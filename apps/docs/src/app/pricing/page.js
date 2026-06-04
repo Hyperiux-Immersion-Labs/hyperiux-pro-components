@@ -1,6 +1,6 @@
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import Link from "next/link";
-import ProCheckoutButton from "@/components/pricing/ProCheckoutButton";
+import ProCheckoutButton from "@/components/Pricing/ProCheckoutButton";
 
 const pricingFeatures = [
   "100+ premium interactive effects",
