@@ -1,0 +1,15 @@
+{
+  "name": "testimonial-swiper",
+  "type": "registry:component",
+  "title": "Testimonial Swiper",
+  "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
+  "category": "components",
+  "dependencies": [
+    "gsap",
+    "lucide-react",
+    "next"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/testimonial",
+  "tier": "pro"
+}
