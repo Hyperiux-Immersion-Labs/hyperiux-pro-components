@@ -10,6 +10,7 @@
   "dependencies": [
     "gsap"
   ],
+  "tier": "pro",
   "registryDependencies": [],
   "exportName": "HelixSlider",
   "exportKind": "named",

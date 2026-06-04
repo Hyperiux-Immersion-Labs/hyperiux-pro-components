@@ -26,6 +26,7 @@ export function EffectCard({
   const videoRef = useRef(null);
   const borderRectRef = useRef(null);
   const [scope, animate] = useAnimate();
+  // console.log(effect)
 
   const isInView = useInView(scope, {
     once: true,
@@ -74,9 +75,8 @@ export function EffectCard({
 
   const videoUrl = effect.videoUrl || effect.videoURL || effect.video_url;
   const videoPreviewUrl = videoUrl
-    ? `${process.env.NEXT_PUBLIC_DEV_URL || ""}${
-        videoUrl.startsWith("/") ? "" : "/"
-      }${videoUrl}`
+    ? `${process.env.NEXT_PUBLIC_DEV_URL || ""}${videoUrl.startsWith("/") ? "" : "/"
+    }${videoUrl}`
     : null;
   const coverImage = effect.coverImage || effect.imageSrc || "/assets/img/image01.webp";
 
@@ -133,9 +133,8 @@ export function EffectCard({
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             priority={priority}
-            className={`object-cover transition-all duration-500 ${
-              showVideo ? "opacity-0" : "opacity-100"
-            }`}
+            className={`object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
+              }`}
           />
           {shouldLoadVideo && (
             <video
@@ -148,9 +147,8 @@ export function EffectCard({
               preload="metadata"
               onLoadedData={() => setVideoReady(true)}
               onError={() => setVideoError(true)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-                showVideo ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
+                }`}
             />
           )}
         </div>
@@ -158,26 +156,26 @@ export function EffectCard({
 
       {/* Pro lock badge — always visible on pro effects */}
       {effect.tier === "pro" && (
-  <div className="absolute top-6 left-6 z-20 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-2.5 py-1 backdrop-blur-sm">
-    {!isProUser && (
-      <svg
-        className="h-3 w-3 text-white/70"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-        />
-      </svg>
-    )}
+        <div className="absolute top-6 left-6 z-20 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/60 px-2.5 py-1 backdrop-blur-sm">
+          {!isProUser && (
+            <svg
+              className="h-3 w-3 text-white/70"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+          )}
 
-    <span className="text-xs font-medium text-white/70">Pro</span>
-  </div>
-)}
+          <span className="text-xs font-medium text-white/70">Pro</span>
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className="absolute top-6 right-6 z-20 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
