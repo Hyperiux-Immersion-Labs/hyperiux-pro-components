@@ -7,7 +7,6 @@
   "categories": [
     "cursor"
   ],
-  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CharacterTrail",

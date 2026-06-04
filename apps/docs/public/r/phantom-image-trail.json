@@ -11,7 +11,9 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/phantom-image-trail",
+  "exportName": "PhantomImageTrail",
+  "exportKind": "named",
+  "previewUrl": "/mouse-hover-image",
   "coverImage": "/assets/list/phantom-image-trail.png",
   "videoUrl": "phantom-image-trail.mp4",
   "files": [

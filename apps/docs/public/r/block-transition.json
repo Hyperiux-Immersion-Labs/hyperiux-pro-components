@@ -12,7 +12,9 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/page-transitions/block-transition",
+  "exportName": "BlockTransition",
+  "exportKind": "named",
+  "previewUrl": "/page-transitions/block",
   "coverImage": "/assets/list/block-transition.png",
   "videoUrl": "block-transition.mp4",
   "files": [

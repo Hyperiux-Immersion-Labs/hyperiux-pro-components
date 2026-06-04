@@ -1,0 +1,14 @@
+{
+  "name": "rotation-slider",
+  "type": "registry:component",
+  "title": "Rotation Slider",
+  "description": "Scroll-pinned horizontal slider with 3D card rotation, vertical drift, and SplitText caption reveals.",
+  "category": "scroll",
+  "dependencies": [
+    "gsap",
+    "next"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/rotation-slider",
+  "tier": "free"
+}

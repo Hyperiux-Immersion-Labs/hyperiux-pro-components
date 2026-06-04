@@ -7,7 +7,6 @@
   "categories": [
     "loaders"
   ],
-  "tier": "free",
   "dependencies": [
     "gsap",
     "@react-three/fiber",

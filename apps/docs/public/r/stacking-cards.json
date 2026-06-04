@@ -7,7 +7,6 @@
   "categories": [
     "scroll"
   ],
-  "tier": "free",
   "dependencies": [
     "gsap",
     "next"

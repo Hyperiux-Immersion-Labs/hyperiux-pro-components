@@ -7,7 +7,6 @@
   "categories": [
     "text"
   ],
-  "tier": "free",
   "dependencies": [
     "framer-motion"
   ],
