@@ -22,6 +22,7 @@ const ENV_INTENSITY_CONFIG = {
   lightOut: 3
 }
 
+
 // Camera z positions for zoomed / out states per device
 const CAMERA_CONFIG = {
   desktop: { zoomedZ: 2.5, outZ: 4.8 },
