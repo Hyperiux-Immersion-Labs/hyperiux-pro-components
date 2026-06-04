@@ -3,8 +3,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import crypto from "crypto";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function generateTemporaryPassword() {
   const alphabet =
     "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
@@ -53,6 +51,7 @@ async function sendTemporaryPasswordEmail({
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const signInUrl = `${appUrl}/sign-in`;
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const result = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL,
     to: [email],
