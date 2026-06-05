@@ -69,7 +69,38 @@ function findPrivateRegistryPath(slug) {
 }
 
 function attachPrivateFileContent(effect, effectDir) {
-  const files = effect.files || [];
+  // If files list is empty (source registry.json has no files key),
+  // discover them by scanning the effect directory — same logic as the build script.
+  const files =
+    effect.files && effect.files.length > 0
+      ? effect.files
+      : fs
+          .readdirSync(effectDir)
+          .filter(
+            (f) =>
+              (f.endsWith(".jsx") ||
+                f.endsWith(".js") ||
+                f.endsWith(".css")) &&
+              f !== "registry.json"
+          )
+          .map((fileName) => {
+            const isCss = fileName.endsWith(".css");
+            const isModuleCss = fileName.endsWith(".module.css");
+            return {
+              path: fileName,
+              type: isCss ? "registry:style" : "registry:component",
+              target: isCss
+                ? isModuleCss
+                  ? `components/hyperiux/${fileName}`
+                  : `styles/${fileName}`
+                : `components/hyperiux/${fileName}`,
+              targetPath: isCss
+                ? isModuleCss
+                  ? `components/hyperiux/${fileName}`
+                  : `styles/${fileName}`
+                : `components/hyperiux/${fileName}`,
+            };
+          });
 
   return {
     ...effect,
@@ -82,7 +113,6 @@ function attachPrivateFileContent(effect, effectDir) {
 
       if (!fs.existsSync(sourcePath)) {
         console.warn(`Private registry source file missing: ${sourcePath}`);
-
         return file;
       }
 
