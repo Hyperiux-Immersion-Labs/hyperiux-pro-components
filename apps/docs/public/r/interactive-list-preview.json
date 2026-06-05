@@ -4,10 +4,10 @@
   "title": "Interactive List Preview",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
   "category": "others",
-  "tier": "free",
   "categories": [
     "others"
   ],
+  "tier": "free",
   "dependencies": [
     "gsap"
   ],

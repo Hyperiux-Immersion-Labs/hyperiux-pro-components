@@ -4,10 +4,10 @@
   "title": "Horizontal Feature Reveal",
   "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
+  "tier": "free",
   "dependencies": [
     "gsap"
   ],

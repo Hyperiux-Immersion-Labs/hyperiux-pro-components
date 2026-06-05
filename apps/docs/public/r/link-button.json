@@ -4,10 +4,10 @@
   "title": "Link Button",
   "description": "Minimal link button with animated underline and rotating arrow icon",
   "category": "buttons",
-  "tier": "free",
   "categories": [
     "buttons"
   ],
+  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "LinkButton",

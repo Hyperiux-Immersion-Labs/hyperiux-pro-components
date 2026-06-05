@@ -4,10 +4,10 @@
   "title": "Spider Particles",
   "description": "Canvas particle network background with connecting lines and mouse-driven repulsion — pure canvas, zero dependencies",
   "category": "backgrounds",
-  "tier": "free",
   "categories": [
     "backgrounds"
   ],
+  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpiderParticles",

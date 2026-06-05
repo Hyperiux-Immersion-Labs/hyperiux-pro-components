@@ -4,10 +4,10 @@
   "title": "Block Transition",
   "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
   "category": "transitions",
-  "tier": "free",
   "categories": [
     "transitions"
   ],
+  "tier": "free",
   "dependencies": [
     "gsap",
     "next-transition-router"
@@ -16,7 +16,7 @@
   "exportName": "BlockTransition",
   "exportKind": "named",
   "previewUrl": "/page-transitions/block",
-  "coverImage": "block-transition",
+  "coverImage": "/assets/img/image01.webp",
   "videoUrl": "block-transition.mp4",
   "files": [
     {

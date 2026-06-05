@@ -4,20 +4,57 @@
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
   "category": "webgl",
+  "categories": [
+    "webgl"
+  ],
+  "tier": "pro",
   "dependencies": [
     "three",
     "@react-three/fiber",
     "@react-three/drei"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/book-flip.png",
-  "videoUrl": "book-flip.mp4",
-  "previewUrl": "/book-flip",
-  "tier": "pro",
-  "categories": [
-    "webgl"
-  ],
   "exportName": "BookFlip",
   "exportKind": "named",
-  "files": []
+  "previewUrl": "/book-flip",
+  "coverImage": "/assets/list/book-flip.png",
+  "videoUrl": "book-flip.mp4",
+  "files": [
+    {
+      "path": "book-flip.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/book-flip.jsx"
+    },
+    {
+      "path": "Book.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Book.jsx"
+    },
+    {
+      "path": "BookFlipViewer.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/BookFlipViewer.jsx"
+    },
+    {
+      "path": "Experience.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Experience.jsx"
+    },
+    {
+      "path": "PageContext.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/PageContext.jsx"
+    },
+    {
+      "path": "UI.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/UI.jsx"
+    },
+    {
+      "path": "assets/audio/page-flip-01a.mp3",
+      "type": "registry:asset",
+      "target": "public/assets/audio/page-flip-01a.mp3",
+      "source": "/assets/audio/page-flip-01a.mp3"
+    }
+  ]
 }

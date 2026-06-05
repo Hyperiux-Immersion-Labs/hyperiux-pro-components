@@ -4,10 +4,10 @@
   "title": "Scramble Link Button",
   "description": "Link button with text scramble effect on hover, optional underline and arrow",
   "category": "buttons",
-  "tier": "free",
   "categories": [
     "buttons"
   ],
+  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "ScrambleLinkButton",
