@@ -4,8 +4,9 @@ import path from "path";
 const PUBLIC_REGISTRY_PATH = path.join(process.cwd(), "public/r");
 
 const PRIVATE_REGISTRY_CANDIDATES = [
-  path.join(process.cwd(), "registry/effects"),
-  path.join(process.cwd(), "apps/docs/registry/effects"),
+  path.join(process.cwd(), "registry/effects"),           // Vercel: cwd = repo root
+  path.join(process.cwd(), "../../registry/effects"),     // Vercel: cwd = apps/docs
+  path.join(process.cwd(), "apps/docs/registry/effects"), // legacy fallback
 ];
 
 function readJson(filePath) {
