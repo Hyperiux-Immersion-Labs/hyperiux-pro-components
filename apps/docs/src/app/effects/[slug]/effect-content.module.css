@@ -1,0 +1,259 @@
+.content {
+  color: #d2d2d2;
+}
+
+.content > * + * {
+  margin-top: 1.5rem;
+}
+
+.content h2 {
+  color: rgb(255 255 255);
+  font-size: clamp(1.875rem, 2.8vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: 8rem;
+}
+
+.content h2 + p,
+.content h2 + ul,
+.content h2 + ol,
+.content h2 + figure,
+.content h2 + blockquote,
+.content h2 + div,
+.content h2 + section,
+.content h3 + p,
+.content h3 + ul,
+.content h3 + ol,
+.content h3 + figure,
+.content h3 + blockquote,
+.content h3 + div,
+.content h3 + section {
+  margin-top: 2rem;
+}
+
+.content h3 {
+  color: rgb(255 255 255);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  scroll-margin-top: 8rem;
+}
+
+.content p,
+.content td,
+.content th {
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.content p + p {
+  margin-top: 1rem;
+}
+
+.content p + div,
+.content p + figure,
+.content p + section,
+.content p + ul,
+.content p + ol,
+.content p + blockquote,
+.content figure + p,
+.content div + p,
+.content section + p {
+  margin-top: 1.25rem;
+}
+
+.content strong {
+  color: rgb(255 255 255);
+  font-weight: 600;
+}
+
+.content em {
+  font-style: italic;
+}
+
+.content a {
+  color: var(--color-primary, #f97316);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.content ul {
+  padding-left: 1.25rem;
+}
+
+.content ul li + li,
+.content ol li + li {
+  margin-top: 0.65rem;
+}
+
+.content blockquote {
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+  padding-left: 1rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-style: italic;
+}
+
+.contentInlineCode {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.92em;
+}
+
+.imageFrame {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.caption {
+  margin-top: 0.85rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.content :global(.codeblock-root) {
+  margin-top: 1.25rem;
+}
+
+.table {
+  width: 100%;
+  min-width: 38rem;
+  border-collapse: collapse;
+}
+
+.table th {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(0, 0, 0, 0.18);
+  font-weight: 500;
+}
+
+.table th,
+.table td {
+  padding: 0.95rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.numberList {
+  padding-left: 1.25rem;
+}
+
+.numberList li + li {
+  margin-top: 0.75rem;
+}
+
+.callout {
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  background: rgba(249, 115, 22, 0.1);
+  
+}
+
+.callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.calloutInfo {
+  border-color: rgba(59, 130, 246, 0.34);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.calloutWarning {
+  border-color: rgba(245, 158, 11, 0.34);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.calloutSuccess {
+  border-color: rgba(34, 197, 94, 0.34);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.calloutTitle {
+  color: rgb(255 255 255);
+  font-size: clamp(1.875rem, 2.8vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) > .calloutTitle {
+  margin-bottom: 1.5rem;
+}
+
+.calloutGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.calloutGridItem {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.04);
+  min-height: auto;
+  padding: 0.75rem 1rem;
+  color: #d2d2d2;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) ul {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) ul li {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.375rem;
+  background: rgba(255, 255, 255, 0.04);
+  min-height: auto;
+  padding: 0.75rem 1rem;
+  color: #d2d2d2;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) ul li + li {
+  margin-top: 0;
+}
+
+@media (min-width: 640px) {
+  .calloutGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

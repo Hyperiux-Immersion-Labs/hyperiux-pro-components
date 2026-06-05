@@ -1,15 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { Faculty_Glyphic } from 'next/font/google';
 import { ReactLenis } from 'lenis/react';
 import PixelScrollCanvas from './PixelScrollCanvas';
 import { sections } from './content';
-
-const facultyGlyphic = Faculty_Glyphic({
-    subsets: ['latin'],
-    weight: '400',
-});
 
 export default function SplitCanvas() {
     const wrapperRef = useRef(null);
@@ -55,7 +49,8 @@ export default function SplitCanvas() {
                                             {section.number}
                                         </span>
                                         <h2
-                                            className={`text-[44px] max-md:text-[40px] max-sm:text-[32px] leading-[1.05] font-normal ${facultyGlyphic.className}`}
+                                            className="text-[44px] max-md:text-[40px] max-sm:text-[32px] leading-[1.05] font-normal"
+                                            style={{ fontFamily: '"Times New Roman", Georgia, serif' }}
                                         >
                                             {section.title}
                                         </h2>
