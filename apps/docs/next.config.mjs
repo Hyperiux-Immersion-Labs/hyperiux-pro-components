@@ -4,7 +4,11 @@ import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const shouldUploadSentrySourceMaps = Boolean(
+  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true"
+);
 const hasSentryBuildConfig = Boolean(
+  shouldUploadSentrySourceMaps &&
   process.env.NEXT_PUBLIC_SENTRY_DSN &&
     process.env.SENTRY_ORG &&
     process.env.SENTRY_PROJECT &&

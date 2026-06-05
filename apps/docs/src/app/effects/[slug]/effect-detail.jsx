@@ -161,7 +161,7 @@ export function EffectDetailContent({
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen bg-black text-foreground px-15 max-sm:px-6">
+      <div className="min-h-screen bg-black text-foreground px-15 max-md:px-2 max-sm:px-6">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
