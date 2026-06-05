@@ -4,7 +4,6 @@
   "title": "Infinite Grid Gallery",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -13,7 +12,7 @@
   "exportName": "InfiniteGridGallery",
   "exportKind": "named",
   "previewUrl": "/infinite-grid-gallery",
-  "coverImage": "/assets/list/infinite-grid-gallery.png",
+  "coverImage": "image10",
   "videoUrl": "infinite-grid-gallery.mp4",
   "files": [
     {

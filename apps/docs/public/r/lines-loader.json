@@ -4,7 +4,6 @@
   "title": "Lines Loader",
   "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
   "category": "loaders",
-  "tier": "pro",
   "categories": [
     "loaders"
   ],
@@ -15,7 +14,7 @@
   "exportName": "CenterLinesLoader",
   "exportKind": "named",
   "previewUrl": "/loaders/lines-loading",
-  "coverImage": "/assets/list/lines-loader.png",
+  "coverImage": "lines-loader",
   "videoUrl": "lines-loader.mp4",
   "files": [
     {

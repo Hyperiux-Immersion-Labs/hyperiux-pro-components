@@ -4,7 +4,6 @@
   "title": "Butterfly Trail Cursor",
   "description": "3D butterfly swarm that spawns around the pointer and fades through space",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -17,7 +16,7 @@
   "exportName": "ButterflyTrailCursor",
   "exportKind": "named",
   "previewUrl": "/cursors/butterflies",
-  "coverImage": "/assets/list/butterfly-trail-cursor.png",
+  "coverImage": "butterfly-trail-cursor",
   "videoUrl": "butterfly-trail-cursor.mp4",
   "files": [
     {

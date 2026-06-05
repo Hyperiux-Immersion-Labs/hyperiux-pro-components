@@ -4,7 +4,6 @@
   "title": "Parallax Gallery",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "ParallaxGallery",
   "exportKind": "named",
   "previewUrl": "/frame-slider",
-  "coverImage": "/assets/list/parallax-gallery.png",
+  "coverImage": "parallax-gallery",
   "videoUrl": "parallax-gallery.mp4",
   "files": [
     {

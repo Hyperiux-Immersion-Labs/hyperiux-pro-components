@@ -4,7 +4,6 @@
   "title": "Draggable Marquee",
   "description": "Infinite horizontal marquee with drag interaction and momentum physics",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "DraggableMarquee",
   "exportKind": "named",
   "previewUrl": "/draggable-marquee",
-  "coverImage": "/assets/list/draggable-marquee.png",
+  "coverImage": "draggable-marquee",
   "videoUrl": "draggable-marquee.mp4",
   "files": [
     {

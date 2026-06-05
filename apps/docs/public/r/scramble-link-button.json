@@ -4,7 +4,6 @@
   "title": "Scramble Link Button",
   "description": "Link button with text scramble effect on hover, optional underline and arrow",
   "category": "buttons",
-  "tier": "free",
   "categories": [
     "buttons"
   ],
@@ -13,7 +12,7 @@
   "exportName": "ScrambleLinkButton",
   "exportKind": "named",
   "previewUrl": "/buttons/scramble-link-button",
-  "coverImage": "/assets/list/scramble-link-button.png",
+  "coverImage": "scramble-link-button",
   "videoUrl": "scramble-link-button.mp4",
   "files": [
     {

@@ -12,21 +12,16 @@ const PUBLIC_ASSET_REGEX =
   /(?<![\w])["'`]((?:\/(?:assets|models|valley|601|svgs|img)\/[^"'`)\s]+)|(?:\/(?:showreel|eye-loop|hyperiux-wordmark|hyperiux)\.(?:mp4|svg)))["'`]/g;
 
 function resolveCoverImage(effectName, explicitCoverImage) {
-  const normalize = (p) => (typeof p === "string" ? p.trim() : "");
-  const existsInPublic = (publicUrlPath) => {
-    const p = normalize(publicUrlPath);
-    if (!p.startsWith("/")) return false;
-    return fs.existsSync(path.join(PUBLIC_PATH, p.slice(1)));
-  };
+  if (explicitCoverImage === null) return null;
 
-  const explicit = normalize(explicitCoverImage);
-  if (explicit && existsInPublic(explicit)) return explicit;
+  const explicit =
+    typeof explicitCoverImage === "string" ? explicitCoverImage.trim() : "";
 
-  const defaultList = `/assets/list/${effectName}.png`;
-  if (existsInPublic(defaultList)) return defaultList;
+  const coverImage = explicit || effectName;
+  if (/^(https?:)?\/\//.test(coverImage)) return coverImage;
 
-  // Guaranteed local fallback so cards never render empty.
-  return "/assets/img/image01.webp";
+  const fileName = path.basename(coverImage.split(/[?#]/)[0]);
+  return (fileName || effectName).replace(/\.[^.]+$/, "");
 }
 
 // Controls the order categories appear in the listing.

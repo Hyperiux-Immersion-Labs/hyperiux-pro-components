@@ -4,7 +4,6 @@
   "title": "SVG Pixel Reveal",
   "description": "Scroll-driven image that transitions from pixelated to crisp using an SVG filter and GSAP ScrollTrigger",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "SvgPixelReveal",
   "exportKind": "named",
   "previewUrl": "/svg-pixel-reveal",
-  "coverImage": "/assets/list/svg-pixel-reveal.png",
+  "coverImage": "svg-pixel-reveal",
   "videoUrl": "svg-pixel-reveal.mp4",
   "files": [
     {

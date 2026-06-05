@@ -4,7 +4,6 @@
   "title": "Fish Eye",
   "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -17,7 +16,7 @@
   "exportName": "FishEyeImage",
   "exportKind": "named",
   "previewUrl": "/cursors/fish-eye",
-  "coverImage": "/assets/list/fish-eye.png",
+  "coverImage": "fish-eye",
   "videoUrl": "fish-eye.mp4",
   "files": [
     {

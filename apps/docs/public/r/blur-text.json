@@ -4,7 +4,6 @@
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "BlurText",
   "exportKind": "named",
   "previewUrl": "/blur-text-reveal",
-  "coverImage": "/assets/list/blur-text.png",
+  "coverImage": "blur-text",
   "videoUrl": "blur-text.mp4",
   "files": [
     {

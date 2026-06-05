@@ -4,7 +4,6 @@
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
   "category": "others",
-  "tier": "pro",
   "categories": [
     "others"
   ],
@@ -15,7 +14,7 @@
   "exportName": "CardDrift",
   "exportKind": "named",
   "previewUrl": "/card-drift",
-  "coverImage": "/assets/list/card-drift.png",
+  "coverImage": "card-drift",
   "videoUrl": "card-drift.mp4",
   "files": [
     {

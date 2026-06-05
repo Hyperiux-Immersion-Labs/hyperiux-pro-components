@@ -4,7 +4,6 @@
   "title": "Colorful Cursor Aura",
   "description": "Layered radial color aura that follows the cursor across oversized headline text",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -15,7 +14,7 @@
   "exportName": "ColorfulCursorAura",
   "exportKind": "named",
   "previewUrl": "/colorful-cursor-aura",
-  "coverImage": "/assets/list/colorful-cursor-aura.png",
+  "coverImage": "colorful-cursor-aura",
   "videoUrl": "colorful-cursor-aura.mp4",
   "files": [
     {

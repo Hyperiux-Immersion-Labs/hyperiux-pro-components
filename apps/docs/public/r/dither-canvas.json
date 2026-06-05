@@ -4,7 +4,6 @@
   "title": "Dither Canvas",
   "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
   "category": "backgrounds",
-  "tier": "pro",
   "categories": [
     "backgrounds"
   ],
@@ -13,7 +12,7 @@
   "exportName": "DitherCanvas",
   "exportKind": "named",
   "previewUrl": "/binary-effect",
-  "coverImage": "/assets/list/dither-canvas.png",
+  "coverImage": "dither-canvas",
   "videoUrl": "dither-canvas.mp4",
   "files": [
     {

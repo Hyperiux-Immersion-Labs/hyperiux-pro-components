@@ -4,7 +4,6 @@
   "title": "Overflow Text Reveal",
   "description": "Text lines slide up from hidden overflow with smooth stagger animation on scroll",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "OverflowTextReveal",
   "exportKind": "named",
   "previewUrl": "/overflow-text-reveal",
-  "coverImage": "/assets/list/overflow-text-reveal.png",
+  "coverImage": "overflow-text-reveal",
   "videoUrl": "overflow-text-reveal.mp4",
   "files": [
     {

@@ -4,7 +4,6 @@
   "title": "Slide Text Reveal",
   "description": "Characters slide in from the right with staggered fade animation on scroll",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "SlideTextReveal",
   "exportKind": "named",
   "previewUrl": "/slide-text-reveal",
-  "coverImage": "/assets/list/slide-text-reveal.png",
+  "coverImage": "slide-text-reveal",
   "videoUrl": "slide-text-reveal.mp4",
   "files": [
     {

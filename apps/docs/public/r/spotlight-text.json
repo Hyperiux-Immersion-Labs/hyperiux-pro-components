@@ -4,7 +4,6 @@
   "title": "Spotlight Text",
   "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -13,7 +12,7 @@
   "exportName": "SpotlightText",
   "exportKind": "named",
   "previewUrl": "/spotlight-text",
-  "coverImage": "/assets/list/spotlight-text.png",
+  "coverImage": "spotlight-text",
   "videoUrl": "spotlight-text.mp4",
   "files": [
     {

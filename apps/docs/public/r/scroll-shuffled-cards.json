@@ -4,7 +4,6 @@
   "title": "Scroll Shuffled Cards",
   "description": "Pinned scroll section that drifts a shuffled stack of editorial cards across the viewport",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "ScrollShuffledCards",
   "exportKind": "named",
   "previewUrl": "/scroll-shuffled-cards",
-  "coverImage": "/assets/list/scroll-shuffled-cards.png",
+  "coverImage": "scroll-shuffled-cards",
   "videoUrl": "scroll-shuffled-cards.mp4",
   "files": [
     {

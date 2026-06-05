@@ -4,7 +4,6 @@
   "title": "Hover Stack",
   "description": "Overlapping card stack that fans out around the hovered card",
   "category": "components",
-  "tier": "free",
   "categories": [
     "components"
   ],
@@ -13,7 +12,7 @@
   "exportName": "HoverStack",
   "exportKind": "named",
   "previewUrl": "/hover-stack",
-  "coverImage": "/assets/list/hover-stack.png",
+  "coverImage": "hover-stack",
   "videoUrl": "hover-stack.mp4",
   "files": [
     {

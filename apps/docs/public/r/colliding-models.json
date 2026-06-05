@@ -4,7 +4,6 @@
   "title": "Colliding Models",
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -22,7 +21,7 @@
   "exportName": "CollidingModels",
   "exportKind": "named",
   "previewUrl": "/colliding-models",
-  "coverImage": "/assets/list/colliding-models.png",
+  "coverImage": "colliding-models",
   "videoUrl": "colliding-models.mp4",
   "files": [
     {

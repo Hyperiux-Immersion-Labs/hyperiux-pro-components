@@ -4,7 +4,6 @@
   "title": "File Encryption",
   "description": "Auto-scrolling draggable card marquee with a WebGL laser beam that splits each card between its plain and ASCII/encrypted face, plus Canvas 2D particle scatter.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -15,7 +14,7 @@
   "exportName": "FileEncryption",
   "exportKind": "named",
   "previewUrl": "/file-encryption",
-  "coverImage": "/assets/list/file-encryption.png",
+  "coverImage": "file-encryption",
   "videoUrl": "file-encryption.mp4",
   "files": [
     {

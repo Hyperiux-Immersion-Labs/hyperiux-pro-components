@@ -4,7 +4,6 @@
   "title": "Character Stagger Button",
   "description": "Link button with staggered character animation on hover",
   "category": "buttons",
-  "tier": "pro",
   "categories": [
     "buttons"
   ],
@@ -15,7 +14,7 @@
   "exportName": "CharStaggerButton",
   "exportKind": "named",
   "previewUrl": "/buttons/char-stagger-button",
-  "coverImage": "/assets/list/char-stagger-button.png",
+  "coverImage": "char-stagger-button",
   "videoUrl": "char-stagger-button.mp4",
   "files": [
     {

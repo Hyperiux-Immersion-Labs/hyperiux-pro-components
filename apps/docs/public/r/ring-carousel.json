@@ -4,7 +4,6 @@
   "title": "Ring Carousel",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
   "category": "carousels",
-  "tier": "pro",
   "categories": [
     "carousels"
   ],
@@ -16,7 +15,7 @@
   "exportName": "RingCarousel",
   "exportKind": "named",
   "previewUrl": "/ring-carousel",
-  "coverImage": "/assets/list/ring-carousel.png",
+  "coverImage": "ring-carousel",
   "videoUrl": "ring-carousel.mp4",
   "files": [
     {

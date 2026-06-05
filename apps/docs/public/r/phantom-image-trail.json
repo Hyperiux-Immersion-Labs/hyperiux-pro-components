@@ -4,7 +4,6 @@
   "title": "Phantom Image Trail",
   "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
   "category": "cursor",
-  "tier": "free",
   "categories": [
     "cursor"
   ],
@@ -15,7 +14,7 @@
   "exportName": "PhantomImageTrail",
   "exportKind": "named",
   "previewUrl": "/mouse-hover-image",
-  "coverImage": "/assets/list/phantom-image-trail.png",
+  "coverImage": "phantom-image-trail",
   "videoUrl": "phantom-image-trail.mp4",
   "files": [
     {

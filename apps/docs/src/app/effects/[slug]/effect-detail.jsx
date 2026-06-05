@@ -17,6 +17,7 @@ import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { UpgradeCard } from "@/components/ui/UpgradeCard";
 import { getEffectPreviewHref } from "@/lib/categories";
+import { resolveMediaUrl } from "@/lib/media";
 import Footer from "@/components/Footer";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
@@ -41,36 +42,7 @@ export function EffectDetailContent({
 
   const videoRef = useRef(null);
   const contentRef = useRef(null);
-  const videoPreviewUrl = effect.videoUrl
-    ? `${process.env.NEXT_PUBLIC_DEV_URL || ""}${effect.videoUrl.startsWith("/") ? "" : "/"
-    }${effect.videoUrl}`
-    : null;
-
-  const resolveCoverImageUrl = (rawCoverImage) => {
-    if (!rawCoverImage) return null;
-    const src = String(rawCoverImage).trim();
-    if (!src) return null;
-    if (/^(https?:)?\/\//.test(src)) return src;
-    if (src.startsWith("/")) {
-      const pathWithoutSlash = src.slice(1);
-      if (
-        pathWithoutSlash.startsWith("assets/") ||
-        pathWithoutSlash.startsWith("models/") ||
-        pathWithoutSlash.startsWith("img/") ||
-        pathWithoutSlash.startsWith("svgs/") ||
-        pathWithoutSlash.startsWith("valley/") ||
-        pathWithoutSlash.startsWith("601/")
-      ) {
-        return src;
-      }
-      const normalized = pathWithoutSlash.replace(/\/+$/, "");
-      const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
-      return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
-    }
-    const normalized = src.replace(/\/+$/, "");
-    const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
-    return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
-  };
+  const videoPreviewUrl = resolveMediaUrl(effect.videoUrl);
 
   const componentName = slug
     .split("-")
@@ -242,7 +214,10 @@ export default function MyComponent() {
                 {!showVideo && (
                   <Image
                     src={
-                      resolveCoverImageUrl(effect.coverImage || effect.imageSrc) ||
+                      resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+                        defaultDirectory: "vault-listing-images",
+                        defaultExtension: "png",
+                      }) ||
                       "/assets/img/image01.webp"
                     }
                     alt={effect.title || slug}

@@ -4,7 +4,6 @@
   "title": "Infinite Carousel",
   "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
   "category": "carousels",
-  "tier": "pro",
   "categories": [
     "carousels"
   ],
@@ -15,7 +14,7 @@
   "exportName": "InfiniteCarousel",
   "exportKind": "named",
   "previewUrl": "/infinite-carousel",
-  "coverImage": "/assets/list/infinite-carousel.png",
+  "coverImage": "infinite-carousel",
   "videoUrl": "infinite-carousel.mp4",
   "files": [
     {

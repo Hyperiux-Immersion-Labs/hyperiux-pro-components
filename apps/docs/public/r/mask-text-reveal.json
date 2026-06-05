@@ -4,7 +4,6 @@
   "title": "Mask Text Reveal",
   "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "MaskTextReveal",
   "exportKind": "named",
   "previewUrl": "/mask-text-reveal",
-  "coverImage": "/assets/list/mask-text-reveal.png",
+  "coverImage": "mask-text-reveal",
   "videoUrl": "mask-text-reveal.mp4",
   "files": [
     {

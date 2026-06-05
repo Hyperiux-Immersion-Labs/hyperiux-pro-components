@@ -4,7 +4,6 @@
   "title": "Square Translate",
   "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "SquareTranslate",
   "exportKind": "named",
   "previewUrl": "/square-translate",
-  "coverImage": "/assets/list/square-translate.png",
+  "coverImage": "square-translate",
   "videoUrl": "square-translate.mp4",
   "files": [
     {

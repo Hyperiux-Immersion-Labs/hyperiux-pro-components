@@ -4,7 +4,6 @@
   "title": "Horizontal Feature Reveal",
   "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "HorizonScroll",
   "exportKind": "named",
   "previewUrl": "/horizontal-feature-reveal",
-  "coverImage": "/assets/img/image01.webp",
+  "coverImage": "horizon-scroll",
   "videoUrl": "horizontal-feature-reveal.mp4",
   "files": [
     {

@@ -4,7 +4,6 @@
   "title": "Coffee Bean Cursor",
   "description": "Mouse-reactive 3D coffee bean flow with velocity-based lighting and fluid drift",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -17,7 +16,7 @@
   "exportName": "CoffeeBeanCursor",
   "exportKind": "named",
   "previewUrl": "/cursors/coffee",
-  "coverImage": "/assets/list/coffee-bean-cursor.png",
+  "coverImage": "coffee-bean-cursor",
   "videoUrl": "coffee-bean-cursor.mp4",
   "files": [
     {

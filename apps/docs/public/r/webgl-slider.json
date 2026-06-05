@@ -4,7 +4,6 @@
   "title": "WebGL Slider",
   "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
   "category": "carousels",
-  "tier": "pro",
   "categories": [
     "carousels"
   ],
@@ -17,7 +16,7 @@
   "exportName": "WebglSlider",
   "exportKind": "named",
   "previewUrl": "/webgl-slider",
-  "coverImage": "/assets/list/webgl-slider.png",
+  "coverImage": "webgl-slider",
   "videoUrl": "webgl-slider.mp4",
   "files": [
     {

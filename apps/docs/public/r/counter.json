@@ -4,7 +4,6 @@
   "title": "Counter",
   "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "Counter",
   "exportKind": "named",
   "previewUrl": "/counter",
-  "coverImage": "/assets/list/counter.png",
+  "coverImage": "counter",
   "videoUrl": "/counter.mp4",
   "files": [
     {

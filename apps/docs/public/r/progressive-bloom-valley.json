@@ -4,7 +4,6 @@
   "title": "Progressive Bloom Valley",
   "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -19,7 +18,7 @@
   "exportName": "ProgressiveBloomValley",
   "exportKind": "named",
   "previewUrl": "/webgl/progressive-bloom-valley",
-  "coverImage": "/assets/list/progressive-bloom-valley.png",
+  "coverImage": "progressive-bloom-valley",
   "videoUrl": "progressive-bloom-valley.mp4",
   "files": [
     {

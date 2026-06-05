@@ -4,7 +4,6 @@
   "title": "Interactive Arrows",
   "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout. Scroll-driven background color transitions via GSAP ScrollTrigger.",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -15,7 +14,7 @@
   "exportName": "InteractiveArrows",
   "exportKind": "named",
   "previewUrl": "/interactive-arrows",
-  "coverImage": "/assets/list/interactive-arrows.png",
+  "coverImage": "interactive-arrows",
   "videoUrl": "interactive-arrows.mp4",
   "files": [
     {

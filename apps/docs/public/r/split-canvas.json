@@ -4,7 +4,6 @@
   "title": "Split Canvas",
   "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -16,7 +15,7 @@
   "exportName": "SplitCanvas",
   "exportKind": "named",
   "previewUrl": "/split-canvas",
-  "coverImage": "/assets/list/split-canvas.png",
+  "coverImage": "split-canvas",
   "videoUrl": "split-canvas.mp4",
   "files": [
     {

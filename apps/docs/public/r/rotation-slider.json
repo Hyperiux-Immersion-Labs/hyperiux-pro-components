@@ -4,7 +4,6 @@
   "title": "Rotation Slider",
   "description": "Scroll-pinned horizontal slider with 3D card rotation, vertical drift, and SplitText caption reveals.",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
@@ -16,7 +15,7 @@
   "exportName": "RotationSlider",
   "exportKind": "named",
   "previewUrl": "/rotation-slider",
-  "coverImage": "/assets/list/rotation-slider.png",
+  "coverImage": "rotation-slider",
   "videoUrl": "rotation-slider.mp4",
   "files": [
     {

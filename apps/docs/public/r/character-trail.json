@@ -4,7 +4,6 @@
   "title": "Character Trail",
   "description": "Cursor wrapper that leaves a snake-like grid trail of character tiles as the mouse moves. Tiles snap to a 50px grid, cycle through a configurable alphabet and color palette, pop in with a spring animation, then stagger-fade out after the cursor idles.",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -13,7 +12,7 @@
   "exportName": "CharacterTrail",
   "exportKind": "named",
   "previewUrl": "/character-trail",
-  "coverImage": "/assets/list/character-trail.png",
+  "coverImage": "character-trail",
   "videoUrl": "character-trail.mp4",
   "files": [
     {

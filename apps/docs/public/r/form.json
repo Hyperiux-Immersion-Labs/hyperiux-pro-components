@@ -4,7 +4,6 @@
   "title": "Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
   "category": "components",
-  "tier": "pro",
   "categories": [
     "components"
   ],
@@ -13,7 +12,7 @@
   "exportName": "Form",
   "exportKind": "named",
   "previewUrl": "/form",
-  "coverImage": "/assets/list/form.png",
+  "coverImage": "form",
   "videoUrl": "form.mp4",
   "files": [
     {

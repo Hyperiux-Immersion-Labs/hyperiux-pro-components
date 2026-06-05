@@ -4,7 +4,6 @@
   "title": "Draggable Canvas",
   "description": "Six independently draggable Canvas 2D windows that each reveal a different cropped region of a shared video, creating a parallax masking illusion. GSAP Draggable with InertiaPlugin gives each window smooth throw physics. Includes a minimal coordinate-display cursor.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -15,7 +14,7 @@
   "exportName": "DraggableCanvas",
   "exportKind": "named",
   "previewUrl": "/webgl/draggable-canvas",
-  "coverImage": "/assets/list/draggable-canvas.png",
+  "coverImage": "draggable-canvas",
   "videoUrl": "draggable-canvas.mp4",
   "files": [
     {

@@ -4,7 +4,6 @@
   "title": "Rotating Carousel",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -16,7 +15,7 @@
   "exportName": "RotatingCarousel",
   "exportKind": "named",
   "previewUrl": "/circular-slider",
-  "coverImage": "/assets/list/rotating-carousel.png",
+  "coverImage": "rotating-carousel",
   "videoUrl": "rotating-carousel.mp4",
   "files": [
     {

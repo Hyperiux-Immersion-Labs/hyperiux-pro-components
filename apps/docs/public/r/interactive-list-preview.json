@@ -4,7 +4,6 @@
   "title": "Interactive List Preview",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
   "category": "others",
-  "tier": "free",
   "categories": [
     "others"
   ],
@@ -15,7 +14,7 @@
   "exportName": "InteractiveListPreview",
   "exportKind": "named",
   "previewUrl": "/interactive-list-preview",
-  "coverImage": "/assets/list/interactive-list-preview.png",
+  "coverImage": "interactive-list-preview",
   "videoUrl": "interactive-list-preview.mp4",
   "files": [
     {

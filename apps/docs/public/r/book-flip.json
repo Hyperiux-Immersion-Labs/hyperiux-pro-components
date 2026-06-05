@@ -4,7 +4,6 @@
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -17,7 +16,7 @@
   "exportName": "BookFlip",
   "exportKind": "named",
   "previewUrl": "/book-flip",
-  "coverImage": "/assets/list/book-flip.png",
+  "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
   "files": [
     {

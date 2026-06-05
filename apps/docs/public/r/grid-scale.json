@@ -4,7 +4,6 @@
   "title": "Grid Scale",
   "description": "Scroll-driven animation where a centered clip-path panel expands to fullscreen while corner boxes fly in, grid lines dissolve, and floating keyword pills converge to the center.",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "GridScale",
   "exportKind": "named",
   "previewUrl": "/grid-scale",
-  "coverImage": "/assets/list/grid-scale.png",
+  "coverImage": "grid-scale",
   "videoUrl": "grid-scale.mp4",
   "files": [
     {

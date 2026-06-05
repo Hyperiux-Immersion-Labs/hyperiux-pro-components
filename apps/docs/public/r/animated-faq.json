@@ -4,7 +4,6 @@
   "title": "Animated FAQ",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
   "category": "components",
-  "tier": "pro",
   "categories": [
     "components"
   ],
@@ -17,7 +16,7 @@
   "exportName": "FAQGroup",
   "exportKind": "named",
   "previewUrl": "/animated-faq",
-  "coverImage": "/assets/list/animated-faq.png",
+  "coverImage": "animated-faq",
   "videoUrl": "animated-faq.mp4",
   "files": [
     {

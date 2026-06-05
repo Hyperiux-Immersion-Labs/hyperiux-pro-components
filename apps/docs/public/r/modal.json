@@ -4,7 +4,6 @@
   "title": "Modal",
   "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
   "category": "components",
-  "tier": "pro",
   "categories": [
     "components"
   ],
@@ -15,7 +14,7 @@
   "exportName": "Modal",
   "exportKind": "named",
   "previewUrl": "/modal",
-  "coverImage": "/assets/list/modal.png",
+  "coverImage": "modal",
   "videoUrl": "modal.mp4",
   "files": [
     {

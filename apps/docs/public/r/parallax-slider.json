@@ -4,7 +4,6 @@
   "title": "Parallax Slider",
   "description": "Pinned horizontal gallery with clip-path reveals and image parallax",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
@@ -16,7 +15,7 @@
   "exportName": "ParallaxSlider",
   "exportKind": "named",
   "previewUrl": "/parallax-slider",
-  "coverImage": "/assets/list/parallax-slider.png",
+  "coverImage": "parallax-slider",
   "videoUrl": "parallax-slider.mp4",
   "files": [
     {

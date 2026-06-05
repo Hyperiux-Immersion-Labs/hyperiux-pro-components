@@ -4,7 +4,6 @@
   "title": "Parallax Footer",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -13,7 +12,7 @@
   "exportName": "ParallaxFooter",
   "exportKind": "named",
   "previewUrl": "/parallax-footer",
-  "coverImage": "/assets/list/parallax-footer.png",
+  "coverImage": "parallax-footer",
   "videoUrl": "parallax-footer.mp4",
   "files": [
     {

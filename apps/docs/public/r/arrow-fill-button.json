@@ -4,7 +4,6 @@
   "title": "Arrow Fill Button",
   "description": "Button with expanding circle fill and animated arrow icon on hover",
   "category": "buttons",
-  "tier": "free",
   "categories": [
     "buttons"
   ],
@@ -13,7 +12,7 @@
   "exportName": "ArrowFillButton",
   "exportKind": "named",
   "previewUrl": "/buttons/arrow-fill-button",
-  "coverImage": "/assets/list/arrow-fill-button.png",
+  "coverImage": "arrow-fill-button",
   "videoUrl": "arrow-fill-button.mp4",
   "files": [
     {

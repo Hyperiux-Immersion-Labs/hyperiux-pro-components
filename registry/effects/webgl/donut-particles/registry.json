@@ -9,7 +9,7 @@
     "@react-three/fiber"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/donut-particles.png",
+  "coverImage": "donut-particles",
   "videoUrl": "donut-particles.mp4",
   "previewUrl": "/donut-particles",
   "tier": "pro"

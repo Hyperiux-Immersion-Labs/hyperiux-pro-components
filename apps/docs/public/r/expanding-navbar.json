@@ -4,7 +4,6 @@
   "title": "Expanding Navbar",
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
   "category": "navigation",
-  "tier": "pro",
   "categories": [
     "navigation"
   ],
@@ -16,7 +15,7 @@
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
   "previewUrl": "/expanding-navbar",
-  "coverImage": "/assets/list/expanding-navbar.png",
+  "coverImage": "expanding-navbar",
   "videoUrl": "expanding-navbar.mp4",
   "files": [
     {

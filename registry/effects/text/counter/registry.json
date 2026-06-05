@@ -8,7 +8,7 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/img/image12.png",
+  "coverImage": "image12",
   "videoUrl": "/counter.mp4",
   "previewUrl": "/counter",
   "tier": "pro"

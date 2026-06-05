@@ -4,7 +4,6 @@
   "title": "Circle Text Reveal",
   "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "CircleTextReveal",
   "exportKind": "named",
   "previewUrl": "/circle-reveal",
-  "coverImage": "/assets/img/image01.webp",
+  "coverImage": "text-reveal",
   "videoUrl": "circle-text-reveal.mp4",
   "files": [
     {

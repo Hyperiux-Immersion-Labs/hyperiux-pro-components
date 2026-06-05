@@ -9,7 +9,7 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/ring-carousel.png",
+  "coverImage": "ring-carousel",
   "previewUrl": "/ring-carousel",
   "tier": "pro"
 }

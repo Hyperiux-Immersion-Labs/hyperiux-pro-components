@@ -4,7 +4,6 @@
   "title": "Grid Tunnel",
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -17,7 +16,7 @@
   "exportName": "GridTunnel",
   "exportKind": "named",
   "previewUrl": "/grid-tunnel",
-  "coverImage": "/assets/list/grid-tunnel.png",
+  "coverImage": "grid-tunnel",
   "videoUrl": "grid-tunnel.mp4",
   "files": [
     {

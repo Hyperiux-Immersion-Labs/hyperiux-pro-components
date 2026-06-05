@@ -4,7 +4,6 @@
   "title": "Hero Banner Animated",
   "description": "Immersive WebGL hero with a 3D room, interactive TV screen with pixelated video transition, mouse-tracked lighting, edge blur, and film grain post-processing.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -20,7 +19,7 @@
   "exportName": "HeroBanner",
   "exportKind": "named",
   "previewUrl": "/hero-banner-animated",
-  "coverImage": "/assets/list/hero-banner-animated.png",
+  "coverImage": "hero-banner-animated",
   "videoUrl": "hero-banner-animated.mp4",
   "files": [
     {

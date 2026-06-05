@@ -10,7 +10,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/chess-grid-transition",
-  "coverImage": "/assets/list/chess-grid-transition.png",
+  "coverImage": "chess-grid-transition",
   "videoUrl": "chess-grid-transition.mp4",
   "tier": "free"
 }

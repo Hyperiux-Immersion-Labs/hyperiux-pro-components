@@ -4,7 +4,6 @@
   "title": "Svg Draw Page Transition",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
   "category": "transitions",
-  "tier": "pro",
   "categories": [
     "transitions"
   ],
@@ -16,7 +15,7 @@
   "exportName": "SvgDrawPageTransition",
   "exportKind": "named",
   "previewUrl": "/page-transitions/brush-strokes",
-  "coverImage": "/assets/list/svg-draw-page-transition.png",
+  "coverImage": "svg-draw-page-transition",
   "videoUrl": "svg-draw-page-transition.mp4",
   "files": [
     {

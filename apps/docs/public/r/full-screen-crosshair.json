@@ -4,7 +4,6 @@
   "title": "Full Screen Crosshair",
   "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -13,7 +12,7 @@
   "exportName": "FullScreenCrosshair",
   "exportKind": "named",
   "previewUrl": "/full-screen-crosshair",
-  "coverImage": "/assets/list/full-screen-crosshair.png",
+  "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
   "files": [
     {

@@ -4,7 +4,6 @@
   "title": "Curved Plane V2",
   "description": "Three.js WebGL vertical image gallery with three columns. The center column scrolls in the opposite direction to the outer two, creating a parallax effect. A custom GLSL shader curves each card vertically on drag and scroll. Collapses to two columns on tablet.",
   "category": "webgl",
-  "tier": "pro",
   "categories": [
     "webgl"
   ],
@@ -16,7 +15,7 @@
   "exportName": "CurvedPlaneV2",
   "exportKind": "named",
   "previewUrl": "/curved-plane/v2",
-  "coverImage": "/assets/list/curved-plane-v2.png",
+  "coverImage": "curved-plane-v2",
   "videoUrl": "curved-plane-v2.mp4",
   "files": [
     {

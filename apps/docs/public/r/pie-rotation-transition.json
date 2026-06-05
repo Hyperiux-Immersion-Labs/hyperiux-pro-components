@@ -4,7 +4,6 @@
   "title": "Pie Rotation Transition",
   "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
   "category": "transitions",
-  "tier": "free",
   "categories": [
     "transitions"
   ],
@@ -16,7 +15,7 @@
   "exportName": "PieRotationTransition",
   "exportKind": "named",
   "previewUrl": "/page-transitions/pie-rotation-transition",
-  "coverImage": "/assets/list/pie-rotation-transition.png",
+  "coverImage": "pie-rotation-transition",
   "videoUrl": "pie-rotation-transition.mp4",
   "files": [
     {

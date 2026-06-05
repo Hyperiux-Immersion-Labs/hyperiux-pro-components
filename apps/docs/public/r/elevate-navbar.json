@@ -4,7 +4,6 @@
   "title": "Elevate Navbar",
   "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
   "category": "navigation",
-  "tier": "free",
   "categories": [
     "navigation"
   ],
@@ -15,7 +14,7 @@
   "exportName": "ElevateNavbar",
   "exportKind": "named",
   "previewUrl": "/navigation/elevate-navbar",
-  "coverImage": "/assets/list/elevate-navbar.png",
+  "coverImage": "elevate-navbar",
   "videoUrl": "elevate-navbar.mp4",
   "files": [
     {

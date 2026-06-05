@@ -4,7 +4,6 @@
   "title": "Glitchy Text",
   "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "GlitchyText",
   "exportKind": "named",
   "previewUrl": "/glitchy-text",
-  "coverImage": "/assets/list/glitchy-text.png",
+  "coverImage": "glitchy-text",
   "videoUrl": "glitchy-text.mp4",
   "files": [
     {

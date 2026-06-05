@@ -4,7 +4,6 @@
   "title": "Perspective Text Reveal",
   "description": "3D perspective rotation text reveal with lines flipping into view on scroll",
   "category": "text",
-  "tier": "pro",
   "categories": [
     "text"
   ],
@@ -15,7 +14,7 @@
   "exportName": "PerspectiveTextReveal",
   "exportKind": "named",
   "previewUrl": "/perspective-text-reveal",
-  "coverImage": "/assets/list/perspective-text-reveal.png",
+  "coverImage": "perspective-text-reveal",
   "videoUrl": "perspective-text-reveal.mp4",
   "files": [
     {

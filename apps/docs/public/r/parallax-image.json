@@ -4,7 +4,6 @@
   "title": "Parallax Image",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
   "category": "scroll",
-  "tier": "pro",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "ParallaxImage",
   "exportKind": "named",
   "previewUrl": "/parallax-image-animation",
-  "coverImage": "/assets/list/parallax-image.png",
+  "coverImage": "parallax-image",
   "videoUrl": "parallax-image.mp4",
   "files": [
     {

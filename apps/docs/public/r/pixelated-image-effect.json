@@ -4,7 +4,6 @@
   "title": "Pixelated Image Effect",
   "description": "SVG filter-based image pixelation that reacts to cursor position — pixel size grows and shrinks as you move across the image",
   "category": "cursor",
-  "tier": "free",
   "categories": [
     "cursor"
   ],
@@ -13,7 +12,7 @@
   "exportName": "PixelatedImageEffect",
   "exportKind": "named",
   "previewUrl": "/pixelated-image-effect",
-  "coverImage": "/assets/list/pixelated-image-effect.png",
+  "coverImage": "pixelated-image-effect",
   "videoUrl": "pixelated-image-effect.mp4",
   "files": [
     {

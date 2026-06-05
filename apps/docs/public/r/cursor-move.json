@@ -4,7 +4,6 @@
   "title": "Cursor Move",
   "description": "Fullscreen cursor-follow crosshair + cursor dot with variable font axis mapping and coordinate readout.",
   "category": "cursor",
-  "tier": "pro",
   "categories": [
     "cursor"
   ],
@@ -13,7 +12,7 @@
   "exportName": "CursorMove",
   "exportKind": "named",
   "previewUrl": "/cursor-move",
-  "coverImage": "/assets/list/cursor-move.png",
+  "coverImage": "cursor-move",
   "videoUrl": "cursor-move.mp4",
   "files": [
     {

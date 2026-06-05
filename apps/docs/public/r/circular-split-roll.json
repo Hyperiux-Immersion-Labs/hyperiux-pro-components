@@ -4,7 +4,6 @@
   "title": "Circular Split Roll",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "CircularScrollShowcase",
   "exportKind": "default",
   "previewUrl": "/circular-split-roll",
-  "coverImage": "/assets/list/circular-split-roll.png",
+  "coverImage": "circular-split-roll",
   "videoUrl": "circular-split-roll.mp4",
   "files": [
     {

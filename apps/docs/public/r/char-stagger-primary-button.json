@@ -4,7 +4,6 @@
   "title": "Character Stagger Primary Button",
   "description": "Primary button with staggered character animation on hover",
   "category": "buttons",
-  "tier": "pro",
   "categories": [
     "buttons"
   ],
@@ -13,7 +12,7 @@
   "exportName": "CharStaggerPrimaryButton",
   "exportKind": "named",
   "previewUrl": "/buttons/char-stagger-primary-button",
-  "coverImage": "/assets/list/char-stagger-primary-button.png",
+  "coverImage": "char-stagger-primary-button",
   "videoUrl": "char-stagger-primary-button.mp4",
   "files": [
     {

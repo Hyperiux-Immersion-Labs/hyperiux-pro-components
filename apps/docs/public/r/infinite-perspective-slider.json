@@ -4,7 +4,6 @@
   "title": "Infinite Perspective Slider",
   "description": "Looping perspective gallery with wheel and drag input plus split-text hover reveals",
   "category": "scroll",
-  "tier": "free",
   "categories": [
     "scroll"
   ],
@@ -15,7 +14,7 @@
   "exportName": "InfinitePerspectiveSlider",
   "exportKind": "named",
   "previewUrl": "/infinite-perspective-slider",
-  "coverImage": "/assets/img/image01.webp",
+  "coverImage": "infinite-perspective-slider2",
   "videoUrl": "infinite-perspective-slider.mp4",
   "files": [
     {

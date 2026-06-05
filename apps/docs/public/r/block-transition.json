@@ -4,7 +4,6 @@
   "title": "Block Transition",
   "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
   "category": "transitions",
-  "tier": "free",
   "categories": [
     "transitions"
   ],
