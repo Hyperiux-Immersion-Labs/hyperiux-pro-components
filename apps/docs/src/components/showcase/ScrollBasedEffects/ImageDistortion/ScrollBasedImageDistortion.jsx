@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ReactLenis } from 'lenis/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import * as THREE from 'three'
+import * as THREE from 'three'  
 
 import {
   ImageDistortionFragment,
