@@ -13,7 +13,6 @@ function getBillingInterval(value) {
   if (["monthly", "quarterly", "yearly"].includes(value)) {
     return value;
   }
-
   return null;
 }
 
