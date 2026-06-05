@@ -4,6 +4,7 @@
   "title": "Rope Cursor",
   "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

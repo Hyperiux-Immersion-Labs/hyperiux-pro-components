@@ -4,6 +4,7 @@
   "title": "Chess Grid Transition",
   "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
   "category": "transitions",
+  "tier": "free",
   "categories": [
     "transitions"
   ],

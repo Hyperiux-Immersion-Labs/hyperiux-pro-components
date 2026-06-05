@@ -4,6 +4,7 @@
   "title": "Liquid Glass Cursor",
   "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

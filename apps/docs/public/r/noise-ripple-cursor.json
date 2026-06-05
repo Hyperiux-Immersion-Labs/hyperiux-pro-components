@@ -4,6 +4,7 @@
   "title": "Noise Ripple Cursor",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

@@ -4,6 +4,7 @@
   "title": "Parallax Footer",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
   "category": "scroll",
+  "tier": "pro",
   "categories": [
     "scroll"
   ],

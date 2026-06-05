@@ -4,6 +4,7 @@
   "title": "Colorful Cursor Aura",
   "description": "Layered radial color aura that follows the cursor across oversized headline text",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

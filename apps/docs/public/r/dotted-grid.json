@@ -4,6 +4,7 @@
   "title": "Dotted Grid",
   "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes (star, square, circle ring, plus, triangle). Mouse cursor creates a dark shrinking head effect and leaves a glowing blue trail that lingers and fades.",
   "category": "backgrounds",
+  "tier": "free",
   "categories": [
     "backgrounds"
   ],

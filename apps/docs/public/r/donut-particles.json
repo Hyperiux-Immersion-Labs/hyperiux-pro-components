@@ -4,6 +4,7 @@
   "title": "Donut Particles",
   "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

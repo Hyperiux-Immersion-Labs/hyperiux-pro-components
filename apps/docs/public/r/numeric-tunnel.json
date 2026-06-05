@@ -4,6 +4,7 @@
   "title": "Numeric Tunnel",
   "description": "WebGL loader with a 3D numeric tunnel that crossfades into a chromatic aberration warp effect",
   "category": "loaders",
+  "tier": "free",
   "categories": [
     "loaders"
   ],

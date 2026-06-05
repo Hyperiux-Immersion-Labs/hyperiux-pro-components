@@ -4,6 +4,7 @@
   "title": "Directional Menu",
   "description": "Mega menu with directional content transitions using GSAP",
   "category": "navigation",
+  "tier": "free",
   "categories": [
     "navigation"
   ],

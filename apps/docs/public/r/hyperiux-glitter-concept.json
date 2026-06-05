@@ -4,6 +4,7 @@
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

@@ -4,6 +4,7 @@
   "title": "Butterfly Trail Cursor",
   "description": "3D butterfly swarm that spawns around the pointer and fades through space",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

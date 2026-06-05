@@ -4,6 +4,7 @@
   "title": "Dot Fill Button",
   "description": "Button with expanding dot that fills the background on hover with character stagger",
   "category": "buttons",
+  "tier": "pro",
   "categories": [
     "buttons"
   ],

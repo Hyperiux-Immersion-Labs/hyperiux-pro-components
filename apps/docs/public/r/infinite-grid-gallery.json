@@ -4,6 +4,7 @@
   "title": "Infinite Grid Gallery",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

@@ -4,6 +4,7 @@
   "title": "Parallax Gallery",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "category": "scroll",
+  "tier": "pro",
   "categories": [
     "scroll"
   ],

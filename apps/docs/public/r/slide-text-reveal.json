@@ -4,6 +4,7 @@
   "title": "Slide Text Reveal",
   "description": "Characters slide in from the right with staggered fade animation on scroll",
   "category": "text",
+  "tier": "pro",
   "categories": [
     "text"
   ],

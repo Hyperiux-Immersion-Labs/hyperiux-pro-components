@@ -4,6 +4,7 @@
   "title": "Pixel Bloom",
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

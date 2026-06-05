@@ -4,6 +4,7 @@
   "title": "WebGL Slider",
   "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
   "category": "carousels",
+  "tier": "pro",
   "categories": [
     "carousels"
   ],

@@ -4,6 +4,7 @@
   "title": "Character Stagger Primary Button",
   "description": "Primary button with staggered character animation on hover",
   "category": "buttons",
+  "tier": "pro",
   "categories": [
     "buttons"
   ],

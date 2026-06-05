@@ -4,6 +4,7 @@
   "title": "Inertia Scroll Effect",
   "description": "Three-phase scroll-driven sequence: parallax hero, image flies in with text, 5×5 grid materialises and shrinks hero to a cell, then grid scrolls off while the last image expands into a centred overlay. Powered by GSAP ScrollTrigger with Lenis infinite scroll.",
   "category": "scroll",
+  "tier": "pro",
   "categories": [
     "scroll"
   ],

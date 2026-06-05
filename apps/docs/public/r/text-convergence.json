@@ -4,6 +4,7 @@
   "title": "Text Convergence",
   "description": "Horizontal scroll-driven text marquee where characters fly in from random positions and converge into place as you scroll",
   "category": "scroll",
+  "tier": "free",
   "categories": [
     "scroll"
   ],

@@ -4,6 +4,7 @@
   "title": "Immersive Full screen Navigation",
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
   "category": "navigation",
+  "tier": "free",
   "categories": [
     "navigation"
   ],

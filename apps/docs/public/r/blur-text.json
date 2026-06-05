@@ -4,6 +4,7 @@
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",
   "category": "text",
+  "tier": "pro",
   "categories": [
     "text"
   ],

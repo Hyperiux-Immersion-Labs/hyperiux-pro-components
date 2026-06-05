@@ -4,6 +4,7 @@
   "title": "Hover Stack",
   "description": "Overlapping card stack that fans out around the hovered card",
   "category": "components",
+  "tier": "free",
   "categories": [
     "components"
   ],

@@ -4,6 +4,7 @@
   "title": "Circular Split Roll",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
   "category": "scroll",
+  "tier": "free",
   "categories": [
     "scroll"
   ],

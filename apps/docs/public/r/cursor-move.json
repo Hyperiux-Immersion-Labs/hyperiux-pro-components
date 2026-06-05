@@ -4,6 +4,7 @@
   "title": "Cursor Move",
   "description": "Fullscreen cursor-follow crosshair + cursor dot with variable font axis mapping and coordinate readout.",
   "category": "cursor",
+  "tier": "pro",
   "categories": [
     "cursor"
   ],

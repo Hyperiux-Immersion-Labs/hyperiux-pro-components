@@ -4,6 +4,7 @@
   "title": "Parallax Image",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
   "category": "scroll",
+  "tier": "pro",
   "categories": [
     "scroll"
   ],

@@ -4,6 +4,7 @@
   "title": "Text Hover Expand",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
   "category": "text",
+  "tier": "pro",
   "categories": [
     "text"
   ],

@@ -4,6 +4,7 @@
   "title": "Overflow Stagger Text",
   "description": "Characters stagger up from overflow with slight rotation for a dynamic reveal effect",
   "category": "text",
+  "tier": "free",
   "categories": [
     "text"
   ],

@@ -4,6 +4,7 @@
   "title": "Curved Plane",
   "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

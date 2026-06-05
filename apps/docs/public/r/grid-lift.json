@@ -4,6 +4,7 @@
   "title": "Grid Lift",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

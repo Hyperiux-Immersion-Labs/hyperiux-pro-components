@@ -4,6 +4,7 @@
   "title": "Hover Slider",
   "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
   "category": "webgl",
+  "tier": "pro",
   "categories": [
     "webgl"
   ],

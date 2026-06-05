@@ -4,6 +4,7 @@
   "title": "Sticky Content Wrapper",
   "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
   "category": "scroll",
+  "tier": "free",
   "categories": [
     "scroll"
   ],

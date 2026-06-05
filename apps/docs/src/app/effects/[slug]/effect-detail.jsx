@@ -46,7 +46,31 @@ export function EffectDetailContent({
     }${effect.videoUrl}`
     : null;
 
-
+  const resolveCoverImageUrl = (rawCoverImage) => {
+    if (!rawCoverImage) return null;
+    const src = String(rawCoverImage).trim();
+    if (!src) return null;
+    if (/^(https?:)?\/\//.test(src)) return src;
+    if (src.startsWith("/")) {
+      const pathWithoutSlash = src.slice(1);
+      if (
+        pathWithoutSlash.startsWith("assets/") ||
+        pathWithoutSlash.startsWith("models/") ||
+        pathWithoutSlash.startsWith("img/") ||
+        pathWithoutSlash.startsWith("svgs/") ||
+        pathWithoutSlash.startsWith("valley/") ||
+        pathWithoutSlash.startsWith("601/")
+      ) {
+        return src;
+      }
+      const normalized = pathWithoutSlash.replace(/\/+$/, "");
+      const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
+      return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
+    }
+    const normalized = src.replace(/\/+$/, "");
+    const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
+    return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
+  };
 
   const componentName = slug
     .split("-")
@@ -218,7 +242,7 @@ export default function MyComponent() {
                 {!showVideo && (
                   <Image
                     src={
-                      effect.coverImage ||
+                      resolveCoverImageUrl(effect.coverImage || effect.imageSrc) ||
                       "/assets/img/image01.webp"
                     }
                     alt={effect.title || slug}
