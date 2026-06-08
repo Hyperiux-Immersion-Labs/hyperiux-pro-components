@@ -10,7 +10,7 @@ import React, {
  useState,
 } from"react";
 import gsap from"gsap";
-import ChevronBird from"../ChevronBird/ChevronBird";
+import { ChevronBird } from "./chevron-bird";
 
 const FAQContext = createContext(null);
 const FAQGroupContext = createContext(null);

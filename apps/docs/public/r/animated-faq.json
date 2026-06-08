@@ -11,9 +11,7 @@
   "dependencies": [
     "gsap"
   ],
-  "registryDependencies": [
-    "chevron-bird"
-  ],
+  "registryDependencies": [],
   "exportName": "FAQGroup",
   "exportKind": "named",
   "previewUrl": "/animated-faq",
@@ -24,6 +22,11 @@
       "path": "animated-faq.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/animated-faq.jsx"
+    },
+    {
+      "path": "chevron-bird.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/chevron-bird.jsx"
     }
   ]
 }

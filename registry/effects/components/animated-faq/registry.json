@@ -7,9 +7,7 @@
   "dependencies": [
     "gsap"
   ],
-  "registryDependencies": [
-    "chevron-bird"
-  ],
+  "registryDependencies": [],
   "previewUrl": "/animated-faq",
   "tier": "pro"
 }
