@@ -161,6 +161,7 @@ h4 {
 /* Selection color */
 ::selection {
   background: #ff5f00;
+  color:#ffffff;
 }
 .codeblock-root ::selection {
   background: rgba(99, 102, 241, 0.35);

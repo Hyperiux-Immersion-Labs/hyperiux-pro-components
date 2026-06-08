@@ -44,6 +44,49 @@ export function EffectDetailContent({
     }${effect.videoUrl}`
     : null;
 
+  const resolveCoverImageUrl = (rawCoverImage) => {
+    if (!rawCoverImage) return null;
+    const src = String(rawCoverImage).trim();
+    if (!src) return null;
+    if (/^(https?:)?\/\//.test(src)) return src;
+    if (src.startsWith("/")) {
+      const pathWithoutSlash = src.slice(1);
+      if (
+        pathWithoutSlash.startsWith("assets/") ||
+        pathWithoutSlash.startsWith("models/") ||
+        pathWithoutSlash.startsWith("img/") ||
+        pathWithoutSlash.startsWith("svgs/") ||
+        pathWithoutSlash.startsWith("valley/") ||
+        pathWithoutSlash.startsWith("601/")
+      ) {
+        return src;
+      }
+      const normalized = pathWithoutSlash.replace(/\/+$/, "");
+      const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
+      return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
+    }
+    const normalized = src.replace(/\/+$/, "");
+    const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
+    return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
+  };
+
+  const componentName = slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("");
+
+  const usageCode = `import { ${componentName} } from "@/components/effects/${slug}";
+
+export default function MyComponent() {
+  return (
+    <${componentName}>
+      Your content here
+    </${componentName}>
+  );
+}`;
+
+  const installCode = `npx hyperiux add ${slug}`;
+
   const showVideo = videoPreviewUrl && !videoError && videoReady;
 
   const previewHref =
@@ -197,7 +240,7 @@ export function EffectDetailContent({
                 {!showVideo && (
                   <Image
                     src={
-                      effect.coverImage ||
+                      resolveCoverImageUrl(effect.coverImage || effect.imageSrc) ||
                       "/assets/img/image01.webp"
                     }
                     alt={effect.title || slug}

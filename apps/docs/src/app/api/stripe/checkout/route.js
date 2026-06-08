@@ -13,7 +13,6 @@ function getBillingInterval(value) {
   if (["monthly", "quarterly", "yearly"].includes(value)) {
     return value;
   }
-
   return null;
 }
 
@@ -24,7 +23,7 @@ export async function POST(request) {
     if (!userId) {
       return NextResponse.json(
         { error: "Unauthorized", redirectTo: "/sign-in" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -35,7 +34,7 @@ export async function POST(request) {
     if (!billingInterval || !priceId) {
       return NextResponse.json(
         { error: "Invalid billing interval or missing Stripe price ID." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -53,7 +52,7 @@ export async function POST(request) {
 
       return NextResponse.json(
         { error: "Unable to check subscription record." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -80,7 +79,7 @@ export async function POST(request) {
             status: "inactive",
             updated_at: new Date().toISOString(),
           },
-          { onConflict: "clerk_user_id" }
+          { onConflict: "clerk_user_id" },
         );
 
       if (upsertError) {
@@ -88,12 +87,13 @@ export async function POST(request) {
 
         return NextResponse.json(
           { error: "Unable to create subscription record." },
-          { status: 500 }
+          { status: 500 },
         );
       }
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    // const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = "http://localhost:3001";
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -128,7 +128,7 @@ export async function POST(request) {
 
     return NextResponse.json(
       { error: error?.message || "Unable to create checkout session." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
