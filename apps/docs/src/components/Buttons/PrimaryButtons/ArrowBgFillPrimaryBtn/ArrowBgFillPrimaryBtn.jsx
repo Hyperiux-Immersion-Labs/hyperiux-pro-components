@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from"react";
 import Link from"next/link";
+import { ArrowRight } from"lucide-react";
 
 export function ArrowBgFillPrimaryBtn({
  btnText,
@@ -36,7 +37,7 @@ export function ArrowBgFillPrimaryBtn({
  <>
  <Link
  {...props}
- className={`arrow-bg-fill-btn ${className}`}
+ className={`arrow-bg-fill-btn ${isReady ? "is-ready" : ""} ${className}`}
  style={{
  "--btn-bg": bgColor,
  "--btn-text": textColor,
@@ -46,7 +47,7 @@ export function ArrowBgFillPrimaryBtn({
  "--btn-fill-text-hover": hoverFillTextColor,
  "--btn-arrow": arrowColor || fillTextColor,
  "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
- opacity: isReady ? 1 : 0,
+ visibility: isReady ? "visible" : "hidden",
  }}
  >
  <span className="arrow-bg-fill-btn__text">{btnText}</span>
@@ -55,25 +56,10 @@ export function ArrowBgFillPrimaryBtn({
  <span>{btnText}</span>
 
  <div className="arrow-bg-fill-btn__circle-text">
- <svg
- viewBox="0 0 10 10"
- fill="none"
- xmlns="http://www.w3.org/2000/svg"
- className="arrow-bg-fill-btn__icon"
- >
- <path
- fillRule="evenodd"
- clipRule="evenodd"
- d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
- className="arrow-bg-fill-btn__path"
- />
- <path
- fillRule="evenodd"
- clipRule="evenodd"
- d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
- className="arrow-bg-fill-btn__path"
- />
- </svg>
+ <span className="arrow-bg-fill-btn__icon" aria-hidden="true">
+ <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8}/>
+ <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8}/>
+ </span>
  </div>
  </div>
  </Link>
@@ -98,7 +84,6 @@ export function ArrowBgFillPrimaryBtn({
    text-rendering: geometricPrecision;
    white-space: nowrap;
    overflow: hidden;
-   transition: opacity 0.01s linear;
  }
 
  .arrow-bg-fill-btn__text {
@@ -119,7 +104,7 @@ export function ArrowBgFillPrimaryBtn({
    background-color: var(--btn-fill-bg);
    color: var(--btn-fill-text);
    pointer-events: none;
-   transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+   transition: none;
  }
 
  .arrow-bg-fill-btn__circle-text {
@@ -137,6 +122,9 @@ export function ArrowBgFillPrimaryBtn({
    position: absolute;
    right: 1.8vw;
    overflow: hidden;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
    flex: 0 0 auto;
    color: var(--btn-arrow);
  }
@@ -146,9 +134,21 @@ export function ArrowBgFillPrimaryBtn({
  }
 
  .arrow-bg-fill-btn__path {
-   transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+   transition: none;
+   position: absolute;
+   inset: 0;
    transform-origin: center center;
-   fill: currentColor;
+   width: 100%;
+   height: 100%;
+   color: currentColor;
+ }
+
+ .arrow-bg-fill-btn.is-ready .arrow-bg-fill-btn__circle {
+   transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+ }
+
+ .arrow-bg-fill-btn.is-ready .arrow-bg-fill-btn__path {
+   transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
  }
 
  .arrow-bg-fill-btn__path:first-child {
