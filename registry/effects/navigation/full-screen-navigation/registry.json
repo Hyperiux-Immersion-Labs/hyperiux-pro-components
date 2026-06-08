@@ -5,9 +5,10 @@
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
   "category": "navigation",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
-  "registryDependencies": ["char-stagger-button"],
+  "registryDependencies": [],
   "previewUrl": "/navigation/immersive-full-screen-nav",
   "tier": "free"
 }

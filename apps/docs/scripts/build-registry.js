@@ -192,6 +192,9 @@ async function buildRegistry() {
         .filter((f) => f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
         .filter((f) => f !== "registry.json");
 
+      const useSubfolder = registryJson.subfolder === true;
+      const subfolderPrefix = useSubfolder ? `${registryJson.name}/` : "";
+
       const fileContents = files.map((fileName) => {
         const filePath = path.join(effectPath, fileName);
         const content = fs.readFileSync(filePath, "utf-8");
@@ -203,9 +206,9 @@ async function buildRegistry() {
           type: isCss ? "registry:style" : "registry:component",
           target: isCss
             ? isModuleCss
-              ? `components/hyperiux/${fileName}`
+              ? `components/hyperiux/${subfolderPrefix}${fileName}`
               : `styles/${fileName}`
-            : `components/hyperiux/${fileName}`,
+            : `components/hyperiux/${subfolderPrefix}${fileName}`,
           content,
         };
       });
