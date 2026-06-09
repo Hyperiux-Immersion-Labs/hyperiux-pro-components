@@ -317,7 +317,7 @@ export function ZoomSlider({ images = [] }) {
               ref={(element) => {
                 imageWrapRefs.current[index] = element;
               }}
-              className="relative cursor-pointer overflow-hidden"
+              className="relative overflow-hidden"
               style={{
                 width: cardWidthMin,
                 height: cardHeightMax,

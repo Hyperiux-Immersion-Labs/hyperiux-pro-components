@@ -7,8 +7,8 @@ import Link from "next/link";
 const DEFAULT_TEXT = "";
 const DEFAULT_HREF = "#";
 const DEFAULT_HOVER_COLOR = "#ff6b00";
-const DEFAULT_SCRAMBLE_DURATION = 700;
-const DEFAULT_STEP_MS = 30;
+const DEFAULT_SCRAMBLE_DURATION = 1000;
+const DEFAULT_STEP_MS = 50;
 const DEFAULT_REVEAL_STAGGER = 1.4;
 const GLYPHS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
