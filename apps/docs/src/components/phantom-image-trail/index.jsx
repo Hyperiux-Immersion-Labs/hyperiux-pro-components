@@ -12,7 +12,7 @@ const IDLE_DISTANCE_THRESHOLD = 2;
 const TRIGGER_DISTANCE_THRESHOLD = 100;
 const INITIAL_Z_INDEX = 1;
 
-export function ImagesAnimation({
+export function PhantomImage({
   images = [],
   enableRotation = true,
   idleSpawn = true,
@@ -50,6 +50,17 @@ export function ImagesAnimation({
   const hasImages = images.length > 0;
   const totalImages = hasImages ? images.length * imageMultiplier : 0;
 
+  useEffect(() => {
+    imagesRef.current = imagesRef.current.slice(0, totalImages);
+    imageIndexRef.current = totalImages
+      ? imageIndexRef.current % totalImages
+      : 0;
+
+    if (!hasImages) {
+      zIndexRef.current = INITIAL_Z_INDEX;
+    }
+  }, [hasImages, totalImages]);
+
   const getMouseDistance = useCallback(() => {
     const currentMouse = mouse.current;
     const lastTriggerPosition = lastTriggerPositionRef.current;
@@ -84,6 +95,10 @@ export function ImagesAnimation({
     isIdle = false,
     overridePosition = null,
   } = {}) => {
+    if (!totalImages) {
+      return;
+    }
+
     const image = imagesRef.current[imageIndexRef.current];
 
     if (!image) {
@@ -150,8 +165,7 @@ export function ImagesAnimation({
       });
 
     zIndexRef.current += 1;
-    imageIndexRef.current =
-      (imageIndexRef.current + 1) % imagesRef.current.length;
+    imageIndexRef.current = (imageIndexRef.current + 1) % totalImages;
   }, [
     cursorOffsetX,
     cursorOffsetY,
@@ -161,6 +175,7 @@ export function ImagesAnimation({
     idleFadeMultiplier,
     idlePopOutMultiplier,
     popOutDuration,
+    totalImages,
   ]);
 
   const scheduleIdleSpawn = useCallback(function scheduleIdleSpawn() {

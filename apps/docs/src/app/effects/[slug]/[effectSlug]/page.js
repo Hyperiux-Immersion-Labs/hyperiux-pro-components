@@ -1,21 +1,20 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { getEffectConfig } from "@/lib/effect-configs";
 import {
-  getEffectCategory,
   getEffectCategoryBySlug,
-  getEffectPrimaryCategory,
 } from "@/lib/categories";
 
 import {
   getAllEffectSlugs,
   getEffectBySlug,
-  getEffectCode,
   getEffectsByCategory,
   getRegistryIndex,
 } from "@/lib/registry";
 
-import { getEffectContent } from "@/lib/effect-content";
+import {
+  getAllSanityEffectEntries,
+  getSanityEffectContent,
+} from "@/lib/sanity";
 import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { EffectDetailContent } from "../effect-detail";
 
@@ -37,17 +36,12 @@ function normalize(value = "") {
 }
 
 export async function generateStaticParams() {
-  const registry = getRegistryIndex();
+  const entries = await getAllSanityEffectEntries();
 
-  return registry.items.map((effect) => {
-    const categoryId = getEffectPrimaryCategory(effect);
-    const category = getEffectCategory(categoryId);
-
-    return {
-      slug: category?.slug || categoryId,
-      effectSlug: effect.name,
-    };
-  });
+  return entries.map((entry) => ({
+    slug: entry.categorySlug,
+    effectSlug: entry.effectSlug,
+  }));
 }
 
 export async function generateMetadata({ params }) {
@@ -55,9 +49,14 @@ export async function generateMetadata({ params }) {
 
   const effect = getEffectBySlug(effectSlug);
   const category = getEffectCategoryBySlug(slug);
-  const content = getEffectContent(slug, effectSlug);
+  const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (!effect || !category || !effectBelongsToCategory(effect, category.id)) {
+  if (
+    !effect ||
+    !category ||
+    !effectBelongsToCategory(effect, category.id) ||
+    !content
+  ) {
     return {
       title: "Effect Not Found",
     };
@@ -78,8 +77,14 @@ export default async function EffectPage({ params }) {
 
   const effect = getEffectBySlug(effectSlug);
   const category = getEffectCategoryBySlug(slug);
+  const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (!effect || !category || !effectBelongsToCategory(effect, category.id)) {
+  if (
+    !effect ||
+    !category ||
+    !effectBelongsToCategory(effect, category.id) ||
+    !content
+  ) {
     notFound();
   }
 
@@ -97,13 +102,6 @@ export default async function EffectPage({ params }) {
   for (const [categoryId, effects] of Object.entries(categoriesMap)) {
     effectCounts[categoryId] = effects.length;
   }
-
-  const config = getEffectConfig(effectSlug);
-
-  const code = getEffectCode(effectSlug);
-
-  const content = getEffectContent(slug, effectSlug);
-
   /*
     ----------------------------------------
     RELATED EFFECTS FROM DATA
@@ -140,8 +138,6 @@ export default async function EffectPage({ params }) {
       slug={effectSlug}
       categorySlug={slug}
       effect={effect}
-      config={config}
-      code={code}
       content={content}
       relatedEffects={relatedEffects}
       effectCounts={effectCounts}

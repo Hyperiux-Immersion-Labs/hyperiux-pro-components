@@ -706,8 +706,8 @@
       ],
       "exportName": "PhantomImageTrail",
       "exportKind": "named",
-      "previewUrl": "/mouse-hover-image",
-      "coverImage": "phantom-image-trail",
+      "previewUrl": "/phantom-image-trail",
+      "coverImage": "/assets/list/phantom-image-trail.png",
       "videoUrl": "phantom-image-trail.mp4",
       "addedAt": 1780573510913.5786
     },

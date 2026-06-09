@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import {OverFlowStagAnim} from "@/components/TextAnimations/OverFlowStagAnim/OverFlowStagAnim";
+import {OverFlowStagAnim} from "@/components/overflow-stagger-text";
 import { ReactLenis } from "lenis/react";
 
 const details = [

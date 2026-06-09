@@ -1,4 +1,4 @@
-import { StickyContentWrapper } from"@/components/StickyContent/StickyContent";
+import { StickyContentWrapper } from "@/components/sticky-content-wrapper";
 import { ReactLenis } from"lenis/react";
 
 const stickyItems = [

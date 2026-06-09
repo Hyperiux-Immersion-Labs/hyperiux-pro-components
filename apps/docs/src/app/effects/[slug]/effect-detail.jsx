@@ -10,25 +10,23 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
-import { UpgradeCard } from "@/components/ui/UpgradeCard";
 import { getEffectPreviewHref } from "@/lib/categories";
 import { resolveMediaUrl } from "@/lib/media";
 import Footer from "@/components/Footer";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
+import styles from "./effect-content.module.css";
 
 export function EffectDetailContent({
   slug,
   categorySlug,
   effect,
-  config,
-  code,
   content,
   relatedEffects = [],
   effectCounts,
@@ -178,7 +176,7 @@ export default function MyComponent() {
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen bg-black text-foreground px-15 max-sm:px-6">
+      <div className="min-h-screen bg-black text-foreground px-15 max-md:px-2 max-sm:px-6">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
@@ -199,12 +197,12 @@ export default function MyComponent() {
                 )}
                <HeadAnim>
                 <h1 className="text-5xl max-sm:text-center text-foreground mb-4">
-                  {content?.h1 || effect.title}
+                  {content?.title || effect.title}
                 </h1>
                 </HeadAnim>
                <Copy delay={0.5}>
                 <p className="text-[#d2d2d2] w-[80%] max-sm:w-full max-sm:text-center">
-                  {content?.shortDescription ||
+                  {content?.summary ||
                     effect.description}
                 </p>
                 </Copy>
@@ -251,9 +249,9 @@ export default function MyComponent() {
                 {sidebarContent}
               </div>
 
-              {isLocked ? (
-                <div className="relative rounded-xl border border-white/10 bg-white/5 overflow-hidden min-h-80 flex items-center justify-center">
-                  {/* Blurred ghost of install/code sections behind the gate */}
+              {/* {isLocked ? ( */}
+                {/* <div className="relative rounded-xl border border-white/10 bg-white/5 overflow-hidden min-h-80 flex items-center justify-center">
+                
                   <div
                     aria-hidden="true"
                     className="absolute inset-0 pointer-events-none select-none blur-sm opacity-30 p-8 space-y-6"
@@ -265,19 +263,13 @@ export default function MyComponent() {
                   </div>
 
                   <UpgradeCard effectTitle={effect.title} />
-                </div>
-              ) : (
+                </div> */}
+              {/* ) : ( */}
                 <EffectDynamicContent
                   ref={contentRef}
-                content={content}
-                  installCode={installCode}
-                  usageCode={usageCode}
-                  componentCode={code}
-                  config={config}
-                  slug={slug}
-                  categorySlug={categorySlug}
+                  content={content}
                 />
-              )}
+              {/* )} */}
             </div>
 
             <div className="lg:col-span-1 self-stretch max-sm:hidden fadeup">
@@ -320,373 +312,115 @@ export default function MyComponent() {
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
   {
     content,
-    installCode,
-    usageCode,
-    componentCode,
-    config,
-    slug,
-    categorySlug,
   },
   ref
 ) {
   if (!content) return null;
 
   return (
-    <div ref={ref} className="space-y-14">
-      {content.heroCopy?.length > 0 && (
-        <section className="space-y-5">
-          <h2
-            id="overview"
-            className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup"
-          >
-            Overview
-          </h2>
-
-          <div className="space-y-5 text-[#d2d2d2] text-base leading-7">
-            {content.heroCopy.map((paragraph, index) => (
-              <p key={index} className="fadeup">{paragraph}</p>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {content.bestUsedFor?.length > 0 && (
-        <section className="space-y-5">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            Best Used For
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {content.bestUsedFor.map((item) => (
-              <div
-                key={item}
-                className="border border-border/60 bg-secondary-surface/50 rounded-md px-4 py-3 text-[#d2d2d2] fadeup"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {content.tutorial?.length > 0 && (
-        <section className="space-y-6">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            Step-by-Step Tutorial
-          </h2>
-
-          <div className="space-y-8">
-            {content.tutorial.map((step, index) => (
-              <div key={step.title || index} className="space-y-6">
-                <div className="py-5 space-y-3">
-                  <div className="flex items-start gap-4 max-sm:gap-3">
-
-
-                    <div className="space-y-2">
-                      <h3
-                        id={step.title
-                          ?.toLowerCase()
-                          .replaceAll(" ", "-")
-                          .replace(/[^\w-]/g, "")}
-                        className="text-2xl max-sm:text-xl tracking-tighter text-foreground fadeup scroll-mt-32"
-                      >
-                        {step.title}
-                      </h3>
-
-                      <p className="text-[#d2d2d2] leading-7 fadeup">{step.body}</p>
-                    </div>
-                  </div>
-
-                  {step.code && (
-                    <CodeBlock
-                      code={step.code}
-                      language={step.language || "bash"}
-                      filename={step.filename}
-                    />
-                  )}
-                </div>
-
-                {step.blocks?.length > 0 && (
-                  <div className="space-y-6 fadeup">
-                    {step.blocks.map((block, blockIndex) => (
-                      <TutorialBlock
-                        key={`${step.title || index}-${block.title || blockIndex
-                          }`}
-                        block={block}
-                        installCode={installCode}
-                        usageCode={usageCode}
-                        componentCode={componentCode}
-                        config={config}
-                        slug={slug}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {content.customizationOptions?.length > 0 && (
-        <section className="space-y-5">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            Customization Options
-          </h2>
-
-          <div className="bg-secondary-surface/60 backdrop-blur-md rounded-xl border border-border/60 overflow-x-auto fadeup">
-            <table className="w-full text-sm max-sm:min-w-[640px] ">
-              <thead className="bg-black/20 border-b border-border/60">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-muted">
-                    Option
-                  </th>
-
-                  <th className="text-left px-4 py-3 font-medium text-muted">
-                    Recommendation
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-border">
-                {content.customizationOptions.map((item) => (
-                  <tr key={item.option}>
-                    <td className="px-4 py-4 text-foreground font-medium align-top">
-                      {item.option}
-                    </td>
-
-                    <td className="px-4 py-4 text-muted leading-6">
-                      {item.recommendation}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
-
-      {content.notes && (
-        <section className="space-y-5">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            Implementation Notes
-          </h2>
-
-          <div className="grid grid-cols-1 gap-8 mt-10">
-            {content.notes.performance && (
-              <div className="space-y-2">
-                <h3 className="text-2xl max-sm:text-xl tracking-tighter text-foreground fadeup">
-                  Performance Notes
-                </h3>
-
-                <p className="text-[#d2d2d2] leading-7 fadeup">
-                  {content.notes.performance}
-                </p>
-              </div>
-            )}
-
-            {content.notes.accessibility && (
-              <div className="space-y-2">
-                <h3 className="text-2xl max-sm:text-xl tracking-tighter text-foreground fadeup">
-                  Accessibility Notes
-                </h3>
-
-                <p className="text-[#d2d2d2] leading-7 fadeup">
-                  {content.notes.accessibility}
-                </p>
-              </div>
-            )}
-
-            {content.notes.mobile && (
-              <div className="space-y-2">
-                <h3 className="text-2xl max-sm:text-xl tracking-tighter text-foreground fadeup">
-                  Mobile Support Notes
-                </h3>
-
-                <p className="text-[#d2d2d2] leading-7 fadeup">
-                  {content.notes.mobile}
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {content.commonMistakes?.length > 0 && (
-        <section className="space-y-5">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            Common Mistakes
-          </h2>
-
-          <div className="space-y-3 fadeup">
-            {content.commonMistakes.map((mistake) => (
-              <div key={mistake} className="flex gap-3 rounded-md">
-                <span className="text-primary mt-1">●</span>
-
-                <p className="text-[#d2d2d2] leading-7">{mistake}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-
-
-      {content.faq?.length > 0 && (
-        <section className="space-y-5">
-          <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter fadeup">
-            FAQ
-          </h2>
-
-          <div className="space-y-8 mt-10">
-            {content.faq.map((item) => (
-              <div key={item.question} className="space-y-2">
-                <h3 className="text-xl tracking-tighter text-foreground fadeup">
-                  {item.question}
-                </h3>
-
-                <p className="text-[#d2d2d2] leading-7 fadeup">{item.answer}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {content.finalCta && (
-        <section className="border border-primary/40 bg-primary/10 rounded-xl p-6 space-y-5 fadeup">
-          <div className="space-y-2">
-            <h2 className="text-4xl max-sm:text-3xl font-semibold text-foreground tracking-tighter ">
-              Build With This Effect
-            </h2>
-
-            <p className="text-[#d2d2d2] leading-7 ">
-              {content.finalCta.body}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <button className="px-5 py-2.5 rounded-full bg-primary text-white hover:bg-primary/80 transition-colors cursor-pointer">
-              {content.finalCta.primary || `Install ${content.h1 || "Effect"}`}
-            </button>
-
-            <Link
-              href={categorySlug ? `/effects/${categorySlug}` : "/effects"}
-              className="px-5 py-2.5 rounded-full border border-border/60 text-foreground hover:bg-white hover:text-black transition-colors"
-            >
-              {content.finalCta.secondary || "View Effects"}
-            </Link>
-
-            {content.finalCta.commercial && (
-              <Link
-                href="/contact"
-                className="px-5 py-2.5 rounded-full border border-border/60 text-foreground hover:bg-white hover:text-black transition-colors"
-              >
-                {content.finalCta.commercial}
-              </Link>
-            )}
-          </div>
-        </section>
-      )}
+    <div ref={ref} className={`space-y-8 ${styles.content}`}>
+      <SanityBodyRenderer body={content.body} />
     </div>
   );
 });
 
-function TutorialBlock({
-  block,
-  installCode,
-  usageCode,
-  componentCode,
-  config,
-}) {
+function SanityBodyRenderer({ body = [] }) {
+  if (!body.length) return null;
+
+  const groupedBlocks = groupBodyBlocks(body);
+
+  return (
+    <div className="space-y-6">
+      {groupedBlocks.map((block, index) => (
+        <SanityBodyBlock
+          key={block._key || block._groupKey || `${block._type}-${index}`}
+          block={block}
+        />
+      ))}
+    </div>
+  );
+}
+
+function SanityBodyBlock({ block }) {
   if (!block) return null;
 
-  if (block.type === "code") {
-    let resolvedCode = block.code || "";
+  if (block._type === "block") {
+    return <PortableTextBlock block={block} />;
+  }
 
-    if (block.source === "install") {
-      resolvedCode = installCode;
-    }
-
-    if (block.source === "usage") {
-      resolvedCode = usageCode;
-    }
-
-    if (block.source === "component") {
-      resolvedCode = componentCode;
-    }
-
-    if (!resolvedCode) return null;
+  if (block._type === "listGroup") {
+    const ListTag = block.listItem === "number" ? "ol" : "ul";
+    const listClassName =
+      block.listItem === "number"
+        ? `fadeup ${styles.numberList}`
+        : "fadeup";
 
     return (
-      <div className="space-y-3">
-        {block.title && (
-          <h3 className="font-medium text-muted text-2xl tracking-tighter">
-            {block.title}
-          </h3>
-        )}
+      <ListTag className={listClassName}>
+        {block.items.map((item, index) => (
+          <li key={item._key || `${block._groupKey}-${index}`}>
+            {buildMarkedChildren(item)}
+          </li>
+        ))}
+      </ListTag>
+    );
+  }
 
-        <div className="">
-          <CodeBlock
-            code={resolvedCode}
-            language={block.language || "jsx"}
-            filename={block.filename}
+  if (block._type === "effectImage") {
+    return (
+      <figure className="fadeup">
+        <div className={styles.imageFrame}>
+          <img
+            src={block.url}
+            alt={block.alt || ""}
+            className={styles.image}
           />
         </div>
+
+        {block.caption && (
+          <figcaption className={styles.caption}>{block.caption}</figcaption>
+        )}
+      </figure>
+    );
+  }
+
+  if (block._type === "effectCodeBlock") {
+    return (
+      <div className="fadeup">
+        <CodeBlock
+          code={normalizeCodeString(block.code || "")}
+          language={block.language || "jsx"}
+          filename={block.filename}
+        />
       </div>
     );
   }
 
-  if (block.type === "props") {
-    if (!config?.props?.length) return null;
-
+  if (block._type === "effectTableBlock") {
     return (
-      <div className="space-y-3">
-        <h3 className="font-medium text-muted text-2xl tracking-tighter">
-          {block.title || "Props"}
-        </h3>
+      <div className="space-y-3 fadeup">
+        {block.caption && (
+          <h3 className="text-xl tracking-tighter text-foreground">
+            {block.caption}
+          </h3>
+        )}
 
-        <div className="bg-secondary-surface/60 backdrop-blur-md rounded-xl border border-border/60 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-black/20 border-b border-border/60">
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
               <tr>
-                <th className="text-left px-4 py-3">
-                  Prop
-                </th>
-
-                <th className="text-left px-4 py-3">
-                  Type
-                </th>
-
-                <th className="text-left px-4 py-3">
-                  Default
-                </th>
-
-                <th className="text-left px-4 py-3">
-                  Description
-                </th>
+                {(block.headers || []).map((header, index) => (
+                  <th key={`${header}-${index}`}>{header}</th>
+                ))}
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-border">
-              {config.props.map((prop) => (
-                <tr key={prop.name}>
-                  <td className="px-4 py-3">
-                    {prop.name}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {prop.type}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {config.defaults?.[
-                      prop.name
-                    ]?.toString() || "-"}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    {prop.description || "-"}
-                  </td>
+            <tbody>
+              {(block.rows || []).map((row, rowIndex) => (
+                <tr key={row._key || rowIndex}>
+                  {(row.cells || []).map((cell, cellIndex) => (
+                    <td key={`${rowIndex}-${cellIndex}`}>{cell}</td>
+                  ))}
                 </tr>
               ))}
             </tbody>
@@ -696,7 +430,239 @@ function TutorialBlock({
     );
   }
 
+  if (block._type === "effectCalloutBlock") {
+    const toneClass =
+      block.tone === "info"
+        ? styles.calloutInfo
+        : block.tone === "warning"
+          ? styles.calloutWarning
+          : block.tone === "success"
+            ? styles.calloutSuccess
+            : "";
+
+    const shouldRenderAsCardGrid =
+      !block.tone ||
+      block.tone === "default";
+
+    return (
+      <section className={`fadeup ${styles.callout} ${toneClass}`}>
+        {block.title && (
+          <h3 className={styles.calloutTitle}>{block.title}</h3>
+        )}
+
+        {shouldRenderAsCardGrid ? (
+          <CalloutCardGrid body={block.content || []} />
+        ) : (
+          <SanityBodyRenderer body={block.content || []} />
+        )}
+      </section>
+    );
+  }
+
   return null;
+}
+
+function CalloutCardGrid({ body = [] }) {
+  const items = body
+    .map((block) => extractPlainBlockText(block))
+    .filter(Boolean);
+
+  if (!items.length) {
+    return <SanityBodyRenderer body={body} />;
+  }
+
+  return (
+    <div className={styles.calloutGrid}>
+      {items.map((item, index) => (
+        <div key={`${item}-${index}`} className={styles.calloutGridItem}>
+          {item}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PortableTextBlock({ block }) {
+  if (isCodeOnlyBlock(block)) {
+    const code = normalizeCodeString(getBlockText(block));
+
+    if (!code.trim()) return null;
+
+    return (
+      <div className="fadeup">
+        <CodeBlock
+          code={code}
+          language={inferCodeLanguage(code)}
+        />
+      </div>
+    );
+  }
+
+  const children = buildMarkedChildren(block);
+  const style = block.style || "normal";
+
+  if (style === "h2") {
+    return <h2 className="fadeup">{children}</h2>;
+  }
+
+  if (style === "h3") {
+    return <h3 className="fadeup">{children}</h3>;
+  }
+
+  if (style === "blockquote") {
+    return <blockquote className="fadeup">{children}</blockquote>;
+  }
+
+  if (block.listItem === "bullet") {
+    return (
+      <ul className="fadeup">
+        <li>{children}</li>
+      </ul>
+    );
+  }
+
+  if (block.listItem === "number") {
+    return (
+      <ol className="fadeup">
+        <li>{children}</li>
+      </ol>
+    );
+  }
+
+  return <p className="fadeup">{children}</p>;
+}
+
+function groupBodyBlocks(body) {
+  const grouped = [];
+
+  for (const block of body) {
+    if (block?._type === "block" && block.listItem) {
+      const previous = grouped[grouped.length - 1];
+
+      if (
+        previous?._type === "listGroup" &&
+        previous.listItem === block.listItem &&
+        (previous.level || 1) === (block.level || 1)
+      ) {
+        previous.items.push(block);
+        continue;
+      }
+
+      grouped.push({
+        _type: "listGroup",
+        _groupKey: `list-${block._key || grouped.length}`,
+        listItem: block.listItem,
+        level: block.level || 1,
+        items: [block],
+      });
+      continue;
+    }
+
+    grouped.push(block);
+  }
+
+  return grouped;
+}
+
+function isCodeOnlyBlock(block) {
+  const children = block?.children || [];
+
+  if (!children.length) return false;
+
+  return children.every((child) => {
+    if (child?._type !== "span") return false;
+
+    const marks = child.marks || [];
+
+    return marks.includes("code");
+  });
+}
+
+function getBlockText(block) {
+  return (block?.children || [])
+    .map((child) => child?.text || "")
+    .join("");
+}
+
+function extractPlainBlockText(block) {
+  if (block?._type !== "block") return "";
+
+  const text = getBlockText(block).trim();
+
+  if (!text) return "";
+
+  return text;
+}
+
+function inferCodeLanguage(code) {
+  const trimmed = code.trim();
+
+  if (
+    trimmed.startsWith("npm ") ||
+    trimmed.startsWith("npx ") ||
+    trimmed.startsWith("pnpm ") ||
+    trimmed.startsWith("yarn ")
+  ) {
+    return "bash";
+  }
+
+  return "jsx";
+}
+
+function normalizeCodeString(code) {
+  return code
+    .replace(/\\r\\n/g, "\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, "\\");
+}
+
+function buildMarkedChildren(block) {
+  const markDefs = block.markDefs || [];
+
+  return (block.children || []).map((child, index) => {
+    if (!child?.text) return null;
+
+    let node = child.text;
+
+    for (const mark of child.marks || []) {
+      if (mark === "strong") {
+        node = <strong key={`strong-${index}`}>{node}</strong>;
+        continue;
+      }
+
+      if (mark === "em") {
+        node = <em key={`em-${index}`}>{node}</em>;
+        continue;
+      }
+
+      if (mark === "code") {
+        node = (
+          <code key={`code-${index}`} className={styles.contentInlineCode}>
+            {node}
+          </code>
+        );
+        continue;
+      }
+
+      const markDef = markDefs.find((item) => item._key === mark);
+
+      if (markDef?._type === "link" && markDef.href) {
+        node = (
+          <a
+            key={`link-${index}`}
+            href={markDef.href}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {node}
+          </a>
+        );
+      }
+    }
+
+    return <span key={child._key || index}>{node}</span>;
+  });
 }
 
 function TableOfContents({ containerRef, watchKey }) {

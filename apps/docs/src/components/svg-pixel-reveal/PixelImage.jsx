@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from"react";
 import Image from"next/image";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
-import PixelateSvgFilter from"@/components/PixelatedSvg/PixelatedSvgEffect";
+import PixelateSvgFilter from "./PixelatedScgFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 

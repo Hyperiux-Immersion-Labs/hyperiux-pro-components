@@ -3,9 +3,13 @@
 import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import Image from 'next/image'
 
-export function ChessGridTransition({ children, enableContentShift = false }) {
+
+export function ChessGridTransition({
+  children,
+  enableContentShift = false,
+  bgColor = '#ff5f00',
+}) {
   const wrapperRef = useRef(null)
   const gridRef = useRef(null)
   const bgRef = useRef(null)
@@ -137,8 +141,9 @@ export function ChessGridTransition({ children, enableContentShift = false }) {
           return (
             <span
               key={i}
-              className='bg-[#ff5f00] absolute shrink-0'
+              className='absolute shrink-0'
               style={{
+                backgroundColor: bgColor,
                 width: `calc((100vw / ${cols}) * ${isMobile ? 1.6 : 1} + ${overlap}px)`,
                 height: `calc(100vh / ${rows} + ${overlap}px)`,
                 left: `calc(${colIndex} * (100vw / ${cols}) * ${isMobile ? 1.6 : 1} - ${overlap / 2}px)`,

@@ -324,8 +324,9 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  )
 }
 
-export function NumericTunnel({ onComplete }) {
+export function NumericTunnel({ children, onComplete }) {
  const [loaderValue, setLoaderValue] = useState(0)
+ const [isComplete, setIsComplete] = useState(false)
 
  useEffect(() => {
  let interval;
@@ -341,10 +342,19 @@ export function NumericTunnel({ onComplete }) {
  }
  }, [])
 
+ const handleComplete = () => {
+ setIsComplete(true)
+ if (onComplete) onComplete()
+ }
+
  return (
- <div className="h-screen w-full bg-white">
- <h2 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black text-[10vw] font-bold'>UI</h2>
- <NumericTunnelCanvas loaderValue={loaderValue} onComplete={onComplete} />
+ <div className="relative h-screen w-full overflow-hidden">
+ {children}
+ {!isComplete && (
+ <div className="absolute inset-0 z-10">
+ <NumericTunnelCanvas loaderValue={loaderValue} onComplete={handleComplete} />
+ </div>
+ )}
  </div>
  )
 }
