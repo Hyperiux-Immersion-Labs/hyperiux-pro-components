@@ -13,5 +13,42 @@
   "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
   "previewUrl": "/book-flip",
-  "tier": "pro"
+  "tier": "pro",
+  "categories": [
+    "webgl"
+  ],
+  "exportName": "BookFlip",
+  "exportKind": "named",
+  "files": [
+  {
+    "path": "book-flip.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/book-flip.jsx"
+  },
+  {
+    "path": "Book.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/Book.jsx"
+  },
+  {
+    "path": "BookFlipViewer.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/BookFlipViewer.jsx"
+  },
+  {
+    "path": "Experience.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/Experience.jsx"
+  },
+  {
+    "path": "PageContext.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/PageContext.jsx"
+  },
+  {
+    "path": "UI.jsx",
+    "type": "registry:component",
+    "target": "components/hyperiux/UI.jsx"
+  }
+]
 }

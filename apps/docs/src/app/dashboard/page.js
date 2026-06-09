@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+// import CliTokenManager from "@/components/dashboard/CliTokenManager";
+import CliTokenManager from "@/components/Dashboard/CliTokenManager";
 
 function formatDate(value) {
   if (!value) return "Unknown";
@@ -204,6 +206,7 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+      <CliTokenManager plan={data.plan} />
     </div>
   );
 }

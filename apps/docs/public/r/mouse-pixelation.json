@@ -7,6 +7,7 @@
   "categories": [
     "webgl"
   ],
+  "tier": "free",
   "dependencies": [
     "three",
     "@react-three/fiber",

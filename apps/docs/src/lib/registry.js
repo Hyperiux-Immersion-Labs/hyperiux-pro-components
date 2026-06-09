@@ -1,75 +1,172 @@
 import fs from "fs";
 import path from "path";
 
-const REGISTRY_PATH = path.join(process.cwd(), "public/r");
+const PUBLIC_REGISTRY_PATH = path.join(process.cwd(), "public/r");
 
-function readJsonFile(filePath) {
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
+const PRIVATE_REGISTRY_CANDIDATES = [
+  path.join(process.cwd(), "registry/effects"),           // Vercel: cwd = repo root
+  path.join(process.cwd(), "../../registry/effects"),     // Vercel: cwd = apps/docs
+  path.join(process.cwd(), "apps/docs/registry/effects"), // legacy fallback
+];
 
-  try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(content);
-  } catch (error) {
-    console.error(`Failed to read registry file: ${filePath}`, error);
-    return null;
-  }
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
-export function getRegistryIndex() {
-  const indexPath = path.join(REGISTRY_PATH, "index.json");
-  const index = readJsonFile(indexPath);
+function isCodeFile(filePath = "") {
+  return (
+    filePath.endsWith(".js") ||
+    filePath.endsWith(".jsx") ||
+    filePath.endsWith(".ts") ||
+    filePath.endsWith(".tsx") ||
+    filePath.endsWith(".css") ||
+    filePath.endsWith(".json")
+  );
+}
 
-  if (!index?.items?.length) {
-    return {
-      items: [],
-    };
+function getExistingPrivateRegistryRoot() {
+  return PRIVATE_REGISTRY_CANDIDATES.find((candidate) =>
+    fs.existsSync(candidate)
+  );
+}
+
+function findPrivateRegistryPath(slug) {
+  const privateRoot = getExistingPrivateRegistryRoot();
+
+  if (!privateRoot) {
+    console.warn("No private registry root found.", {
+      cwd: process.cwd(),
+      checked: PRIVATE_REGISTRY_CANDIDATES,
+    });
+
+    return null;
   }
 
-  const items = index.items.map((item) => {
-    const fullEffectPath = path.join(REGISTRY_PATH, `${item.name}.json`);
-    const fullEffect = readJsonFile(fullEffectPath);
+  const categories = fs.readdirSync(privateRoot);
 
-    return {
-      ...item,
+  for (const category of categories) {
+    const categoryPath = path.join(privateRoot, category);
 
-      /*
-        These fields may not exist in index.json, so we hydrate them
-        from the individual effect JSON file.
-      */
-      tier: item.tier || fullEffect?.tier || "free",
-      type: item.type || fullEffect?.type || "registry:component",
-      registryDependencies:
-        item.registryDependencies || fullEffect?.registryDependencies || [],
-      exportName: item.exportName || fullEffect?.exportName || null,
-      exportKind: item.exportKind || fullEffect?.exportKind || "default",
-      dependencies: item.dependencies || fullEffect?.dependencies || [],
-      categories:
-        item.categories ||
-        fullEffect?.categories ||
-        [item.category || fullEffect?.category || "other"],
-      category: item.category || fullEffect?.category || "other",
-      previewUrl: item.previewUrl || fullEffect?.previewUrl || null,
-      coverImage: item.coverImage || fullEffect?.coverImage || null,
-      videoUrl: item.videoUrl || fullEffect?.videoUrl || null,
-      addedAt: item.addedAt || fullEffect?.addedAt || 0,
-    };
+    if (!fs.statSync(categoryPath).isDirectory()) {
+      continue;
+    }
+
+    const effectDir = path.join(categoryPath, slug);
+    const registryPath = path.join(effectDir, "registry.json");
+
+    if (fs.existsSync(registryPath)) {
+      return {
+        effectDir,
+        registryPath,
+      };
+    }
+  }
+
+  console.warn(`Private registry not found for "${slug}".`, {
+    privateRoot,
   });
 
+  return null;
+}
+
+function attachPrivateFileContent(effect, effectDir) {
+  // If files list is empty (source registry.json has no files key),
+  // discover them by scanning the effect directory — same logic as the build script.
+  const files =
+    effect.files && effect.files.length > 0
+      ? effect.files
+      : fs
+          .readdirSync(effectDir)
+          .filter(
+            (f) =>
+              (f.endsWith(".jsx") ||
+                f.endsWith(".js") ||
+                f.endsWith(".css")) &&
+              f !== "registry.json"
+          )
+          .map((fileName) => {
+            const isCss = fileName.endsWith(".css");
+            const isModuleCss = fileName.endsWith(".module.css");
+            return {
+              path: fileName,
+              type: isCss ? "registry:style" : "registry:component",
+              target: isCss
+                ? isModuleCss
+                  ? `components/hyperiux/${fileName}`
+                  : `styles/${fileName}`
+                : `components/hyperiux/${fileName}`,
+              targetPath: isCss
+                ? isModuleCss
+                  ? `components/hyperiux/${fileName}`
+                  : `styles/${fileName}`
+                : `components/hyperiux/${fileName}`,
+            };
+          });
+
   return {
-    ...index,
-    items,
+    ...effect,
+    files: files.map((file) => {
+      if (file.type === "registry:asset") {
+        return file;
+      }
+
+      const sourcePath = path.join(effectDir, file.path);
+
+      if (!fs.existsSync(sourcePath)) {
+        console.warn(`Private registry source file missing: ${sourcePath}`);
+        return file;
+      }
+
+      if (!isCodeFile(sourcePath)) {
+        return file;
+      }
+
+      return {
+        ...file,
+        content: fs.readFileSync(sourcePath, "utf-8"),
+      };
+    }),
   };
 }
 
+export function getRegistryIndex() {
+  const indexPath = path.join(PUBLIC_REGISTRY_PATH, "index.json");
+  const content = fs.readFileSync(indexPath, "utf-8");
+
+  return JSON.parse(content);
+}
+
 export function getEffectBySlug(slug) {
-  const effectPath = path.join(REGISTRY_PATH, `${slug}.json`);
-  return readJsonFile(effectPath);
+  const privateMatch = findPrivateRegistryPath(slug);
+
+  if (privateMatch) {
+    const effect = readJson(privateMatch.registryPath);
+
+    return attachPrivateFileContent(effect, privateMatch.effectDir);
+  }
+
+  const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slug}.json`);
+
+  if (!fs.existsSync(publicEffectPath)) {
+    return null;
+  }
+
+  return readJson(publicEffectPath);
+}
+
+export function getPublicEffectBySlug(slug) {
+  const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slug}.json`);
+
+  if (!fs.existsSync(publicEffectPath)) {
+    return null;
+  }
+
+  return readJson(publicEffectPath);
 }
 
 export function getAllEffectSlugs() {
   const index = getRegistryIndex();
+
   return index.items.map((item) => item.name);
 }
 
@@ -83,7 +180,10 @@ export function getEffectsByCategory() {
       : [item.category || "other"];
 
     for (const cat of cats) {
-      if (!categories[cat]) categories[cat] = [];
+      if (!categories[cat]) {
+        categories[cat] = [];
+      }
+
       categories[cat].push(item);
     }
   }

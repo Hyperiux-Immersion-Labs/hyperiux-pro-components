@@ -4,42 +4,65 @@ import { getUserPlan } from "@/lib/subscription";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 
+function createCliToken() {
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  return `hpx_${rawToken}`;
+}
+
+function hashCliToken(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 // POST /api/cli/token
-// Generates a new CLI token for the authenticated user and stores its hash in Supabase.
+// Generates a new CLI token for the authenticated Pro user.
 // The plaintext token is returned once and never stored.
 export async function POST() {
   const { userId } = await auth();
 
   if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
-  // Only pro subscribers can generate a CLI token
   const plan = await getUserPlan(userId);
+
   if (plan !== "pro") {
     return NextResponse.json(
-      { error: "A Hyperiux Pro subscription is required to generate a CLI token." },
+      {
+        error:
+          "A Hyperiux Pro subscription is required to generate a CLI token.",
+      },
       { status: 403 }
     );
   }
 
-  // Generate a cryptographically random 32-byte token
-  const token = crypto.randomBytes(32).toString("hex");
-  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const token = createCliToken();
+  const tokenHash = hashCliToken(token);
 
   const { error } = await supabase
     .from("subscriptions")
     .update({
       cli_token_hash: tokenHash,
+      cli_token_created_at: new Date().toISOString(),
+      cli_token_last_used_at: null,
+      cli_token_revoked_at: null,
       updated_at: new Date().toISOString(),
     })
     .eq("clerk_user_id", userId);
 
   if (error) {
-    console.error("Failed to store CLI token hash:", error);
-    return NextResponse.json({ error: "Failed to generate token." }, { status: 500 });
+    console.error("CLI_TOKEN_GENERATION_ERROR:", error);
+
+    return NextResponse.json(
+      { error: "Failed to generate CLI token." },
+      { status: 500 }
+    );
   }
 
-  // Return the plaintext token — shown once to the user, never stored
-  return NextResponse.json({ token });
+  return NextResponse.json({
+    token,
+    message: "Copy this token now. It will not be shown again.",
+  });
 }

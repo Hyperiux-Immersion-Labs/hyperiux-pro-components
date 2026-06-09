@@ -187,6 +187,9 @@ async function buildRegistry() {
         .filter((f) => f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
         .filter((f) => f !== "registry.json");
 
+      const useSubfolder = registryJson.subfolder === true;
+      const subfolderPrefix = useSubfolder ? `${registryJson.name}/` : "";
+
       const fileContents = files.map((fileName) => {
         const filePath = path.join(effectPath, fileName);
         const content = fs.readFileSync(filePath, "utf-8");
@@ -198,9 +201,9 @@ async function buildRegistry() {
           type: isCss ? "registry:style" : "registry:component",
           target: isCss
             ? isModuleCss
-              ? `components/hyperiux/${fileName}`
+              ? `components/hyperiux/${subfolderPrefix}${fileName}`
               : `styles/${fileName}`
-            : `components/hyperiux/${fileName}`,
+            : `components/hyperiux/${subfolderPrefix}${fileName}`,
           content,
         };
       });
@@ -250,6 +253,9 @@ async function buildRegistry() {
         ? registryJson.categories
         : [primaryCategory];
 
+      const tier = registryJson.tier || "free";
+      const isPro = tier === "pro" || tier === "paid";
+
       // Build the full registry item
       const defaultVideoUrl = `${registryJson.name}.mp4`;
       const resolvedVideoUrl =
@@ -258,6 +264,13 @@ async function buildRegistry() {
         registryJson.name,
         registryJson.coverImage
       );
+
+      // For pro effects, strip file content from the public JSON.
+      // The CLI fetches full source via the authenticated /api/cli/effects/[slug] route.
+      const publicFiles = isPro
+        ? [...fileContents, ...assetFiles].map(({ content: _content, ...rest }) => rest)
+        : [...fileContents, ...assetFiles];
+
       const registryItem = {
         name: registryJson.name,
         type: registryJson.type || "registry:component",
@@ -265,6 +278,7 @@ async function buildRegistry() {
         description: registryJson.description,
         category: primaryCategory,
         categories: categories_list,
+        tier,
         dependencies: registryJson.dependencies || [],
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
@@ -272,7 +286,7 @@ async function buildRegistry() {
         previewUrl: registryJson.previewUrl || null,
         coverImage: resolvedCoverImage,
         videoUrl: resolvedVideoUrl,
-        files: [...fileContents, ...assetFiles],
+        files: publicFiles,
       };
 
       // Write individual effect JSON
@@ -288,6 +302,7 @@ async function buildRegistry() {
         description: registryJson.description,
         category: primaryCategory,
         categories: categories_list,
+        tier,
         dependencies: registryJson.dependencies || [],
         exportName,
         exportKind,
