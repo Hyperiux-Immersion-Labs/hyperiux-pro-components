@@ -1,4 +1,4 @@
-import { ArrowBgFillPrimaryBtn } from "@/components/Buttons/PrimaryButtons/ArrowBgFillPrimaryBtn/ArrowBgFillPrimaryBtn";
+import { ArrowFillButton } from "@/components/arrow-fill-button";
 import { ButtonDemoShell } from "@/components/Buttons/ButtonDemoShell";
 
 export default function Page() {
@@ -7,7 +7,7 @@ export default function Page() {
             title="Arrow Fill Button"
             backgroundSrc="/assets/buttonbg/image01.png"
         >
-            <ArrowBgFillPrimaryBtn
+            <ArrowFillButton
                 className="bg-[#ff6b00]"
                 href="#"
                 btnText="Hover me"

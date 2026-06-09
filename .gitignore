@@ -1,5 +1,9 @@
 node_modules
 .next
+apps/docs/node_modules
+apps/docs/.next
+apps/**/docs/**/node_modules
+apps/**/docs/**/.next
 /out
 /build
 .DS_Store

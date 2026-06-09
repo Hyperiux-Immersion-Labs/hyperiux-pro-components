@@ -1,4 +1,4 @@
-import {ImagesAnimation} from "@/components/MouseHoverAnim/ImagesAnimation";
+import { PhantomImage } from "@/components/phantom-image-trail";
 import React from "react";
 
 const images = [
@@ -11,19 +11,19 @@ const images = [
   { src: "/assets/gradient/image5.png", alt: "Gradient 5" },
   { src: "/assets/gradient/image6.png", alt: "Gradient 6" },
   { src: "/assets/gradient/image7.png", alt: "Gradient 7" },
-  { src: "/assets/gradient/image8.png", alt: "Gradient 8" },
-  { src: "/assets/gradient/image9.png", alt: "Gradient 9" },
-  { src: "/assets/gradient/image10.png", alt: "Gradient 10" },
-  { src: "/assets/gradient/image11.png", alt: "Gradient 11" },
-  { src: "/assets/gradient/image12.png", alt: "Gradient 12" },
-  { src: "/assets/gradient/image13.png", alt: "Gradient 13" },
-  { src: "/assets/gradient/image14.png", alt: "Gradient 14" },
-  { src: "/assets/gradient/image15.png", alt: "Gradient 15" },
-  { src: "/assets/gradient/image1.png", alt: "Gradient 1" },
-  { src: "/assets/gradient/image2.png", alt: "Gradient 2" },
-  { src: "/assets/gradient/image3.png", alt: "Gradient 3" },
-  { src: "/assets/gradient/image4.png", alt: "Gradient 4" },
-  { src: "/assets/gradient/image5.png", alt: "Gradient 5" },
+//   { src: "/assets/gradient/image8.png", alt: "Gradient 8" },
+//   { src: "/assets/gradient/image9.png", alt: "Gradient 9" },
+//   { src: "/assets/gradient/image10.png", alt: "Gradient 10" },
+//   { src: "/assets/gradient/image11.png", alt: "Gradient 11" },
+//   { src: "/assets/gradient/image12.png", alt: "Gradient 12" },
+//   { src: "/assets/gradient/image13.png", alt: "Gradient 13" },
+//   { src: "/assets/gradient/image14.png", alt: "Gradient 14" },
+//   { src: "/assets/gradient/image15.png", alt: "Gradient 15" },
+//   { src: "/assets/gradient/image1.png", alt: "Gradient 1" },
+//   { src: "/assets/gradient/image2.png", alt: "Gradient 2" },
+//   { src: "/assets/gradient/image3.png", alt: "Gradient 3" },
+//   { src: "/assets/gradient/image4.png", alt: "Gradient 4" },
+//   { src: "/assets/gradient/image5.png", alt: "Gradient 5" },
 ];
 
 const page = () => {
@@ -40,10 +40,10 @@ const page = () => {
                     </span>
                 </p>
             </div>
-            <ImagesAnimation
+            <PhantomImage
                 images={images}
                 enableRotation={true}
-                idleSpawn={true}
+                idleSpawn={false}
                 idleDelay={300}
                 cursorOffsetX={-12}
                 cursorOffsetY={-12}

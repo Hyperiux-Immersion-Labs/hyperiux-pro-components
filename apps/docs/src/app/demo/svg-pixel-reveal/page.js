@@ -1,4 +1,4 @@
-import PixelImage from"@/components/PixelatedSvg/PixelImage";
+import PixelImage from"@/components/svg-pixel-reveal/PixelImage";
 import LenisSmoothScroll from"@/components/SmoothScroll/LenisScroll";
 
 export default function Page() {

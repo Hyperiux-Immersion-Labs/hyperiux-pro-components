@@ -1,5 +1,5 @@
 import React from'react'
-import { RectangularTextReveal as TextBlockReveal } from'@/components/RectangularTextReveal/RectangularTextReveal'
+import { RectangularTextReveal as TextBlockReveal } from'@/components/rectangular-text-reveal'
 
 export default function page() {
  return (

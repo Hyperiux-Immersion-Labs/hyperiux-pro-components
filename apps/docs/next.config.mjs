@@ -4,10 +4,22 @@ import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const REPO_ROOT = path.join(__dirname, "..", "..");
+const shouldUploadSentrySourceMaps = Boolean(
+  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true"
+);
+const hasSentryBuildConfig = Boolean(
+  shouldUploadSentrySourceMaps &&
+  process.env.NEXT_PUBLIC_SENTRY_DSN &&
+    process.env.SENTRY_ORG &&
+    process.env.SENTRY_PROJECT &&
+    process.env.SENTRY_AUTH_TOKEN
+);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   async redirects() {
     return [
       {
@@ -117,22 +129,21 @@ const nextConfig = {
   },
 };
 
-const sentryConfig = withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
+const sentryConfig = hasSentryBuildConfig
+  ? withSentryConfig(nextConfig, {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
 
-  // Only upload source maps in CI/production to avoid slowing local builds
-  silent: true,
-  widenClientFileUpload: true,
-  hideSourceMaps: true,
-  disableLogger: true,
+      // Only upload source maps in CI/production to avoid slowing local builds
+      silent: true,
+      widenClientFileUpload: true,
+      hideSourceMaps: true,
+      webpack: {
+        treeshake: {
+          removeDebugLogging: true,
+        },
+      },
+    })
+  : nextConfig;
 
-  // Disable source map upload if DSN isn't set (local dev)
-  sourcemaps: {
-    disable: !process.env.NEXT_PUBLIC_SENTRY_DSN,
-  },
-});
-
-// Keep local development as close to plain Next.js as possible.
-// This avoids extra config wrapping and broader-than-needed dev watching.
 export default process.env.NODE_ENV === "development" ? nextConfig : sentryConfig;

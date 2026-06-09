@@ -19,6 +19,12 @@
   --dark-card: #141414;
   --border: #bcbcbc;
   --muted: #d2d2d2;
+  --font-display: "Aeonik", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-sans:
+    "Aeonik", "Inter", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-mono:
+    "SF Mono", "JetBrains Mono", "Fira Code", "Roboto Mono", Consolas,
+    monospace;
 }
 
 @theme inline {
