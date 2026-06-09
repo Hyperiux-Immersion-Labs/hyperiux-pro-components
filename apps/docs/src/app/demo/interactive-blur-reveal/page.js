@@ -1,4 +1,4 @@
-import InteractiveBlurReveal from '@/components/Interactive-blur-reveal'
+import InteractiveBlurReveal from '@/components/interactive-blur-reveal'
 import Link from 'next/link'
 
 
