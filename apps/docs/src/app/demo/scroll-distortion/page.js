@@ -1,4 +1,6 @@
-import ScrollBasedImageDistortion from'@/components/showcase/ScrollBasedEffects/ImageDistortion/ScrollBasedImageDistortion'
+
+// import ScrollDistortion from '@/components/scroll-distortion'
+import ScrollDistortion from '@/components/scroll-distortion'
 import React from'react'
 
 const sections = [
@@ -17,7 +19,7 @@ const shaderConfig = {
 
 export default function page() {
  return (
- <ScrollBasedImageDistortion
+ <ScrollDistortion
  sections={sections}
  shaderConfig={shaderConfig}
  displacementSrc="/assets/img/distortion.jpg"

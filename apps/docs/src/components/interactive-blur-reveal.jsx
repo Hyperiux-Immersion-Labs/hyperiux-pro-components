@@ -11,6 +11,7 @@ const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   1, -1,
   1, 1,
 ]);
+ 
 const TEXTURE_UNIT_BASE = 0;
 const TEXTURE_UNIT_NOISE = 1;
 const DEFAULT_POINTER_POSITION = 0.5;
@@ -253,7 +254,7 @@ function createTexture(gl, image, unit, shouldRepeat = false) {
   return texture;
 }
 
-function FrostedGlassRevealShader({
+function InteractiveBlurReveal({
   iChannel0,
   iChannel1,
   className,
@@ -507,4 +508,4 @@ function FrostedGlassRevealShader({
   );
 }
 
-export { FrostedGlassRevealShader as InteractiveBlurReveal };
+export default InteractiveBlurReveal;

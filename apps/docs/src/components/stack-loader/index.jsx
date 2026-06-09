@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useLayoutEffect, useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
+
+gsap.registerPlugin(SplitText);
 
 const INTRO_EASE = "cubic-bezier(0.25,1,0.5,1)";
 const IMAGE_ENTRY_Y_PERCENT = 500;
@@ -17,8 +19,6 @@ const STACK_Y_PERCENT_STEP = 20;
 const SPREAD_Y_PERCENT_STEP = 110;
 const IMAGE_FADE_STAGGER = 0.08;
 
-gsap.registerPlugin(SplitText);
-
 const DEFAULT_IMAGE_SOURCES = [
   "/assets/img/image01.webp",
   "/assets/img/image07.png",
@@ -29,11 +29,10 @@ const DEFAULT_IMAGE_SOURCES = [
   "/img/mobile.png",
 ];
 
-export default function StackToSpreadIntro({
+function StackToSpreadIntro({
   images = DEFAULT_IMAGE_SOURCES,
   onComplete,
 }) {
-  // State and refs
   const rootRef = useRef(null);
   const imagesRef = useRef([]);
   const text1Ref = useRef(null);
@@ -47,18 +46,26 @@ export default function StackToSpreadIntro({
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Animation targets
-      const imageElements = imagesRef.current;
+      const imageElements = imagesRef.current.filter(Boolean);
 
-      // Split text
-      const text1 = SplitText.create(text1Ref.current, { type: "words" });
-      const text2 = SplitText.create(text2Ref.current, { type: "words" });
-      const descriptionText = SplitText.create(descriptionTextRef.current, {
-        type: "words lines",
+      const text1 = SplitText.create(text1Ref.current, {
+        type: "words",
       });
-      const animatedTextTargets = [text1.words, text2.words, descriptionText.lines];
 
-      // Initial state
+      const text2 = SplitText.create(text2Ref.current, {
+        type: "words",
+      });
+
+      const descriptionText = SplitText.create(descriptionTextRef.current, {
+        type: "words,lines",
+      });
+
+      const animatedTextTargets = [
+        text1.words,
+        text2.words,
+        descriptionText.lines,
+      ];
+
       gsap.set(animatedTextTargets, {
         rotateX: TEXT_ROTATE_X_START,
         opacity: 0,
@@ -66,21 +73,29 @@ export default function StackToSpreadIntro({
         transformOrigin: "50% 100%",
         willChange: "transform",
       });
-      gsap.set(imageElements, { opacity: 0 });
-      gsap.set(descriptionTextRef.current, { opacity: 1 });
 
-      const tl = gsap.timeline({});
+      gsap.set(imageElements, {
+        opacity: 0,
+      });
 
-      // Entry
+      gsap.set(descriptionTextRef.current, {
+        opacity: 1,
+      });
+
+      const tl = gsap.timeline();
+
       tl.fromTo(
         "#imgs-wrapper",
-        { yPercent: IMAGE_ENTRY_Y_PERCENT, opacity: 0 },
+        {
+          yPercent: IMAGE_ENTRY_Y_PERCENT,
+          opacity: 0,
+        },
         {
           yPercent: 0,
           opacity: 1,
           duration: 0.5,
           ease: INTRO_EASE,
-        },
+        }
       );
 
       tl.set([text1Ref.current, text2Ref.current], { opacity: 1 }, "<");
@@ -92,7 +107,7 @@ export default function StackToSpreadIntro({
           duration: 0.5,
           ease: INTRO_EASE,
         },
-        "<",
+        "<"
       );
 
       tl.to(
@@ -103,10 +118,9 @@ export default function StackToSpreadIntro({
           stagger: TEXT_STAGGER,
           ease: INTRO_EASE,
         },
-        "<+0.5",
+        "<+0.5"
       );
 
-      // Image layering
       imageElements.forEach((imageElement, index) => {
         tl.to(
           imageElement,
@@ -115,11 +129,10 @@ export default function StackToSpreadIntro({
             duration: IMAGE_Z_INDEX_DURATION,
             ease: INTRO_EASE,
           },
-          index * IMAGE_Z_INDEX_STAGGER,
+          index * IMAGE_Z_INDEX_STAGGER
         );
-      }, "<");
+      });
 
-      // Description exit
       tl.to(
         descriptionText.lines,
         {
@@ -130,10 +143,9 @@ export default function StackToSpreadIntro({
           stagger: TEXT_STAGGER,
           ease: INTRO_EASE,
         },
-        "<+0.2",
+        "<+0.2"
       );
 
-      // Stack images
       tl.to(
         imageElements,
         {
@@ -146,10 +158,9 @@ export default function StackToSpreadIntro({
           },
           ease: "power3.inOut",
         },
-        "<",
+        "<"
       );
 
-      // Spread images
       tl.to(
         imageElements,
         {
@@ -160,6 +171,7 @@ export default function StackToSpreadIntro({
             if (totalImages === 1) return 0;
 
             const totalSpread = SPREAD_Y_PERCENT_STEP * (totalImages - 1);
+
             return -totalSpread / 2 + index * SPREAD_Y_PERCENT_STEP;
           },
           duration: 1,
@@ -169,7 +181,7 @@ export default function StackToSpreadIntro({
           },
           ease: "power3.inOut",
         },
-        "+=0.2",
+        "+=0.2"
       );
 
       tl.to(
@@ -178,10 +190,9 @@ export default function StackToSpreadIntro({
           yPercent: 0,
           ease: INTRO_EASE,
         },
-        "<",
+        "<"
       );
 
-      // Heading exit
       tl.to([text1.words, text2.words], {
         opacity: 0,
         duration: 0.5,
@@ -191,7 +202,6 @@ export default function StackToSpreadIntro({
         ease: INTRO_EASE,
       });
 
-      // Loader exit
       tl.to(
         imageElements,
         {
@@ -207,16 +217,18 @@ export default function StackToSpreadIntro({
               duration: 0.5,
               ease: INTRO_EASE,
               onComplete: () => {
-                gsap.set(rootRef.current, { display: "none" });
+                gsap.set(rootRef.current, {
+                  display: "none",
+                });
+
                 onCompleteRef.current?.();
               },
             });
           },
         },
-        "<+0.2",
+        "<+0.2"
       );
 
-      // Cleanup
       return () => {
         text1.revert();
         text2.revert();
@@ -227,16 +239,13 @@ export default function StackToSpreadIntro({
     return () => ctx.revert();
   }, []);
 
-  // Derived values
-  const imgSources = images;
-
   return (
     <section
       ref={rootRef}
       id="loader-wrapper"
-      className="bg-[#FCFCFC] text-black px-[2.5vw] max-md:px-[5vw] max-sm:px-[6vw] h-screen flex items-center justify-center w-full"
+      className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-md:px-[5vw] max-sm:px-[6vw]"
     >
-      <div className="w-full flex items-center justify-between max-md:flex-col max-md:justify-center max-md:gap-[33vh] max-sm:gap-[70vw]">
+      <div className="flex w-full items-center justify-between max-md:flex-col max-md:justify-center max-md:gap-[33vh] max-sm:gap-[70vw]">
         <p
           ref={text1Ref}
           className="opacity-0 max-md:text-[2.8vw] max-sm:text-[5vw]"
@@ -248,18 +257,21 @@ export default function StackToSpreadIntro({
           id="imgs-wrapper"
           className="relative size-[6.5vw] max-md:z-99 max-md:size-[13vw] max-sm:size-[18vw]"
         >
-          {imgSources.map((src, i) => (
+          {images.map((src, index) => (
             <div
-              key={i}
-              ref={(el) => (imagesRef.current[i] = el)}
-              className="absolute top-0 left-0 rounded-sm size-full overflow-hidden opacity-0"
+              key={`${src}-${index}`}
+              ref={(element) => {
+                imagesRef.current[index] = element;
+              }}
+              className="absolute top-0 left-0 size-full overflow-hidden rounded-sm opacity-0"
             >
               <Image
                 src={src}
                 width={1000}
                 height={1000}
-                className="h-full w-full  object-cover"
+                className="h-full w-full object-cover"
                 alt=""
+                priority={index === 0}
               />
             </div>
           ))}
@@ -277,9 +289,39 @@ export default function StackToSpreadIntro({
         ref={descriptionTextRef}
         className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-md:bottom-[3vw] max-md:w-[68vw] max-md:text-[2.4vw] max-sm:bottom-[6vw] max-sm:w-[90%] max-sm:text-[3.5vw]"
       >
-        A multi-awarded interactive digital studio crafting
-        immersive & interactive experiences for global brands since 2006.
+        A multi-awarded interactive digital studio crafting immersive &
+        interactive experiences for global brands since 2006.
       </p>
     </section>
+  );
+}
+
+export default function StackLoader({
+  images = DEFAULT_IMAGE_SOURCES,
+}) {
+  const [isLoaderComplete, setIsLoaderComplete] = useState(false);
+
+  const handleLoaderComplete = useCallback(() => {
+    setIsLoaderComplete(true);
+  }, []);
+
+  return (
+    <div
+      id="DEMO UI"
+      className="relative h-screen w-screen overflow-hidden bg-zinc-900"
+    >
+      <p
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-neutral-300 transition-opacity duration-300 ${
+          isLoaderComplete ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        DEMO UI
+      </p>
+
+      <StackToSpreadIntro
+        images={images}
+        onComplete={handleLoaderComplete}
+      />
+    </div>
   );
 }
