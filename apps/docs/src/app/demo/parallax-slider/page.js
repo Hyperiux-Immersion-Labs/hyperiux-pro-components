@@ -1,12 +1,12 @@
 import React from'react'
-import { ParallaxSlider as ParallaxImgSlider } from'@/components/ParallaxImgSlider/ParallaxSlider'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
+import ParallaxSlider from '@/components/parallax-slider'
 
 const page = () => {
  return (
  <>
  <LenisSmoothScroll />
- <ParallaxImgSlider images={[
+ <ParallaxSlider images={[
 '/assets/nature/nature06.png',
 '/assets/nature/nature08.png',
 '/assets/nature/nature09.png',

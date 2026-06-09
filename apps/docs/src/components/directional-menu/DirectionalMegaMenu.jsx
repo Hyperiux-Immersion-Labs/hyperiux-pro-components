@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
-import { ChevronBird } from "../ChevronBird/ChevronBird";
+import { ChevronDown } from "lucide-react";
 
 const DEFAULT_ANIMATION = {
   contentFadeDelay: 0.06,
@@ -459,12 +459,17 @@ export function DirectionalMegaMenu({
               key={item.label || index}
               type="button"
               onMouseEnter={() => onItemEnter(index)}
-              className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium transition-colors duration-300 hover:text-white max-md:text-lg max-sm:text-sm ${navItemClassName} ${
-                isActive ? activeClassName : inactiveClassName
-              }`}
+              className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium transition-colors duration-300 hover:text-white max-md:text-lg max-sm:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
+                }`}
             >
               {item.label}
-              {hasDropdownContent(item) && <ChevronBird isActive={isActive} />}
+
+              {hasDropdownContent(item) && (
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform duration-300 ${isActive ? "-rotate-180" : "rotate-0"
+                    }`}
+                />
+              )}
             </button>
           );
         })}

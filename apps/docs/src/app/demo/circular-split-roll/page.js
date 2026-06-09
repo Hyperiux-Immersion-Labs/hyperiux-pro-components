@@ -1,6 +1,6 @@
 "use client";
 
-import {CircularScrollShowcase} from"@/components/CircularSplitRoll/CircularSplitRoll";
+import {CircularScrollShowcase} from"@/components/circular-split-roll";
 import React from"react";
 import { ReactLenis } from"lenis/react";
 
