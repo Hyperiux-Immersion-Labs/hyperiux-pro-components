@@ -253,7 +253,7 @@ function createTexture(gl, image, unit, shouldRepeat = false) {
   return texture;
 }
 
-function FrostedGlassRevealShader({
+function InteractiveBlurReveal({
   iChannel0,
   iChannel1,
   className,
@@ -507,4 +507,4 @@ function FrostedGlassRevealShader({
   );
 }
 
-export { FrostedGlassRevealShader as InteractiveBlurReveal };
+export default InteractiveBlurReveal;

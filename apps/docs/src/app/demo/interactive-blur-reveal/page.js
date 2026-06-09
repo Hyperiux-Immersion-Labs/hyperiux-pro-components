@@ -1,11 +1,11 @@
+import InteractiveBlurReveal from '@/components/Interactive-blur-reveal'
 import Link from 'next/link'
 
-import { InteractiveBlurReveal as FrostedGlassShader } from '@/components/InteractiveBlurReveal/InteractiveBlurReveal'
 
 const Page = () => {
   return (
     <main className="relative h-dvh w-dvw overflow-hidden bg-black text-white">
-      <FrostedGlassShader
+      <InteractiveBlurReveal
         iChannel0="/assets/img/image02.webp"
         iChannel1="/assets/download.png"
       />
