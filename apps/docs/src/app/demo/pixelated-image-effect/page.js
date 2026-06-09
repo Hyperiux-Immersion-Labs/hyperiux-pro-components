@@ -1,4 +1,4 @@
-import { PixelatedImageEffectDemo } from "@/components/PixelatedSvg/PixelatedSvgEffect";
+import { PixelatedImageEffectDemo } from "@/components/pixelated-image-effect";
 
 export default function Page() {
  return (

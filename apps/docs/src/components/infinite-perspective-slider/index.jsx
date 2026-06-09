@@ -203,6 +203,7 @@ export function InfiniteScrollSlider({ images = [] }) {
         state.prevDirection = 0;
 
         positionCards(0, 0);
+        gsap.set(cardRefs.current, { opacity: 1 });
         state.raf = requestAnimationFrame(tick);
 
         window.addEventListener('wheel', onWheel, { passive: true });
@@ -381,7 +382,7 @@ export function InfiniteScrollSlider({ images = [] }) {
                                 ref={(el) => {
                                     cardRefs.current[i] = el;
                                 }}
-                                className="absolute top-0 left-0 pointer-events-auto will-change-transform"
+                                className="absolute top-0 left-0 pointer-events-auto opacity-0 will-change-transform"
                                 style={{
                                     width: cardWidth,
                                     height: cardHeight,

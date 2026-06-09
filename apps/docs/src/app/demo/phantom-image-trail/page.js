@@ -1,4 +1,4 @@
-import { PhantomImage} from "@/components/MouseHoverAnim/PhantomImageTrail";
+import { PhantomImage } from "@/components/phantom-image-trail";
 import React from "react";
 
 const images = [
@@ -43,7 +43,7 @@ const page = () => {
             <PhantomImage
                 images={images}
                 enableRotation={true}
-                idleSpawn={true}
+                idleSpawn={false}
                 idleDelay={300}
                 cursorOffsetX={-12}
                 cursorOffsetY={-12}

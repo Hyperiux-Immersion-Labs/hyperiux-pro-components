@@ -1,4 +1,4 @@
-import {HorizontalScroll} from "@/components/HorizontalScrollSection/HorizontalScroll";
+import { HorizontalScroll } from "@/components/horizontal-feature-reveal";
 import React from "react";
 import { ReactLenis } from "lenis/react";
 

@@ -28,7 +28,6 @@ const smoothstep = (e0, e1, v) => {
   return t * t * (3 - 2 * t);
 };
 
-// ─── Pure Shape Math ──────────────────────────────────────────────────────────
 
 const getStarStrength = (x, y, time, width, height) => {
   const cx = width / 2;
@@ -119,7 +118,6 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
   return getTriangleStrength(x, y, time, width, height);
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export function DottedGrid() {
   const canvasRef  = useRef(null);
@@ -146,7 +144,6 @@ export function DottedGrid() {
     let animationId;
     let dots = [];
 
-    // ─── Dot Setup ─────────────────────────────────────────────────────────────
 
     const createDots = () => {
       dots = [];
@@ -179,7 +176,6 @@ export function DottedGrid() {
       createDots();
     };
 
-    // ─── Event Handlers ────────────────────────────────────────────────────────
 
     const handlePointerMove = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -203,8 +199,6 @@ export function DottedGrid() {
       patternRef.current.currentShapeIndex = (patternRef.current.currentShapeIndex + 1) % TOTAL_SHAPES;
       patternRef.current.transitionStartTime = performance.now() * 0.001;
     };
-
-    // ─── Transition / Shape Interpolator ───────────────────────────────────────
 
     const getShapeData = (x, y, time) => {
       const { currentShapeIndex, transitionStartTime } = patternRef.current;
@@ -256,7 +250,6 @@ export function DottedGrid() {
       };
     };
 
-    // ─── Drawing Utilities ─────────────────────────────────────────────────────
 
     const drawDot = (x, y, radius, brightness, grayDisperseStrength, trailStrength, mouseStrength) => {
       const mouseFade = mouseStrength * mouseStrength * 0.72;
@@ -280,7 +273,6 @@ export function DottedGrid() {
       ctx.fill();
     };
 
-    // ─── Main Draw Loop ────────────────────────────────────────────────────────
 
     const animate = (ms) => {
       const time = ms * 0.001;
@@ -363,7 +355,6 @@ export function DottedGrid() {
       animationId = requestAnimationFrame(animate);
     };
 
-    // ─── Listeners & Boot ──────────────────────────────────────────────────────
 
     resize();
     window.addEventListener("resize", resize);

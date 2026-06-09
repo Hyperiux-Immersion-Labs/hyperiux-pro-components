@@ -1,5 +1,5 @@
-import {ChessGridHeader} from'@/components/showcase/transitions/ChessGrids/ChessGridHeader'
-import { ChessGridTransition } from'@/components/showcase/transitions/ChessGrids/ChessGridTransition'
+import {ChessGridHeader} from'@/components/chess-grid-transition/ChessGridHeader'
+import { ChessGridTransition } from'@/components/chess-grid-transition/ChessGridTransition'
 import React from'react'
 
 export default function layout({ children }) {

@@ -12,7 +12,12 @@ const defaultPropertiesData = [];
 export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
   useEffect(() => {
     const ctx = gsap.context(() => {
-      if (window.innerWidth <= 1024) return;
+      if (window.innerWidth <= 1025) return;
+
+      gsap.set(
+        ".industry-img, .industry-no, .industry-title, .industry-content",
+        { opacity: 1 },
+      );
 
       const head = document.querySelector(".industry-head");
       if (head) {
@@ -168,7 +173,7 @@ export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
                 <Image
                   src={property.image}
                   alt={`property-img-${index + 1}`}
-                  className={`w-full h-full scale-[1.4] translate-x-[-30%] industry-${property.imgClass} max-md:translate-x-0 max-md:scale-[1] max-md:object-cover`}
+                  className={`w-full h-full scale-[1.4] translate-x-[-30%] opacity-0 industry-img industry-${property.imgClass} max-md:translate-x-0 max-md:scale-[1] max-md:object-cover max-md:opacity-100`}
                   width={500}
                   height={1080}
                 />
@@ -176,21 +181,24 @@ export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
 
               <div className="flex flex-col gap-[5vh] w-[60%] pt-[7%] max-sm:pt-0 max-md:w-full max-md:gap-[4vw] max-sm:gap-[7vw]">
                 <p
-                  className={`text-[6em] font-medium font-display text-secondary leading-none max-md:text-[10vw] industry-no-${property.no}`}
+                  className={`text-[6em] font-medium font-display text-secondary leading-none opacity-0 industry-no industry-no-${property.no} max-md:text-[10vw] max-md:opacity-100`}
                 >
                   {property.number}
                 </p>
 
                 <div className="w-full h-fit flex flex-col gap-[4vh] max-sm:gap-[7vw]">
                   <h3
-                    className={`text-[4em] max-sm:text-[9vw] max-md:text-[7.5vw] ${property.titleClass}`}
+                    className={`text-[4em] opacity-0 industry-title max-sm:text-[9vw] max-md:text-[7.5vw] max-md:opacity-100 ${property.titleClass}`}
                   >
                     {property.title}
                   </h3>
 
                   <div className="space-y-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4.2vw]">
                     {property.paragraphs.map((para, pIndex) => (
-                      <p key={pIndex} className={property.contentClass}>
+                      <p
+                        key={pIndex}
+                        className={`opacity-0 industry-content max-md:opacity-100 ${property.contentClass}`}
+                      >
                         {para}
                       </p>
                     ))}
