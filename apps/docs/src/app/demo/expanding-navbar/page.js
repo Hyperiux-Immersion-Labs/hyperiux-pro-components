@@ -1,6 +1,6 @@
 import React from "react";
-import { ExpandingNavbarDesktop } from "../../components/osmo-nav/ExpandingNavbarDesktop";
-import { ExpandingNavbarMobile } from "../../components/osmo-nav/ExpandingNavbarMobile";
+import { ExpandingNavbarDesktop } from "../../../components/osmo-nav/ExpandingNavbarDesktop";
+import { ExpandingNavbarMobile } from "../../../components/osmo-nav/ExpandingNavbarMobile";
 
 export default function Page() {
     return (
