@@ -533,7 +533,7 @@ export function ElevateNavbarDesktop({
       ref={navWrapRef}
       onMouseEnter={onHeaderMouseEnter}
       onMouseLeave={onHeaderMouseLeave}
-      className="absolute top-[1vw] right-[2vw] rounded-md bg-[#363737] max-md:hidden"
+      className="absolute top-[1vw] right-[2vw] rounded-md bg-[#363737]"
     >
       <div className="relative flex h-full w-full items-center gap-[1.5vw] p-[0.3vw] pl-[1vw]">
         <div className="flex h-full items-center gap-[1.5vw]">

@@ -7,6 +7,69 @@ import Image from 'next/image';
 
 gsap.registerPlugin(SplitText);
 
+const DEFAULT_SLIDER_DATA = [
+  {
+    number: '01',
+    src: '/assets/abstract/image01.png',
+    title: 'AURA',
+    desc: 'Soft light and atmospheric tones',
+  },
+  {
+    number: '02',
+    src: '/assets/abstract/image07.png',
+    title: 'DRIFT',
+    desc: 'Floating through silence',
+  },
+  {
+    number: '03',
+    src: '/assets/abstract/image03.png',
+    title: 'FORM',
+    desc: 'Shapes carved by light',
+  },
+  {
+    number: '04',
+    src: '/assets/abstract/image09.png',
+    title: 'FLOW',
+    desc: 'Smooth transitions in motion',
+  },
+  {
+    number: '05',
+    src: '/assets/abstract/image05.png',
+    title: 'DEPTH',
+    desc: 'Layers and visual weight',
+  },
+  {
+    number: '06',
+    src: '/assets/abstract/image06.png',
+    title: 'ENERGY',
+    desc: 'Movement captured in time',
+  },
+  {
+    number: '07',
+    src: '/assets/abstract/image02.png',
+    title: 'GLITCH',
+    desc: 'Breaking visual boundaries',
+  },
+  {
+    number: '08',
+    src: '/assets/abstract/image08.png',
+    title: 'FRAME-X',
+    desc: 'Cinematic still frame',
+  },
+  {
+    number: '09',
+    src: '/assets/abstract/image04.png',
+    title: 'LIGHTPLAY',
+    desc: 'Contrast and highlights',
+  },
+  {
+    number: '10',
+    src: '/assets/abstract/image05.png',
+    title: 'MINIMAL',
+    desc: 'Less but stronger',
+  },
+];
+
 const SCROLL_PER_PX = 1.0;
 const LERP_FACTOR = 0.08;
 const MOBILE_BREAKPOINT = 640;
@@ -15,8 +78,9 @@ const SLIDER_BOTTOM_OFFSET = 0;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
-export function ZoomSlider({ images = [] }) {
-  // State & refs
+export function ZoomSliderCarousel({ sliderData = DEFAULT_SLIDER_DATA }) {
+  const images = sliderData;
+
   const stripRef = useRef(null);
   const cardRefs = useRef([]);
   const imageWrapRefs = useRef([]);
@@ -25,7 +89,6 @@ export function ZoomSlider({ images = [] }) {
   const [viewportWidth, setViewportWidth] = useState(1440);
   const [viewportHeight, setViewportHeight] = useState(900);
 
-  // Derived values
   const isMobile = viewportWidth < MOBILE_BREAKPOINT;
   const isTablet =
     viewportWidth >= MOBILE_BREAKPOINT && viewportWidth < TABLET_BREAKPOINT;
@@ -46,7 +109,6 @@ export function ZoomSlider({ images = [] }) {
     lastX: 0,
   });
 
-  // Effects
   useEffect(() => {
     const onResize = () => {
       setViewportWidth(window.innerWidth);
@@ -65,6 +127,7 @@ export function ZoomSlider({ images = [] }) {
 
       const cards = Array.from(stripRef.current.children);
       const count = images.length;
+
       if (!count) return;
 
       const loopWidth = count * cardStep;
@@ -95,9 +158,12 @@ export function ZoomSlider({ images = [] }) {
           cardHeightMin + scale * (cardHeightMax - cardHeightMin);
         const y = bottom - cardHeight;
 
+        if (!cards[cardIndex]) continue;
+
         cards[cardIndex].style.transform = `translate(${currentX}px, ${y}px)`;
 
         const imageWrap = imageWrapRefs.current[cardIndex];
+
         if (!imageWrap) continue;
 
         imageWrap.style.width = `${visualWidth}px`;
@@ -192,11 +258,13 @@ export function ZoomSlider({ images = [] }) {
     cardRefs.current.forEach((card, index) => {
       const textElement = textRefs.current[index];
       const imageWrap = imageWrapRefs.current[index];
+
       if (!card || !textElement || !imageWrap) return;
 
       const numberElement = textElement.querySelector('[data-number]');
       const titleElement = textElement.querySelector('[data-title]');
       const descElement = textElement.querySelector('[data-desc]');
+
       if (!numberElement || !titleElement || !descElement) return;
 
       const split = SplitText.create(
@@ -211,6 +279,7 @@ export function ZoomSlider({ images = [] }) {
       gsap.set(textElement, { autoAlpha: 0 });
 
       const imageElement = imageWrap.querySelector('img');
+
       if (imageElement) {
         gsap.set(imageElement, { opacity: 1 });
       }
@@ -299,12 +368,14 @@ export function ZoomSlider({ images = [] }) {
               >
                 {item.number}
               </p>
+
               <p
                 data-title
                 className="overflow-hidden text-[13px] font-extrabold uppercase leading-[1.15] tracking-[0.08em] text-white"
               >
                 {item.title}
               </p>
+
               <p
                 data-desc
                 className="overflow-hidden text-[10px] font-normal leading-normal tracking-[0.04em] text-white/60"
@@ -317,7 +388,7 @@ export function ZoomSlider({ images = [] }) {
               ref={(element) => {
                 imageWrapRefs.current[index] = element;
               }}
-              className="relative cursor-pointer overflow-hidden"
+              className="relative overflow-hidden"
               style={{
                 width: cardWidthMin,
                 height: cardHeightMax,
@@ -346,3 +417,5 @@ export function ZoomSlider({ images = [] }) {
     </div>
   );
 }
+
+export default ZoomSliderCarousel;

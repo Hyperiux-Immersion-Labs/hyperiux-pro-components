@@ -4,7 +4,7 @@ import { useEffect, useState } from"react";
 import Link from"next/link";
 import { ArrowRight } from"lucide-react";
 
-export function ArrowBgFillPrimaryBtn({
+export function ArrowFillButton({
  btnText,
  className ="",
 

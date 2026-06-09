@@ -1,4 +1,4 @@
-import { RectangularTextReveal as TextBlockReveal } from"@/components/RectangularTextReveal/RectangularTextReveal";
+import { RectangularTextReveal as TextBlockReveal } from"@/components/rectangular-text-reveal";
 import React from"react";
 import { ReactLenis } from"lenis/react";
 

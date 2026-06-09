@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -14,12 +13,10 @@ const TRAIL_FADE_MS = 1200;
 const RANDOM_TIME = 0.6;
 const COLLECT_TIME = 1.1;
 const SHAPE_HOLD_TIME = 1.2;
-const GRAY_DISPERSE_TIME = 0.9; // trail lingers ~2s
 
-const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME + GRAY_DISPERSE_TIME;
+const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME;
 const TOTAL_SHAPES = 5;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const lerp     = (a, b, t) => a + (b - a) * t;
 const clamp01  = (v) => Math.max(0, Math.min(1, v));
@@ -242,12 +239,7 @@ export function DottedGrid() {
         return { shapeStrength, randomStrength: 0, grayDisperseStrength: 0 };
       }
 
-      const eased = smoothstep(0, 1, (cyclePosition - RANDOM_TIME - COLLECT_TIME - SHAPE_HOLD_TIME) / GRAY_DISPERSE_TIME);
-      return {
-        shapeStrength: shapeStrength * (1 - eased),
-        randomStrength: eased,
-        grayDisperseStrength: eased,
-      };
+      return { shapeStrength, randomStrength: 0, grayDisperseStrength: 0 };
     };
 
 
@@ -387,4 +379,3 @@ export function DottedGrid() {
     </section>
   );
 }
-
