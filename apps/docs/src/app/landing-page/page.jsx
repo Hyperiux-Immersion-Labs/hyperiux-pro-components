@@ -15,7 +15,7 @@ export default function page() {
   return (
     <VaultShell>
       <Hero />
-      {/* <GlowingPlates /> */}
+      <GlowingPlates />
       <SpiralImages />
       <SectionBreak />
       <VaultGrid />

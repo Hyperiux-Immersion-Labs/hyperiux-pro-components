@@ -37,11 +37,13 @@ export default function Navbar() {
             ref={navbarRef}
             className="fixed top-0 left-0 z-999 flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
         >
-            <HyperiuxLogo className="w-[10vw] h-auto text-primary" />
+            <Link href="/">
+                <HyperiuxLogo className="w-[10vw] h-auto text-primary" />
+            </Link>
 
             <div className="bg-grey text20 flex gap-[3vw] rounded-full px-[2.5vw] py-2 font-medium">
                 {vaultLinks.map(({ label }) => (
-                    <Link key={label} href="#">
+                    <Link className='hover:text-primary transition-colors duration-300' key={label} href="#">
                         {label}
                     </Link>
                 ))}
