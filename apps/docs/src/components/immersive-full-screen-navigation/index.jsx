@@ -23,7 +23,7 @@ const NAV_CONTENT = {
     { label: "About", href: "#" },
     { label: "Contact", href: "#" },
   ],
-  images: ["/assets/img/image01.webp", "/assets/img/image02.webp"],
+  images: ["https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg"],
   socials: [
     { type: "instagram", href: "#" },
     { type: "facebook", href: "#" },

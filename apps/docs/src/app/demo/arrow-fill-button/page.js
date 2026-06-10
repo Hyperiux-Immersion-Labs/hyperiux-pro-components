@@ -1,13 +1,10 @@
 import { ArrowFillButton } from "@/components/arrow-fill-button";
 import Image from "next/image";
-// import { ButtonDemoShell } from "@/components/Buttons/ButtonDemoShell";
+
 
 export default function Page() {
     return (
-        // <ButtonDemoShell
-        //     title="Arrow Fill Button"
-        //     backgroundSrc="/assets/buttonbg/image01.jpg"
-        // >
+       
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
@@ -30,7 +27,7 @@ export default function Page() {
 
             <div className="fixed inset-0">
                 <Image
-                    src="/assets/buttonbg/image01.jpg"
+                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
                     alt="bg image"
                     title="Arrow Fill Button"
                     className="h-full w-full object-cover"

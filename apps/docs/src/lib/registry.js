@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { getEffectSlugAliases } from "./effect-slugs";
 
 const PUBLIC_REGISTRY_PATH = path.join(process.cwd(), "public/r");
 
@@ -43,6 +44,7 @@ function findPrivateRegistryPath(slug) {
   }
 
   const categories = fs.readdirSync(privateRoot);
+  const slugAliases = getEffectSlugAliases(slug);
 
   for (const category of categories) {
     const categoryPath = path.join(privateRoot, category);
@@ -51,14 +53,39 @@ function findPrivateRegistryPath(slug) {
       continue;
     }
 
-    const effectDir = path.join(categoryPath, slug);
-    const registryPath = path.join(effectDir, "registry.json");
+    for (const slugAlias of slugAliases) {
+      const effectDir = path.join(categoryPath, slugAlias);
+      const registryPath = path.join(effectDir, "registry.json");
 
-    if (fs.existsSync(registryPath)) {
-      return {
-        effectDir,
-        registryPath,
-      };
+      if (fs.existsSync(registryPath)) {
+        return {
+          effectDir,
+          registryPath,
+        };
+      }
+    }
+
+    const effectDirs = fs.readdirSync(categoryPath);
+
+    for (const effectDirName of effectDirs) {
+      const effectDir = path.join(categoryPath, effectDirName);
+      const registryPath = path.join(effectDir, "registry.json");
+
+      if (
+        !fs.statSync(effectDir).isDirectory() ||
+        !fs.existsSync(registryPath)
+      ) {
+        continue;
+      }
+
+      const registry = readJson(registryPath);
+
+      if (slugAliases.includes(registry.name)) {
+        return {
+          effectDir,
+          registryPath,
+        };
+      }
     }
   }
 
@@ -157,13 +184,15 @@ export function getEffectBySlug(slug) {
 }
 
 export function getPublicEffectBySlug(slug) {
-  const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slug}.json`);
+  for (const slugAlias of getEffectSlugAliases(slug)) {
+    const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slugAlias}.json`);
 
-  if (!fs.existsSync(publicEffectPath)) {
-    return null;
+    if (fs.existsSync(publicEffectPath)) {
+      return readJson(publicEffectPath);
+    }
   }
 
-  return readJson(publicEffectPath);
+  return null;
 }
 
 export function getAllEffectSlugs() {

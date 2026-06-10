@@ -1,9 +1,9 @@
 # Full `sticky-content-wrapper` Sanity example
 
-This is the full `sticky-content-wrapper` content from [`effect-content.js`](/Users/ishita/Documents/GitHub/hyperiux-pro-components/apps/docs/src/lib/effect-content.js), rewritten into the new Sanity shape used by the docs app.
+This is a full `sticky-content-wrapper` example in the Sanity shape used by the docs app.
 
 Note:
-- The original file contains one real code sample under "Usage", and two source-driven placeholders:
+- The legacy local content source contained one real code sample under "Usage", and two source-driven placeholders:
   - `source: "install"`
   - `source: "component"`
 - It also contains one `props` placeholder block rather than an actual props table payload.
@@ -326,7 +326,7 @@ Note:
     },
     {
       _type: "effectCalloutBlock",
-      title: "Original props placeholder from effect-content.js",
+      title: "Legacy props placeholder",
       tone: "info",
       content: [
         {
@@ -335,7 +335,7 @@ Note:
           children: [
             {
               _type: "span",
-              text: "The original content file does not contain a literal props table here. It only references a source placeholder with title \"StickyContentWrapper Props\" and type \"props\". Replace this boxed block with a real authored table in Sanity if you want that section to render as structured rows.",
+              text: "The legacy local content source did not contain a literal props table here. It only referenced a source placeholder with title \"StickyContentWrapper Props\" and type \"props\". Replace this boxed block with a real authored table in Sanity if you want that section to render as structured rows.",
               marks: []
             }
           ],
@@ -393,7 +393,7 @@ Note:
     },
     {
       _type: "effectCalloutBlock",
-      title: "Original component code placeholder from effect-content.js",
+      title: "Legacy component code placeholder",
       tone: "info",
       content: [
         {
@@ -402,7 +402,7 @@ Note:
           children: [
             {
               _type: "span",
-              text: "The original content file does not inline the component source here. It references a source-based code block with source \"component\", filename \"sticky-content-wrapper.jsx\", and language \"jsx\". If you want this section to render as full code in the new Sanity model, paste the actual component source into an effectCodeBlock.",
+              text: "The legacy local content source did not inline the component source here. It referenced a source-based code block with source \"component\", filename \"sticky-content-wrapper.jsx\", and language \"jsx\". If you want this section to render as full code in the new Sanity model, paste the actual component source into an effectCodeBlock.",
               marks: []
             }
           ],
