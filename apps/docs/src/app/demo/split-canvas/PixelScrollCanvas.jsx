@@ -54,7 +54,6 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
  const canvasSize = isMobile ? 300 : 599;
  const numSlices = 32;
-
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 

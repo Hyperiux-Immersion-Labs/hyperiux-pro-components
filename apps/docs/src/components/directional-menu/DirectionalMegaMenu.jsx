@@ -52,6 +52,7 @@ export function DirectionalMegaMenu({
       contentFadeDelay: animation.contentFadeDelay ?? DEFAULT_ANIMATION.contentFadeDelay,
       contentFadeDuration:
         animation.contentFadeDuration ??
+  
         DEFAULT_ANIMATION.contentFadeDuration,
       distance: animation.distance ?? DEFAULT_ANIMATION.distance,
       duration: animation.duration ?? DEFAULT_ANIMATION.duration,

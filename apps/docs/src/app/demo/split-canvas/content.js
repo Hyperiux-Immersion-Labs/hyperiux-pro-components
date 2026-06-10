@@ -36,9 +36,9 @@ export const sections = [
 ];
 
 export const imageSources = [
-'/assets/pixelated/dino.png',
-'/assets/pixelated/cat.png',
+'/assets/pixelated/banana.png',
+'/assets/pixelated/cherry.png',
 '/assets/pixelated/mango.png',
-'/assets/pixelated/dog.png',
-'/assets/pixelated/cup.png',
+'/assets/pixelated/pineapple.png',
+'/assets/pixelated/watermelon.png',
 ];

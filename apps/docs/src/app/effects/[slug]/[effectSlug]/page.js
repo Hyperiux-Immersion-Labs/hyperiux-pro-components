@@ -54,8 +54,7 @@ export async function generateMetadata({ params }) {
   if (
     !effect ||
     !category ||
-    !effectBelongsToCategory(effect, category.id) ||
-    !content
+    !effectBelongsToCategory(effect, category.id)
   ) {
     return {
       title: "Effect Not Found",
@@ -82,8 +81,7 @@ export default async function EffectPage({ params }) {
   if (
     !effect ||
     !category ||
-    !effectBelongsToCategory(effect, category.id) ||
-    !content
+    !effectBelongsToCategory(effect, category.id)
   ) {
     notFound();
   }
