@@ -1,24 +1,24 @@
-import { Space_Grotesk, Inter, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "highlight.js/styles/night-owl.css";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
+const layGrotesk = localFont({
+  src: [
+    {
+      path: "../fonts/laygrotesk-trial-regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/laygrotesk-trial-medium.otf",
+      weight: "500",
+      style: "medium",
+    },
+  ],
+  variable: "--font-laygrotesk",
+  display: "swap",
 });
 
 export const metadata = {
@@ -34,14 +34,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html
-        lang="en"
-        className={`${spaceGrotesk.variable} ${inter.variable} ${geistMono.variable} antialiased`}
-      >
-        <body
-          className="min-h-screen bg-background text-foreground font-sans"
-          style={{ background: "#000000", color: "#ffffff" }}
-        >
+      <html lang="en" className={`${layGrotesk.className} antialiased`}>
+        <body className="min-h-screen bg-background text-foreground font-sans">
           {children}
           <Analytics />
         </body>

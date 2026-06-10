@@ -1,0 +1,42 @@
+/* TEXT SIZES */
+.self-padd {
+  padding: 0 3.5vw;
+}
+.text18{
+  font-size: 1vw;
+}
+.text22 {
+  font-size: 1.15vw;
+}
+.text24 {
+  font-size: 1.25vw;
+}
+.text20 {
+  font-size: 1.05vw;
+}
+.text34 {
+  font-size: 1.75vw;
+}
+.text32 {
+  font-size: 1.8vw;
+}
+.text80 {
+  font-size: 4.5vw;
+  line-height: 1.15;
+  font-weight: 400;
+}
+.text110 {
+  font-size: 6vw;
+  line-height: 1.15;
+  font-weight: 400;
+}
+.text140 {
+  font-size: 7.2vw;
+  line-height: 1.1;
+  font-weight: 400;
+}
+.text180{
+  font-size: 9vw;
+  line-height: 1.1;
+  font-weight: 400;
+}

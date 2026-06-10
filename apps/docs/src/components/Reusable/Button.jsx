@@ -1,0 +1,148 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import Link from "next/link";
+import { ArrowUpRightIcon } from "@/utils/Icons";
+
+gsap.registerPlugin(SplitText);
+
+const HOVER_EASE = "power3.inOut";
+
+const VARIANT_STYLES = {
+  orange: {
+    pill: "bg-primary text-white",
+    circle: "bg-primary",
+    icon: "text-white",
+  },
+  black: {
+    pill: "bg-black text-white",
+    circle: "bg-black",
+    icon: "text-white",
+  },
+  white: {
+    pill: "bg-white text-black",
+    circle: "bg-white",
+    icon: "text-black",
+  },
+};
+
+export default function Button({
+  text = "Install CLI",
+  href = "/effects",
+  variant = "orange",
+}) {
+  const linkRef = useRef(null);
+  const textRef = useRef(null);
+  const cloneRef = useRef(null);
+  const timelineRef = useRef(null);
+
+  useEffect(() => {
+    const link = linkRef.current;
+    const textEl = textRef.current;
+    if (!link || !textEl) return;
+
+    let split;
+    let splitClone;
+    let ctx;
+
+    const init = async () => {
+      await document.fonts.ready;
+
+      ctx = gsap.context(() => {
+        const cloneEl = document.createElement("span");
+        cloneEl.textContent = textEl.textContent;
+        cloneEl.setAttribute("aria-hidden", "true");
+        cloneEl.className = "absolute inset-0 block";
+        cloneRef.current = cloneEl;
+        textEl.parentElement?.appendChild(cloneEl);
+
+        split = SplitText.create(textEl, {
+          type: "chars",
+          charsClass: "inline-block",
+        });
+
+        splitClone = SplitText.create(cloneEl, {
+          type: "chars",
+          charsClass: "inline-block",
+        });
+
+        gsap.set(split.chars, { yPercent: 0 });
+        gsap.set(splitClone.chars, { yPercent: 100 });
+
+        timelineRef.current = gsap
+          .timeline({ paused: true })
+          .to(
+            split.chars,
+            {
+              yPercent: -100,
+              duration: 0.45,
+              stagger: 0.025,
+              ease: HOVER_EASE,
+            },
+            0
+          )
+          .to(
+            splitClone.chars,
+            {
+              yPercent: 0,
+              duration: 0.45,
+              stagger: 0.025,
+              ease: HOVER_EASE,
+            },
+            0
+          );
+      }, link);
+    };
+
+    init();
+
+    const onEnter = () => timelineRef.current?.play();
+    const onLeave = () => timelineRef.current?.reverse();
+
+    link.addEventListener("mouseenter", onEnter);
+    link.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      link.removeEventListener("mouseenter", onEnter);
+      link.removeEventListener("mouseleave", onLeave);
+      timelineRef.current?.kill();
+      timelineRef.current = null;
+      split?.revert();
+      splitClone?.revert();
+      cloneRef.current?.remove();
+      cloneRef.current = null;
+      ctx?.revert();
+    };
+  }, [text]);
+
+  const styles = VARIANT_STYLES[variant] ?? VARIANT_STYLES.orange;
+
+  return (
+    <Link ref={linkRef} href={href} className="group relative inline-block">
+      <div className="w-full translate-x-0 transition-transform duration-400 group-hover:translate-x-[-1vw]">
+        <div className={`relative z-2 rounded-full px-[1.5vw] py-[.5vw] text22 whitespace-nowrap ${styles.pill}`}>
+          <p className="relative overflow-hidden">
+            <span ref={textRef} className="block">
+              {text}
+            </span>
+          </p>
+        </div>
+
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-full top-1/2 ml-[-0.35vw] -translate-y-1/2"
+        >
+          <span className={`relative flex size-[2.8vw] origin-left scale-50 translate-x-[-1vw] items-center justify-center rounded-full p-2 transition-all duration-400 ease-out group-hover:scale-100 group-hover:translate-x-0 ${styles.circle}`}>
+            <div className="relative size-full overflow-hidden">
+              <span className="absolute left-0 top-0 flex size-full scale-50 items-center justify-center transition-all duration-400 group-hover:scale-100 group-hover:translate-x-0 group-hover:translate-y-0">
+                <ArrowUpRightIcon className={`size-full ${styles.icon}`} />
+              </span>
+            </div>
+          </span>
+        </span>
+      </div>
+    </Link>
+  );
+}
