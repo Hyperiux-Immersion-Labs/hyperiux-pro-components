@@ -127,7 +127,7 @@ export function ScrambleLinkButton({
       {...props}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
-      className={`group inline-flex items-center gap-2 text-inherit no-underline transition-colors duration-350 ease-in-out hover:text-(--scramble-hover-color) ${className}`}
+      className={`group inline-flex items-center gap-2 cursor-pointer scale-150 text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out hover:text-(--scramble-hover-color) max-md:text-[3vw] max-sm:text-[4.2vw] ${className}`}
       style={{ "--scramble-hover-color": hoverColor }}
     >
       <span className={innerClassName}>
@@ -139,7 +139,7 @@ export function ScrambleLinkButton({
 
         <span
           ref={scrambleRef}
-          className={`absolute inset-0 inline-block whitespace-pre [font-variant-ligatures:none] ${textClassName}`}
+          className={`absolute inset-0 text-left inline-block whitespace-pre [font-variant-ligatures:none] ${textClassName}`}
           aria-label={finalText}
         >
           {finalText}
