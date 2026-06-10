@@ -312,21 +312,21 @@ export function ZoomSliderCarousel({
             >
               <p
                 data-number
-                className="overflow-hidden text-[10px] font-bold uppercase leading-none tracking-[0.18em] text-white/50"
+                className="overflow-hidden select-none text-[10px] font-bold uppercase leading-none tracking-[0.18em] text-white/50"
               >
                 {item.number}
               </p>
 
               <p
                 data-title
-                className="overflow-hidden text-[13px] font-extrabold uppercase leading-[1.15] tracking-[0.08em] text-white"
+                className="overflow-hidden select-none text-[13px] font-extrabold uppercase leading-[1.15] tracking-[0.08em] text-white"
               >
                 {item.title}
               </p>
 
               <p
                 data-desc
-                className="overflow-hidden text-[10px] font-normal leading-normal tracking-[0.04em] text-white/60"
+                className="overflow-hidden text-[10px] select-none font-normal leading-normal tracking-[0.04em] text-white/60"
               >
                 {item.desc}
               </p>
