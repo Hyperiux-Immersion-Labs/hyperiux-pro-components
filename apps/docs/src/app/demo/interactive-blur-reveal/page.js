@@ -1,7 +1,6 @@
 import InteractiveBlurReveal from '@/components/interactive-blur-reveal'
 import Link from 'next/link'
 
-
 const Page = () => {
   return (
     <main className="relative h-dvh w-dvw overflow-hidden bg-black text-white">

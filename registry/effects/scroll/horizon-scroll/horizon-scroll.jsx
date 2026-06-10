@@ -10,7 +10,7 @@ const defaultItems = [
   {
     number: "01",
     title: "Burj Khalifa",
-    image: "/assets/horizontal-section/horizontal-img-1.png",
+    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
     paragraphs: [
       "Burj Khalifa represents the highest standard of luxury living in Dubai, combining iconic architecture and unmatched skyline views.",
       "From premium residences to a location at the heart of Downtown Dubai, it delivers an address defined by exclusivity and long-term value.",
@@ -19,7 +19,7 @@ const defaultItems = [
   {
     number: "02",
     title: "Palm Jumeirah",
-    image: "/assets/horizontal-section/horizontal-img-2.png",
+    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
     paragraphs: [
       "Palm Jumeirah is one of Dubai's most sought-after waterfront destinations, known for private beachfront residences.",
       "The location offers a rare combination of luxury, privacy, and international appeal.",
@@ -28,7 +28,7 @@ const defaultItems = [
   {
     number: "03",
     title: "Dubai Marina",
-    image: "/assets/horizontal-section/horizontal-img-3.png",
+    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
     paragraphs: [
       "Dubai Marina offers a dynamic urban waterfront experience with high-rise luxury apartments and vibrant retail.",
       "Its rental demand and lifestyle positioning make it compelling for investors and residents alike.",

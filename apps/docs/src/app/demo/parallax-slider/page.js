@@ -7,12 +7,12 @@ const page = () => {
  <>
  <LenisSmoothScroll />
  <ParallaxSlider images={[
-'/assets/nature/nature06.png',
-'/assets/nature/nature08.png',
-'/assets/nature/nature09.png',
-'/assets/nature/nature10.png',
-'/assets/nature/nature11.png',
-'/assets/nature/nature12.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg',
 '/assets/nature/nature13.png',
 '/assets/nature/nature14.png',
  ]} bgColor='#111111' />

@@ -1,12 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
-import { ReactLenis } from "lenis/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ImageDistortionVertex = `
   varying vec2 vUv;
@@ -39,6 +35,7 @@ const ImageDistortionFragment = `
 
   void main() {
     float disp = texture2D(u_displacement, vUv).r;
+
     disp = mix(
       disp,
       disp * (sin(vUv.y * 10.0 + u_progress * 6.28) * 0.5 + 0.5),
@@ -100,16 +97,15 @@ const DEFAULT_SHADER_CONFIG = {
   strength: 0.8,
   rgbShift: 0.05,
   scale: 0.15,
-  transitionDuration: 1.5,
+  transitionDuration: 1.25,
   transitionEase: "power3.inOut",
 };
 
 const MAX_PIXEL_RATIO = 2;
-
-const LENIS_OPTIONS = {
-  autoRaf: true,
-  duration: 2,
-};
+const WHEEL_THRESHOLD = 75;
+const TOUCH_THRESHOLD = 45;
+const TEXT_STAGGER = 0.035;
+const TEXT_DURATION = 0.7;
 
 export default function ScrollDistortion({
   sections = DEFAULT_SECTIONS,
@@ -117,14 +113,30 @@ export default function ScrollDistortion({
   displacementSrc = "/assets/img/distortion.jpg",
 }) {
   const containerRef = useRef(null);
-  const wrapperRef = useRef(null);
   const imageRefs = useRef([]);
+  const textRefs = useRef([]);
+
+  const currentIndexRef = useRef(0);
+  const targetIndexRef = useRef(0);
+  const isTransitioningRef = useRef(false);
+  const wheelDeltaRef = useRef(0);
+  const touchStartYRef = useRef(null);
+
+  const splitSections = useMemo(() => {
+    return sections.map((section) => ({
+      ...section,
+      chars: section.text.split(""),
+    }));
+  }, [sections]);
 
   useEffect(() => {
-    const containerElement = containerRef.current;
-    const wrapperElement = wrapperRef.current;
+     gsap.set(".text-container",{
+        opacity: 1,
+      })
 
-    if (!containerElement || !wrapperElement || sections.length === 0) {
+    const containerElement = containerRef.current;
+
+    if (!containerElement || sections.length === 0) {
       return undefined;
     }
 
@@ -133,7 +145,8 @@ export default function ScrollDistortion({
       ...shaderConfig,
     };
 
-    const { clientWidth, clientHeight } = containerElement;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
     const scene = new THREE.Scene();
 
@@ -143,20 +156,15 @@ export default function ScrollDistortion({
     });
 
     const camera = new THREE.OrthographicCamera(
-      -clientWidth / 2,
-      clientWidth / 2,
-      clientHeight / 2,
-      -clientHeight / 2,
+      -width / 2,
+      width / 2,
+      height / 2,
+      -height / 2,
       -1,
       1
     );
 
-    const geometry = new THREE.PlaneGeometry(clientWidth, clientHeight);
-
-    let animationFrameId = 0;
-    let currentIndex = 0;
-    let targetIndex = 0;
-    let isTransitioning = false;
+    const geometry = new THREE.PlaneGeometry(width, height);
 
     const textures = imageRefs.current
       .slice(0, sections.length)
@@ -173,7 +181,7 @@ export default function ScrollDistortion({
 
     const displacementTexture = createTextureFromImage(displacementImage);
 
-    renderer.setSize(clientWidth, clientHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
 
     containerElement.replaceChildren(renderer.domElement);
@@ -193,7 +201,7 @@ export default function ScrollDistortion({
           value: 0,
         },
         u_resolution: {
-          value: new THREE.Vector2(clientWidth, clientHeight),
+          value: new THREE.Vector2(width, height),
         },
         u_textureResolution0: {
           value: new THREE.Vector2(1, 1),
@@ -231,69 +239,215 @@ export default function ScrollDistortion({
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
+    gsap.set(textRefs.current[0], {
+      yPercent: 0,
+      autoAlpha: 1,
+    });
+
+    textRefs.current.forEach((chars, index) => {
+      if (index === 0) return;
+
+      gsap.set(chars, {
+        yPercent: 100,
+        autoAlpha: 0,
+      });
+    });
+
+    const animateTextTransition = (fromIndex, toIndex, direction) => {
+      const fromChars = textRefs.current[fromIndex] || [];
+      const toChars = textRefs.current[toIndex] || [];
+
+      gsap.killTweensOf([...fromChars, ...toChars]);
+
+      const outgoingY = direction > 0 ? -100 : 100;
+      const incomingY = direction > 0 ? 100 : -100;
+
+      gsap.set(toChars, {
+        yPercent: incomingY,
+        autoAlpha: 0,
+      });
+     
+      const timeline = gsap.timeline();
+
+      timeline.to(
+        fromChars,
+        {
+          yPercent: outgoingY,
+          autoAlpha: 0,
+          duration: TEXT_DURATION,
+          stagger: TEXT_STAGGER,
+          ease: "power3.inOut",
+        },
+        0
+      );
+
+      timeline.to(
+        toChars,
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          duration: TEXT_DURATION,
+          stagger: TEXT_STAGGER,
+          ease: "power3.inOut",
+        },
+        0.08
+      );
+
+      return timeline;
+    };
+
     const transitionTo = (nextIndex) => {
       if (nextIndex < 0 || nextIndex >= textures.length) {
         return;
       }
 
-      if (nextIndex === currentIndex || isTransitioning) {
-        targetIndex = nextIndex;
+      const currentIndex = currentIndexRef.current;
+
+      if (nextIndex === currentIndex) {
         return;
       }
 
-      targetIndex = nextIndex;
-      isTransitioning = true;
+      targetIndexRef.current = nextIndex;
 
+      if (isTransitioningRef.current) {
+        return;
+      }
+
+      isTransitioningRef.current = true;
+
+      const direction = nextIndex > currentIndex ? 1 : -1;
+
+      material.uniforms.u_texture0.value = textures[currentIndex];
       material.uniforms.u_texture1.value = textures[nextIndex];
+
+      setTextureResolution(0, textures[currentIndex]);
       setTextureResolution(1, textures[nextIndex]);
+
+      material.uniforms.u_progress.value = 0;
+
+      animateTextTransition(currentIndex, nextIndex, direction);
 
       gsap.to(material.uniforms.u_progress, {
         value: 1,
         duration: config.transitionDuration,
         ease: config.transitionEase,
+        overwrite: true,
         onComplete: () => {
           material.uniforms.u_texture0.value = textures[nextIndex];
           setTextureResolution(0, textures[nextIndex]);
           material.uniforms.u_progress.value = 0;
 
-          currentIndex = nextIndex;
-          isTransitioning = false;
+          currentIndexRef.current = nextIndex;
+          isTransitioningRef.current = false;
 
-          if (targetIndex !== currentIndex) {
-            transitionTo(targetIndex);
+          if (targetIndexRef.current !== currentIndexRef.current) {
+            transitionTo(targetIndexRef.current);
           }
         },
       });
     };
 
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: wrapperElement,
-      start: "top top",
-      end: `+=${(sections.length - 1) * 100}%`,
-      scrub: true,
-      onUpdate: (scrollState) => {
-        const nextIndex = Math.round(
-          scrollState.progress * (sections.length - 1)
-        );
+    const goNext = () => {
+      const nextIndex = Math.min(
+        currentIndexRef.current + 1,
+        sections.length - 1
+      );
 
-        transitionTo(nextIndex);
-      },
-    });
+      transitionTo(nextIndex);
+    };
+
+    const goPrev = () => {
+      const nextIndex = Math.max(currentIndexRef.current - 1, 0);
+
+      transitionTo(nextIndex);
+    };
+
+    const onWheel = (event) => {
+      event.preventDefault();
+
+      wheelDeltaRef.current += event.deltaY;
+
+      if (Math.abs(wheelDeltaRef.current) < WHEEL_THRESHOLD) {
+        return;
+      }
+
+      if (wheelDeltaRef.current > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+
+      wheelDeltaRef.current = 0;
+    };
+
+    const onTouchStart = (event) => {
+      touchStartYRef.current = event.touches[0].clientY;
+    };
+
+    const onTouchMove = (event) => {
+      if (touchStartYRef.current === null) return;
+
+      const currentY = event.touches[0].clientY;
+      const delta = touchStartYRef.current - currentY;
+
+      if (Math.abs(delta) < TOUCH_THRESHOLD) return;
+
+      if (delta > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+
+      touchStartYRef.current = currentY;
+    };
 
     const renderScene = () => {
       renderer.render(scene, camera);
       animationFrameId = window.requestAnimationFrame(renderScene);
     };
 
+    let animationFrameId = 0;
     renderScene();
 
+    const onResize = () => {
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+
+      renderer.setSize(nextWidth, nextHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+
+      camera.left = -nextWidth / 2;
+      camera.right = nextWidth / 2;
+      camera.top = nextHeight / 2;
+      camera.bottom = -nextHeight / 2;
+      camera.updateProjectionMatrix();
+
+      mesh.geometry.dispose();
+      mesh.geometry = new THREE.PlaneGeometry(nextWidth, nextHeight);
+
+      material.uniforms.u_resolution.value.set(nextWidth, nextHeight);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("resize", onResize);
+
     return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("resize", onResize);
+
       window.cancelAnimationFrame(animationFrameId);
-      scrollTrigger.kill();
       gsap.killTweensOf(material.uniforms.u_progress);
 
+      textRefs.current.forEach((chars) => {
+        gsap.killTweensOf(chars);
+      });
+
       scene.remove(mesh);
-      geometry.dispose();
+      mesh.geometry.dispose();
       material.dispose();
       displacementTexture.dispose();
       textures.forEach((texture) => texture.dispose());
@@ -303,55 +457,62 @@ export default function ScrollDistortion({
   }, [displacementSrc, sections, shaderConfig]);
 
   return (
-    <ReactLenis root options={LENIS_OPTIONS}>
-      <div
-        ref={wrapperRef}
-        className="relative"
-        style={{
-          height: `${sections.length * 100}vh`,
-        }}
-      >
-        <div className="hidden">
-          {sections.map((section, index) => (
-            <div key={`${section.src}-${index}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                ref={(element) => {
-                  imageRefs.current[index] = element;
-                }}
-                src={section.src}
-                alt=""
-              />
-            </div>
-          ))}
+    <section className="fixed inset-0 h-screen w-screen overflow-hidden bg-black">
+      <div className="hidden">
+        {sections.map((section, index) => (
+          <div key={`${section.src}-${index}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={(element) => {
+                imageRefs.current[index] = element;
+              }}
+              src={section.src}
+              alt=""
+            />
+          </div>
+        ))}
 
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={(element) => {
-              imageRefs.current[sections.length] = element;
-            }}
-            src={displacementSrc}
-            alt=""
-          />
-        </div>
-
-        <div
-          ref={containerRef}
-          className="sticky top-0 h-screen w-full bg-black"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={(element) => {
+            imageRefs.current[sections.length] = element;
+          }}
+          src={displacementSrc}
+          alt=""
         />
-
-        <div className="pointer-events-none absolute inset-0 z-10">
-          {sections.map((section, index) => (
-            <div
-              key={`${section.text}-${index}`}
-              className="flex h-screen items-center justify-center"
-            >
-              <h1 className="text-[10vw] text-white">{section.text}</h1>
-            </div>
-          ))}
-        </div>
       </div>
-    </ReactLenis>
+
+      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
+
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden opacity-0 text-container">
+        {splitSections.map((section, sectionIndex) => (
+          <h1
+            key={`${section.text}-${sectionIndex}`}
+            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 overflow-hidden text-[10vw] leading-none text-white"
+            aria-label={section.text}
+          >
+            {section.chars.map((char, charIndex) => (
+              <span
+                key={`${section.text}-${charIndex}`}
+                ref={(element) => {
+                  if (!textRefs.current[sectionIndex]) {
+                    textRefs.current[sectionIndex] = [];
+                  }
+
+                  textRefs.current[sectionIndex][charIndex] = element;
+                }}
+                className="inline-block will-change-transform"
+              >
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          </h1>
+        ))}
+      </div>
+      <div className="pointer-events-none h-fit w-fit absolute top-[90%] left-1/2 -translate-x-1/2 inset-0 z-20" >
+       scroll to see the transition
+      </div>
+    </section>
   );
 }
 

@@ -12,7 +12,7 @@ const stickyItems = [
  "• Smart and sustainable design",
  ],
  link:{ href:"#", text:"Explore Residences" },
- image:"/assets/sticky-section/sticky-1-img.png",
+ image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
  },
 
  {
@@ -25,7 +25,7 @@ const stickyItems = [
  "• Surrounded by lifestyle hubs",
  ],
  link:{ href:"#", text:"View Locations" },
- image:"/assets/sticky-section/sticky-2-img.png",
+ image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
  },
 
  {
@@ -38,7 +38,7 @@ const stickyItems = [
  "• Strong long-term appreciation potential",
  ],
  link:{ href:"#", text:"Explore Investment" },
- image:"/assets/sticky-section/sticky-3-img.png",
+ image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
  },
 
  {
@@ -51,7 +51,7 @@ const stickyItems = [
  "• Community-driven living spaces",
  ],
  link:{ href:"#", text:"View Amenities" },
- image:"/assets/sticky-section/sticky-4-img.png",
+ image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
  },
 ];
 

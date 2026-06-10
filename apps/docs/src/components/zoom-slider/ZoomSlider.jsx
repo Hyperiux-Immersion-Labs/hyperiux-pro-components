@@ -7,69 +7,6 @@ import Image from 'next/image';
 
 gsap.registerPlugin(SplitText);
 
-const DEFAULT_SLIDER_DATA = [
-  {
-    number: '01',
-    src: '/assets/abstract/image01.png',
-    title: 'AURA',
-    desc: 'Soft light and atmospheric tones',
-  },
-  {
-    number: '02',
-    src: '/assets/abstract/image07.png',
-    title: 'DRIFT',
-    desc: 'Floating through silence',
-  },
-  {
-    number: '03',
-    src: '/assets/abstract/image03.png',
-    title: 'FORM',
-    desc: 'Shapes carved by light',
-  },
-  {
-    number: '04',
-    src: '/assets/abstract/image09.png',
-    title: 'FLOW',
-    desc: 'Smooth transitions in motion',
-  },
-  {
-    number: '05',
-    src: '/assets/abstract/image05.png',
-    title: 'DEPTH',
-    desc: 'Layers and visual weight',
-  },
-  {
-    number: '06',
-    src: '/assets/abstract/image06.png',
-    title: 'ENERGY',
-    desc: 'Movement captured in time',
-  },
-  {
-    number: '07',
-    src: '/assets/abstract/image02.png',
-    title: 'GLITCH',
-    desc: 'Breaking visual boundaries',
-  },
-  {
-    number: '08',
-    src: '/assets/abstract/image08.png',
-    title: 'FRAME-X',
-    desc: 'Cinematic still frame',
-  },
-  {
-    number: '09',
-    src: '/assets/abstract/image04.png',
-    title: 'LIGHTPLAY',
-    desc: 'Contrast and highlights',
-  },
-  {
-    number: '10',
-    src: '/assets/abstract/image05.png',
-    title: 'MINIMAL',
-    desc: 'Less but stronger',
-  },
-];
-
 const SCROLL_PER_PX = 1.0;
 const LERP_FACTOR = 0.08;
 const MOBILE_BREAKPOINT = 640;
@@ -78,7 +15,7 @@ const SLIDER_BOTTOM_OFFSET = 0;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
-export function ZoomSliderCarousel({ sliderData = DEFAULT_SLIDER_DATA }) {
+export function ZoomSliderCarousel({ sliderData}) {
   const images = sliderData;
 
   const stripRef = useRef(null);

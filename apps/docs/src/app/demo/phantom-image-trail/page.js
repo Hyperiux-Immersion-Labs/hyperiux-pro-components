@@ -2,28 +2,14 @@ import { PhantomImage } from "@/components/phantom-image-trail";
 import React from "react";
 
 const images = [
- 
 
-  { src: "/assets/gradient/image1.png", alt: "Gradient 1" },
-  { src: "/assets/gradient/image2.png", alt: "Gradient 2" },
-  { src: "/assets/gradient/image3.png", alt: "Gradient 3" },
-  { src: "/assets/gradient/image4.png", alt: "Gradient 4" },
-  { src: "/assets/gradient/image5.png", alt: "Gradient 5" },
-  { src: "/assets/gradient/image6.png", alt: "Gradient 6" },
-  { src: "/assets/gradient/image7.png", alt: "Gradient 7" },
-//   { src: "/assets/gradient/image8.png", alt: "Gradient 8" },
-//   { src: "/assets/gradient/image9.png", alt: "Gradient 9" },
-//   { src: "/assets/gradient/image10.png", alt: "Gradient 10" },
-//   { src: "/assets/gradient/image11.png", alt: "Gradient 11" },
-//   { src: "/assets/gradient/image12.png", alt: "Gradient 12" },
-//   { src: "/assets/gradient/image13.png", alt: "Gradient 13" },
-//   { src: "/assets/gradient/image14.png", alt: "Gradient 14" },
-//   { src: "/assets/gradient/image15.png", alt: "Gradient 15" },
-//   { src: "/assets/gradient/image1.png", alt: "Gradient 1" },
-//   { src: "/assets/gradient/image2.png", alt: "Gradient 2" },
-//   { src: "/assets/gradient/image3.png", alt: "Gradient 3" },
-//   { src: "/assets/gradient/image4.png", alt: "Gradient 4" },
-//   { src: "/assets/gradient/image5.png", alt: "Gradient 5" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", alt: "Gradient 1" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg", alt: "Gradient 2" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", alt: "Gradient 3" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg", alt: "Gradient 4" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg", alt: "Gradient 5" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", alt: "Gradient 6" },
+  { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", alt: "Gradient 7" },
 ];
 
 const page = () => {
