@@ -19,7 +19,8 @@ const IMAGE_VISIBILITY_HIDDEN = "hidden";
 const IMAGE_VISIBILITY_VISIBLE = "visible";
 const ITEM_LABEL_START_CODE = 97;
 
-const getItemLabel = (index) => `(${String.fromCharCode(ITEM_LABEL_START_CODE + index)}.)`;
+const getItemLabel = (index) =>
+  `(${String.fromCharCode(ITEM_LABEL_START_CODE + index)}.)`;
 
 export function ListHover({ items }) {
   const imageRefs = useRef([]);
@@ -33,7 +34,6 @@ export function ListHover({ items }) {
   const zIndexRef = useRef(DEFAULT_IMAGE_Z_INDEX);
 
   useEffect(() => {
-    // Initial visual state
     imageRefs.current.forEach((imageElement) => {
       if (!imageElement) return;
 
@@ -53,7 +53,9 @@ export function ListHover({ items }) {
   }, []);
 
   const getNextTweenGeneration = (index) => {
-    tweenGenerationRef.current[index] = (tweenGenerationRef.current[index] || 0) + 1;
+    tweenGenerationRef.current[index] =
+      (tweenGenerationRef.current[index] || 0) + 1;
+
     return tweenGenerationRef.current[index];
   };
 
@@ -63,6 +65,7 @@ export function ListHover({ items }) {
 
   const setRowTextColor = (index, color) => {
     const rowElement = rowRefs.current[index];
+
     if (!rowElement) return;
 
     gsap.to(rowElement.querySelectorAll("td"), {
@@ -76,6 +79,7 @@ export function ListHover({ items }) {
   const moveHighlightToRow = (rowElement) => {
     const tableElement = tableRef.current;
     const highlightElement = highlightRef.current;
+
     if (!tableElement || !highlightElement || !rowElement) return;
 
     const tableBounds = tableElement.getBoundingClientRect();
@@ -93,11 +97,13 @@ export function ListHover({ items }) {
 
   const animateImageOut = (index) => {
     const imageElement = imageRefs.current[index];
+
     if (!imageElement) return;
 
     const tweenGeneration = getNextTweenGeneration(index);
 
     gsap.killTweensOf(imageElement);
+
     gsap.to(imageElement, {
       clipPath: IMAGE_HIDDEN_CLIP_PATH,
       opacity: 0,
@@ -106,13 +112,16 @@ export function ListHover({ items }) {
       onComplete: () => {
         if (tweenGenerationRef.current[index] !== tweenGeneration) return;
 
-        gsap.set(imageElement, { visibility: IMAGE_VISIBILITY_HIDDEN });
+        gsap.set(imageElement, {
+          visibility: IMAGE_VISIBILITY_HIDDEN,
+        });
       },
     });
   };
 
   const onRowEnter = (rowElement, index) => {
     const imageElement = imageRefs.current[index];
+
     if (!imageElement) return;
 
     pendingLeaveRef.current[index] = false;
@@ -122,6 +131,7 @@ export function ListHover({ items }) {
     const tweenGeneration = getNextTweenGeneration(index);
 
     gsap.killTweensOf(imageElement);
+
     gsap.set(imageElement, {
       zIndex: zIndexRef.current,
       visibility: IMAGE_VISIBILITY_VISIBLE,
@@ -148,12 +158,14 @@ export function ListHover({ items }) {
     }
 
     activeIndexRef.current = index;
+
     setRowTextColor(index, ACTIVE_ROW_TEXT_COLOR);
     moveHighlightToRow(rowElement);
   };
 
   const onRowLeave = (index) => {
     const imageElement = imageRefs.current[index];
+
     if (!imageElement) return;
 
     if (gsap.isTweening(imageElement)) {
@@ -215,8 +227,11 @@ export function ListHover({ items }) {
             <div
               key={`${item.client}-${index}`}
               ref={(element) => setImageRef(index, element)}
-              className="absolute top-1/2 left-[30vw] h-90 w-78 -translate-y-1/2 invisible"
-              style={{ willChange: "clip-path, opacity", zIndex: DEFAULT_IMAGE_Z_INDEX }}
+              className="invisible absolute left-[35%] top-1/2 h-90 w-78 -translate-y-1/2"
+              style={{
+                willChange: "clip-path, opacity",
+                zIndex: DEFAULT_IMAGE_Z_INDEX,
+              }}
             >
               <Image src={item.img} alt="" fill className="object-cover" />
             </div>
@@ -230,40 +245,42 @@ export function ListHover({ items }) {
         >
           <table className="relative z-30 w-full table-fixed border-collapse">
             <colgroup>
-              <col className="w-1/7" />
-              <col className="w-1/7" />
-              <col className="w-1/3" />
-              <col className="w-1/9" />
-              <col className="w-130!" />
-              <col />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "40%" }} />
             </colgroup>
 
             <tbody>
               {items.map((item, index) => (
                 <tr
                   key={`${item.client}-${index}`}
-                  onMouseEnter={(event) => onRowEnter(event.currentTarget, index)}
+                  onMouseEnter={(event) =>
+                    onRowEnter(event.currentTarget, index)
+                  }
                   onMouseLeave={() => onRowLeave(index)}
-                  className="cursor-pointer"
+                  className=""
                 >
                   <td className="whitespace-nowrap px-6 py-3 text-xs uppercase tracking-widest">
                     {item.client}
                   </td>
+
                   <td className="whitespace-nowrap px-6 py-3 text-xs uppercase tracking-widest">
                     {item.platform}
                   </td>
-                  <td className="py-3" />
-                  <td className="whitespace-nowrap px-3 py-3 text-xs text-white/40">
-                    {getItemLabel(index)}
+
+                  <td className="whitespace-nowrap px-6 py-3 text-center text-xs uppercase tracking-widest">
+                   
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-left text-xs">
+
+                  <td className="whitespace-nowrap px-6 py-3 text-xs uppercase tracking-widest">
                     {item.services}
                   </td>
                 </tr>
               ))}
 
               <tr>
-                <td colSpan={6} className="p-0" />
+                <td colSpan={4} className="p-0" />
               </tr>
             </tbody>
           </table>
@@ -272,25 +289,25 @@ export function ListHover({ items }) {
 
       <div className="hidden w-full bg-neutral-900 font-mono text-white max-md:block">
         {items.map((item, index) => (
-          <div
-            key={`${item.client}-${index}`}
-            className="flex border-b border-white/10"
-          >
+          <div key={`${item.client}-${index}`} className="flex border-b border-white/10">
             <div className="flex w-1/2 flex-col justify-between gap-3 p-4">
               <div className="flex flex-col gap-1">
                 <p className="font-bold uppercase tracking-widest max-sm:text-sm max-md:text-xl">
                   {item.client}
                 </p>
+
                 {item.platform && (
                   <p className="uppercase tracking-widest text-white/60 max-sm:text-xs max-md:text-lg">
                     {item.platform}
                   </p>
                 )}
+
                 <p className="leading-relaxed text-white/50 max-sm:text-xs max-md:text-base">
                   {item.services}
                 </p>
               </div>
-              <p className="text-white/30 max-sm:text-xs">{getItemLabel(index)}</p>
+
+             
             </div>
 
             <div className="relative aspect-3/4 h-full w-1/2 max-md:h-[30vh]">

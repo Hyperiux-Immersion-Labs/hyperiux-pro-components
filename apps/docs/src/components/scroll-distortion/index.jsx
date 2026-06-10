@@ -509,9 +509,58 @@ export default function ScrollDistortion({
           </h1>
         ))}
       </div>
-      <div className="pointer-events-none h-fit w-fit absolute top-[90%] left-1/2 -translate-x-1/2 inset-0 z-20" >
-       scroll to see the transition
-      </div>
+       <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 text-white flex flex-col gap-[1vw] justify-center items-center">
+                    scroll down
+                    <svg
+                        width="20"
+                        height="28"
+                        className="size-[1.5vw]"
+                        viewBox="0 0 20 28"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <style>{`
+                  .chev1 { animation: fadeDown 1.4s ease-in-out infinite; }
+                  .chev2 { animation: fadeDown 1.4s ease-in-out 0.22s infinite; }
+                  .chev3 { animation: fadeDown 1.4s ease-in-out 0.44s infinite; }
+                  @keyframes fadeDown {
+                    0%   { opacity: 0.08; transform: translateY(-3px); }
+                    50%  { opacity: 0.55; transform: translateY(2px); }
+                    100% { opacity: 0.08; transform: translateY(-3px); }
+                  }
+                `}</style>
+                        <polyline
+                            className="chev1 stroke-current"
+                            points="2,2 10,9 18,2"
+                            stroke="white"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <polyline
+                            className="chev2 stroke-current"
+                            points="2,10 10,17 18,10"
+                            stroke="white"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <polyline
+                            className="chev3 stroke-current"
+                            points="2,18 10,25 18,18"
+                            stroke="white"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </div>
     </section>
   );
 }
