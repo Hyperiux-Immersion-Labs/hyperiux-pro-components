@@ -15,7 +15,7 @@
   "exportName": "Tabs",
   "exportKind": "named",
   "previewUrl": "/tabs",
-  "coverImage": "/assets/list/tabs.png",
+  "coverImage": "tabs",
   "videoUrl": "tabs.mp4",
   "files": [
     {

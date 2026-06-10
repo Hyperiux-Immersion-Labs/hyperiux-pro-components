@@ -15,7 +15,7 @@
   "exportName": "MarqueeAlongSvgPath",
   "exportKind": "named",
   "previewUrl": "/svg-path",
-  "coverImage": "/assets/list/svg-path-marquee.png",
+  "coverImage": "svg-path-marquee",
   "videoUrl": "svg-path-marquee.mp4",
   "files": [
     {

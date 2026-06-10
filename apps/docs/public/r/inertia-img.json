@@ -15,7 +15,7 @@
   "exportName": "InertiaImg",
   "exportKind": "named",
   "previewUrl": "/inertia-img",
-  "coverImage": "/assets/list/inertia-img.png",
+  "coverImage": "inertia-img",
   "videoUrl": "inertia-img.mp4",
   "files": [
     {

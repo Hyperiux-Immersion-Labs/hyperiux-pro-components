@@ -6,7 +6,7 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "coverImage": "/assets/list/full-screen-crosshair.png",
+  "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
   "previewUrl": "/full-screen-crosshair",
   "tier": "pro"

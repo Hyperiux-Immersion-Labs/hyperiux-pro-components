@@ -10,7 +10,7 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/webgl-slider.png",
+  "coverImage": "webgl-slider",
   "previewUrl": "/webgl-slider",
   "tier": "pro"
 }

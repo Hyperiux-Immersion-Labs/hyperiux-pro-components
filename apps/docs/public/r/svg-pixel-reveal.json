@@ -15,7 +15,7 @@
   "exportName": "SvgPixelReveal",
   "exportKind": "named",
   "previewUrl": "/svg-pixel-reveal",
-  "coverImage": "/assets/list/svg-pixel-reveal.png",
+  "coverImage": "svg-pixel-reveal",
   "videoUrl": "svg-pixel-reveal.mp4",
   "files": [
     {

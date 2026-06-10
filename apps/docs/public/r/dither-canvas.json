@@ -13,7 +13,7 @@
   "exportName": "DitherCanvas",
   "exportKind": "named",
   "previewUrl": "/binary-effect",
-  "coverImage": "/assets/list/dither-canvas.png",
+  "coverImage": "dither-canvas",
   "videoUrl": "dither-canvas.mp4",
   "files": [
     {

@@ -21,7 +21,7 @@
   "exportName": "MilkyWay",
   "exportKind": "named",
   "previewUrl": "/milkyway",
-  "coverImage": "/assets/list/milkyway.png",
+  "coverImage": "milkyway",
   "videoUrl": "milkyway.mp4",
   "files": [
     {

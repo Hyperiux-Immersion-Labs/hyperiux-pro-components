@@ -17,7 +17,7 @@
   "exportName": "GridTunnel",
   "exportKind": "named",
   "previewUrl": "/grid-tunnel",
-  "coverImage": "/assets/list/grid-tunnel.png",
+  "coverImage": "grid-tunnel",
   "videoUrl": "grid-tunnel.mp4",
   "files": [
     {

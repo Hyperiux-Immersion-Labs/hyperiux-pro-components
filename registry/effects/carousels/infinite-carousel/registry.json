@@ -8,7 +8,7 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/infinite-carousel.png",
+  "coverImage": "infinite-carousel",
   "previewUrl": "/infinite-carousel",
   "tier": "pro"
 }

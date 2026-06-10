@@ -20,7 +20,7 @@
   "exportName": "HeroBanner",
   "exportKind": "named",
   "previewUrl": "/hero-banner-animated",
-  "coverImage": "/assets/list/hero-banner-animated.png",
+  "coverImage": "hero-banner-animated",
   "videoUrl": "hero-banner-animated.mp4",
   "files": [
     {

@@ -16,7 +16,7 @@
   "exportName": "DonutParticles",
   "exportKind": "named",
   "previewUrl": "/donut-particles",
-  "coverImage": "/assets/list/donut-particles.png",
+  "coverImage": "donut-particles",
   "videoUrl": "donut-particles.mp4",
   "files": [
     {

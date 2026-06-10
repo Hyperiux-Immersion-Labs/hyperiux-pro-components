@@ -15,7 +15,7 @@
   "exportName": "InteractiveArrows",
   "exportKind": "named",
   "previewUrl": "/interactive-arrows",
-  "coverImage": "/assets/list/interactive-arrows.png",
+  "coverImage": "interactive-arrows",
   "videoUrl": "interactive-arrows.mp4",
   "files": [
     {

@@ -15,7 +15,7 @@
   "exportName": "FileEncryption",
   "exportKind": "named",
   "previewUrl": "/file-encryption",
-  "coverImage": "/assets/list/file-encryption.png",
+  "coverImage": "file-encryption",
   "videoUrl": "file-encryption.mp4",
   "files": [
     {

@@ -15,7 +15,7 @@
   "exportName": "BlurText",
   "exportKind": "named",
   "previewUrl": "/blur-text-reveal",
-  "coverImage": "/assets/list/blur-text.png",
+  "coverImage": "blur-text",
   "videoUrl": "blur-text.mp4",
   "files": [
     {

@@ -17,7 +17,7 @@
   "exportName": "TestimonialSwiper",
   "exportKind": "named",
   "previewUrl": "/testimonial",
-  "coverImage": "/assets/list/testimonial-swiper.png",
+  "coverImage": "testimonial-swiper",
   "videoUrl": "testimonial-swiper.mp4",
   "files": [
     {

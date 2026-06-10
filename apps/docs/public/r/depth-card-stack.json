@@ -15,7 +15,7 @@
   "exportName": "DepthCardStack",
   "exportKind": "named",
   "previewUrl": "/depth-card-stack",
-  "coverImage": "/assets/list/depth-card-stack.png",
+  "coverImage": "depth-card-stack",
   "videoUrl": "depth-card-stack.mp4",
   "files": [
     {

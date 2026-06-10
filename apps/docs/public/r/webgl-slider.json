@@ -17,7 +17,7 @@
   "exportName": "WebglSlider",
   "exportKind": "named",
   "previewUrl": "/webgl-slider",
-  "coverImage": "/assets/list/webgl-slider.png",
+  "coverImage": "webgl-slider",
   "videoUrl": "webgl-slider.mp4",
   "files": [
     {

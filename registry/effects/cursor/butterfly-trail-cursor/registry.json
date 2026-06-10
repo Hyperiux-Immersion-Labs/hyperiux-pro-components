@@ -11,7 +11,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/cursors/butterflies",
-  "coverImage": "/assets/list/butterfly-trail-cursor.png",
+  "coverImage": "butterfly-trail-cursor",
   "videoUrl": "butterfly-trail-cursor.mp4",
   "tier": "pro"
 }

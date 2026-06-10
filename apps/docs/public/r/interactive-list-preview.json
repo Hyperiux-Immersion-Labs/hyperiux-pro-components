@@ -15,7 +15,7 @@
   "exportName": "InteractiveListPreview",
   "exportKind": "named",
   "previewUrl": "/interactive-list-preview",
-  "coverImage": "/assets/list/interactive-list-preview.png",
+  "coverImage": "interactive-list-preview",
   "videoUrl": "interactive-list-preview.mp4",
   "files": [
     {

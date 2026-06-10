@@ -13,7 +13,7 @@
   "exportName": "ParallaxFooter",
   "exportKind": "named",
   "previewUrl": "/parallax-footer",
-  "coverImage": "/assets/list/parallax-footer.png",
+  "coverImage": "parallax-footer",
   "videoUrl": "parallax-footer.mp4",
   "files": [
     {

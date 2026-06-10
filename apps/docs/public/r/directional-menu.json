@@ -17,7 +17,7 @@
   "exportName": "DirectionalMenu",
   "exportKind": "named",
   "previewUrl": "/navigation/directional-menu",
-  "coverImage": "/assets/list/directional-menu.png",
+  "coverImage": "directional-menu",
   "videoUrl": "directional-menu.mp4",
   "files": [
     {

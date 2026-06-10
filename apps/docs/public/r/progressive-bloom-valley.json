@@ -19,7 +19,7 @@
   "exportName": "ProgressiveBloomValley",
   "exportKind": "named",
   "previewUrl": "/webgl/progressive-bloom-valley",
-  "coverImage": "/assets/list/progressive-bloom-valley.png",
+  "coverImage": "progressive-bloom-valley",
   "videoUrl": "progressive-bloom-valley.mp4",
   "files": [
     {

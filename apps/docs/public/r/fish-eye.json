@@ -17,7 +17,7 @@
   "exportName": "FishEyeImage",
   "exportKind": "named",
   "previewUrl": "/cursors/fish-eye",
-  "coverImage": "/assets/list/fish-eye.png",
+  "coverImage": "fish-eye",
   "videoUrl": "fish-eye.mp4",
   "files": [
     {

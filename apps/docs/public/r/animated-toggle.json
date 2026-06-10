@@ -13,7 +13,7 @@
   "exportName": "ChevronBird",
   "exportKind": "named",
   "previewUrl": "/buttons/animated-toggle",
-  "coverImage": "/assets/list/animated-toggle.png",
+  "coverImage": "animated-toggle",
   "videoUrl": "animated-toggle.mp4",
   "files": [
     {

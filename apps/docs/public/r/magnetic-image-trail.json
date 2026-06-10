@@ -13,7 +13,7 @@
   "exportName": "MagneticImageTrail",
   "exportKind": "named",
   "previewUrl": "/magnetic-image-trail",
-  "coverImage": "/assets/list/magnetic-image-trail.png",
+  "coverImage": "magnetic-image-trail",
   "videoUrl": "magnetic-image-trail.mp4",
   "files": [
     {

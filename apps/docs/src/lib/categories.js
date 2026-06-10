@@ -41,7 +41,13 @@ export function getEffectPrimaryCategory(effect) {
 }
 
 export function getEffectHref(effect) {
-  if (!effect?.name) return "/effects";
+  const effectSlug = effect?.effectSlug || effect?.slug || effect?.name;
+
+  if (!effectSlug) return "/effects";
+
+  if (effect?.categorySlug) {
+    return `/effects/${effect.categorySlug}/${effectSlug}`;
+  }
 
   const categoryId = effect.categories?.[0] || effect.category || "others";
 
@@ -49,17 +55,11 @@ export function getEffectHref(effect) {
 
   const categorySlug = category?.slug || categoryId;
 
-  return `/effects/${categorySlug}/${effect.name}`;
+  return `/effects/${categorySlug}/${effectSlug}`;
 }
 
 export function getEffectPreviewHref(effect) {
+  const effectSlug = effect?.effectSlug || effect?.slug || effect?.name;
 
-  const categoryId = effect.categories?.[0] || effect.category || "others";
-
-  const category = getEffectCategory(categoryId);
-
-  const categorySlug = category?.slug || categoryId;
-
-
-  return `/${categorySlug}/${effect.name}`;
+  return effectSlug ? `/demo/${effectSlug}` : "/effects";
 }

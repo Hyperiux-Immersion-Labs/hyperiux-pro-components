@@ -17,7 +17,7 @@
   "exportName": "BookFlip",
   "exportKind": "named",
   "previewUrl": "/book-flip",
-  "coverImage": "/assets/list/book-flip.png",
+  "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
   "files": [
     {

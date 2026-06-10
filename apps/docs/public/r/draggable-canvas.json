@@ -15,7 +15,7 @@
   "exportName": "DraggableCanvas",
   "exportKind": "named",
   "previewUrl": "/webgl/draggable-canvas",
-  "coverImage": "/assets/list/draggable-canvas.png",
+  "coverImage": "draggable-canvas",
   "videoUrl": "draggable-canvas.mp4",
   "files": [
     {

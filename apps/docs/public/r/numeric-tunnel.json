@@ -18,7 +18,7 @@
   "exportName": "NumericTunnel",
   "exportKind": "named",
   "previewUrl": "/loaders/numeric-tunnel",
-  "coverImage": "/assets/list/numeric-tunnel.png",
+  "coverImage": "numeric-tunnel",
   "videoUrl": "numeric-tunnel.mp4",
   "files": [
     {

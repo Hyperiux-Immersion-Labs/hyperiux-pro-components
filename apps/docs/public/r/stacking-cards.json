@@ -16,7 +16,7 @@
   "exportName": "StackingCards",
   "exportKind": "named",
   "previewUrl": "/stacking-cards",
-  "coverImage": "/assets/list/stacking-cards.png",
+  "coverImage": "stacking-cards",
   "videoUrl": "stacking-cards.mp4",
   "files": [
     {

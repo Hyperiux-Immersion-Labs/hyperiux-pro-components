@@ -13,7 +13,7 @@
   "exportName": "SpotlightText",
   "exportKind": "named",
   "previewUrl": "/spotlight-text",
-  "coverImage": "/assets/list/spotlight-text.png",
+  "coverImage": "spotlight-text",
   "videoUrl": "spotlight-text.mp4",
   "files": [
     {

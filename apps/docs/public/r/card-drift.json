@@ -15,7 +15,7 @@
   "exportName": "CardDrift",
   "exportKind": "named",
   "previewUrl": "/card-drift",
-  "coverImage": "/assets/list/card-drift.png",
+  "coverImage": "card-drift",
   "videoUrl": "card-drift.mp4",
   "files": [
     {

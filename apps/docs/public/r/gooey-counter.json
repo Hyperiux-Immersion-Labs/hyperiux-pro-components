@@ -13,7 +13,7 @@
   "exportName": "GooeyCounter",
   "exportKind": "named",
   "previewUrl": "/gooey-counter",
-  "coverImage": "/assets/list/gooey-counter.png",
+  "coverImage": "gooey-counter",
   "videoUrl": "gooey-counter.mp4",
   "files": [
     {

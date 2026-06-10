@@ -16,7 +16,7 @@
   "exportName": "CurvedPlane",
   "exportKind": "named",
   "previewUrl": "/curved-plane",
-  "coverImage": "/assets/list/curved-plane.png",
+  "coverImage": "curved-plane",
   "videoUrl": "curved-plane.mp4",
   "files": [
     {

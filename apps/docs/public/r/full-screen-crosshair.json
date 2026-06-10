@@ -13,7 +13,7 @@
   "exportName": "FullScreenCrosshair",
   "exportKind": "named",
   "previewUrl": "/full-screen-crosshair",
-  "coverImage": "/assets/list/full-screen-crosshair.png",
+  "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
   "files": [
     {

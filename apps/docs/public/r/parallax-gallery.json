@@ -15,7 +15,7 @@
   "exportName": "ParallaxGallery",
   "exportKind": "named",
   "previewUrl": "/frame-slider",
-  "coverImage": "/assets/list/parallax-gallery.png",
+  "coverImage": "parallax-gallery",
   "videoUrl": "parallax-gallery.mp4",
   "files": [
     {

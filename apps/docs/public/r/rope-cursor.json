@@ -15,7 +15,7 @@
   "exportName": "RopeCursor",
   "exportKind": "named",
   "previewUrl": "/cursors/rope",
-  "coverImage": "/assets/list/rope-cursor.png",
+  "coverImage": "rope-cursor",
   "videoUrl": "rope-cursor",
   "files": [
     {

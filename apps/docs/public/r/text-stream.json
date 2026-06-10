@@ -15,7 +15,7 @@
   "exportName": "TextStream",
   "exportKind": "named",
   "previewUrl": "/text-stream",
-  "coverImage": "/assets/list/text-stream.png",
+  "coverImage": "text-stream",
   "videoUrl": "text-stream.mp4",
   "files": [
     {

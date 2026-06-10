@@ -13,7 +13,7 @@
   "exportName": "InteractiveBlurReveal",
   "exportKind": "named",
   "previewUrl": "/webgl/interactive-blur-reveal",
-  "coverImage": "/assets/list/interactive-blur-reveal.png",
+  "coverImage": "interactive-blur-reveal",
   "videoUrl": "interactive-blur-reveal.mp4",
   "files": [
     {
