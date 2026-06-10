@@ -15,7 +15,7 @@
   "exportName": "ScrambleText",
   "exportKind": "named",
   "previewUrl": "/scramble-text",
-  "coverImage": "/assets/list/scramble-text.png",
+  "coverImage": "scramble-text",
   "videoUrl": "scramble-text.mp4",
   "files": [
     {

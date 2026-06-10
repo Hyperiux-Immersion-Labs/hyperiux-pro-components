@@ -15,7 +15,7 @@
     "next"
   ],
   "registryDependencies": [],
-  "coverImage": "/assets/list/colliding-models.png",
+  "coverImage": "colliding-models",
   "videoUrl": "colliding-models.mp4",
   "previewUrl": "/colliding-models",
   "tier": "pro"

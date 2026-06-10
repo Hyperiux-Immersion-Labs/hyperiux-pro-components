@@ -15,7 +15,7 @@
   "exportName": "CustomVideoPlayer",
   "exportKind": "named",
   "previewUrl": "/video-player",
-  "coverImage": "/assets/img/image01.webp",
+  "coverImage": "video-player",
   "videoUrl": "custom-video-player.mp4",
   "files": [
     {

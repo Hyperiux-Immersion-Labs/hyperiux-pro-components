@@ -15,7 +15,7 @@
   "exportName": "DraggableMarquee",
   "exportKind": "named",
   "previewUrl": "/draggable-marquee",
-  "coverImage": "/assets/list/draggable-marquee.png",
+  "coverImage": "draggable-marquee",
   "videoUrl": "draggable-marquee.mp4",
   "files": [
     {

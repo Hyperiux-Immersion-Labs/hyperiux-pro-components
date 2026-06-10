@@ -15,7 +15,7 @@
   "exportName": "TextConvergence",
   "exportKind": "named",
   "previewUrl": "/text-convergence",
-  "coverImage": "/assets/list/text-convergence.png",
+  "coverImage": "text-convergence",
   "videoUrl": "text-convergence.mp4",
   "files": [
     {

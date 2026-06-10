@@ -15,7 +15,7 @@
   "exportName": "GridLift",
   "exportKind": "named",
   "previewUrl": "/webgl/grid-lift",
-  "coverImage": "/assets/list/grid-lift.png",
+  "coverImage": "grid-lift",
   "videoUrl": "grid-lift.mp4",
   "files": [
     {

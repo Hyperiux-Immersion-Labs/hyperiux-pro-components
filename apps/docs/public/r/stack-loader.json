@@ -15,7 +15,7 @@
   "exportName": "Cappen",
   "exportKind": "named",
   "previewUrl": "/loaders/stack-loader",
-  "coverImage": "/assets/list/stack-loader.png",
+  "coverImage": "stack-loader",
   "videoUrl": "stack-loader.mp4",
   "files": [
     {

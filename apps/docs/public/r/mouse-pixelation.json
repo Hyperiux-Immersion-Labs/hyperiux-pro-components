@@ -18,7 +18,7 @@
   "exportName": "MousePixelation",
   "exportKind": "named",
   "previewUrl": "/mouse-pixelation",
-  "coverImage": "/assets/list/mouse-pixelation.png",
+  "coverImage": "mouse-pixelation",
   "videoUrl": "mouse-pixelation.mp4",
   "files": [
     {

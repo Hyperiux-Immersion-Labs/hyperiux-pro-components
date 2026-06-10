@@ -138,20 +138,22 @@ export function getRegistryIndex() {
 
 export function getEffectBySlug(slug) {
   const privateMatch = findPrivateRegistryPath(slug);
+  const publicEffect = getPublicEffectBySlug(slug);
 
   if (privateMatch) {
-    const effect = readJson(privateMatch.registryPath);
+    const privateEffect = readJson(privateMatch.registryPath);
+    const effect = {
+      ...publicEffect,
+      ...privateEffect,
+      categories: privateEffect.categories || publicEffect?.categories,
+      coverImage: privateEffect.coverImage ?? publicEffect?.coverImage,
+      videoUrl: privateEffect.videoUrl ?? publicEffect?.videoUrl,
+    };
 
     return attachPrivateFileContent(effect, privateMatch.effectDir);
   }
 
-  const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slug}.json`);
-
-  if (!fs.existsSync(publicEffectPath)) {
-    return null;
-  }
-
-  return readJson(publicEffectPath);
+  return publicEffect;
 }
 
 export function getPublicEffectBySlug(slug) {

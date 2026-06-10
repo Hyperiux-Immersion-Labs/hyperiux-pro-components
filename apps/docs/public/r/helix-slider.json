@@ -15,7 +15,7 @@
   "exportName": "HelixSlider",
   "exportKind": "named",
   "previewUrl": "/cylindrical-scroll",
-  "coverImage": "/assets/list/helix-slider.png",
+  "coverImage": "helix-slider",
   "videoUrl": "helix-slider.mp4",
   "files": [
     {

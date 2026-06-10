@@ -17,7 +17,7 @@
   "exportName": "PortfolioConcept",
   "exportKind": "named",
   "previewUrl": "/portfolio-concept",
-  "coverImage": "/assets/list/portfolio-concept.png",
+  "coverImage": "portfolio-concept",
   "videoUrl": "portfolio-concept.mp4",
   "files": [
     {

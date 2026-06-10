@@ -15,7 +15,7 @@
   "exportName": "FAQGroup",
   "exportKind": "named",
   "previewUrl": "/animated-faq",
-  "coverImage": "/assets/list/animated-faq.png",
+  "coverImage": "animated-faq",
   "videoUrl": "animated-faq.mp4",
   "files": [
     {

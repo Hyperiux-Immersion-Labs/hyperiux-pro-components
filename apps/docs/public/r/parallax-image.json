@@ -15,7 +15,7 @@
   "exportName": "ParallaxImage",
   "exportKind": "named",
   "previewUrl": "/parallax-image-animation",
-  "coverImage": "/assets/list/parallax-image.png",
+  "coverImage": "parallax-image",
   "videoUrl": "parallax-image.mp4",
   "files": [
     {

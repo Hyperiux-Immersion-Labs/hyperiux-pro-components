@@ -17,7 +17,7 @@
   "exportName": "ImmersiveFullScreenNavigation",
   "exportKind": "named",
   "previewUrl": "/navigation/immersive-full-screen-nav",
-  "coverImage": "/assets/list/immersive-full-screen-navigation.png",
+  "coverImage": "immersive-full-screen-navigation",
   "videoUrl": "immersive-full-screen-navigation.mp4",
   "files": [
     {

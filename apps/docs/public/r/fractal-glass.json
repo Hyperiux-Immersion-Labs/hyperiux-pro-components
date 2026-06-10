@@ -15,7 +15,7 @@
   "exportName": "FractalGlass",
   "exportKind": "named",
   "previewUrl": "/webgl/fractal-glass",
-  "coverImage": "/assets/list/fractal-glass.png",
+  "coverImage": "fractal-glass",
   "videoUrl": "fractal-glass.mp4",
   "files": [
     {

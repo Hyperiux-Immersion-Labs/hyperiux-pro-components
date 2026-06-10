@@ -15,7 +15,7 @@
   "exportName": "PerspectiveTextReveal",
   "exportKind": "named",
   "previewUrl": "/perspective-text-reveal",
-  "coverImage": "/assets/list/perspective-text-reveal.png",
+  "coverImage": "perspective-text-reveal",
   "videoUrl": "perspective-text-reveal.mp4",
   "files": [
     {

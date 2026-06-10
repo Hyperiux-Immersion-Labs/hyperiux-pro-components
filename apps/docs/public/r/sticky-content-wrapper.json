@@ -15,7 +15,7 @@
   "exportName": "StickyContentWrapper",
   "exportKind": "named",
   "previewUrl": "/sticky-content-wrapper",
-  "coverImage": "/assets/list/sticky-content-wrapper.png",
+  "coverImage": "sticky-content-wrapper",
   "videoUrl": "sticky-content-wrapper.mp4",
   "files": [
     {

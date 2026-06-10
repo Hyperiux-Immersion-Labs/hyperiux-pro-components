@@ -13,7 +13,7 @@
   "exportName": "SpiderParticles",
   "exportKind": "named",
   "previewUrl": "/spider-particles",
-  "coverImage": "/assets/list/spider-particles.png",
+  "coverImage": "spider-particles",
   "videoUrl": "spider-particles.mp4",
   "files": [
     {

@@ -7,7 +7,7 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/cursors/pixel-bloom",
-  "coverImage": "/assets/list/pixel-bloom.png",
+  "coverImage": "pixel-bloom",
   "videoUrl": "pixel-bloom",
   "tier": "pro"
 }

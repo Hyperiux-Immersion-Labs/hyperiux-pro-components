@@ -18,8 +18,8 @@
   "exportName": "WebGLPortfolioSlider",
   "exportKind": "named",
   "previewUrl": "/webgl-portfolio-slider",
-  "coverImage": "/assets/img/image01.webp",
-  "videoUrl": "webgl-portfolio-slider.mp4",
+  "coverImage": "3d-portfolio-slider",
+  "videoUrl": "3d-portfolio-slider.mp4",
   "files": [
     {
       "path": "webgl-portfolio-slider.jsx",

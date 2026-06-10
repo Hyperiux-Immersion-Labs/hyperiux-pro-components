@@ -22,7 +22,7 @@
   "exportName": "CollidingModels",
   "exportKind": "named",
   "previewUrl": "/colliding-models",
-  "coverImage": "/assets/list/colliding-models.png",
+  "coverImage": "colliding-models",
   "videoUrl": "colliding-models.mp4",
   "files": [
     {

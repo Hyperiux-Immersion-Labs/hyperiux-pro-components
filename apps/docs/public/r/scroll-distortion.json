@@ -17,7 +17,7 @@
   "exportName": "ScrollDistortion",
   "exportKind": "named",
   "previewUrl": "/scroll-distortion",
-  "coverImage": "/assets/list/scroll-distortion.png",
+  "coverImage": "scroll-distortion",
   "videoUrl": "scroll-distortion.mp4",
   "files": [
     {

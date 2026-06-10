@@ -10,7 +10,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/flip",
-  "coverImage": "/assets/list/page-flip-transition.png",
+  "coverImage": "page-flip-transition",
   "videoUrl": "page-flip-transition.mp4",
   "tier": "pro"
 }

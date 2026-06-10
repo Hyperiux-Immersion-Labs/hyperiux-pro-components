@@ -13,7 +13,7 @@
   "exportName": "CharacterTrail",
   "exportKind": "named",
   "previewUrl": "/character-trail",
-  "coverImage": "/assets/list/character-trail.png",
+  "coverImage": "character-trail",
   "videoUrl": "character-trail.mp4",
   "files": [
     {

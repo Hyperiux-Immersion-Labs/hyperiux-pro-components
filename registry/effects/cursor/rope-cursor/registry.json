@@ -9,7 +9,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/cursors/rope",
-  "coverImage": "/assets/list/rope-cursor.png",
+  "coverImage": "rope-cursor",
   "videoUrl": "rope-cursor",
   "tier": "pro"
 }

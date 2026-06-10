@@ -13,7 +13,7 @@
   "exportName": "CursorMove",
   "exportKind": "named",
   "previewUrl": "/cursor-move",
-  "coverImage": "/assets/list/cursor-move.png",
+  "coverImage": "cursor-move",
   "videoUrl": "cursor-move.mp4",
   "files": [
     {

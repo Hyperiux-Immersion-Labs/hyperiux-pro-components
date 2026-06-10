@@ -16,7 +16,7 @@
   "exportName": "PixelTransition",
   "exportKind": "named",
   "previewUrl": "/page-transitions/pixels",
-  "coverImage": "/assets/list/pixel-transition.png",
+  "coverImage": "pixel-transition",
   "videoUrl": "pixel-transition.mp4",
   "files": [
     {

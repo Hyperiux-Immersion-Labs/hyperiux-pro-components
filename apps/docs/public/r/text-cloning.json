@@ -13,7 +13,7 @@
   "exportName": "TextCloning",
   "exportKind": "named",
   "previewUrl": "/text-cloning",
-  "coverImage": "/assets/list/text-cloning.png",
+  "coverImage": "text-cloning",
   "videoUrl": "text-cloning.mp4",
   "files": [
     {

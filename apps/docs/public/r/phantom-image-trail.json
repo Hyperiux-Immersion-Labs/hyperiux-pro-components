@@ -15,7 +15,7 @@
   "exportName": "PhantomImageTrail",
   "exportKind": "named",
   "previewUrl": "/phantom-image-trail",
-  "coverImage": "/assets/list/phantom-image-trail.png",
+  "coverImage": "phantom-image-trail",
   "videoUrl": "phantom-image-trail.mp4",
   "files": [
     {

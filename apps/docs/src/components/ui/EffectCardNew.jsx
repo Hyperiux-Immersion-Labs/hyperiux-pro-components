@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { useAnimate, useInView } from "motion/react";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
+import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { Heart } from "lucide-react";
 
 gsap.registerPlugin(DrawSVGPlugin);
@@ -73,40 +74,13 @@ export function EffectCard({
     });
   }, [isHovered]);
 
-  const videoUrl = effect.videoUrl || effect.videoURL || effect.video_url;
-  const videoPreviewUrl = videoUrl
-    ? `${process.env.NEXT_PUBLIC_DEV_URL || ""}${videoUrl.startsWith("/") ? "" : "/"
-    }${videoUrl}`
-    : null;
-
-  const resolveCoverImageUrl = (rawCoverImage) => {
-    if (!rawCoverImage) return null;
-    const src = String(rawCoverImage).trim();
-    if (!src) return null;
-    if (/^(https?:)?\/\//.test(src)) return src;
-    if (src.startsWith("/")) {
-      const pathWithoutSlash = src.slice(1);
-      if (
-        pathWithoutSlash.startsWith("assets/") ||
-        pathWithoutSlash.startsWith("models/") ||
-        pathWithoutSlash.startsWith("img/") ||
-        pathWithoutSlash.startsWith("svgs/") ||
-        pathWithoutSlash.startsWith("valley/") ||
-        pathWithoutSlash.startsWith("601/")
-      ) {
-        return src;
-      }
-      const normalized = pathWithoutSlash.replace(/\/+$/, "");
-      const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
-      return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
-    }
-    const normalized = src.replace(/\/+$/, "");
-    const hasExtension = /\.[a-zA-Z0-9]+$/.test(normalized);
-    return `${process.env.NEXT_PUBLIC_DEV_URL || ""}/${hasExtension ? normalized : `${normalized}.png`}`;
-  };
+  const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const coverImage =
-    resolveCoverImageUrl(effect.coverImage || effect.imageSrc) ||
+    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+      defaultDirectory: "vault-listing-images",
+      defaultExtension: "png",
+    }) ||
     "/assets/img/image01.webp";
 
   useEffect(() => {
@@ -120,7 +94,7 @@ export function EffectCard({
   const shouldLoadVideo = videoPreviewUrl && !videoError && isHovered;
   const showVideo = shouldLoadVideo && videoReady;
   const effectHref = getEffectHref(effect);
-  const previewHref = effect.previewUrl || getEffectPreviewHref(effect);
+  const previewHref = getEffectPreviewHref(effect);
 
   return (
     <div

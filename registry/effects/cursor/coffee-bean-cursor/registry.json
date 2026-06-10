@@ -11,7 +11,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/cursors/coffee",
-  "coverImage": "/assets/list/coffee-bean-cursor.png",
+  "coverImage": "coffee-bean-cursor",
   "videoUrl": "coffee-bean-cursor.mp4",
   "tier": "pro"
 }

@@ -16,7 +16,7 @@
   "exportName": "SplitCanvas",
   "exportKind": "named",
   "previewUrl": "/split-canvas",
-  "coverImage": "/assets/list/split-canvas.png",
+  "coverImage": "split-canvas",
   "videoUrl": "split-canvas.mp4",
   "files": [
     {

@@ -15,7 +15,7 @@
   "exportName": "ScrollStack",
   "exportKind": "named",
   "previewUrl": "/stacked-card",
-  "coverImage": "/assets/list/scroll-stack.png",
+  "coverImage": "scroll-stack",
   "videoUrl": "scroll-stack.mp4",
   "files": [
     {

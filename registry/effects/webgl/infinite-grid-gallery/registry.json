@@ -6,7 +6,7 @@
   "category": "webgl",
   "dependencies": [],
   "registryDependencies": [],
-  "coverImage": "/assets/img/image10.png",
+  "coverImage": "infinite-grid-gallery",
   "videoUrl": "infinite-grid-gallery.mp4",
   "previewUrl": "/infinite-grid-gallery",
   "tier": "pro"

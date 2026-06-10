@@ -15,7 +15,7 @@
   "exportName": "ZoomSlider",
   "exportKind": "named",
   "previewUrl": "/webgl/zoom-slider",
-  "coverImage": "/assets/list/zoom-slider.png",
+  "coverImage": "zoom-slider",
   "videoUrl": "zoom-slider.mp4",
   "files": [
     {

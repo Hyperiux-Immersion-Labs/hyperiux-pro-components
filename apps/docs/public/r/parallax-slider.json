@@ -16,7 +16,7 @@
   "exportName": "ParallaxSlider",
   "exportKind": "named",
   "previewUrl": "/parallax-slider",
-  "coverImage": "/assets/list/parallax-slider.png",
+  "coverImage": "parallax-slider",
   "videoUrl": "parallax-slider.mp4",
   "files": [
     {
