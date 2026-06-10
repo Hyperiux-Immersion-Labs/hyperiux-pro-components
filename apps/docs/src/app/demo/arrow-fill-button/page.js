@@ -16,7 +16,7 @@ export default function Page() {
 
                 <div className="">
                     <ArrowFillButton
-                        className="bg-[#ff6b00] scale-150"
+                        className="bg-linear-to-r from-[#ff6b00] to-[#ff5f00] scale-150"
                         href="#"
                         btnText="Hover me"
                     />
@@ -38,6 +38,5 @@ export default function Page() {
                 <div className="absolute inset-0 bg-black/70" />
             </div>
         </div>
-        // </ButtonDemoShell>
     );
 }

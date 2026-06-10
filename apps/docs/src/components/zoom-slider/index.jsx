@@ -1,5 +1,14 @@
-import React from 'react'
-import ZoomSliderCarousel from './ZoomSlider'
+import React from 'react';
+import ZoomSliderCarousel from './ZoomSlider';
+
+const ZoomSlider = () => {
+  return (
+    <ZoomSliderCarousel title="Scroll to explore" sliderData={DEFAULT_SLIDER_DATA} />
+  );
+};
+ 
+
+export default ZoomSlider;
 
 const DEFAULT_SLIDER_DATA = [
   {
@@ -63,13 +72,3 @@ const DEFAULT_SLIDER_DATA = [
     desc: 'Less but stronger',
   },
 ];
-const ZoomSlider = () => {
- return (
- <>
- <ZoomSliderCarousel sliderData={DEFAULT_SLIDER_DATA} />
- </>
- )
-}
-
-export default ZoomSlider
-

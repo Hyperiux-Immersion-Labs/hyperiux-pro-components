@@ -39,7 +39,7 @@ const Page = () => {
                   Staggered overflow
                 </p>
 
-                <OverFlowStagAnim scrub={true} start="top 24%" end="bottom bottom">
+                <OverFlowStagAnim scrub={false} start="top 80%">
                   <h1 className="max-w-5xl text-[clamp(4rem,10vw,10rem)] font-black uppercase leading-[0.82] tracking-normal text-[#151515] max-sm:text-[3.8rem] max-sm:leading-[0.86]">
                     Text that steps into frame.
                   </h1>

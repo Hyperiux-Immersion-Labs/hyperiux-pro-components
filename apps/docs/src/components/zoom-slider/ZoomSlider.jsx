@@ -15,7 +15,10 @@ const SLIDER_BOTTOM_OFFSET = 0;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
-export function ZoomSliderCarousel({ sliderData}) {
+export function ZoomSliderCarousel({
+  sliderData ,
+  title,
+}) {
   const images = sliderData;
 
   const stripRef = useRef(null);
@@ -277,6 +280,14 @@ export function ZoomSliderCarousel({ sliderData}) {
       className="relative w-screen overflow-hidden bg-black"
       style={{ height: '100svh' }}
     >
+      {title ? (
+        <div className="pointer-events-none absolute left-1/2 top-10 z-20 -translate-x-1/2 px-4 text-center">
+          <h2 className="text-4xl text-white max-sm:text-2xl">
+            {title}
+          </h2>
+        </div>
+      ) : null}
+
       <div ref={stripRef} className="absolute inset-0">
         {images.map((item, index) => (
           <div

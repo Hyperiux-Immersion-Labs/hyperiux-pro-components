@@ -24,6 +24,11 @@ export function ArrowFillButton({
   ...props
 }) {
   const [isReady, setIsReady] = useState(false);
+  const usesUtilityBackground =
+    className.includes("bg-") ||
+    className.includes("from-") ||
+    className.includes("via-") ||
+    className.includes("to-");
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -39,7 +44,7 @@ export function ArrowFillButton({
         {...props}
         className={`arrow-bg-fill-btn cursor-default ${isReady ? "is-ready" : ""} ${className}`}
         style={{
-          "--btn-bg": bgColor,
+          "--btn-bg": usesUtilityBackground ? undefined : bgColor,
           "--btn-text": textColor,
           "--btn-fill-bg": fillBgColor,
           "--btn-fill-text": fillTextColor,
@@ -77,7 +82,7 @@ export function ArrowFillButton({
    min-width: unset;
    max-width: unset;
    border-radius: 1000px;
-   background: var(--btn-bg);
+   background-color: var(--btn-bg, #ff6b00);
    color: var(--btn-text);
    font-size: 1.1vw;
    font-weight: 500;

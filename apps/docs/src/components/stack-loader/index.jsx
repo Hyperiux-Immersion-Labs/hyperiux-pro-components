@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
 
@@ -29,10 +36,10 @@ const DEFAULT_IMAGE_SOURCES = [
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
 ];
 
-function StackToSpreadIntro({
-  images = DEFAULT_IMAGE_SOURCES,
-  onComplete,
-}) {
+const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
+  { images = DEFAULT_IMAGE_SOURCES, onComplete },
+  ref
+) {
   const rootRef = useRef(null);
   const imagesRef = useRef([]);
   const text1Ref = useRef(null);
@@ -241,7 +248,15 @@ function StackToSpreadIntro({
 
   return (
     <section
-      ref={rootRef}
+      ref={(element) => {
+        rootRef.current = element;
+
+        if (typeof ref === "function") {
+          ref(element);
+        } else if (ref) {
+          ref.current = element;
+        }
+      }}
       id="loader-wrapper"
       className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-md:px-[5vw] max-sm:px-[6vw]"
     >
@@ -294,15 +309,22 @@ function StackToSpreadIntro({
       </p>
     </section>
   );
-}
+});
 
 export default function StackLoader({
   images = DEFAULT_IMAGE_SOURCES,
 }) {
   const [isLoaderComplete, setIsLoaderComplete] = useState(false);
+  const [introInstance, setIntroInstance] = useState(0);
+  const stackToSpreadIntroRef = useRef(null);
 
   const handleLoaderComplete = useCallback(() => {
     setIsLoaderComplete(true);
+  }, []);
+
+  const handleReplay = useCallback(() => {
+    setIsLoaderComplete(false);
+    setIntroInstance((currentInstance) => currentInstance + 1);
   }, []);
 
   return (
@@ -315,10 +337,31 @@ export default function StackLoader({
           isLoaderComplete ? "opacity-100" : "opacity-0"
         }`}
       >
-        DEMO UI
+        HYPERIUX VAULT
       </p>
 
+     <button
+  type="button"
+  onClick={handleReplay}
+  className={`absolute top-[calc(50%+4.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
+    rounded-full border border-white/15 bg-white/5 px-5 py-2
+    text-sm font-medium text-white backdrop-blur-md
+    
+    transition-all duration-300 cursor-pointer
+    hover:scale-105 hover:border-white/30 hover:bg-white/10
+    active:scale-95
+    ${
+      isLoaderComplete
+        ? "opacity-100"
+        : "pointer-events-none opacity-0"
+    }`}
+>
+  ↻ Replay
+</button>
+
       <StackToSpreadIntro
+        key={introInstance}
+        ref={stackToSpreadIntroRef}
         images={images}
         onComplete={handleLoaderComplete}
       />

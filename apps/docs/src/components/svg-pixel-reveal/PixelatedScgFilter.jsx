@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import { useRef, useState } from "react";
 
 export function PixelateSvgFilter({
  id ="pixelate-filter",
@@ -119,80 +117,5 @@ export function PixelateSvgFilter({
  );
 }
 
-export function PixelatedImageEffectDemo({
- src ="/assets/img/image02.webp",
- alt ="Pixelated nature scene",
- priority = true,
- imageClassName ="",
-}) {
- const imageRef = useRef(null);
- const isTouching = useRef(false);
- const [pixelSize, setPixelSize] = useState(16);
-
- const updatePixel = (event) => {
- if (!imageRef.current) return;
-
- const rect = imageRef.current.getBoundingClientRect();
- const x = event.clientX - rect.left;
-
- const nextPixelSize = Math.min(Math.max(x / 30, 1), 64);
- setPixelSize(nextPixelSize);
- };
-
- const handlePointerDown = (event) => {
- isTouching.current = true;
- updatePixel(event);
- };
-
- const handlePointerMove = (event) => {
- if (event.pointerType ==="touch" && !isTouching.current) return;
- updatePixel(event);
- };
-
- const handlePointerUp = () => {
- isTouching.current = false;
- };
-
- return (
- <div className="relative flex h-dvh w-dvw flex-col gap-15 items-center justify-center">
-
- <h2 className="text-5xl text-center max-md:hidden">
- Move your cursor.
- <br />See the pixels react
- </h2>
-
- <h2 className="hidden max-md:block text-center text-2xl">
-    Tap the image to reveal the blur.
-    <br />
-    Desktop gives you the full interactive magic
-
- </h2>
-
- <PixelateSvgFilter
- id="pixelate-filter"
- size={pixelSize}
- crossLayers
- />
-
- <div
- ref={imageRef}
- className="relative h-[55vh] w-full max-sm:max-w-[90%] overflow-hidden max-md:max-w-[90%] max-w-lg touch-none"
- style={{ filter:"url(#pixelate-filter)" }}
- onPointerDown={handlePointerDown}
- onPointerMove={handlePointerMove}
- onPointerUp={handlePointerUp}
- onPointerLeave={handlePointerUp}
- >
- <Image
- src={src}
- alt={alt}
- fill
- priority={priority}
- className={`object-cover ${imageClassName}`.trim()}
- />
- </div>
- </div>
- );
-}
 
 export default PixelateSvgFilter;

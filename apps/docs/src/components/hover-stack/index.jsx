@@ -59,7 +59,7 @@ const HoverStack = () => {
         <>
 
 
-            <section className="w-full h-fit bg-[#fff9ec] py-[10%] max-sm:py-[20%] overflow-hidden flex flex-col gap-[7vw] justify-center items-center">
+            <section className="w-full h-screen bg-[#fff9ec] py-[10%] max-sm:py-[20%] overflow-hidden flex flex-col gap-[7vw] justify-center items-center">
                 <h1 className="text-[#1a1a1a] text-[5.5vw]">
                     Stack Hovered Cards
                 </h1>

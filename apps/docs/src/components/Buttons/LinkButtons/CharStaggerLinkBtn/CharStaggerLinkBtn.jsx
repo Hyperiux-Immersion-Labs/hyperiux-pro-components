@@ -78,6 +78,7 @@ export default function CharStaggerLinkBtn({
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
   icon: Icon = ArrowRight,
+  iconVariant = "stacked",
   iconClassName = "",
   onClick,
   ...props
@@ -144,6 +145,10 @@ export default function CharStaggerLinkBtn({
 
   // Derived values
   const sourceText = typeof children === "string" ? children : text;
+  const mergedStyle = {
+    ...props.style,
+    color: isActive ? hoverColor : props.style?.color,
+  };
   const linkClassName = [
     "char-stagger-link-btn inline-flex items-center gap-2 no-underline",
     isActive ? "char-stagger-link-btn--active" : "",
@@ -195,9 +200,7 @@ export default function CharStaggerLinkBtn({
         onMouseLeave={onMouseLeave}
         onTouchStart={onTouchStart}
         onMouseDown={onMouseDown}
-        style={{
-          color: isActive ? hoverColor : undefined,
-        }}
+        style={mergedStyle}
         className={linkClassName}
       >
         <div className="mt-[0.3vw]">
@@ -222,10 +225,14 @@ export default function CharStaggerLinkBtn({
 
         {showArrow && Icon && (
           <div className={iconContainerClassName}>
-            <div className={iconWrapperClassName}>
-              <Icon className="flex-none w-full h-full" />
-              <Icon className="flex-none w-full h-full" />
-            </div>
+            {iconVariant === "single" ? (
+              <Icon className="h-4 w-4 shrink-0" />
+            ) : (
+              <div className={iconWrapperClassName}>
+                <Icon className="flex-none w-full h-full" />
+                <Icon className="flex-none w-full h-full" />
+              </div>
+            )}
           </div>
         )}
       </Link>

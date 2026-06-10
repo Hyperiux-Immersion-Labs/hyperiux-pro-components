@@ -14,7 +14,13 @@ const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X ="5vw";
 
-export default function ParallaxSlider({ images = [], bgColor ="#000000" }) {
+const DEFAULT_HEADING ="Scroll to explore";
+
+export default function ParallaxSlider({
+ images = [],
+ bgColor ="#000000",
+ heading = DEFAULT_HEADING,
+}) {
  const outerRef = useRef(null);
  const trackRef = useRef(null);
 
@@ -112,7 +118,14 @@ export default function ParallaxSlider({ images = [], bgColor ="#000000" }) {
  className="relative"
  style={{ height:"400vh", backgroundColor: bgColor }}
  >
- <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+ <div className="sticky top-0 h-screen overflow-hidden">
+ <div className="absolute top-10 left-1/2 z-10 -translate-x-1/2 px-4 text-center">
+ <p className="text-lg uppercase tracking-[0.4em] text-white/80">
+ {heading}
+ </p>
+ </div>
+
+ <div className="flex h-full items-center pt-16">
  <div
  ref={trackRef}
  className="flex items-center will-change-transform"
@@ -155,7 +168,7 @@ export default function ParallaxSlider({ images = [], bgColor ="#000000" }) {
  </div>
  </div>
  </div>
+ </div>
  );
 }
-
 
