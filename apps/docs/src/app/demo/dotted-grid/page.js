@@ -1,10 +1,10 @@
-import { DottedGrid } from'@/components/dotted-grid'
-import React from'react'
+import { DottedGrid } from '@/components/dotted-grid'
+import React from 'react'
 
-const page = () => {
- return (
- <DottedGrid/>
- )
+const Page = () => {
+    return (
+        <DottedGrid />
+    )
 }
 
-export default page
+export default Page;

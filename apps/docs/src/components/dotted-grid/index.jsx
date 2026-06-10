@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
 const MOUSE_RADIUS = 380; // wider head influence
@@ -18,8 +17,8 @@ const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME;
 const TOTAL_SHAPES = 5;
 
 
-const lerp     = (a, b, t) => a + (b - a) * t;
-const clamp01  = (v) => Math.max(0, Math.min(1, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
 const smoothstep = (e0, e1, v) => {
   const t = clamp01((v - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
@@ -51,7 +50,7 @@ const getSquareStrength = (x, y, width, height) => {
 
   const rx = (x - cx) / scale;
   const ry = (y - cy) / scale;
-  const d  = Math.max(Math.abs(rx), Math.abs(ry));
+  const d = Math.max(Math.abs(rx), Math.abs(ry));
 
   return clamp01(1 - smoothstep(0.78, 0.82, d));
 };
@@ -75,9 +74,9 @@ const getPlusStrength = (x, y, width, height) => {
   const ry = (y - cy) / scale;
 
   const thickness = 0.18;
-  const length    = 0.75;
+  const length = 0.75;
 
-  const vertical   = Math.abs(rx) < thickness && Math.abs(ry) < length;
+  const vertical = Math.abs(rx) < thickness && Math.abs(ry) < length;
   const horizontal = Math.abs(ry) < thickness && Math.abs(rx) < length;
 
   const d = Math.min(
@@ -117,7 +116,7 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 
 
 export function DottedGrid() {
-  const canvasRef  = useRef(null);
+  const canvasRef = useRef(null);
   const patternRef = useRef({
     currentShapeIndex: 0,
     transitionStartTime: null,
@@ -132,8 +131,11 @@ export function DottedGrid() {
   });
 
   useEffect(() => {
+    patternRef.current.transitionStartTime = null;
+    patternRef.current.currentShapeIndex = 0;
+
     const canvas = canvasRef.current;
-    const ctx    = canvas.getContext("2d", { alpha: false });
+    const ctx = canvas.getContext("2d", { alpha: false });
 
     let width = 0;
     let height = 0;
@@ -164,10 +166,10 @@ export function DottedGrid() {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      width  = rect.width;
+      width = rect.width;
       height = rect.height;
-      dpr    = window.devicePixelRatio || 1;
-      canvas.width  = Math.floor(width * dpr);
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       createDots();
@@ -180,7 +182,7 @@ export function DottedGrid() {
       const y = e.clientY - rect.top;
       mouseRef.current.targetX = x;
       mouseRef.current.targetY = y;
-      mouseRef.current.active  = true;
+      mouseRef.current.active = true;
       mouseRef.current.trail.push({ x, y, t: performance.now() });
 
       if (mouseRef.current.trail.length > TRAIL_LENGTH) {
@@ -199,7 +201,7 @@ export function DottedGrid() {
 
     const getShapeData = (x, y, time) => {
       const { currentShapeIndex, transitionStartTime } = patternRef.current;
-      
+
       if (transitionStartTime === null) {
         return {
           shapeStrength: getRawShapeStrength(currentShapeIndex, x, y, time, width, height),
@@ -248,7 +250,7 @@ export function DottedGrid() {
       const trailFade = trailStrength * 0.38;
       const alpha = clamp01((0.28 + brightness * 0.72) - mouseFade - trailFade);
 
-      const normalL   = 16 + brightness * 78;
+      const normalL = 16 + brightness * 78;
       const disperseL = 12 + brightness * 58 + grayDisperseStrength * 22;
       const lightness = lerp(normalL, disperseL, grayDisperseStrength);
 
@@ -257,7 +259,7 @@ export function DottedGrid() {
       const trailLift = trailStrength * 38 * (1 - trailStrength * 0.55);
 
       const finalLightness = clamp01((lightness - mouseDark + mouseLift + trailLift) / 100) * 100;
-      const saturation     = trailStrength * trailStrength * 16;
+      const saturation = trailStrength * trailStrength * 16;
 
       ctx.beginPath();
       ctx.fillStyle = `hsla(210, ${saturation}%, ${finalLightness}%, ${alpha})`;
@@ -372,7 +374,10 @@ export function DottedGrid() {
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/4 via-transparent to-black/40" />
       <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.95)]" />
-      <div className="hidden max-sm:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm leading-tight pointer-events-none">
+      <div className="max-sm:hidden fixed bottom-15 left-1/2 -translate-x-1/2 z-50 p-4 rounded-2xl bg-white/10 backdrop-blur-md text-white text-center text-md pointer-events-none">
+        Click anywhere to change the pattern.
+      </div>
+      <div className="hidden max-sm:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm pointer-events-none">
         Works best on desktop  <br />
         Here, tap & drag to explore
       </div>
