@@ -1,7 +1,8 @@
 'use client'
+import CustomNavbar from "@/components/immersive-full-screen-navigation/CustomNavbar";
+import FullscreenNav from "@/components/immersive-full-screen-navigation/FullscreenNav";
 import React from"react";
-import FullscreenNav from"@/components/Navbar/FullscreenNav";
-import CustomNavbar from"@/components/Navbar/CustomNavbar";
+
 
 const page = () => {
  return (

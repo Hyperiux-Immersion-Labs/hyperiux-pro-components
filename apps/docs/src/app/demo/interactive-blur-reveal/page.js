@@ -17,11 +17,11 @@ const Page = () => {
 
           <Link
             className="pointer-events-auto text-sm max-sm:text-sm max-md:text-lg font-semibold opacity-90 transition-opacity hover:opacity-100"
-            href="#"
+            href="https://www.hyperiux.com/"
             target="_blank"
             rel="noreferrer"
           >
-            VISIT HYPERIUX IMMERSION LABS
+            VISIT HYPERIUX
           </Link>
         </header>
 

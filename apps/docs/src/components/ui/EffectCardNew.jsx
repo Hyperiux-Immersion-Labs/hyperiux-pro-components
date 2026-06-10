@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { useAnimate, useInView } from "motion/react";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
-import { resolveMediaUrl } from "@/lib/media";
+import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { Heart } from "lucide-react";
 
 gsap.registerPlugin(DrawSVGPlugin);
@@ -74,8 +74,7 @@ export function EffectCard({
     });
   }, [isHovered]);
 
-  const videoUrl = effect.videoUrl || effect.videoURL || effect.video_url;
-  const videoPreviewUrl = resolveMediaUrl(videoUrl);
+  const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const coverImage =
     resolveMediaUrl(effect.coverImage || effect.imageSrc, {
@@ -95,7 +94,7 @@ export function EffectCard({
   const shouldLoadVideo = videoPreviewUrl && !videoError && isHovered;
   const showVideo = shouldLoadVideo && videoReady;
   const effectHref = getEffectHref(effect);
-  const previewHref = effect.previewUrl || getEffectPreviewHref(effect);
+  const previewHref = getEffectPreviewHref(effect);
 
   return (
     <div

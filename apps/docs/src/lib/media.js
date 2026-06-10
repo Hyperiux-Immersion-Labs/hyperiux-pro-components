@@ -22,3 +22,10 @@ export function resolveMediaUrl(
 
   return `${baseUrl}/${mediaPath}`;
 }
+
+export function resolveEffectVideoUrl(effect) {
+  return resolveMediaUrl(
+    effect?.videoUrl || effect?.videoURL || effect?.video_url,
+    { defaultExtension: "mp4" }
+  );
+}

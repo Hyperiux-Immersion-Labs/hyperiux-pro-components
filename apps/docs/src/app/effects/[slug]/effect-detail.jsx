@@ -16,7 +16,7 @@ import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { getEffectPreviewHref } from "@/lib/categories";
-import { resolveMediaUrl } from "@/lib/media";
+import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Footer from "@/components/Footer";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
@@ -40,7 +40,7 @@ export function EffectDetailContent({
 
   const videoRef = useRef(null);
   const contentRef = useRef(null);
-  const videoPreviewUrl = resolveMediaUrl(effect.videoUrl);
+  const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const componentName = slug
     .split("-")
@@ -61,8 +61,25 @@ export default function MyComponent() {
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
 
-  const previewHref =
-    effect.previewUrl || getEffectPreviewHref(effect);
+  const handleVideoReady = () => {
+    const video = videoRef.current;
+
+    setVideoReady(true);
+
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.play?.().catch(() => {});
+  };
+
+  const previewHref = getEffectPreviewHref({
+    ...effect,
+    effectSlug: slug,
+    categorySlug,
+  });
 
   const sidebarContent = (
     <div className="space-y-6">
@@ -209,33 +226,37 @@ export default function MyComponent() {
               </div>
 
               <div className="aspect-video w-full overflow-hidden relative bg-black/20 fadeup">
-                {!showVideo && (
-                  <Image
-                    src={
-                      resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-                        defaultDirectory: "vault-listing-images",
-                        defaultExtension: "png",
-                      }) ||
-                      "/assets/img/image01.webp"
-                    }
-                    alt={effect.title || slug}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    priority
-                    className="object-contain transition-all duration-500"
-                  />
-                )}
+                <Image
+                  src={
+                    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+                      defaultDirectory: "vault-listing-images",
+                      defaultExtension: "png",
+                    }) ||
+                    "/assets/img/image01.webp"
+                  }
+                  alt={effect.title || slug}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  priority
+                  className={`object-contain transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
+                    }`}
+                />
 
                 {videoPreviewUrl && !videoError && (
                   <video
+                    key={videoPreviewUrl}
                     ref={videoRef}
                     src={videoPreviewUrl}
                     autoPlay
                     loop
                     muted
+                    defaultMuted
                     playsInline
-                    preload="metadata"
-                    onCanPlay={() => setVideoReady(true)}
+                    preload="auto"
+                    onLoadedMetadata={handleVideoReady}
+                    onLoadedData={handleVideoReady}
+                    onCanPlay={handleVideoReady}
+                    onPlaying={handleVideoReady}
                     onError={() => setVideoError(true)}
                     className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${showVideo
                       ? "opacity-100"
