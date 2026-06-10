@@ -128,6 +128,8 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         "<+0.5"
       );
 
+      
+
       imageElements.forEach((imageElement, index) => {
         tl.to(
           imageElement,
@@ -140,18 +142,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         );
       });
 
-      tl.to(
-        descriptionText.lines,
-        {
-          rotateX: TEXT_ROTATE_X_START,
-          transformOrigin: "top center",
-          opacity: 0,
-          duration: 0.5,
-          stagger: TEXT_STAGGER,
-          ease: INTRO_EASE,
-        },
-        "<+0.2"
-      );
+      
 
       tl.to(
         imageElements,
@@ -168,6 +159,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         "<"
       );
 
+      
       tl.to(
         imageElements,
         {
@@ -190,6 +182,20 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         },
         "+=0.2"
       );
+
+      tl.to(
+        descriptionText.lines,
+        {
+          rotateX: TEXT_ROTATE_X_START,
+          transformOrigin: "top center",
+          opacity: 0,
+          duration: 1,
+          stagger: TEXT_STAGGER,
+          ease: INTRO_EASE,
+        },
+        "<-0.1"
+      );
+
 
       tl.to(
         "#imgs-wrapper",
@@ -301,6 +307,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       </div>
 
       <p
+
         ref={descriptionTextRef}
         className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-md:bottom-[3vw] max-md:w-[68vw] max-md:text-[2.4vw] max-sm:bottom-[6vw] max-sm:w-[90%] max-sm:text-[3.5vw]"
       >
@@ -311,7 +318,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
   );
 });
 
-export default function StackLoader({
+export function StackLoader({
   images = DEFAULT_IMAGE_SOURCES,
 }) {
   const [isLoaderComplete, setIsLoaderComplete] = useState(false);
