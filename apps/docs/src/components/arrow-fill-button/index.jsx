@@ -1,70 +1,70 @@
 "use client";
 
-import { useEffect, useState } from"react";
-import Link from"next/link";
-import { ArrowRight } from"lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export function ArrowFillButton({
- btnText,
- className ="",
+  btnText,
+  className = "",
 
- bgColor ="#ff6b00",
- textColor ="#ffffff",
+  bgColor = "#ff6b00",
+  textColor = "#ffffff",
 
- fillBgColor ="#ffffff",
- fillTextColor ="#ff6b00",
+  fillBgColor = "#ffffff",
+  fillTextColor = "#ff6b00",
 
- hoverFillBgColor ="#ffffff",
- hoverFillTextColor ="#ff6b00",
+  hoverFillBgColor = "#ffffff",
+  hoverFillTextColor = "#ff6b00",
 
- // NEW
- arrowColor,
- hoverArrowColor,
+  // NEW
+  arrowColor,
+  hoverArrowColor,
 
- ...props
+  ...props
 }) {
- const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
- useEffect(() => {
- const frame = window.requestAnimationFrame(() => {
- setIsReady(true);
- });
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setIsReady(true);
+    });
 
- return () => window.cancelAnimationFrame(frame);
- }, []);
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
- return (
- <>
- <Link
- {...props}
- className={`arrow-bg-fill-btn ${isReady ? "is-ready" : ""} ${className}`}
- style={{
- "--btn-bg": bgColor,
- "--btn-text": textColor,
- "--btn-fill-bg": fillBgColor,
- "--btn-fill-text": fillTextColor,
- "--btn-fill-bg-hover": hoverFillBgColor,
- "--btn-fill-text-hover": hoverFillTextColor,
- "--btn-arrow": arrowColor || fillTextColor,
- "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
- visibility: isReady ? "visible" : "hidden",
- }}
- >
- <span className="arrow-bg-fill-btn__text">{btnText}</span>
+  return (
+    <>
+      <Link
+        {...props}
+        className={`arrow-bg-fill-btn cursor-default ${isReady ? "is-ready" : ""} ${className}`}
+        style={{
+          "--btn-bg": bgColor,
+          "--btn-text": textColor,
+          "--btn-fill-bg": fillBgColor,
+          "--btn-fill-text": fillTextColor,
+          "--btn-fill-bg-hover": hoverFillBgColor,
+          "--btn-fill-text-hover": hoverFillTextColor,
+          "--btn-arrow": arrowColor || fillTextColor,
+          "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
+          visibility: isReady ? "visible" : "hidden",
+        }}
+      >
+        <span className="arrow-bg-fill-btn__text">{btnText}</span>
 
- <div aria-hidden="true" className="arrow-bg-fill-btn__circle">
- <span>{btnText}</span>
+        <div aria-hidden="true" className="arrow-bg-fill-btn__circle">
+          <span>{btnText}</span>
 
- <div className="arrow-bg-fill-btn__circle-text">
- <span className="arrow-bg-fill-btn__icon" aria-hidden="true">
- <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8}/>
- <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8}/>
- </span>
- </div>
- </div>
- </Link>
+          <div className="arrow-bg-fill-btn__circle-text">
+            <span className="arrow-bg-fill-btn__icon" aria-hidden="true">
+              <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8} />
+              <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8} />
+            </span>
+          </div>
+        </div>
+      </Link>
 
- <style jsx global>{`
+      <style jsx global>{`
  .arrow-bg-fill-btn {
    display: inline-flex;
    align-items: center;
@@ -79,7 +79,7 @@ export function ArrowFillButton({
    border-radius: 1000px;
    background: var(--btn-bg);
    color: var(--btn-text);
-   font-size: 1.05vw;
+   font-size: 1.1vw;
    font-weight: 500;
    text-rendering: geometricPrecision;
    white-space: nowrap;
@@ -89,6 +89,7 @@ export function ArrowFillButton({
  .arrow-bg-fill-btn__text {
    position: relative;
    z-index: 1;
+   padding-bottom: 1px;
  }
 
  .arrow-bg-fill-btn__circle {
@@ -108,7 +109,7 @@ export function ArrowFillButton({
  }
 
  .arrow-bg-fill-btn__circle-text {
-   padding: 0 1px 0 0;
+   padding: 0 0 1px 0;
    display: flex;
    align-items: center;
    gap: 1vw;
@@ -117,10 +118,10 @@ export function ArrowFillButton({
  }
 
  .arrow-bg-fill-btn__icon {
-   width: 0.8vw;
-   height: 0.8vw;
+   width: 1.1vw;
+   height: 1.1vw;
    position: absolute;
-   right: 1.8vw;
+   right: 1.6vw;
    overflow: hidden;
    display: inline-flex;
    align-items: center;
@@ -231,6 +232,6 @@ export function ArrowFillButton({
    }
  }
  `}</style>
- </>
- );
+    </>
+  );
 }
