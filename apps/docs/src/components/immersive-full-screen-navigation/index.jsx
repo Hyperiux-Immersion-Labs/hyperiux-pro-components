@@ -18,10 +18,10 @@ const NAV_CONTENT = {
   tagline: "Crafting digital experiences.",
   location: "Noida, India",
   links: [
-    { label: "Home", href: "/" },
-    { label: "Work", href: "/work" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: "Home", href: "#" },
+    { label: "Work", href: "#" },
+    { label: "About", href: "#" },
+    { label: "Contact", href: "#" },
   ],
   images: ["/assets/img/image01.webp", "/assets/img/image02.webp"],
   socials: [
@@ -49,8 +49,8 @@ export default function ImmersiveFullscreenNav({
         )}
       </FullscreenNav>
 
-      <main className="flex h-screen items-center justify-center bg-white">
-        <p className="text-5xl text-neutral-700">Click on the HamBurger </p>
+      <main className="flex h-screen items-center justify-center bg-white max-sm:px-[7vw] text-center">
+        <p className="text-5xl text-neutral-700">Click on the hamburger to open the navigation</p>
       </main>
     </>
   );

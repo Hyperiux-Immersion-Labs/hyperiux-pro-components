@@ -151,12 +151,12 @@ export default function FullscreenNav({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-70 flex h-16 items-center justify-between px-8 ${headerClassName}`}
+        className={`fixed top-0 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <Link
           href={brandHref}
           style={{ color: isOpen ? headerOpenColor : undefined }}
-          className={`text-lg font-normal tracking-tight transition-colors duration-500 ease-in-out ${
+          className={`text-2xl font-normal tracking-tight transition-colors duration-500 ease-in-out ${
             isOpen ? "delay-500" : "text-black delay-500"
           }`}
         >
@@ -168,23 +168,23 @@ export default function FullscreenNav({
           onTouchStart={onToggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
-          className="flex h-10 w-10 cursor-pointer flex-col items-center justify-center gap-1.5"
+          className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5"
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-px w-6 transition-all duration-700 ease-in-out delay-300 ${
-              isOpen ? "translate-y-1.25 rotate-45" : "bg-black"
+            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${
+              isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
             }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-px w-6 transition-all duration-500 delay-300 ${
+            className={`block h-[2px] w-full transition-all duration-500 delay-300 ${
               isOpen ? "scale-x-0 opacity-0" : "bg-black"
             }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-px w-6 transition-all duration-700 ease-in-out delay-300 ${
+            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${
               isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
             }`}
           />

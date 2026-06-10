@@ -125,11 +125,11 @@ export function ElevateNavbarMobile({
   }, [activeDropdownIndex]);
 
   return (
-    <div className="fixed right-[3vw] top-[3vw] z-999">
+    <div className="fixed h-fit left-1/2 top-[40%] -translate-x-1/2 z-999">
       <div
         ref={backdropRef}
         onClick={() => setIsMenuOpen(false)}
-        className="fixed inset-0 bg-black/40 opacity-0 backdrop-blur-sm"
+        className="fixed inset-0 "
       />
 
       <div className="flex items-center justify-between gap-[2vw] rounded-[4vw] border border-white/10 bg-[#2f2f2f]/90 px-[3vw] py-[2vw] backdrop-blur-xl">

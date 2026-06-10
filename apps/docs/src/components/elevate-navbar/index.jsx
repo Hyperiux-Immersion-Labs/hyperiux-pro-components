@@ -73,9 +73,16 @@ export default function ElevateNavbar() {
 
   return (
     <div className="relative h-screen w-full bg-purple-300 font-mono text-[0.75vw]">
-      <h1 className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center text-[10vw] font-black uppercase text-[#363737]">
+      <div className="absolute left-1/2 top-[30%] w-full -translate-x-1/2 -translate-y-1/2 text-center  text-[#363737]">
+      <h1 className="text-[8vw] font-black uppercase">
         Elevate Navbar
       </h1>
+      <p className="mt-4 text-[1.2vw] max-sm:text-[3vw]">
+        Hover over the navbar to see the effect. Resize the window to see the responsive design in action.
+      </p>
+
+      </div>
+      
 
       {isMobile ? (
         <ElevateNavbarMobile menuItems={menuItems} cta={cta} />

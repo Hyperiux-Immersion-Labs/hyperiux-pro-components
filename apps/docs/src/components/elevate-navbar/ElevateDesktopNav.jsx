@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 const DEFAULT_MENU_ITEMS = [
   {
@@ -45,16 +45,15 @@ const DEFAULT_MENU_ITEMS = [
   },
 ];
 
-const DROPDOWN_ITEM_OFFSET_Y = -14;
+const DROPDOWN_ITEM_OFFSET_Y = -8;
 const NAV_TEXT_DURATION = 0.35;
 const CTA_DURATION = 0.4;
-const DROPDOWN_POINTER_DELAY = 0.08;
-const NAV_POINTER_DELAY = 0.06;
+const DROPDOWN_POINTER_DELAY = 0.03;
+
 const DIMMED_TEXT_COLOR = "rgba(255,255,255,0.5)";
 const ACTIVE_TEXT_COLOR = "rgba(255,255,255,1)";
 const DEFAULT_CTA_BACKGROUND = "#fff";
 const HOVER_CTA_BACKGROUND = "#000";
-const IMAGE_TINT = "rgba(255, 0, 0, 0.9)";
 
 const DEFAULT_CTA = {
   label: "BUILT W/ HYPERIUX",
@@ -65,7 +64,6 @@ export function ElevateNavbarDesktop({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
 }) {
-  // State & refs
   const navWrapRef = useRef(null);
   const navLinksRef = useRef([]);
   const ctaRef = useRef(null);
@@ -73,12 +71,15 @@ export function ElevateNavbarDesktop({
   const dropdownItemsRef = useRef([]);
   const dropdownTextDataRef = useRef([]);
   const linkDataRef = useRef([]);
+
   const activeDropdownIndexRef = useRef(null);
   const isPointerInsideDropdownRef = useRef(false);
   const hideCallRef = useRef(null);
   const switchTweenRef = useRef(null);
   const itemTweenRef = useRef(null);
+
   const [renderedDropdownIndex, setRenderedDropdownIndexState] = useState(null);
+  const [activeChevronIndex, setActiveChevronIndex] = useState(null);
 
   const killHideCall = useCallback(() => {
     if (!hideCallRef.current) return;
@@ -107,6 +108,7 @@ export function ElevateNavbarDesktop({
 
   const setRenderedDropdownIndex = useCallback((index) => {
     dropdownItemsRef.current = [];
+    dropdownTextDataRef.current = [];
     setRenderedDropdownIndexState(index);
   }, []);
 
@@ -137,7 +139,8 @@ export function ElevateNavbarDesktop({
           activeIndex !== null && index !== activeIndex
             ? DIMMED_TEXT_COLOR
             : ACTIVE_TEXT_COLOR,
-        duration: 0.3,
+        duration: 0.22,
+        ease: "power2.out",
         overwrite: true,
       });
     });
@@ -178,6 +181,7 @@ export function ElevateNavbarDesktop({
 
   const animateDropdownItemsIn = useCallback(() => {
     const dropdownItems = getCurrentDropdownItems();
+
     if (!dropdownItems.length) return;
 
     killItemTween();
@@ -186,37 +190,20 @@ export function ElevateNavbarDesktop({
     gsap.set(dropdownItems, {
       opacity: 0,
       y: DROPDOWN_ITEM_OFFSET_Y,
-      pointerEvents: "none",
+      pointerEvents: "auto",
     });
 
     itemTweenRef.current = gsap.timeline({
       overwrite: true,
-      onStart: () => {
-        gsap.set(dropdownItems, { pointerEvents: "auto" });
-      },
     });
 
-    itemTweenRef.current
-      .to(
-        dropdownItems,
-        {
-          y: 0,
-          duration: 0.6,
-          stagger: 0.05,
-          ease: "elastic.out(0.9, 0.6)",
-        },
-        0
-      )
-      .to(
-        dropdownItems,
-        {
-          opacity: 1,
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "power2.inOut",
-        },
-        0
-      );
+    itemTweenRef.current.to(dropdownItems, {
+      y: 0,
+      opacity: 1,
+      duration: 0.22,
+      stagger: 0.025,
+      ease: "power3.out",
+    });
   }, [getCurrentDropdownItems, killItemTween]);
 
   const animateDropdownItemsOut = useCallback(
@@ -234,32 +221,20 @@ export function ElevateNavbarDesktop({
       itemTweenRef.current = gsap.timeline({
         overwrite: true,
         onStart: () => {
-          gsap.set(dropdownItems, { pointerEvents: "none" });
+          gsap.set(dropdownItems, {
+            pointerEvents: "none",
+          });
         },
         onComplete,
       });
 
-      itemTweenRef.current
-        .to(
-          dropdownItems,
-          {
-            y: DROPDOWN_ITEM_OFFSET_Y,
-            duration: 0.34,
-            stagger: 0.04,
-            ease: "power2.inOut",
-          },
-          0
-        )
-        .to(
-          dropdownItems,
-          {
-            opacity: 0,
-            duration: 0.28,
-            stagger: 0.04,
-            ease: "power2.inOut",
-          },
-          0
-        );
+      itemTweenRef.current.to(dropdownItems, {
+        y: DROPDOWN_ITEM_OFFSET_Y,
+        opacity: 0,
+        duration: 0.16,
+        stagger: 0.015,
+        ease: "power2.out",
+      });
     },
     [getCurrentDropdownItems, killItemTween]
   );
@@ -269,16 +244,26 @@ export function ElevateNavbarDesktop({
     killSwitchTween();
 
     activeDropdownIndexRef.current = null;
+    setActiveChevronIndex(null);
 
     animateDropdownItemsOut(() => {
-      if (activeDropdownIndexRef.current !== null || isPointerInsideDropdownRef.current) {
+      if (
+        activeDropdownIndexRef.current !== null ||
+        isPointerInsideDropdownRef.current
+      ) {
         return;
       }
 
       setRenderedDropdownIndex(null);
       hideWrapper();
     });
-  }, [animateDropdownItemsOut, hideWrapper, killHideCall, killSwitchTween, setRenderedDropdownIndex]);
+  }, [
+    animateDropdownItemsOut,
+    hideWrapper,
+    killHideCall,
+    killSwitchTween,
+    setRenderedDropdownIndex,
+  ]);
 
   const openDropdownForIndex = useCallback(
     (index) => {
@@ -291,6 +276,7 @@ export function ElevateNavbarDesktop({
 
       activeDropdownIndexRef.current = index;
       isPointerInsideDropdownRef.current = false;
+
       showWrapper();
 
       if (renderedDropdownIndex === null) {
@@ -300,39 +286,24 @@ export function ElevateNavbarDesktop({
 
       if (renderedDropdownIndex === index) {
         const dropdownItems = getCurrentDropdownItems();
+
         if (!dropdownItems.length) return;
 
         killItemTween();
         gsap.killTweensOf(dropdownItems);
 
-        itemTweenRef.current = gsap.timeline({
-          overwrite: true,
-          onStart: () => {
-            gsap.set(dropdownItems, { pointerEvents: "auto" });
-          },
+        gsap.set(dropdownItems, {
+          pointerEvents: "auto",
         });
 
-        itemTweenRef.current
-          .to(
-            dropdownItems,
-            {
-              y: 0,
-              duration: 0.45,
-              stagger: 0.04,
-              ease: "elastic.out(0.9, 0.6)",
-            },
-            0
-          )
-          .to(
-            dropdownItems,
-            {
-              opacity: 1,
-              duration: 0.35,
-              stagger: 0.04,
-              ease: "power2.inOut",
-            },
-            0
-          );
+        itemTweenRef.current = gsap.to(dropdownItems, {
+          y: 0,
+          opacity: 1,
+          duration: 0.18,
+          stagger: 0.02,
+          ease: "power3.out",
+          overwrite: true,
+        });
 
         return;
       }
@@ -340,6 +311,7 @@ export function ElevateNavbarDesktop({
       switchTweenRef.current = gsap.delayedCall(0, () => {
         animateDropdownItemsOut(() => {
           if (activeDropdownIndexRef.current === null) return;
+
           setRenderedDropdownIndex(activeDropdownIndexRef.current);
         });
       });
@@ -350,6 +322,7 @@ export function ElevateNavbarDesktop({
       killHideCall,
       killItemTween,
       killSwitchTween,
+      menuItems,
       renderedDropdownIndex,
       setRenderedDropdownIndex,
       showWrapper,
@@ -361,9 +334,6 @@ export function ElevateNavbarDesktop({
 
     hideCallRef.current = gsap.delayedCall(DROPDOWN_POINTER_DELAY, () => {
       if (isPointerInsideDropdownRef.current) return;
-      if (activeDropdownIndexRef.current !== null && menuItems[activeDropdownIndexRef.current]?.isDropdown) {
-        return;
-      }
 
       closeDropdown();
     });
@@ -379,17 +349,27 @@ export function ElevateNavbarDesktop({
 
     activeDropdownIndexRef.current = null;
     isPointerInsideDropdownRef.current = false;
+
+    setActiveChevronIndex(null);
     setNavVisualState(null);
 
     animateDropdownItemsOut(() => {
       setRenderedDropdownIndex(null);
       hideWrapper();
     });
-  }, [animateDropdownItemsOut, hideWrapper, killHideCall, killSwitchTween, setNavVisualState, setRenderedDropdownIndex]);
+  }, [
+    animateDropdownItemsOut,
+    hideWrapper,
+    killHideCall,
+    killSwitchTween,
+    setNavVisualState,
+    setRenderedDropdownIndex,
+  ]);
 
   const onNavItemEnter = useCallback(
     (index) => {
       const item = linkDataRef.current[index];
+
       if (!item) return;
 
       killHideCall();
@@ -397,43 +377,46 @@ export function ElevateNavbarDesktop({
       setNavVisualState(index);
 
       if (menuItems[index]?.isDropdown) {
+        setActiveChevronIndex(index);
         activeDropdownIndexRef.current = index;
         openDropdownForIndex(index);
         return;
       }
 
+      setActiveChevronIndex(null);
       activeDropdownIndexRef.current = null;
       closeDropdown();
     },
-    [animateTextSwap, closeDropdown, killHideCall, openDropdownForIndex, setNavVisualState]
+    [
+      animateTextSwap,
+      closeDropdown,
+      killHideCall,
+      menuItems,
+      openDropdownForIndex,
+      setNavVisualState,
+    ]
   );
 
   const onNavItemLeave = useCallback(
     (index) => {
       const item = linkDataRef.current[index];
+
       if (!item) return;
 
       animateTextSwap(item, false);
 
       if (menuItems[index]?.isDropdown) {
-        killHideCall();
-
-        hideCallRef.current = gsap.delayedCall(NAV_POINTER_DELAY, () => {
-          if (isPointerInsideDropdownRef.current) return;
-          if (activeDropdownIndexRef.current !== index) return;
-          closeDropdown();
-        });
-
         return;
       }
 
       setNavVisualState(null);
     },
-    [animateTextSwap, closeDropdown, killHideCall, setNavVisualState]
+    [animateTextSwap, menuItems, setNavVisualState]
   );
 
   const onCtaHover = useCallback((isEntering = true) => {
     const ctaElement = ctaRef.current;
+
     if (!ctaElement) return;
 
     const defaultText = ctaElement.querySelector("[data-default]");
@@ -441,11 +424,19 @@ export function ElevateNavbarDesktop({
 
     gsap
       .timeline({
-        defaults: { duration: CTA_DURATION, ease: "power2.out", overwrite: true },
+        defaults: {
+          duration: CTA_DURATION,
+          ease: "power2.out",
+          overwrite: true,
+        },
       })
       .to(
         ctaElement,
-        { backgroundColor: isEntering ? HOVER_CTA_BACKGROUND : DEFAULT_CTA_BACKGROUND },
+        {
+          backgroundColor: isEntering
+            ? HOVER_CTA_BACKGROUND
+            : DEFAULT_CTA_BACKGROUND,
+        },
         0
       )
       .to(defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
@@ -477,7 +468,6 @@ export function ElevateNavbarDesktop({
     [animateTextSwap]
   );
 
-  // Effects
   useLayoutEffect(() => {
     const context = gsap.context(() => {
       linkDataRef.current = navLinksRef.current.map((linkElement) => {
@@ -505,7 +495,7 @@ export function ElevateNavbarDesktop({
       }
 
       hideWrapper();
-    });
+    }, navWrapRef);
 
     return () => context.revert();
   }, [hideWrapper]);
@@ -525,59 +515,70 @@ export function ElevateNavbarDesktop({
     };
   }, [killHideCall, killItemTween, killSwitchTween]);
 
-  // Derived values
-  const dropdownItems = menuItems[renderedDropdownIndex]?.dropdown || [];
+  const dropdownItems =
+    renderedDropdownIndex !== null
+      ? menuItems[renderedDropdownIndex]?.dropdown || []
+      : [];
 
   return (
     <div
       ref={navWrapRef}
       onMouseEnter={onHeaderMouseEnter}
       onMouseLeave={onHeaderMouseLeave}
-      className="absolute top-[1vw] right-[2vw] rounded-md bg-[#363737]"
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[0.55vw] bg-[#363737] text-[0.98vw]"
     >
-      <div className="relative flex h-full w-full items-center gap-[1.5vw] p-[0.3vw] pl-[1vw]">
-        <div className="flex h-full items-center gap-[1.5vw]">
-          {menuItems.map((item, index) => (
-            <Link
-              key={item.name}
-              ref={(element) => {
-                navLinksRef.current[index] = element;
-              }}
-              href={item.href}
-              className="relative flex items-center overflow-hidden py-[0.5vw] uppercase"
-              onMouseEnter={() => onNavItemEnter(index)}
-              onMouseLeave={() => onNavItemLeave(index)}
-            >
-              <div className="relative overflow-hidden">
-                <span data-default className="flex items-center">
-                  {item.name}
-                  {item.isDropdown && <ChevronDown className="ml-1 h-[1vw] w-[1vw]" />}
-                </span>
+      <div className="relative flex h-full w-full items-center gap-[1.95vw] p-[0.39vw] pl-[1.3vw]">
+        <div className="flex h-full items-center gap-[1.95vw]">
+          {menuItems.map((item, index) => {
+            const isDropdownActive = activeChevronIndex === index;
 
-                <span
-                  data-hover
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <span className="flex items-center">
+            return (
+              <Link
+                key={item.name}
+                ref={(element) => {
+                  navLinksRef.current[index] = element;
+                }}
+                href={item.href}
+                className="relative flex items-center gap-[0.32vw] py-[0.65vw] text-[0.98vw] uppercase leading-none"
+                onMouseEnter={() => onNavItemEnter(index)}
+                onMouseLeave={() => onNavItemLeave(index)}
+              >
+                <div className="relative overflow-hidden">
+                  <span data-default className="block">
                     {item.name}
-                    {item.isDropdown && <ChevronUp className="ml-1 h-[1vw] w-[1vw]" />}
                   </span>
-                </span>
-              </div>
-            </Link>
-          ))}
+
+                  <span
+                    data-hover
+                    className="absolute inset-0 flex items-center"
+                  >
+                    {item.name}
+                  </span>
+                </div>
+
+                {item.isDropdown && (
+                  <ChevronDown
+                    className={`h-[1.3vw] w-[1.3vw] shrink-0 transition-transform duration-100 ease-out ${
+                      isDropdownActive ? "-rotate-180" : "rotate-0"
+                    }`}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
         <Link
           ref={ctaRef}
           href={cta.href}
-          className="relative overflow-hidden rounded-sm bg-white px-[0.5vw] py-[0.5vw] text-black"
+          className="relative overflow-hidden rounded-[0.26vw] bg-white px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
           onMouseEnter={() => onCtaHover(true)}
           onMouseLeave={() => onCtaHover(false)}
         >
           <span data-default className="block">
             {cta.label}
           </span>
+
           <span
             data-hover
             className="absolute inset-0 flex items-center justify-center text-white"
@@ -590,9 +591,9 @@ export function ElevateNavbarDesktop({
           ref={dropdownRef}
           onMouseEnter={onDropdownMouseEnter}
           onMouseLeave={onDropdownMouseLeave}
-          className="absolute top-[calc(100%-.5vw)] left-0 h-fit w-full pt-[1.3vw]"
+          className="absolute left-0 top-full h-fit w-full pt-[0.46vw]"
         >
-          <div className="space-y-[0.4vw]">
+          <div className="space-y-[0.52vw]">
             {dropdownItems.map((item, index) => (
               <div
                 key={`${renderedDropdownIndex}-${item.title}`}
@@ -605,40 +606,34 @@ export function ElevateNavbarDesktop({
                   href={item.href}
                   onMouseEnter={() => onDropdownItemEnter(index)}
                   onMouseLeave={() => onDropdownItemLeave(index)}
-                  className="flex items-center justify-between rounded-md bg-[#363737] p-[0.4vw] text-white transition-all duration-400 hover:scale-[1.02] hover:bg-white hover:text-black!"
+                  className="flex items-center justify-between rounded-[0.55vw] bg-[#363737] p-[0.52vw] text-[0.98vw] text-white transition-all duration-300 hover:scale-[1.02] hover:bg-white hover:text-black!"
                 >
-                  <div className="flex items-center gap-[1.5vw]">
-                    <div className="size-[5vw] overflow-hidden rounded-md">
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={item.img}
-                          alt={item.title}
-                          width={500}
-                          height={500}
-                          className="h-full w-full object-cover"
-                        />
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background: IMAGE_TINT,
-                            mixBlendMode: "multiply",
-                            pointerEvents: "none",
-                          }}
-                        />
-                      </div>
+                  <div className="flex items-center gap-[1.95vw]">
+                    <div className="size-[6.5vw] overflow-hidden rounded-[0.55vw]">
+                      <Image
+                        src={item.img}
+                        alt={item.title}
+                        width={500}
+                        height={500}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
 
-                    <div className="relative overflow-hidden uppercase">
+                    <div className="relative overflow-hidden uppercase leading-none">
                       <span data-default className="block">
                         {item.title}
                       </span>
-                      <span data-hover className="absolute inset-0 flex items-center">
+
+                      <span
+                        data-hover
+                        className="absolute inset-0 flex items-center"
+                      >
                         {item.title}
                       </span>
                     </div>
                   </div>
 
-                  <ChevronRight className="mr-[2vw] h-[1vw] w-[1vw]" />
+                  <ChevronRight className="mr-[2.6vw] h-[1.3vw] w-[1.3vw]" />
                 </Link>
               </div>
             ))}

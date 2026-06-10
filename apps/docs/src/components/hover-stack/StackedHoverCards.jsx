@@ -78,7 +78,7 @@ const StackHoveredCards = ({
     }
 
     const transition = isActive
-      ? "transform 480ms cubic-bezier(0.22, 1.6, 0.32, 1), box-shadow 900ms cubic-bezier(0.22, 1.6, 0.32, 1)"
+      ? "transform 700ms cubic-bezier(0.22, 1.6, 0.32, 1), box-shadow 900ms cubic-bezier(0.22, 1.6, 0.32, 1)"
       : hasActive
         ? "transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1)"
         : "transform 480ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 380ms cubic-bezier(0.4, 0, 0.2, 1)";
