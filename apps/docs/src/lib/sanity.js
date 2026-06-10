@@ -1,5 +1,6 @@
 import {createClient} from '@sanity/client'
-import { getEffectContent, effectContent } from './effect-content'
+import { getEffectCategoryBySlug, getEffectCategorySlugAliases } from './categories'
+import { getEffectRouteSlug, getEffectSlugAliases } from './effect-slugs'
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
@@ -23,58 +24,73 @@ function getSanityClient() {
   })
 }
 
-function getLocalEffectEntries() {
-  return Object.entries(effectContent).flatMap(([categorySlug, effects]) =>
-    Object.keys(effects).map((effectSlug) => ({
-      categorySlug,
-      effectSlug,
-    }))
-  )
+function normalizeEffectEntries(entries = []) {
+  return entries.map((entry) => {
+    const category = getEffectCategoryBySlug(entry.categorySlug)
+
+    return {
+      ...entry,
+      categorySlug: category?.slug || entry.categorySlug,
+      effectSlug: getEffectRouteSlug(entry.effectSlug),
+    }
+  })
+}
+
+function getCategorySlugAliases(categorySlug) {
+  return getEffectCategorySlugAliases(categorySlug)
 }
 
 export async function getSanityEffectContent(categorySlug, effectSlug) {
   if (!isSanityConfigured()) {
-    return getEffectContent(categorySlug, effectSlug)
+    console.warn('Sanity is not configured. Effect content cannot be loaded.')
+    return null
   }
 
   try {
     const client = getSanityClient()
+    const categorySlugs = getCategorySlugAliases(categorySlug)
+    const effectSlugs = getEffectSlugAliases(effectSlug)
 
-    return await client.fetch(
-      `*[_type == "effectContent" && categorySlug == $categorySlug && effectSlug == $effectSlug][0]`,
-      {categorySlug, effectSlug}
+    const content = await client.fetch(
+      `*[_type == "effectContent" && categorySlug in $categorySlugs && effectSlug in $effectSlugs][0]`,
+      {categorySlugs, effectSlugs}
     )
+
+    return content || null
   } catch (error) {
     console.warn(
-      `Falling back to local effect content for ${categorySlug}/${effectSlug}:`,
+      `Sanity effect content could not be loaded for ${categorySlug}/${effectSlug}:`,
       error?.message || error
     )
 
-    return getEffectContent(categorySlug, effectSlug)
+    return null
   }
 }
 
 export async function getAllSanityEffectEntries() {
   if (!isSanityConfigured()) {
-    return getLocalEffectEntries()
+    console.warn('Sanity is not configured. No effect detail pages will be pre-rendered.')
+    return []
   }
 
   try {
     const client = getSanityClient()
 
-    return await client.fetch(
+    const entries = await client.fetch(
       `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug)][]{
         categorySlug,
         effectSlug
       }`
     )
+
+    return normalizeEffectEntries(entries)
   } catch (error) {
     console.warn(
-      'Falling back to local effect entries because Sanity could not be reached:',
+      'Sanity effect entries could not be loaded:',
       error?.message || error
     )
 
-    return getLocalEffectEntries()
+    return []
   }
 }
 

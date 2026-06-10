@@ -510,11 +510,11 @@ export default function ScrollDistortion({
         ))}
       </div>
        <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 text-white flex flex-col gap-[1vw] justify-center items-center">
-                    scroll down
+                    scroll
                     <svg
                         width="20"
                         height="28"
-                        className="size-[1.5vw]"
+                        className="size-[1.5vw] max-md:size-[3vw] max-sm:size-[4vw]"
                         viewBox="0 0 20 28"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"

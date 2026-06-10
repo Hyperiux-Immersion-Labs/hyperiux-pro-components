@@ -14,12 +14,12 @@ const PREVIEW_IMAGES = [
   {
     alt: "Dashboard preview",
     heightClassName: "h-54 max-md:h-60 max-sm:h-40",
-    src: "/assets/menu/beach.jpg",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
   },
   {
     alt: "Product showcase",
     heightClassName: "h-54 max-md:h-60 max-sm:h-40",
-    src: "/assets/menu/spider-man.jpg",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
   },
 ];
 

@@ -39,7 +39,7 @@ const Page = () => {
                   Staggered overflow
                 </p>
 
-                <OverFlowStagAnim scrub={true} start="top 24%" end="bottom bottom">
+                <OverFlowStagAnim scrub={false} start="top 80%">
                   <h1 className="max-w-5xl text-[clamp(4rem,10vw,10rem)] font-black uppercase leading-[0.82] tracking-normal text-[#151515] max-sm:text-[3.8rem] max-sm:leading-[0.86]">
                     Text that steps into frame.
                   </h1>
@@ -50,7 +50,7 @@ const Page = () => {
                 <div className="relative aspect-4/5  overflow-hidden bg-[#dbeafe] max-md:aspect-16/11">
                 
                   <Image
-                    src="/assets/gradient/image14.png"
+                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
                     alt=""
                     fill
                     priority
@@ -110,7 +110,7 @@ const Page = () => {
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="relative min-h-130 overflow-hidden max-sm:min-h-80">
               <Image
-                src="/assets/img/distortion.jpg"
+                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
                 alt=""
                 fill
                 sizes="(max-width: 640px) 100vw, 54vw"

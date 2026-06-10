@@ -5,16 +5,16 @@ import React from"react";
 import { ReactLenis } from"lenis/react";
 
 const showcaseItems = [
- { title:"Vuelta", image:"/img/1.png", alt:"Vuelta lamp" },
- { title:"JH42", image:"/img/2.png", alt:"JH42 lamp" },
- { title:"Hay", image:"/img/3.png", alt:"Hay product" },
- { title:"Teresa", image:"/img/4.png", alt:"Teresa lamp" },
- { title:"Tahiti", image:"/img/5.png", alt:"Tahiti lamp" },
- { title:"Akari 1A", image:"/img/6.png", alt:"Akari 1A lamp" },
- { title:"Nessino", image:"/img/7.png", alt:"Nessino lamp" },
- { title:"Panthella", image:"/img/8.png", alt:"Panthella lamp" },
- { title:"Bellhop", image:"/img/3.png", alt:"Bellhop lamp" },
- { title:"Flowerpot", image:"/img/4.png", alt:"Flowerpot lamp" },
+ { title:"Vuelta", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", alt:"Vuelta lamp" },
+ { title:"JH42", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", alt:"JH42 lamp" },
+ { title:"Hay", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", alt:"Hay product" },
+ { title:"Teresa", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", alt:"Teresa lamp" },
+ { title:"Tahiti", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", alt:"Tahiti lamp" },
+ { title:"Akari 1A", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", alt:"Akari 1A lamp" },
+ { title:"Nessino", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg", alt:"Nessino lamp" },
+ { title:"Panthella", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg", alt:"Panthella lamp" },
+ { title:"Bellhop", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg", alt:"Bellhop lamp" },
+ { title:"Flowerpot", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg", alt:"Flowerpot lamp" },
 ];
 
 export default function Page() {
