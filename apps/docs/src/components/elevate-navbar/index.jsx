@@ -7,7 +7,7 @@ import { ElevateNavbarDesktop } from "./ElevateDesktopNav";
 const menuItems = [
   {
     name: "Effects",
-    href: "/effects",
+    href: "#",
     isDropdown: true,
     dropdown: [
       { title: "All Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", href: "#" },
@@ -33,7 +33,7 @@ const menuItems = [
   },
   {
     name: "Docs",
-    href: "/docs",
+    href: "#",
     isDropdown: true,
     dropdown: [
       { title: "Introduction", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", href: "#" },
