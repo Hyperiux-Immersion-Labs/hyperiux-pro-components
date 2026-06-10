@@ -3,7 +3,11 @@ import ZoomSliderCarousel from './ZoomSlider';
 
 const ZoomSlider = () => {
   return (
-    <ZoomSliderCarousel title="Scroll to explore" sliderData={DEFAULT_SLIDER_DATA} />
+    <ZoomSliderCarousel
+      title="Zoom Slider"
+      subheading="Scroll to explore "
+      sliderData={DEFAULT_SLIDER_DATA}
+    />
   );
 };
  

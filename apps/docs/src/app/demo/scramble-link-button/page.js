@@ -17,6 +17,7 @@ export default function Page() {
                     <ScrambleLinkButton
                         href="#"
                         text="Hover me"
+                        showLine={true}
                         stepMs={50}
                         className="text-[2vw] max-sm:text-[4.5vw]"
                     />

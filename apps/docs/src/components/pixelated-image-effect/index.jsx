@@ -119,11 +119,12 @@ export function PixelateSvgFilter({
  );
 }
 
-export function PixelatedImageEffectDemo({
- src ="/assets/img/image02.webp",
+export function PixelatedImageEffect({
+ src ="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
  alt ="Pixelated nature scene",
  priority = true,
  imageClassName ="",
+ heading ="Slide left for a clear image, right for more pixelation.",
 }) {
  const imageRef = useRef(null);
  const isTouching = useRef(false);
@@ -156,16 +157,12 @@ export function PixelatedImageEffectDemo({
  return (
  <div className="relative flex h-dvh w-dvw flex-col gap-15 items-center justify-center">
 
-<h2 className="text-5xl text-center max-md:hidden">
-  Move your cursor inside the image.
-  <br />
-  Move left for a clear image, right for maximum pixelation.
+<h2 className="text-5xl text-center max-md:hidden w-[45%]">
+  {heading}
 </h2>
 
  <h2 className="hidden max-md:block text-center text-2xl">
-    Tap the image to reveal the blur.
-    <br />
-    Desktop gives you the full interactive magic
+   {heading}
 
  </h2>
 

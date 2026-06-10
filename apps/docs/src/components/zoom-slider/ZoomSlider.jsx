@@ -16,8 +16,9 @@ const SLIDER_BOTTOM_OFFSET = 0;
 const lerp = (a, b, n) => a + (b - a) * n;
 
 export function ZoomSliderCarousel({
-  sliderData ,
+  sliderData,
   title,
+  subheading,
 }) {
   const images = sliderData;
 
@@ -285,6 +286,11 @@ export function ZoomSliderCarousel({
           <h2 className="text-4xl text-white max-sm:text-2xl">
             {title}
           </h2>
+          {subheading ? (
+            <p className="mt-3 text-sm tracking-[0.08em] text-white/65 max-sm:text-xs">
+              {subheading}
+            </p>
+          ) : null}
         </div>
       ) : null}
 

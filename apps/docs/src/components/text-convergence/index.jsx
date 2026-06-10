@@ -16,10 +16,6 @@ const CHARACTER_Y_PERCENT_MAX = 200;
 const CHARACTER_ROTATION_MIN = -20;
 const CHARACTER_ROTATION_MAX = 20;
 const CHARACTER_EASE = "elastic.out(1,0.8)";
-const GLOW_BACKGROUND =
-  "radial-gradient(ellipse 70% 55% at 50% 52%, rgba(255,255,255,0.06) 0%, transparent 70%)";
-const BOTTOM_RULE_BACKGROUND =
-  "linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent)";
 
 const getDynamicHeight = (text) => {
   const trimmedText = text.trim();
@@ -37,7 +33,7 @@ const getDynamicHeight = (text) => {
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export function TextBreak({
-  text = "",
+  text = "Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless.",
   bgColor = "bg-black",
   textColor = "text-white",
 }) {
@@ -50,6 +46,14 @@ export function TextBreak({
   const dynamicHeight = useMemo(() => getDynamicHeight(text), [text]);
 
   // Effects
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    sectionRef.current.style.setProperty("--text-break-height", dynamicHeight);
+  }, [dynamicHeight]);
+
   useEffect(() => {
     const introElement = introRef.current;
 
@@ -117,7 +121,7 @@ export function TextBreak({
             containerAnimation: scrollTween,
             start: "left 100%",
             end: "left 30%",
-            scrub: 1,
+            scrub: 0.4,
           },
         });
       });
@@ -132,20 +136,12 @@ export function TextBreak({
   return (
     <div
       ref={sectionRef}
-      className={`relative ${bgColor}`}
-      style={{ height: dynamicHeight }}
+      className={`relative h-(--text-break-height) ${bgColor}`}
     >
-      <div
-        className="sticky top-0 flex h-screen items-center"
-        style={{ overflow: "clip" }}
-      >
+      <div className="sticky top-0 flex h-screen items-center overflow-clip">
         <h3
           ref={textRef}
-          className={`flex whitespace-nowrap gap-[4vw] pl-[100vw] font-bold leading-[1.1] tracking-tighter font-sans! ${textColor}`}
-          style={{
-            fontSize: "clamp(2rem, 10vw, 12rem)",
-            width: "max-content",
-          }}
+          className={`flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] font-sans! text-4xl font-bold leading-[1.1] tracking-tighter sm:text-6xl lg:text-8xl xl:text-9xl ${textColor}`}
         >
           {text}
         </h3>
@@ -155,59 +151,28 @@ export function TextBreak({
           className="pointer-events-none absolute inset-0 z-20"
         >
           <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: GLOW_BACKGROUND,
-              pointerEvents: "none",
-            }}
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_52%,rgba(255,255,255,0.06)_0%,transparent_70%)]"
           />
 
           <span
-            style={{
-              position: "absolute",
-              top: "2.2rem",
-              left: "2.4rem",
-              fontFamily: "'Courier New', monospace",
-              fontSize: "0.65rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.28)",
-            }}
+            className="absolute top-[2.2rem] left-[2.4rem] font-mono text-xs uppercase tracking-[0.22vw] text-gray-400"
           >
             scroll experience
           </span>
 
           <span
-            style={{
-              position: "absolute",
-              top: "2.2rem",
-              right: "2.4rem",
-              fontFamily: "'Courier New', monospace",
-              fontSize: "0.65rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.28)",
-            }}
+            className="absolute top-[2.2rem] right-[2.4rem] font-mono text-xs uppercase tracking-[0.22vw] text-gray-400"
           >
             v1.0
           </span>
 
           <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "2.4rem",
-            }}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-[2.4rem]"
           >
             <svg
               width="320"
               height="1"
-              style={{ opacity: 0.12 }}
+              className="opacity-[0.2]"
               xmlns="http://www.w3.org/2000/svg"
             >
               <line
@@ -221,78 +186,35 @@ export function TextBreak({
             </svg>
 
             <p
-              style={{
-                fontFamily: "'Courier New', monospace",
-                fontSize: "0.7rem",
-                letterSpacing: "0.3em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.4)",
-                margin: 0,
-              }}
+              className="m-0 font-mono text-xs uppercase tracking-[0.3vw] text-gray-400"
             >
               — kinetic typography —
             </p>
 
             <h2
-              style={{
-                margin: 0,
-                fontFamily: "Georgia, 'Times New Roman', serif",
-                fontSize: "clamp(3.2rem, 10vw, 9rem)",
-                fontWeight: 400,
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
-                color: "rgba(255,255,255,0.92)",
-                textAlign: "center",
-                maxWidth: "14ch",
-              }}
+              className="m-0 max-w-[14ch] text-center font-serif text-5xl font-normal leading-none tracking-[-0.03vw] text-white/92 sm:text-6xl lg:text-8xl xl:text-9xl"
             >
               Words
               <br />
-              <em
-                style={{
-                  fontStyle: "italic",
-                  color: "rgba(255,255,255,0.45)",
-                }}
-              >
+              <em className="text-white/45 italic">
                 in motion.
               </em>
             </h2>
 
             <p
-              style={{
-                margin: 0,
-                fontFamily: "'Courier New', monospace",
-                fontSize: "0.78rem",
-                letterSpacing: "0.08em",
-                color: "rgba(255,255,255,0.3)",
-                textAlign: "center",
-                maxWidth: "32ch",
-                lineHeight: 1.7,
-              }}
+              className="m-0 max-w-100 text-center font-mono text-sm leading-[1.7] tracking-[0.08vw] text-white/80"
             >
               Each character assembles as you scroll.
-              <br />
+            
               Drag the page downward to begin.
             </p>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "0.3rem",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'Courier New', monospace",
-                  fontSize: "0.62rem",
-                  letterSpacing: "0.25em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.25)",
-                }}
-              >
+            <div className="flex flex-col items-center gap-[2vw]">
+  <span className="">
+  <p className="font-mono text-xs uppercase tracking-[0.25vw] text-white/80">
+
                 scroll
+  </p>
               </span>
 
               <svg
@@ -344,29 +266,13 @@ export function TextBreak({
           </div>
 
           <span
-            style={{
-              position: "absolute",
-              bottom: "2.2rem",
-              left: "2.4rem",
-              fontFamily: "'Courier New', monospace",
-              fontSize: "0.62rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.18)",
-            }}
+            className="absolute bottom-[2.2rem] left-[2.4rem] font-mono text-xs uppercase tracking-[0.18vw] text-gray-400"
           >
             gsap · splittext
           </span>
 
           <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: "10%",
-              right: "10%",
-              height: "1px",
-              background: BOTTOM_RULE_BACKGROUND,
-            }}
+            className="absolute right-[10%] bottom-0 left-[10%] h-px bg-[linear-gradient(to_right,transparent,rgba(255,255,255,0.12),transparent)]"
           />
         </div>
       </div>
