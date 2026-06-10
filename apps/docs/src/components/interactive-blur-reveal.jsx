@@ -11,6 +11,7 @@ const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   1, -1,
   1, 1,
 ]);
+ 
 const TEXTURE_UNIT_BASE = 0;
 const TEXTURE_UNIT_NOISE = 1;
 const DEFAULT_POINTER_POSITION = 0.5;
