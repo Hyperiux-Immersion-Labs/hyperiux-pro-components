@@ -88,7 +88,7 @@ const DEFAULT_SECTIONS = [
     src: "/assets/img/image02.webp",
   },
   {
-    text: "RUN!!",
+    text: "RUN",
     src: "/assets/img/image03.webp",
   },
 ];

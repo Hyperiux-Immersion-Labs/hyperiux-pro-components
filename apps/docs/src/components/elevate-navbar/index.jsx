@@ -7,12 +7,12 @@ import { ElevateNavbarDesktop } from "./ElevateDesktopNav";
 const menuItems = [
   {
     name: "Effects",
-    href: "/effects",
+    href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "All Effects", img: "/img/dino2.png", href: "/effects" },
-      { title: "Components", img: "/img/dino2.png", href: "/effects/components" },
-      { title: "WebGL", img: "/img/dino2.png", href: "/effects/webgl" },
+      { title: "All Effects", img: "/img/dino2.png", href: "#" },
+      { title: "Components", img: "/img/dino2.png", href: "#" },
+      { title: "WebGL", img: "/img/dino2.png", href: "#" },
     ],
   },
   {
@@ -20,9 +20,9 @@ const menuItems = [
     href: "/tech",
     isDropdown: true,
     dropdown: [
-      { title: "React Effects", img: "/img/dino2.png", href: "/tech/react" },
-      { title: "GSAP Effects", img: "/img/dino2.png", href: "/tech/gsap" },
-      { title: "Three.js Effects", img: "/img/dino2.png", href: "/tech/threejs" },
+      { title: "React Effects", img: "/img/dino2.png", href: "#" },
+      { title: "GSAP Effects", img: "/img/dino2.png", href: "#" },
+      { title: "Three.js Effects", img: "/img/dino2.png", href: "#" },
     ],
   },
   {
@@ -33,12 +33,12 @@ const menuItems = [
   },
   {
     name: "Docs",
-    href: "/docs",
+    href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "Introduction", img: "/img/dino2.png", href: "/docs" },
-      { title: "Installation", img: "/img/dino2.png", href: "/docs/installation" },
-      { title: "CLI", img: "/img/dino2.png", href: "/docs/cli" },
+      { title: "Introduction", img: "/img/dino2.png", href: "#" },
+      { title: "Installation", img: "/img/dino2.png", href: "#" },
+      { title: "CLI", img: "/img/dino2.png", href: "#" },
     ],
   },
 ];
