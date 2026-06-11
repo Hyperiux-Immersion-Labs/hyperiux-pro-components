@@ -4,12 +4,12 @@ import CylindricalScrollCards from"@/components/CylindricalScroll/CylindricalScr
 import { ReactLenis } from"lenis/react";
 
 const cards = [
- { id: 1, image:"/img/1.png", title:"Card 1" },
- { id: 2, image:"/img/2.png", title:"Card 2" },
- { id: 3, image:"/img/3.png", title:"Card 3" },
- { id: 4, image:"/img/4.png", title:"Card 4" },
- { id: 5, image:"/img/5.png", title:"Card 5" },
- { id: 6, image:"/img/6.png", title:"Card 6" },
+ { id: 1, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", title:"Card 1" },
+ { id: 2, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", title:"Card 2" },
+ { id: 3, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", title:"Card 3" },
+ { id: 4, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", title:"Card 4" },
+ { id: 5, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", title:"Card 5" },
+ { id: 6, image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", title:"Card 6" },
 ];
 
 export default function Page() {

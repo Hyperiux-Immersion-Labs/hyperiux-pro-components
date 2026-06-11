@@ -11,7 +11,7 @@ const DEFAULT_MENU_ITEMS = [
     name: "Effects",
     dropdown: [
       { title: "All Effects", img: "/img/dino2.png", href: "/effects" },
-      { title: "Components", img: "/img/dino2.png", href: "/effects/components" },
+    { title: "Components", img: "/img/dino2.png", href: "/effects/components" },
       { title: "WebGL", img: "/img/dino2.png", href: "/effects/webgl-effects" },
     ],
   },

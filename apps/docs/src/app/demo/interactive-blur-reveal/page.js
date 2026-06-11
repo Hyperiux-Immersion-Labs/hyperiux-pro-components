@@ -39,8 +39,9 @@ const Page = () => {
           <p className="text-shadow-lg absolute right-10 bottom-10 max-w-[39vw] text-[1.25vw] leading-[1.45] opacity-70 max-md:max-w-[50vw] max-md:text-[2.5vw] max-sm:bottom-7 max-sm:left-5 max-sm:max-w-[70vw] max-sm:text-[3vw]">
             We build digital spaces with texture, motion, and atmosphere -
             where every scroll, hover, and transition feels less like an
-            interface and more like stepping through glass into another world.
+            interface and more like stepping through glass into another world. 
           </p>
+          
         </section>
       </div>
     </main>
