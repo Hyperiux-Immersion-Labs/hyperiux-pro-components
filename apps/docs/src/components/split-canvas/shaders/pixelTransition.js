@@ -17,20 +17,33 @@ export const PixelTransitionFragment = `
 
  varying vec2 vUv;
 
+ vec2 getPixelatedUv(vec2 uv, vec2 resolution, float gridSize) {
+ vec2 gridCount = max(floor(resolution / gridSize), vec2(1.0));
+ vec2 cellSize = resolution / gridCount;
+ vec2 pixelPos = uv * resolution;
+ vec2 cellIndex = floor(pixelPos / cellSize);
+ vec2 cellCenter = (cellIndex + 0.5) * cellSize;
+
+ return cellCenter / resolution;
+ }
+
  // Draw grid lines only (transparent background)
  float drawGridLines(vec2 uv, vec2 resolution, float gridSize) {
+ vec2 gridCount = max(floor(resolution / gridSize), vec2(1.0));
+ vec2 cellSize = resolution / gridCount;
  vec2 pixelPos = uv * resolution;
  float lineWidth = 1.0;
 
  // Vertical and horizontal lines
- float vLine = step(mod(pixelPos.x, gridSize), lineWidth);
- float hLine = step(mod(pixelPos.y, gridSize), lineWidth);
+ float vLine = step(mod(pixelPos.x, cellSize.x), lineWidth);
+ float hLine = step(mod(pixelPos.y, cellSize.y), lineWidth);
 
  return max(vLine, hLine);
  }
 
  void main() {
  vec2 uv = vUv;
+ vec2 pixelatedUv = getPixelatedUv(uv, u_resolution, u_gridSize);
 
  // Grid lines (just the lines, transparent elsewhere)
  float gridLine = drawGridLines(uv, u_resolution, u_gridSize);
@@ -56,13 +69,13 @@ export const PixelTransitionFragment = `
 
  if (posInSlice < visibleThreshold) {
  // Collapsed part - show texture2
- texColor = texture2D(u_texture2, uv);
+ texColor = texture2D(u_texture2, pixelatedUv);
  } else {
  // Visible part - show texture1 with slide offset
  vec2 adjustedUV = uv;
  float slideOffset = visibleThreshold * sliceHeight;
  adjustedUV.y = clamp(uv.y - slideOffset, 0.0, 1.0);
- texColor = texture2D(u_texture1, adjustedUV);
+ texColor = texture2D(u_texture1, getPixelatedUv(adjustedUV, u_resolution, u_gridSize));
  }
 
  // Composite: transparent background + grid lines + image

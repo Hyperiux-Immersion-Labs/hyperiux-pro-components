@@ -4,8 +4,8 @@ import { useEffect, useRef } from'react';
 import * as THREE from'three';
 import gsap from'gsap';
 import { ScrollTrigger } from'gsap/ScrollTrigger';
-import { PixelTransitionVertex, PixelTransitionFragment } from'./shaders/pixelTransition';
-import { imageSources } from'./content';
+import { PixelTransitionFragment, PixelTransitionVertex } from './shaders/pixelTransition';
+import { imageSources } from './content';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,8 +51,14 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  let isMounted = true;
  let animationId;
 
- const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
- const canvasSize = isMobile ? 300 : 599;
+ const getCanvasSize = () => {
+ if (typeof window === 'undefined') return 599;
+ if (window.innerWidth < 640) return 320;
+ if (window.innerWidth < 768) return 420;
+ return 599;
+ };
+
+ const canvasSize = getCanvasSize();
  const numSlices = 32;
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
@@ -84,7 +90,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  u_progress: { value: 0 },
  u_numSlices: { value: numSlices },
  u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },
- u_gridSize: { value: 15.0 }, // Grid cell size in pixels
+ u_gridSize: { value: 16.0 }, // Grid cell size in pixels
  },
  vertexShader: PixelTransitionVertex,
  fragmentShader: PixelTransitionFragment,
@@ -102,18 +108,19 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  const viewportHeight = window.innerHeight;
  const sectionHeight = viewportHeight; // 100vh per section
 
- // Canvas is centered, so:
- // - Bottom of canvas is at viewport center + canvasSize/2
- // - Top of canvas is at viewport center - canvasSize/2
- const canvasTop = (viewportHeight - canvasSize) / 2;
- const canvasBottom = canvasTop + canvasSize;
-
  ScrollTrigger.create({
  trigger: wrapper,
  start:'top top',
  end:'bottom bottom',
  scrub: true,
  onUpdate: (self) => {
+ // Use the actual rendered canvas position so transitions stay aligned
+ // even when breakpoint styles shift the canvas up or down.
+ const canvasRect = container.getBoundingClientRect();
+ const canvasTop = canvasRect.top;
+ const canvasBottom = canvasRect.bottom;
+ const canvasHeight = canvasRect.height || canvasSize;
+
  // Current scroll position within wrapper (in pixels)
  const wrapperHeight = wrapper.offsetHeight;
  const scrolled = self.progress * (wrapperHeight - viewportHeight);
@@ -134,7 +141,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  if (borderPos <= canvasBottom && borderPos >= canvasTop) {
  currentTransition = i - 1;
  // Progress: 0 when border at canvasBottom, 1 when border at canvasTop
- transitionProgress = (canvasBottom - borderPos) / canvasSize;
+ transitionProgress = (canvasBottom - borderPos) / canvasHeight;
  break;
  } else if (borderPos < canvasTop) {
  // Border has passed above canvas, this transition is complete
@@ -183,8 +190,8 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  const canvasTextures = canvases.map(canvas => {
  const texture = new THREE.CanvasTexture(canvas);
  texture.needsUpdate = true;
- texture.minFilter = THREE.LinearFilter;
- texture.magFilter = THREE.LinearFilter;
+ texture.minFilter = THREE.NearestFilter;
+ texture.magFilter = THREE.NearestFilter;
  return texture;
  });
 
@@ -217,7 +224,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  return (
  <div
  ref={containerRef}
- className="w-150 h-150 max-sm:w-75 max-sm:h-75 border-r border-t border-black/20"
+ className="h-[599px] w-[599px] max-md:h-[420px] max-md:w-[420px] max-sm:h-[320px] max-sm:w-[320px] max-sm:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }

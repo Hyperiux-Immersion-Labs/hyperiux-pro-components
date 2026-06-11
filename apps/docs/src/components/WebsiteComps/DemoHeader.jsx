@@ -4,6 +4,7 @@ import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { ArrowFillButton } from "@/components/arrow-fill-button";
+import { LinkButton } from "@/components/link-button";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
@@ -32,7 +33,7 @@ export default function DemoHeader({
     <>
    
 
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-20 w-full px-10 py-3 transition-transform duration-500 ease-out ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-50 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-3 transition-transform duration-500 ease-out ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -92,20 +93,30 @@ export default function DemoHeader({
 
           <div className="min-w-0 text-right">
             {showText ? (
-              <ArrowFillButton
-                href={href}
-                btnText={text}
-              
-                // bgColor={resolvedTextColor}
-                textColor="#ffffff"
-                // fillBgColor="#ffffff"
-                // fillTextColor={resolvedTextColor}
-                // hoverFillBgColor="#ffffff"
-                hoverFillTextColor="#ff6b00"
-                arrowColor='#ff6b00'
-                hoverArrowColor='#ff6b00'
-                className="scale-[0.3] origin-right transition-transform duration-200 sm:scale-90 border border-[#ff5f00]"
-              />
+              <>
+                <ArrowFillButton
+                  href={href}
+                  btnText={text}
+                  // bgColor={resolvedTextColor}
+                  textColor="#ffffff"
+                  // fillBgColor="#ffffff"
+                  // fillTextColor={resolvedTextColor}
+                  // hoverFillBgColor="#ffffff"
+                  hoverFillTextColor="#ff6b00"
+                  arrowColor='#ff6b00'
+                  hoverArrowColor='#ff6b00'
+                  className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
+                />
+                <LinkButton
+                  href={href}
+                  
+                  text={text}
+                  mobileText={text}
+                  clickedColor="#ff6b00"
+                  className="hidden origin-right text-xl scale-[0.7] text-black transition-transform duration-200  max-md:block max-sm:block"
+                  iconClassName="h-5 w-5 max-md:h-6 max-md:w-6 max-sm:h-6 max-sm:w-6"
+                />
+              </>
             ) : null}
           </div>
         </div>

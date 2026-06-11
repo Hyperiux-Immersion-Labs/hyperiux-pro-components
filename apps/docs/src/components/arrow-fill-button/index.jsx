@@ -39,204 +39,45 @@ export function ArrowFillButton({
   }, []);
 
   return (
-    <>
-      <Link
-        {...props}
-        className={`arrow-bg-fill-btn cursor-default ${isReady ? "is-ready" : ""} ${className}`}
-        style={{
-          "--btn-bg": usesUtilityBackground ? undefined : bgColor,
-          "--btn-text": textColor,
-          "--btn-fill-bg": fillBgColor,
-          "--btn-fill-text": fillTextColor,
-          "--btn-fill-bg-hover": hoverFillBgColor,
-          "--btn-fill-text-hover": hoverFillTextColor,
-          "--btn-arrow": arrowColor || fillTextColor,
-          "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
-          visibility: isReady ? "visible" : "hidden",
-        }}
+    <Link
+      {...props}
+      className={`group relative inline-flex h-[4.2vw] w-fit max-w-none min-w-0 cursor-default items-center justify-center overflow-hidden rounded-full px-[3vw] pr-[calc(var(--icon-slot)+1.4vw)] whitespace-nowrap font-medium text-[1.1vw] [text-rendering:geometricPrecision] [--icon-slot:3.6vw] [--icon-circle:2.2vw] max-md:h-[11vw] max-md:px-[5vw] max-md:pr-[calc(var(--icon-slot)+3vw)] max-md:text-[3vw] max-md:font-normal max-md:[--icon-slot:9vw] max-md:[--icon-circle:5.5vw] max-sm:h-[15vw] max-sm:px-[7vw] max-sm:pr-[calc(var(--icon-slot)+4vw)] max-sm:text-[4.2vw] max-sm:[--icon-slot:12.5vw] max-sm:[--icon-circle:7.5vw] ${usesUtilityBackground ? "" : "bg-(--btn-bg)"} text-(--btn-text) ${className}`}
+      style={{
+        "--btn-bg": bgColor,
+        "--btn-text": textColor,
+        "--btn-fill-bg": fillBgColor,
+        "--btn-fill-text": fillTextColor,
+        "--btn-fill-bg-hover": hoverFillBgColor,
+        "--btn-fill-text-hover": hoverFillTextColor,
+        "--btn-arrow": arrowColor || fillTextColor,
+        "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
+        visibility: isReady ? "visible" : "hidden",
+      }}
+    >
+      <span className="relative z-1 pb-px">{btnText}</span>
+
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute -inset-px z-2 flex items-center rounded-full bg-(--btn-fill-bg) px-[3vw] pr-[calc(var(--icon-slot)+1.4vw)] text-(--btn-fill-text) [clip-path:inset(0.7vw_0.7vw_0.7vw_calc(100%-var(--icon-slot))_round_9999px)] max-md:px-[5vw] max-md:pr-[calc(var(--icon-slot)+3vw)] max-md:[clip-path:inset(16%_6%_18%_calc(100%-var(--icon-slot))_round_9999px)] max-sm:px-[7vw] max-sm:pr-[calc(var(--icon-slot)+4vw)] max-sm:[clip-path:inset(18%_6%_18%_calc(100%-var(--icon-slot))_round_9999px)] ${isReady ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_round_9999px)]" : ""}`}
       >
-        <span className="arrow-bg-fill-btn__text">{btnText}</span>
+        <span>{btnText}</span>
 
-        <div aria-hidden="true" className="arrow-bg-fill-btn__circle">
-          <span>{btnText}</span>
-
-          <div className="arrow-bg-fill-btn__circle-text">
-            <span className="arrow-bg-fill-btn__icon" aria-hidden="true">
-              <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8} />
-              <ArrowRight className="arrow-bg-fill-btn__path" strokeWidth={1.8} />
-            </span>
-          </div>
+        <div className="flex w-full items-center gap-[1vw] whitespace-nowrap pb-px max-md:gap-[2vw] max-sm:gap-[2.5vw]">
+          <span
+            className={`absolute right-[0.7vw] max-md:right-[2.2vw] top-1/2 inline-flex h-[var(--icon-circle)] min-h-[var(--icon-circle)] w-[var(--icon-circle)] min-w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow)  max-sm:right-[2.5vw] ${isReady ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover)" : ""}`}
+            aria-hidden="true"
+          >
+            <ArrowRight
+              className={`${isReady ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)]" : ""} absolute left-1/2 top-1/2 h-[58%] w-[58%] -translate-x-[170%] -translate-y-1/2 origin-center scale-0 text-current group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100`}
+              strokeWidth={1.8}
+            />
+            <ArrowRight
+              className={`${isReady ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)]" : ""} absolute left-1/2 top-1/2 h-[58%] w-[58%] -translate-x-1/2 -translate-y-1/2 origin-center text-current group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0`}
+              strokeWidth={1.8}
+            />
+          </span>
         </div>
-      </Link>
-
-      <style jsx global>{`
- .arrow-bg-fill-btn {
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   height: 4.2vw;
-   padding-right: 5vw;
-   padding-left: 3vw;
-   position: relative;
-   width: fit-content;
-   min-width: unset;
-   max-width: unset;
-   border-radius: 1000px;
-   background-color: var(--btn-bg, #ff6b00);
-   color: var(--btn-text);
-   font-size: 1.1vw;
-   font-weight: 500;
-   text-rendering: geometricPrecision;
-   white-space: nowrap;
-   overflow: hidden;
- }
-
- .arrow-bg-fill-btn__text {
-   position: relative;
-   z-index: 1;
-   padding-bottom: 1px;
- }
-
- .arrow-bg-fill-btn__circle {
-   clip-path: inset(0.7vw 0.7vw 0.7vw calc(100% - 3.6vw) round 4vw);
-   position: absolute;
-   inset: -1px;
-   border-radius: 1000px;
-   display: flex;
-   align-items: center;
-   padding-right: 5vw;
-   padding-left: 3vw;
-   z-index: 2;
-   background-color: var(--btn-fill-bg);
-   color: var(--btn-fill-text);
-   pointer-events: none;
-   transition: none;
- }
-
- .arrow-bg-fill-btn__circle-text {
-   padding: 0 0 1px 0;
-   display: flex;
-   align-items: center;
-   gap: 1vw;
-   width: 100%;
-   white-space: nowrap;
- }
-
- .arrow-bg-fill-btn__icon {
-   width: 1.1vw;
-   height: 1.1vw;
-   position: absolute;
-   right: 1.6vw;
-   overflow: hidden;
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   flex: 0 0 auto;
-   color: var(--btn-arrow);
- }
-
- .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__icon {
-   color: var(--btn-arrow-hover);
- }
-
- .arrow-bg-fill-btn__path {
-   transition: none;
-   position: absolute;
-   inset: 0;
-   transform-origin: center center;
-   width: 100%;
-   height: 100%;
-   color: currentColor;
- }
-
- .arrow-bg-fill-btn.is-ready .arrow-bg-fill-btn__circle {
-   transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
- }
-
- .arrow-bg-fill-btn.is-ready .arrow-bg-fill-btn__path {
-   transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
- }
-
- .arrow-bg-fill-btn__path:first-child {
-   transform: translateX(-120%) scale(0);
- }
-
- .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__path:first-child {
-   transform: translateX(0) scale(1);
- }
-
- .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__path:last-child {
-   transform: translateX(120%) scale(0);
- }
-
- .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__circle {
-   clip-path: inset(0 round 4vw);
-   background-color: var(--btn-fill-bg-hover);
-   color: var(--btn-fill-text-hover);
- }
-
- @media screen and (max-width: 1024px) {
-   .arrow-bg-fill-btn {
-     height: 11vw;
-     padding-right: 10vw;
-     padding-left: 5vw;
-     font-size: 3vw;
-     font-weight: 400;
-   }
-
-   .arrow-bg-fill-btn__circle {
-     padding-right: 10vw;
-     padding-left: 5vw;
-     clip-path: inset(16% 6% 18% calc(100% - 9vw) round 4vw);
-   }
-
-   .arrow-bg-fill-btn__icon {
-     width: 2vw;
-     height: 2vw;
-     right: 4.5vw;
-   }
-
-   .arrow-bg-fill-btn__circle-text {
-     padding: 0 2% 0 0;
-     gap: 2vw;
-   }
-
-   .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__circle {
-     clip-path: inset(0 round 4vw);
-   }
- }
-
- @media screen and (max-width: 540px) {
-   .arrow-bg-fill-btn {
-     height: 15vw;
-     padding-right: 15vw;
-     padding-left: 7vw;
-     font-size: 4.2vw;
-     font-weight: 400;
-   }
-
-   .arrow-bg-fill-btn__circle {
-     padding-right: 15vw;
-     padding-left: 7vw;
-     clip-path: inset(18% 6% 18% calc(100% - 12.5vw) round 10vw);
-   }
-
-   .arrow-bg-fill-btn__icon {
-     width: 3.5vw;
-     height: 3.5vw;
-     right: 5.8vw;
-   }
-
-   .arrow-bg-fill-btn__circle-text {
-     padding: 0 3.5% 0 0;
-     gap: 2.5vw;
-   }
-
-   .arrow-bg-fill-btn:hover .arrow-bg-fill-btn__circle {
-     clip-path: inset(0 round 10vw);
-   }
- }
- `}</style>
-    </>
+      </div>
+    </Link>
   );
 }
