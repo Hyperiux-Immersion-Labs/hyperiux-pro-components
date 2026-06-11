@@ -8,11 +8,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const SPLIT_TYPES = "lines,chars";
 const SPLIT_MASK = "chars";
 const CHARS_CLASS = "char++";
+
 const INITIAL_Y_PERCENT = 100;
 const INITIAL_ROTATION = 8;
+
 const ANIMATION_DURATION = 0.5;
 const STAGGER_DELAY = 0.03;
 const ANIMATION_EASE = "power3.out";
+
 const COPY_WRAPPER_ATTRIBUTE = "data-copy-wrapper";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -22,28 +25,27 @@ export function OverFlowStagAnim({
   animateOnScroll = true,
   delay = 0,
   className = "",
+  stagger = STAGGER_DELAY,
   scrub = true,
   start = "top 90%",
   end = "bottom 60%",
 }) {
-  // State and refs
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
   const charactersRef = useRef([]);
 
-  // Effects
   useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
+    if (!containerRef.current) return;
 
     splitRefs.current = [];
     charactersRef.current = [];
 
     const animationTarget = containerRef.current;
+
     const shouldSplitChildren = animationTarget.hasAttribute(
       COPY_WRAPPER_ATTRIBUTE
     );
+
     const elementsToSplit = shouldSplitChildren
       ? Array.from(animationTarget.children)
       : [animationTarget];
@@ -80,7 +82,7 @@ export function OverFlowStagAnim({
           yPercent: 0,
           rotate: 0,
           duration: ANIMATION_DURATION,
-          stagger: STAGGER_DELAY,
+          stagger,
           ease: ANIMATION_EASE,
           delay,
         };
@@ -112,9 +114,8 @@ export function OverFlowStagAnim({
 
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, end, scrub, start]);
+  }, [animateOnScroll, delay, end, scrub, stagger, start]);
 
-  // Return
   return (
     <div
       ref={containerRef}

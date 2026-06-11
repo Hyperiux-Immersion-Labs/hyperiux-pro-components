@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import {OverFlowStagAnim} from "@/components/overflow-stagger-text";
+import { OverFlowStagAnim } from "@/components/overflow-stagger-text";
 import { ReactLenis } from "lenis/react";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 const details = [
   { label: "Split", value: "characters" },
@@ -26,45 +28,53 @@ const Page = () => {
   return (
     <ReactLenis root>
       <main className="overflow-hidden bg-[#f4efe6] text-[#151515]">
-        <section className="min-h-screen px-8 py-8 max-sm:px-4 max-md:py-18 max-sm:py-4">
-          <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl grid-rows-[auto_1fr_auto] border border-[#151515]/15 bg-[#fbf8f1] max-sm:min-h-[calc(100vh-2rem)]">
+        <section className=" px-8 py-8 max-sm:px-4 max-md:py-18 max-sm:py-4">
+          <div className="mx-auto grid  max-w-7xl grid-rows-[auto_1fr_auto] border border-[#151515]/15 bg-[#fbf8f1] max-sm:min-h-[calc(100vh-2rem)]">
             <div className="flex items-center justify-between border-b border-[#151515]/15 px-6 py-5 text-xs max-sm:text-sm max-md:text-base font-semibold uppercase tracking-[0.24em] text-[#151515]/60 max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:px-4 max-sm:tracking-[0.16em]">
               <span>Overflow Stagger Text</span>
               <span>Character reveal system</span>
             </div>
 
-            <div className="grid items-center gap-10 px-6 py-14 lg:grid-cols-[1.08fr_0.92fr] max-sm:px-4 max-sm:py-10">
-              <div>
-                <p className="mb-6 w-fit rounded-full bg-[#151515] px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#fbf8f1] max-sm:text-xs">
-                  Staggered overflow
-                </p>
-
-                <OverFlowStagAnim scrub={false} start="top 80%">
-                  <h1 className="max-w-5xl text-[clamp(4rem,10vw,10rem)] font-black uppercase leading-[0.82] tracking-normal text-[#151515] max-sm:text-[3.8rem] max-sm:leading-[0.86]">
+            <div className="grid  gap-10 px-6 py-14 lg:grid-cols-[1.08fr_0.92fr] max-sm:px-4 max-sm:py-10">
+              <div className="flex flex-col gap-[2vw] max-sm:gap-[4vw]">
+                <OverFlowStagAnim scrub={false} start="top bottom">
+                  <h1 className=" text-[7vw] uppercase leading-[0.82] tracking-normal text-[#151515] max-md:text-[10vw] max-sm:text-[15vw] max-sm:leading-[0.86]">
                     Text that steps into frame.
                   </h1>
                 </OverFlowStagAnim>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="w-fit cursor-pointer rounded-full bg-black px-[1.5vw] py-[1vw] text-white leading-[1] max-sm:px-[7vw] max-sm:py-[4vw] max-md:px-[3vw] max-md:py-[2vw]"
+                >
+                  <div className="mt-[-0.2vw]">Replay The Animation</div>
+                </button>
               </div>
 
               <div className="grid gap-6">
-                <div className="relative aspect-4/5  overflow-hidden bg-[#dbeafe] max-md:aspect-16/11">
-                
+                <div className="relative size-[30vw]  overflow-hidden bg-[#dbeafe] max-md:size-[85vw]">
                   <Image
                     src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
                     alt=""
                     fill
                     priority
-                    sizes="(max-width: 640px) 100vw, 42vw"
+                    sizes=""
                     className="object-cover"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-[#151515] px-5 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#fbf8f1] max-sm:text-[0.68rem]">
                     Overflow hidden / characters visible
                   </div>
                 </div>
-
-                <p className="max-w-md text-lg leading-8 text-[#151515]/68 max-sm:text-base max-sm:leading-7">
-                  A clean text reveal where each character rises from a clipped line with a tiny rotation. It feels playful, but the layout stays calm.
-                </p>
+                <OverFlowStagAnim
+                  scrub={false}
+                  start="top bottom"
+                  stagger={0.008}
+                >
+                  <p className="max-w-md text-lg leading-8 text-[#151515]/68 max-sm:text-base max-sm:leading-7">
+                    A clean text reveal where each character rises from a
+                    clipped line with a tiny rotation. It feels playful, but the
+                    layout stays calm.
+                  </p>
+                </OverFlowStagAnim>
               </div>
             </div>
 
@@ -77,7 +87,9 @@ const Page = () => {
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#151515]/45 max-sm:tracking-[0.16em]">
                     {label}
                   </p>
-                  <p className="mt-2 text-xl font-black uppercase max-sm:text-lg">{value}</p>
+                  <p className="mt-2 text-xl font-black uppercase max-sm:text-lg">
+                    {value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -120,7 +132,7 @@ const Page = () => {
             </div>
 
             <div className="flex flex-col justify-between gap-12">
-              <OverFlowStagAnim scrub={true} start="top 80%" end='bottom 80%'>
+              <OverFlowStagAnim scrub={true} start="top 80%" end="bottom 80%">
                 <h2 className="text-6xl font-black uppercase leading-[0.9] max-sm:text-[3.1rem]">
                   Simple setup, expressive entrance.
                 </h2>
@@ -132,7 +144,9 @@ const Page = () => {
                     key={note}
                     className="border-t border-white/20 pt-5 text-lg leading-8 text-white/70 max-sm:text-base max-md:text-xl max-sm:leading-7"
                   >
-                    <span className="mr-4 font-black text-[#f8d84a]">0{index + 1}</span>
+                    <span className="mr-4 font-black text-[#f8d84a]">
+                      0{index + 1}
+                    </span>
                     {note}
                   </p>
                 ))}
@@ -140,6 +154,7 @@ const Page = () => {
             </div>
           </div>
         </section>
+        <ScrollBottom textColor={"text-[#151515]"}/>
       </main>
     </ReactLenis>
   );
