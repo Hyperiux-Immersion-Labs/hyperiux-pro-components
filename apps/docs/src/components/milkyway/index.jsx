@@ -11,7 +11,8 @@ import Link from'next/link'
 import EdgeBlurEffect from'@/components/Valley/EdgeBlurEffect'
 import CircularText from'@/components/Valley/CircularText'
 
-
+// ─────────────────────────────────────────────────────────────
+// CONFIG // ─────────────────────────────────────────────────────────────
 const CFG = {
  texSize: 400,
  maxRadius: 3.5,
@@ -81,6 +82,9 @@ const SMOKE_CFG = {
  seed: 7777,
 }
 
+// ─────────────────────────────────────────────────────────────
+// SHADERS (do not remove/modify except for whitespace)
+// ─────────────────────────────────────────────────────────────
 const SIM_FRAG = /* glsl */`
 precision highp float;
 uniform sampler2D uPosition;
@@ -382,6 +386,9 @@ void main(){
 }
 `
 
+// ─────────────────────────────────────────────────────────────
+// Inline GPUCompute
+// ─────────────────────────────────────────────────────────────
 class GPUCompute {
  constructor(w, h, renderer) {
  this.w = w
@@ -447,9 +454,13 @@ class GPUCompute {
  Object.values(this.vars).forEach(v => {
  v.rtA.dispose(); v.rtB.dispose(); v.simMat.dispose(); v.mesh.geometry.dispose()
  })
+ /* Do not dispose static geo/cam/scene, they are shared */
  }
 }
 
+// ─────────────────────────────────────────────────────────────
+// Seeded RNG (mulberry32)
+// ─────────────────────────────────────────────────────────────
 function mulberry32(seed) {
  let t = seed >>> 0
  return () => {
@@ -460,8 +471,9 @@ function mulberry32(seed) {
  }
 }
 
+// ─────────────────────────────────────────────────────────────
 // Build DataTextures for initial positions and static data
-
+// ─────────────────────────────────────────────────────────────
 function buildTextures(cfg) {
  const { texSize: S, maxRadius, holeRadius, holeEdgeBand, arms, spiralTightness, armWidth,
  diskHeight, coreRadius, coreHeight, seed } = cfg
@@ -529,9 +541,9 @@ function buildTextures(cfg) {
  return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
 }
 
-
+// ─────────────────────────────────────────────────────────────
 // Build particle geometry (attributes only — positions on GPU)
-
+// ─────────────────────────────────────────────────────────────
 function buildGeo(cfg) {
  const { texSize: S, maxRadius, holeRadius, coreRadius, seed } = cfg
  const count = S * S
@@ -569,9 +581,9 @@ function buildGeo(cfg) {
  return geo
 }
 
-
+// ─────────────────────────────────────────────────────────────
 // Build smoke DataTextures (initial positions + static data)
-
+// ─────────────────────────────────────────────────────────────
 function buildSmokeTextures(cfg) {
  const S = cfg.texSize
  const total = S * S
@@ -648,9 +660,9 @@ function buildSmokeGeo(cfg) {
  return geo
 }
 
-
+// ─────────────────────────────────────────────────────────────
 // SmokeFlow — GPGPU-driven flowing nebula layer
-
+// ─────────────────────────────────────────────────────────────
 const SmokeFlow = React.memo(function SmokeFlow() {
  const { gl } = useThree()
  const gpuRef = useRef(null)
@@ -714,10 +726,10 @@ const SmokeFlow = React.memo(function SmokeFlow() {
 })
 
 
-// Galaxy group — base pose + smooth mouse tilt (whole scene)
-
 const GALAXY_BASE_ROT = [degToRad(110), degToRad(-10), degToRad(0)]
+/** Max euler offset (rad) from mouse at screen edges — keep small for subtle parallax */
 const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
+/** How fast smoothed mouse catches the cursor (frame-rate independent lerp) */
 const MOUSE_LERP_LAMBDA = 1
 
 function GalaxyMouseGroup({ children }) {
@@ -756,8 +768,6 @@ function GalaxyMouseGroup({ children }) {
  )
 }
 
-
-// MilkyWayGPGPU— main R3F component
 
 const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
  const { gl } = useThree()
@@ -822,8 +832,6 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
 })
 
 
-// Starfield background (plain points, no canvas — pure THREE.js)
-
 const BackgroundStars = React.memo(function BackgroundStars() {
  const mesh = useMemo(() => {
  const count = 4000
@@ -872,8 +880,7 @@ function getMobileSnapshot() {
  return window.matchMedia(MOBILE_QUERY).matches
 }
 
-
-export function Milkyway() {
+export function MilkyWay() {
  const dpr = useSyncExternalStore(subscribeToViewportChange, getDprSnapshot, () => 1)
  const isMobile = useSyncExternalStore(subscribeToViewportChange, getMobileSnapshot, () => true)
 
@@ -946,7 +953,7 @@ export function Milkyway() {
  Particles Galaxy
 
  </h1>
- <h1 className='text-[7vw]  mt-[-1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
+ <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
  </div>
 
  {!isMobile && (

@@ -1,9 +1,9 @@
 import React from 'react'
-import {Milkyway} from '@/components/milkyway'
+import { MilkyWay } from '@/components/milkyway'
 
 const page = () => {
   return (
-   <Milkyway />
+   <MilkyWay />
   )
 }
 

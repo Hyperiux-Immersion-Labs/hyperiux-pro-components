@@ -725,9 +725,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
  )
 })
 
-// ─────────────────────────────────────────────────────────────
-// Galaxy group — base pose + smooth mouse tilt (whole scene)
-// ─────────────────────────────────────────────────────────────
+
 const GALAXY_BASE_ROT = [degToRad(110), degToRad(-10), degToRad(0)]
 /** Max euler offset (rad) from mouse at screen edges — keep small for subtle parallax */
 const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
@@ -770,9 +768,7 @@ function GalaxyMouseGroup({ children }) {
  )
 }
 
-// ─────────────────────────────────────────────────────────────
-// MilkyWayGPGPU — main R3F component
-// ─────────────────────────────────────────────────────────────
+
 const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
  const { gl } = useThree()
  const groupRef = useRef()
@@ -835,9 +831,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
  )
 })
 
-// ─────────────────────────────────────────────────────────────
-// Starfield background (plain points, no canvas — pure THREE.js)
-// ─────────────────────────────────────────────────────────────
+
 const BackgroundStars = React.memo(function BackgroundStars() {
  const mesh = useMemo(() => {
  const count = 4000
@@ -886,9 +880,6 @@ function getMobileSnapshot() {
  return window.matchMedia(MOBILE_QUERY).matches
 }
 
-// ─────────────────────────────────────────────────────────────
-// Page
-// ─────────────────────────────────────────────────────────────
 export function MilkyWay() {
  const dpr = useSyncExternalStore(subscribeToViewportChange, getDprSnapshot, () => 1)
  const isMobile = useSyncExternalStore(subscribeToViewportChange, getMobileSnapshot, () => true)

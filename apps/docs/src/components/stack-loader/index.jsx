@@ -307,7 +307,6 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       </div>
 
       <p
-
         ref={descriptionTextRef}
         className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-md:bottom-[3vw] max-md:w-[68vw] max-md:text-[2.4vw] max-sm:bottom-[6vw] max-sm:w-[90%] max-sm:text-[3.5vw]"
       >
