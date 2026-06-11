@@ -1,6 +1,5 @@
 import { CylindricalScrollCards } from "./CylindricalScroll";
 import { ReactLenis } from"lenis/react";
-import DemoHeader from "../WebsiteComps/DemoHeader";
 import ScrollBottom from "../WebsiteComps/ScrollBottom";
 
 const cards = [
@@ -15,7 +14,6 @@ const cards = [
 export function HelixSlider() {
  return (
     <>
-   <DemoHeader logoColor="#ffffff" />
  <ReactLenis root options={{infinite: true,}}>
  <main>
   <ScrollBottom className='z-90 bottom-[5%] gap-[0.5vw] ' textColor={'text-white'} />

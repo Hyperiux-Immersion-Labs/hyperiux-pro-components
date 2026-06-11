@@ -69,7 +69,7 @@ export function LinkButton({
         {...linkProps}
         {...props}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-md:text-[3vw] max-sm:text-[4.2vw] ${className}`}
+        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-md:text-[4vw] max-sm:text-[5.5vw] ${className}`}
         style={clickedStyle}
       >
         <div className="flex items-center justify-start gap-2">
