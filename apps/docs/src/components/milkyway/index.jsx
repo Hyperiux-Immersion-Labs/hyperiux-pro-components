@@ -6,7 +6,7 @@ import { Center } from'@react-three/drei'
 import * as THREE from'three'
 import { degToRad } from'three/src/math/MathUtils'
 import { EffectComposer, Vignette } from'@react-three/postprocessing'
-import {Stars } from'lucide-react'
+import {ArrowRight, Stars } from'lucide-react'
 import Link from'next/link'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import CircularText from'@/components/Valley/CircularText'
@@ -963,9 +963,16 @@ export function MilkyWay() {
  {/* Navbar (leave unchanged) */}
  <div className='w-full absolute top-0 left-0 pt-[2vw] px-[2vw] flex items-center max-sm:flex-col max-sm:gap-5 justify-between h-fit'>
  <p className='text-4xl font-medium'>Galaxy</p>
- <p className='w-60 leading-[1.2]'>
+ <div className='w-60 space-y-2'>
+
+ <p className='leading-[1.2]'>
     Move your cursor around and watch the scene respond.
  </p>
+     <button className="pr-4 py-1.5 flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
+              <Link href={"/effects"}>Explore Platform</Link>
+              <ArrowRight className='h-4 w-4' />
+            </button>
+ </div>
 
  
  </div>

@@ -1,4 +1,4 @@
-import DemoHeader from "@/components/DemoHeader";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { StickyContent } from "@/components/sticky-content-wrapper";
 import { ReactLenis } from"lenis/react";
 

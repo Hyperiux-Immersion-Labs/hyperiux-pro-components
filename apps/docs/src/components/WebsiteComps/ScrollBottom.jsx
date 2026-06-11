@@ -1,8 +1,10 @@
 import React from 'react'
 
-const ScrollBottom = ({textColor,className}) => {
+const ScrollBottom = ({textColor,
+  className='bottom-[5%] gap-[1vw]'
+}) => {
   return (
-    <div className={`fixed bottom-[5%] left-1/2 -translate-x-1/2 ${textColor} flex flex-col gap-[1vw] justify-center items-center  ${className}`}>
+    <div className={`fixed left-1/2 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
           scroll
           <svg
             width="20"
