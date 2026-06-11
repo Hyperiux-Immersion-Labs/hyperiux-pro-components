@@ -1,6 +1,7 @@
 
 // import ScrollDistortion from '@/components/scroll-distortion'
 import ScrollDistortion from '@/components/scroll-distortion'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import React from'react'
 
 const sections = [
@@ -19,10 +20,14 @@ const shaderConfig = {
 
 export default function page() {
  return (
- <ScrollDistortion
- sections={sections}
- shaderConfig={shaderConfig}
- displacementSrc="/assets/img/distortion.jpg"
- />
+    <>
+    <ScrollDistortion
+    sections={sections}
+    shaderConfig={shaderConfig}
+    displacementSrc="/assets/img/distortion.jpg"
+    />
+    <ScrollBottom textColor={"text-white"}/>
+    
+    </>
  )
 }

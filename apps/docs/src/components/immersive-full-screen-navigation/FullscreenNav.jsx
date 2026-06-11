@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -153,40 +154,49 @@ export default function FullscreenNav({
       <header
         className={`fixed top-0 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
-        <Link
-          href={brandHref}
-          style={{ color: isOpen ? headerOpenColor : undefined }}
-          className={`text-2xl font-normal tracking-tight transition-colors duration-500 ease-in-out ${
-            isOpen ? "delay-500" : "text-black delay-500"
-          }`}
-        >
-          {brand}
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 cursor-pointer">
+          <Image
+            src="/hyperiux.svg"
+            alt="Hyperiux"
+            className={` transition-all duration-300 ${isOpen?"brightness-100  delay-700":"brightness-0  delay-700"}`}
+            width={30}
+            height={30}
+          />
+
+          <div className="flex items-center gap-2">
+            <Image
+              src="/hyperiux-wordmark.svg"
+              alt="Hyperiux"
+              className={`transition-all duration-300 ${isOpen?"brightness-100  delay-700":"brightness-0  delay-700"}`}
+              width={156}
+              height={45}
+            />
+          </div>
+          </Link>
+        </div>
 
         <button
           onClick={onToggleMenu}
           onTouchStart={onToggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
-          className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5"
+          className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5 max-md:size-14 max-sm:size-10"
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${
-              isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
-            }`}
+            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
+              }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-500 delay-300 ${
-              isOpen ? "scale-x-0 opacity-0" : "bg-black"
-            }`}
+            className={`block h-[2px] w-full transition-all duration-500 delay-300 ${isOpen ? "scale-x-0 opacity-0" : "bg-black"
+              }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${
-              isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
-            }`}
+            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
+              }`}
           />
         </button>
       </header>
@@ -194,9 +204,8 @@ export default function FullscreenNav({
       <nav
         ref={overlayRef}
         style={{ clipPath: closedInitial, backgroundColor: overlayBg }}
-        className={`fixed inset-0 z-60 flex flex-col items-center justify-center gap-2 ${
-          isOpen ? "pointer-events-auto" : "pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-60 flex flex-col items-center justify-center gap-2 ${isOpen ? "pointer-events-auto" : "pointer-events-none"
+          }`}
         aria-hidden={!isOpen}
         role="navigation"
       >
@@ -207,19 +216,19 @@ export default function FullscreenNav({
           {children
             ? children(isOpen)
             : links.map(({ label, href }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  onClick={isOpen ? onCloseMenu : undefined}
-                  tabIndex={isOpen ? 0 : -1}
-                  style={{ color: linkColor }}
-                  onMouseEnter={onLinkMouseEnter}
-                  onMouseLeave={onLinkMouseLeave}
-                  className={`${linkSizeClass} font-normal tracking-tight transition-colors`}
-                >
-                  {label}
-                </Link>
-              ))}
+              <Link
+                key={label}
+                href={href}
+                onClick={isOpen ? onCloseMenu : undefined}
+                tabIndex={isOpen ? 0 : -1}
+                style={{ color: linkColor }}
+                onMouseEnter={onLinkMouseEnter}
+                onMouseLeave={onLinkMouseLeave}
+                className={`${linkSizeClass} font-normal tracking-tight transition-colors`}
+              >
+                {label}
+              </Link>
+            ))}
         </div>
       </nav>
     </>
