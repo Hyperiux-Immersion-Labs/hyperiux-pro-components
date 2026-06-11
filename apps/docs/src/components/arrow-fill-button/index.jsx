@@ -8,14 +8,14 @@ export function ArrowFillButton({
   btnText,
   className = "",
 
-  bgColor = "#ff6b00",
+  bgColor = "#ff5f00",
   textColor = "#ffffff",
 
   fillBgColor = "#ffffff",
-  fillTextColor = "#ff6b00",
+  fillTextColor = "#ff5f00",
 
   hoverFillBgColor = "#ffffff",
-  hoverFillTextColor = "#ff6b00",
+  hoverFillTextColor = "#ff5f00",
 
   // NEW
   arrowColor,

@@ -95,6 +95,7 @@ export default function DemoHeader({
               <ArrowFillButton
                 href={href}
                 btnText={text}
+              
                 // bgColor={resolvedTextColor}
                 textColor="#ffffff"
                 // fillBgColor="#ffffff"
@@ -103,7 +104,7 @@ export default function DemoHeader({
                 hoverFillTextColor="#ff6b00"
                 arrowColor='#ff6b00'
                 hoverArrowColor='#ff6b00'
-                className="scale-[0.3] origin-right transition-transform duration-200 sm:scale-90"
+                className="scale-[0.3] origin-right transition-transform duration-200 sm:scale-90 border border-[#ff5f00]"
               />
             ) : null}
           </div>

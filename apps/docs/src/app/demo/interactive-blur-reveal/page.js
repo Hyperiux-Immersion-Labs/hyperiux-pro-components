@@ -1,4 +1,5 @@
 import InteractiveBlurReveal from '@/components/interactive-blur-reveal'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import Link from 'next/link'
 
 const Page = () => {
@@ -8,21 +9,11 @@ const Page = () => {
         iChannel0="/assets/img/image02.webp"
         iChannel1="/assets/download.png"
       />
+        <DemoHeader logoColor={"#ffffff"}/>
+
 
       {/* Overlay copy (matches reference layout) */}
       <div className="pointer-events-none fixed inset-0 z-10 h-screen w-screen">
-        <header className="flex items-start justify-between px-10 pt-7 max-sm:px-5 max-sm:pt-5">
-          <div className="text-sm max-sm:text-sm font-semibold opacity-90 max-md:text-lg">HYPERIUX</div>
-
-          <Link
-            className="pointer-events-auto text-sm max-sm:text-sm max-md:text-lg font-semibold opacity-90 transition-opacity hover:opacity-100"
-            href="https://www.hyperiux.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            VISIT HYPERIUX
-          </Link>
-        </header>
 
         <section className="flex h-full w-full flex-col items-start justify-center px-10">
           <div className="mt-[-12%]">
@@ -36,11 +27,9 @@ const Page = () => {
             </p>
           </div>
 
-          <p className="text-shadow-lg absolute right-10 bottom-10 max-w-[39vw] text-[1.25vw] leading-[1.45] opacity-70 max-md:max-w-[50vw] max-md:text-[2.5vw] max-sm:bottom-7 max-sm:left-5 max-sm:max-w-[70vw] max-sm:text-[3vw]">
-            We build digital spaces with texture, motion, and atmosphere -
-            where every scroll, hover, and transition feels less like an
-            interface and more like stepping through glass into another world. 
-          </p>
+          <p className="text-shadow-lg absolute right-10 bottom-10 max-w-[39vw] text-[1.25vw] leading-[1.45] max-md:hidden">
+  Move the cursor across the screen and watch the frosted layer dissolve into a sharp, fluid reveal. 
+</p>
           
         </section>
       </div>

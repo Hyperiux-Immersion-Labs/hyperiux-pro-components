@@ -106,7 +106,7 @@ export function ChessGridTransition({
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
           { opacity: 1, y: 0 },
-          { opacity: 0, duration: 0.8, y: -50 },
+          { opacity: 0, duration: 0.8 },
           0
         )
 
@@ -119,7 +119,7 @@ export function ChessGridTransition({
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
-          { opacity: 0, y: 50 },
+          { opacity: 0, },
           { opacity: 1, duration: 0.8, delay: 1, y: 0, clearProps: 'all' },
           0
         )

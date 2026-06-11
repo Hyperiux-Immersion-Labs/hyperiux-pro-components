@@ -26,8 +26,8 @@ export default function Page() {
  sectionHeight={140}
  leftRadiusX={500}
  leftRadiusY={500}
- rightRadiusX={500}
- rightRadiusY={500}
+ rightRadiusX={550}
+ rightRadiusY={550}
  imageCardWidth={205}
  imageCardHeight={205}
  />
