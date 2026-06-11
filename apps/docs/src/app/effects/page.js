@@ -19,7 +19,7 @@ function VaultFallback() {
 export default async function EffectsPage() {
  const categories = getEffectsByCategory();
  const registry = getRegistryIndex();
- console.log(registry)
+//  console.log(registry)
 
  // Calculate effect counts per category
  const effectCounts = {};

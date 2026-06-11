@@ -1,5 +1,4 @@
 import { BookFlipViewer } from "@/components/BookFlip/BookFlipViewer";
-import { degToRad } from "three/src/math/MathUtils";
 
 // Image array for the book pages
 const BOOK_IMAGES = [
@@ -21,6 +20,7 @@ const BOOK_IMAGES = [
 
 export default function BookFlipPage() {
   return (
+    <>
     <BookFlipViewer
       images={BOOK_IMAGES}
       pathPattern="/assets/nature"
@@ -37,6 +37,11 @@ export default function BookFlipPage() {
       }}
       showUI={true}
     />
+    <div className="w-fit absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+    Click on the navigation buttons or the pages itself to flip pages of the book
+
+    </div>
+    </>
   );
 }
 

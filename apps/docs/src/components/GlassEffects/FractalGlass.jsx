@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from"react";
-import * as THREE from"three";
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
 
 const vertexShader = `
  varying vec2 vUv;
@@ -100,165 +100,165 @@ const fragmentShader = `
 `;
 
 function GlassStripParallax({
- imageSrc ="/assets/img/image10.jpg", // ← new prop: path/URL to image file
- videoSrc = null, 
- mediaType ="image", 
- stripesFrequency = 8.0,
- glassStrength = 0.8,
- glassSmoothness = 0.5,
- parallaxStrength = 0.6,
- distortionMultiplier = 8.0,
- edgePadding = 0.12,
+  imageSrc = "/assets/img/image10.jpg", // ← new prop: path/URL to image file
+  videoSrc = null,
+  mediaType = "image",
+  stripesFrequency = 8.0,
+  glassStrength = 0.8,
+  glassSmoothness = 0.5,
+  parallaxStrength = 0.6,
+  distortionMultiplier = 8.0,
+  edgePadding = 0.12,
 }) {
- const mountRef = useRef(null);
- const videoRef = useRef(null); // keeps reference to video element for cleanup
+  const mountRef = useRef(null);
+  const videoRef = useRef(null); // keeps reference to video element for cleanup
 
- useEffect(() => {
- const el = mountRef.current;
- if (!el) return;
+  useEffect(() => {
+    const el = mountRef.current;
+    if (!el) return;
 
- const W = el.clientWidth;
- const H = el.clientHeight;
+    const W = el.clientWidth;
+    const H = el.clientHeight;
 
- const renderer = new THREE.WebGLRenderer({ antialias: true });
- renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
- renderer.setSize(W, H);
- el.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(W, H);
+    el.appendChild(renderer.domElement);
 
- const scene = new THREE.Scene();
- const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
- camera.position.z = 1;
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 1;
 
- const uniforms = {
- uTexture: { value: new THREE.Texture() },
- uResolution: { value: new THREE.Vector2(W, H) },
- uTextureSize: { value: new THREE.Vector2(1, 1) },
- uMouse: { value: new THREE.Vector2(0.5, 0.5) },
- uParallaxStrength: { value: parallaxStrength },
- uDistortionMultiplier:{ value: distortionMultiplier },
- uGlassStrength: { value: glassStrength },
- uStripesFrequency: { value: stripesFrequency },
- uGlassSmoothness: { value: glassSmoothness },
- uEdgePadding: { value: edgePadding },
- };
+    const uniforms = {
+      uTexture: { value: new THREE.Texture() },
+      uResolution: { value: new THREE.Vector2(W, H) },
+      uTextureSize: { value: new THREE.Vector2(1, 1) },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uParallaxStrength: { value: parallaxStrength },
+      uDistortionMultiplier: { value: distortionMultiplier },
+      uGlassStrength: { value: glassStrength },
+      uStripesFrequency: { value: stripesFrequency },
+      uGlassSmoothness: { value: glassSmoothness },
+      uEdgePadding: { value: edgePadding },
+    };
 
- let videoEl = null;
- let videoTexture = null;
+    let videoEl = null;
+    let videoTexture = null;
 
- if (mediaType ==="video" && videoSrc) {
- // ── Video path ──────────────────────────────────────────────
- videoEl = document.createElement("video");
- videoEl.src = videoSrc;
- videoEl.crossOrigin ="anonymous";
- videoEl.loop = true;
- videoEl.muted = true;
- videoEl.playsInline = true;
- videoEl.autoplay = true;
- videoRef.current = videoEl;
+    if (mediaType === "video" && videoSrc) {
+      // ── Video path ──────────────────────────────────────────────
+      videoEl = document.createElement("video");
+      videoEl.src = videoSrc;
+      videoEl.crossOrigin = "anonymous";
+      videoEl.loop = true;
+      videoEl.muted = true;
+      videoEl.playsInline = true;
+      videoEl.autoplay = true;
+      videoRef.current = videoEl;
 
- videoEl.addEventListener("loadedmetadata", () => {
- uniforms.uTextureSize.value.set(videoEl.videoWidth, videoEl.videoHeight);
- });
+      videoEl.addEventListener("loadedmetadata", () => {
+        uniforms.uTextureSize.value.set(videoEl.videoWidth, videoEl.videoHeight);
+      });
 
- videoEl.play().catch(() => {
- // Autoplay blocked — still renders first frame when available
- });
+      videoEl.play().catch(() => {
+        // Autoplay blocked — still renders first frame when available
+      });
 
- videoTexture = new THREE.VideoTexture(videoEl);
- videoTexture.minFilter = THREE.LinearFilter;
- videoTexture.magFilter = THREE.LinearFilter;
- videoTexture.wrapS = THREE.ClampToEdgeWrapping;
- videoTexture.wrapT = THREE.ClampToEdgeWrapping;
- uniforms.uTexture.value = videoTexture;
+      videoTexture = new THREE.VideoTexture(videoEl);
+      videoTexture.minFilter = THREE.LinearFilter;
+      videoTexture.magFilter = THREE.LinearFilter;
+      videoTexture.wrapS = THREE.ClampToEdgeWrapping;
+      videoTexture.wrapT = THREE.ClampToEdgeWrapping;
+      uniforms.uTexture.value = videoTexture;
 
- } else {
- // ── Image path ──────────────────────────────────────────────
- const loader = new THREE.TextureLoader();
- loader.crossOrigin ="anonymous";
- loader.load(imageSrc, (tex) => {
- tex.minFilter = THREE.LinearFilter;
- tex.magFilter = THREE.LinearFilter;
- tex.wrapS = THREE.ClampToEdgeWrapping;
- tex.wrapT = THREE.ClampToEdgeWrapping;
- uniforms.uTexture.value = tex;
- uniforms.uTextureSize.value.set(
- tex.image.naturalWidth || tex.image.width || 1920,
- tex.image.naturalHeight || tex.image.height || 1080
- );
- });
- }
+    } else {
+      // ── Image path ──────────────────────────────────────────────
+      const loader = new THREE.TextureLoader();
+      loader.crossOrigin = "anonymous";
+      loader.load(imageSrc, (tex) => {
+        tex.minFilter = THREE.LinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        uniforms.uTexture.value = tex;
+        uniforms.uTextureSize.value.set(
+          tex.image.naturalWidth || tex.image.width || 1920,
+          tex.image.naturalHeight || tex.image.height || 1080
+        );
+      });
+    }
 
- const geo = new THREE.PlaneGeometry(2, 2);
- const mat = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
- scene.add(new THREE.Mesh(geo, mat));
+    const geo = new THREE.PlaneGeometry(2, 2);
+    const mat = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
+    scene.add(new THREE.Mesh(geo, mat));
 
- const target = { x: 0.5, y: 0.5 };
- const current = { x: 0.5, y: 0.5 };
+    const target = { x: 0.5, y: 0.5 };
+    const current = { x: 0.5, y: 0.5 };
 
- const setTarget = (x, y) => {
- target.x = x / window.innerWidth;
- target.y = 1 - y / window.innerHeight;
- };
- const onMouse = (e) => setTarget(e.clientX, e.clientY);
- const onTouch = (e) => setTarget(e.touches[0].clientX, e.touches[0].clientY);
- window.addEventListener("mousemove", onMouse);
- window.addEventListener("touchmove", onTouch, { passive: true });
+    const setTarget = (x, y) => {
+      target.x = x / window.innerWidth;
+      target.y = 1 - y / window.innerHeight;
+    };
+    const onMouse = (e) => setTarget(e.clientX, e.clientY);
+    const onTouch = (e) => setTarget(e.touches[0].clientX, e.touches[0].clientY);
+    window.addEventListener("mousemove", onMouse);
+    window.addEventListener("touchmove", onTouch, { passive: true });
 
- const onResize = () => {
- const w = el.clientWidth, h = el.clientHeight;
- renderer.setSize(w, h);
- uniforms.uResolution.value.set(w, h);
- };
- window.addEventListener("resize", onResize);
+    const onResize = () => {
+      const w = el.clientWidth, h = el.clientHeight;
+      renderer.setSize(w, h);
+      uniforms.uResolution.value.set(w, h);
+    };
+    window.addEventListener("resize", onResize);
 
- let raf;
- const tick = () => {
- raf = requestAnimationFrame(tick);
- current.x += (target.x - current.x) * 0.04;
- current.y += (target.y - current.y) * 0.04;
- uniforms.uMouse.value.set(current.x, current.y);
- // For video, mark texture as needing update every frame
- if (videoTexture) videoTexture.needsUpdate = true;
- renderer.render(scene, camera);
- };
- tick();
+    let raf;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      current.x += (target.x - current.x) * 0.04;
+      current.y += (target.y - current.y) * 0.04;
+      uniforms.uMouse.value.set(current.x, current.y);
+      // For video, mark texture as needing update every frame
+      if (videoTexture) videoTexture.needsUpdate = true;
+      renderer.render(scene, camera);
+    };
+    tick();
 
- return () => {
- cancelAnimationFrame(raf);
- window.removeEventListener("mousemove", onMouse);
- window.removeEventListener("touchmove", onTouch);
- window.removeEventListener("resize", onResize);
- if (videoEl) {
- videoEl.pause();
- videoEl.src ="";
- videoRef.current = null;
- }
- if (videoTexture) videoTexture.dispose();
- renderer.dispose();
- mat.dispose();
- geo.dispose();
- if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
- };
- }, [imageSrc, videoSrc, mediaType, stripesFrequency, glassStrength, glassSmoothness,
- parallaxStrength, distortionMultiplier, edgePadding]);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMouse);
+      window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("resize", onResize);
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.src = "";
+        videoRef.current = null;
+      }
+      if (videoTexture) videoTexture.dispose();
+      renderer.dispose();
+      mat.dispose();
+      geo.dispose();
+      if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
+    };
+  }, [imageSrc, videoSrc, mediaType, stripesFrequency, glassStrength, glassSmoothness,
+    parallaxStrength, distortionMultiplier, edgePadding]);
 
- return (
-  <div
-    ref={mountRef}
-    style={{
-      position: "fixed",
-      inset: 0,
-      width: "100vw",
-      height: "100vh",
-      overflow: "hidden",
-      background: "#000",
-    }}
-  >
-    {/* Mobile message */}
+  return (
     <div
-      className="
+      ref={mountRef}
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        background: "#000",
+      }}
+    >
+      {/* Mobile message */}
+      <div
+        className="
         hidden
-        max-sm:flex
+        max-md:flex
         fixed
         bottom-6
         left-1/2
@@ -274,13 +274,13 @@ function GlassStripParallax({
         text-sm
         leading-tight
         pointer-events-none
+        max-sm:px-[7vw] max-sm:py-[4vw]
       "
-    >
-      Works best on desktop  <br />
-      Here, tap & drag to explore
+      >
+        Works best on desktop
+      </div>
     </div>
-  </div>
- );
+  );
 }
 
 export { GlassStripParallax as FractalGlass };

@@ -1,0 +1,32 @@
+'use client'
+import { FractalGlass as GlassStripParallax } from"@/components/GlassEffects/FractalGlass";
+
+const images = {
+ blob:"/assets/img/image10.jpg",
+ };
+
+export default function Home() {
+
+ return (
+ <>
+
+ <GlassStripParallax
+ imageSrc={images.blob}
+ stripesFrequency={40}
+ glassStrength={2.0}
+ glassSmoothness={0.014}
+ parallaxStrength={0.15}
+ distortionMultiplier={8.0}
+ edgePadding={0.12}
+ />
+ <div className="w-fit absolute bottom-8 left-1/2 -translate-x-1/2  text-center max-md:hidden">
+ Move the cursor left and right to see the fractal effect
+ </div>
+ <div className="w-fit absolute  left-1/2 -translate-x-1/2 bottom-[85%] text-center hidden max-md:block">
+ Drag left and right to see the fractal effect
+ </div>
+
+ 
+ </>
+ );
+}
