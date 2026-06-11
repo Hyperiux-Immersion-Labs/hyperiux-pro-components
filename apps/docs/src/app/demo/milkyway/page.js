@@ -1,5 +1,6 @@
-import React from 'react'
+import dynamic from 'next/dynamic'
 import { MilkyWay } from '@/components/milkyway'
+
 
 const page = () => {
   return (

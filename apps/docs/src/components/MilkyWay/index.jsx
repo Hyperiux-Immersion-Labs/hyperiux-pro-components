@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useMemo, useEffect, useSyncExternalStore } from'react'
+import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from'react'
 import { Canvas, useFrame, useThree } from'@react-three/fiber'
 import { Center } from'@react-three/drei'
 import * as THREE from'three'
@@ -8,11 +8,10 @@ import { degToRad } from'three/src/math/MathUtils'
 import { EffectComposer, Vignette } from'@react-three/postprocessing'
 import {Stars } from'lucide-react'
 import Link from'next/link'
-import EdgeBlurEffect from'@/components/Valley/EdgeBlurEffect'
+import EdgeBlurEffect from './EdgeBlurEffect'
 import CircularText from'@/components/Valley/CircularText'
 
-// ─────────────────────────────────────────────────────────────
-// CONFIG // ─────────────────────────────────────────────────────────────
+
 const CFG = {
  texSize: 400,
  maxRadius: 3.5,
@@ -676,7 +675,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
 
  const mat = useMemo(() => new THREE.ShaderMaterial({
  uniforms: {
- uPosition: { value: null },
+ uPosition: { value: posTex },
  uPixelRatio: { value: Math.min(typeof window !=='undefined' ? window.devicePixelRatio : 1, 2) },
  uTime: { value: 0 },
  },
@@ -685,7 +684,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
  transparent: true,
  depthWrite: false,
  blending: THREE.AdditiveBlending,
- }), [])
+ }), [posTex])
 
  useEffect(() => {
  const gpu = new GPUCompute(SMOKE_CFG.texSize, SMOKE_CFG.texSize, gl)
@@ -783,7 +782,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
 
  const mat = useMemo(() => new THREE.ShaderMaterial({
  uniforms: {
- uPosition: { value: null },
+ uPosition: { value: posTex },
  uPixelRatio: { value: Math.min(typeof window !=='undefined' ? window.devicePixelRatio : 1, 2) },
  },
  vertexShader: PARTICLE_VERT,
@@ -791,7 +790,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
  transparent: true,
  depthWrite: false,
  blending: THREE.AdditiveBlending,
- }), [])
+ }), [posTex])
 
  useEffect(() => {
  const gpu = new GPUCompute(CFG.texSize, CFG.texSize, gl)
@@ -859,46 +858,81 @@ const BackgroundStars = React.memo(function BackgroundStars() {
 
 const MOBILE_QUERY = '(max-width: 767px)'
 
-function subscribeToViewportChange(callback) {
- if (typeof window ==='undefined') return () => {}
- const mobileQuery = window.matchMedia(MOBILE_QUERY)
- window.addEventListener('resize', callback)
- mobileQuery.addEventListener('change', callback)
- return () => {
- window.removeEventListener('resize', callback)
- mobileQuery.removeEventListener('change', callback)
- }
-}
+function SceneReady({ onReady }) {
+ const frameCountRef = useRef(0)
+ const readyRef = useRef(false)
 
-function getDprSnapshot() {
- if (typeof window ==='undefined') return 1
- return Math.max(1, Math.min(2, window.devicePixelRatio || 1))
-}
+ useFrame(() => {
+ if (readyRef.current) return
+ frameCountRef.current += 1
+ if (frameCountRef.current < 24) return
+ readyRef.current = true
+ onReady()
+ })
 
-function getMobileSnapshot() {
- if (typeof window ==='undefined') return true
- return window.matchMedia(MOBILE_QUERY).matches
+ return null
 }
 
 export function MilkyWay() {
- const dpr = useSyncExternalStore(subscribeToViewportChange, getDprSnapshot, () => 1)
- const isMobile = useSyncExternalStore(subscribeToViewportChange, getMobileSnapshot, () => true)
+ const [isPageLoaded, setIsPageLoaded] = useState(false)
+ const [viewport, setViewport] = useState(null)
+ const [isSceneReady, setIsSceneReady] = useState(false)
+
+ useLayoutEffect(() => {
+ const markLoaded = () => setIsPageLoaded(true)
+ if (document.readyState === 'complete') {
+ markLoaded()
+ } else {
+ window.addEventListener('load', markLoaded, { once: true })
+ }
+
+ const updateViewport = () => {
+ setViewport({
+ dpr: Math.max(1, Math.min(2, window.devicePixelRatio || 1)),
+ isMobile: window.matchMedia(MOBILE_QUERY).matches,
+ })
+ }
+
+ updateViewport()
+ window.addEventListener('resize', updateViewport)
+ const mobileQuery = window.matchMedia(MOBILE_QUERY)
+ mobileQuery.addEventListener('change', updateViewport)
+
+ return () => {
+ window.removeEventListener('load', markLoaded)
+ window.removeEventListener('resize', updateViewport)
+ mobileQuery.removeEventListener('change', updateViewport)
+ }
+ }, [])
+
+ useEffect(() => {
+ if (viewport?.isMobile) {
+ setIsSceneReady(false)
+ }
+ }, [viewport?.isMobile])
+
+ const showDesktopScene = isPageLoaded && viewport !== null && !viewport.isMobile
+ const showMobileFallback = isPageLoaded && viewport !== null && viewport.isMobile
+ const showDesktopContent = showDesktopScene && isSceneReady
+ const showMobileContent = showMobileFallback
 
  return (
  <section style={{ width:'100%', height:'100vh', background:'#000' }}>
 
 
- {!isMobile ? (
+ {showDesktopScene ? (
  <Canvas
- dpr={dpr}
+ dpr={viewport.dpr}
  gl={{ antialias: false, powerPreference:'high-performance' }}
  camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}
+ style={{ opacity: isSceneReady ? 1 : 0 }}
  >
+ <SceneReady onReady={() => setIsSceneReady(true)} />
  <BackgroundStars />
  <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
  <GalaxyMouseGroup>
  <MilkyWayGPGPU />
- <SmokeFlow />
+ {isSceneReady && <SmokeFlow />}
  </GalaxyMouseGroup>
  </Center>
  <EffectComposer>
@@ -913,14 +947,15 @@ export function MilkyWay() {
  <Vignette opacity={.5} offset={.8} darkness={.7}/>
  </EffectComposer>
  </Canvas>
- ) : (
+ ) : showMobileContent ? (
  <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
  <p className=' rounded-full bg-white/10 px-5 py-3 w-[60%] text-base backdrop-blur-sm'>
  Open in desktop to experience this effect.
  </p>
  </div>
- )}
+ ) : null}
 
+ {(showDesktopContent || showMobileContent) && (
  <div className=" h-screen w-full absolute left-0 top-0 max-sm:top-5 z-299 flex items-center justify-center">
 
 
@@ -928,22 +963,10 @@ export function MilkyWay() {
  {/* Navbar (leave unchanged) */}
  <div className='w-full absolute top-0 left-0 pt-[2vw] px-[2vw] flex items-center max-sm:flex-col max-sm:gap-5 justify-between h-fit'>
  <p className='text-4xl font-medium'>Galaxy</p>
- <div className="flex items-center max-sm:gap-2">
- {[
-"Spiral Arms",
-"Stellar Map",
-"Nebulae",
-"Star Clusters"
- ].map((item) => (
- <Link
- href={"#"}
- key={item}
- className='bg-white/20 hover:bg-white hover:text-black max-sm:text-sm transition-all duration-500 cursor-pointer backdrop-blur-sm rounded-full text-sm px-[2vw] py-[.5vw]'
- >
- {item}
- </Link>
- ))}
- </div>
+ <p className='w-60 leading-[1.2]'>
+    Move your cursor around and watch the scene respond.
+ </p>
+
  
  </div>
  {/* Enhanced cosmic hero section */}
@@ -956,12 +979,12 @@ export function MilkyWay() {
  <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
  </div>
 
- {!isMobile && (
+ {!viewport?.isMobile && (
  <div className='h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
 
 
  <CircularText
- text="EXPLORE THE GALAXY"
+ text="EXPLORE THE GALAXY "
  spinDuration={20}
  onHover="speedUp"
  />
@@ -972,6 +995,7 @@ export function MilkyWay() {
  </div>
 
  </div>
+ )}
  </section>
  )
 }
