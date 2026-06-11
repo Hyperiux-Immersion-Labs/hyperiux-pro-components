@@ -37,14 +37,14 @@ export function DirectionalMegaMenu({
   navClassName = "",
   navItemClassName = "",
   activeClassName = "text-white",
-  inactiveClassName = "text-neutral-500",
+  inactiveClassName = "text-white",
   panelClassName = "",
   contentWrapperClassName = "",
   initialIndex = NO_INDEX,
   closeDelay = 180,
   animation = {},
-  panelGap = 20,
-  menuTop = "top-[105%]",
+  panelGap = 0,
+  menuTop = "",
 }) {
   // Animation config
   const config = useMemo(
@@ -447,40 +447,44 @@ export function DirectionalMegaMenu({
 
   return (
     <div
-      className={`fixed left-0 top-0 z-50 w-full py-8.5  ${className}`}
+      className={`pointer-events-none absolute inset-0 z-50 ${className}`}
       onMouseEnter={clearCloseTimer}
       onMouseLeave={onWrapperMouseLeave}
     >
-      <div className={`flex items-center justify-center gap-8 ${navClassName}`}>
-        {items.map((item, index) => {
-          const isActive = highlightedIndex === index;
+      <div
+        className={`flex h-full items-center justify-center ${navClassName}`}
+      >
+        <div className="pointer-events-auto flex items-center justify-center gap-8">
+          {items.map((item, index) => {
+            const isActive = highlightedIndex === index;
 
-          return (
-            <button
-              key={item.label || index}
-              type="button"
-              onMouseEnter={() => onItemEnter(index)}
-              className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium transition-colors duration-300 hover:text-white max-md:text-lg max-sm:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
-                }`}
-            >
-              {item.label}
+            return (
+              <button
+                key={item.label || index}
+                type="button"
+                onMouseEnter={() => onItemEnter(index)}
+                className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-colors duration-300 hover:text-white max-md:text-lg max-sm:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
+                  }`}
+              >
+                {item.label}
 
-              {hasDropdownContent(item) && (
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-300 ${isActive ? "-rotate-180" : "rotate-0"
-                    }`}
-                />
-              )}
-            </button>
-          );
-        })}
+                {hasDropdownContent(item) && (
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${isActive ? "-rotate-180" : "rotate-0"
+                      }`}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {isOpen && currentIndex !== NO_INDEX && hasDropdownContent(items[currentIndex]) && (
-        <div style={{ paddingTop: `${panelGap}px` }}>
+        <div className="absolute left-0 w-full" style={{ top: `calc(100% + ${panelGap}px)` }}>
           <div
             ref={menuPanelRef}
-            className={`menu-container w-full overflow-hidden ${menuTop}`}
+            className={`menu-container pointer-events-auto w-full overflow-hidden ${menuTop}`}
           >
             <div
               ref={panelRef}

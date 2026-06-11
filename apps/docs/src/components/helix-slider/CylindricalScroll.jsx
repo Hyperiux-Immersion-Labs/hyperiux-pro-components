@@ -20,7 +20,7 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
-export default function CylindricalScrollCards({
+export function CylindricalScrollCards({
     items = defaultItems,
     cardWidth = 220,
     cardHeight = 300,
