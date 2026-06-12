@@ -12,14 +12,28 @@ const ctr = (degrees) => {
 
 
 export default function ReflectiveRods() {
+    const commonProps = {
+        radius: 0.1,
+        smoothness: 16,
+        materialProps: {
+            color: '#ffffff',
+            metalness: 1.0,
+            roughness: 0.02,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.0,
+            envMapIntensity: 3.5,
+        }
+    }
+
     return (
         <section
-            className="h-[115vh] w-full z-50 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
+            className="h-[200vh] max-sm:hidden w-full z-50 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
             id="reflectiveRoadsCanvas"
         >
             <Canvas
                 camera={{ fov: 55, position: [0, 0.3, 8] }}
-                gl={{ preserveDrawingBuffer: true }}
+                dpr={[1]}
+                gl={{ preserveDrawingBuffer: true, antialias: true, alpha: true }}
                 style={{
                     // center the canvas content explicitly
                     display: 'flex',
@@ -27,9 +41,17 @@ export default function ReflectiveRods() {
                     alignItems: 'center',
                 }}
             >
-                <Environment preset='city' />
-                <RodsGroup1 ctr={ctr} />
-                <RodsGroup2 ctr={ctr} />
+                <Environment preset='studio' />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[-10, 5, 5]} color="#00e5ff" intensity={8} distance={30} decay={2} />
+                <pointLight position={[10, 5, 5]} color="#ff007f" intensity={8} distance={30} decay={2} />
+                <pointLight position={[0, 8, 10]} color="#ffffff" intensity={3} />
+                <RodsGroup1 ctr={ctr} commonProps={commonProps} />
+                <RodsGroup2 ctr={ctr} commonProps={commonProps} />
+                {/* <mesh>
+                    <sphereGeometry args={[2, 32, 32]} />
+                    <meshStandardMaterial color="#fff000" />
+                </mesh> */}
             </Canvas>
 
         </section>
