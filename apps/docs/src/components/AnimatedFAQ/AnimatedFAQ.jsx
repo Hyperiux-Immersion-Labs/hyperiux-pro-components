@@ -11,7 +11,7 @@ import React, {
  useState,
 } from"react";
 import gsap from"gsap";
-import { ChevronBird } from "../ChevronBird/ChevronBird";
+import { ChevronBird } from "../animated-toggle/ChevronBird";
 
 const FAQContext = createContext(null);
 const FAQGroupContext = createContext(null);

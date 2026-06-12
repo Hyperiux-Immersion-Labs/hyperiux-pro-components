@@ -1,45 +1,37 @@
-'use client';
+"use client";
 
-import { useState } from"react";
-import { ChevronBird } from "@/components/ChevronBird/ChevronBird";
-import Cross from"@/components/AnimatedToggle/Cross";
-import Plus from"@/components/AnimatedToggle/Plus";
-import Image from"next/image";
-import img from"../../../../public/assets/img/pexels.jpg";
+import { AnimatedToggles } from "@/components/animated-toggle";
+import Image from "next/image";
 
 export default function AnimatedTogglePage() {
- const [chevronActive, setChevronActive] = useState(false);
- const [crossActive, setCrossActive] = useState(false);
- const [plusActive, setPlusActive] = useState(false);
-
- return (
- <>
- <section className="min-h-dvh w-full flex items-center relative justify-center">
- <div className="z-1">
- <h1 className="text-6xl text-neutral-400 mb-10 max-sm:mb-18 max-sm:text-4xl max-sm:text-center">Animated Toggle</h1>
- <div className="flex gap-8 justify-center">
- <button
- onClick={() => setChevronActive(prev => !prev)}
- className={`cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-90 ${chevronActive ?"bg-primary" :"bg-zinc-400"}`}
- >
- <ChevronBird className="mt-2" size={32} isActive={chevronActive} />
- </button>
- <button
- onClick={() => setCrossActive(prev => !prev)}
- className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-90 ${crossActive ?"bg-primary" :"bg-zinc-400"}`}
- >
- <Cross size={24} isActive={crossActive} />
- </button>
- <button
- onClick={() => setPlusActive(prev => !prev)}
- className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-90 ${plusActive ?"bg-primary" :"bg-zinc-400"}`}
- >
- <Plus size={24} isActive={plusActive} />
- </button>
- </div>
- </div>
- <Image className="absolute w-full h-full object-cover brightness-25" src={img} alt="Pexels Image" placeholder="blur" sizes="fill" />
- </section>
- </>
- )
+  return (
+    <>
+      <section className="min-h-dvh w-full flex items-center relative justify-center">
+        <div className="z-1 space-y-[4vw] max-md:px-[7vw] max-md:space-y-[10vw]">
+          <div className="flex flex-col items-center justify-center gap-[1vw] text-center max-md:gap-[3vw]">
+            <h1 className="text-[5vw] text-white max-sm:text-[11vw] max-md:text-[7vw] max-sm:text-center">
+              Animated Toggle
+            </h1>
+            <p className="text-[1.2vw] max-sm:text-[4.5vw] max-md:text-[3vw]">
+              Hover over and click to see the effect for hovered and active
+              state of the toggles below
+            </p>
+          </div>
+          <div className="flex gap-8 justify-center">
+            <AnimatedToggles />
+          </div>
+        </div>
+        <Image
+          className="absolute w-full h-full object-cover brightness-40"
+          src={
+            "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"
+          }
+          alt="Pexels Image"
+          width={1920}
+          height={1080}
+          sizes="fill"
+        />
+      </section>
+    </>
+  );
 }
