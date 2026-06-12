@@ -34,6 +34,8 @@ function MarqueeRow({ rowRef, hidden = false }) {
                         width={240}
                         height={logo.height}
                         draggable={false}
+                        id='marquee-svg'
+
                         className="h-full w-[8vw] object-contain"
                     />
                 </div>
@@ -82,7 +84,7 @@ export default function TechMarquee() {
     }, [])
 
     return (
-        <section className="relative mt-[10vw] w-full overflow-hidden">
+        <section id='TechMarquee' className="relative pt-[10vw] w-full overflow-hidden">
             <div className="overflow-hidden">
                 <div
                     ref={trackRef}
@@ -94,10 +96,10 @@ export default function TechMarquee() {
             </div>
 
             {/* Left Blur */}
-            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[10vw] bg-linear-to-r from-background via-background/70 to-transparent" />
+            <div id='LeftBlur' className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[10vw] bg-linear-to-r from-background via-background/70 to-transparent" />
 
             {/* Right Blur */}
-            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[10vw] bg-linear-to-l from-background via-background/70 to-transparent" />
+            <div id='RightBlur' className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[10vw] bg-linear-to-l from-background via-background/70 to-transparent" />
         </section>
     )
 }

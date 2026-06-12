@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import TechMarquee from './TechMarquee'
+import SplitLine from '../Reusable/SplitLine'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -40,15 +41,15 @@ export default function Workflow() {
         <section
             ref={sectionRef}
             id="Workflow"
-            className="h-fit bg-background my-[10vw] gap-[2vw] flex-col w-full  flex items-center justify-center"
+            className="h-fit bg-background  py-[10vw]! gap-[2vw] flex-col w-full  flex items-center justify-center"
         >
             <p className="text22 text-light-grey">
                 Workflow
             </p>
 
-            <h2 className="text140 text-center w-[60vw]">
+            <SplitLine as="h2" className="text140 text-center w-[60vw]">
                 Preview it. Install it. Make it yours.
-            </h2>
+            </SplitLine>
 
             <div className="w-full self-padd flex gap-[2.5vw] items-end mt-[4vw] flex-col">
                 <div className="w-fit mr-[2vw]">

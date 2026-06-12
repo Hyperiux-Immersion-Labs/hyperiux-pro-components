@@ -4,8 +4,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import SplitText from 'gsap/SplitText'
-import { ArrowUpRightIcon } from '@/utils/Icons'
-import Image from 'next/image'
+import VaultBox from '../Reusable/VaultBoxes'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -57,143 +56,180 @@ const BOXES_BOTTOM = [
     }
 ];
 
-function VaultBox({ id, styles, img, number, label }) {
-    return (
-        <div
-            id={id}
-            className={`flex p-[1vw] overflow-hidden justify-between relative h-full rounded-md ${styles}`}
-        >
-            <div className='absolute inset-0 bg-black/50'>
-                <Image src={img} alt='image' fill className='object-cover h-full w-full' />
-            </div>
-            <div className='relative z-2 flex justify-between h-full w-full'>
-                <div className='text24 '>
-                    <p>{number}</p>
-                    <p>{label}</p>
-                </div>
-                <div className='size-[2vw] flex items-end'>
-                    <ArrowUpRightIcon className={'h-full w-full object-contain'} />
-                </div>
-            </div>
-        </div>
-    )
-}
-
 export default function VaultGrid() {
     const sectionRef = useRef(null)
     const textRef = useRef(null)
-    const moveTextRef = useRef(null)
-    const headingRef = useRef(null)
+    const moveFirstTextRef = useRef(null)
+    const navigatedTextRef = useRef(null)
+    const readTextRef = useRef(null)
+    const andTextRef = useRef(null)
+    const exploreTextRef = useRef(null)
     const secondLayoutRef = useRef(null)
 
     useEffect(() => {
-        if (!textRef.current || !moveTextRef.current || !headingRef.current || !sectionRef.current || !secondLayoutRef.current) return
+        if (
+            !textRef.current ||
+            !moveFirstTextRef.current ||
+            !navigatedTextRef.current ||
+            !readTextRef.current ||
+            !andTextRef.current ||
+            !exploreTextRef.current ||
+            !sectionRef.current
+        ) return
 
         const ctx = gsap.context(() => {
+            // 1. Split Text
             const split = SplitText.create(textRef.current, {
                 type: 'words,chars',
             })
+            const moveSplit = SplitText.create(moveFirstTextRef.current, {
+                type: 'words,chars',
+            })
 
-            // Set initial states
+            // 2. Layer Config
+            const TOP_LAYER = [
+                { id: "block-top-layer-1", xPercent: 300 },
+                { id: "block-top-layer-2", xPercent: 450 },
+                { id: "block-top-layer-3", xPercent: 600 },
+            ]
+            const BOTTOM_LAYER = [
+                { id: "block-bottom-layer-1", xPercent: 550 },
+                { id: "block-bottom-layer-2", xPercent: 450 },
+                { id: "block-bottom-layer-3", xPercent: 600 },
+            ]
+
+            // 3. Initial States
             gsap.set(textRef.current, { opacity: 1 })
-            gsap.set(split.chars, { color: '#939393' })
-            gsap.set(secondLayoutRef.current, { opacity: 0 })
-            gsap.set(moveTextRef.current, { xPercent: -200 })
-
-            const topLayer = [
-                { id: 'block-top-layer-1', xPercent: 300 },
-                { id: 'block-top-layer-2', xPercent: 450 },
-                { id: 'block-top-layer-3', xPercent: 600 }
-            ]
-            const bottomLayer = [
-                { id: 'block-bottom-layer-1', xPercent: 300 },
-                { id: 'block-bottom-layer-2', xPercent: 450 },
-                { id: 'block-bottom-layer-3', xPercent: 600 }
-            ]
-
-            topLayer.forEach(layer =>
-                gsap.set(`#${layer.id}`, { xPercent: layer.xPercent })
+            gsap.set(split.chars, { color: "#939393" })
+            gsap.set(moveSplit.chars, { color: "#939393" })
+            gsap.set(
+                [
+                    navigatedTextRef.current,
+                    readTextRef.current,
+                    andTextRef.current,
+                    exploreTextRef.current
+                ],
+                {
+                    xPercent: 20,
+                    opacity: 0,
+                    filter: "blur(10px)",
+                }
             )
-            bottomLayer.forEach(layer =>
-                gsap.set(`#${layer.id}`, { xPercent: layer.xPercent })
+            TOP_LAYER.forEach(layer =>
+                gsap.set(`#${layer.id}`, {
+                    xPercent: layer.xPercent,
+                })
+            )
+            BOTTOM_LAYER.forEach(layer =>
+                gsap.set(`#${layer.id}`, {
+                    xPercent: layer.xPercent,
+                })
             )
 
-            // Master timeline controlled via ScrollTrigger
-            const tl = gsap.timeline({
+            // 4. Master Timeline controlled with ScrollTrigger
+            const master = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
                     end: "bottom bottom",
                     scrub: true,
-                    markers: false,
-                }
+                },
             })
 
-            // 1. First animation: split text character coloring
-            tl.to(split.chars, {
-                color: '#ff5f00',
-                stagger: 0.01,
-                ease: 'none',
-                duration: 2,
+            // 5. Intro Timeline (character color, fade, move)
+            const intro = gsap.timeline()
+            intro.to(split.chars, {
+                color: "#ff5f00",
+                stagger: {
+                    amount: 2
+                },
+                ease: "power4.out",
             })
-
-            // 2. Fade out first text
-            tl.to(textRef.current, {
+            intro.to(moveSplit.chars, {
+                color: "#ff5f00",
+                ease: "power4.out",
+            }, "-=0.25")
+            intro.to(split.words, {
                 opacity: 0,
-                duration: 0.8,
-                ease: 'power2.out',
+                filter: "blur(10px)",
+                stagger: {
+                    amount: .2,
+                    from: "random"
+                },
+                ease: "power2.out",
             })
 
-            // 3. Fade in second layout container
-            tl.to(secondLayoutRef.current, {
-                opacity: 1,
-                duration: 0.8,
-                ease: 'power2.out',
-            }, "-=0.4")
+            intro.to(moveFirstTextRef.current, {
+                yPercent: -150,
+                xPercent: -520,
+                duration:1,
+                ease: 'power2.inOut'
+            },"-=0.4")
 
-            // 4. Second animation: box and text movements (nested timeline)
-            const secondTl = gsap.timeline()
-
-            secondTl.to(moveTextRef.current, { xPercent: 0, duration: 2, ease: "power2.out" }, 0)
-
-            topLayer.forEach((layer, i) => {
-                secondTl.to(
+            // 6. Reveal Timeline (heading, boxes, fade, collapse)
+            const reveal = gsap.timeline()
+            reveal.to(
+                [
+                    navigatedTextRef.current,
+                    readTextRef.current,
+                    andTextRef.current,
+                    exploreTextRef.current
+                ],
+                {
+                    xPercent: 0,
+                    opacity: 1,
+                    filter: "blur(0px)",
+                    stagger: 0.1,
+                    ease: "power2.out",
+                }
+            )
+            TOP_LAYER.forEach((layer, i) => {
+                reveal.to(
                     `#${layer.id}`,
                     {
                         xPercent: 0,
                         duration: 1.2,
-                        ease: "power2.out"
+                        ease: "power2.out",
                     },
                     0.1 + i * 0.13
                 )
             })
-
-            bottomLayer.forEach((layer, i) => {
-                secondTl.to(
+            BOTTOM_LAYER.forEach((layer, i) => {
+                reveal.to(
                     `#${layer.id}`,
                     {
                         xPercent: 0,
                         duration: 1.2,
-                        ease: "power2.out"
+                        ease: "power2.out",
                     },
                     0.5 + i * 0.13
                 )
             })
+            reveal.to(
+                [
+                    navigatedTextRef.current,
+                    readTextRef.current,
+                    andTextRef.current,
+                    exploreTextRef.current,
+                    moveFirstTextRef.current,
+                ],
+                {
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: "power2.out",
+                }
+            )
+            reveal.to("#heading-container", {
+                height: "1.5vw",
+                duration:1,
+                transformOrigin: "center center",
+                ease: "power2.inOut",
+            }, "-=0.9")
 
-            secondTl.to([headingRef.current, moveTextRef.current], {
-                opacity: 0,
-                duration: 1.2,
-                ease: "power2.out"
-            })
-
-            secondTl.to('#heading-container', {
-                height: '1.5vw',
-                transformOrigin: 'center center',
-                duration: 1.2,
-                ease: "power2.out"
-            })
-
-            tl.add(secondTl)
+            // 7. Compose Master Timeline
+            master
+                .add(intro)
+                .add(reveal)
 
         }, sectionRef)
 
@@ -212,14 +248,14 @@ export default function VaultGrid() {
                     className="absolute text80 w-[85vw] text-center opacity-0 text-[#939393] z-20 pointer-events-none"
                 >
                     Hyperiux Vault is built around the interaction layer of a
-                    website, the moments people notice when they scroll, hover,
-                    move.
+                    website, the moments people notice when they scroll, hover, <span className='opacity-0'>move</span>
                 </h2>
+                <p ref={moveFirstTextRef} className='absolute right-[15vw] top-[32.5vw] -translate-y-1/2 text-[#939393] text80'>move</p>
 
                 {/* Second Animation Content */}
                 <div
                     ref={secondLayoutRef}
-                    className="w-full flex-col flex items-center justify-center opacity-0 z-10"
+                    className="w-full flex-col flex items-center justify-center  z-10"
                 >
                     {/* Top Layer */}
                     <div className="w-full relative z-10 h-[40vh] gap-[1.5vw] flex items-center justify-center ">
@@ -229,17 +265,27 @@ export default function VaultGrid() {
                     </div>
 
                     {/* Middle Heading Container */}
-                    <div id="heading-container" className="w-full relative z-0 h-[30vh] flex items-center justify-center ">
-                        <p ref={moveTextRef} className="text-primary text80">
+                    <div id="heading-container" className="w-full  relative z-0 h-[30vh] flex items-center justify-center ">
+                        <span className="text80 opacity-0 text-center">
                             move
-                        </p>
-                        <h2 ref={headingRef} className="text80 text-center">
-                            , navigate, read, and explore.
-                        </h2>
+                        </span>
+                        <span ref={navigatedTextRef} className="text80 text-center">
+                            &nbsp;, navigate,&nbsp;
+                        </span>
+                        <span ref={readTextRef} className="text80 text-center">
+                            read,&nbsp;
+                        </span>
+                        <span ref={andTextRef} className="text80 text-center">
+                            and&nbsp;
+
+                        </span>
+                        <span ref={exploreTextRef} className="text80 text-center">
+                            explore
+                        </span>
                     </div>
 
                     {/* Bottom Layer */}
-                    <div className="w-full h-[40vh] relative z-10 gap-[2vw] flex items-center justify-center ">
+                    <div className="w-full h-[40vh] relative z-10 gap-[1.5vw] flex items-center justify-center ">
                         {BOXES_BOTTOM.map(box => (
                             <VaultBox key={box.id} {...box} />
                         ))}
