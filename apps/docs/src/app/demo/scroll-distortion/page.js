@@ -1,13 +1,14 @@
 
 // import ScrollDistortion from '@/components/scroll-distortion'
 import ScrollDistortion from '@/components/scroll-distortion'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import React from'react'
 
 const sections = [
- { text:'SHADOW', src:'/assets/img/image01.webp' },
- { text:'FLOWER', src:'/assets/img/image02.webp' },
- { text:'RUN!!', src:'/assets/img/image03.webp' },
+ { text:'SHADOW', src:'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg' },
+ { text:'FLOWER', src:'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg' },
+ { text:'RUN!!', src:'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg' },
 ]
 
 const shaderConfig = {
@@ -21,10 +22,11 @@ const shaderConfig = {
 export default function page() {
  return (
     <>
+    <DemoHeader logoColor="text-white"/>
     <ScrollDistortion
     sections={sections}
     shaderConfig={shaderConfig}
-    displacementSrc="/assets/img/distortion.jpg"
+    displacementSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg"
     />
     <ScrollBottom textColor={"text-white"}/>
     

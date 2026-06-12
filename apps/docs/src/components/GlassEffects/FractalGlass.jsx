@@ -99,8 +99,57 @@ const fragmentShader = `
  }
 `;
 
+function resolveMediaSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
+}
+
+function loadImageElement(source) {
+  return new Promise((resolve, reject) => {
+    const imageSource = resolveMediaSource(source);
+
+    if (!imageSource) {
+      reject(new Error("A valid image URL is required."));
+      return;
+    }
+
+    fetch(imageSource, {
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Image request failed with ${response.status}`);
+        }
+
+        return response.blob();
+      })
+      .then((blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const image = new Image();
+
+        image.onload = () => resolve({ image, objectUrl });
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error(`Unable to decode glass strip image: ${imageSource}`));
+        };
+        image.src = objectUrl;
+      })
+      .catch((error) => {
+        reject(
+          new Error(
+            `Unable to load glass strip image: ${imageSource}. Current origin is ${window.location.origin}. Make sure R2 allows this exact origin. ${error?.message || ""}`
+          )
+        );
+      });
+  });
+}
+
 function GlassStripParallax({
-  imageSrc = "/assets/img/image10.jpg", // ← new prop: path/URL to image file
+  imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", // ← new prop: path/URL to image file
   videoSrc = null,
   mediaType = "image",
   stripesFrequency = 8.0,
@@ -144,16 +193,20 @@ function GlassStripParallax({
 
     let videoEl = null;
     let videoTexture = null;
+    let imageTexture = null;
+    let imageObjectUrl = null;
+    let isDisposed = false;
 
     if (mediaType === "video" && videoSrc) {
       // ── Video path ──────────────────────────────────────────────
       videoEl = document.createElement("video");
-      videoEl.src = videoSrc;
       videoEl.crossOrigin = "anonymous";
+      videoEl.referrerPolicy = "no-referrer";
       videoEl.loop = true;
       videoEl.muted = true;
       videoEl.playsInline = true;
       videoEl.autoplay = true;
+      videoEl.src = resolveMediaSource(videoSrc);
       videoRef.current = videoEl;
 
       videoEl.addEventListener("loadedmetadata", () => {
@@ -173,17 +226,25 @@ function GlassStripParallax({
 
     } else {
       // ── Image path ──────────────────────────────────────────────
-      const loader = new THREE.TextureLoader();
-      loader.crossOrigin = "anonymous";
-      loader.load(imageSrc, (tex) => {
-        tex.minFilter = THREE.LinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.wrapS = THREE.ClampToEdgeWrapping;
-        tex.wrapT = THREE.ClampToEdgeWrapping;
-        uniforms.uTexture.value = tex;
+      loadImageElement(imageSrc).then(({ image, objectUrl }) => {
+        if (isDisposed) return;
+
+        imageObjectUrl = objectUrl;
+        imageTexture = new THREE.Texture(image);
+        imageTexture.needsUpdate = true;
+        imageTexture.minFilter = THREE.LinearFilter;
+        imageTexture.magFilter = THREE.LinearFilter;
+        imageTexture.wrapS = THREE.ClampToEdgeWrapping;
+        imageTexture.wrapT = THREE.ClampToEdgeWrapping;
+        uniforms.uTexture.value = imageTexture;
         uniforms.uTextureSize.value.set(
-          tex.image.naturalWidth || tex.image.width || 1920,
-          tex.image.naturalHeight || tex.image.height || 1080
+          image.naturalWidth || image.width || 1920,
+          image.naturalHeight || image.height || 1080
+        );
+      }).catch((error) => {
+        console.warn(
+          `Unable to load glass strip texture: ${resolveMediaSource(imageSrc)}. Make sure the public URL allows CORS for this site.`,
+          error
         );
       });
     }
@@ -224,6 +285,7 @@ function GlassStripParallax({
     tick();
 
     return () => {
+      isDisposed = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("touchmove", onTouch);
@@ -234,6 +296,8 @@ function GlassStripParallax({
         videoRef.current = null;
       }
       if (videoTexture) videoTexture.dispose();
+      if (imageTexture) imageTexture.dispose();
+      if (imageObjectUrl) URL.revokeObjectURL(imageObjectUrl);
       renderer.dispose();
       mat.dispose();
       geo.dispose();

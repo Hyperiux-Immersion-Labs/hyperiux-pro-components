@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
 
@@ -81,15 +81,15 @@ const ImageDistortionFragment = `
 const DEFAULT_SECTIONS = [
   {
     text: "SHADOW",
-    src: "/assets/img/image01.webp",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
   },
   {
     text: "FLOWER",
-    src: "/assets/img/image02.webp",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
   },
   {
     text: "RUN",
-    src: "/assets/img/image03.webp",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
   },
 ];
 
@@ -107,14 +107,50 @@ const TOUCH_THRESHOLD = 45;
 const TEXT_STAGGER = 0.035;
 const TEXT_DURATION = 0.7;
 
+function resolveImageSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
+}
+
+function loadCorsObjectUrl(source) {
+  const imageSource = resolveImageSource(source);
+
+  if (!imageSource) {
+    return Promise.reject(new Error("A valid image URL is required."));
+  }
+
+  return fetch(imageSource, {
+    mode: "cors",
+    credentials: "omit",
+    cache: "no-store",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Image request failed with ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch((error) => {
+      throw new Error(
+        `Unable to load scroll distortion texture: ${imageSource}. Current origin is ${window.location.origin}. Make sure R2 allows this exact origin. ${error?.message || ""}`
+      );
+    });
+}
+
 export default function ScrollDistortion({
   sections = DEFAULT_SECTIONS,
   shaderConfig = {},
-  displacementSrc = "/assets/img/distortion.jpg",
+  displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
 }) {
   const containerRef = useRef(null);
   const imageRefs = useRef([]);
   const textRefs = useRef([]);
+  const [objectUrls, setObjectUrls] = useState(null);
+  const [decodedUrls, setDecodedUrls] = useState(() => new Set());
 
   const currentIndexRef = useRef(0);
   const targetIndexRef = useRef(0);
@@ -130,13 +166,57 @@ export default function ScrollDistortion({
   }, [sections]);
 
   useEffect(() => {
+    let isCancelled = false;
+    let nextObjectUrls = [];
+
+    Promise.all([
+      ...sections.map((section) => loadCorsObjectUrl(section.src)),
+      loadCorsObjectUrl(displacementSrc),
+    ])
+      .then((urls) => {
+        nextObjectUrls = urls;
+
+        if (!isCancelled) {
+          setObjectUrls(urls);
+        }
+      })
+      .catch((error) => {
+        if (!isCancelled) {
+          console.warn(error?.message || error);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+      nextObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [displacementSrc, sections]);
+
+  const areImagesDecoded =
+    objectUrls?.length === sections.length + 1 &&
+    objectUrls.every((url) => decodedUrls.has(url));
+
+  const markImageDecoded = (url) => {
+    if (!url) return;
+
+    setDecodedUrls((currentUrls) => {
+      if (currentUrls.has(url)) return currentUrls;
+
+      const nextUrls = new Set(currentUrls);
+      nextUrls.add(url);
+
+      return nextUrls;
+    });
+  };
+
+  useEffect(() => {
      gsap.set(".text-container",{
         opacity: 1,
       })
 
     const containerElement = containerRef.current;
 
-    if (!containerElement || sections.length === 0) {
+    if (!containerElement || sections.length === 0 || !areImagesDecoded) {
       return undefined;
     }
 
@@ -433,6 +513,8 @@ export default function ScrollDistortion({
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("resize", onResize);
 
+    const textRefGroups = textRefs.current;
+
     return () => {
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
@@ -442,7 +524,7 @@ export default function ScrollDistortion({
       window.cancelAnimationFrame(animationFrameId);
       gsap.killTweensOf(material.uniforms.u_progress);
 
-      textRefs.current.forEach((chars) => {
+      textRefGroups.forEach((chars) => {
         gsap.killTweensOf(chars);
       });
 
@@ -454,32 +536,46 @@ export default function ScrollDistortion({
       renderer.dispose();
       containerElement.replaceChildren();
     };
-  }, [displacementSrc, sections, shaderConfig]);
+  }, [areImagesDecoded, displacementSrc, sections, shaderConfig]);
 
   return (
     <section className="fixed inset-0 h-screen w-screen overflow-hidden bg-black">
       <div className="hidden">
-        {sections.map((section, index) => (
-          <div key={`${section.src}-${index}`}>
+        {objectUrls?.slice(0, sections.length).map((url, index) => (
+          <div key={`${resolveImageSource(sections[index]?.src)}-${index}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={(element) => {
                 imageRefs.current[index] = element;
+                if (element?.complete && element.naturalWidth > 0) {
+                  markImageDecoded(url);
+                }
               }}
-              src={section.src}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              src={url}
+              onLoad={() => markImageDecoded(url)}
               alt=""
             />
           </div>
         ))}
 
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={(element) => {
-            imageRefs.current[sections.length] = element;
-          }}
-          src={displacementSrc}
-          alt=""
-        />
+        {objectUrls?.[sections.length] && (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            ref={(element) => {
+              imageRefs.current[sections.length] = element;
+              if (element?.complete && element.naturalWidth > 0) {
+                markImageDecoded(objectUrls[sections.length]);
+              }
+            }}
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+            src={objectUrls[sections.length]}
+            onLoad={() => markImageDecoded(objectUrls[sections.length])}
+            alt=""
+          />
+        )}
       </div>
 
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />

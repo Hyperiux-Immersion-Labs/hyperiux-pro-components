@@ -4,17 +4,6 @@ import Link from "next/link";
 export default function AuthShell({ children, backHref = "/" }) {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-6 py-20 text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 h-screen w-screen">
-        <Image
-          src="/assets/heroo-bg.png"
-          alt="vault background"
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
-      </div>
-
       <Link
         href={backHref}
         aria-label="Go back"

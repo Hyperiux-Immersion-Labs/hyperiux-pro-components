@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { MousePointer2 } from "lucide-react";
 
 import PixelCircle from "./PixelCircle";
 import PixelShift from "./PixelShift";
@@ -29,18 +30,12 @@ const VERSIONS = [
 
 export default function MousePixelation({
   variant = "pixel-shift",
-  imageUrl = "/assets/img/image06.png",
+  imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
   ...props
 }) {
   const [activeVariant, setActiveVariant] = useState(
     VARIANTS[variant] ? variant : "pixel-shift"
   );
-
-  useEffect(() => {
-    if (VARIANTS[variant]) {
-      setActiveVariant(variant);
-    }
-  }, [variant]);
 
   const ActiveComponent = useMemo(() => {
     return VARIANTS[activeVariant] || PixelShift;
@@ -52,6 +47,7 @@ export default function MousePixelation({
         activeVariant={activeVariant}
         onVariantChange={setActiveVariant}
       />
+      <CursorMoveCue />
 
       <ActiveComponent
         imageUrl={imageUrl}
@@ -59,6 +55,15 @@ export default function MousePixelation({
         {...props}
       />
     </>
+  );
+}
+
+function CursorMoveCue() {
+  return (
+    <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 shadow-[0_0_30px_rgba(255,255,255,0.08)] backdrop-blur-md max-sm:bottom-5 max-sm:text-xs">
+     
+      <span>Move your cursor to see the pixelated effects</span>
+    </div>
   );
 }
 

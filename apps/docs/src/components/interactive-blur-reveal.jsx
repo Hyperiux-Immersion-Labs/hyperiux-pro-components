@@ -175,6 +175,20 @@ function createProgram(gl, vertexSource, fragmentSource) {
   return program;
 }
 
+function resolveImageSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
+}
+
+function shouldUseCrossOrigin(source) {
+  if (typeof source !== "string") return false;
+  if (source.startsWith("data:") || source.startsWith("blob:")) return false;
+
+  return true;
+}
+
 function loadImage(source) {
   return new Promise((resolve, reject) => {
     if (source instanceof HTMLImageElement) {
@@ -188,12 +202,29 @@ function loadImage(source) {
       return;
     }
 
+    const imageSource = resolveImageSource(source);
+
+    if (!imageSource) {
+      reject(new Error("A valid image URL is required."));
+      return;
+    }
+
     const image = new Image();
 
-    image.crossOrigin = "anonymous";
+    if (shouldUseCrossOrigin(imageSource)) {
+      image.crossOrigin = "anonymous";
+      image.referrerPolicy = "no-referrer";
+    }
+
     image.onload = () => resolve(image);
-    image.onerror = reject;
-    image.src = source;
+    image.onerror = () => {
+      reject(
+        new Error(
+          `Unable to load texture image: ${imageSource}. If this is a remote public URL, the server must allow CORS for WebGL textures.`
+        )
+      );
+    };
+    image.src = imageSource;
   });
 }
 
@@ -572,7 +603,10 @@ function InteractiveBlurReveal({ iChannel0, iChannel1, className, style }) {
         cleanupWebgl = cleanup;
       })
       .catch((error) => {
-        console.error(error);
+        console.warn(
+          "InteractiveBlurReveal could not initialize. The provided texture URL must be directly loadable by the browser and must allow CORS for WebGL.",
+          error?.message || error
+        );
       });
 
     return () => {

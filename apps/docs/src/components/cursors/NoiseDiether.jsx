@@ -131,6 +131,13 @@ const createFBO = (renderer, width, height) => {
  return target;
 };
 
+const resolveTextureSource = (source) => {
+ if (typeof source === 'string') return source;
+ if (source?.src) return source.src;
+
+ return source;
+};
+
 export const NoiseDietherShader = ({
  imageSrc ='/assets/img/image02.webp',
  noiseColor ='#ffffff',
@@ -165,9 +172,22 @@ export const NoiseDietherShader = ({
  const container = containerRef.current;
  if (!container) return;
 
- // Load image
+ // Load image. Direct public URLs work when the remote server sends CORS
+ // headers that allow anonymous WebGL texture reads.
  const textureLoader = new THREE.TextureLoader();
- const imageTexture = textureLoader.load(imageSrc);
+ textureLoader.setCrossOrigin('anonymous');
+ const resolvedImageSrc = resolveTextureSource(imageSrc);
+ const imageTexture = textureLoader.load(
+ resolvedImageSrc,
+ undefined,
+ undefined,
+ (error) => {
+ console.error(
+ `Unable to load noise image texture: ${resolvedImageSrc}. If this is a remote public URL, the server must allow CORS for WebGL textures.`,
+ error
+ );
+ }
+ );
  imageTexture.minFilter = THREE.LinearFilter;
  imageTexture.magFilter = THREE.LinearFilter;
 

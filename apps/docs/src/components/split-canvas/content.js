@@ -36,9 +36,9 @@ export const sections = [
 ];
 
 export const imageSources = [
-'/assets/pixelated/banana.png',
-'/assets/pixelated/cherry.png',
-'/assets/pixelated/mango.png',
-'/assets/pixelated/pineapple.png',
-'/assets/pixelated/watermelon.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/banana.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/cherry.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/mango.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/pineapple.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/watermelon.png',
 ];

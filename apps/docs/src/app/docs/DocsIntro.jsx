@@ -17,14 +17,6 @@ export default function DocsIntro() {
         Welcome to <b> Hyperiux Vault</b> <br /> A curated library of premium Vault built for websites
         that need to be remembered.
       </Para>
-
-      {/* <DocsImage
-        src="/assets/heroo-bg.png"
-        alt="Hyperiux Vault introduction preview"
-        sizes="(max-width: 1280px) 100vw, 900px"
-        priority
-      /> */}
-
       <Para>
         Most UI libraries help teams assemble the expected parts of a page: buttons, cards,
         inputs, accordions, grids. Useful, yes. Distinctive, rarely.
