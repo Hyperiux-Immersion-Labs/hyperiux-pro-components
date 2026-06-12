@@ -9,10 +9,7 @@ import ReflectiveRods from '@/Experience/ReflectiveRods'
 
 export default function Footer() {
     return (
-        <>
-          
-
-            <footer className='h-fit max-sm:hidden  z-200 relative w-full'>
+            <footer className='h-fit   z-200 relative w-full'>
                 <ReflectiveRods />
                 <div className='self-padd z-100 h-fit min-h-screen flex items-end justify-end relative'>
                     <div className='w-full h-fit relative'>
@@ -86,7 +83,6 @@ export default function Footer() {
 
                 </div>
             </footer>
-        </>
 
     )
 }
