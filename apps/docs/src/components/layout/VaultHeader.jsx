@@ -8,20 +8,8 @@ import { useState } from "react";
 import ProfileDropdown from "./ProfileDropDown";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import Button from "@/components/Reusable/Button";
 
-const categoryNames = {
-  text: "Text Animations",
-  backgrounds: "Backgrounds",
-  buttons: "Buttons",
-  scroll: "Scroll Animations",
-  cursor: "Cursor Effects",
-  components: "Components",
-  navigation: "Navigation",
-  transitions: "Page Transitions",
-  loaders: "Website Loaders",
-  webgl: "WebGL",
-  others: "Others",
-};
 
 export function VaultHeader({
   searchQuery,
@@ -56,10 +44,22 @@ export function VaultHeader({
     loadWishlistCount();
   }, []);
 
+  const githubLink = (
+    <Link
+      href="https://github.com/hyperiux"
+      target="_blank"
+      rel="noreferrer"
+      className=""
+      aria-label="Open Hyperiux on GitHub"
+    >
+      <Image src='/icons/github.svg' height={200} width={200} className="h-9 w-9" />
+    </Link>
+  );
+
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 px-10 h-18 py-4 bg-black/10 backdrop-blur-md"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm  px-10 py-5"
       >
         <div className="flex items-center h-full justify-between">
           <Link href="/" className="flex items-center gap-3">
@@ -86,7 +86,8 @@ export function VaultHeader({
             {showSearch && (
               <button
                 onClick={() => setOpenTrigger((n) => n + 1)}
-                className="group flex bg-[#0000033] backdrop-blur-[6px] items-center gap-2 w-80 max-sm:w-12 max-sm:h-12 max-sm:justify-center max-sm:rounded-full pl-4 max-sm:pl-3 pr-3 py-3 border border-border/60 rounded-xl  text-white  hover:border-white/80 duration-300 ease-in-out transition-all  cursor-pointer"
+                className="group flex h-10 cursor-pointer  items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:px-0"
+                aria-label="Search effects"
               >
                 <svg
                   className="w-5 h-5 shrink-0 text-current"
@@ -102,30 +103,30 @@ export function VaultHeader({
                   />
                 </svg>
 
-                <span className="flex-1 text-left max-sm:hidden text-[1.1vw] text-current opacity-60">
-                  Search effects...
+                <span className="max-sm:hidden text-sm">
+                  Search
                 </span>
 
-                <kbd className="px-1 py-0.5 rounded text-xs text-current opacity-50">
-                  (⌘K / Ctrl+K)
+                <kbd className="rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-lg:hidden space-x-2">
+                  ⌘K
                 </kbd>
               </button>
             )}
             {!isSignedIn ? (
               <>
-                <Link
-                  href="/sign-in"
-                  className="hidden md:flex px-5 py-2.5 rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition-all"
-                >
-                  Sign In
-                </Link>
+                <div className="max-sm:hidden block">
+                  <Button
+                    text="Sign In"
+                    href="/sign-in"
+                    variant="orange"
+                    showArrow={false}
+                    innerClassName="group-hover:!translate-x-0"
+                    pillClassName="px-4 py-2 text-xs leading-none"
+                  />
+                </div>
 
-                <Link
-                  href="/pricing"
-                  className="px-5 py-2.5 rounded-full bg-white text-black hover:opacity-90 transition-all"
-                >
-                  Get Pro
-                </Link>
+               
+                {githubLink}
               </>
             ) : (
               <>

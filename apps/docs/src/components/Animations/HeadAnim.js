@@ -36,14 +36,20 @@ export default function HeadAnim({
       elements.forEach((element) => {
         elementRefs.current.push(element);
 
-        // Split into characters
+        // Split into words + characters so letters never wrap away from their word
         const split = SplitText.create(element, {
-          type: "lines,chars",   
-          mask:"chars",            // <-- chars instead of lines
-          charsClass: "char++",        // optional: auto-increment class names
-          reduceWhiteSpace: false      // keep spaces as nodes
+          type: "lines,words,chars",
+          mask:"chars",
+          wordsClass: "word++",
+          charsClass: "char++",
+          reduceWhiteSpace: false
         });
         splitRefs.current.push(split);
+
+        gsap.set(split.words, {
+          display: "inline-block",
+          whiteSpace: "nowrap",
+        });
 
         // Collect characters
         chars.current.push(...split.chars);

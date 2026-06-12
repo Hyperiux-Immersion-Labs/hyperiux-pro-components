@@ -12,6 +12,14 @@ import { Heart } from "lucide-react";
 
 gsap.registerPlugin(DrawSVGPlugin);
 
+function formatLabel(value = "") {
+  return value
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export function EffectCard({
   effect,
   priority = false,
@@ -95,6 +103,12 @@ export function EffectCard({
   const showVideo = shouldLoadVideo && videoReady;
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
+  const categories = (effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean);
+  const primaryCategoryLabel = formatLabel(categories[0] || "others");
+  const dependencyPills = (effect.dependencies || [])
+    .slice(0, 2)
+    .map(formatLabel)
+    .filter(Boolean);
 
   return (
     <div
@@ -129,31 +143,56 @@ export function EffectCard({
 
       {/* Clickable Preview Area */}
       <Link href={effectHref} className="block">
-        <div className="aspect-video bg-black/20 rounded-[1vw] max-sm:rounded-[4vw] overflow-hidden relative">
-          <Image
-            src={coverImage}
-            alt={effect.title || effect.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={priority}
-            className={`object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
-              }`}
-          />
-          {shouldLoadVideo && (
-            <video
-              ref={videoRef}
-              src={videoPreviewUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              onLoadedData={() => setVideoReady(true)}
-              onError={() => setVideoError(true)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
+        <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
+          <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              {dependencyPills.map((pill) => (
+                <span
+                  key={pill}
+                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-4 max-sm:text-xs"
+                >
+                  {pill}
+                </span>
+              ))}
+            </div>
+
+            {effect.tier === "pro" && (
+              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:text-xs">
+                Pro
+              </span>
+            )}
+          </div>
+
+          <div className="absolute inset-0 flex items-center justify-center px-7">
+            <div className="relative aspect-video w-full overflow-hidden rounded-sm">
+              <Image
+                src={coverImage}
+                alt={effect.title || effect.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={priority}
+                className={`object-cover transition-all duration-500 group-hover:scale-[1.02] ${
+                  showVideo ? "opacity-0" : "opacity-100"
                 }`}
-            />
-          )}
+              />
+              {shouldLoadVideo && (
+                <video
+                  ref={videoRef}
+                  src={videoPreviewUrl}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  onLoadedData={() => setVideoReady(true)}
+                  onError={() => setVideoError(true)}
+                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+                    showVideo ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </Link>
 
@@ -221,6 +260,9 @@ export function EffectCard({
           <h3 className="font-sans font-semibold max-sm:text-xl text-base text-foreground group-hover:text-primary transition-colors">
             {effect.title}
           </h3>
+          <p className="mt-0.5 text18 text-[#AEAEAE]">
+            {primaryCategoryLabel}
+          </p>
         </Link>
         <div className="flex items-center gap-2 flex-wrap">
           {(effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean).map((cat) => (

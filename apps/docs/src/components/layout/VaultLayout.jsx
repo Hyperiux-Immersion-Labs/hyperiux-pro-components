@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useLenis } from "lenis/react";
 import Image from "next/image";
 import { Sidebar } from "./Sidebar";
-import Footer from "../Footer";
+
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -17,25 +17,10 @@ const DOCS_TOP_LINKS = [
 function SidebarFallback({ totalEffects }) {
   return (
     <aside
-      className="fixed left-0 top-20 bottom-0 z-40 bg-transparent text-foreground"
-      style={{ width: "16rem", ["--sidebar-width"]: "16rem", ["--sidebar-peek"]: "4.25rem" }}
+      className="fixed left-0 top-0 bottom-0 z-40 w-18 border-r border-white/10 bg-[#060606] text-foreground"
     >
-      <div className="relative flex h-full w-(--sidebar-width) flex-col rounded-lg overflow-visible -translate-x-[(var(--sidebar-width)-var(--sidebar-peek))]">
-        <button
-          type="button"
-          aria-label="Open sidebar"
-          className="absolute right-0 top-1/2 -translate-y-1/2 h-14 w-(--sidebar-peek)rounded-r-2xl bg-black/35 border border-border/60/60 flex items-center justify-end backdrop-blur-md"
-          style={{ zIndex: 60 }}
-        >
-          <div className="ml-auto mr-4 flex gap-1.5">
-            <span className="h-6 w-0.75 rounded-full bg-white/90" />
-            <span className="h-6 w-0.75 rounded-full bg-white/90" />
-          </div>
-        </button>
-
-        <div className="h-full w-full flex items-center justify-center">
-          <div className="h-14 w-14" />
-        </div>
+      <div className="flex h-full items-start justify-center px-2 py-3">
+        <div className="h-29.5 w-full border-b border-white/10 bg-[#080808]" />
       </div>
     </aside>
   );
@@ -91,6 +76,7 @@ export function VaultLayout({
 
       <Suspense fallback={<SidebarFallback totalEffects={totalEffects} />}>
         <Sidebar
+          effects={effects}
           effectCounts={effectCounts}
           totalEffects={totalEffects}
           isExpanded={isSidebarOpen}
