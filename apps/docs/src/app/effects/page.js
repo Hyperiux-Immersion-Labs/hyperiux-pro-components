@@ -3,6 +3,7 @@ import { getEffectsByCategory, getRegistryIndex } from"@/lib/registry";
 import { VaultContent } from"./vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
+import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
 
 export const metadata = {
  title:"The Vault | Hyperiux Vault",
@@ -19,7 +20,8 @@ function VaultFallback() {
 export default async function EffectsPage() {
  const categories = getEffectsByCategory();
  const registry = getRegistryIndex();
- console.log(registry)
+ const sanityEntries = await getAllSanityEffectEntries();
+ const effects = applySanityCategorySlugs(registry.items, sanityEntries);
 
  // Calculate effect counts per category
  const effectCounts = {};
@@ -33,7 +35,7 @@ const { userId } = await auth();
  <Suspense fallback={<VaultFallback />}>
    
  <VaultContent
- effects={[...registry.items].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0))}
+ effects={[...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0))}
  effectCounts={effectCounts}
   userPlan={userPlan}
  />

@@ -1,8 +1,5 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import {
-  getEffectCategoryBySlug,
-} from "@/lib/categories";
 
 import {
   getAllEffectSlugs,
@@ -10,21 +7,15 @@ import {
   getEffectsByCategory,
   getRegistryIndex,
 } from "@/lib/registry";
+import { getEffectHref } from "@/lib/categories";
 
 import {
+  applySanityCategorySlugs,
   getAllSanityEffectEntries,
   getSanityEffectContent,
 } from "@/lib/sanity";
 import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { EffectDetailContent } from "../effect-detail";
-
-function effectBelongsToCategory(effect, categoryId) {
-  const categories = effect.categories?.length
-    ? effect.categories
-    : [effect.category || "others"];
-
-  return categories.includes(categoryId);
-}
 
 function normalize(value = "") {
   return value
@@ -37,26 +28,37 @@ function normalize(value = "") {
 
 export async function generateStaticParams() {
   const entries = await getAllSanityEffectEntries();
+  const registry = getRegistryIndex();
+  const params = new Map();
 
-  return entries.map((entry) => ({
-    slug: entry.categorySlug,
-    effectSlug: entry.effectSlug,
-  }));
+  for (const entry of entries) {
+    params.set(`${entry.categorySlug}/${entry.effectSlug}`, {
+      slug: entry.categorySlug,
+      effectSlug: entry.effectSlug,
+    });
+  }
+
+  for (const effect of registry.items) {
+    const [, , categorySlug, effectSlug] = getEffectHref(effect).split("/");
+
+    if (!categorySlug || !effectSlug) continue;
+
+    params.set(`${categorySlug}/${effectSlug}`, {
+      slug: categorySlug,
+      effectSlug,
+    });
+  }
+
+  return [...params.values()];
 }
 
 export async function generateMetadata({ params }) {
   const { slug, effectSlug } = await params;
 
   const effect = getEffectBySlug(effectSlug);
-  const category = getEffectCategoryBySlug(slug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (
-    !effect ||
-    !category ||
-    !effectBelongsToCategory(effect, category.id) ||
-    !content
-  ) {
+  if (!effect) {
     return {
       title: "Effect Not Found",
     };
@@ -76,15 +78,9 @@ export default async function EffectPage({ params }) {
   const { slug, effectSlug } = await params;
 
   const effect = getEffectBySlug(effectSlug);
-  const category = getEffectCategoryBySlug(slug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (
-    !effect ||
-    !category ||
-    !effectBelongsToCategory(effect, category.id) ||
-    !content
-  ) {
+  if (!effect) {
     notFound();
   }
 
@@ -94,6 +90,8 @@ export default async function EffectPage({ params }) {
   const isLocked = !canAccessEffect(effect.tier ?? "pro", userPlan);
 
   const registry = getRegistryIndex();
+  const sanityEntries = await getAllSanityEffectEntries();
+  const registryItems = applySanityCategorySlugs(registry.items, sanityEntries);
 
   const categoriesMap = getEffectsByCategory();
 
@@ -114,7 +112,7 @@ export default async function EffectPage({ params }) {
     .map((relatedName) => {
       const normalizedRelatedName = normalize(relatedName);
 
-      return registry.items.find((item) => {
+      return registryItems.find((item) => {
         const normalizedTitle = normalize(item.title);
 
         const normalizedName = normalize(item.name);

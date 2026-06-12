@@ -1,6 +1,6 @@
 export const effectCategories = [
   { id: "all", name: "All Effects", slug: "all" },
-  { id: "text", name: "Text Animations", slug: "text-effects" },
+  { id: "text", name: "Text Animations", slug: "text-animations" },
   { id: "backgrounds", name: "Backgrounds", slug: "backgrounds" },
   { id: "buttons", name: "Buttons", slug: "buttons" },
   { id: "carousels", name: "Carousels", slug: "carousels" },
@@ -9,13 +9,37 @@ export const effectCategories = [
   { id: "navigation", name: "Navigation", slug: "navigation" },
   { id: "cursor", name: "Cursor Effects", slug: "cursor-effects" },
   { id: "transitions", name: "Page Transitions", slug: "page-transitions" },
-  { id: "loaders", name: "Website Loaders", slug: "website-loaders" },
-  { id: "webgl", name: "WebGL", slug: "webgl" },
+  { id: "loaders", name: "Website Loaders", slug: "loaders" },
+  { id: "webgl", name: "WebGL Effects", slug: "webgl-effects" },
   { id: "others", name: "Others", slug: "others" },
 ];
 
 const categoriesById = new Map(effectCategories.map((category) => [category.id, category]));
-const categoriesBySlug = new Map(effectCategories.map((category) => [category.slug, category]));
+const categorySlugAliases = {
+  text: "text",
+  "text-effects": "text",
+  "text-animations": "text",
+  transitions: "transitions",
+  "page-transitions": "transitions",
+  loader: "loaders",
+  loaders: "loaders",
+  "website-loader": "loaders",
+  "website-loaders": "loaders",
+  webgl: "webgl",
+  "webgl-effects": "webgl",
+  scroll: "scroll",
+  "scroll-effects": "scroll",
+  "scroll-animations": "scroll",
+  cursor: "cursor",
+  "cursor-effects": "cursor",
+};
+const categoriesBySlug = new Map([
+  ...effectCategories.map((category) => [category.slug, category]),
+  ...Object.entries(categorySlugAliases).map(([slug, id]) => [
+    slug,
+    categoriesById.get(id),
+  ]),
+].filter(([, category]) => Boolean(category)));
 
 export function getEffectCategory(id) {
   return categoriesById.get(id) || null;

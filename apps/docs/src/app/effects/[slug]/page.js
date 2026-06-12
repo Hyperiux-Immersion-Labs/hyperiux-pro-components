@@ -5,6 +5,7 @@ import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
+import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
 
 function VaultFallback() {
   return (
@@ -15,6 +16,8 @@ function VaultFallback() {
 
 export async function generateStaticParams() {
   const slugs = new Set();
+
+  slugs.add("free");
 
   for (const categorySlug of Object.keys(getEffectsByCategory())) {
     const category = getEffectCategoryBySlug(categorySlug);
@@ -27,6 +30,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+
+  if (slug === "free") {
+    return {
+      title: "Free Effects | Hyperiux Vault",
+      description: "Browse free effects in the Hyperiux Vault",
+    };
+  }
+
   const category = getEffectCategoryBySlug(slug);
 
   if (category) {
@@ -42,6 +53,7 @@ export async function generateMetadata({ params }) {
 export default async function EffectsCategoryPage({ params }) {
   const { userId } = await auth();
   const { slug } = await params;
+  const isFreeListing = slug === "free";
   const category = getEffectCategoryBySlug(slug);
   const categoriesMap = getEffectsByCategory();
   const userPlan = await getUserPlan(userId);
@@ -52,19 +64,21 @@ export default async function EffectsCategoryPage({ params }) {
     effectCounts[categoryId] = effects.length;
   }
 
-  if (!category || !categoriesMap[category.id]) {
+  if (!isFreeListing && (!category || !categoriesMap[category.id])) {
     notFound();
   }
 
   const registry = getRegistryIndex();
+  const sanityEntries = await getAllSanityEffectEntries();
+  const effects = applySanityCategorySlugs(registry.items, sanityEntries);
 
   return (
     <Suspense fallback={<VaultFallback />}>
       <VaultContent
-        key={category.id}
-        effects={[...registry.items].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0))}
+        key={isFreeListing ? "free" : category.id}
+        effects={[...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0))}
         effectCounts={effectCounts}
-        initialCategory={category.id}
+        initialCategory={isFreeListing ? "free" : category.id}
         userPlan={userPlan}
       />
     </Suspense>

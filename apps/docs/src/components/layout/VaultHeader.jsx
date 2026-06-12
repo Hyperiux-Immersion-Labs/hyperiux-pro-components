@@ -1,38 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { GlobalSearch } from "./SearchBar";
 import { useState } from "react";
 import ProfileDropdown from "./ProfileDropDown";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import Button from "@/components/Reusable/Button";
+import { GithubIcon } from "@/utils/Icons";
 
-const categoryNames = {
-  text: "Text Animations",
-  backgrounds: "Backgrounds",
-  buttons: "Buttons",
-  scroll: "Scroll Animations",
-  cursor: "Cursor Effects",
-  components: "Components",
-  navigation: "Navigation",
-  transitions: "Page Transitions",
-  loaders: "Website Loaders",
-  webgl: "WebGL",
-  others: "Others",
-};
 
 export function VaultHeader({
-  searchQuery,
-  onSearchChange,
-  totalEffects,
-  effectName,
   showSearch = true,
   effects = [],
 }) {
-  const searchParams = useSearchParams();
-  const currentCategory = searchParams.get("category");
   const { isSignedIn } = useUser();
 
   const [openTrigger, setOpenTrigger] = useState(0);
@@ -56,40 +37,34 @@ export function VaultHeader({
     loadWishlistCount();
   }, []);
 
+  const githubLink = (
+    <Link
+      href="https://github.com/hyperiux"
+      target="_blank"
+      rel="noreferrer"
+      className=""
+      aria-label="Open Hyperiux on GitHub"
+    >
+      <GithubIcon className="h-8 w-8" />
+    </Link>
+  );
+
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 px-10 h-18 py-4 bg-black/10 backdrop-blur-md"
+        className="fixed top-0 left-0 right-0 z-50  px-10 py-5"
       >
-        <div className="flex items-center h-full justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/hyperiux.svg"
-              alt="Hyperiux"
-              width={30}
-              height={30}
-            />
-
-            <div className="flex items-center gap-2 text-white">
-              <Image
-                src="/hyperiux-wordmark.svg"
-                alt="Hyperiux"
-                width={156}
-                height={45}
-              />
-            </div>
-          </Link>
-
-          {/* Right side - Search */}
-          <div className="flex items-center gap-3">
+        <div className="flex h-full items-center justify-end gap-3">
 
             {showSearch && (
               <button
                 onClick={() => setOpenTrigger((n) => n + 1)}
-                className="group flex bg-[#0000033] backdrop-blur-[6px] items-center gap-2 w-80 max-sm:w-12 max-sm:h-12 max-sm:justify-center max-sm:rounded-full pl-4 max-sm:pl-3 pr-3 py-3 border border-border/60 rounded-xl  text-white  hover:border-white/80 duration-300 ease-in-out transition-all  cursor-pointer"
+                className="group flex h-10  items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:px-0"
+                aria-label="Search effects"
               >
+                <div className="flex items-center gap-2">
                 <svg
-                  className="w-5 h-5 shrink-0 text-current"
+                  className="h-4 w-4 shrink-0 text-current"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -102,39 +77,40 @@ export function VaultHeader({
                   />
                 </svg>
 
-                <span className="flex-1 text-left max-sm:hidden text-[1.1vw] text-current opacity-60">
-                  Search effects...
+                <span className="max-sm:hidden">
+                  Search
                 </span>
+                </div>
 
-                <kbd className="px-1 py-0.5 rounded text-xs text-current opacity-50">
-                  (⌘K / Ctrl+K)
+                <kbd className="rounded bg-black/40 px-1 py-0.5 text-[10px] text-current opacity-50 max-lg:hidden">
+                  ⌘K
                 </kbd>
               </button>
             )}
             {!isSignedIn ? (
               <>
-                <Link
-                  href="/sign-in"
-                  className="hidden md:flex px-5 py-2.5 rounded-full border border-white/10 text-white hover:bg-white hover:text-black transition-all"
-                >
-                  Sign In
-                </Link>
+                <div className="hidden md:block">
+                  <Button
+                    text="Sign In"
+                    href="/sign-in"
+                    variant="orange"
+                    showArrow={false}
+                    innerClassName="group-hover:!translate-x-0"
+                    pillClassName="px-4 py-2 text-xs leading-none"
+                  />
+                </div>
 
-                <Link
+                {/* <Link
                   href="/pricing"
-                  className="px-5 py-2.5 rounded-full bg-white text-black hover:opacity-90 transition-all"
+                  className="flex h-8 items-center rounded-full bg-white px-4 text-xs text-black transition-all hover:opacity-90"
                 >
                   Get Pro
-                </Link>
+                </Link> */}
+                {githubLink}
               </>
             ) : (
               <>
-                <Link
-                  href="/pricing"
-                  className="px-5 py-2.5 rounded-full bg-white text-black hover:opacity-90 transition-all"
-                >
-                  Upgrade
-                </Link>
+                {githubLink}
 
                 <ProfileDropdown
                   savedCount={wishlistCount}
@@ -142,7 +118,6 @@ export function VaultHeader({
                 />
               </>
             )}
-          </div>
         </div>
       </header>
 

@@ -14,10 +14,9 @@ import {
   getEffectCategoryHref,
 } from "@/lib/categories";
 import Link from "next/link";
-import Image from "next/image";
-import Footer from "@/components/Footer";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
+import Footer from "@/components/LandingPage/Footer";
 
 export function VaultContent({
   effects,
@@ -49,6 +48,12 @@ export function VaultContent({
 
     params.delete("category");
 
+    if (resolvedCategory === "free") {
+      const nextQuery = params.toString();
+      router.push(nextQuery ? `/effects/free?${nextQuery}` : "/effects/free");
+      return;
+    }
+
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
     const nextUrl = nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
@@ -67,7 +72,7 @@ export function VaultContent({
         effectCounts[id],
     );
 
-    return [...knownCategories, ...extraCategories];
+    return ["all", "free", ...knownCategories, ...extraCategories];
   }, [effectCounts]);
   const [wishlist, setWishlist] = useState([]);
 
@@ -125,7 +130,9 @@ export function VaultContent({
   const filteredEffects = useMemo(() => {
     return effects.filter((effect) => {
       // Category filter
-      if (categoryFilter !== "all") {
+      if (categoryFilter === "free") {
+        if (effect.tier === "pro") return false;
+      } else if (categoryFilter !== "all") {
         const cats = effect.categories?.length
           ? effect.categories
           : [effect.category];
@@ -153,6 +160,10 @@ export function VaultContent({
   const totalEffects = useMemo(() => {
     if (categoryFilter === "all") return effects.length;
 
+    if (categoryFilter === "free") {
+      return effects.filter((effect) => effect.tier !== "pro").length;
+    }
+
     return effects.filter((effect) => {
       const cats = effect.categories?.length
         ? effect.categories
@@ -160,7 +171,10 @@ export function VaultContent({
       return cats.includes(categoryFilter);
     }).length;
   }, [effects, categoryFilter]);
-  const activeCategoryName = getEffectCategory(categoryFilter)?.name || categoryFilter;
+  const activeCategoryName =
+    categoryFilter === "free"
+      ? "Free"
+      : getEffectCategory(categoryFilter)?.name || categoryFilter;
 
   return (
     <VaultLayout
@@ -168,6 +182,7 @@ export function VaultContent({
       effects={effects}
       activeCategory={categoryFilter}
     >
+      {({ isSidebarOpen }) => (
       <div className="min-h-screen text-foreground relative">
         <VaultHeader
           searchQuery={searchQuery}
@@ -177,16 +192,16 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12  text-center">
-            {/* <p className=" mb-4 text-lg font-sans">Hello</p> */}
+          <div className="mx-auto px-8 pt-40 pb-20 text-center max-sm:px-7">
+            <p className="mb-4 font-sans text-22 text-light-grey">The Vault Library</p>
             <HeadAnim>
               <h1
-                className="font-display max-sm:text-4xl text-7xl font-normal text-foreground mb-4"
+                className="mb-4 font-display text110 font-normal text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.0" }}
               >
                 {categoryFilter === "all" ? (
                   <>
-                    Welcome to <br /> the vault
+                    Browse creative effects <br /> for modern websites.
                   </>
                 ) : (
                   <>
@@ -195,19 +210,11 @@ export function VaultContent({
                 )}
               </h1>
             </HeadAnim>
-
-            <div className="flex items-center justify-center gap-4 text-lg font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-base fadeup">
-              <span>{totalEffects} effects</span>
-              <span>•</span>
-              <span>Free & Pro effects</span>
-              <span>•</span>
-              <span>Copy & paste</span>
-            </div>
           </div>
         </div>
 
         {/* Filter pills — desktop wraps, mobile single-line scroll */}
-        <div className="pb-10 px-10 max-sm:px-0">
+        <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20">
           <div className="relative max-sm:w-full">
             {/* Right fade hint on mobile */}
             <div
@@ -234,26 +241,33 @@ export function VaultContent({
             >
               {quickCategories.map((cat) => {
                 const isSelected = categoryFilter === cat;
+                const label =
+                  cat === "all"
+                    ? "All"
+                    : cat === "free"
+                      ? "Free"
+                      : cat === "webgl"
+                        ? "WebGL"
+                        : cat.charAt(0).toUpperCase() + cat.slice(1);
+
                 return (
                   <button
                     key={cat}
                     type="button"
-                    onClick={() => updateCategoryFilter(isSelected ? "all" : cat)}
+                    onClick={() => updateCategoryFilter(cat)}
                     className={`
     px-7 py-2.5 max-sm:px-6 text-md text-center relative rounded-full
-    backdrop-blur-[6px] border font-sans group flex items-center cursor-pointer
-    transition-all duration-300 ease-in-out
-    hover:text-primary hover:bg-white 
+    backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
+    transition-all duration-500 ease-in-out
+    hover:text-[#111111] hover:bg-white  text20
     ${isSelected
-                        ? "bg-white text-primary border-transparent pr-12"
-                        : "bg-[#00000033] border-border/50 text-foreground pr-7"
+                        ? "bg-white text-[#111111]  pr-12"
+                        : "bg-[#161616] text-foreground pr-7"
                       }
   `}
                   >
                     <span className="leading-none">
-                      {cat === "webgl"
-                        ? "WebGL"
-                        : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      {label}
                     </span>
 
                     <span
@@ -288,7 +302,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className=" px-10 max-sm:px-6 pb-12 fadeup">
+        <div className="mx-auto px-10 pb-12 fadeup max-sm:px-6">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${categoryFilter !== "all" || searchQuery
               ? "mb-8 min-h-10 opacity-100"
@@ -378,34 +392,19 @@ export function VaultContent({
                 filteredEffects={filteredEffects}
                 wishlist={wishlist}
                 toggleWishlist={toggleWishlist}
-                 isProUser={isProUser}
+                isProUser={isProUser}
+                isSidebarOpen={isSidebarOpen}
               />
 
 
             </>
           )}
         </div>
-        <div className="py-32 text-center">
-          <h2 className="text-5xl font-display text-white mb-4">
-            Unlock Hyperiux Pro
-          </h2>
-
-          <p className="text-zinc-400 max-w-2xl mx-auto mb-8">
-            Access every premium effect, source code, CLI installs,
-            future releases, and advanced dashboard features.
-          </p>
-
-          <Link
-            href="/pricing"
-            className="inline-flex px-8 py-4 bg-white text-black rounded-full"
-          >
-            Get Pro
-          </Link>
-        </div>
         <div className="px-10 py-8">
-          <Footer />
+          <Footer/>
         </div>
       </div>
+      )}
     </VaultLayout>
   );
 }
@@ -415,6 +414,7 @@ function EffectsGrid({
   wishlist,
   toggleWishlist,
   isProUser = false,
+  isSidebarOpen = false,
 }) {
   const [showAllMobileCards, setShowAllMobileCards] = useState(false);
   const gridRef = useRef(null);
@@ -451,7 +451,9 @@ function EffectsGrid({
     <>
       <div
         ref={gridRef}
-        className="grid max-sm:grid-cols-1 max-md:grid-cols-2 grid-cols-3 gap-5 max-sm:gap-8 gap-y-12.5"
+        className={`grid gap-4 gap-6 rounded-xl bg-[#272727] max-sm:grid-cols-1 max-sm:gap-8 p-5 ${
+          isSidebarOpen ? "grid-cols-2" : "grid-cols-3"
+        }`}
       >
         {filteredEffects.map((effect, i) => (
           <div

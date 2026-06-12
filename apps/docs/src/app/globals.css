@@ -1,16 +1,9 @@
 @import "tailwindcss";
-
-@font-face {
-  font-family: "Aeonik";
-  src: url("/assets/fonts/Aeonik-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+@import "./CustomCss.css";
 
 :root {
   /* Coinbase-inspired color palette */
-  --background: #000000;
+  --background: #0e0e0e;
   --foreground: #ffffff;
   --primary: #ff5f00;
   --primary-hover: #ff9253;
@@ -19,12 +12,9 @@
   --dark-card: #141414;
   --border: #bcbcbc;
   --muted: #d2d2d2;
-  --font-display: "Aeonik", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-sans:
-    "Aeonik", "Inter", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-mono:
-    "SF Mono", "JetBrains Mono", "Fira Code", "Roboto Mono", Consolas,
-    monospace;
+  /* NEW COLORS */
+  --grey: #252525;
+  --light-grey: #939393;
 }
 
 @theme inline {
@@ -37,10 +27,9 @@
   --color-dark-card: var(--dark-card);
   --color-border: var(--border);
   --color-muted: var(--muted);
-  --font-aeonik: "Aeonik", var(--font-sans), system-ui, sans-serif;
-  --font-display: var(--font-display);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --color-grey: var(--grey);
+  --color-light-grey: var(--light-grey);
+  --font-laygrotesk: var(--font-laygrotesk);
 
   /* Border radius scale from Coinbase design */
   --radius-sm: 4px;
@@ -55,20 +44,18 @@
   --breakpoint-sm: 768px;
 }
 
+html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   line-height: 1.5;
   font-size: 16px;
   width: 100vw;
   overflow-x: hidden;
-}
-
-html,
-body {
-  background: #000000;
-  color: #ffffff;
 }
 
 /* Typography hierarchy inspired by Coinbase */
@@ -76,27 +63,27 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   font-weight: 400;
   line-height: 1.1;
 }
 
 .display-hero {
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   font-size: 80px;
   font-weight: 400;
   line-height: 1;
 }
 
 .display-secondary {
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   font-size: 64px;
   font-weight: 400;
   line-height: 1;
 }
 
 .display-third {
-  font-family: var(--font-display), system-ui, sans-serif;
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   font-size: 52px;
   font-weight: 400;
   line-height: 1;
@@ -106,7 +93,7 @@ h4 {
 .btn-pill {
   border-radius: 56px;
   padding: 12px 32px;
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.16px;
@@ -161,7 +148,7 @@ h4 {
 /* Selection color */
 ::selection {
   background: #ff5f00;
-  color:#ffffff;
+  color: #ffffff;
 }
 .codeblock-root ::selection {
   background: rgba(99, 102, 241, 0.35);
@@ -402,10 +389,10 @@ h4 {
   color: #ffffff !important;
   margin-bottom: 2rem !important;
 }
-.cl-footerAction{
+.cl-footerAction {
   margin-top: 1rem !important;
 }
-.cl-internal-brtq98[data-variant="solid"][data-color="primary"]{
+.cl-internal-brtq98[data-variant="solid"][data-color="primary"] {
   background: #ff5f00 !important;
   height: 2.5vw !important;
   border-radius: 9999px !important;
@@ -413,52 +400,49 @@ h4 {
   box-shadow: none !important;
   margin-bottom: 1rem !important;
 }
-.cl-internal-1yioxat[data-variant="outline"]{
-   box-shadow: none !important;
-   height: 2.5vw !important;
+.cl-internal-1yioxat[data-variant="outline"] {
+  box-shadow: none !important;
+  height: 2.5vw !important;
   border-radius: 9999px !important;
 
-   background: white !important;
+  background: white !important;
 }
-.cl-internal-brtq98[data-variant="solid"]::after{
+.cl-internal-brtq98[data-variant="solid"]::after {
   background: #ff5f00 !important;
 }
-.cl-internal-10u89jk{
+.cl-internal-10u89jk {
   color: #ff5f00 !important;
 }
-.cl-internal-wq8kjp{
-display: none !important;
+.cl-internal-wq8kjp {
+  display: none !important;
 }
-.cl-internal-bails5{
+.cl-internal-bails5 {
   margin-top: 2rem !important;
-
 }
-.cl-formFieldInfoText__password{
-  color:white !important;
+.cl-formFieldInfoText__password {
+  color: white !important;
 }
-.cl-internal-1h6fgzy{
-  color:white !important;
-
+.cl-internal-1h6fgzy {
+  color: white !important;
 }
-.cl-formFieldRow__signOutOfOtherSessions{
-  display:none !important;
+.cl-formFieldRow__signOutOfOtherSessions {
+  display: none !important;
 }
-.cl-footerAction__alternativeMethods{
-  color:#ff5f00 !important;
+.cl-footerAction__alternativeMethods {
+  color: #ff5f00 !important;
 }
-.cl-internal-5ur8x{
-  color:white !important;
+.cl-internal-5ur8x {
+  color: white !important;
 }
-.cl-formFieldSuccessText{
-   color:white !important;
+.cl-formFieldSuccessText {
+  color: white !important;
 }
-.cl-formFieldWarningText{
-   color:white !important;
+.cl-formFieldWarningText {
+  color: white !important;
 }
-.cl-backLink{
-   color:#ff5f00 !important;
+.cl-backLink {
+  color: #ff5f00 !important;
 }
-
 
 @media (max-width: 640px) {
   .hyperiux-clerk .cl-cardBox {
