@@ -36,6 +36,26 @@ function normalizeEffectEntries(entries = []) {
   })
 }
 
+export function applySanityCategorySlugs(effects = [], entries = []) {
+  const entryByEffectSlug = new Map(
+    normalizeEffectEntries(entries)
+      .filter((entry) => entry?.effectSlug && entry?.categorySlug)
+      .map((entry) => [entry.effectSlug, entry.categorySlug])
+  )
+
+  return effects.map((effect) => {
+    const effectSlug = getEffectRouteSlug(effect.effectSlug || effect.slug || effect.name)
+    const categorySlug = entryByEffectSlug.get(effectSlug)
+
+    if (!categorySlug) return effect
+
+    return {
+      ...effect,
+      categorySlug,
+    }
+  })
+}
+
 function getCategorySlugAliases(categorySlug) {
   return getEffectCategorySlugAliases(categorySlug)
 }
