@@ -7,6 +7,7 @@ import ProfileDropdown from "./ProfileDropDown";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Button from "@/components/Reusable/Button";
+import Image from "next/image";
 
 
 export function VaultHeader({

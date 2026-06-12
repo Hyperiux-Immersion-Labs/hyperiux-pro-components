@@ -7,6 +7,8 @@ import { useAnimate, useInView } from "motion/react";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
+import gsap from "gsap";
+import DrawSVGPlugin from "gsap/DrawSVGPlugin";
 
 gsap.registerPlugin(DrawSVGPlugin);
 

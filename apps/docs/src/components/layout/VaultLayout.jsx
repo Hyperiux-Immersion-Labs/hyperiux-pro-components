@@ -83,7 +83,6 @@ export function VaultLayout({
         <Sidebar
           effects={effects}
           effectCounts={effectCounts}
-          effects={effects}
           totalEffects={totalEffects}
           isExpanded={isSidebarOpen}
           onToggle={() => setIsSidebarOpen((v) => !v)}

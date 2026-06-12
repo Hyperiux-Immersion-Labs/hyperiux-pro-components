@@ -85,6 +85,12 @@ export default function MyComponent() {
     categorySlug,
   });
   const dependencies = effect.dependencies || [];
+  const coverImage =
+    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+      defaultDirectory: "vault-listing-images",
+      defaultExtension: "png",
+    }) ||
+    "/assets/img/image01.webp";
 
   const sidebarContent = (
     <div className="space-y-6">
@@ -208,7 +214,7 @@ export default function MyComponent() {
 
         <main className="mx-auto w-full  px-15 pt-28 pb-12 max-sm:px-4 max-sm:pt-24">
           <section className="space-y-7">
-            <div className="flex  items-start justify-between gap-5">
+            <div className="flex items-start justify-between gap-5">
               <div className="w-full space-y-5">
                 {/* {categorySlug && (
                   <Copy>
@@ -230,26 +236,24 @@ export default function MyComponent() {
                   </p>
                 </Copy>
                 <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
-                {(dependencies.length > 0 || effect.tier === "pro") && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    {dependencies.map((dep) => (
-                      <span
-                        key={dep}
-                        className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground"
-                      >
-                        {dep}
-                      </span>
-                    ))}
+                  {(dependencies.length > 0 || effect.tier === "pro") && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {dependencies.map((dep) => (
+                        <span
+                          key={dep}
+                          className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground"
+                        >
+                          {dep}
+                        </span>
+                      ))}
 
-                    {effect.tier === "pro" && (
-                      <span className="rounded-full bg-primary px-4 py-2 text-xs font-medium text-white">
-                        Pro
-                      </span>
-                    )}
-                  </div>
-                )}
-
-               
+                      {effect.tier === "pro" && (
+                        <span className="rounded-full bg-primary px-4 py-2 text-xs font-medium text-white">
+                          Pro
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <div className="ml-auto shrink-0">
                     <Button
@@ -258,13 +262,10 @@ export default function MyComponent() {
                       target="_blank"
                       variant="orange"
                       className="shrink-0"
-                      />
-                      </div>
+                    />
                   </div>
                 </div>
-       
-
-            
+              </div>
             </div>
 
             <div className="fadeup h-[46vw]">
@@ -287,7 +288,6 @@ export default function MyComponent() {
                     autoPlay
                     loop
                     muted
-                    defaultMuted
                     playsInline
                     preload="auto"
                     onLoadedMetadata={handleVideoReady}
@@ -385,23 +385,22 @@ export default function MyComponent() {
 
                     <div className="rounded-xl  fadeup">
                       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                      {relatedEffects.map((relatedEffect) => (
-                        <EffectCard
-                          key={relatedEffect.name}
-                          effect={relatedEffect}
-                        />
-                      ))}
+                        {relatedEffects.map((relatedEffect) => (
+                          <EffectCard
+                            key={relatedEffect.name}
+                            effect={relatedEffect}
+                          />
+                        ))}
                       </div>
                     </div>
                   </section>
                 )}
               </>
             )}
-            </div>
           </section>
         </main>
 
-       <Footer/>
+        <Footer />
       </div>
     </VaultLayout>
   );
