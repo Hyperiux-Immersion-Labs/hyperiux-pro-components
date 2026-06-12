@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useLenis } from "lenis/react";
 import Image from "next/image";
 import { Sidebar } from "./Sidebar";
-import Footer from "../Footer";
+
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -17,10 +17,10 @@ const DOCS_TOP_LINKS = [
 function SidebarFallback({ totalEffects }) {
   return (
     <aside
-      className="fixed left-0 top-0 bottom-0 z-40 w-[72px] border-r border-white/10 bg-[#060606] text-foreground"
+      className="fixed left-0 top-0 bottom-0 z-40 w-18 border-r border-white/10 bg-[#060606] text-foreground"
     >
       <div className="flex h-full items-start justify-center px-2 py-3">
-        <div className="h-[118px] w-full border-b border-white/10 bg-[#080808]" />
+        <div className="h-29.5 w-full border-b border-white/10 bg-[#080808]" />
       </div>
     </aside>
   );
@@ -81,6 +81,7 @@ export function VaultLayout({
 
       <Suspense fallback={<SidebarFallback totalEffects={totalEffects} />}>
         <Sidebar
+          effects={effects}
           effectCounts={effectCounts}
           effects={effects}
           totalEffects={totalEffects}

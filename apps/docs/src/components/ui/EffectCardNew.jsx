@@ -8,24 +8,9 @@ import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
 
-const CATEGORY_LABELS = {
-  backgrounds: "Background",
-  buttons: "Button",
-  carousels: "Carousel",
-  components: "Component",
-  cursor: "Cursor",
-  loaders: "Loader",
-  navigation: "Navigation",
-  others: "Other",
-  scroll: "Scroll",
-  text: "Text",
-  transitions: "Transition",
-  webgl: "WebGL",
-};
+gsap.registerPlugin(DrawSVGPlugin);
 
 function formatLabel(value = "") {
-  if (CATEGORY_LABELS[value]) return CATEGORY_LABELS[value];
-
   return value
     .split(/[-_\s]+/)
     .filter(Boolean)
@@ -82,8 +67,7 @@ export function EffectCard({
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
   const categories = (effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean);
-  const primaryCategory = categories[0] || "others";
-  const primaryCategoryLabel = formatLabel(primaryCategory);
+  const primaryCategoryLabel = formatLabel(categories[0] || "others");
   const dependencyPills = (effect.dependencies || [])
     .slice(0, 2)
     .map(formatLabel)
@@ -103,13 +87,13 @@ export function EffectCard({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={effectHref} className="block">
-        <div className="relative aspect-square overflow-hidden rounded-md bg-[#161616]">
+        <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
           <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
               {dependencyPills.map((pill) => (
                 <span
                   key={pill}
-                  className="rounded-full bg-[#0E0E0E] px-5 py-1 text18 font-medium text-white/70 max-sm:px-4 max-sm:text-xs"
+                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-4 max-sm:text-xs"
                 >
                   {pill}
                 </span>
@@ -117,7 +101,7 @@ export function EffectCard({
             </div>
 
             {effect.tier === "pro" && (
-              <span className="rounded-full bg-primary px-4 py-0.5 text18 font-medium text-white max-sm:px-4 max-sm:text-xs">
+              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:text-xs">
                 Pro
               </span>
             )}
@@ -161,7 +145,7 @@ export function EffectCard({
           <h3 className="truncate font-sans text22 font-medium leading-none text-white transition-colors group-hover:text-white">
             {effect.title}
           </h3>
-          <p className="mt-2 text18 text-[#AEAEAE]">
+          <p className="mt-0.5 text18 text-[#AEAEAE]">
             {primaryCategoryLabel}
           </p>
         </Link>

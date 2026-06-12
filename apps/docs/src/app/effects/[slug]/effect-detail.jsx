@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import gsap from "gsap";
 import { useLenis } from "lenis/react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
@@ -22,7 +23,8 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
-import Footer from "@/components/LandingPage/Footer";
+import Footer from "@/components/Footer";
+import { LockKeyhole } from "lucide-react";
 
 export function EffectDetailContent({
   slug,
@@ -41,6 +43,7 @@ export function EffectDetailContent({
 
   const videoRef = useRef(null);
   const contentRef = useRef(null);
+  const relatedEffectsRef = useRef(null);
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const componentName = slug
@@ -81,17 +84,110 @@ export default function MyComponent() {
     effectSlug: slug,
     categorySlug,
   });
-  const categories = (effect.categories?.length
-    ? effect.categories
-    : [effect.category]
-  ).filter(Boolean);
   const dependencies = effect.dependencies || [];
-  const coverImage =
-    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) ||
-    "/assets/img/image01.webp";
+
+  const sidebarContent = (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Link
+          href={previewHref}
+          target="_blank"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 backdrop-blur-md text-foreground bg-primary duration-300 ease-in-out hover:bg-primary/80 hover:text-white rounded-md hover:border-transparent transition-colors"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
+          </svg>
+
+          Live Preview
+        </Link>
+      </div>
+
+      <div className="bg-secondary-surface/60 backdrop-blur-md rounded-md border border-border/60 p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium text-foreground">Resource details</h3>
+          {effect.tier === "pro" && (
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/20 text-white/70 text-xs font-medium">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Pro
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-3 text-sm">
+          <div className="flex justify-between gap-6">
+            <span className="text-muted">Category</span>
+
+            <span className="text-foreground capitalize text-right">
+              {(effect.categories?.length
+                ? effect.categories
+                : [effect.category]
+              ).join(", ")}
+            </span>
+          </div>
+
+          <div className="flex justify-between gap-6">
+            <span className="text-muted">Dependencies</span>
+
+            <span className="text-foreground text-right">
+              {effect.dependencies?.join(", ") || "None"}
+            </span>
+          </div>
+
+          <div className="flex justify-between gap-6">
+            <span className="text-muted">License</span>
+
+            <span className="text-foreground text-right">
+              MIT
+            </span>
+          </div>
+        </div>
+
+        <div className="pt-3 border-t border-border/60">
+          <div className="flex flex-wrap gap-2">
+            {(effect.categories?.length
+              ? effect.categories
+              : [effect.category]
+            ).map((cat) => (
+              <span
+                key={cat}
+                className="px-2.5 py-1 border border-border/60 rounded-full text-xs text-white/80 capitalize"
+              >
+                {cat}
+              </span>
+            ))}
+
+            {effect.dependencies?.map((dep) => (
+              <span
+                key={dep}
+                className="px-2.5 py-1 capitalize border border-border/60 rounded-full text-xs text-white/80"
+              >
+                {dep}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <VaultLayout
@@ -113,33 +209,33 @@ export default function MyComponent() {
         <main className="mx-auto w-full  px-15 pt-28 pb-12 max-sm:px-4 max-sm:pt-24">
           <section className="space-y-7">
             <div className="flex  items-start justify-between gap-5">
-              <div className="w-full">
-                {categorySlug && (
+              <div className="w-full space-y-5">
+                {/* {categorySlug && (
                   <Copy>
                     <p className="mb-3 text20 font-medium capitalize text-primary">
                       {categorySlug.replaceAll("-", " ")}
                     </p>
                   </Copy>
-                )}
+                )} */}
 
                 <HeadAnim>
-                  <h1 className="w-full text-[4.05vw] font-medium leading-[1.05] text-foreground md:text-5xl">
+                  <h1 className="w-full max-sm:text-[4vw] font-semibold leading-[1.05] text-foreground text-[4vw] ">
                     {content?.title || effect.title}
                   </h1>
                 </HeadAnim>
 
                 <Copy delay={0.5}>
-                  <p className="mt-4 w-full text-foreground text22 leading-relaxed">
+                  <p className="mt-4 w-full text-foreground opacity-90 text22 leading-relaxed">
                     {content?.summary || effect.description}
                   </p>
                 </Copy>
-                <div className="mt-5 flex w-full items-center justify-between gap-3 fadeup">
+                <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
                 {(dependencies.length > 0 || effect.tier === "pro") && (
                   <div className="flex flex-wrap items-center gap-2">
                     {dependencies.map((dep) => (
                       <span
                         key={dep}
-                        className="rounded-full bg-[#161616] px-4 py-2 text-20 capitalize text-foreground"
+                        className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground"
                       >
                         {dep}
                       </span>
@@ -152,29 +248,34 @@ export default function MyComponent() {
                     )}
                   </div>
                 )}
+
+               
+
                   <div className="ml-auto shrink-0">
                     <Button
                       text="Live Preview"
                       href={previewHref}
+                      target="_blank"
                       variant="orange"
                       className="shrink-0"
-                    />
+                      />
+                      </div>
                   </div>
                 </div>
-              </div>
+       
 
             
             </div>
 
-            <div className="rounded-xl  bg-[#272727] p-5 fadeup h-[48vw]">
-              <div className="aspect-video w-full overflow-hidden relative rounded-lg bg-black h-full">
+            <div className="fadeup h-[46vw]">
+              <div className="relative h-full w-full aspect-video overflow-hidden rounded-lg bg-black isolate">
                 <Image
                   src={coverImage}
                   alt={effect.title || slug}
                   fill
                   sizes="(max-width: 1024px) 100vw, 980px"
                   priority
-                  className={`object-contain transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
+                  className={`rounded-[inherit] object-contain transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
                     }`}
                 />
 
@@ -194,7 +295,7 @@ export default function MyComponent() {
                     onCanPlay={handleVideoReady}
                     onPlaying={handleVideoReady}
                     onError={() => setVideoError(true)}
-                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-500 ${showVideo
+                    className={`absolute inset-0 h-full w-full rounded-[inherit] object-contain transition-opacity duration-500 ${showVideo
                       ? "opacity-100"
                       : "opacity-0"
                       }`}
@@ -203,50 +304,100 @@ export default function MyComponent() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
-                <TableOfContents
-                  containerRef={contentRef}
-                  watchKey={slug}
-                />
-              </div>
+            {isLocked ? (
+              <section className="relative my-14 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup max-sm:px-4 max-sm:py-12">
+           
 
-              <EffectDynamicContent
-                ref={contentRef}
-                content={content}
-              />
-            </div>
+                <div className="relative z-10 mx-auto flex max-w-312 flex-col items-center">
+                  <LockKeyhole className="h-20 w-20 text-white max-sm:h-16 max-sm:w-16" strokeWidth={1.5} />
 
-          {relatedEffects?.length > 0 && (
-            <section className="my-20 space-y-20">
-              <div className="flex items-center justify-between">
-                <HeadAnim>
-                  <h2 className="text-center text-[3.32vw] font-medium text-foreground">
-                    Related Effects
+                  <h2 className="mt-10 text-[3.5vw] font-semibold leading-[0.96] tracking-tight text-white max-sm:mt-7 max-sm:text-[11vw]">
+                    {effect.title} is Locked
                   </h2>
-                </HeadAnim>
-                <div className="justify-self-end">
-                  <Button
-                    text="Live Preview"
-                    href={previewHref}
-                    variant="orange"
-                    className="shrink-0"
-                  />
-                </div>
-              </div>
 
-              <div className="rounded-xl  bg-[#272727] p-5 fadeup">
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {relatedEffects.map((relatedEffect) => (
-                  <EffectCard
-                    key={relatedEffect.name}
-                    effect={relatedEffect}
-                  />
-                ))}
+                  <p className="mt-6 mx-10 text-[1.2vw] leading-[1.45] text-white/90 max-sm:text-[4vw]">
+                    Subscribe to Hyperiux Pro to access this effect and 100+ others. Unlimited installs via CLI, full source
+                    code, forever.
+                  </p>
+
+                  <div className="mt-10 flex items-center gap-8 max-sm:flex-col max-sm:gap-4">
+                    <Button
+                      text="Sign In"
+                      href="/sign-in"
+                      variant="orange"
+                      className="shrink-0"
+                      innerClassName="max-sm:group-hover:translate-x-0"
+                      pillClassName="px-8 py-3 text-[1.5vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
+                      circleWrapperClassName="max-sm:hidden"
+                      circleClassName="size-12 max-sm:size-11"
+                    />
+
+                    <Button
+                      text="Explore Free Effects"
+                      href="/effects"
+                      variant="white"
+                      className="shrink-0"
+                      pillClassName="px-8 py-3 text-[1.5vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
+                      showArrow={false}
+                      disableHoverShift
+                    />
+                  </div>
+
+                  <p className="mt-6 text-[0.9vw] text-white/45 max-sm:text-[3.6vw]">
+                    Cancel anytime · Instant access after payment
+                  </p>
                 </div>
-              </div>
-            </section>
-          )}
+              </section>
+            ) : (
+              <>
+                <div className="relative">
+                  <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                    <TableOfContents
+                      containerRef={contentRef}
+                      stopRef={relatedEffectsRef}
+                      watchKey={slug}
+                    />
+                  </div>
+
+                  <EffectDynamicContent
+                    ref={contentRef}
+                    content={content}
+                  />
+                </div>
+
+                {relatedEffects?.length > 0 && (
+                  <section ref={relatedEffectsRef} className="my-20 space-y-14">
+                    <div className="flex items-center justify-between">
+                      <HeadAnim>
+                        <h2 className="text-center text-[3.32vw] font-medium text-foreground">
+                          Related Effects
+                        </h2>
+                      </HeadAnim>
+                      <div className="justify-self-end">
+                        <Button
+                          text="Explore all effects"
+                          href='/effects'
+                          variant="orange"
+                          className="shrink-0"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl  fadeup">
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                      {relatedEffects.map((relatedEffect) => (
+                        <EffectCard
+                          key={relatedEffect.name}
+                          effect={relatedEffect}
+                        />
+                      ))}
+                      </div>
+                    </div>
+                  </section>
+                )}
+              </>
+            )}
+            </div>
           </section>
         </main>
 
@@ -337,9 +488,15 @@ function SanityBodyBlock({ block }) {
           code={normalizeCodeString(block.code || "")}
           language={block.language || "jsx"}
           filename={block.filename}
+          hideHeaderWhenNoFilename
+          className={!block.filename ? styles.contentCodeBlockNoFilename : ""}
         />
       </div>
     );
+  }
+
+  if (block._type === "horizontalRule") {
+    return <hr className={`fadeup ${styles.contentDivider}`} />;
   }
 
   if (block._type === "effectTableBlock") {
@@ -611,7 +768,7 @@ function buildMarkedChildren(block) {
   });
 }
 
-function TableOfContents({ containerRef, watchKey }) {
+function TableOfContents({ containerRef, stopRef, watchKey }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -622,6 +779,7 @@ function TableOfContents({ containerRef, watchKey }) {
     targetTop: 0,
     timeoutId: null,
   });
+  const scrollTweenRef = useRef(null);
 
   const onTocClick = (e, id) => {
     e.preventDefault();
@@ -651,17 +809,31 @@ function TableOfContents({ containerRef, watchKey }) {
 
     setActiveId(id);
 
-    if (lenis) {
-      lenis.scrollTo(targetTop, {
-        duration: 1.15,
-        easing: (t) => 1 - Math.pow(1 - t, 3),
-      });
-    } else {
-      window.scrollTo({
-        top: targetTop,
-        behavior: "smooth",
-      });
-    }
+    scrollTweenRef.current?.kill();
+
+    const scrollState = {
+      y: window.scrollY,
+    };
+
+    scrollTweenRef.current = gsap.to(scrollState, {
+      y: targetTop,
+      duration: 1.15,
+      ease: "power3.out",
+      onUpdate: () => {
+        if (lenis) {
+          lenis.scrollTo(scrollState.y, {
+            immediate: true,
+            force: true,
+          });
+          return;
+        }
+
+        window.scrollTo(0, scrollState.y);
+      },
+      onComplete: () => {
+        scrollTweenRef.current = null;
+      },
+    });
 
     window.history.pushState(null, "", `#${id}`);
 
@@ -705,8 +877,13 @@ function TableOfContents({ containerRef, watchKey }) {
 
     const updateVisibility = () => {
       const rect = root.getBoundingClientRect();
+      const stopRect = stopRef?.current?.getBoundingClientRect();
+      const hasReachedStop = stopRect
+        ? stopRect.top <= window.innerHeight * 0.65
+        : false;
 
       setIsVisible(
+        !hasReachedStop &&
         rect.top <= window.innerHeight * 0.45 &&
         rect.bottom >= window.innerHeight * 0.25
       );
@@ -720,7 +897,7 @@ function TableOfContents({ containerRef, watchKey }) {
       window.removeEventListener("scroll", updateVisibility);
       window.removeEventListener("resize", updateVisibility);
     };
-  }, [containerRef, watchKey]);
+  }, [containerRef, stopRef, watchKey]);
 
   useEffect(() => {
     const root = containerRef?.current;
@@ -804,6 +981,8 @@ headings.forEach((el, index) => {
 
   useEffect(() => {
     return () => {
+      scrollTweenRef.current?.kill();
+
       if (activeLockRef.current.timeoutId) {
         window.clearTimeout(
           activeLockRef.current.timeoutId
@@ -852,7 +1031,7 @@ headings.forEach((el, index) => {
             >
               <span
                 className={[
-                  "block h-[2px] rounded-full transition-all duration-300 ease-out",
+                  "block h-0.5 rounded-full transition-all duration-300 ease-out",
                   activeId === it.id
                     ? "w-8 bg-primary"
                     : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",

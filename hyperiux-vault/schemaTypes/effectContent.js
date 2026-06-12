@@ -202,6 +202,30 @@ const calloutBlock = defineType({
   ],
 })
 
+const horizontalRule = defineType({
+  name: 'horizontalRule',
+  title: 'Separator',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'label',
+      title: 'Label',
+      type: 'string',
+      initialValue: 'Separator',
+      hidden: true,
+      readOnly: true,
+    }),
+  ],
+  preview: {
+    prepare() {
+      return {
+        title: 'Separator',
+        subtitle: 'Horizontal rule',
+      }
+    },
+  },
+})
+
 const bodyBlock = defineType({
   name: 'effectBody',
   title: 'Body',
@@ -239,6 +263,7 @@ const bodyBlock = defineType({
     defineArrayMember({type: 'effectCodeBlock'}),
     defineArrayMember({type: 'effectTableBlock'}),
     defineArrayMember({type: 'effectCalloutBlock'}),
+    defineArrayMember({type: 'horizontalRule'}),
   ],
 })
 
@@ -312,6 +337,7 @@ export const effectContentSchemaTypes = [
   tableRow,
   tableBlock,
   calloutBlock,
+  horizontalRule,
   bodyBlock,
   effectContent,
 ]

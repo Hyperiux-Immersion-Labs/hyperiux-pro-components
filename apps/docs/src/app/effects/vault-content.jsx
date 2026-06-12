@@ -192,14 +192,14 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12  text-center">
-            <div className="flex items-center justify-center gap-4 text-lg font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-base fadeup">
+          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12  text-center space-y-8">
+            <div className="flex items-center justify-center gap-4 text-lg font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-base fadeup text-light-grey">
               <span>The Vault Library</span>
             </div>
             <HeadAnim>
               <h1
-                className="mb-4 font-display text110 font-normal text-foreground max-sm:text-4xl"
-                style={{ lineHeight: "1.0" }}
+                className="mb-4 font-display text110 font-normal  text-foreground max-sm:text-4xl"
+                style={{ lineHeight: "1.1" }}
               >
                 {categoryFilter === "all" ? (
                   <>
@@ -234,8 +234,8 @@ export function VaultContent({
                 // mobile: horizontal scroll, no wrap, padded edges
                 "max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-6",
                 // always-visible orange scrollbar
-                "[scrollbar-width:thin] [scrollbar-color:#CC4C04_transparent]",
-                "[&::-webkit-scrollbar]:h-[4px]",
+                "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
+                "[&::-webkit-scrollbar]:h-1",
                 "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
                 "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
                 "max-sm:pb-3 ",
@@ -258,13 +258,13 @@ export function VaultContent({
                     type="button"
                     onClick={() => updateCategoryFilter(cat)}
                     className={`
-    px-7 py-2.5 max-sm:px-6 text-md text-center relative rounded-full
+    px-6 py-2.5 max-sm:px-6 text-md text-center relative rounded-full
     backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
     transition-all duration-500 ease-in-out
     hover:text-[#111111] hover:bg-white  text20
     ${isSelected
-                        ? "bg-white text-[#111111]  pr-12"
-                        : "bg-[#161616] text-foreground pr-7"
+                        ? "bg-white text-[#111111]  "
+                        : "bg-[#272727] text-foreground "
                       }
   `}
                   >
@@ -272,7 +272,7 @@ export function VaultContent({
                       {label}
                     </span>
 
-                    <span
+                    {/* <span
                       className={`
       absolute right-5 top-1/2 -translate-y-1/2
       flex items-center overflow-hidden
@@ -296,7 +296,7 @@ export function VaultContent({
                           d="M6 18L18 6M6 6l12 12"
                         />
                       </svg>
-                    </span>
+                    </span> */}
                   </button>
                 );
               })}
@@ -453,9 +453,7 @@ function EffectsGrid({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-4 gap-6 rounded-xl bg-[#272727] max-sm:grid-cols-1 max-sm:gap-8 p-5 ${
-          isSidebarOpen ? "grid-cols-2" : "grid-cols-3"
-        }`}
+        className="grid gap-6 rounded-xl grid-cols-3 max-sm:grid-cols-1 max-sm:gap-8"
       >
         {filteredEffects.map((effect, i) => (
           <div

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   ChevronRight,
   FileText,
@@ -13,7 +14,6 @@ import {
   Puzzle,
 } from "lucide-react";
 import { effectCategories, getEffectCategoryHref, getEffectHref } from "@/lib/categories";
-import { HyperiuxIcon, HyperiuxLogo } from "@/utils/Icons";
 
 function categoryLabel(category) {
   return category.name
@@ -27,7 +27,7 @@ function NavIconLink({ href, label, icon: Icon, isExpanded, onClick }) {
       href={href}
       title={label}
       onClick={onClick}
-      className={`relative flex items-center gap-3 rounded-full px-4 py-2 text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
+      className={`relative flex items-center gap-3 rounded-full px-4 py-1 text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
         isExpanded ? "hover:bg-[#272727]" : "justify-center px-0"
       }`}
     >
@@ -42,6 +42,7 @@ function SectionButton({
   icon: Icon,
   isExpanded,
   isOpen,
+  isActive,
   onClick,
 }) {
   return (
@@ -50,7 +51,9 @@ function SectionButton({
       title={label}
       onClick={onClick}
       className={`relative flex w-full items-center gap-3 rounded-full text-left text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
-        isExpanded ? "px-4 py-2 hover:bg-[#272727]" : "justify-center px-0 py-3"
+        isExpanded
+          ? `px-4 py-1 hover:bg-[#272727] ${isActive ? "bg-[#272727] text-white" : ""}`
+          : `justify-center px-0 py-3 ${isActive ? "text-white" : ""}`
       }`}
     >
       <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
@@ -71,17 +74,20 @@ function SectionButton({
 }
 
 export function Sidebar({
-  effectCounts = {},
-  effects = [],
-  isExpanded: controlledExpanded,
-  onToggle,
-  onClose,
-  activeCategory,
-  topLinks = [],
+    effects = [],
+    effectCounts,
+    totalEffects,
+    isExpanded: controlledExpanded,
+    onToggle,
+    onClose,
+    activeCategory,
+    topLinks = [],
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentCategory = activeCategory || searchParams.get("category") || "all";
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const lastPathSegment = pathSegments[pathSegments.length - 1] || "";
   const [activeHash, setActiveHash] = useState("");
   const [fetchedEffects, setFetchedEffects] = useState([]);
   const [openSection, setOpenSection] = useState("components");
@@ -132,6 +138,25 @@ export function Sidebar({
 
   const freeEffects = sortedEffects.filter((effect) => effect.tier !== "pro");
   const proEffects = sortedEffects.filter((effect) => effect.tier === "pro");
+  const categoryRouteSlugs = effectCategories
+    .slice(1)
+    .map((category) => getEffectCategoryHref(category.id).split("/").filter(Boolean).pop());
+  const isCategoryRoute = Boolean(lastPathSegment) && categoryRouteSlugs.includes(lastPathSegment);
+  const isComponentRoute = pathname.startsWith("/effects/") && lastPathSegment && !isCategoryRoute;
+  const isCategoriesActive =
+    isCategoryRoute || (pathname === "/effects" && currentCategory !== "all");
+  const isComponentsActive = isComponentRoute;
+  const isDocumentationActive = isDocsActive;
+
+  useEffect(() => {
+    const nextOpenSection = isDocumentationActive
+      ? "docs"
+      : isCategoriesActive
+        ? "categories"
+        : "components";
+
+    setOpenSection(nextOpenSection);
+  }, [isCategoriesActive, isDocumentationActive, pathname]);
 
   const toggleSection = (section) => {
     if (!isExpanded) {
@@ -156,16 +181,16 @@ export function Sidebar({
   return (
     <aside
       className={`fixed left-0 top-0 bottom-0 z-40 text-white transition-[width] duration-300 ease-out ${
-        isExpanded ? "w-[288px]" : "w-[72px]"
+        isExpanded ? "w-[288px]" : "w-22"
       }`}
     >
       <div
-        className={`flex h-full flex-col border-r border-white/10 bg-[#060606] transition-all duration-300 ${
-          isExpanded ? "px-3 py-3" : "items-center px-0 py-3"
+        className={`flex h-full flex-col border-r  rounded-tr-md border-white/10 bg-[#060606] transition-all duration-300 ${
+          isExpanded ? "pl-3 pr-1 py-3" : "items-center px-0 py-3"
         }`}
       >
         <div
-          className={`mb-14 flex items-center overflow-hidden border-b border-white/10 bg-[#080808] ${
+          className={`mb-10 flex items-center overflow-hidden border-b border-white/10 bg-[#080808] ${
             isExpanded ? "h-16 w-full justify-start px-4" : "h-16 w-full justify-center"
           }`}
         >
@@ -176,9 +201,21 @@ export function Sidebar({
             }`}
             onClick={close}
           >
-            <HyperiuxIcon className="!h-5 !w-5 shrink-0 text-primary [&_svg]:h-full [&_svg]:w-full" />
+            <Image
+              src="/hyperiux.svg"
+              alt="Hyperiux"
+              width={28}
+              height={28}
+              className="h-7 w-7 shrink-0"
+            />
             {isExpanded && (
-              <HyperiuxLogo className="h-auto w-32 text-primary" />
+              <Image
+                src="/hyperiux-wordmark.svg"
+                alt="Hyperiux"
+                width={128}
+                height={37}
+                className="h-auto w-32"
+              />
             )}
           </Link>
         </div>
@@ -187,21 +224,21 @@ export function Sidebar({
           type="button"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
           onClick={toggle}
-          className={`absolute top-4 z-50 flex h-10 w-10 cursor-pointer items-center justify-center rounded-sm  bg-[#272727] text-white transition-[left,background-color,transform] duration-500 ease-out hover:bg-white/15 ${
-            isExpanded ? "left-[288px]" : "left-[72px]"
+          className={`absolute top-4 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm  bg-[#272727] text-white transition-[left,background-color,transform] duration-500 ease-out hover:bg-white/15 ${
+            isExpanded ? "left-75" : "left-25"
           }`}
         >
           <motion.span
             animate={{ rotate: isExpanded ? 0 : 180 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            <PanelLeft className="h-4 w-4" />
+            <PanelLeft className="h-5 w-5" />
           </motion.span>
         </button>
 
         <nav
           data-lenis-prevent
-          className={isExpanded ? "w-full flex-1 overflow-y-auto pr-1" : "flex w-full flex-col items-center gap-7"}
+          className={isExpanded ? "w-full flex-1 overflow-y-auto pr-1 space-y-4" : "flex w-full flex-col items-center gap-7"}
         >
           <NavIconLink
             href="/effects"
@@ -211,8 +248,8 @@ export function Sidebar({
             onClick={close}
           />
 
-          {isExpanded && (
-            <div className="ml-[19px] mb-2 overflow-hidden border-l border-white/12 pl-7">
+          {/* {isExpanded && (
+            <div className="ml-[19px] mb-2 overflow-hidden  pl-7">
               <Link
                 href="/effects"
                 onClick={close}
@@ -228,13 +265,14 @@ export function Sidebar({
                 <span>All Effects</span>
               </Link>
             </div>
-          )}
+          )} */}
 
           <SectionButton
             label="Categories"
             icon={Grid2X2}
             isExpanded={isExpanded}
             isOpen={openSection === "categories"}
+            isActive={isCategoriesActive}
             onClick={() => toggleSection("categories")}
           />
 
@@ -246,7 +284,7 @@ export function Sidebar({
               animate={{ height: "auto", opacity: 1, y: 0 }}
               exit={{ height: 0, opacity: 0, y: -6 }}
               transition={{ duration: 0.24, ease: "easeOut" }}
-              className="ml-[19px] mb-4 space-y-1 overflow-hidden border-l border-white/12 pl-7"
+              className="ml-[19px] mb-4 max-h-[45vh] space-y-1 overflow-y-auto border-l border-white/12 pl-7 pr-3"
             >
               {effectCategories.slice(1).map((category) => {
                 const count = effectCounts[category.id] || 0;
@@ -257,12 +295,12 @@ export function Sidebar({
                     key={category.id}
                     href={getEffectCategoryHref(category.id)}
                     onClick={close}
-                    className={`flex items-center justify-between gap-3 rounded-full py-2 text-sm transition-colors ${
+                    className={`relative flex items-center justify-between gap-3 rounded-full py-2 text-sm transition-colors ${
                       isActive ? "text-white" : "text-white/42 hover:text-white/75"
                     }`}
                   >
-                    <span className="flex min-w-0 items-center gap-2 truncate">
-                      {isActive && <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />}
+                    {isActive && <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />}
+                    <span className="flex min-w-0 items-center truncate">
                       <span className="truncate">{categoryLabel(category)}</span>
                     </span>
                     {count > 0 && (
@@ -282,6 +320,7 @@ export function Sidebar({
             icon={Puzzle}
             isExpanded={isExpanded}
             isOpen={openSection === "components"}
+            isActive={isComponentsActive}
             onClick={() => toggleSection("components")}
           />
 
@@ -301,16 +340,24 @@ export function Sidebar({
               ].map(([label, items]) => (
                 <div key={label} className="space-y-2">
                   <p className="text18 uppercase tracking-[0.18em] text-white/35">{label}</p>
-                  {items.map((effect) => (
-                    <Link
-                      key={effect.name}
-                      href={getEffectHref(effect)}
-                      onClick={close}
-                      className="block truncate rounded-full py-1.5 text-sm text-white/45 transition-colors hover:text-white"
-                    >
-                      {effect.title || effect.name}
-                    </Link>
-                  ))}
+                  {items.map((effect) => {
+                    const href = getEffectHref(effect);
+                    const isActive = pathname === href;
+
+                    return (
+                      <Link
+                        key={effect.name}
+                        href={href}
+                        onClick={close}
+                        className={`relative flex items-center rounded-full py-1.5 text-sm transition-colors ${
+                          isActive ? "text-white" : "text-white/45 hover:text-white"
+                        }`}
+                      >
+                        {isActive && <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />}
+                        <span className="truncate">{effect.title || effect.name}</span>
+                      </Link>
+                    );
+                  })}
                 </div>
               ))}
             </motion.div>
@@ -322,6 +369,7 @@ export function Sidebar({
             icon={FileText}
             isExpanded={isExpanded}
             isOpen={openSection === "docs"}
+            isActive={isDocumentationActive}
             onClick={() => toggleSection("docs")}
           />
 
@@ -344,11 +392,11 @@ export function Sidebar({
                     key={link.href}
                     href={link.href}
                     onClick={close}
-                    className={`flex items-center gap-2 rounded-full py-2 text-sm transition-colors ${
+                    className={`relative flex items-center rounded-full py-2 text-sm transition-colors ${
                       isActive ? "text-white" : "text-white/42 hover:text-white/75"
                     }`}
                   >
-                    {isActive && <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />}
+                    {isActive && <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />}
                     {link.label}
                   </Link>
                 );

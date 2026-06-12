@@ -7,7 +7,6 @@ import ProfileDropdown from "./ProfileDropDown";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Button from "@/components/Reusable/Button";
-import { GithubIcon } from "@/utils/Icons";
 
 
 export function VaultHeader({
@@ -45,21 +44,21 @@ export function VaultHeader({
       className=""
       aria-label="Open Hyperiux on GitHub"
     >
-      <GithubIcon className="h-8 w-8" />
+      <Image src='/icons/github.svg' height={200} width={200} className="h-9 w-9" />
     </Link>
   );
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50  px-10 py-5"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm  px-10 py-5"
       >
         <div className="flex h-full items-center justify-end gap-3">
 
             {showSearch && (
               <button
                 onClick={() => setOpenTrigger((n) => n + 1)}
-                className="group flex h-10  items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:px-0"
+                className="group flex h-10 cursor-pointer  items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:px-0"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -77,19 +76,19 @@ export function VaultHeader({
                   />
                 </svg>
 
-                <span className="max-sm:hidden">
+                <span className="max-sm:hidden text-sm">
                   Search
                 </span>
                 </div>
 
-                <kbd className="rounded bg-black/40 px-1 py-0.5 text-[10px] text-current opacity-50 max-lg:hidden">
+                <kbd className="rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-lg:hidden space-x-2">
                   ⌘K
                 </kbd>
               </button>
             )}
             {!isSignedIn ? (
               <>
-                <div className="hidden md:block">
+                <div className="max-sm:hidden block">
                   <Button
                     text="Sign In"
                     href="/sign-in"
@@ -100,12 +99,7 @@ export function VaultHeader({
                   />
                 </div>
 
-                {/* <Link
-                  href="/pricing"
-                  className="flex h-8 items-center rounded-full bg-white px-4 text-xs text-black transition-all hover:opacity-90"
-                >
-                  Get Pro
-                </Link> */}
+               
                 {githubLink}
               </>
             ) : (
