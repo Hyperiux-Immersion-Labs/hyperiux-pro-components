@@ -58,11 +58,7 @@ export async function generateMetadata({ params }) {
   const effect = getEffectBySlug(effectSlug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (
-    !effect ||
-    !category ||
-    !effectBelongsToCategory(effect, category.id)
-  ) {
+  if (!effect) {
     return {
       title: "Effect Not Found",
     };
@@ -84,11 +80,7 @@ export default async function EffectPage({ params }) {
   const effect = getEffectBySlug(effectSlug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (
-    !effect ||
-    !category ||
-    !effectBelongsToCategory(effect, category.id)
-  ) {
+  if (!effect) {
     notFound();
   }
 
