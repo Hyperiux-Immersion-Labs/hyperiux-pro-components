@@ -1,28 +1,55 @@
-import React from "react";
+'use client'
+import { useEffect, useRef } from "react";
 import Button from "../Reusable/Button";
+import SplitLine from "../Reusable/SplitLine";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function FeaturedEffects() {
+  const effect1 = useRef(null);
+  const effect2 = useRef(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo([effect1.current, effect2.current], {
+        xPercent: (index) => index === 0 ? -100 : 100,
+
+
+      }, {
+        xPercent: 0,
+        ease: "power2.inOut",
+        scrollTrigger: {
+          trigger:'#FeaturedEffects',
+          start: "top 80%",
+          end: "85% 80%",
+          scrub: true,
+        },
+      });
+    });
+  });
   return (
     <section
       id="FeaturedEffects"
       className="h-fit bg-background my-[10vw] gap-[2vw] flex-col w-full self-padd  flex items-center justify-center"
     >
       <p className="text22 text-light-grey">Featured Effects</p>
-      <h2 className="text140  text-center w-[80vw]">
+
+      <SplitLine as="h2" className="text140 text-center w-[80vw]">
         Start with the effects people actually notice.
-      </h2>
-      <p className="text34 text-center mt-[4vw] w-[80vw]">
+      </SplitLine>
+      <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] w-[80vw]">
         A few high-impact patterns from the Vault - ready to preview, copy,
         install, and adapt.
-      </p>
+      </SplitLine>
 
       <div className="w-full flex gap-[2.5vw] items-end mt-[4vw] flex-col ">
         <div className="w-fit mr-[2vw]">
           <Button text="Explore All Effects" href="/effects" />
         </div>
         <div className="w-full flex h-[50vh] items-center gap-[2vw] justify-between">
-          <div className="w-full h-full rounded-md bg-zinc-300" />
-          <div className="w-full h-full rounded-md bg-yellow-100" />
+          <div ref={effect1} className="w-full h-full rounded-md bg-zinc-300" />
+          <div ref={effect2} className="w-full h-full rounded-md bg-yellow-100" />
         </div>
       </div>
     </section>

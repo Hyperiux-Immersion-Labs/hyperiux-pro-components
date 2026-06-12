@@ -1,93 +1,228 @@
-'use client'
-import { useEffect, useRef } from "react";
-import Button from "../Reusable/Button";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import SplitLine from "../Reusable/SplitLine";
+import TextConvergence from "../Reusable/TextConvergence";
+import ProjectCard from "../Reusable/ProjectCard";
+import Button from "../Reusable/Button";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const agencyProjects = [
     {
-        title: "Yellow",
-        subtitle: "Branding | UI/UX Design"
-    },
-    {
-        title: "Yellow",
-        subtitle: "Branding | UI/UX Design"
-    },
-    {
-        title: "Yellow",
-        subtitle: "Branding | UI/UX Design"
-    },
-    {
+        img: "/img/montra.png",
         title: "Montra",
-        subtitle: "Branding | UI/UX Design"
+        subtitle: "Branding | UI/UX Design",
+        link: "https://montra.app",
+    },
+    {
+        img: "/img/yellow.png",
+        title: "Yellow",
+        subtitle: "Branding | UI/UX Design",
+        link: "https://welcometoyellow.com/",
+    },
+    {
+        img: "/img/monielink.png",
+        title: "Monielink",
+        subtitle: "Branding | UI/UX Design",
+        link: "https://monielink.io",
+    },
+    {
+        img: "/img/montra.png",
+        title: "Montra",
+        subtitle: "Branding | UI/UX Design",
+        link: "https://montra.app",
     },
 ];
 
 export default function AgencyProof() {
     const swiperTranslateWrapper = useRef(null);
+    const wrapperRef = useRef(null);
+    const [scrollTween, setScrollTween] = useState(null);
 
+    // Title/subtitle refs, project card refs, per card
+    const titleRefs = useRef([]);
+    const subtitleRefs = useRef([]);
+    const projectRefs = useRef([]);
+
+    // The GSAP animation architecture, all contained, correct cleanups
     useEffect(() => {
-        gsap.set(swiperTranslateWrapper.current, { xPercent: 100 })
+        // Ensure fonts loaded before splitting, more stable line split
+        let isUnmounted = false;
+        let allSplits = [];
+        let ctx;
 
-        const tl = gsap.timeline()
-        tl.to(swiperTranslateWrapper.current, {
-            xPercent: -270,
-            duration: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: "#SwiperDiv",
-                start: "top center",
-                end: "100% center",
-                scrub: true,
-                markers: false,
-            }
-        })
-    }, [])
+        const setup = async () => {
+            await (document.fonts?.ready || Promise.resolve());
+
+            if (isUnmounted) return;
+
+            // Horizontal scroll: translate by precise content width
+            const wrapperEl = swiperTranslateWrapper.current;
+            if (!wrapperEl) return;
+
+            ctx = gsap.context(() => {
+                // --- Horizontal scroll trigger ---
+                const tween = gsap.fromTo(
+                    wrapperEl,
+                    {
+                        x: () => window.innerWidth,
+                    },
+                    {
+                        x: () => {
+                            const containerWidth = wrapperEl.scrollWidth;
+                            return -containerWidth;
+                        },
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "#SwiperDiv",
+                            start: "top center",
+                            end: "bottom center",
+                            scrub: true,
+                            markers: false,
+                            invalidateOnRefresh: true,
+                        },
+                    }
+                );
+
+                setScrollTween(tween);
+
+                // ---- SplitText & scrub for titles ----
+
+                titleRefs.current.forEach((title, idx) => {
+                    if (!title) return;
+                    // Mask lines for better effect
+                    const split = SplitText.create(title, {
+                        type: "lines",
+                        mask: "lines",
+                    });
+                    allSplits.push(split);
+
+                    gsap.fromTo(
+                        split.lines,
+                        { yPercent: 100 },
+                        {
+                            yPercent: 0,
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: title,
+                                containerAnimation: tween,
+                                start: "left 85%",
+                                end: "left 55%",
+                                scrub: true,
+                                //markers: true,
+                            },
+                        }
+                    );
+                });
+
+                // ---- SplitText & scrub for subtitles ----
+
+                subtitleRefs.current.forEach((subtitle, idx) => {
+                    if (!subtitle) return;
+                    const split = SplitText.create(subtitle, {
+                        type: "lines",
+                        mask: "lines",
+                    });
+                    allSplits.push(split);
+
+                    gsap.fromTo(
+                        split.lines,
+                        { yPercent: 100 },
+                        {
+                            yPercent: 0,
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: subtitle,
+                                containerAnimation: tween,
+                                start: "left 82%",
+                                end: "left 52%",
+                                scrub: true,
+                                //markers: true,
+                            },
+                        }
+                    );
+                });
+            });
+
+            // GSAP strongly recommends this after font-ready & DOM split
+            ScrollTrigger.refresh();
+        };
+
+        setup();
+
+        return () => {
+            isUnmounted = true;
+            // SplitText cleanup: revert all mutated DOMs
+            allSplits.forEach((s) => s && s.revert && s.revert());
+            ctx && ctx.revert && ctx.revert();
+            // Remove all scroll triggers to avoid leftovers
+            ScrollTrigger.getAll().forEach((st) => st.kill());
+            ScrollTrigger.refresh();
+        };
+    }, []);
 
     return (
         <section
-            id="FreeVault"
-            className="h-fit py-[10vw]! gap-[2vw] flex-col w-full flex items-center justify-center"
+            id="AgencyProof"
+            className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center"
         >
             <p className="text22 text-light-grey">Agency Proof</p>
-            <h2 className="text140  text-center w-[80vw]">
+
+            <SplitLine as="h2" className="text140 text-center w-[80vw]">
                 A public proof of how Hyperiux thinks about digital experience.
-            </h2>
-            <p className="text34 text-center mt-[4vw] w-[80vw]">
-                The Vault is a public slice of Hyperiux’s interaction design and creative frontend thinking - the same discipline
-                used for premium websites, product experiences, SaaS landing pages, and immersive digital systems.
-            </p>
+            </SplitLine>
+
+            <SplitLine
+                delay={0.2}
+                as="p"
+                className="text34 text-center mt-[4vw] w-[80vw]"
+            >
+                The Vault is a public slice of Hyperiux’s interaction design and
+                creative frontend thinking - the same discipline used for premium
+                websites, product experiences, SaaS landing pages, and immersive digital
+                systems.
+            </SplitLine>
+            <div className="w-full flex justify-end px-[10vw] mt-[2vw]">
+                <Button text="Read Installation Docs" />
+            </div>
+
             <div id="SwiperDiv" className="h-[500vh] w-full relative">
-
-                <div className="w-full flex sticky top-[5vw] h-fit  gap-[2.5vw] items-end mt-[4vw] flex-col ">
-                    <div className="w-fit self-padd mr-[1vw]">
-                        <Button text="Read Installation Docs" href="/effects" />
-                    </div>
-                    <div className="w-full  flex h-[60vh] items-center gap-[2vw]">
-
-                        {/* TRANSLATE DIV */}
-                        <div ref={swiperTranslateWrapper} className="flex  h-full w-full gap-[2vw] items-center">
-                            {agencyProjects.map((project, idx) => (
-                                <div key={idx} className="w-[60vw] shrink-0 h-full space-y-[2vw] ">
-                                    <div className="w-full h-full rounded-md bg-neutral-200"></div>
-                                    <div className="h-fit ">
-                                        <p className="text32">{project.title}</p>
-                                        <p className="text24">{project.subtitle}</p>
-                                    </div>
-                                </div>
+                <div className="w-full flex sticky top-[5vw] h-fit gap-[2.5vw] items-end mt-[4vw] flex-col overflow-hidden">
+                    <div
+                        ref={wrapperRef}
+                        className="w-full flex h-fit items-center gap-[2vw] relative"
+                    >
+                        <div
+                            ref={swiperTranslateWrapper}
+                            className="flex h-full w-full gap-[2vw] items-center relative"
+                        >
+                            {/* Floating cursor per card */}
+                             {agencyProjects.map((project, idx) => (
+                                <ProjectCard
+                                    key={idx}
+                                    project={project}
+                                    idx={idx}
+                                    projectRef={(el) => (projectRefs.current[idx] = el)}
+                                    titleRef={(el) => (titleRefs.current[idx] = el)}
+                                    subtitleRef={(el) => (subtitleRefs.current[idx] = el)}
+                                />
                             ))}
-                            {/* TEXT DIV */}
-                            <div className="w-[120vw] flex items-center justify-center h-full shrink-0">
-                                <h2 className="text180">Prediction is not decoration</h2>
+
+                            <div className="w-[310vw] flex items-center justify-center h-full shrink-0">
+                                <TextConvergence
+                                    text="Prediction is not decoration. It's a core interaction design principle."
+                                    containerAnimation={scrollTween}
+                                    className="text180"
+                                />
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </section>
     );
 }
