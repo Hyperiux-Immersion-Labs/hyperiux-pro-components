@@ -80,7 +80,7 @@ export default function AgencyProof() {
                         scrollTrigger: {
                             trigger: "#SwiperDiv",
                             start: "top center",
-                            end: "bottom center",
+                            end: "95% center",
                             scrub: true,
                             markers: false,
                             invalidateOnRefresh: true,

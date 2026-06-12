@@ -1,8 +1,10 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useLenis } from 'lenis/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
 import gsap from 'gsap'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
@@ -12,6 +14,15 @@ import { vaultLinks } from '@/utils/Links'
 export default function Navbar() {
     const navbarRef = useRef(null)
     const hidden = useRef(false)
+    const [hoveredIndex, setHoveredIndex] = useState(null)
+    const pathname = usePathname()
+
+    const activeIndex = vaultLinks.findIndex((link) => {
+        if (link.href === '/') {
+            return pathname === '/'
+        }
+        return pathname.startsWith(link.href)
+    })
 
     const toggleNavbar = (hide) => {
         if (!navbarRef.current || hidden.current === hide) return
@@ -41,12 +52,31 @@ export default function Navbar() {
                 <HyperiuxLogo className="w-[10vw] h-auto text-primary" />
             </Link>
 
-            <div className="bg-grey text20 flex gap-[3vw] rounded-full px-[2.5vw] py-2 font-medium">
-                {vaultLinks.map(({ label }) => (
-                    <Link className='hover:text-primary transition-colors duration-300' key={label} href="#">
-                        {label}
-                    </Link>
-                ))}
+            <div
+                className="bg-grey text20 flex gap-[0.6vw] rounded-full p-[0.6vw] font-medium relative"
+                onMouseLeave={() => setHoveredIndex(null)}
+            >
+                {vaultLinks.map(({ label, href }, index) => {
+                    const isHighlighted = hoveredIndex !== null ? hoveredIndex === index : activeIndex === index
+                    return (
+                        <Link
+                            className={`relative rounded-full px-[1.2vw] p-[0.4vw] transition-colors duration-300 z-10 ${isHighlighted ? 'text-foreground' : 'text-white/70'
+                                }`}
+                            key={label}
+                            href={href}
+                            onMouseEnter={() => setHoveredIndex(index)}
+                        >
+                            {label}
+                            {isHighlighted && (
+                                <motion.span
+                                    layoutId="nav-pill"
+                                    className="absolute inset-0 bg-primary rounded-full -z-10"
+                                    transition={{ type: 'spring', stiffness: 180, damping: 20 }}
+                                />
+                            )}
+                        </Link>
+                    )
+                })}
             </div>
 
             <div className="flex items-center justify-center gap-[2.5vw]">
