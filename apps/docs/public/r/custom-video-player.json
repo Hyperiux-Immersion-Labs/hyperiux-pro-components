@@ -15,7 +15,7 @@
   "exportName": "CustomVideoPlayer",
   "exportKind": "named",
   "previewUrl": "/video-player",
-  "coverImage": "video-player",
+  "coverImage": "custom-video-player",
   "videoUrl": "custom-video-player.mp4",
   "files": [
     {

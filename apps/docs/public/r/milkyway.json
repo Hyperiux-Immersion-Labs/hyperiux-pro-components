@@ -7,7 +7,7 @@
   "categories": [
     "webgl"
   ],
-  "tier": "free",
+  "tier": "pro",
   "dependencies": [
     "@react-three/fiber",
     "@react-three/drei",

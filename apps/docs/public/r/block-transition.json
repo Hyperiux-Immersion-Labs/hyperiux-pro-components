@@ -16,7 +16,7 @@
   "exportName": "BlockTransition",
   "exportKind": "named",
   "previewUrl": "/page-transitions/block",
-  "coverImage": "/assets/img/image01.webp",
+  "coverImage": "block-transition",
   "videoUrl": "block-transition.mp4",
   "files": [
     {

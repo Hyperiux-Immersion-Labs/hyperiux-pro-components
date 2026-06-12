@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const os = require('os');
 
 const ROOT = path.resolve(__dirname, '..');
 const REGISTRY_DIR = path.join(ROOT, 'registry', 'effects');
@@ -59,19 +60,44 @@ function ensurePackageForEffect(effectDir) {
 }
 
 function packEffect(effectDir, info) {
-  const cwd = effectDir;
+  // If registry.json provides a sourcePath, assemble a staging dir that includes those files
+  const meta = info.meta || {};
+  const useSource = typeof meta.sourcePath === 'string' && meta.sourcePath.trim() !== '';
+  let cwd = effectDir;
+  let stagingDir = null;
   try {
+    if (useSource) {
+      stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hyperiux-'));
+      // copy effectDir contents (registry.json + package.json or others) into staging
+      fs.cpSync(effectDir, stagingDir, { recursive: true });
+
+      // resolve sourcePath relative to repo root if it's not absolute
+      const srcPath = path.isAbsolute(meta.sourcePath) ? meta.sourcePath : path.join(ROOT, meta.sourcePath);
+      if (fs.existsSync(srcPath)) {
+        // copy source folder into staging under `src` (preserve folder name)
+        const baseName = path.basename(srcPath);
+        const destPath = path.join(stagingDir, baseName);
+        fs.cpSync(srcPath, destPath, { recursive: true });
+      } else {
+        console.warn('sourcePath not found for', effectDir, srcPath);
+      }
+      cwd = stagingDir;
+    }
+
     const out = execSync('npm pack --silent', { cwd, stdio: ['ignore', 'pipe', 'inherit'] });
-    // npm pack prints filename
     const m = String(out || '').trim().split('\n').pop();
     const tarballName = m || `${info.pkg.name.replace('/', '-')}-${info.pkg.version}.tgz`;
-    const src = path.join(effectDir, tarballName);
+    const src = path.join(cwd, tarballName);
     const dest = path.join(DIST_DIR, tarballName);
     fs.renameSync(src, dest);
     return dest;
   } catch (err) {
-    console.error('pack failed for', effectDir, err.message);
+    console.error('pack failed for', effectDir, err && err.message);
     return null;
+  } finally {
+    if (stagingDir) {
+      try { fs.rmSync(stagingDir, { recursive: true, force: true }); } catch (e) { /* ignore */ }
+    }
   }
 }
 
