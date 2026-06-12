@@ -1,0 +1,18 @@
+{
+  "name": "@hyperiux/curved-plane-v2",
+  "version": "0.0.1",
+  "description": "Three.js WebGL vertical image gallery with three columns. The center column scrolls in the opposite direction to the outer two, creating a parallax effect. A custom GLSL shader curves each card vertically on drag and scroll. Collapses to two columns on tablet.",
+  "main": "curved-plane-v2.jsx",
+  "files": [
+    "curved-plane-v2.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*",
+    "gsap": "*"
+  }
+}

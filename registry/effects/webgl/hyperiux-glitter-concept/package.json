@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/hyperiux-glitter-concept",
+  "version": "0.0.1",
+  "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
+  "main": "MorphingParticleModelNew.jsx",
+  "files": [
+    "MorphingParticleModelNew.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*",
+    "@react-three/fiber": "*",
+    "@react-three/drei": "*",
+    "@react-three/postprocessing": "*",
+    "postprocessing": "*"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/phantom-image-trail",
+  "version": "0.0.1",
+  "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
+  "main": "phantom-image-trail.jsx",
+  "files": [
+    "phantom-image-trail.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "cursor",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

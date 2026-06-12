@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/grid-lift",
+  "version": "0.0.1",
+  "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
+  "main": "grid-lift.jsx",
+  "files": [
+    "grid-lift.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "leva": "*"
+  }
+}

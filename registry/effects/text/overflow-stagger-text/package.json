@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/overflow-stagger-text",
+  "version": "0.0.1",
+  "description": "Characters stagger up from overflow with slight rotation for a dynamic reveal effect",
+  "main": "overflow-stagger-text.jsx",
+  "files": [
+    "overflow-stagger-text.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

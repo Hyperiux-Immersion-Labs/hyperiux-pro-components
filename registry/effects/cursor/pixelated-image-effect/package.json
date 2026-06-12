@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/pixelated-image-effect",
+  "version": "0.0.1",
+  "description": "SVG filter-based image pixelation that reacts to cursor position — pixel size grows and shrinks as you move across the image",
+  "main": "pixelated-image-effect.jsx",
+  "files": [
+    "pixelated-image-effect.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "cursor",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

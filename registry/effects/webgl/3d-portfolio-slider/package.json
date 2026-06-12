@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/webgl-portfolio-slider",
+  "version": "0.0.1",
+  "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+  "main": "webgl-portfolio-slider.jsx",
+  "files": [
+    "webgl-portfolio-slider.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*",
+    "gsap": "*",
+    "lenis": "*"
+  }
+}

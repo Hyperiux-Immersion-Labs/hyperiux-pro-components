@@ -1,0 +1,18 @@
+{
+  "name": "@hyperiux/pixel-transition",
+  "version": "0.0.1",
+  "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
+  "main": "pixel-transition.jsx",
+  "files": [
+    "pixel-transition.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "transitions",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*",
+    "next-transition-router": "*"
+  }
+}

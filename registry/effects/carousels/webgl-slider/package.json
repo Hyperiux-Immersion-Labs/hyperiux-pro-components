@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/webgl-slider",
+  "version": "0.0.1",
+  "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
+  "main": "webgl-slider.jsx",
+  "files": [
+    "webgl-slider.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "carousels",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*",
+    "gsap": "*",
+    "lenis": "*"
+  }
+}

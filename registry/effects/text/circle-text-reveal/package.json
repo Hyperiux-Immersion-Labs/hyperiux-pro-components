@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/circle-text-reveal",
+  "version": "0.0.1",
+  "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
+  "main": "circle-text-reveal.jsx",
+  "files": [
+    "circle-text-reveal.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "framer-motion": "*"
+  }
+}

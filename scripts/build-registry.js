@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const ROOT = path.resolve(__dirname, '..');
+const REGISTRY_DIR = path.join(ROOT, 'registry', 'effects');
+const DIST_DIR = path.join(ROOT, 'registry', 'dist');
+
+if (!fs.existsSync(DIST_DIR)) fs.mkdirSync(DIST_DIR, { recursive: true });
+
+function readJson(file) {
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+function writeJson(file, obj) {
+  fs.writeFileSync(file, JSON.stringify(obj, null, 2));
+}
+
+function collectEffectDirs(dir) {
+  return fs.readdirSync(dir).flatMap((entry) => {
+    const p = path.join(dir, entry);
+    if (fs.statSync(p).isDirectory()) return [p];
+    return [];
+  }).sort();
+}
+
+function ensurePackageForEffect(effectDir) {
+  // read registry.json
+  const registryFile = path.join(effectDir, 'registry.json');
+  if (!fs.existsSync(registryFile)) return null;
+  const meta = readJson(registryFile);
+  const name = meta.packageName || `@hyperiux/${meta.name}`;
+  const pkgFile = path.join(effectDir, 'package.json');
+  let pkg = null;
+  if (fs.existsSync(pkgFile)) {
+    pkg = readJson(pkgFile);
+  } else {
+    // try to find main entry
+    const files = fs.readdirSync(effectDir);
+    const jsFile = files.find((f) => /\.jsx?$/.test(f) || /\.tsx?$/.test(f));
+    const main = jsFile || 'index.js';
+    pkg = {
+      name,
+      version: meta.version || '0.0.1',
+      description: meta.description || meta.title || name,
+      main: main,
+      files: [main, 'registry.json'],
+      keywords: [meta.category || 'effect', 'hyperiux'],
+      dependencies: {},
+    };
+    if (Array.isArray(meta.dependencies)) {
+      meta.dependencies.forEach((d) => { pkg.dependencies[d] = '*'; });
+    }
+    writeJson(pkgFile, pkg);
+    console.log('wrote package.json for', name);
+  }
+  return { pkg, pkgFile, meta };
+}
+
+function packEffect(effectDir, info) {
+  const cwd = effectDir;
+  try {
+    const out = execSync('npm pack --silent', { cwd, stdio: ['ignore', 'pipe', 'inherit'] });
+    // npm pack prints filename
+    const m = String(out || '').trim().split('\n').pop();
+    const tarballName = m || `${info.pkg.name.replace('/', '-')}-${info.pkg.version}.tgz`;
+    const src = path.join(effectDir, tarballName);
+    const dest = path.join(DIST_DIR, tarballName);
+    fs.renameSync(src, dest);
+    return dest;
+  } catch (err) {
+    console.error('pack failed for', effectDir, err.message);
+    return null;
+  }
+}
+
+function walkRegistry(rootDir) {
+  const categories = fs.readdirSync(rootDir).filter((f) => fs.statSync(path.join(rootDir, f)).isDirectory());
+  const results = [];
+  categories.forEach((cat) => {
+    const catDir = path.join(rootDir, cat);
+    const effects = collectEffectDirs(catDir);
+    effects.forEach((effDir) => {
+      const info = ensurePackageForEffect(effDir);
+      if (!info) return;
+      const tar = packEffect(effDir, info);
+      if (tar) {
+        results.push({ name: info.pkg.name, version: info.pkg.version, tarball: path.relative(ROOT, tar).replace(/\\\\/g, '/') });
+      }
+    });
+  });
+  return results;
+}
+
+console.log('Building registry packages...');
+const built = walkRegistry(REGISTRY_DIR);
+const indexFile = path.join(DIST_DIR, 'registry-index.json');
+writeJson(indexFile, built);
+console.log('Built', built.length, 'packages. index at', indexFile);
+console.log('Done.');

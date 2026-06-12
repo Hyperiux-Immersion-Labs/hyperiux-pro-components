@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/blur-text",
+  "version": "0.0.1",
+  "description": "Text that reveals with a blur-to-focus animation on scroll",
+  "main": "blur-text.jsx",
+  "files": [
+    "blur-text.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "framer-motion": "*"
+  }
+}

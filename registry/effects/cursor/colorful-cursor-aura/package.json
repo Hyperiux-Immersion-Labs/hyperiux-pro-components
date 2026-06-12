@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/colorful-cursor-aura",
+  "version": "0.0.1",
+  "description": "Layered radial color aura that follows the cursor across oversized headline text",
+  "main": "colorful-cursor-aura.jsx",
+  "files": [
+    "colorful-cursor-aura.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "cursor",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

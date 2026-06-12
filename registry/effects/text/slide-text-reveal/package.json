@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/slide-text-reveal",
+  "version": "0.0.1",
+  "description": "Characters slide in from the right with staggered fade animation on scroll",
+  "main": "slide-text-reveal.jsx",
+  "files": [
+    "slide-text-reveal.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

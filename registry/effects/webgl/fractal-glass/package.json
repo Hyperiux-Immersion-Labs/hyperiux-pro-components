@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/fractal-glass",
+  "version": "0.0.1",
+  "description": "WebGL glass-strip refraction effect with fractal distortion, edge blending, and pointer-reactive parallax.",
+  "main": "fractal-glass.jsx",
+  "files": [
+    "fractal-glass.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*"
+  }
+}

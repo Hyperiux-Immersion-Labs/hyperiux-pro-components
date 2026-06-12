@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/svg-pixel-reveal",
+  "version": "0.0.1",
+  "description": "Scroll-driven image that transitions from pixelated to crisp using an SVG filter and GSAP ScrollTrigger",
+  "main": "svg-pixel-reveal.jsx",
+  "files": [
+    "svg-pixel-reveal.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "scroll",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

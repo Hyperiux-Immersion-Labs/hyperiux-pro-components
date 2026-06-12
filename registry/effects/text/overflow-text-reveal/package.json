@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/overflow-text-reveal",
+  "version": "0.0.1",
+  "description": "Text lines slide up from hidden overflow with smooth stagger animation on scroll",
+  "main": "overflow-text-reveal.jsx",
+  "files": [
+    "overflow-text-reveal.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

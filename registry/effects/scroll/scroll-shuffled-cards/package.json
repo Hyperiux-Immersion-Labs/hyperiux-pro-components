@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/scroll-shuffled-cards",
+  "version": "0.0.1",
+  "description": "Pinned scroll section that drifts a shuffled stack of editorial cards across the viewport",
+  "main": "card.jsx",
+  "files": [
+    "card.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "scroll",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

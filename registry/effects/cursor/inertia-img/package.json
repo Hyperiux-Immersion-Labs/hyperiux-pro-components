@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/inertia-img",
+  "version": "0.0.1",
+  "description": "Image grid with physics-based inertia and wobble effect on mouse hover using GSAP InertiaPlugin.",
+  "main": "inertia-img.jsx",
+  "files": [
+    "inertia-img.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "cursor",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

@@ -5,6 +5,7 @@
     "dev": "npm --prefix apps/docs run dev",
     "build": "npm --prefix apps/docs run build",
     "start": "npm --prefix apps/docs run start",
-    "lint": "npm --prefix apps/docs run lint"
+    "lint": "npm --prefix apps/docs run lint",
+    "build:registry": "node ./scripts/build-registry.js"
   }
 }

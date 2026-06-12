@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/dotted-grid",
+  "version": "0.0.1",
+  "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes (star, square, circle ring, plus, triangle). Mouse cursor creates a dark shrinking head effect and leaves a glowing blue trail that lingers and fades.",
+  "main": "dotted-grid.jsx",
+  "files": [
+    "dotted-grid.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

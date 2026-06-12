@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/card-drift",
+  "version": "0.0.1",
+  "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
+  "main": "card-drift.jsx",
+  "files": [
+    "card-drift.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "others",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

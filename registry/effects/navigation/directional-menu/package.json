@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/directional-menu",
+  "version": "0.0.1",
+  "description": "Mega menu with directional content transitions using GSAP",
+  "main": "directional-menu.jsx",
+  "files": [
+    "directional-menu.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "navigation",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/elevate-navbar",
+  "version": "0.0.1",
+  "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+  "main": "elevate-navbar.jsx",
+  "files": [
+    "elevate-navbar.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "navigation",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

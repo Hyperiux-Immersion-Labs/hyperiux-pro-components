@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/text-convergence",
+  "version": "0.0.1",
+  "description": "Horizontal scroll-driven text marquee where characters fly in from random positions and converge into place as you scroll",
+  "main": "text-convergence.jsx",
+  "files": [
+    "text-convergence.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "scroll",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

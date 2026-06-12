@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/scramble-text",
+  "version": "0.0.1",
+  "description": "Hacker-style text scramble effect that reveals text character by character on scroll",
+  "main": "scramble-text.jsx",
+  "files": [
+    "scramble-text.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

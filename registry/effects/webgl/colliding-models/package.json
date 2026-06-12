@@ -1,0 +1,24 @@
+{
+  "name": "@hyperiux/colliding-models",
+  "version": "0.0.1",
+  "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
+  "main": "MagneticEffect.jsx",
+  "files": [
+    "MagneticEffect.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*",
+    "@react-three/fiber": "*",
+    "@react-three/drei": "*",
+    "@react-three/rapier": "*",
+    "@react-three/postprocessing": "*",
+    "postprocessing": "*",
+    "maath": "*",
+    "next": "*"
+  }
+}

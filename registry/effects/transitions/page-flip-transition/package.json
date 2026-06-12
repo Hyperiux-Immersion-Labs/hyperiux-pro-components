@@ -1,0 +1,18 @@
+{
+  "name": "@hyperiux/page-flip-transition",
+  "version": "0.0.1",
+  "description": "Angular full-screen route wipe with a folding panel and staggered indicator bars",
+  "main": "page-flip-transition.jsx",
+  "files": [
+    "page-flip-transition.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "transitions",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*",
+    "next-transition-router": "*"
+  }
+}

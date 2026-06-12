@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/dither-canvas",
+  "version": "0.0.1",
+  "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
+  "main": "dither-canvas.jsx",
+  "files": [
+    "dither-canvas.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/mask-text-reveal",
+  "version": "0.0.1",
+  "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",
+  "main": "mask-text-reveal.jsx",
+  "files": [
+    "mask-text-reveal.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

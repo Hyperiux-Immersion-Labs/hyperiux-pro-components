@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/char-stagger-primary-button",
+  "version": "0.0.1",
+  "description": "Primary button with staggered character animation on hover",
+  "main": "char-stagger-primary-button.jsx",
+  "files": [
+    "char-stagger-primary-button.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "buttons",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

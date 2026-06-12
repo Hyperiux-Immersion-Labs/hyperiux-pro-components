@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/infinite-perspective-slider",
+  "version": "0.0.1",
+  "description": "Looping perspective gallery with wheel and drag input plus split-text hover reveals",
+  "main": "infinite-perspective-slider.jsx",
+  "files": [
+    "infinite-perspective-slider.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "scroll",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}
