@@ -1,7 +1,25 @@
+import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "highlight.js/styles/night-owl.css";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+
+const layGrotesk = localFont({
+  src: [
+    {
+      path: "../fonts/laygrotesk-trial-regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/laygrotesk-trial-medium.otf",
+      weight: "500",
+      style: "medium",
+    },
+  ],
+  variable: "--font-laygrotesk",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Hyperiux Vault - Beautiful Effects for Your Website",
@@ -16,11 +34,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="antialiased">
-        <body
-          className="min-h-screen bg-background text-foreground font-sans"
-          style={{ background: "#000000", color: "#ffffff" }}
-        >
+      <html lang="en" className={`${layGrotesk.className} antialiased`}>
+        <body className="min-h-screen bg-background text-foreground font-sans">
           {children}
           <Analytics />
         </body>
@@ -28,3 +43,4 @@ export default function RootLayout({ children }) {
     </ClerkProvider>
   );
 }
+

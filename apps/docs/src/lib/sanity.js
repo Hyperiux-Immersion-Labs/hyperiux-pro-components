@@ -59,7 +59,7 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
     return content || null
   } catch (error) {
     console.warn(
-      `Sanity effect content could not be loaded for ${categorySlug}/${effectSlug}:`,
+      `Sanity effect content could not be loaded for ${categorySlug}/${effectSlug}`,
       error?.message || error
     )
 

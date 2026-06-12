@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import hljs from "highlight.js";
+import { Copy } from "lucide-react";
 
 export function CodeBlock({ code, language = "jsx", filename }) {
     const [copied, setCopied] = useState(false);
@@ -24,26 +25,27 @@ export function CodeBlock({ code, language = "jsx", filename }) {
     };
 
     return (
-        <div className="relative border border-border/60 rounded-md overflow-hidden fadeup codeblock-root">
+        <div className="relative rounded-md overflow-hidden fadeup codeblock-root">
             
             <div
                 className="max-h-[30vw] overflow-y-auto"
                 style={{ scrollbarGutter: "stable" }}
             >
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border/60 bg-black sticky top-0 z-10">
+                <div className="flex items-center justify-between px-4 py-2  bg-[#484848] sticky top-0 z-10">
                     <span className="text-sm text-muted">{filename || ""}</span>
                     <button
                         onClick={handleCopy}
-                        className="text-xs px-3 cursor-pointer py-1.5 rounded-sm bg-black/40 border border-border/60 text-muted hover:text-foreground transition-colors"
+                        className="text-xs px-3 cursor-pointer py-1.5 rounded-sm bg-transparent text-foreground hover:text-foreground transition-colors"
                     >
-                        {copied ? "Copied!" : "Copy"}
+                        <Copy/>
+                        {/* {copied ? "Copied!" : "Copy"} */}
                     </button>
                 </div>
                 <div className="relative">
-                    <pre className="overflow-x-auto text-sm bg-transparent!">
+                    <pre className="overflow-x-auto text-sm bg-[#272727]">
                         {highlighted ? (
                             <code
-                                className={`hljs language-${language}`}
+                                className={`hljs bg-[#272727]! language-${language}`}
                                 dangerouslySetInnerHTML={{ __html: highlighted }}
                             />
                         ) : (

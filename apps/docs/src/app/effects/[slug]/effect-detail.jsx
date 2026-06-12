@@ -9,19 +9,20 @@ import {
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { motion } from "framer-motion";
+import { useLenis } from "lenis/react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
-import Footer from "@/components/Footer";
+import Button from "@/components/Reusable/Button";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
+import Footer from "@/components/LandingPage/Footer";
 
 export function EffectDetailContent({
   slug,
@@ -80,109 +81,17 @@ export default function MyComponent() {
     effectSlug: slug,
     categorySlug,
   });
-
-  const sidebarContent = (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link
-          href={previewHref}
-          target="_blank"
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 backdrop-blur-md text-foreground bg-primary duration-300 ease-in-out hover:bg-primary/80 hover:text-white rounded-md hover:border-transparent transition-colors"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-
-          Live Preview
-        </Link>
-      </div>
-
-      <div className="bg-secondary-surface/60 backdrop-blur-md rounded-md border border-border/60 p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-medium text-foreground">Resource details</h3>
-          {effect.tier === "pro" && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/20 text-white/70 text-xs font-medium">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              Pro
-            </span>
-          )}
-        </div>
-
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">Category</span>
-
-            <span className="text-foreground capitalize text-right">
-              {(effect.categories?.length
-                ? effect.categories
-                : [effect.category]
-              ).join(", ")}
-            </span>
-          </div>
-
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">Dependencies</span>
-
-            <span className="text-foreground text-right">
-              {effect.dependencies?.join(", ") || "None"}
-            </span>
-          </div>
-
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">License</span>
-
-            <span className="text-foreground text-right">
-              MIT
-            </span>
-          </div>
-        </div>
-
-        <div className="pt-3 border-t border-border/60">
-          <div className="flex flex-wrap gap-2">
-            {(effect.categories?.length
-              ? effect.categories
-              : [effect.category]
-            ).map((cat) => (
-              <span
-                key={cat}
-                className="px-2.5 py-1 border border-border/60 rounded-full text-xs text-white/80 capitalize"
-              >
-                {cat}
-              </span>
-            ))}
-
-            {effect.dependencies?.map((dep) => (
-              <span
-                key={dep}
-                className="px-2.5 py-1 capitalize border border-border/60 rounded-full text-xs text-white/80"
-              >
-                {dep}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const categories = (effect.categories?.length
+    ? effect.categories
+    : [effect.category]
+  ).filter(Boolean);
+  const dependencies = effect.dependencies || [];
+  const coverImage =
+    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+      defaultDirectory: "vault-listing-images",
+      defaultExtension: "png",
+    }) ||
+    "/assets/img/image01.webp";
 
   return (
     <VaultLayout
@@ -193,7 +102,7 @@ export default function MyComponent() {
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen bg-black text-foreground px-15 max-md:px-2 max-sm:px-6">
+      <div className="min-h-screen bg-black text-foreground">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
@@ -201,42 +110,69 @@ export default function MyComponent() {
           />
         </Suspense>
 
-        <div className="mx-auto px-8 pt-28 pb-8 max-sm:px-0">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            <div className="lg:col-span-2 space-y-8">
-              <div>
+        <main className="mx-auto w-full  px-15 pt-28 pb-12 max-sm:px-4 max-sm:pt-24">
+          <section className="space-y-7">
+            <div className="flex  items-start justify-between gap-5">
+              <div className="w-full">
                 {categorySlug && (
                   <Copy>
-                  <p className="text-sm uppercase tracking-[0.18em] text-primary mb-4 max-sm:text-center">
-                    {categorySlug.replaceAll("-", " ")}
-                  </p>
+                    <p className="mb-3 text20 font-medium capitalize text-primary">
+                      {categorySlug.replaceAll("-", " ")}
+                    </p>
                   </Copy>
                 )}
-               <HeadAnim>
-                <h1 className="text-5xl max-sm:text-center text-foreground mb-4">
-                  {content?.title || effect.title}
-                </h1>
+
+                <HeadAnim>
+                  <h1 className="w-full text-[4.05vw] font-medium leading-[1.05] text-foreground md:text-5xl">
+                    {content?.title || effect.title}
+                  </h1>
                 </HeadAnim>
-               <Copy delay={0.5}>
-                <p className="text-[#d2d2d2] w-[80%] max-sm:w-full max-sm:text-center">
-                  {content?.summary ||
-                    effect.description}
-                </p>
+
+                <Copy delay={0.5}>
+                  <p className="mt-4 w-full text-foreground text22 leading-relaxed">
+                    {content?.summary || effect.description}
+                  </p>
                 </Copy>
+                <div className="mt-5 flex w-full items-center justify-between gap-3 fadeup">
+                {(dependencies.length > 0 || effect.tier === "pro") && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {dependencies.map((dep) => (
+                      <span
+                        key={dep}
+                        className="rounded-full bg-[#161616] px-4 py-2 text-20 capitalize text-foreground"
+                      >
+                        {dep}
+                      </span>
+                    ))}
+
+                    {effect.tier === "pro" && (
+                      <span className="rounded-full bg-primary px-4 py-2 text-xs font-medium text-white">
+                        Pro
+                      </span>
+                    )}
+                  </div>
+                )}
+                  <div className="ml-auto shrink-0">
+                    <Button
+                      text="Live Preview"
+                      href={previewHref}
+                      variant="orange"
+                      className="shrink-0"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div className="aspect-video w-full overflow-hidden relative bg-black/20 fadeup">
+            
+            </div>
+
+            <div className="rounded-xl  bg-[#272727] p-5 fadeup h-[48vw]">
+              <div className="aspect-video w-full overflow-hidden relative rounded-lg bg-black h-full">
                 <Image
-                  src={
-                    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-                      defaultDirectory: "vault-listing-images",
-                      defaultExtension: "png",
-                    }) ||
-                    "/assets/img/image01.webp"
-                  }
+                  src={coverImage}
                   alt={effect.title || slug}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 66vw"
+                  sizes="(max-width: 1024px) 100vw, 980px"
                   priority
                   className={`object-contain transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
                     }`}
@@ -265,67 +201,56 @@ export default function MyComponent() {
                   />
                 )}
               </div>
-
-              <div className="sm:hidden">
-                {sidebarContent}
-              </div>
-
-              {/* {isLocked ? ( */}
-                {/* <div className="relative rounded-xl border border-white/10 bg-white/5 overflow-hidden min-h-80 flex items-center justify-center">
-                
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 pointer-events-none select-none blur-sm opacity-30 p-8 space-y-6"
-                  >
-                    <div className="h-10 bg-white/20 rounded-md w-1/3" />
-                    <div className="h-32 bg-white/10 rounded-xl" />
-                    <div className="h-10 bg-white/20 rounded-md w-1/4" />
-                    <div className="h-48 bg-white/10 rounded-xl" />
-                  </div>
-
-                  <UpgradeCard effectTitle={effect.title} />
-                </div> */}
-              {/* ) : ( */}
-                <EffectDynamicContent
-                  ref={contentRef}
-                  content={content}
-                />
-              {/* )} */}
             </div>
 
-            <div className="lg:col-span-1 self-stretch max-sm:hidden fadeup">
-              <div className="sticky top-28 h-fit">
-                {sidebarContent}
+            <div className="relative">
+              <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                 <TableOfContents
                   containerRef={contentRef}
                   watchKey={slug}
                 />
               </div>
+
+              <EffectDynamicContent
+                ref={contentRef}
+                content={content}
+              />
             </div>
 
-          </div>
-
           {relatedEffects?.length > 0 && (
-            <div className="my-16 space-y-6">
-              <HeadAnim>
-              <h2 className="text-4xl font-semibold text-foreground tracking-tighter">
-                Related Effects
-              </h2>
-              </HeadAnim>
+            <section className="my-20 space-y-20">
+              <div className="flex items-center justify-between">
+                <HeadAnim>
+                  <h2 className="text-center text-[3.32vw] font-medium text-foreground">
+                    Related Effects
+                  </h2>
+                </HeadAnim>
+                <div className="justify-self-end">
+                  <Button
+                    text="Live Preview"
+                    href={previewHref}
+                    variant="orange"
+                    className="shrink-0"
+                  />
+                </div>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fadeup">
+              <div className="rounded-xl  bg-[#272727] p-5 fadeup">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {relatedEffects.map((relatedEffect) => (
                   <EffectCard
                     key={relatedEffect.name}
                     effect={relatedEffect}
                   />
                 ))}
+                </div>
               </div>
-            </div>
+            </section>
           )}
-        </div>
+          </section>
+        </main>
 
-        <Footer />
+       <Footer/>
       </div>
     </VaultLayout>
   );
@@ -339,7 +264,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
   if (!content) return null;
 
   return (
-    <div ref={ref} className={`space-y-8 ${styles.content}`}>
+    <div ref={ref} className={`space-y-8 w-[70%] ${styles.content}`}>
       <SanityBodyRenderer body={content.body} />
     </div>
   );
@@ -689,6 +614,8 @@ function buildMarkedChildren(block) {
 function TableOfContents({ containerRef, watchKey }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const lenis = useLenis();
 
   const activeLockRef = useRef({
     id: "",
@@ -724,10 +651,17 @@ function TableOfContents({ containerRef, watchKey }) {
 
     setActiveId(id);
 
-    window.scrollTo({
-      top: targetTop,
-      behavior: "smooth",
-    });
+    if (lenis) {
+      lenis.scrollTo(targetTop, {
+        duration: 1.15,
+        easing: (t) => 1 - Math.pow(1 - t, 3),
+      });
+    } else {
+      window.scrollTo({
+        top: targetTop,
+        behavior: "smooth",
+      });
+    }
 
     window.history.pushState(null, "", `#${id}`);
 
@@ -763,6 +697,30 @@ function TableOfContents({ containerRef, watchKey }) {
         120
       );
   };
+
+  useEffect(() => {
+    const root = containerRef?.current;
+
+    if (!root) return;
+
+    const updateVisibility = () => {
+      const rect = root.getBoundingClientRect();
+
+      setIsVisible(
+        rect.top <= window.innerHeight * 0.45 &&
+        rect.bottom >= window.innerHeight * 0.25
+      );
+    };
+
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, [containerRef, watchKey]);
 
   useEffect(() => {
     const root = containerRef?.current;
@@ -854,67 +812,56 @@ headings.forEach((el, index) => {
     };
   }, []);
 
-  if (items.length === 0) return null;
+  if (items.length === 0 || !isVisible) return null;
 
   return (
-    <div className="rounded-md border border-border/60 bg-black/20 backdrop-blur-md p-5 mt-6">
-      <p className="text-sm font-medium text-muted uppercase tracking-wider mb-3">
-        On this page
-      </p>
+    <div className="group relative flex items-center gap-4">
+      <span
+        aria-hidden="true"
+        className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
+      />
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+        <ul className="space-y-1">
+          {items.map((it) => (
+            <li key={it.id}>
+              <a
+                href={`#${it.id}`}
+                className={[
+                  "block rounded-sm px-3 py-2 text20 font-medium leading-none text-white transition-colors duration-300 ease-out",
+                  activeId === it.id
+                    ? "bg-black"
+                    : "hover:bg-black/55",
+                ].join(" ")}
+                onClick={(e) => onTocClick(e, it.id)}
+              >
+                {it.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <ul className="space-y-3 mt-8">
-  {items.map((it) => (
-    <li
-      key={it.id}
-      className="text-[0.95vw] max-sm:text-sm cursor-pointer"
-    >
-      <a
-        href={`#${it.id}`}
-        className={[
-          "flex items-center gap-3 origin-left transition-all duration-300 ease-out will-change-transform",
-          activeId === it.id
-            ? "text-foreground scale-[1.06]"
-            : "text-foreground/65 hover:text-foreground hover:scale-[1.04]",
-        ].join(" ")}
-        onClick={(e) => onTocClick(e, it.id)}
-      >
-        <span className="relative h-2 w-2 shrink-0">
-          {activeId === it.id ? (
-            <motion.span
-              layoutId="toc-dot"
-              className="absolute inset-0 rounded-full bg-primary"
-              animate={{
-                scale: [1, 1.25, 1],
-                opacity: [0.85, 1, 0.85],
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 700,
-                damping: 45,
-                opacity: {
-                  duration: 1.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-                scale: {
-                  duration: 1.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }}
-            />
-          ) : (
-            <span className="absolute inset-0 rounded-full bg-white/0" />
-          )}
-        </span>
-
-        <span className="transition-all duration-300">
-          {it.text}
-        </span>
-      </a>
-    </li>
-  ))}
-</ul>
+      <ul className="flex w-12 flex-col items-end gap-5">
+        {items.map((it) => (
+          <li key={it.id}>
+            <a
+              href={`#${it.id}`}
+              aria-label={it.text}
+              className="block cursor-pointer py-1"
+              onClick={(e) => onTocClick(e, it.id)}
+            >
+              <span
+                className={[
+                  "block h-[2px] rounded-full transition-all duration-300 ease-out",
+                  activeId === it.id
+                    ? "w-8 bg-primary"
+                    : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
+                ].join(" ")}
+              />
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default async function TechOverviewPage() {
       effectCounts={effectCounts}
       totalEffects={allEffectSlugs.length}
       activeCategory={null}
-      bgImageSrc="/assets/heroo-bg.png"
+      bgImageSrc=""
     >
       <TechBackground>
         {/* Sticky Header with Title */}

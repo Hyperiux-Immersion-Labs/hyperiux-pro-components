@@ -17,11 +17,31 @@ export const effectCategories = [
 ];
 
 const categoriesById = new Map(effectCategories.map((category) => [category.id, category]));
-const categoriesBySlug = new Map(
-  effectCategories.flatMap((category) =>
-    [category.slug, ...(category.aliases || [])].map((slug) => [slug, category])
-  )
-);
+const categorySlugAliases = {
+  text: "text",
+  "text-effects": "text",
+  "text-animations": "text",
+  transitions: "transitions",
+  "page-transitions": "transitions",
+  loader: "loaders",
+  loaders: "loaders",
+  "website-loader": "loaders",
+  "website-loaders": "loaders",
+  webgl: "webgl",
+  "webgl-effects": "webgl",
+  scroll: "scroll",
+  "scroll-effects": "scroll",
+  "scroll-animations": "scroll",
+  cursor: "cursor",
+  "cursor-effects": "cursor",
+};
+const categoriesBySlug = new Map([
+  ...effectCategories.map((category) => [category.slug, category]),
+  ...Object.entries(categorySlugAliases).map(([slug, id]) => [
+    slug,
+    categoriesById.get(id),
+  ]),
+].filter(([, category]) => Boolean(category)));
 
 export function getEffectCategory(id) {
   return categoriesById.get(id) || null;
