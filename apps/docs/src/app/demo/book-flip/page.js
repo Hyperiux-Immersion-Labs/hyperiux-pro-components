@@ -1,4 +1,4 @@
-import { BookFlipViewer } from "@/components/BookFlip/BookFlipViewer";
+import { BookFlip } from "@/components/BookFlip";
 
 // Image array for the book pages
 const BOOK_IMAGES = [
@@ -21,7 +21,7 @@ const BOOK_IMAGES = [
 export default function BookFlipPage() {
   return (
     <>
-    <BookFlipViewer
+    <BookFlip
       images={BOOK_IMAGES}
       pathPattern="/assets/nature"
       bgColor="#000000"

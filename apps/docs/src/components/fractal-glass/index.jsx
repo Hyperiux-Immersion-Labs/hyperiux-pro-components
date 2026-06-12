@@ -148,8 +148,8 @@ function loadImageElement(source) {
   });
 }
 
-function GlassStripParallax({
-  imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", // ← new prop: path/URL to image file
+export default function FractalGlass({
+  imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", // ← new prop: path/URL to image file
   videoSrc = null,
   mediaType = "image",
   stripesFrequency = 8.0,
@@ -347,4 +347,4 @@ function GlassStripParallax({
   );
 }
 
-export { GlassStripParallax as FractalGlass };
+
