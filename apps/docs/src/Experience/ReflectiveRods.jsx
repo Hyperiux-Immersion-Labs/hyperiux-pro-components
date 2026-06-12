@@ -13,15 +13,18 @@ const ctr = (degrees) => {
 
 export default function ReflectiveRods() {
     const commonProps = {
-        radius: 0.1,
-        smoothness: 16,
+        radius: 0.05,
+        smoothness: 20,
         materialProps: {
             color: '#ffffff',
             metalness: 1.0,
-            roughness: 0.02,
+            roughness: 0.1,
             clearcoat: 1.0,
             clearcoatRoughness: 0.0,
-            envMapIntensity: 3.5,
+            envMapIntensity: 10.0,
+            iridescence: 1.0,
+            iridescenceIOR: 2.4,
+            iridescenceThicknessRange: [80, 1600],
         }
     }
 
