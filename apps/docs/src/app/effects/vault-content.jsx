@@ -192,8 +192,10 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className="mx-auto px-8 pt-40 pb-20 text-center max-sm:px-7">
-            <p className="mb-4 font-sans text-22 text-light-grey">The Vault Library</p>
+          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12  text-center">
+            <div className="flex items-center justify-center gap-4 text-lg font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-base fadeup">
+              <span>The Vault Library</span>
+            </div>
             <HeadAnim>
               <h1
                 className="mb-4 font-display text110 font-normal text-foreground max-sm:text-4xl"
