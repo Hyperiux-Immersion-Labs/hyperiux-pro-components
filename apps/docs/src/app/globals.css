@@ -55,7 +55,7 @@ body {
   line-height: 1.5;
   font-size: 16px;
   width: 100vw;
-  overflow-x: hidden;
+  overflow-x: hidden ; 
 }
 
 /* Typography hierarchy inspired by Coinbase */
@@ -241,6 +241,8 @@ h4 {
   font-weight: 400 !important;
   line-height: 1.25rem !important;
 }
+
+
 
 .hyperiux-clerk .cl-input,
 .hyperiux-clerk .cl-formFieldInput {

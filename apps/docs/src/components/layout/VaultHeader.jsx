@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { GlobalSearch } from "./SearchBar";
 import { useState } from "react";
@@ -8,6 +9,22 @@ import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Button from "@/components/Reusable/Button";
 import Image from "next/image";
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
+import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+
+const DOCS_TOP_LINKS = [
+  { href: "/docs", label: "Introduction" },
+  { href: "/docs/installation", label: "Installation" },
+  { href: "/docs/cli", label: "CLI" },
+  { href: "/docs/dependencies", label: "Dependencies" },
+  { href: "/docs/license", label: "License" },
+];
+
+function categoryLabel(category) {
+  return category.name
+    .replace("Website ", "")
+    .replace("Page ", "");
+}
 
 
 export function VaultHeader({
@@ -18,6 +35,9 @@ export function VaultHeader({
 
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
 
   useEffect(() => {
     async function loadWishlistCount() {
@@ -37,29 +57,88 @@ export function VaultHeader({
     loadWishlistCount();
   }, []);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMenuOpen]);
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const closeMobileDropdowns = () => {
+    setIsCategoriesOpen(false);
+    setIsDocumentationOpen(false);
+  };
+
   const githubLink = (
     <Link
       href="https://github.com/hyperiux"
       target="_blank"
       rel="noreferrer"
-      className=""
+      className="flex h-9 w-9 items-center justify-center"
       aria-label="Open Hyperiux on GitHub"
     >
-      <Image src='/icons/github.svg' height={200} width={200} className="h-9 w-9" />
+      <Image
+        src="/icons/github.svg"
+        alt="GitHub"
+        height={200}
+        width={200}
+        className="h-9 w-9"
+      />
     </Link>
   );
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm  px-10 py-5"
+        className="fixed top-0 left-0 right-0 z-50 bg-black/20 px-10 py-5 backdrop-blur-sm max-md:px-6 max-sm:px-4 max-sm:w-screen "
       >
         <div className="flex h-full items-center justify-end gap-3">
+          <Link
+            href="/effects"
+            className="hidden items-center gap-3 max-sm:flex"
+            onClick={closeMobileMenu}
+          >
+            <Image
+              src="/hyperiux.svg"
+              alt="Hyperiux"
+              width={28}
+              height={28}
+              className="h-7 w-7 shrink-0"
+            />
+            <Image
+              src="/hyperiux-wordmark.svg"
+              alt="Hyperiux"
+              width={128}
+              height={37}
+              className="h-auto w-28"
+            />
+          </Link>
 
+          <div className="hidden items-center gap-2 max-sm:ml-auto max-sm:flex">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen((value) => !value);
+                  closeMobileDropdowns();
+                }}
+                className="flex h-10 w-10 items-center justify-center text-white transition hover:text-white/80"
+                aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMobileMenuOpen}
+              >
+                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5 max-sm:h-7 max-sm:w-7" />}
+              </button>
+          </div>
+
+          <div className="flex items-center gap-3">
             {showSearch && (
               <button
                 onClick={() => setOpenTrigger((n) => n + 1)}
-                className="group flex h-10 cursor-pointer  items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:px-0"
+                className="group flex h-10 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-md:gap-3 max-sm:hidden"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -77,19 +156,19 @@ export function VaultHeader({
                   />
                 </svg>
 
-                <span className="max-sm:hidden text-sm">
+                <span className="text-sm max-md:hidden">
                   Search
                 </span>
                 </div>
 
-                <kbd className="rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-lg:hidden space-x-2">
+                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-lg:hidden">
                   ⌘K
                 </kbd>
               </button>
             )}
             {!isSignedIn ? (
               <>
-                <div className="max-sm:hidden block">
+                <div className="block max-sm:hidden">
                   <Button
                     text="Sign In"
                     href="/sign-in"
@@ -100,21 +179,244 @@ export function VaultHeader({
                   />
                 </div>
 
-               
-                {githubLink}
+                <div className="max-sm:hidden">
+                  {githubLink}
+                </div>
               </>
             ) : (
               <>
-                {githubLink}
+                <div className="max-sm:hidden">
+                  {githubLink}
+                </div>
 
-                <ProfileDropdown
-                  savedCount={wishlistCount}
-                  plan="free"
-                />
+                <div className="max-sm:hidden">
+                  <ProfileDropdown
+                    savedCount={wishlistCount}
+                    plan="free"
+                  />
+                </div>
               </>
             )}
+          </div>
         </div>
       </header>
+
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close mobile menu overlay"
+              className="fixed inset-0 z-40 bg-black/60 max-sm:block"
+              onClick={() => {
+                closeMobileMenu();
+                closeMobileDropdowns();
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            />
+
+            <motion.div
+              className="fixed right-0 top-0 z-50 h-screen w-[88vw] max-w-[360px] overflow-y-auto border-l border-white/10 bg-[#060606] px-4 py-5 text-white shadow-2xl max-sm:block sm:hidden"
+              initial={{ x: "100%", opacity: 0.9 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "100%", opacity: 0.9 }}
+              transition={{ duration: 0.28, ease: "easeOut" }}
+            >
+            <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
+              <Link href="/effects" onClick={closeMobileMenu} className="flex items-center gap-3">
+                <Image
+                  src="/hyperiux.svg"
+                  alt="Hyperiux"
+                  width={28}
+                  height={28}
+                  className="h-7 w-7"
+                />
+                <Image
+                  src="/hyperiux-wordmark.svg"
+                  alt="Hyperiux"
+                  width={128}
+                  height={37}
+                  className="h-auto w-28"
+                />
+              </Link>
+
+              <button
+                type="button"
+                onClick={closeMobileMenu}
+                className="flex h-10 w-10 items-center justify-center text-white transition hover:text-white/80"
+                aria-label="Close navigation menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {!isSignedIn ? (
+                <div onClick={closeMobileMenu}>
+                  <Button
+                    text="Sign In"
+                    href="/sign-in"
+                    variant="orange"
+                    showArrow={false}
+                    pillClassName="w-full px-4 py-3 text-center text-sm leading-none"
+                    className="block w-full"
+                    innerClassName="w-full group-hover:!translate-x-0"
+                  />
+                </div>
+              ) : (
+                <Link
+                  href="/dashboard"
+                  onClick={closeMobileMenu}
+                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white/90 transition hover:bg-white/10"
+                >
+                  <span>Account</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              )}
+
+              {showSearch && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenTrigger((n) => n + 1);
+                    closeMobileMenu();
+                  }}
+                  className="group flex h-10 max-sm:h-14 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white"
+                >
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="h-4 w-4 shrink-0 text-current"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <span className="text-sm max-sm:text-lg">Search</span>
+                  </div>
+                  <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50">
+                    ⌘K
+                  </kbd>
+                </button>
+              )}
+
+              <div onClick={closeMobileMenu} className="flex justify-start">
+                {githubLink}
+              </div>
+            </div>
+
+            <div className="my-5 h-px bg-white/10" />
+
+            <nav className="space-y-6">
+              <div className="space-y-2">
+                
+                <div className="space-y-1">
+                  <Link
+                    href="/effects"
+                    onClick={closeMobileMenu}
+                    className="flex w-full items-center rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35"
+                  >
+                    Overview
+                  </Link>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsCategoriesOpen((value) => !value);
+                    setIsDocumentationOpen(false);
+                  }}
+                  className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35"
+                  aria-expanded={isCategoriesOpen}
+                >
+                  <span>Categories</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isCategoriesOpen ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence initial={false}>
+                {isCategoriesOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.24, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                  <div className="max-h-72 space-y-1 overflow-y-auto pr-1">
+                    {effectCategories.slice(1).map((category) => (
+                      <Link
+                        key={category.id}
+                        href={getEffectCategoryHref(category.id)}
+                        onClick={() => {
+                          closeMobileMenu();
+                          closeMobileDropdowns();
+                        }}
+                        className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white"
+                      >
+                        {categoryLabel(category)}
+                      </Link>
+                    ))}
+                  </div>
+                  </motion.div>
+                )}
+                </AnimatePresence>
+              </div>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsDocumentationOpen((value) => !value);
+                    setIsCategoriesOpen(false);
+                  }}
+                  className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35"
+                  aria-expanded={isDocumentationOpen}
+                >
+                  <span>Documentation</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isDocumentationOpen ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence initial={false}>
+                {isDocumentationOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.24, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                  <div className="max-h-72 space-y-1 overflow-y-auto pr-1">
+                    {DOCS_TOP_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => {
+                          closeMobileMenu();
+                          closeMobileDropdowns();
+                        }}
+                        className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                  </motion.div>
+                )}
+                </AnimatePresence>
+              </div>
+            </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Global Search Modal — fully self-contained, Ctrl+K works natively */}
       <GlobalSearch

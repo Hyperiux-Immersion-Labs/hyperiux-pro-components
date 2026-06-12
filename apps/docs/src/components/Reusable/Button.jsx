@@ -49,6 +49,9 @@ export default function Button({
     const link = linkRef.current;
     const textEl = textRef.current;
     if (!link || !textEl) return;
+    const shouldAnimate = !window.matchMedia("(max-width: 639px)").matches;
+
+    if (!shouldAnimate) return;
 
     let split;
     let splitClone;
@@ -128,10 +131,10 @@ export default function Button({
 
   return (
     <Link ref={linkRef} href={href} className={`group relative inline-block ${className}`}>
-      <div className={`w-full translate-x-0 transition-transform duration-400 group-hover:translate-x-[-1vw] ${innerClassName}`}>
-        <div className={`relative z-2 rounded-full px-[1.5vw] py-[.5vw] text22 whitespace-nowrap ${styles.pill} ${pillClassName}`}>
+      <div className={`w-full translate-x-0 transition-transform duration-400 group-hover:translate-x-[-1vw] max-sm:group-hover:translate-x-0 ${innerClassName}`}>
+        <div className={`relative z-2 rounded-full px-[1.5vw] py-[.5vw] text22 whitespace-nowrap max-md:px-5 max-md:py-2 max-md:text-base max-sm:px-4 max-sm:py-3 max-sm:text-sm ${styles.pill} ${pillClassName}`}>
           <p className="relative overflow-hidden">
-            <span ref={textRef} className="block">
+            <span ref={textRef} className="block max-sm:text-xl">
               {text}
             </span>
           </p>
@@ -140,12 +143,12 @@ export default function Button({
         {showArrow && (
           <span
             aria-hidden="true"
-            className={`pointer-events-none absolute left-full top-1/2 ml-[-0.35vw] -translate-y-1/2 ${circleWrapperClassName}`}
+            className={`pointer-events-none absolute left-full top-1/2 ml-[-0.35vw] -translate-y-1/2 max-sm:hidden ${circleWrapperClassName}`}
           >
-            <span className={`relative flex size-[2.8vw] origin-left scale-50 translate-x-[-1vw] items-center justify-center rounded-full p-2 transition-all duration-400 ease-out group-hover:scale-100 group-hover:translate-x-0 ${styles.circle} ${circleClassName}`}>
+            <span className={`relative flex size-[2.8vw] min-h-11 min-w-11 origin-left scale-50 translate-x-[-1vw] items-center justify-center rounded-full p-2 transition-all duration-400 ease-out group-hover:scale-100 group-hover:translate-x-0 max-md:size-11 ${styles.circle} ${circleClassName}`}>
               <div className="relative size-full overflow-hidden">
                 <span className="absolute left-0 top-0 flex size-full scale-50 items-center justify-center transition-all duration-400 group-hover:scale-100 group-hover:translate-x-0 group-hover:translate-y-0">
-                  <ArrowUpRightIcon className={`size-full ${styles.icon} ${iconClassName}`} />
+                  <ArrowUpRightIcon className={`size-full max-sm:h-10 max-sm:w-10 ${styles.icon} ${iconClassName}`} />
                 </span>
               </div>
             </span>

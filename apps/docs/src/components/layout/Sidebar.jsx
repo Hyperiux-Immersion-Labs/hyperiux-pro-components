@@ -90,7 +90,7 @@ export function Sidebar({
   const lastPathSegment = pathSegments[pathSegments.length - 1] || "";
   const [activeHash, setActiveHash] = useState("");
   const [fetchedEffects, setFetchedEffects] = useState([]);
-  const [openSection, setOpenSection] = useState("components");
+  const [sectionOverride, setSectionOverride] = useState({ key: "", value: null });
   const [uncontrolledExpanded, setUncontrolledExpanded] = useState(false);
   const isExpanded =
     typeof controlledExpanded === "boolean" ? controlledExpanded : uncontrolledExpanded;
@@ -147,25 +147,32 @@ export function Sidebar({
     isCategoryRoute || (pathname === "/effects" && currentCategory !== "all");
   const isComponentsActive = isComponentRoute;
   const isDocumentationActive = isDocsActive;
-
-  useEffect(() => {
-    const nextOpenSection = isDocumentationActive
-      ? "docs"
-      : isCategoriesActive
-        ? "categories"
-        : "components";
-
-    setOpenSection(nextOpenSection);
-  }, [isCategoriesActive, isDocumentationActive, pathname]);
+  const routeKey = `${pathname}?${currentCategory}`;
+  const defaultOpenSection = isDocumentationActive
+    ? "docs"
+    : isCategoriesActive
+      ? "categories"
+      : "components";
+  const openSection =
+    sectionOverride.key === routeKey && sectionOverride.value !== null
+      ? sectionOverride.value
+      : defaultOpenSection;
 
   const toggleSection = (section) => {
     if (!isExpanded) {
       toggle();
-      setOpenSection(section);
+      setSectionOverride({ key: routeKey, value: section });
       return;
     }
 
-    setOpenSection((current) => (current === section ? "" : section));
+    setSectionOverride((current) => {
+      const currentValue = current.key === routeKey ? current.value : defaultOpenSection;
+
+      return {
+        key: routeKey,
+        value: currentValue === section ? "" : section,
+      };
+    });
   };
 
   const toggle = () => {
@@ -180,7 +187,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-0 bottom-0 z-40 text-white transition-[width] duration-300 ease-out ${
+      className={`fixed left-0 top-0 bottom-0 z-40 text-white transition-[width] duration-300 ease-out max-sm:hidden ${
         isExpanded ? "w-[288px]" : "w-22"
       }`}
     >
@@ -224,7 +231,7 @@ export function Sidebar({
           type="button"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
           onClick={toggle}
-          className={`absolute top-4 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-sm  bg-[#272727] text-white transition-[left,background-color,transform] duration-500 ease-out hover:bg-white/15 ${
+          className={`absolute top-4 z-50 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-sm bg-[#272727] text-white transition-[left,background-color,transform] duration-500 ease-out hover:bg-white/15 sm:flex ${
             isExpanded ? "left-75" : "left-25"
           }`}
         >

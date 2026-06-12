@@ -255,7 +255,7 @@ export default function MyComponent() {
                     </div>
                   )}
 
-                  <div className="ml-auto shrink-0">
+                  <div className="ml-auto shrink-0 max-sm:hidden">
                     <Button
                       text="Live Preview"
                       href={previewHref}
@@ -302,7 +302,21 @@ export default function MyComponent() {
                   />
                 )}
               </div>
+            
             </div>
+
+            <div className="max-sm:flex w-full max-sm:pt-4 justify-center shrink-0  hidden">
+                    <Button
+                      text="Live Preview"
+                      href={previewHref}
+                      target="_blank"
+                      variant="orange"
+                      className="shrink-0"
+                    />
+                  </div>
+
+            
+            
 
             {isLocked ? (
               <section className="relative my-14 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup max-sm:px-4 max-sm:py-12">
@@ -414,7 +428,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
   if (!content) return null;
 
   return (
-    <div ref={ref} className={`space-y-8 w-[70%] ${styles.content}`}>
+    <div ref={ref} className={`space-y-8 w-[70%] max-sm:w-full ${styles.content}`}>
       <SanityBodyRenderer body={content.body} />
     </div>
   );
@@ -426,7 +440,7 @@ function SanityBodyRenderer({ body = [] }) {
   const groupedBlocks = groupBodyBlocks(body);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-sm:px-4">
       {groupedBlocks.map((block, index) => (
         <SanityBodyBlock
           key={block._key || block._groupKey || `${block._type}-${index}`}

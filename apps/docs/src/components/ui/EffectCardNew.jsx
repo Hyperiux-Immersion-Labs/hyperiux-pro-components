@@ -90,12 +90,12 @@ export function EffectCard({
     >
       <Link href={effectHref} className="block">
         <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
-          <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-center justify-between gap-3 max-sm:inset-x-2.5 max-sm:top-2.5 max-sm:gap-2">
+            <div className="flex min-w-0 flex-wrap items-center gap-2 max-sm:gap-1.5">
               {dependencyPills.map((pill) => (
                 <span
                   key={pill}
-                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-4 max-sm:text-xs"
+                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-3 max-sm:py-1 max-sm:text-[11px]"
                 >
                   {pill}
                 </span>
@@ -103,13 +103,13 @@ export function EffectCard({
             </div>
 
             {effect.tier === "pro" && (
-              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:text-xs">
+              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[11px]">
                 Pro
               </span>
             )}
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-center px-7">
+          <div className="absolute inset-0 flex items-center justify-center px-7 max-sm:px-4">
             <div className="relative aspect-video w-full overflow-hidden rounded-sm">
               <Image
                 src={coverImage}
@@ -142,28 +142,28 @@ export function EffectCard({
         </div>
       </Link>
 
-      <div className="flex items-start justify-between gap-4 px-3 pt-5 pb-1">
+      <div className="flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-sm:gap-3 max-sm:px-2 max-sm:pt-4">
         <Link href={effectHref} className="block min-w-0 gap-1">
-          <h3 className="truncate font-sans text22 font-medium leading-none text-white transition-colors group-hover:text-white">
+          <h3 className="truncate font-sans text22 font-medium leading-none text-white transition-colors group-hover:text-white max-sm:text-base">
             {effect.title}
           </h3>
-          <p className="mt-0.5 text18 text-[#AEAEAE]">
+          <p className="mt-0.5 text18 text-[#AEAEAE] max-sm:text-xs">
             {primaryCategoryLabel}
           </p>
         </Link>
 
-        <div className="flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-sm:gap-1.5 max-sm:opacity-100">
           <button
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
               toggleWishlist?.(effect);
             }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-sm:h-8 max-sm:w-8"
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
             <Heart
-              className={`h-4 w-4 ${
+              className={`h-4 w-4 max-sm:h-3.5 max-sm:w-3.5 ${
                 isWishlisted ? "fill-white text-white" : "text-white"
               }`}
             />
@@ -175,18 +175,18 @@ export function EffectCard({
               event.stopPropagation();
               window.open(previewHref, "_blank");
             }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-sm:h-8 max-sm:w-8"
             aria-label="Preview"
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="h-4 w-4 max-sm:h-3.5 max-sm:w-3.5" />
           </button>
 
           <Link
             href={effectHref}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-sm:h-8 max-sm:w-8"
             aria-label={`Open ${effect.title || effect.name}`}
           >
-            <ArrowUpRight className="h-5 w-5" />
+            <ArrowUpRight className="h-5 w-5 max-sm:h-4 max-sm:w-4" />
           </Link>
         </div>
       </div>

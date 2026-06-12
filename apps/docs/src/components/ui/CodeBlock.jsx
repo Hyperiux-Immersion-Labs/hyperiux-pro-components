@@ -36,15 +36,19 @@ export function CodeBlock({
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
             
             <div
-                className="max-h-[30vw] overflow-y-auto"
+                className={`max-h-[30vw] overflow-y-auto ${
+                    shouldShowHeader
+                        ? "max-sm:max-h-[38vh] max-sm:min-h-[18vh]"
+                        : "max-sm:h-[8vh]"
+                }`}
                 style={{ scrollbarGutter: "stable" }}
             >
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
-                        <span className="text-lg text-white tracking-widest">{filename || ""}</span>
+                        <span className="text-lg text-white tracking-widest max-sm:text-sm">{filename || ""}</span>
                         <button
                             onClick={handleCopy}
-                            className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground"
+                            className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground max-sm:text-xl"
                         >
                             <Copy />
                         </button>
@@ -58,7 +62,11 @@ export function CodeBlock({
                     </button>
                 )}
                 <div className="relative">
-                    <pre className="overflow-x-auto text-sm bg-[#272727]">
+                    <pre
+                        className={`overflow-x-auto bg-[#272727] text-sm ${
+                            shouldShowHeader ? "max-sm:text-xs" : "max-sm:text-sm"
+                        }`}
+                    >
                         {highlighted ? (
                             <code
                                 className={`hljs bg-[#272727]! language-${language}`}
@@ -87,10 +95,10 @@ export function InstallCommand({ effect }) {
     return (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800">
             <span className="text-green-500">$</span>
-            <code className="flex-1 text-sm text-neutral-300">{command}</code>
+            <code className="flex-1 text-sm text-neutral-300 max-sm:text-lg!">{command}</code>
             <button
                 onClick={handleCopy}
-                className="text-xs px-3 py-1.5 rounded bg-white text-black hover:bg-neutral-200 transition-colors font-medium"
+                className="text-xs px-3 py-1.5 rounded bg-white text-black hover:bg-neutral-200 transition-colors font-medium max-sm:text-[11px]"
             >
                 {copied ? "Copied!" : "Copy"}
             </button>

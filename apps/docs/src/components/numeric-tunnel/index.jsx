@@ -2,6 +2,8 @@
 import { NumericTunnel } from './NumericTunnel'
 import React, { useCallback, useState } from'react'
 
+export { NumericTunnel }
+
 export function Tunnel() {
  const [isComplete, setIsComplete] = useState(false)
  const [tunnelInstance, setTunnelInstance] = useState(0)
@@ -41,5 +43,4 @@ export function Tunnel() {
  </NumericTunnel>
  )
 }
-
 

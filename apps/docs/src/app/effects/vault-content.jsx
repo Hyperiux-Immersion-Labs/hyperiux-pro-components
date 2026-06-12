@@ -192,18 +192,18 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12  text-center space-y-8">
-            <div className="flex items-center justify-center gap-4 text-lg font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-base fadeup text-light-grey">
+          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16">
+            <div className="flex items-center justify-center gap-4 text-lg  font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-sm fadeup text-light-grey">
               <span>The Vault Library</span>
             </div>
             <HeadAnim>
               <h1
-                className="mb-4 font-display text110 font-normal  text-foreground max-sm:text-4xl"
+                className="mb-4 font-display text110 w-[80%] mx-auto font-normal max-sm:w-[90%]  text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.1" }}
               >
                 {categoryFilter === "all" ? (
                   <>
-                    Browse creative effects <br /> for modern websites.
+                    Browse creative effects for modern websites.
                   </>
                 ) : (
                   <>
@@ -258,10 +258,10 @@ export function VaultContent({
                     type="button"
                     onClick={() => updateCategoryFilter(cat)}
                     className={`
-    px-6 py-2.5 max-sm:px-6 text-md text-center relative rounded-full
+    px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
     backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-    transition-all duration-500 ease-in-out
-    hover:text-[#111111] hover:bg-white  text20
+    transition-all duration-500 ease-in-out max-sm:text-lg
+    hover:text-[#111111] hover:bg-white text20 
     ${isSelected
                         ? "bg-white text-[#111111]  "
                         : "bg-[#272727] text-foreground "
@@ -312,14 +312,14 @@ export function VaultContent({
               }`}
           >
             {(categoryFilter !== "all" || searchQuery) && (
-              <span className="text-sm text-muted font-sans">
+              <span className="text-sm text-muted font-sans max-sm:text-xs">
                 Showing {filteredEffects.length} of {totalEffects} effects
               </span>
             )}
             {categoryFilter !== "all" && (
               <>
                 <span
-                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm capitalize font-medium"
+                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm capitalize font-medium max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
                   style={{ borderRadius: "56px" }}
                 >
                   <span>{categoryFilter}</span>
@@ -348,7 +348,7 @@ export function VaultContent({
             {searchQuery && (
               <>
                 <span
-                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
                   style={{ borderRadius: "56px" }}
                 >
                   <span>&quot;{searchQuery}&quot;</span>
@@ -376,15 +376,15 @@ export function VaultContent({
           </div>
 
           {filteredEffects.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-6xl mb-6">🔍</div>
+            <div className="py-20 text-center max-sm:px-4 max-sm:py-14">
+              <div className="mb-6 text-6xl max-sm:mb-4 max-sm:text-4xl">🔍</div>
               <h3
-                className="font-display text-3xl font-normal text-foreground mb-3"
+                className="mb-3 font-display text-3xl font-normal text-foreground max-sm:text-2xl"
                 style={{ lineHeight: "1.1" }}
               >
                 No effects found
               </h3>
-              <p className="text-muted font-sans text-base">
+              <p className="font-sans text-base text-muted max-sm:text-sm">
                 Try adjusting your search or filter criteria
               </p>
             </div>
@@ -453,7 +453,7 @@ function EffectsGrid({
     <>
       <div
         ref={gridRef}
-        className="grid gap-6 rounded-xl grid-cols-3 max-sm:grid-cols-1 max-sm:gap-8"
+        className="grid gap-6 rounded-xl grid-cols-3 max-sm:grid-cols-1 max-sm:gap-16"
       >
         {filteredEffects.map((effect, i) => (
           <div
@@ -473,7 +473,7 @@ function EffectsGrid({
       </div>
 
       {filteredEffects.length > 10 && !showAllMobileCards && (
-        <div className="hidden max-sm:flex justify-center mt-10">
+        <div className="mt-10 hidden justify-center max-sm:flex">
           <CharStaggerLinkBtn
             href="#"
             text="View more"
@@ -482,7 +482,7 @@ function EffectsGrid({
               e.preventDefault();
               setShowAllMobileCards(true);
             }}
-            className="text-lg font-sans text-foreground"
+            className="font-sans text-lg text-foreground max-sm:text-base"
           />
         </div>
       )}
