@@ -13,10 +13,12 @@ import {
   getEffectCategoryBySlug,
   getEffectCategoryHref,
 } from "@/lib/categories";
-import Link from "next/link";
 import HeadAnim from "@/components/Animations/HeadAnim";
+import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
 import Footer from "@/components/LandingPage/Footer";
+import FAQSection from "@/components/LandingPage/FAQ";
+import { getFeaturedEffects } from "@/lib/featured-effects";
 
 export function VaultContent({
   effects,
@@ -30,13 +32,18 @@ export function VaultContent({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const featuredEffects = useMemo(() => getFeaturedEffects(effects), [effects]);
+  const featuredEffectNames = useMemo(
+    () => new Set(featuredEffects.map((effect) => effect.name)),
+    [featuredEffects],
+  );
 
   const categoryFilter = useMemo(() => {
     const queryCategory = searchParams.get("category");
-    if (queryCategory) return queryCategory;
+    if (queryCategory) return queryCategory === "all" ? initialCategory : queryCategory;
 
     const [, rootSegment, categorySlug] = pathname.split("/");
-    if (rootSegment !== "effects" || !categorySlug) return "all";
+    if (rootSegment !== "effects" || !categorySlug) return initialCategory;
 
     return getEffectCategoryBySlug(categorySlug)?.id || initialCategory;
   }, [initialCategory, pathname, searchParams]);
@@ -54,6 +61,12 @@ export function VaultContent({
       return;
     }
 
+    if (resolvedCategory === "featured") {
+      const nextQuery = params.toString();
+      router.push(nextQuery ? `/effects/featured?${nextQuery}` : "/effects/featured");
+      return;
+    }
+
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
     const nextUrl = nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
@@ -62,17 +75,18 @@ export function VaultContent({
   }, [router, searchParams]);
   const quickCategories = useMemo(() => {
     const knownCategories = effectCategories
-      .filter((category) => category.id !== "all" && effectCounts?.[category.id])
+      .filter((category) => category.id !== "featured" && effectCounts?.[category.id])
       .map((category) => category.id);
     const extraCategories = Object.keys(effectCounts || {}).filter(
       (id) =>
         id &&
         id !== "all" &&
+        id !== "featured" &&
         !knownCategories.includes(id) &&
         effectCounts[id],
     );
 
-    return ["all", "free", ...knownCategories, ...extraCategories];
+    return ["featured", "free", ...knownCategories, ...extraCategories];
   }, [effectCounts]);
   const [wishlist, setWishlist] = useState([]);
 
@@ -132,6 +146,8 @@ export function VaultContent({
       // Category filter
       if (categoryFilter === "free") {
         if (effect.tier === "pro") return false;
+      } else if (categoryFilter === "featured") {
+        if (!featuredEffectNames.has(effect.name)) return false;
       } else if (categoryFilter !== "all") {
         const cats = effect.categories?.length
           ? effect.categories
@@ -155,13 +171,19 @@ export function VaultContent({
 
       return true;
     });
-  }, [effects, categoryFilter, searchQuery]);
+  }, [effects, categoryFilter, searchQuery, featuredEffectNames]);
 
   const totalEffects = useMemo(() => {
-    if (categoryFilter === "all") return effects.length;
+    if (categoryFilter === "all") {
+      return effects.length;
+    }
 
     if (categoryFilter === "free") {
       return effects.filter((effect) => effect.tier !== "pro").length;
+    }
+
+    if (categoryFilter === "featured") {
+      return featuredEffects.length;
     }
 
     return effects.filter((effect) => {
@@ -170,11 +192,29 @@ export function VaultContent({
         : [effect.category];
       return cats.includes(categoryFilter);
     }).length;
-  }, [effects, categoryFilter]);
+  }, [effects, categoryFilter, featuredEffects]);
+  const activeCategory = getEffectCategory(categoryFilter);
   const activeCategoryName =
-    categoryFilter === "free"
+    categoryFilter === "all"
+      ? "All"
+      : categoryFilter === "free"
       ? "Free"
-      : getEffectCategory(categoryFilter)?.name || categoryFilter;
+      : activeCategory?.name || categoryFilter;
+  const activeCategoryDescription =
+    categoryFilter === "all"
+      ? "Browse the full Hyperiux vault across motion, WebGL, cursor, scroll, component, loader, navigation, and transition effects."
+      : activeCategory?.description ||
+        "Explore free effects from the Hyperiux vault, ready to install, remix, and use in real projects.";
+  const activeCategoryFaqItems = useMemo(
+    () =>
+      (activeCategory?.faqs || []).map((item, index) => ({
+        id: `${categoryFilter}-faq-${index + 1}`,
+        title: item.question,
+        content: item.answer,
+        defaultOpen: index === 0,
+      })),
+    [activeCategory?.faqs, categoryFilter],
+  );
 
   return (
     <VaultLayout
@@ -193,26 +233,23 @@ export function VaultContent({
 
         <div className="">
           <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16">
-            <div className="flex items-center justify-center gap-4 text-lg  font-sans max-sm:flex-wrap max-sm:gap-2 max-sm:text-sm fadeup text-light-grey">
-              <span>The Vault Library</span>
-            </div>
             <HeadAnim>
               <h1
                 className="mb-4 font-display text110 w-[80%] mx-auto font-normal max-sm:w-[90%]  text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.1" }}
               >
-                {categoryFilter === "all" ? (
-                  <>
-                    Browse creative effects for modern websites.
-                  </>
-                ) : (
-                  <>
-                    {activeCategoryName} <br /> effects
-                  </>
-                )}
+                {activeCategoryName} Effects
               </h1>
             </HeadAnim>
+            <div>
+              <Copy delay={0.3}>
+                <p className="max-w-[65vw] mx-auto text-lg text-muted max-sm:text-base">
+                  {activeCategoryDescription}
+                </p>
+              </Copy>
+            </div>
           </div>
+
         </div>
 
         {/* Filter pills — desktop wraps, mobile single-line scroll */}
@@ -244,10 +281,10 @@ export function VaultContent({
               {quickCategories.map((cat) => {
                 const isSelected = categoryFilter === cat;
                 const label =
-                  cat === "all"
-                    ? "All"
-                    : cat === "free"
+                  cat === "free"
                       ? "Free"
+                      : cat === "featured"
+                        ? "Featured"
                       : cat === "webgl"
                         ? "WebGL"
                         : cat.charAt(0).toUpperCase() + cat.slice(1);
@@ -306,45 +343,16 @@ export function VaultContent({
 
         <div className="mx-auto px-10 pb-12 fadeup max-sm:px-6">
           <div
-            className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${categoryFilter !== "all" || searchQuery
+            className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"
               : "mb-0 min-h-0 opacity-0 pointer-events-none"
               }`}
           >
-            {(categoryFilter !== "all" || searchQuery) && (
+            {/* {searchQuery && (
               <span className="text-sm text-muted font-sans max-sm:text-xs">
                 Showing {filteredEffects.length} of {totalEffects} effects
               </span>
-            )}
-            {categoryFilter !== "all" && (
-              <>
-                <span
-                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm capitalize font-medium max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
-                  style={{ borderRadius: "56px" }}
-                >
-                  <span>{categoryFilter}</span>
-                  <button
-                    type="button"
-                    onClick={() => updateCategoryFilter("all")}
-                    className="hover:text-white cursor-pointer transition-colors"
-                  >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </span>
-              </>
-            )}
+            )} */}
             {searchQuery && (
               <>
                 <span
@@ -397,13 +405,14 @@ export function VaultContent({
                 isProUser={isProUser}
                 isSidebarOpen={isSidebarOpen}
               />
-
-
             </>
           )}
         </div>
+        {activeCategoryFaqItems.length > 0 && (
+          <FAQSection faqItems={activeCategoryFaqItems} />
+        )}
         <div className="px-10 py-8">
-          <Footer/>
+          {/* <Footer/> */}
         </div>
       </div>
       )}

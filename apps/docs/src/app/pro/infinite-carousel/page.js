@@ -115,8 +115,11 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 export default function Page() {
  return (
  <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12">
- <div className=" flex items-center justify-center px-4 max-md:mb-10 max-sm:mb-10">
- <h1 className="m-0 text-center text-8xl leading-[0.9] tracking-tighter text-[#111] max-md:text-6xl max-sm:text-5xl">Cards Carousel</h1>
+ <div className=" flex items-center justify-center px-4 max-md:mb-5 max-sm:mb-10">
+ <div className="text-center">
+ <h1 className="m-0 text-center text-7xl leading-[0.9] tracking-tighter text-[#111] max-md:text-6xl max-sm:text-5xl">Cards Carousel</h1>
+ <p className="mt-3 text-[1rem] max-md:text-[0.95rem] text-[#111]/70">Give it a nudge - drag a card or tap the arrows to set the lineup in motion, watch it glide, loop, and reveal.</p>
+ </div>
  </div>
 
  <div className="w-full">

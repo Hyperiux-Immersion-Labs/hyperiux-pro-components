@@ -107,8 +107,13 @@ export default async function EffectPage({ params }) {
   */
 
   const relatedEffectNames = content?.relatedEffectNames || [];
+  const sanityEffectSlugs = new Set(
+    sanityEntries
+      .map((entry) => normalize(entry.effectSlug))
+      .filter(Boolean)
+  );
 
-  const relatedEffects = relatedEffectNames
+  const pinnedRelatedEffects = relatedEffectNames
     .map((relatedName) => {
       const normalizedRelatedName = normalize(relatedName);
 
@@ -127,8 +132,37 @@ export default async function EffectPage({ params }) {
       });
     })
     .filter(Boolean)
-    .filter((item) => item.name !== effectSlug)
-    .slice(0, 3);
+    .filter((item) => item.name !== effectSlug);
+
+  const pinnedRelatedSlugs = new Set(
+    pinnedRelatedEffects.flatMap((item) => [
+      normalize(item.name),
+      normalize(item.slug),
+      normalize(item.effectSlug),
+    ])
+  );
+
+  const remainingSanityEffects = registryItems.filter((item) => {
+    const normalizedName = normalize(item.name);
+    const normalizedSlug = normalize(item.slug);
+    const normalizedEffectSlug = normalize(item.effectSlug);
+
+    if (item.name === effectSlug) return false;
+    if (pinnedRelatedSlugs.has(normalizedName)) return false;
+    if (pinnedRelatedSlugs.has(normalizedSlug)) return false;
+    if (pinnedRelatedSlugs.has(normalizedEffectSlug)) return false;
+
+    return (
+      sanityEffectSlugs.has(normalizedName) ||
+      sanityEffectSlugs.has(normalizedSlug) ||
+      sanityEffectSlugs.has(normalizedEffectSlug)
+    );
+  });
+
+  const relatedEffects = [
+    ...pinnedRelatedEffects,
+    ...remainingSanityEffects,
+  ];
 
 
   return (

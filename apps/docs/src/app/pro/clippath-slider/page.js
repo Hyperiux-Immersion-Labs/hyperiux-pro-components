@@ -1,9 +1,11 @@
 import React from'react'
 import { ClippathSlider } from'@/components/Slider/ClippathSlider'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
 const page = () => {
  return (
  <>
+ {/* <DemoHeader logoColor='#ffffff'/> */}
  <ClippathSlider
  slides={slides}
  clueText="Click either side and watch the next scene cut through."

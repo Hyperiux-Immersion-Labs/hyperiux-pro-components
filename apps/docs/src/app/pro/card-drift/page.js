@@ -1,9 +1,11 @@
 import React from'react'
 import DraggableTestimonial from'@/components/Testimonial/DraggableTestimonial'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
 const page = () => {
  return (
  <>
+ <DemoHeader logoColor='#ffffff'/>
  <DraggableTestimonial
  data={testimonials}
  bgColor="bg-black"

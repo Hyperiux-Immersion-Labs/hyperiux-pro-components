@@ -143,9 +143,9 @@ export default function Button({
         {showArrow && (
           <span
             aria-hidden="true"
-            className={`pointer-events-none absolute left-full top-1/2 ml-[-0.35vw] -translate-y-1/2 max-sm:hidden ${circleWrapperClassName}`}
+            className={`pointer-events-none absolute left-full top-1/2 ml-[-0.25vw] -translate-y-1/2 max-sm:hidden ${circleWrapperClassName}`}
           >
-            <span className={`relative flex size-[2.8vw] min-h-11 min-w-11 origin-left scale-50 translate-x-[-1vw] items-center justify-center rounded-full p-2 transition-all duration-400 ease-out group-hover:scale-100 group-hover:translate-x-0 max-md:size-11 ${styles.circle} ${circleClassName}`}>
+            <span className={`relative flex size-[2.5vw] min-h-9 min-w-9 origin-left scale-50 translate-x-[-1vw] items-center justify-center rounded-full p-2 transition-all duration-400 ease-out group-hover:scale-100 group-hover:translate-x-0 max-md:size-11 ${styles.circle} ${circleClassName}`}>
               <div className="relative size-full overflow-hidden">
                 <span className="absolute left-0 top-0 flex size-full scale-50 items-center justify-center transition-all duration-400 group-hover:scale-100 group-hover:translate-x-0 group-hover:translate-y-0">
                   <ArrowUpRightIcon className={`size-full max-sm:h-10 max-sm:w-10 ${styles.icon} ${iconClassName}`} />

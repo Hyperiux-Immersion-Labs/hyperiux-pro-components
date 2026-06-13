@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -212,7 +213,7 @@ tl.fromTo(
               <br />
               with motion, interaction, and depth.
             </p>
-            <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] absolute top-[35%] left-[48%] -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
+            <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
           </div>
 
           {/* Corner Boxes */}
@@ -236,6 +237,7 @@ tl.fromTo(
           ))}
         </div>
       </section>
+      <ScrollBottom/>
     </>
   )
 }

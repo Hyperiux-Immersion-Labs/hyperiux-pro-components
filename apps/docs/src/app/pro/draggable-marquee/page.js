@@ -51,25 +51,9 @@ const page = () => {
  className="py-10"
  itemClassName="select-none"
  />
- {/* <DraggableMarquee
- items={marqueeImages}
- speed={7.2}
- gapClassName="gap-[2vw]"
- renderItem={(item) => (
- <div className="flex flex-col gap-4 w-[20vw]">
- <div className="aspect-[4/5] rounded-xl overflow-hidden">
- <Image
- src={item.src}
- alt=""
- width={500}
- height={700}
- className="w-full h-full object-cover"
- />
- </div>
- <h3 className="text-lg">{item.title}</h3>
- </div>
- )}
- /> */}
+	<div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
+		Drag the strip left or right to reveal the scenes.
+	</div>
  </section>
  </>
  );

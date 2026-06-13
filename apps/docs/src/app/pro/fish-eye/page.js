@@ -34,9 +34,12 @@ export default function page() {
             </div>
 
             <div className='size-[25vw] mt-auto max-md:mt-0 max-md:size-[30vw] relative'>
-                <FishEyeImage src="/img/dino2.png" />w
+                <FishEyeImage src="/img/dino2.png" />
             </div>
 
+            <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">
+                Pssst... Float your cursor over an image - watch the scene bulge, wobble and come alive.
+            </div>
         </div>
            </>
     )

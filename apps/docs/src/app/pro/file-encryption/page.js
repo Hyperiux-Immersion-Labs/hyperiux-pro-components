@@ -153,6 +153,10 @@ export default function Page() {
         <span>ChaCha20-Poly1305</span>
       </div>
 
+      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm max-md:hidden shadow-lg">
+       Slide a card to either edge - watch it snap into place and spill its secret.
+      </div>
+
       <style>{`
         @keyframes twinkle {
           0%, 100% { opacity: 0.1; }

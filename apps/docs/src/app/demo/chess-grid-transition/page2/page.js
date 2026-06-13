@@ -17,7 +17,7 @@ export default function page() {
 
         <div className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center">
           <ArrowFillButton
-            className="border-[#ff5f00] border text-[#ff5f00] cursor-pointer"
+            className="border-[#ff5f00] border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
             href={"/demo/chess-grid-transition"}
           />

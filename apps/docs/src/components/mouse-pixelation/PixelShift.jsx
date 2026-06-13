@@ -20,6 +20,7 @@ const INITIAL_TIME = 2;
 const BLOCK_SIZE = 1 / 35;
 const EFFECT_RADIUS = 0.3;
 const EFFECT_INTENSITY = 1.8;
+const DEFAULT_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
 const DEFAULT_NOTICE =
   "Heads up: the pixel-drift responds to cursor velocity - desktop is the sweet spot.";
 
@@ -209,8 +210,27 @@ function resolveImageSource(source) {
   return source;
 }
 
-function loadTextureBlobUrl(source) {
+function resolveTextureSource(source) {
   const imageSource = resolveImageSource(source);
+
+  if (!imageSource) return imageSource;
+  if (imageSource.startsWith("/")) return imageSource;
+
+  try {
+    const url = new URL(imageSource);
+
+    if (url.hostname === "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev") {
+      return `/api/media-proxy?url=${encodeURIComponent(imageSource)}`;
+    }
+  } catch {
+    return imageSource;
+  }
+
+  return imageSource;
+}
+
+function loadTextureBlobUrl(source) {
+  const imageSource = resolveTextureSource(source);
 
   if (!imageSource) {
     return Promise.reject(new Error("A valid image URL is required."));
@@ -237,13 +257,14 @@ function loadTextureBlobUrl(source) {
 }
 
 function Scene({ img }) {
+  const resolvedImage = resolveImageSource(img) || DEFAULT_IMAGE_URL;
   const [textureUrl, setTextureUrl] = useState(null);
 
   useEffect(() => {
     let isCancelled = false;
     let objectUrl;
 
-    loadTextureBlobUrl(img)
+    loadTextureBlobUrl(resolvedImage)
       .then((nextObjectUrl) => {
         objectUrl = nextObjectUrl;
 
@@ -264,7 +285,7 @@ function Scene({ img }) {
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [img]);
+  }, [resolvedImage]);
 
   const texture = useMemo(() => {
     if (!textureUrl) return null;
@@ -279,7 +300,7 @@ function Scene({ img }) {
       undefined,
       (error) => {
         console.warn(
-          `Unable to decode PixelShift texture: ${resolveImageSource(img)}.`,
+          `Unable to decode PixelShift texture: ${resolvedImage}.`,
           error
         );
       }
@@ -289,7 +310,7 @@ function Scene({ img }) {
     nextTexture.magFilter = THREE.LinearFilter;
 
     return nextTexture;
-  }, [img, textureUrl]);
+  }, [resolvedImage, textureUrl]);
 
   useEffect(() => {
     return () => {
@@ -304,7 +325,7 @@ function Scene({ img }) {
 
 export default function PixelShift({
   img,
-  imageUrl = img,
+  imageUrl = img || DEFAULT_IMAGE_URL,
   notice = DEFAULT_NOTICE,
 }) {
   return (

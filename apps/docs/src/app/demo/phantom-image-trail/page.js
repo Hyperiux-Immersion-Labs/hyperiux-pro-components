@@ -1,4 +1,5 @@
 import { PhantomImage } from "@/components/phantom-image-trail";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import React from "react";
 
 const images = [
@@ -14,7 +15,9 @@ const images = [
 
 const page = () => {
     return (
-        <div className="w-screen h-screen relative z-999 bg-[#f8fdfe]">
+        <>
+        <DemoHeader/>
+        <div className="w-screen h-screen relative  bg-[#f8fdfe]">
             <div className="absolute w-full h-full flex justify-center items-center">
                 <h1 className="text-[5.5vw] max-md:hidden text-stone-800">
                     Move the Mouse to See Magic
@@ -40,6 +43,7 @@ const page = () => {
                 imageMultiplier={3}
             />
         </div>
+        </>
     );
 };
 

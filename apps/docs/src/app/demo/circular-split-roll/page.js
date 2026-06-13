@@ -3,6 +3,7 @@
 import {CircularScrollShowcase} from"@/components/circular-split-roll";
 import React from"react";
 import { ReactLenis } from"lenis/react";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 const showcaseItems = [
  { title:"Vuelta", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", alt:"Vuelta lamp" },
@@ -31,6 +32,7 @@ export default function Page() {
  imageCardWidth={205}
  imageCardHeight={205}
  />
+ <ScrollBottom/>
  </main>
  </ReactLenis>
  );

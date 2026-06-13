@@ -50,7 +50,7 @@ function SectionButton({
       type="button"
       title={label}
       onClick={onClick}
-      className={`relative flex w-full items-center gap-3 rounded-full text-left text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
+      className={`relative flex w-full items-center gap-3 rounded-full text-left text22 cursor-pointer font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
         isExpanded
           ? `px-4 py-1 hover:bg-[#272727] ${isActive ? "bg-[#272727] text-white" : ""}`
           : `justify-center px-0 py-3 ${isActive ? "text-white" : ""}`
@@ -85,7 +85,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentCategory = activeCategory || searchParams.get("category") || "all";
+  const currentCategory = activeCategory || searchParams.get("category") || "featured";
   const pathSegments = pathname.split("/").filter(Boolean);
   const lastPathSegment = pathSegments[pathSegments.length - 1] || "";
   const [activeHash, setActiveHash] = useState("");
@@ -139,12 +139,10 @@ export function Sidebar({
   const freeEffects = sortedEffects.filter((effect) => effect.tier !== "pro");
   const proEffects = sortedEffects.filter((effect) => effect.tier === "pro");
   const categoryRouteSlugs = effectCategories
-    .slice(1)
     .map((category) => getEffectCategoryHref(category.id).split("/").filter(Boolean).pop());
   const isCategoryRoute = Boolean(lastPathSegment) && categoryRouteSlugs.includes(lastPathSegment);
   const isComponentRoute = pathname.startsWith("/effects/") && lastPathSegment && !isCategoryRoute;
-  const isCategoriesActive =
-    isCategoryRoute || (pathname === "/effects" && currentCategory !== "all");
+  const isCategoriesActive = isCategoryRoute || pathname === "/effects";
   const isComponentsActive = isComponentRoute;
   const isDocumentationActive = isDocsActive;
   const routeKey = `${pathname}?${currentCategory}`;
@@ -255,25 +253,6 @@ export function Sidebar({
             onClick={close}
           />
 
-          {/* {isExpanded && (
-            <div className="ml-[19px] mb-2 overflow-hidden  pl-7">
-              <Link
-                href="/effects"
-                onClick={close}
-                className={`flex items-center gap-2 rounded-full py-2 text-sm transition-colors ${
-                  pathname === "/effects" && currentCategory === "all"
-                    ? "text-white"
-                    : "text-white/42 hover:text-white/75"
-                }`}
-              >
-                {pathname === "/effects" && currentCategory === "all" && (
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-                )}
-                <span>All Effects</span>
-              </Link>
-            </div>
-          )} */}
-
           <SectionButton
             label="Categories"
             icon={Grid2X2}
@@ -293,7 +272,7 @@ export function Sidebar({
               transition={{ duration: 0.24, ease: "easeOut" }}
               className="ml-[19px] mb-4 max-h-[45vh] space-y-1 overflow-y-auto border-l border-white/12 pl-7 pr-3"
             >
-              {effectCategories.slice(1).map((category) => {
+              {effectCategories.map((category) => {
                 const count = effectCounts[category.id] || 0;
                 const isActive = currentCategory === category.id;
 
@@ -302,7 +281,7 @@ export function Sidebar({
                     key={category.id}
                     href={getEffectCategoryHref(category.id)}
                     onClick={close}
-                    className={`relative flex items-center justify-between gap-3 rounded-full py-2 text-sm transition-colors ${
+                    className={`relative flex items-center justify-between gap-3 rounded-full py-1 text-sm transition-colors ${
                       isActive ? "text-white" : "text-white/42 hover:text-white/75"
                     }`}
                   >
@@ -322,16 +301,16 @@ export function Sidebar({
           )}
           </AnimatePresence>
 
-          <SectionButton
+          {/* <SectionButton
             label="Components"
             icon={Puzzle}
             isExpanded={isExpanded}
             isOpen={openSection === "components"}
             isActive={isComponentsActive}
             onClick={() => toggleSection("components")}
-          />
+          /> */}
 
-          <AnimatePresence initial={false}>
+          {/* <AnimatePresence initial={false}>
           {isExpanded && openSection === "components" && (
             <motion.div
               key="components"
@@ -369,7 +348,7 @@ export function Sidebar({
               ))}
             </motion.div>
           )}
-          </AnimatePresence>
+          </AnimatePresence> */}
 
           <SectionButton
             label="Documentation"

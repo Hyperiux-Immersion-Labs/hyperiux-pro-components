@@ -9,9 +9,11 @@ const VARIANTS = {
   "enhanced-pixel-cube": EnhancedPixelCube,
 };
 
+const DEFAULT_PIXEL_SHIFT_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
+
 export function MousePixelation({
   variant = "pixel-circle",
-  imageUrl,
+  imageUrl = DEFAULT_PIXEL_SHIFT_IMAGE,
   ...props
 }) {
   const Component = VARIANTS[variant] ?? PixelCircle;

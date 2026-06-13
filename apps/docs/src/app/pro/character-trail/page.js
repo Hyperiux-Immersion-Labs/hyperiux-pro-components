@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import CharacterTrail from '@/components/CursorTrail/CharTrail'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
@@ -51,7 +52,7 @@ export default function Page() {
   return (
     <>
       <LenisSmoothScroll />
-
+<DemoHeader/>
       {isMobile ? (
         <Content />
       ) : (

@@ -1,4 +1,6 @@
 import { GridTunnel as InfiniteGridTunnel } from'@/components/GridTunnel/GridTunnel';
+import DemoHeader from '@/components/WebsiteComps/DemoHeader';
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom';
 import React from'react'
 
 const images = [
@@ -54,7 +56,9 @@ const images = [
 const page = () => {
  return (
  <>
+ <DemoHeader/>
  <InfiniteGridTunnel images={images}/>
+ <ScrollBottom textColor={"text-[#111111]"}/>
  </>
  )
 }

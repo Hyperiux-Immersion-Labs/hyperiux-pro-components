@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MousePointer2 } from "lucide-react";
-
 import PixelCircle from "./PixelCircle";
 import PixelShift from "./PixelShift";
 import EnhancedPixelCube from "./EnhancedPixelCube";
@@ -28,9 +26,11 @@ const VERSIONS = [
   },
 ];
 
+const DEFAULT_PIXEL_SHIFT_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
+
 export default function MousePixelation({
   variant = "pixel-shift",
-  imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  imageUrl = DEFAULT_PIXEL_SHIFT_IMAGE,
   ...props
 }) {
   const [activeVariant, setActiveVariant] = useState(

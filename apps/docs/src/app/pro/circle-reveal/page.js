@@ -1,9 +1,11 @@
 import React from'react'
 import CircleReveal from'@/components/TextAnims/CircleReveal'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
 const page = () => {
  return (
  <>
+ <DemoHeader/>
  <CircleReveal
  textColor="#111"
  Text="Some ideas only bloom when you move toward them."

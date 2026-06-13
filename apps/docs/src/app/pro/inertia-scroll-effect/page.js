@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import SmoothAnim from '@/components/ScrollAnimation/SmoothAnim'
 import { ReactLenis } from 'lenis/react'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 
 const images = {
   section1Img: '/assets/img/image06.png',
@@ -101,6 +102,7 @@ export default function Page() {
       <div className="bg-white text-black/90">
         <SmoothAnim images={images} />
       </div>
+      <ScrollBottom textColor={'text-[#545454]'}/>
     </ReactLenis>
   )
 }

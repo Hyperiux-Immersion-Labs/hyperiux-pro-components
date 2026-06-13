@@ -102,7 +102,10 @@ export default function ParticlePage() {
           />
         </EffectComposer>
       </Canvas>
-    </div>
+        <div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
+       Sweep your cursor across the canvas - leave a glittering comet trail and watch the model respond.
+        </div>
+      </div>
   );
 }
 

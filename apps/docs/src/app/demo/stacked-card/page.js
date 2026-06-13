@@ -6,7 +6,6 @@ const page = () => {
  return (
  <>
  <ReactLenis root>
-
  <State bgColor="bg-white" cards={defaultContent} />
  </ReactLenis>
   </>

@@ -5,6 +5,7 @@ import { CustomEase } from "gsap/CustomEase";
 import Image from "next/image";
 import { HoverFillLink } from "./HoverFillLink";
 import { navigationData } from "./data";
+import Link from "next/link";
 
 gsap.registerPlugin(CustomEase);
 
@@ -404,6 +405,7 @@ export function ExpandingNavbarDesktop() {
                         className={`w-full h-0.5 absolute top-[-.5vw] left-1/2 -translate-x-1/2  bg-[#1A1A1A] transition-all duration-300 opacity-0`}
                         style={{ display: "block" }}
                     />
+                    <Link href="https://www.hyperiux.com/" target="_blank" className="flex items-center gap-2">
                     <div className="w-[8vw] h-auto relative">
                         <Image
                             src="/hyperiux-wordmark.svg"
@@ -412,11 +414,7 @@ export function ExpandingNavbarDesktop() {
                             height={100}
                             className="w-full h-full object-contain brightness-0 invert"
                         />
-                    </div>
-
-                    <p className="text-[1vw] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
-                        Immersion Labs
-                    </p>
+                    </div></Link>
 
                     <div
                         onClick={toggleMenu}

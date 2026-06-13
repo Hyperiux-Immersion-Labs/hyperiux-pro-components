@@ -38,6 +38,8 @@ export function VaultHeader({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
 
   useEffect(() => {
     async function loadWishlistCount() {
@@ -74,28 +76,20 @@ export function VaultHeader({
     setIsDocumentationOpen(false);
   };
 
-  const githubLink = (
-    <Link
-      href="https://github.com/hyperiux"
-      target="_blank"
-      rel="noreferrer"
-      className="flex h-9 w-9 items-center justify-center"
-      aria-label="Open Hyperiux on GitHub"
-    >
-      <Image
-        src="/icons/github.svg"
-        alt="GitHub"
-        height={200}
-        width={200}
-        className="h-9 w-9"
-      />
-    </Link>
-  );
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+      setIsScrolled(scrollTop > 150);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-black/20 px-10 py-5 backdrop-blur-sm max-md:px-6 max-sm:px-4 max-sm:w-screen "
+        className={`fixed top-0 left-0 right-0 z-50  px-10 py-5  max-md:px-6 max-sm:px-4 max-sm:w-screen ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
@@ -178,17 +172,9 @@ export function VaultHeader({
                     pillClassName="px-4 py-2 text-xs leading-none"
                   />
                 </div>
-
-                <div className="max-sm:hidden">
-                  {githubLink}
-                </div>
               </>
             ) : (
               <>
-                <div className="max-sm:hidden">
-                  {githubLink}
-                </div>
-
                 <div className="max-sm:hidden">
                   <ProfileDropdown
                     savedCount={wishlistCount}
@@ -307,10 +293,6 @@ export function VaultHeader({
                   </kbd>
                 </button>
               )}
-
-              <div onClick={closeMobileMenu} className="flex justify-start">
-                {githubLink}
-              </div>
             </div>
 
             <div className="my-5 h-px bg-white/10" />
@@ -352,7 +334,7 @@ export function VaultHeader({
                     className="overflow-hidden"
                   >
                   <div className="max-h-72 space-y-1 overflow-y-auto pr-1">
-                    {effectCategories.slice(1).map((category) => (
+                    {effectCategories.map((category) => (
                       <Link
                         key={category.id}
                         href={getEffectCategoryHref(category.id)}

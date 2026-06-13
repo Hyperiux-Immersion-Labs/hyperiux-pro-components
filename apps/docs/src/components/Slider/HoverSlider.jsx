@@ -432,28 +432,15 @@ const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
  <section
  ref={mountRef}
  onPointerLeave={onLeave}
- className="relative isolate min-h-screen overflow-visible max-sm:px-0 bg-[#f0ede6] px-4 text-[#1e1c18] md:overflow-hidden md:px-10  py-9"
+ className="relative isolate min-h-screen overflow-visible max-sm:px-0 bg-[#f0ede6] px-4 text-[#1e1c18] md:overflow-hidden md:px-10  py-9 relative"
  style={{ cursor:"crosshair" }}
  >
- <header
- className="relative z-20 flex items-start max-sm:px-2 justify-between text-[11px]"
- style={{ color:"rgba(30,28,24,0.6)" }}
- >
- <div>1470px × 797px</div>
- <nav className="absolute left-1/2 top-0 flex -translate-x-1/2 gap- max-sm:gap-5">
- <span>Featured Works,</span>
- <span>Archive</span>
- <span>About</span>
- </nav>
- <div className="flex items-center gap-2 max-sm:hidden">
- <span className="inline-block h-2 w-2 bg-[#e63000]" />
- <span>Available June 2026</span>
- </div>
- </header>
-
- <div className="relative max-sm:px-2 z-20 mt-12 w-full overflow-x-auto pb-8 md:mt-[9vh] md:max-w-205 md:overflow-x-visible md:pb-0">
+	<div className="relative max-sm:px-2 z-20  w-full overflow-x-auto pb-8  md:max-w-205 md:overflow-x-visible md:pb-0">
+		<div className="absolute top-[1vw] right-[-40vw] z-30 bg-white/6 backdrop-blur-sm px-3 py-2 rounded-full text-[#1e1c18] text-[0.9rem] max-sm:hidden shadow-md w-[20vw]">
+			Tip: hover the list rows - watch the images move and reveal.
+		</div>
  <div
- className="grid min-w-155 gap-5 pb-4 text-[10px] uppercase tracking-widest md:min-w-0"
+ className="grid min-w-155 gap-5 pb-4 text-sm uppercase tracking-widest md:min-w-0"
  style={{
  gridTemplateColumns:"72px minmax(140px,1fr) minmax(180px,1.1fr) 64px",
  color:"rgba(30,28,24,0.6)",
@@ -483,23 +470,23 @@ const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
  borderBottom:"1px solid rgba(30,28,24,0.06)",
  cursor:"crosshair",
  transition:"color 0.15s",
- color: active ?"#e63000" :"rgba(30,28,24,0.6)",
+ color: active ?"#FF5F00" :"rgba(30,28,24,0.6)",
  }}
  >
- <div style={{ fontSize: 11, letterSpacing:"0.03em" }}>{item.id}</div>
- <div style={{ fontSize: 12, fontWeight: 500 }}>{item.title}</div>
- <div style={{ fontSize: 11 }}>{item.focus}</div>
- <div style={{ fontSize: 11 }}>{item.year}</div>
+ <div style={{ fontSize: 13, letterSpacing:"0.03em" }}>{item.id}</div>
+ <div style={{ fontSize: 15, fontWeight: 500 }}>{item.title}</div>
+ <div style={{ fontSize: 13 }}>{item.focus}</div>
+ <div style={{ fontSize: 15 }}>{item.year}</div>
  </div>
  );
  })}
  </div>
 
  <p
- className="pointer-events-none max-sm:hidden relative z-20 mt-6 max-w-[320px] text-left text-[12px] leading-relaxed md:absolute md:right-[10vw] md:top-[22vh] md:mt-0 md:text-center"
+ className="pointer-events-none max-sm:hidden z-20 max-w-[350px] text-right text-sm leading-relaxed md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0 absolute bottom-[8%] right-0"
  style={{ color:"rgba(30,28,24,0.6)" }}
  >
-A curated collection of futuristic UI experiments, motion systems, and interactive components - crafted to push modern web experiences beyond the ordinary.
+ A curated collection of futuristic UI experiments, motion systems, and interactive components — crafted to push modern web experiences beyond the ordinary.
  </p>
  </section>
  );

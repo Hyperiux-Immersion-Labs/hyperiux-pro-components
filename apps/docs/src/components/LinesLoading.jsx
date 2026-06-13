@@ -521,7 +521,7 @@ export default function LineRevealLoader({ onComplete } = {}) {
           onClick={run}
           className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 cursor-pointer rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-[11px] tracking-widest text-neutral-900"
         >
-          replay
+          Replay
         </button>
       )}
     </div>

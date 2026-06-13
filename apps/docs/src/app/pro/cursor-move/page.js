@@ -26,6 +26,9 @@ const page = () => {
           variableTextTransition="font-variation-settings 0.05s linear, transform 0.05s linear"
           variableTextTransformOrigin="bottom"
         />
+        <div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.05vw] max-md:hidden shadow-lg">
+         Glide your cursor over the screen - the crosshair dances, the letters bend, and the coordinates responds.
+        </div>
     </>
   )
 }

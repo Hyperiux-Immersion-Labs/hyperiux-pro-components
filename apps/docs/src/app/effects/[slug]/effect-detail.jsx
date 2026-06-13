@@ -16,6 +16,12 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
+import {
+  FAQContent,
+  FAQGroup,
+  FAQTitle,
+  FAQWrapper,
+} from "@/components/animated-faq";
 import { getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Button from "@/components/Reusable/Button";
@@ -24,7 +30,7 @@ import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import Footer from "@/components/Footer";
-import { LockKeyhole } from "lucide-react";
+import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 
 export function EffectDetailContent({
   slug,
@@ -43,7 +49,15 @@ export function EffectDetailContent({
 
   const videoRef = useRef(null);
   const contentRef = useRef(null);
+  const ctaSectionRef = useRef(null);
   const relatedEffectsRef = useRef(null);
+  const relatedSliderRef = useRef(null);
+  const relatedSliderDragRef = useRef({
+    isDragging: false,
+    startX: 0,
+    scrollLeft: 0,
+    hasDragged: false,
+  });
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const componentName = slug
@@ -64,6 +78,75 @@ export default function MyComponent() {
   const installCode = `npx hyperiux add ${slug}`;
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
+  const showRelatedSliderControls = relatedEffects.length > 3;
+  const pageTitle = content ? content.title?.trim() : effect.title;
+  const pageSummary = content ? content.summary?.trim() : effect.description;
+  const hasCtaSection = Boolean(
+    content?.ctaBanner?.heading || content?.ctaBanner?.buttonText
+  );
+
+  const scrollRelatedEffects = (direction) => {
+    const slider = relatedSliderRef.current;
+
+    if (!slider) return;
+
+    const scrollAmount = slider.clientWidth * 0.86;
+
+    slider.scrollBy({
+      left: direction === "next" ? scrollAmount : -scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  const handleRelatedPointerDown = (event) => {
+    const slider = relatedSliderRef.current;
+
+    if (!slider) return;
+
+    relatedSliderDragRef.current = {
+      isDragging: true,
+      startX: event.clientX,
+      scrollLeft: slider.scrollLeft,
+      hasDragged: false,
+    };
+
+    slider.setPointerCapture?.(event.pointerId);
+  };
+
+  const handleRelatedPointerMove = (event) => {
+    const slider = relatedSliderRef.current;
+    const dragState = relatedSliderDragRef.current;
+
+    if (!slider || !dragState.isDragging) return;
+
+    const deltaX = event.clientX - dragState.startX;
+
+    if (Math.abs(deltaX) > 5) {
+      dragState.hasDragged = true;
+    }
+
+    slider.scrollLeft = dragState.scrollLeft - deltaX;
+  };
+
+  const handleRelatedPointerEnd = (event) => {
+    const slider = relatedSliderRef.current;
+    const dragState = relatedSliderDragRef.current;
+
+    if (!dragState.isDragging) return;
+
+    dragState.isDragging = false;
+    slider?.releasePointerCapture?.(event.pointerId);
+  };
+
+  const handleRelatedClickCapture = (event) => {
+    const dragState = relatedSliderDragRef.current;
+
+    if (!dragState.hasDragged) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragState.hasDragged = false;
+  };
 
   const handleVideoReady = () => {
     const video = videoRef.current;
@@ -76,7 +159,7 @@ export default function MyComponent() {
     video.defaultMuted = true;
     video.loop = true;
     video.playsInline = true;
-    video.play?.().catch(() => {});
+    video.play?.().catch(() => { });
   };
 
   const previewHref = getEffectPreviewHref({
@@ -224,17 +307,21 @@ export default function MyComponent() {
                   </Copy>
                 )} */}
 
-                <HeadAnim>
-                  <h1 className="w-full max-sm:text-[4vw] font-semibold leading-[1.05] text-foreground text-[4vw] ">
-                    {content?.title || effect.title}
-                  </h1>
-                </HeadAnim>
+                {pageTitle && (
+                  <HeadAnim>
+                    <h1 className="w-full max-sm:text-[4vw] font-semibold leading-[1.05] text-foreground text80 ">
+                      {pageTitle}
+                    </h1>
+                  </HeadAnim>
+                )}
 
-                <Copy delay={0.5}>
-                  <p className="mt-4 w-full text-foreground opacity-90 text22 leading-relaxed">
-                    {content?.summary || effect.description}
-                  </p>
-                </Copy>
+                {pageSummary && (
+                  <Copy delay={0.5}>
+                    <p className="mt-4 w-full text-foreground opacity-90 text22 leading-relaxed">
+                      {pageSummary}
+                    </p>
+                  </Copy>
+                )}
                 <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
                   {(dependencies.length > 0 || effect.tier === "pro") && (
                     <div className="flex flex-wrap items-center gap-2">
@@ -302,25 +389,21 @@ export default function MyComponent() {
                   />
                 )}
               </div>
-            
+
             </div>
 
             <div className="max-sm:flex w-full max-sm:pt-4 justify-center shrink-0  hidden">
-                    <Button
-                      text="Live Preview"
-                      href={previewHref}
-                      target="_blank"
-                      variant="orange"
-                      className="shrink-0"
-                    />
-                  </div>
-
-            
-            
-
+              <Button
+                text="Live Preview"
+                href={previewHref}
+                target="_blank"
+                variant="orange"
+                className="shrink-0"
+              />
+            </div>
             {isLocked ? (
               <section className="relative my-14 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup max-sm:px-4 max-sm:py-12">
-           
+
 
                 <div className="relative z-10 mx-auto flex max-w-312 flex-col items-center">
                   <LockKeyhole className="h-20 w-20 text-white max-sm:h-16 max-sm:w-16" strokeWidth={1.5} />
@@ -368,7 +451,7 @@ export default function MyComponent() {
                   <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                     <TableOfContents
                       containerRef={contentRef}
-                      stopRef={relatedEffectsRef}
+                      stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
                       watchKey={slug}
                     />
                   </div>
@@ -379,34 +462,76 @@ export default function MyComponent() {
                   />
                 </div>
 
+                <EffectCtaSection
+                  cta={content?.ctaBanner}
+                  sectionRef={ctaSectionRef}
+                />
+
                 {relatedEffects?.length > 0 && (
                   <section ref={relatedEffectsRef} className="my-20 space-y-14">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-start justify-between gap-5 max-sm:flex-col">
                       <HeadAnim>
                         <h2 className="text-center text-[3.32vw] font-medium text-foreground">
                           Related Effects
                         </h2>
                       </HeadAnim>
-                      <div className="justify-self-end">
+
+                      <div className="fadeup flex flex-col items-end gap-5 max-sm:w-full max-sm:items-stretch">
                         <Button
                           text="Explore all effects"
                           href='/effects'
                           variant="orange"
                           className="shrink-0"
                         />
+
+                        {showRelatedSliderControls && (
+                          <div className="flex items-center justify-end gap-2 max-sm:justify-center">
+                            <button
+                              type="button"
+                              onClick={() => scrollRelatedEffects("previous")}
+                              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-[#272727] text-white transition-colors hover:bg-white hover:text-black"
+                              aria-label="Show previous related effects"
+                            >
+                              <ChevronLeft className="h-5 w-5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => scrollRelatedEffects("next")}
+                              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-[#272727] text-white transition-colors hover:bg-white hover:text-black"
+                              aria-label="Show next related effects"
+                            >
+                              <ChevronRight className="h-5 w-5" />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="rounded-xl  fadeup">
-                      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div className="rounded-xl fadeup">
+                      <div
+                        ref={relatedSliderRef}
+                        onPointerDown={handleRelatedPointerDown}
+                        onPointerMove={handleRelatedPointerMove}
+                        onPointerUp={handleRelatedPointerEnd}
+                        onPointerLeave={handleRelatedPointerEnd}
+                        onPointerCancel={handleRelatedPointerEnd}
+                        onClickCapture={handleRelatedClickCapture}
+                        onDragStart={(event) => event.preventDefault()}
+                        className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-4 active:cursor-grabbing [scrollbar-color:#CC4C04_transparent] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CC4C04]"
+                      >
                         {relatedEffects.map((relatedEffect) => (
-                          <EffectCard
+                          <div
                             key={relatedEffect.name}
-                            effect={relatedEffect}
-                          />
+                            className="min-w-[31vw] snap-start max-lg:min-w-[44vw] max-sm:min-w-[86vw]"
+                          >
+                            <EffectCard
+                              effect={relatedEffect}
+                            />
+                          </div>
                         ))}
                       </div>
                     </div>
+
                   </section>
                 )}
               </>
@@ -414,7 +539,7 @@ export default function MyComponent() {
           </section>
         </main>
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </VaultLayout>
   );
@@ -433,6 +558,31 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
     </div>
   );
 });
+
+function EffectCtaSection({ cta, sectionRef }) {
+  if (!cta?.heading && !cta?.buttonText) return null;
+
+  const buttonLink = cta.buttonLink || "#";
+  const isExternalLink = /^https?:\/\//.test(buttonLink);
+
+  return (
+    <section ref={sectionRef} className={`fadeup ${styles.ctaBanner}`}>
+      {cta.heading && (
+        <h2 className={styles.ctaBannerHeading}>{cta.heading}</h2>
+      )}
+
+      {cta.buttonText && (
+        <Button
+          text={cta.buttonText}
+          href={buttonLink}
+          target="_blank"
+          variant="white"
+          className="shrink-0"
+        />
+      )}
+    </section>
+  );
+}
 
 function SanityBodyRenderer({ body = [] }) {
   if (!body.length) return null;
@@ -510,6 +660,52 @@ function SanityBodyBlock({ block }) {
 
   if (block._type === "horizontalRule") {
     return <hr className={`fadeup ${styles.contentDivider}`} />;
+  }
+
+  if (block._type === "effectFaqAccordion") {
+    const faqItems = block.items || [];
+
+    if (!faqItems.length) return null;
+
+    return (
+      <section className={`fadeup ${styles.faqAccordion}`}>
+        {block.title && (
+          <h2 className={styles.faqAccordionTitle}>{block.title}</h2>
+        )}
+
+        <FAQGroup
+          allowMultiple={false}
+          defaultOpenItems={faqItems[0]?._key ? [faqItems[0]._key] : []}
+        >
+          <div className={styles.faqAccordionItems}>
+            {faqItems.map((item, index) => {
+              const itemId = item._key || `faq-${index}`;
+
+              return (
+                <FAQWrapper
+                  key={itemId}
+                  itemId={itemId}
+                  className={styles.faqAccordionItem}
+                  titleClassName={styles.faqAccordionQuestion}
+                  iconClassName={styles.faqAccordionIcon}
+                  iconSize={18}
+                  iconStrokeWidth={1.8}
+                >
+                  <FAQTitle className="pb-0">
+                    <h3 className={styles.faqAccordionQuestionHeading}>
+                      {item.question}
+                    </h3>
+                  </FAQTitle>
+                  <FAQContent className={styles.faqAccordionAnswer}>
+                    {item.answer}
+                  </FAQContent>
+                </FAQWrapper>
+              );
+            })}
+          </div>
+        </FAQGroup>
+      </section>
+    );
   }
 
   if (block._type === "effectTableBlock") {
@@ -917,24 +1113,24 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
     if (!root) return;
 
-   const headings = Array.from(
-  root.querySelectorAll("h2")
-).map((el, index) => {
-  if (!el.id) {
-    el.id =
-      el.textContent
-        ?.toLowerCase()
-        .replaceAll(" ", "-")
-        .replace(/[^\w-]/g, "") ||
-      `section-${index}`;
-  }
+    const headings = Array.from(
+      root.querySelectorAll("h2")
+    ).map((el, index) => {
+      if (!el.id) {
+        el.id =
+          el.textContent
+            ?.toLowerCase()
+            .replaceAll(" ", "-")
+            .replace(/[^\w-]/g, "") ||
+          `section-${index}`;
+      }
 
-  return {
-    id: el.id,
-    text: el.textContent || "",
-    level: el.tagName.toLowerCase(),
-  };
-});
+      return {
+        id: el.id,
+        text: el.textContent || "",
+        level: el.tagName.toLowerCase(),
+      };
+    });
 
     setItems(headings);
   }, [containerRef, watchKey]);
@@ -944,20 +1140,20 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
     if (!root) return;
 
-   const headings = Array.from(
-  root.querySelectorAll("h2")
-);
+    const headings = Array.from(
+      root.querySelectorAll("h2")
+    );
 
-headings.forEach((el, index) => {
-  if (!el.id) {
-    el.id =
-      el.textContent
-        ?.toLowerCase()
-        .replaceAll(" ", "-")
-        .replace(/[^\w-]/g, "") ||
-      `section-${index}`;
-  }
-});
+    headings.forEach((el, index) => {
+      if (!el.id) {
+        el.id =
+          el.textContent
+            ?.toLowerCase()
+            .replaceAll(" ", "-")
+            .replace(/[^\w-]/g, "") ||
+          `section-${index}`;
+      }
+    });
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(

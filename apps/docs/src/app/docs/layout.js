@@ -3,7 +3,6 @@ import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import DocsBody from "./DocsBody";
 import { VaultHeader } from "@/components/layout/VaultHeader";
-import Footer from "@/components/LandingPage/Footer";
 
 export default function Layout({ children }) {
   const categories = getEffectsByCategory();
@@ -23,10 +22,6 @@ export default function Layout({ children }) {
         <VaultHeader showSearch totalEffects={totalEffects} effects={registry?.items || []} />
       </React.Suspense>
       <DocsBody>{children}</DocsBody>
-      <div className="mt-[5vw]">
-      <Footer/>
-
-      </div>
       </div>
     </VaultLayout>
   );

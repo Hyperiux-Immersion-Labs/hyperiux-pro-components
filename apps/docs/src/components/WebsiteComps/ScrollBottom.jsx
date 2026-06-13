@@ -5,7 +5,7 @@ const ScrollBottom = ({textColor,
 }) => {
   return (
     <div className={`fixed left-1/2 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
-          scroll
+          Scroll
           <svg
             width="20"
             height="28"

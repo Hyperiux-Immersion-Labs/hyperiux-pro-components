@@ -226,6 +226,111 @@ const horizontalRule = defineType({
   },
 })
 
+const faqAccordionItem = defineType({
+  name: 'effectFaqAccordionItem',
+  title: 'FAQ Item',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'question',
+      title: 'Question',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'answer',
+      title: 'Answer',
+      type: 'text',
+      rows: 4,
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'question',
+      subtitle: 'answer',
+    },
+    prepare({title, subtitle}) {
+      return {
+        title: title || 'FAQ item',
+        subtitle,
+      }
+    },
+  },
+})
+
+const faqAccordion = defineType({
+  name: 'effectFaqAccordion',
+  title: 'FAQ Accordion',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Section Title',
+      type: 'string',
+      initialValue: 'Frequently Asked Questions',
+    }),
+    defineField({
+      name: 'items',
+      title: 'Questions and Answers',
+      type: 'array',
+      of: [defineArrayMember({type: 'effectFaqAccordionItem'})],
+      validation: (rule) => rule.required().min(1),
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      items: 'items',
+    },
+    prepare({title, items}) {
+      return {
+        title: title || 'FAQ Accordion',
+        subtitle: `${items?.length || 0} question${items?.length === 1 ? '' : 's'}`,
+      }
+    },
+  },
+})
+
+const ctaBanner = defineType({
+  name: 'effectCtaBanner',
+  title: 'CTA Section',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'heading',
+      title: 'Heading',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'buttonText',
+      title: 'Button Text',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'buttonLink',
+      title: 'Button Link',
+      description: 'Use an internal path like /pricing or a full URL like https://example.com',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'heading',
+      subtitle: 'buttonText',
+    },
+    prepare({title, subtitle}) {
+      return {
+        title: title || 'CTA Section',
+        subtitle,
+      }
+    },
+  },
+})
+
 const bodyBlock = defineType({
   name: 'effectBody',
   title: 'Body',
@@ -264,6 +369,7 @@ const bodyBlock = defineType({
     defineArrayMember({type: 'effectTableBlock'}),
     defineArrayMember({type: 'effectCalloutBlock'}),
     defineArrayMember({type: 'horizontalRule'}),
+    defineArrayMember({type: 'effectFaqAccordion'}),
   ],
 })
 
@@ -288,7 +394,6 @@ export const effectContent = defineType({
       name: 'title',
       title: 'Page Title',
       type: 'string',
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'summary',
@@ -307,6 +412,11 @@ export const effectContent = defineType({
       title: 'Related Effect Names',
       type: 'array',
       of: [defineArrayMember({type: 'string'})],
+    }),
+    defineField({
+      name: 'ctaBanner',
+      title: 'CTA Section',
+      type: 'effectCtaBanner',
     }),
     defineField({
       name: 'seo',
@@ -338,6 +448,9 @@ export const effectContentSchemaTypes = [
   tableBlock,
   calloutBlock,
   horizontalRule,
+  faqAccordionItem,
+  faqAccordion,
+  ctaBanner,
   bodyBlock,
   effectContent,
 ]

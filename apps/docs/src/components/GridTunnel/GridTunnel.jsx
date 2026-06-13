@@ -356,48 +356,16 @@ function Scene({ images }) {
  );
 }
 
-function Header() {
-  return (
-    <header className="pointer-events-auto absolute left-0 top-0 z-20 flex w-full items-center justify-between px-8 py-7 md:px-14">
-      <div className="flex items-center gap-2 text-xl font-bold text-black">
-        {/* <span className="text-2xl leading-none">✦</span> */}
-        <span>Hyperiux Vault</span>
-      </div>
-
-      <nav className="hidden items-center gap-10 text-base font-semibold text-slate-600 md:flex">
-        <a href="#components" className="transition hover:text-black">
-          Components
-        </a>
-        <a href="#backgrounds" className="transition hover:text-black">
-          Backgrounds
-        </a>
-        <a href="#animations" className="transition hover:text-black">
-          Animations
-        </a>
-      </nav>
-
-      <Link href="/effects">
-
-      <button
-        type="button"
-        className="rounded-full bg-black px-7 py-4 text-base font-bold text-white"
-        >
-        Browse Library →
-      </button>
-          </Link>
-    </header>
-  );
-}
 
 function HeroContent() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center px-6">
       <div className="mt-16 max-w-[40vw] text-center max-sm:max-w-[80vw]">
- <h1 className="text-[10vw] font-medium leading-[1.1]! text-center! tracking-[-0.08em] text-black">
-  Hyperiux Library.
+ <h1 className="text-[10vw] font-medium leading-[1.1]! text-center! tracking-tight text-black">
+  Hyperiux Vault.
 </h1>
 
-        <p className="mx-auto mt-15 max-w-[60vw] text-[1.3vw] font-medium leading-tight text-neutral-600 max-sm:text-[4vw] max-sm:max-w-[90vw]! max-sm:mt-10">
+        <p className="mx-auto mt-5 max-w-[60vw] text-[1.3vw] font-medium leading-tight text-neutral-600 max-sm:text-[4vw] max-sm:max-w-[90vw]! max-sm:mt-10">
           A curated collection of modern UI components, smooth animations,
           creative backgrounds and premium interactions for
           <span className="text-[#ff5f00]"> Next.js developers.</span>
@@ -405,7 +373,6 @@ function HeroContent() {
 
         <div className="pointer-events-auto mt-10 flex items-center justify-center gap-8 max-sm:flex-col">
           <Link href="/effects">
-
           <button
             type="button"
             className="rounded-full cursor-pointer bg-black px-10 py-3 text-lg text-white"
@@ -414,12 +381,6 @@ function HeroContent() {
           </button>
           </Link>
 
-          <Link href="/effects">
-
-          <button type="button" className="text-lg cursor-pointer text-black border rounded-full py-3 px-10">
-            View Showcase →
-          </button>
-          </Link>
         </div>
       </div>
     </div>
@@ -509,8 +470,6 @@ function InfiniteGridTunnel({ images = [] }) {
  <Scene images={imageList} />
  <Preload all />
  </Canvas>
-
- <Header />
  <HeroContent />  <FooterMark />
  </section>
  );

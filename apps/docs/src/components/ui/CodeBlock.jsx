@@ -45,12 +45,12 @@ export function CodeBlock({
             >
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
-                        <span className="text-lg text-white tracking-widest max-sm:text-sm">{filename || ""}</span>
+                        <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
                         <button
                             onClick={handleCopy}
                             className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground max-sm:text-xl"
                         >
-                            <Copy />
+                            <Copy size={16} />
                         </button>
                     </div>
                 ) : (
@@ -63,7 +63,7 @@ export function CodeBlock({
                 )}
                 <div className="relative">
                     <pre
-                        className={`overflow-x-auto bg-[#272727] text-sm ${
+                        className={`overflow-x-auto bg-[#272727] text-xs ${
                             shouldShowHeader ? "max-sm:text-xs" : "max-sm:text-sm"
                         }`}
                     >

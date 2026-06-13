@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -20,6 +20,7 @@ const INITIAL_TIME = 2;
 const BLOCK_SIZE = 1 / 35;
 const EFFECT_RADIUS = 0.3;
 const EFFECT_INTENSITY = 1.8;
+const DEFAULT_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
 const DEFAULT_NOTICE =
   "Heads up: the pixel-drift responds to cursor velocity - desktop is the sweet spot.";
 
@@ -202,18 +203,110 @@ function PlaneWithShader({ texture }) {
   );
 }
 
-function Scene({ imageUrl }) {
-  const texture = useMemo(
-    () => new THREE.TextureLoader().load(imageUrl),
-    [imageUrl]
-  );
+function resolveImageSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
+}
+
+function loadTextureBlobUrl(source) {
+  const imageSource = resolveImageSource(source);
+
+  if (!imageSource) {
+    return Promise.reject(new Error("A valid image URL is required."));
+  }
+
+  return fetch(imageSource, {
+    mode: "cors",
+    credentials: "omit",
+    cache: "no-store",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Image request failed with ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch((error) => {
+      throw new Error(
+        `Unable to load PixelShift texture: ${imageSource}. Current origin is ${window.location.origin}. Make sure the public URL allows CORS for this site. ${error?.message || ""}`
+      );
+    });
+}
+
+function Scene({ img }) {
+  const resolvedImage = resolveImageSource(img) || DEFAULT_IMAGE_URL;
+  const [textureUrl, setTextureUrl] = useState(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+    let objectUrl;
+
+    loadTextureBlobUrl(resolvedImage)
+      .then((nextObjectUrl) => {
+        objectUrl = nextObjectUrl;
+
+        if (!isCancelled) {
+          setTextureUrl(nextObjectUrl);
+        }
+      })
+      .catch((error) => {
+        if (!isCancelled) {
+          console.warn(error?.message || error);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [resolvedImage]);
+
+  const texture = useMemo(() => {
+    if (!textureUrl) return null;
+
+    const loader = new THREE.TextureLoader();
+
+    loader.setCrossOrigin("anonymous");
+
+    const nextTexture = loader.load(
+      textureUrl,
+      undefined,
+      undefined,
+      (error) => {
+        console.warn(
+          `Unable to decode PixelShift texture: ${resolvedImage}.`,
+          error
+        );
+      }
+    );
+
+    nextTexture.minFilter = THREE.LinearFilter;
+    nextTexture.magFilter = THREE.LinearFilter;
+
+    return nextTexture;
+  }, [resolvedImage, textureUrl]);
+
+  useEffect(() => {
+    return () => {
+      texture?.dispose();
+    };
+  }, [texture]);
+
+  if (!texture) return null;
 
   return <PlaneWithShader texture={texture} />;
 }
 
-export function PixelShift({
+export default function PixelShift({
   img,
-  imageUrl = img,
+  imageUrl = img || DEFAULT_IMAGE_URL,
   notice = DEFAULT_NOTICE,
 }) {
   return (
@@ -226,10 +319,8 @@ export function PixelShift({
 
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <color attach="background" args={["#000000"]} />
-        <Scene imageUrl={imageUrl} />
+        <Scene img={imageUrl} />
       </Canvas>
     </div>
   );
 }
-
-export default PixelShift;

@@ -127,6 +127,12 @@ export async function getAllSanityEffectEntries() {
 //     secondaryKeywords?: string[],
 //   },
 //   relatedEffectNames?: string[],
+//   ctaBanner?: {
+//     heading: string,
+//     buttonText: string,
+//     buttonLink: string,
+//   },
 //   body: PortableText-like array with text blocks plus custom objects:
-//     effectImage, effectCodeBlock, effectTableBlock, effectCalloutBlock
+//     effectImage, effectCodeBlock, effectTableBlock, effectCalloutBlock,
+//     horizontalRule, effectFaqAccordion
 // }

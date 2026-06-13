@@ -252,7 +252,7 @@ const Page = () => {
 
  <div className="grid gap-6 xl:grid-cols-2 xl:items-center">
  <ParallaxAnim
- src="/assets/nature/nature01.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg"
  wrapperClassName="h-[60vw] w-full overflow-hidden rounded-3xl sm:h-[34vw] xl:h-[28vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />
@@ -317,7 +317,7 @@ const Page = () => {
  </div>
 
  <ParallaxAnim
- src="/assets/nature/nature02.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
  wrapperClassName="mt-10 h-[40vw] w-full overflow-hidden rounded-3xl sm:h-[34vw] xl:h-[28vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />
@@ -463,7 +463,7 @@ const Page = () => {
  <div className="relative">
  <div className="relative -rotate-2 rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-sm sm:p-5">
  <ParallaxAnim
- src="/assets/nature/nature06.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg"
  wrapperClassName="h-[60vw] w-full overflow-hidden rounded-3xl sm:h-[34vw] lg:h-[28vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />

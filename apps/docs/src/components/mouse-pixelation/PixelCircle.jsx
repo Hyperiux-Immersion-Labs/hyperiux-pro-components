@@ -134,7 +134,7 @@ const DEFAULT_SECOND_LINE = {
 const DEFAULT_MOBILE_NOTICE =
   "Pro tip: this one's built for a mouse - try it on desktop for the cleanest pixel trail.";
 const DEFAULT_DESCRIPTION =
-  "Hyperiux is a modern UI animation library crafted for developers who want stunning interactions, smooth transitions, and production-ready components.";
+  "The Vault is a curated collection of production-ready UI effects built to help developers ship polished interactions faster.";
 
 function PixelCirclesPlane() {
   const materialRef = useRef(null);
@@ -295,7 +295,7 @@ export default function Pixelation({
           {mobileNotice}
         </p>
 
-        <p className="w-[30%] text-[1.5vw] text-justify text-white max-md:mt-[5vw] max-md:w-[80%] max-md:text-[3vw] max-sm:w-[90%] max-sm:text-[5vw]">
+        <p className="w-[30%] text-[1.5vw] text-white max-md:mt-[5vw] max-md:w-[80%] max-md:text-[3vw] max-sm:w-[90%] max-sm:text-[5vw]">
           {description}
         </p>
       </section>

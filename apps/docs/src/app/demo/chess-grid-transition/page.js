@@ -17,7 +17,7 @@ export default function page() {
 
         {/* Buttons */}
         <div className="mt-12">
-          <ArrowFillButton className="border-[#ff5f00] border text-[#ff5f00] cursor-pointer" btnText={"Click here"} href={"/demo/chess-grid-transition/page2"}  />
+          <ArrowFillButton className="border-[#ff5f00] border text-[#ffffff] cursor-pointer" btnText={"Click here"} href={"/demo/chess-grid-transition/page2"}  />
         </div>
       </div>
     </section>
