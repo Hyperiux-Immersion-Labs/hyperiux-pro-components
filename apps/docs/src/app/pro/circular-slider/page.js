@@ -1,6 +1,7 @@
 import React from'react'
 import CircularSlider from'@/components/CardsStack/CircularSlider'
 import { ReactLenis } from'lenis/react'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 
 const page = () => {
  return (
@@ -12,6 +13,7 @@ const page = () => {
  para="Built for motion, crafted for experience."
  data={data}
 />
+<ScrollBottom className="bottom-[3.5%]" />
  </ReactLenis>
  </>
  )

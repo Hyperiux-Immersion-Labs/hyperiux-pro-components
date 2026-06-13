@@ -34,7 +34,7 @@ export default function page() {
             </div>
 
             <div className='size-[25vw] mt-auto max-md:mt-0 max-md:size-[30vw] relative'>
-                <FishEyeImage src="/img/dino2.png" />
+                <FishEyeImage src="/img/dino2.png" />w
             </div>
 
         </div>

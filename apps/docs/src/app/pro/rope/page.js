@@ -5,8 +5,8 @@ export default function page() {
  <div className='h-screen w-full bg-[#F1EADE] text-[#bda985] overflow-hidden'>
  <RopeCursor ropeColor='#bda985' ropeWidth={2} ropeOpacity={0.6} segmentLength={0} segmentCount={8} />
  <div className='flex items-center max-sm:hidden justify-center flex-col h-full pointer-events-none'>
- <p className='text-[bda985] text-lg text-center'>Rope Cursor</p>
- <p className='opacity-90 text-xs text-center'>(Move your cursor around to see the rope)</p>
+ <p className='text-[bda985] text-[4vw] text-center'>Rope Cursor</p>
+ <p className='opacity-90 text-[2.5vw] text-center'>(Move your cursor around to see the rope)</p>
  </div>
  <div className='items-center  max-sm:flex hidden justify-center gap-5 flex-col h-full pointer-events-none'>
         

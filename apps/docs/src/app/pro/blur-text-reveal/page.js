@@ -132,6 +132,7 @@ const Page = () => {
 
  <div className="max-w-4xl">
  <BlurText
+ once={false}
  variant="fade"
  className="block text-6xl font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl"
  >
@@ -258,6 +259,7 @@ const Page = () => {
 
  <div className="flex flex-col gap-8">
  <BlurText
+ once={false}
  variant="up"
  className="block text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
  >
@@ -293,6 +295,7 @@ const Page = () => {
 
  <div className="flex h-full flex-col gap-6">
  <BlurText
+ once={false}
  variant="down"
  className="block max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
  >
@@ -393,6 +396,7 @@ const Page = () => {
  </div>
 
  <BlurText
+ once={false}
  variant="left"
  className="block text-5xl font-black uppercase leading-none tracking-tight text-black sm:text-6xl"
  >
@@ -466,6 +470,7 @@ const Page = () => {
 
  <div className="mt-5 rounded-3xl bg-black/70 p-5 sm:p-7">
  <BlurText
+ once={false}
  variant="right"
  className="block text-4xl font-black uppercase leading-tight tracking-tight sm:text-5xl"
  >

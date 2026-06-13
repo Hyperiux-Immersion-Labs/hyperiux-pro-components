@@ -263,6 +263,9 @@ export default function Page() {
  onMouseMove={handleMouseMove}
  >
  <p className='absolute text-[#3D1C0C] text-[8vw] w-full text-center font-bold left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>COFFEE BEANS</p>
+ <p className="pointer-events-none absolute bottom-8 left-1/2 z-10 hidden max-w-[520px] -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-[#ffd4a3]/80 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] sm:block">
+   Stir the air with your cursor - the beans drift, and the light follows like warm espresso steam.
+ </p>
  <div className="absolute max-sm:block hidden top-12 left-1/2 -translate-x-1/2 text-center w-full z-10 pointer-events-none">
    <p className="font-serif text-[#ffd4a3] opacity-80 text-[6vw] leading-none">
      Touch to see effect

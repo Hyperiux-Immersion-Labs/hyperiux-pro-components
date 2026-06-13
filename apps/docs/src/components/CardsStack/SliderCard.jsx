@@ -5,7 +5,7 @@ import { ArrowRight } from"lucide-react";
 const SliderCard = ({ heading, text, bgColor, textColor }) => {
  return (
  <div
- className="h-full w-full rounded-[1.5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-sm:gap-6 hover:shadow-xl transition-all duration-500 cursor-pointer px-[10%] max-sm:px-6 py-20 max-sm:py-10"
+ className="h-full w-full rounded-[1.5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-sm:px-6 py-20 max-sm:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
@@ -26,7 +26,7 @@ const SliderCard = ({ heading, text, bgColor, textColor }) => {
  </p>
  </div>
 
- <div className="mt-[1vw] max-sm:mt-2 flex items-center justify-center gap-[0.5vw] max-sm:gap-2 group/btn">
+ <div className="mt-[1vw] max-sm:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-sm:gap-2 group/btn">
  <span
  className="text-[1vw] max-sm:text-xs uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}

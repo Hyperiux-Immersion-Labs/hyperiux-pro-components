@@ -84,6 +84,9 @@ export default function DraggableVideo() {
     <div className="relative w-full h-screen overflow-hidden  bg-black">
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] px-6 text-right font-mono text-sm leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-sm:bottom-6 max-sm:right-4 max-sm:text-xs z-99999">
+          Drag the floating canvases - each window steals a different slice of the same moving dream.
+        </p>
       {/* Hidden video element - single source for all masks */}
       <video
         ref={setVideoRef}

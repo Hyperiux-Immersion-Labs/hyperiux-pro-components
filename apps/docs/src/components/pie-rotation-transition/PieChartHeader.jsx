@@ -7,8 +7,8 @@ export function PieChartHeader() {
  const pathname = usePathname();
 
  const links = [
- { href:"/demo/pie-rotation-transition", label:"Page 1" },
- { href:"/demo/pie-rotation-transition/page2", label:"Page 2" },
+ { href:"/pro/pie-rotation-transition", label:"Page 1" },
+ { href:"/pro/pie-rotation-transition/page2", label:"Page 2" },
  ];
 
  return (

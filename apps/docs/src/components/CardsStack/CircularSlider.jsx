@@ -100,7 +100,7 @@ const CircularSlider = ({ heading, para, data = [] }) => {
  <div
  key={i}
  className="wheel-card absolute top-0 left-0"
- style={{ width:"23vw", height:"26vw", cursor:"pointer" }}
+ style={{ width:"23vw", height:"26vw" }}
  >
  <SliderCard
  heading={product.heading}

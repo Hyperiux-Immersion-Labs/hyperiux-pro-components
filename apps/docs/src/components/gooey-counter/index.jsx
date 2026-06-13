@@ -373,7 +373,7 @@ export function GooeyCounter() {
    <canvas ref={canvasRef} className=" !h-[75%] !w-[80%] max-sm:!w-full max-sm:!h-full max-md:!w-[80%] max-md:!h-[60%] top-[53%] left-1/2 -translate-y-1/2 absolute -translate-x-1/2  "  />
    <button
     onClick={() => stateRef.current?.start?.()}
-    className="absolute bottom-8 left-1/2 -translate-x-1/2 py-[0.7vw] px-[1.5vw] text-black bg-white rounded-[0.4vw] max-md:px-[5vw] max-md:py-[1.5vw] max-md:rounded-[1.5vw] max-md:bottom-24 max-sm:text-[4.5vw] max-md:text-[3vw]"
+    className="absolute bottom-8 cursor-pointer left-1/2 -translate-x-1/2 py-[0.7vw] px-[1.5vw] text-black bg-white rounded-[0.4vw] max-md:px-[5vw] max-md:py-[1.5vw] max-md:rounded-[1.5vw] max-md:bottom-24 max-sm:text-[4.5vw] max-md:text-[3vw]"
     
    >
     Reset

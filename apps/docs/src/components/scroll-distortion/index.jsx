@@ -151,6 +151,7 @@ export default function ScrollDistortion({
   const textRefs = useRef([]);
   const [objectUrls, setObjectUrls] = useState(null);
   const [decodedUrls, setDecodedUrls] = useState(() => new Set());
+  const [isSceneReady, setIsSceneReady] = useState(false);
 
   const currentIndexRef = useRef(0);
   const targetIndexRef = useRef(0);
@@ -177,6 +178,8 @@ export default function ScrollDistortion({
         nextObjectUrls = urls;
 
         if (!isCancelled) {
+          setDecodedUrls(new Set());
+          setIsSceneReady(false);
           setObjectUrls(urls);
         }
       })
@@ -210,10 +213,6 @@ export default function ScrollDistortion({
   };
 
   useEffect(() => {
-     gsap.set(".text-container",{
-        opacity: 1,
-      })
-
     const containerElement = containerRef.current;
 
     if (!containerElement || sections.length === 0 || !areImagesDecoded) {
@@ -488,6 +487,7 @@ export default function ScrollDistortion({
 
     let animationFrameId = 0;
     renderScene();
+    setIsSceneReady(true);
 
     const onResize = () => {
       const nextWidth = window.innerWidth;
@@ -578,9 +578,21 @@ export default function ScrollDistortion({
         )}
       </div>
 
+      {(objectUrls?.[0] || sections[0]?.src) && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            isSceneReady ? "opacity-0" : "opacity-100"
+          }`}
+          src={objectUrls?.[0] || resolveImageSource(sections[0].src)}
+          alt=""
+          decoding="async"
+        />
+      )}
+
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden opacity-0 text-container">
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden text-container">
         {splitSections.map((section, sectionIndex) => (
           <h1
             key={`${section.text}-${sectionIndex}`}
@@ -597,7 +609,9 @@ export default function ScrollDistortion({
 
                   textRefs.current[sectionIndex][charIndex] = element;
                 }}
-                className="inline-block will-change-transform"
+                className={`inline-block will-change-transform ${
+                  sectionIndex === 0 ? "" : "translate-y-full opacity-0"
+                }`}
               >
                 {char === " " ? "\u00A0" : char}
               </span>

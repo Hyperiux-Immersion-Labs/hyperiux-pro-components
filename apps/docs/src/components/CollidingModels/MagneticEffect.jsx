@@ -61,8 +61,11 @@ help bold brands stand apart
         </div>
       {/* Canvas Container */}
       <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
-        <div className="h-[90%] w-full overflow-hidden rounded-2xl bg-black">
+        <div className="relative h-[90%] w-full overflow-hidden rounded-2xl bg-black">
           <Scene />
+          <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 max-w-[520px] -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-sm:bottom-4 max-sm:text-xs">
+            Move through the field and let the models collide - click to change their spark.
+          </p>
         </div>
       </div>
     </div>

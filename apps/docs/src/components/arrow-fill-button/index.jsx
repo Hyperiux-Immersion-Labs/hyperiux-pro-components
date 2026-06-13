@@ -64,7 +64,7 @@ export function ArrowFillButton({
 
         <div className="flex w-full items-center gap-[1vw] whitespace-nowrap pb-px max-md:gap-[2vw] max-sm:gap-[2.5vw]">
           <span
-            className={`absolute right-[0.7vw] max-md:right-[2.2vw] top-1/2 inline-flex h-[var(--icon-circle)] min-h-[var(--icon-circle)] w-[var(--icon-circle)] min-w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow)  max-sm:right-[2.5vw] ${isReady ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover)" : ""}`}
+            className={`absolute right-[1.05vw] max-md:right-[2.2vw] top-1/2 inline-flex h-[var(--icon-circle)] min-h-[var(--icon-circle)] w-[var(--icon-circle)] min-w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow)  max-sm:right-[2.5vw] ${isReady ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover)" : ""}`}
             aria-hidden="true"
           >
             <ArrowRight

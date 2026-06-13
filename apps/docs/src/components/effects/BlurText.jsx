@@ -18,9 +18,10 @@ export function BlurText({
   blur = 10,
   className = "",
   variant = "fade",
+  once = true,
 }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once, margin: "-100px" });
 
   const { x, y } = variantMap[variant] ?? variantMap.fade;
   const words = typeof children === "string" ? children.split(" ") : [children];

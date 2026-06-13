@@ -26,7 +26,7 @@ export function Tunnel() {
   onClick={handleReplay}
   className={`absolute top-[calc(50%+5.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
     rounded-full border border-black/10 bg-white/60 px-5 py-2
-    text-sm font-medium text-black backdrop-blur-md
+    text-sm font-medium text-black backdrop-blur-md cursor-pointer
 
     transition-all duration-300
     hover:scale-105 hover:border-black/20 hover:bg-white/80

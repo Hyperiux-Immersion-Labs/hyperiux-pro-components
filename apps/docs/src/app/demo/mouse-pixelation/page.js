@@ -6,7 +6,7 @@ const page = () => {
   return (
     <>
     <DemoHeader logoColor="white"/>
-    <MousePixelation variant={"enhanced-pixel-cube"} imageUrl={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-16.jpg"}/>
+    <MousePixelation variant={"pixel-circle"} imageUrl={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-16.jpg"}/>
   </>
   )
 }

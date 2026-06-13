@@ -388,9 +388,52 @@ function createFluid() {
   };
 }
 
+function resolveMediaSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
+}
+
+function isRemoteUrl(source) {
+  return /^https?:\/\//i.test(source);
+}
+
+async function loadVideoSource(source) {
+  const videoSource = resolveMediaSource(source);
+
+  if (!videoSource) {
+    throw new Error("A valid video URL is required.");
+  }
+
+  if (!isRemoteUrl(videoSource)) {
+    return {
+      src: videoSource,
+      revoke: () => {},
+    };
+  }
+
+  const response = await fetch(videoSource, {
+    mode: "cors",
+    credentials: "omit",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Video request failed with ${response.status}`);
+  }
+
+  const objectUrl = URL.createObjectURL(await response.blob());
+
+  return {
+    src: objectUrl,
+    revoke: () => URL.revokeObjectURL(objectUrl),
+  };
+}
+
 /* ── component ─────────────────────────────────────────────────── */
 export default function BinaryEffect({
-  videoSrc = "/assets/videos/enigma-video.mp4",
+  videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 
   /**
    * Lower number = bigger binary characters.
@@ -426,6 +469,7 @@ export default function BinaryEffect({
 
   colorBoost = 1.4,
   disableMobileCursor = true,
+  cursorHint = "Move your cursor to see the binary fluid distortion effect.",
   showMobileMessage = true,
   className = "",
 }) {
@@ -445,13 +489,35 @@ export default function BinaryEffect({
 
     const video = document.createElement("video");
 
-    video.src = videoSrc;
+    video.crossOrigin = "anonymous";
     video.loop = true;
     video.muted = true;
     video.autoplay = true;
     video.playsInline = true;
 
-    video.play().catch(() => {});
+    let isDisposed = false;
+    let revokeVideoSource = () => {};
+
+    loadVideoSource(videoSrc)
+      .then(({ src, revoke }) => {
+        if (isDisposed) {
+          revoke();
+          return;
+        }
+
+        revokeVideoSource = revoke;
+        video.src = src;
+        video.load();
+        video.play().catch(() => {});
+      })
+      .catch((error) => {
+        if (!isDisposed) {
+          console.warn(
+            `Unable to load BinaryEffect video: ${resolveMediaSource(videoSrc)}. Remote WebGL videos require CORS headers.`,
+            error
+          );
+        }
+      });
 
     let program;
 
@@ -735,6 +801,7 @@ export default function BinaryEffect({
     render();
 
     return () => {
+      isDisposed = true;
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
 
@@ -743,6 +810,7 @@ export default function BinaryEffect({
       video.pause();
       video.removeAttribute("src");
       video.load();
+      revokeVideoSource();
 
       gl.deleteTexture(videoTex);
       gl.deleteTexture(fluidTex);
@@ -767,6 +835,10 @@ export default function BinaryEffect({
         ref={ref}
         className={`absolute inset-0 block h-full w-full bg-black ${className}`.trim()}
       />
+
+      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-sm:hidden">
+        {cursorHint}
+      </p>
 
       {showMobileMessage && (
         <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center text-xs text-white/50 max-sm:block">

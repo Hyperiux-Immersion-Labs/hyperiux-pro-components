@@ -199,7 +199,12 @@ export default function ButterfliesPage() {
  <color attach="background" args={['#EAEAE9']} />
  <ButterflyTrail />
  </Canvas>
- <h1 className='font-serif text-4xl text-center absolute text-zinc-600 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>ʚଓ Unseen Butterflies ʚଓ</h1>
+ <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 text-center sm:block">
+  <h1 className='font-serif text-4xl text-zinc-600'>ʚଓ Unseen Butterflies ʚଓ</h1>
+  <p className="mt-4 font-serif text-md italic tracking-wide text-zinc-500">
+   Stir the air with your cursor - the butterflies will follow.
+  </p>
+ </div>
  <div className="absolute max-sm:block hidden bottom-12 left-1/2 -translate-x-1/2 text-center">
   <p className="font-serif text-zinc-600 text-[6vw] leading-none">
     Tap to reveal the effect 

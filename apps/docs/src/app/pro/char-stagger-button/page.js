@@ -1,19 +1,42 @@
-import CharStaggerLinkBtn from"@/components/Buttons/LinkButtons/CharStaggerLinkBtn/CharStaggerLinkBtn";
-import { ButtonDemoShell } from"@/components/Buttons/ButtonDemoShell";
+import CharStaggerLinkBtn from "@/components/Buttons/LinkButtons/CharStaggerLinkBtn/CharStaggerLinkBtn";
+import Image from "next/image";
 
 export default function Page() {
- return (
- <ButtonDemoShell
- title="Character Stagger Button"
- backgroundSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
- >
- <CharStaggerLinkBtn
- href="#"
- showLine
- text="Hover me"
- hoverColor="#ff6b00"
- className="text-[2vw] max-sm:text-[4.5vw]"
- />
- </ButtonDemoShell>
- );
+    return (
+        <div className="h-screen w-screen flex items-center justify-center relative">
+            <div className="space-y-20 relative z-10 text-center -mt-20">
+                <div className="space-y-4">
+                    <p className="text-xs max-sm:text-sm max-md:text-base uppercase tracking-[0.4em] text-white/60">
+                        Hyperiux Button Demo
+                    </p>
+                    <h1 className="text-5xl font-medium max-sm:text-4xl">Character Stagger Button</h1>
+                </div>
+
+                <div className="">
+                    <CharStaggerLinkBtn
+                        href="#"
+                        showLine
+                        text="Hover me"
+                        hoverColor="#ff6b00"
+                        className="text-[2vw] max-sm:text-[4.5vw] scale-150"
+                    />
+                </div>
+            </div>
+
+
+
+            <div className="fixed inset-0">
+                <Image
+                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
+                    alt="bg image"
+                    title="Arrow Fill Button"
+                    className="h-full w-full object-cover"
+                    width={1920}
+                    height={1080}
+                    priority
+                />
+                <div className="absolute inset-0 bg-black/70" />
+            </div>
+        </div>
+    );
 }

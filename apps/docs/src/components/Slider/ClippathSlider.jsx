@@ -5,7 +5,7 @@ import SplitText from "gsap/dist/SplitText";
 
 gsap.registerPlugin(SplitText);
 
-export function ClippathSlider({ slides = [], cursorBg = "#d9f99d", cursorLineColor = "#000", }) {
+export function ClippathSlider({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextSlideIndex, setNextSlideIndex] = useState(0);
@@ -553,35 +553,14 @@ export function ClippathSlider({ slides = [], cursorBg = "#d9f99d", cursorLineCo
         style={{ zIndex: 50 }}
       >
         {/* NAME (left center) */}
-        <h2 className="absolute left-[5%] max-sm:left-[1%] top-[50%] max-md:text-[3vw] w-[20vw] max-sm:w-[27vw] text-right -translate-y-1/2 text-[1.7vw] max-sm:text-[4vw] font-medium about-slider-text ">
+        <h2 className="absolute left-[5%] max-sm:left-[1%] top-[50%] max-md:text-[3vw] w-[20vw] max-sm:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-sm:text-[4vw] font-medium about-slider-text">
           {slides[currentSlide].name}
         </h2>
-
-        {/* SMALL DESCRIPTION (top right) */}
-        <div className="absolute right-[3%] top-[8%] max-sm:top-[13%] max-sm:right-[8%] max-sm:text-[3.2vw] max-md:text-[3vw] max-md:w-[80%] w-[22%] text-[1.1vw] leading-[1.4] opacity-90 about-slider-text">
-
-  <h3 className="mb-4 uppercase tracking-[0.25em] text-white/50 text-[0.8vw] max-md:text-[2.8vw]">
-    Capabilities
-  </h3>
-
-  <div className="flex flex-col gap-2">
-    {slides[currentSlide].tags?.map((tag, i) => (
-      <div key={i} className="flex items-center gap-3">
-        <span className="h-1 w-1 rounded-full bg-current shrink-0" />
-
-        <p className="text-[1.2vw] max-md:text-[4.5vw] font-light about-slider-text leading-[1.2]">
-          {tag}
-        </p>
-      </div>
-    ))}
-  </div>
-
-</div>
-
+        
         {/* TAGS (right middle stacked) */}
-        <div className="absolute right-[5%] top-[55%] max-sm:top-[50%] text-center w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
+        <div className="absolute right-[5%] top-[50%] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
          
-            <p className="text-[1.5vw] max-md:text-[4vw] font-light about-slider-text">
+            <p className="text-[1.5vw] max-md:text-[4vw] font-light about-slider-text text-shadow-black">
                {slides[currentSlide].description}
             </p>
        
@@ -616,6 +595,12 @@ export function ClippathSlider({ slides = [], cursorBg = "#d9f99d", cursorLineCo
 
         </div>
       </div>
+
+      {clueText && (
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-md max-sm:bottom-6 max-sm:text-xs">
+          {clueText}
+        </p>
+      )}
     </section>
   );
 }
