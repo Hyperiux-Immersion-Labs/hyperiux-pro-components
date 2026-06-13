@@ -12,21 +12,21 @@ const BOXES = [
     {
         id: "block-top-layer-1",
         styles: "w-[37.5%]",
-        img: '/img/__mock__/1.png',
+        img: '/video/1.mp4',
         number: "01",
         label: "Scroll Effects"
     },
     {
         id: "block-top-layer-2",
         styles: "w-[25%]",
-        img: '/img/__mock__/5.png',
+        img: '/video/2.mp4',
         number: "02",
         label: "Hover Reveal"
     },
     {
         id: "block-top-layer-3",
         styles: "w-[37.5%]",
-        img: '/img/__mock__/6.png',
+        img: '/video/3.mp4',
         number: "03",
         label: "Parallax Layers"
     }
@@ -36,21 +36,21 @@ const BOXES_BOTTOM = [
     {
         id: "block-bottom-layer-1",
         styles: "w-[20%]",
-        img: '/img/__mock__/2.png',
+        img: '/video/6.mp4',
         number: "04",
         label: "Transitions"
     },
     {
         id: "block-bottom-layer-2",
         styles: "w-[50%]",
-        img: '/img/__mock__/3.png',
+        img: '/video/1.mp4',
         number: "05",
         label: "Text Split"
     },
     {
         id: "block-bottom-layer-3",
         styles: "w-[30%]",
-        img: '/img/__mock__/4.png',
+        img: '/video/6.mp4',
         number: "06",
         label: "GSAP Magic"
     }

@@ -168,7 +168,7 @@ export default function AgencyProof() {
     return (
         <section
             id="AgencyProof"
-            className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center"
+            className="h-fit overflow-x-hidden relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-sm:hidden"
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 

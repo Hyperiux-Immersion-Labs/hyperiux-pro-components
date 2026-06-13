@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { useLenis } from 'lenis/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import gsap from 'gsap'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
@@ -46,7 +46,7 @@ export default function Navbar() {
     return (
         <nav
             ref={navbarRef}
-            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
+            className="fixed max-sm:hidden overflow-x-hidden top-0 left-0 z-999 backdrop-blur-sm flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
         >
             <Link href="/">
                 <HyperiuxLogo className="w-[10vw] h-auto text-primary" />
@@ -67,13 +67,18 @@ export default function Navbar() {
                             onMouseEnter={() => setHoveredIndex(index)}
                         >
                             {label}
-                            {isHighlighted && (
-                                <motion.span
-                                    layoutId="nav-pill"
-                                    className="absolute inset-0 bg-primary rounded-full -z-10"
-                                    transition={{ type: 'spring', stiffness: 180, damping: 20 }}
-                                />
-                            )}
+                            <AnimatePresence>
+                                {isHighlighted && (
+                                    <motion.span
+                                        layoutId="nav-pill"
+                                        className="absolute inset-0 bg-primary rounded-full -z-10"
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ type: 'spring', stiffness: 180, damping: 20 }}
+                                    />
+                                )}
+                            </AnimatePresence>
                         </Link>
                     )
                 })}

@@ -2,7 +2,7 @@
 .self-padd {
   padding: 0 3.5vw;
 }
-.text18{
+.text18 {
   font-size: 1vw;
 }
 .text22 {
@@ -31,28 +31,45 @@
   font-weight: 400;
 }
 .text140 {
-  font-size: 7.2vw;
+  font-size: 6.8vw;
   line-height: 1.1;
   font-weight: 400;
 }
-.text180{
+.text180 {
   font-size: 9vw;
   line-height: 1.1;
   font-weight: 400;
 }
 
-
 @media (max-width: 640px) {
+  .self-padd {
+    padding: 0 8vw;
+  }
+  .text80 {
+    font-size: 7vw;
+  }
+  .text140 {
+    font-size: 10vw;
+  }
   .text110 {
     font-size: 8vw;
   }
   .text20 {
-  font-size: 4vw;
-}
-.text18{
-  font-size: 3.8vw;
-}
-.text22 {
-  font-size: 4.5vw;
-}
+    font-size: 4vw;
+  }
+  .text24 {
+    font-size: 3.9vw;
+  }
+  .text18 {
+    font-size: 3.8vw;
+  }
+  .text22 {
+    font-size: 4.5vw;
+  }
+  .text34 {
+    font-size: 4.5vw;
+  }
+  .text32 {
+    font-size: 4.2vw;
+  }
 }

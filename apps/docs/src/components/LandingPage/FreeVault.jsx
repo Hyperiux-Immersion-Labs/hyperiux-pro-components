@@ -29,7 +29,9 @@ export default function FreeVault() {
     const waitlistRef = useRef(null);
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const mm = gsap.matchMedia();
+
+        mm.add("(min-width: 641px)", () => {
             gsap.fromTo(
                 [freeRef.current, waitlistRef.current],
                 {
@@ -49,7 +51,7 @@ export default function FreeVault() {
             );
         });
 
-        return () => ctx.revert();
+        return () => mm.revert();
     }, []);
 
     useEffect(() => {
@@ -165,39 +167,39 @@ export default function FreeVault() {
     return (
         <section
             id="FreeVault"
-            className="h-fit relative z-10 bg-foreground text-background py-[10vw]! gap-[2vw] flex-col w-full px-[5vw] flex items-center justify-center"
+            className="h-fit relative z-10 bg-foreground text-background py-[10vw]! max-sm:py-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full px-[5vw] max-sm:px-[8vw] flex items-center justify-center overflow-x-hidden"
         >
             <p className="text22 text-light-grey">Free Vault</p>
-            <SplitLine as="h2" className="text140  text-center w-[80vw]">
+            <SplitLine as="h2" className="text140 text-center w-[75vw] max-sm:w-[90vw]">
                 Everything you need today is free.
             </SplitLine>
-            <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] w-[65vw]">
+            <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] max-sm:mt-[6vw] w-[65vw] max-sm:w-[90vw]">
                 Get early access to premium effect packs, complete website sections, founder pricing,
                 and experimental releases before anyone else.
             </SplitLine>
 
-            <div className="w-full flex gap-[2.5vw] items-end mt-[4vw] flex-col ">
-                <div className="w-fit mr-[1vw]">
+            <div className="w-full max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
+                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw] mr-[1vw]">
                     <Button text="Explore All Effects" href="/effects" />
                 </div>
-                <div className="w-full flex h-[80vh] items-center gap-[2vw] justify-between">
+                <div className="w-full max-sm:flex-col-reverse max-sm:flex-col max-sm:gap-[8vw] max-sm:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">
                     <div
                         ref={freeRef}
-                        className="w-1/2 py-[4vw] text-background! px-[3vw] h-full flex flex-col items-start justify-between rounded-md bg-[#F6F6F6]"
+                        className="w-1/2 max-sm:w-full py-[4vw] max-sm:py-[8vw] text-background! px-[3vw] max-sm:px-[6vw] h-full max-sm:h-auto flex flex-col items-start justify-between rounded-sm bg-[#F6F6F6] max-sm:gap-[8vw]"
                     >
                         <p className="text80 font-medium!">
                             Start with <br />
                             20 Free Effects.
                         </p>
-                        <ul className="list-none flex flex-col gap-[.7vw]">
+                        <ul className="list-none flex flex-col gap-[.7vw] max-sm:gap-[3vw]">
                             {freeEffects.map((effect) => (
                                 <li key={effect} className="flex items-center gap-[1vw] text24">
-                                    <CheckIcon className="size-[1vw]" />
+                                    <CheckIcon className="size-[1vw] max-sm:size-[4vw]" />
                                     {effect}
                                 </li>
                             ))}
                         </ul>
-                        <div className="space-y-[1vw]">
+                        <div className="space-y-[1vw] max-sm:space-y-[4vw]">
                             <Button text="Get Free Access" href="/effects" />
                             <p className="text20 text-light-grey ">
                                 No Credit Card Required
@@ -207,7 +209,7 @@ export default function FreeVault() {
 
                     <div
                         ref={waitlistRef}
-                        className="w-1/2 py-[4vw] px-[3vw] h-full flex flex-col items-start justify-between rounded-md bg-primary text-white "
+                        className="w-1/2 max-sm:w-full py-[4vw] max-sm:py-[8vw] px-[3vw] max-sm:px-[6vw] h-full max-sm:h-auto flex flex-col items-start justify-between rounded-sm bg-primary text-white max-sm:gap-[8vw]"
                     >
                         <h3 className="text80 font-medium!">
                             Join the<br />
@@ -215,16 +217,16 @@ export default function FreeVault() {
                         </h3>
                         <p className="text24">Get Early Access To:</p>
 
-                        <ul className="list-none flex flex-col gap-[.5vw]">
+                        <ul className="list-none flex flex-col gap-[.5vw] max-sm:gap-[3vw]">
                             {waitlistBenefits.map((benefit) => (
                                 <li key={benefit} className="flex items-center gap-[1vw] text24">
-                                    <CheckIcon className="size-[1vw] " />
+                                    <CheckIcon className="size-[1vw] max-sm:size-[4vw]" />
                                     {benefit}
                                 </li>
                             ))}
                         </ul>
 
-                        <div className="space-y-[1vw]">
+                        <div className="space-y-[1vw] max-sm:space-y-[4vw]">
                             <Button text="Join Waitlist" href="/waitlist" variant="black" />
                             <p className="text20">
                                 No Spam. Unsubscribe Anytime.

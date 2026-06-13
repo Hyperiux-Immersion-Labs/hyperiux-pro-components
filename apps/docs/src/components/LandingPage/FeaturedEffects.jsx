@@ -10,32 +10,33 @@ gsap.registerPlugin(ScrollTrigger);
 export default function FeaturedEffects() {
   const effect1 = useRef(null);
   const effect2 = useRef(null);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo([effect1.current, effect2.current], {
         xPercent: (index) => index === 0 ? -100 : 100,
-
-
       }, {
         xPercent: 0,
         ease: "power2.inOut",
         scrollTrigger: {
-          trigger:'#FeaturedEffects',
+          trigger: '#FeaturedEffects',
           start: "top 80%",
           end: "85% 80%",
           scrub: true,
         },
       });
     });
-  });
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       id="FeaturedEffects"
-      className="h-fit bg-background my-[10vw] gap-[2vw] flex-col w-full self-padd  flex items-center justify-center"
+      className="h-fit bg-background my-[10vw] gap-[2vw] max-sm:gap-[8vw] flex-col w-full self-padd flex items-center justify-center overflow-x-hidden"
     >
       <p className="text22 text-light-grey">Featured Effects</p>
 
-      <SplitLine as="h2" className="text140 text-center w-[80vw]">
+      <SplitLine as="h2" className="text140 max-sm:w-[70vw] text-center w-[80vw]">
         Start with the effects people actually notice.
       </SplitLine>
       <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] w-[80vw]">
@@ -43,13 +44,37 @@ export default function FeaturedEffects() {
         install, and adapt.
       </SplitLine>
 
-      <div className="w-full flex gap-[2.5vw] items-end mt-[4vw] flex-col ">
-        <div className="w-fit mr-[2vw]">
+      <div className="w-full max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col ">
+        <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw] mr-[2vw]">
           <Button text="Explore All Effects" href="/effects" />
         </div>
-        <div className="w-full flex h-[50vh] items-center gap-[2vw] justify-between">
-          <div ref={effect1} className="w-full h-full rounded-md bg-zinc-300" />
-          <div ref={effect2} className="w-full h-full rounded-md bg-yellow-100" />
+        <div className="w-full max-sm:flex-col max-sm:gap-[8vw] flex h-[50vh] items-center gap-[2vw] justify-between">
+          <div
+            ref={effect1}
+            className="w-full h-full rounded-md overflow-hidden bg-[#151515] border border-white/10"
+          >
+            <video
+              src="/video/1.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            ref={effect2}
+            className="w-full h-full rounded-md overflow-hidden bg-[#151515] border border-white/10"
+          >
+            <video
+              src="/video/4.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>
