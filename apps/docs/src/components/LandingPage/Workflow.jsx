@@ -56,9 +56,9 @@ export default function Workflow() {
                     <Button text="Read Installation Docs" href="/effects" />
                 </div>
 
-                <div className="w-full h-[90vh] max-sm:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
+
+                <div ref={videoRef} className="w-full h-[90vh] max-sm:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
                     {/* <video
-                        ref={videoRef}
                         src="/showreel.mp4"
                         autoPlay
                         loop

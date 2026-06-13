@@ -17,7 +17,7 @@ export default function VaultBox({ id, styles, img, number, label }) {
                 />
             </div>
             <div className='relative z-2 flex justify-between h-full w-full'>
-                <div className='text24 '>
+                <div className='text24' style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)' }}>
                     <p>{number}</p>
                     <p>{label}</p>
                 </div>

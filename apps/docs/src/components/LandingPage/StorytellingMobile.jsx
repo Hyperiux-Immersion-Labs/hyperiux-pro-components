@@ -35,12 +35,6 @@ function seededRand(seed, min, max) {
 
 const CARD_CONFIGS = IMAGES.map((src) => ({ src }));
 
-const BLUR_CARDS = new Set(
-    Array.from({ length: TOTAL }, (_, i) => i)
-        .sort((a, b) => seededRand(a + 500, 0, 1) - seededRand(b + 500, 0, 1))
-        .slice(0, 3),
-);
-
 export default function StorytellingMobile() {
     const sectionRef = useRef(null);
     const stickyContainerRef = useRef(null);
@@ -89,8 +83,6 @@ export default function StorytellingMobile() {
                 (_, i) => -(i / TOTAL) * 2 * Math.PI - Math.PI / 6,
             );
 
-            const peakBlurs = cards.map((_, i) => seededRand(i + 100, 4, 10));
-
             const xSet = cards.map((c) => gsap.quickSetter(c, "x", "px"));
             const ySet = cards.map((c) => gsap.quickSetter(c, "y", "px"));
             const blurSet = cards.map((c) => (v) => (c.style.filter = `blur(${v}px)`));
@@ -135,8 +127,16 @@ export default function StorytellingMobile() {
                 onUpdate: () => {
                     const prog = spiralProxy.progress;
                     const p1 = Math.min(prog / 0.1, 1);
-                    const phase2Progress = Math.min(Math.max((prog - 0.1) / 0.5, 0), 1);
-                    const phase3Progress = Math.min(Math.max((prog - 0.5) / 0.5, 0), 1);
+                    const t = Math.min(Math.max((prog - 0.1) / 0.9, 0), 1); // Single phase from 0.1 to 1.0
+
+                    // flyProgress goes from 0 to 1 as t goes from 0 to 0.5
+                    const flyProgress = Math.min(t / 0.5, 1);
+
+                    // orbitProgress goes from 0 to 1 as t goes from 0 to 1.0
+                    const orbitProgress = Math.pow(t, 2);
+
+                    // expandProgress goes from 0 to 1 as t goes from 0 to 1.0
+                    const expandProgress = Math.pow(t, 2.2);
 
                     cards.forEach((card, i) => {
                         const nextZ = p1 >= i / TOTAL ? TOTAL + i : i;
@@ -144,49 +144,63 @@ export default function StorytellingMobile() {
                         const reverseIdx = TOTAL - 1 - i;
                         const startFrac = (reverseIdx / TOTAL) * staggerFrac;
 
+                        // flyout progress staggered within flyProgress
                         const cardP2 = linear(
-                            (phase2Progress - startFrac) / (1 - startFrac),
+                            (flyProgress - startFrac) / (1 - startFrac),
                         );
 
                         if (cardP2 > 0) {
-                            let currentAngle = cardP2 * finalAngles[i];
-                            const radiusP = cardP2;
-                            let radiusExpandX = 1.0;
-                            let radiusExpandY = 1.0;
+                            const easedCardP2 = 1 - Math.pow(1 - cardP2, 2);
 
-                            if (phase3Progress > 0) {
-                                const orbitProgress = Math.pow(phase3Progress, 1.8);
-                                const maxOrbitRotation = Math.PI * 2 * 0.55;
-                                currentAngle -= orbitProgress * maxOrbitRotation;
+                            // Angle incorporates continuous global rotation
+                            const maxOrbitRotation = Math.PI * 2 * 0.55;
+                            let currentAngle = easedCardP2 * finalAngles[i] - orbitProgress * maxOrbitRotation;
 
-                                const expandProgress = Math.pow(phase3Progress, 1.4);
-                                radiusExpandX += expandProgress * EXPAND_RADIUS_FACTOR;
-                                radiusExpandY += expandProgress * EXPAND_RADIUS_FACTOR;
-                            }
+                            const radiusP = easedCardP2;
+                            const radiusExpand = 1.0 + expandProgress * EXPAND_RADIUS_FACTOR;
 
-                            xSet[i](Math.cos(currentAngle) * radiusP * radiusExpandX * rx);
-                            ySet[i](Math.sin(currentAngle) * radiusP * radiusExpandY * ry);
+                            xSet[i](Math.cos(currentAngle) * radiusP * radiusExpand * rx);
+                            ySet[i](Math.sin(currentAngle) * radiusP * radiusExpand * ry);
 
                             const yVal = Math.sin(currentAngle);
-                            const baseScale = 1.0;
-                            const targetScale = 1.0 + yVal * 0.25;
-                            const currentScale = baseScale + (targetScale - baseScale) * phase3Progress;
+
+                            // Determine size/blur level: small, medium, big based on index
+                            let cardBaseScale = 1.0;
+                            let cardBaseBlur = 0;
+                            if (i % 3 === 0) {
+                                // Small
+                                cardBaseScale = 0.65;
+                                cardBaseBlur = 0;
+                            } else if (i % 3 === 1) {
+                                // Medium
+                                cardBaseScale = 1.0;
+                                cardBaseBlur = 2.5;
+                            } else {
+                                // Big
+                                cardBaseScale = 1.45;
+                                cardBaseBlur = 6.0;
+                            }
+
+                            // Interpolate scale from 1.0 to base scale as card flies out
+                            const finalBaseScale = 1.0 + (cardBaseScale - 1.0) * easedCardP2;
+                            // Interpolate blur from 0 to base blur as card flies out
+                            const finalBaseBlur = cardBaseBlur * easedCardP2;
+
+                            // Apply dynamic depth scale scaling based on single-phase t
+                            const scaleRange = yVal * 0.25 * finalBaseScale;
+                            const currentScale = finalBaseScale + scaleRange * t;
                             scaleSet[i](currentScale);
 
-                            let finalBlur = 0;
-                            if (BLUR_CARDS.has(i)) {
-                                finalBlur = peakBlurs[i] * Math.sin(cardP2 * Math.PI / 2);
-                            } else if (phase3Progress > 0) {
-                                const depthBlur = Math.max(0, -yVal * 4.5);
-                                finalBlur = depthBlur * phase3Progress;
-                            }
-                            blurSet[i](finalBlur);
+                            // Apply dynamic depth blur based on single-phase t
+                            const depthBlur = Math.max(0, -yVal * 4.5);
+                            const currentBlur = finalBaseBlur + depthBlur * t;
+                            blurSet[i](currentBlur);
 
+                            // Calculate dynamic zIndex
                             let depthZ = nextZ;
-                            if (phase3Progress > 0) {
-                                const targetZ = TOTAL + Math.round((yVal + 1) * TOTAL);
-                                depthZ = Math.round(nextZ + (targetZ - nextZ) * phase3Progress);
-                            }
+                            const targetZ = TOTAL + Math.round((yVal + 1) * TOTAL);
+                            depthZ = Math.round(nextZ + (targetZ - nextZ) * t);
+
                             if (depthZ !== previousZ[i]) {
                                 card.style.zIndex = depthZ;
                                 previousZ[i] = depthZ;
@@ -303,7 +317,6 @@ export default function StorytellingMobile() {
                                     zIndex: i,
                                     willChange: "transform, width, filter",
                                     backfaceVisibility: "hidden",
-                                    transform: "translateZ(0)",
                                 }}
                             >
                                 <Image
