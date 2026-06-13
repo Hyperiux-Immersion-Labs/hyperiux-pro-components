@@ -489,7 +489,7 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative overflow-x-hidden w-full h-[1100vh] bg-background max-sm:hidden"
+            className="relative w-full h-[1100vh] bg-background max-sm:hidden"
         >
             <div
                 ref={stickyContainerRef}

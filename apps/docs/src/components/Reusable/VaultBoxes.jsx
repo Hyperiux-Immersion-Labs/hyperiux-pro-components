@@ -4,7 +4,7 @@ export default function VaultBox({ id, styles, img, number, label }) {
     return (
         <div
             id={id}
-            className={`flex p-[1vw] overflow-hidden justify-between relative h-full rounded-md ${styles}`}
+            className={`flex p-[1vw] overflow-hidden justify-between relative h-full max-sm:rounded-sm rounded-md ${styles}`}
         >
             <div className='absolute inset-0 bg-black/50'>
                 <video 

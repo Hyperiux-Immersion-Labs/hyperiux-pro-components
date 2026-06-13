@@ -41,7 +41,7 @@ export default function Workflow() {
         <section
             ref={sectionRef}
             id="Workflow"
-            className="h-fit bg-background py-[10vw]! max-sm:py-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full flex items-center justify-center"
+            className="h-fit overflow-x-hidden bg-background py-[10vw]! max-sm:py-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full flex items-center justify-center"
         >
             <p className="text22 text-light-grey">
                 Workflow

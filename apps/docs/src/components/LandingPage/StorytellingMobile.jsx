@@ -22,7 +22,7 @@ const IMAGES = [
 ];
 
 const TOTAL = IMAGES.length;
-const EXPAND_RADIUS_FACTOR = 0.72;
+const EXPAND_RADIUS_FACTOR = 1.8;
 
 function linear(t) {
     return Math.min(Math.max(t, 0), 1);
@@ -111,9 +111,9 @@ export default function StorytellingMobile() {
                 });
             }
 
-            // Measure dynamic mobile bounds
-            const rx = window.innerWidth * 0.35;
-            const ry = window.innerWidth * 0.22;
+            // Measure dynamic mobile bounds matching desktop aspect ratio (1.5:1)
+            const rx = window.innerWidth * 0.65;
+            const ry = rx / 1.5;
 
             // --- 3. Scroll Sequence Timeline ---
             const masterTL = gsap.timeline({
@@ -278,7 +278,7 @@ export default function StorytellingMobile() {
         <section
             ref={sectionRef}
             id="storytelling-mobile"
-            className="relative overflow-x-hidden w-full h-[600vh] bg-background sm:hidden"
+            className="relative w-full h-[600vh] bg-background sm:hidden"
         >
             <div
                 ref={stickyContainerRef}
@@ -298,7 +298,7 @@ export default function StorytellingMobile() {
                                 style={{
                                     left: "50%",
                                     top: "50%",
-                                    width: "35vw",
+                                    width: "22vw",
                                     aspectRatio: "16/9",
                                     zIndex: i,
                                     willChange: "transform, width, filter",
@@ -311,7 +311,7 @@ export default function StorytellingMobile() {
                                     alt={`card-${i}`}
                                     fill
                                     className="object-cover"
-                                    sizes="35vw"
+                                    sizes="22vw"
                                     priority={i < 3}
                                 />
                             </div>
@@ -332,7 +332,7 @@ export default function StorytellingMobile() {
                     </h2>
                     <h2
                         ref={infoTextRef2}
-                        className="text80 absolute left-1/2 -translate-x-1/2 w-[90vw] font-bold text-white text-center leading-[1.2] pointer-events-auto"
+                        className="text140 absolute left-1/2 -translate-x-1/2 w-[90vw] font-bold text-white text-center leading-[1.2] pointer-events-auto"
                     >
                         Not another static component kit.
                     </h2>
@@ -340,8 +340,8 @@ export default function StorytellingMobile() {
                         ref={infoButtonWrapperRef}
                         className="flex flex-col gap-4 w-[80vw] pointer-events-auto mt-4"
                     >
-                        <Button text="Install CLI" className="w-full" />
-                        <Button text="Work with Hyperiux" variant="white" className="w-full" />
+                        <Button text="Install CLI"  />
+                        <Button text="Work with Hyperiux" variant="white"  />
                     </div>
                 </div>
             </div>

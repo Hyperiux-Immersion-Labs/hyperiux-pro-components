@@ -28,7 +28,7 @@ export default function page() {
       <AgencyProof />
       <AgencyProofMobile />
       <CTA />
-      {/* <Footer /> */}
+      <Footer />
     </VaultShell>
   )
 }
