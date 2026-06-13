@@ -4,8 +4,8 @@ import Button from '../Reusable/Button'
 
 export default function CTA() {
     return (
-        <div className='h-screen flex items-center justify-center flex-col bg-foreground text-background relative z-500 w-full'>
-            <SplitLine as="h2" className='text110 pointer-events-auto px-[10vw] text-center'>
+        <div className='h-screen max-sm:h-fit max-sm:py-[20vw] max-sm:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-sm:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full'>
+            <SplitLine as="h2" className='text110 pointer-events-auto max-sm:px-0! px-[10vw] text-center'>
                 Unlock Next-Level Digital Experiences.
             </SplitLine>
             <SplitLine

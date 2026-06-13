@@ -53,21 +53,21 @@ const BOXES = [
     {
         id: "block-top-layer-1",
         styles: "w-[37.5%]",
-        img: '/img/__mock__/1.png',
+        img: '/video/1.mp4',
         number: "01",
         label: "Scroll Effects"
     },
     {
         id: "block-top-layer-2",
         styles: "w-[25%]",
-        img: '/img/__mock__/5.png',
+        img: '/video/2.mp4',
         number: "02",
         label: "Hover Reveal"
     },
     {
         id: "block-top-layer-3",
         styles: "w-[37.5%]",
-        img: '/img/__mock__/6.png',
+        img: '/video/3.mp4',
         number: "03",
         label: "Parallax Layers"
     }
@@ -77,21 +77,21 @@ const BOXES_BOTTOM = [
     {
         id: "block-bottom-layer-1",
         styles: "w-[20%]",
-        img: '/img/__mock__/2.png',
+        img: '/video/4.mp4',
         number: "04",
         label: "Transitions"
     },
     {
         id: "block-bottom-layer-2",
         styles: "w-[50%]",
-        img: '/img/__mock__/3.png',
+        img: '/video/1.mp4',
         number: "05",
         label: "Text Split"
     },
     {
         id: "block-bottom-layer-3",
         styles: "w-[30%]",
-        img: '/img/__mock__/4.png',
+        img: '/video/6.mp4',
         number: "06",
         label: "GSAP Magic"
     }
@@ -115,6 +115,8 @@ export default function FeaturedStoryTelling() {
     const vaultReadTextRef = useRef(null);
     const vaultAndTextRef = useRef(null);
     const vaultExploreTextRef = useRef(null);
+    const stickyContainerRef = useRef(null);
+    const vaultTargetMoveRef = useRef(null);
 
     useEffect(() => {
         const section = sectionRef.current;
@@ -221,6 +223,25 @@ export default function FeaturedStoryTelling() {
         gsap.set(vaultSplit.chars, { color: "#232323ff" });
         gsap.set(vaultMoveSplit.chars, { color: "#232323ff" });
 
+        const words = vaultSplit.words;
+        const lastWordElement = words[words.length - 1];
+
+        const updatePositions = () => {
+            if (!stickyContainerRef.current || !lastWordElement || !vaultMoveTextRef.current) return;
+            const stickyRect = stickyContainerRef.current.getBoundingClientRect();
+            const sourceRect = lastWordElement.getBoundingClientRect();
+            const sourceX = sourceRect.left - stickyRect.left;
+            const sourceY = sourceRect.top - stickyRect.top;
+
+            gsap.set(vaultMoveTextRef.current, { x: sourceX, y: sourceY });
+        };
+
+        // Run once initially
+        updatePositions();
+
+        // Register ScrollTrigger refreshInit listener
+        ScrollTrigger.addEventListener("refreshInit", updatePositions);
+
         // --- 3. Master Scroll Sequence Timeline ---
         const ctx = gsap.context(() => {
             const masterTL = gsap.timeline({
@@ -289,17 +310,14 @@ export default function FeaturedStoryTelling() {
                             }
                             blurSet[i](finalBlur);
 
+                            let depthZ = nextZ;
                             if (phase3Progress > 0) {
-                                const depthZ = TOTAL + Math.round((yVal + 1) * TOTAL);
-                                if (depthZ !== previousZ[i]) {
-                                    card.style.zIndex = depthZ;
-                                    previousZ[i] = depthZ;
-                                }
-                            } else {
-                                if (nextZ !== previousZ[i]) {
-                                    card.style.zIndex = nextZ;
-                                    previousZ[i] = nextZ;
-                                }
+                                const targetZ = TOTAL + Math.round((yVal + 1) * TOTAL);
+                                depthZ = Math.round(nextZ + (targetZ - nextZ) * phase3Progress);
+                            }
+                            if (depthZ !== previousZ[i]) {
+                                card.style.zIndex = depthZ;
+                                previousZ[i] = depthZ;
                             }
                         } else {
                             xSet[i](0);
@@ -393,7 +411,22 @@ export default function FeaturedStoryTelling() {
 
             masterTL.to(
                 vaultMoveTextRef.current,
-                { yPercent: -150, xPercent: -410, duration: 1.2, ease: "power2.inOut" },
+                {
+                    x: () => {
+                        if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return 0;
+                        const stickyRect = stickyContainerRef.current.getBoundingClientRect();
+                        const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
+                        return targetRect.left - stickyRect.left;
+                    },
+                    y: () => {
+                        if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return 0;
+                        const stickyRect = stickyContainerRef.current.getBoundingClientRect();
+                        const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
+                        return targetRect.top - stickyRect.top;
+                    },
+                    duration: 1.2,
+                    ease: "power2.inOut"
+                },
                 13.8
             );
 
@@ -443,6 +476,7 @@ export default function FeaturedStoryTelling() {
         }, section);
 
         return () => {
+            ScrollTrigger.removeEventListener("refreshInit", updatePositions);
             ctx.revert();
             splittedParagraph.revert();
             if (splittedText2) splittedText2.revert();
@@ -455,9 +489,12 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[1100vh] bg-background"
+            className="relative w-full h-[1100vh] bg-background max-sm:hidden"
         >
-            <div className="sticky top-0 flex items-center justify-center w-full h-screen overflow-hidden">
+            <div
+                ref={stickyContainerRef}
+                className="sticky top-0 flex items-center justify-center w-full h-screen overflow-hidden"
+            >
                 {/* 1. Spiral Images Layer */}
                 <div
                     ref={cardsContainerRef}
@@ -529,7 +566,7 @@ export default function FeaturedStoryTelling() {
                 </h2>
                 <p
                     ref={vaultMoveTextRef}
-                    className="absolute right-[12.5vw] top-[32.5vw] -translate-y-1/2 text-[#939393] text80 z-30 pointer-events-none"
+                    className="absolute left-0 top-0 m-0 p-0 text-[#939393] text80 z-30 pointer-events-none"
                 >
                     move<span className="dots">...</span>
                 </p>
@@ -537,7 +574,7 @@ export default function FeaturedStoryTelling() {
                 {/* 4. Vault Grid Second Layout Layer */}
                 <div
                     ref={vaultSecondLayoutRef}
-                    className="absolute inset-0 flex flex-col items-center justify-center self-padd z-20 pointer-events-none"
+                    className="absolute inset-0 flex h-screen flex-col items-center justify-center self-padd z-20 pointer-events-none"
                 >
                     {/* Top Layer */}
                     <div className="w-full relative z-10 h-[40vh] gap-[1.5vw] flex items-center justify-center pointer-events-auto">
@@ -548,7 +585,7 @@ export default function FeaturedStoryTelling() {
 
                     {/* Middle Heading Container */}
                     <div id="heading-container" className="w-full relative z-0 h-[30vh] flex items-center justify-center pointer-events-auto">
-                        <span className="text80 opacity-0 text-center">
+                        <span ref={vaultTargetMoveRef} className="text80 opacity-0 text-center">
                             move
                         </span>
                         <span ref={vaultNavigatedTextRef} className="text80 text-center text-foreground">
