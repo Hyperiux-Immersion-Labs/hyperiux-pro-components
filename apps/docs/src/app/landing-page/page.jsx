@@ -18,7 +18,7 @@ export default function page() {
 
     <VaultShell>
       <Hero />
-      {/* <GlowingPlates /> */}
+      <GlowingPlates />
       <FeaturedStoryTelling />
       <StorytellingMobile />
       <VaultGridMobile />

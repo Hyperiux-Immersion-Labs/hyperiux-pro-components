@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en" className={`${layGrotesk.className} antialiased`}>
-        <body className="min-h-screen bg-background text-foreground font-sans">
+        <body className="min-h-dvh bg-background text-foreground font-sans">
           {children}
           <Analytics />
         </body>

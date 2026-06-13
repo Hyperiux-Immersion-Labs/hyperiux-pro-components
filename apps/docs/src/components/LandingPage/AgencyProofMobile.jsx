@@ -32,10 +32,10 @@ const agencyProjects = [
         link: "https://monielink.io",
     },
     {
-        img: "/img/montra.png",
-        title: "Montra",
+        img: "/img/yellow.png",
+        title: "Yellow",
         subtitle: "Branding | UI/UX Design",
-        link: "https://montra.app",
+        link: "https://welcometoyellow.com/",
     },
 ];
 

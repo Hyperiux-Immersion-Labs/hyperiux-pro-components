@@ -6,7 +6,7 @@
 // Rendering: MeshStandardMaterial + separate additive glow overlay + Bloom.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useMemo, useLayoutEffect, useEffect } from "react";
+import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -104,15 +104,17 @@ function makeGlowMaterial() {
 
 // ─── Geometry ─────────────────────────────────────────────────────────────────
 function makePlateGeometry(r, h) {
-  return new THREE.CylinderGeometry(r, r, h, 64);
+  return new THREE.CylinderGeometry(r, r, h, 36);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ParametricPlates
 // ─────────────────────────────────────────────────────────────────────────────
-function ParametricPlates() {
+function ParametricPlates({ isMobile }) {
+  const count = CONFIG.count;
+  const radius = CONFIG.radius;
   const {
-    count, radius, heightStep, turns,
+    heightStep, turns,
     localTiltX, localTiltY, localTiltZ,
     plateRadius, plateThickness, roughness, metalness,
     hoverSigma, hoverSpeed, hoverScale, glowIntensity,
@@ -130,6 +132,8 @@ function ParametricPlates() {
   const projPos = useRef(new THREE.Vector3());
   const groupMat = useRef(new THREE.Matrix4());
   const ndcPointer = useRef(new THREE.Vector2(-9999, -9999));
+  const tempEuler = useRef(new THREE.Euler());
+  const tempQuat = useRef(new THREE.Quaternion());
 
   const arraysRef = useRef(null);
   if (arraysRef.current === null) {
@@ -172,17 +176,37 @@ function ParametricPlates() {
   useEffect(() => {
     const el = gl.domElement;
     const pointer = ndcPointer.current;
-    const onMove = (e) => {
+
+    const handlePointer = (clientX, clientY) => {
       const r = el.getBoundingClientRect();
-      pointer.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-      pointer.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      pointer.x = ((clientX - r.left) / r.width) * 2 - 1;
+      pointer.y = -((clientY - r.top) / r.height) * 2 + 1;
     };
+
+    const onMouseMove = (e) => {
+      handlePointer(e.clientX, e.clientY);
+    };
+
+    const onTouchMove = (e) => {
+      if (e.touches && e.touches[0]) {
+        handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
     const onLeave = () => pointer.set(-9999, -9999);
-    el.addEventListener("mousemove", onMove);
+
+    el.addEventListener("mousemove", onMouseMove);
     el.addEventListener("mouseleave", onLeave);
+    el.addEventListener("touchstart", onTouchMove, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    el.addEventListener("touchend", onLeave, { passive: true });
+
     return () => {
-      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mousemove", onMouseMove);
       el.removeEventListener("mouseleave", onLeave);
+      el.removeEventListener("touchstart", onTouchMove);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onLeave);
     };
   }, [gl]);
 
@@ -309,9 +333,9 @@ function ParametricPlates() {
         dummyObj.quaternion.set(nz, 0, -nx, r).normalize();
       }
 
-      dummyObj.rotateX(tiltXArr[i]);
-      dummyObj.rotateY(tiltYArr[i]);
-      dummyObj.rotateZ(localTiltZ);
+      tempEuler.current.set(tiltXArr[i], tiltYArr[i], localTiltZ);
+      tempQuat.current.setFromEuler(tempEuler.current);
+      dummyObj.quaternion.multiply(tempQuat.current);
       dummyObj.scale.set(scaleArr[i], 1.0, scaleArr[i]);
       dummyObj.updateMatrix();
 
@@ -354,7 +378,8 @@ function ParametricPlates() {
       <instancedMesh
         ref={glowRef}
         args={[geo, glowMat, count]}
-        castShadow
+        castShadow={false}
+        receiveShadow={false}
         frustumCulled={false}
       />
     </>
@@ -365,12 +390,23 @@ function ParametricPlates() {
 // Scene Root
 // ─────────────────────────────────────────────────────────────────────────────
 export default function GlowingPlates() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <div className="absolute z-10 bg-background inset-0 h-[140vh] w-full">
       <Canvas
         className="h-full w-full"
         dpr={CONFIG.canvasDpr}
-        shadows
+        shadows={!isMobile}
         gl={{
           antialias: true,
           powerPreference: "high-performance",
@@ -383,27 +419,31 @@ export default function GlowingPlates() {
 
         {/* Key light — warm orange, tight frustum for crisp inter-plate shadows */}
         <directionalLight
-          castShadow
+          castShadow={!isMobile}
           color={CONFIG.lightColor}
           intensity={CONFIG.lightIntensity}
           position={CONFIG.lightPosition}
-     
         />
         <group position={CONFIG.wrapperPosition}>
-          <group position={CONFIG.groupPosition} rotation={CONFIG.groupRotation}>
-            <ParametricPlates />
+          <group 
+            position={CONFIG.groupPosition} 
+            rotation={CONFIG.groupRotation}
+          >
+            <ParametricPlates key={isMobile ? "mobile" : "desktop"} isMobile={isMobile} />
           </group>
         </group>
 
-        <EffectComposer>
-          <Bloom
-            intensity={CONFIG.bloomIntensity}
-            luminanceThreshold={CONFIG.bloomThreshold}
-            luminanceSmoothing={CONFIG.bloomSmoothing}
-            mipmapBlur
-            radius={CONFIG.bloomRadius}
-          />
-        </EffectComposer>
+        {!isMobile && (
+          <EffectComposer>
+            <Bloom
+              intensity={CONFIG.bloomIntensity}
+              luminanceThreshold={CONFIG.bloomThreshold}
+              luminanceSmoothing={CONFIG.bloomSmoothing}
+              mipmapBlur
+              radius={CONFIG.bloomRadius}
+            />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );

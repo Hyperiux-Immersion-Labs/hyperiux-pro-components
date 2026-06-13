@@ -1,8 +1,7 @@
 import React, { useRef } from 'react'
-import { RoundedBox } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
-export default function RodsGroup1({ ctr, commonProps }) {
+export default function RodsGroup1({ ctr, RodInstance }) {
     const rod1Ref = useRef()
     const rod2Ref = useRef()
 
@@ -23,16 +22,12 @@ export default function RodsGroup1({ ctr, commonProps }) {
                 position={[rod1.posX, rod1.posY, rod1.posZ]}
                 rotation={[ctr(rod1.rotX), ctr(rod1.rotY), ctr(rod1.rotZ)]}
             >
-                <RoundedBox
+                <RodInstance
                     ref={rod1Ref}
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
-                    args={[35, 0.25, 0.25]}
-                    radius={commonProps.radius}
-                    smoothness={commonProps.smoothness}
-                >
-                    <meshPhysicalMaterial {...commonProps.materialProps} />
-                </RoundedBox>
+                    scale={[35, 0.25, 0.25]}
+                />
             </group>
 
             {/* Rod 2 */}
@@ -40,16 +35,12 @@ export default function RodsGroup1({ ctr, commonProps }) {
                 position={[rod2.posX, rod2.posY, rod2.posZ]}
                 rotation={[ctr(rod2.rotX), ctr(rod2.rotY), ctr(rod2.rotZ)]}
             >
-                <RoundedBox
+                <RodInstance
                     ref={rod2Ref}
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
-                    args={[35, 0.3, 0.3]}
-                    radius={commonProps.radius}
-                    smoothness={commonProps.smoothness}
-                >
-                    <meshPhysicalMaterial {...commonProps.materialProps} />
-                </RoundedBox>
+                    scale={[35, 0.3, 0.3]}
+                />
             </group>
         </group>
     )

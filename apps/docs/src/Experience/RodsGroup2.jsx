@@ -1,8 +1,7 @@
 import React, { useRef } from 'react'
-import { RoundedBox } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
-export default function RodsGroup2({ ctr, commonProps }) {
+export default function RodsGroup2({ ctr, RodInstance }) {
     const rod1Ref = useRef()
     const rod2Ref = useRef()
     const rod3Ref = useRef()
@@ -26,16 +25,12 @@ export default function RodsGroup2({ ctr, commonProps }) {
                 position={[rod1.posX, rod1.posY, rod1.posZ]}
                 rotation={[ctr(rod1.rotX), ctr(rod1.rotY), ctr(rod1.rotZ)]}
             >
-                <RoundedBox
+                <RodInstance
                     ref={rod1Ref}
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
-                    args={[15, 0.3, 0.3]}
-                    radius={commonProps.radius}
-                    smoothness={commonProps.smoothness}
-                >
-                    <meshPhysicalMaterial {...commonProps.materialProps} />
-                </RoundedBox>
+                    scale={[15, 0.3, 0.3]}
+                />
             </group>
 
             {/* Rod 2 */}
@@ -43,16 +38,12 @@ export default function RodsGroup2({ ctr, commonProps }) {
                 position={[rod2.posX, rod2.posY, rod2.posZ]}
                 rotation={[ctr(rod2.rotX), ctr(rod2.rotY), ctr(rod2.rotZ)]}
             >
-                <RoundedBox
+                <RodInstance
                     ref={rod2Ref}
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
-                    args={[15, 0.3, 0.3]}
-                    radius={commonProps.radius}
-                    smoothness={commonProps.smoothness}
-                >
-                    <meshPhysicalMaterial {...commonProps.materialProps} />
-                </RoundedBox>
+                    scale={[15, 0.3, 0.3]}
+                />
             </group>
 
             {/* Rod 3 */}
@@ -60,16 +51,12 @@ export default function RodsGroup2({ ctr, commonProps }) {
                 position={[rod3.posX, rod3.posY, rod3.posZ]}
                 rotation={[ctr(rod3.rotX), ctr(rod3.rotY), ctr(rod3.rotZ)]}
             >
-                <RoundedBox
+                <RodInstance
                     ref={rod3Ref}
                     position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
-                    args={[15, 0.25, 0.25]}
-                    radius={commonProps.radius}
-                    smoothness={commonProps.smoothness}
-                >
-                    <meshPhysicalMaterial {...commonProps.materialProps} />
-                </RoundedBox>
+                    scale={[15, 0.25, 0.25]}
+                />
             </group>
         </group>
     )
