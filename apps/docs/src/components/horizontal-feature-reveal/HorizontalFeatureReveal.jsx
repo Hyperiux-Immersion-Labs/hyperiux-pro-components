@@ -164,20 +164,20 @@ export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
       className="w-screen h-[600vh] bg-white text-black relative z-10 max-md:mt-0 max-md:h-fit max-md:py-[15%] max-md:px-[7vw]"
       id="industries"
     >
-       <div className="fixed bottom-8 left-1/2 z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center items-center ">
-       <p className="text-lg text-black">
-        scroll
-       </p>
-                    
-                    <svg
-                        width="20"
-                        height="28"
-                        className="size-[1.5vw]"
-                        viewBox="0 0 20 28"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <style>{`
+      <div className="fixed bottom-8 left-1/2 z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center items-center ">
+        <p className="text-lg text-black">
+          scroll
+        </p>
+
+        <svg
+          width="20"
+          height="28"
+          className="size-[1.5vw]"
+          viewBox="0 0 20 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <style>{`
                   .chev1 { animation: fadeDown 1.4s ease-in-out infinite; }
                   .chev2 { animation: fadeDown 1.4s ease-in-out 0.22s infinite; }
                   .chev3 { animation: fadeDown 1.4s ease-in-out 0.44s infinite; }
@@ -187,41 +187,41 @@ export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
                     100% { opacity: 0.08; transform: translateY(-3px); }
                   }
                 `}</style>
-                        <polyline
-                            className="chev1 stroke-current"
-                            points="2,2 10,9 18,2"
-                            stroke="white"
-                            strokeWidth="1.4"
-                            fill="none"
+          <polyline
+            className="chev1 stroke-current"
+            points="2,2 10,9 18,2"
+            stroke="white"
+            strokeWidth="1.4"
+            fill="none"
 
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <polyline
-                            className="chev2 stroke-current"
-                            points="2,10 10,17 18,10"
-                            stroke="white"
-                            strokeWidth="1.4"
-                            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <polyline
+            className="chev2 stroke-current"
+            points="2,10 10,17 18,10"
+            stroke="white"
+            strokeWidth="1.4"
+            fill="none"
 
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <polyline
-                            className="chev3 stroke-current"
-                            points="2,18 10,25 18,18"
-                            stroke="white"
-                            strokeWidth="1.4"
-                            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <polyline
+            className="chev3 stroke-current"
+            points="2,18 10,25 18,18"
+            stroke="white"
+            strokeWidth="1.4"
+            fill="none"
 
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </div>
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-md:static max-md:w-full max-md:h-fit max-md:flex max-md:flex-col max-md:items-start">
 
-        
+
         <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-md:flex-col max-md:gap-[10vw] max-sm:gap-[15vw]">
           {propertiesData.map((property, index) => (
             <div

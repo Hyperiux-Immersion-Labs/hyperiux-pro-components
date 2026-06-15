@@ -353,8 +353,8 @@ export default function StorytellingMobile() {
                         ref={infoButtonWrapperRef}
                         className="flex flex-col gap-4 w-[80vw] pointer-events-auto mt-4"
                     >
-                        <Button text="Install CLI"  />
-                        <Button text="Work with Hyperiux" variant="white"  />
+                        <Button text="Install CLI" />
+                        <Button text="Work with Hyperiux" variant="white" />
                     </div>
                 </div>
             </div>
