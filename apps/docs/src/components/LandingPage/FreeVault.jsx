@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import Button from "../Reusable/Button";
 import { CheckIcon } from "@/utils/Icons";
 import SplitLine from "../Reusable/SplitLine";
+import RandomBlur from "../Reusable/RandomBlur";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -60,11 +61,16 @@ export default function FreeVault() {
                 backgroundColor: '#0e0e0e',
                 color: '#ffffff',
             })
+            gsap.set('#AgencyProof', {
+                backgroundColor: '#fff',
+                color: '#0e0e0e',
+            })
+
             const colorSwitchTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#FreeVault',
-                    start: '0% 70%',
-                    end: '80% 70%',
+                    start: '10% 70%',
+                    end: '120% 70%',
                     markers: false,
                     onEnter: () => {
                         gsap.to('#FreeVault', {
@@ -161,25 +167,28 @@ export default function FreeVault() {
                 },
             })
 
+
+
+
         })
     }, [])
 
     return (
         <section
             id="FreeVault"
-            className="h-fit relative z-10 bg-foreground text-background py-[10vw]! max-sm:py-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full px-[5vw] max-sm:px-[8vw] flex items-center justify-center overflow-x-hidden"
+            className="h-fit relative z-10 bg-foreground text-background py-[10vw]! max-sm:pt-[20vw]! max-sm:pb-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full px-[5vw] max-sm:px-[8vw] flex items-center justify-center overflow-x-hidden"
         >
             <p className="text22 text-light-grey">Free Vault</p>
-            <SplitLine as="h2" className="text140 text-center w-[75vw] max-sm:w-[90vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[75vw] max-sm:w-[90vw]">
                 Everything you need today is free.
-            </SplitLine>
-            <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] max-sm:mt-[6vw] w-[65vw] max-sm:w-[90vw]">
+            </RandomBlur>
+            <SplitLine delay={0.3} as="p" className="text34 text-center mt-[4vw] max-sm:mt-[6vw] w-[65vw] max-sm:w-[90vw]">
                 Get early access to premium effect packs, complete website sections, founder pricing,
                 and experimental releases before anyone else.
             </SplitLine>
 
             <div className="w-full max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
-                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw] mr-[1vw]">
+                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw]">
                     <Button text="Explore All Effects" href="/effects" />
                 </div>
                 <div className="w-full max-sm:flex-col-reverse max-sm:flex-col max-sm:gap-[8vw] max-sm:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">

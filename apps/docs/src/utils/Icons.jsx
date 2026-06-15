@@ -24,7 +24,7 @@ export function HyperiuxLogo({ className }) {
     )
 }
 
-export function ArrowUpRightIcon({ className }) {
+export function ArrowUpRightIcon({ className,stroke=1 }) {
     return (
         <svg
             className={className}
@@ -36,7 +36,7 @@ export function ArrowUpRightIcon({ className }) {
             <path
                 d="M7 17L17 7M17 7H9.5M17 7V14.5"
                 stroke="currentColor"
-                strokeWidth="1"
+                strokeWidth={stroke}
                 strokeLinecap="round"
                 strokeLinejoin="round"
             />

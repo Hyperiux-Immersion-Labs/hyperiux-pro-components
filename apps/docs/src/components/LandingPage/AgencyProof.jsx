@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import SplitLine from "../Reusable/SplitLine";
+import RandomBlur from "../Reusable/RandomBlur";
 import TextConvergence from "../Reusable/TextConvergence";
 import ProjectCard from "../Reusable/ProjectCard";
 import Button from "../Reusable/Button";
@@ -90,6 +91,30 @@ export default function AgencyProof() {
 
                 setScrollTween(tween);
 
+                // ---- Scale animation for project cards ----
+
+                projectRefs.current.forEach((project, idx) => {
+                    if (!project) return;
+
+                    gsap.fromTo(
+                        project,
+                        { scale: 0.85 },
+                        {
+                            scale: 1,
+                            duration:1,
+                            ease: "linear",
+                            scrollTrigger: {
+                                trigger: project,
+                                containerAnimation: tween,
+                                start: "left 100%",
+                                end: "left 70%",
+                                scrub: true,
+                                markers:false,
+                            },
+                        }
+                    );
+                });
+
                 // ---- SplitText & scrub for titles ----
 
                 titleRefs.current.forEach((title, idx) => {
@@ -172,12 +197,12 @@ export default function AgencyProof() {
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 
-            <SplitLine as="h2" className="text140 text-center w-[80vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[80vw]">
                 A public proof of how Hyperiux thinks about digital experience.
-            </SplitLine>
+            </RandomBlur>
 
             <SplitLine
-                delay={0.2}
+                delay={0.3}
                 as="p"
                 className="text34 text-center mt-[4vw] w-[80vw]"
             >

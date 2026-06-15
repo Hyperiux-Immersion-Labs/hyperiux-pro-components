@@ -5,6 +5,7 @@ import CircularButton from "../Reusable/CirclularButton";
 import { socialLinks, socialLinksList, vaultLinks } from "../../utils/Links";
 import LinkHover from "../Reusable/LinksHover";
 import SplitLine from "../Reusable/SplitLine";
+import RandomBlur from "../Reusable/RandomBlur";
 import ReflectiveRods from "@/Experience/ReflectiveRods";
 
 export default function Footer() {
@@ -13,15 +14,15 @@ export default function Footer() {
       <ReflectiveRods />
       <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-sm:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-sm:space-y-[8vw] h-fit relative">
-          <SplitLine
+          <RandomBlur
             as="h2"
             className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
           >
             Build the interaction layer your website is missing.
-          </SplitLine>
+          </RandomBlur>
           <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-sm:mb-[10vw] justify-center gap-[2vw]">
             <Button text="Install CLI" />
-            <Button text="Work with Hyperiux" variant="white" />
+            <Button text="Work with Hyperiux" className="border border-white" variant="white" />
           </div>
           <div className="w-full h-fit flex items-end pb-[2vw] justify-between relative max-sm:flex-col max-sm:items-center   max-sm:gap-[16vw] max-sm:pb-[8vw]">
             <div className="w-fit max-sm:mb-[-4vw] flex-col gap-[1vw] flex items-start justify-center h-full max-sm:order-2 max-sm:items-center max-sm:gap-[6vw]">

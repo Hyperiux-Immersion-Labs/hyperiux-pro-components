@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import TechMarquee from './TechMarquee'
-import SplitLine from '../Reusable/SplitLine'
+import RandomBlur from '../Reusable/RandomBlur'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -26,7 +26,7 @@ export default function Workflow() {
                     scrollTrigger: {
                         trigger: sectionRef.current,
                         start: '20% 50%',
-                        end: '60% 50%',
+                        end: '55% 50%',
                         scrub: true,
                         markers: false,
                     },
@@ -47,12 +47,12 @@ export default function Workflow() {
                 Workflow
             </p>
 
-            <SplitLine as="h2" className="text140 text-center w-[60vw] max-sm:w-[70vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[60vw] max-sm:w-[70vw]">
                 Preview it. Install it. Make it yours.
-            </SplitLine>
+            </RandomBlur>
 
             <div className="w-full self-padd max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
-                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw] mr-[2vw]">
+                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw]">
                     <Button text="Read Installation Docs" href="/effects" />
                 </div>
 

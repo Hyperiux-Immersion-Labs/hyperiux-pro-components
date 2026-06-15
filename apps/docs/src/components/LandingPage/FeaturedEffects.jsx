@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import Button from "../Reusable/Button";
 import SplitLine from "../Reusable/SplitLine";
+import RandomBlur from "../Reusable/RandomBlur";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -36,16 +37,16 @@ export default function FeaturedEffects() {
     >
       <p className="text22 text-light-grey">Featured Effects</p>
 
-      <SplitLine as="h2" className="text140 max-sm:w-[70vw] text-center w-[80vw]">
+      <RandomBlur as="h2" className="text140 max-sm:w-[70vw] text-center w-[80vw]">
         Start with the effects people actually notice.
-      </SplitLine>
-      <SplitLine delay={0.2} as="p" className="text34 text-center mt-[4vw] w-[80vw]">
+      </RandomBlur>
+      <SplitLine delay={0.3} as="p" className="text34 text-center mt-[4vw] w-[80vw]">
         A few high-impact patterns from the Vault - ready to preview, copy,
         install, and adapt.
       </SplitLine>
 
       <div className="w-full max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col ">
-        <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw] mr-[2vw]">
+        <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw]">
           <Button text="Explore All Effects" href="/effects" />
         </div>
         <div className="w-full max-sm:flex-col max-sm:gap-[8vw] flex h-[50vh] items-center gap-[2vw] justify-between">

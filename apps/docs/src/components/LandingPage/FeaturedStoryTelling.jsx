@@ -554,7 +554,7 @@ export default function FeaturedStoryTelling() {
                 </div>
 
                 {/* 2. Spiral Information Layer */}
-                <div className="absolute inset-0 flex items-center gap-[3.5vw] flex-col self-padd justify-center h-full z-20 pointer-events-none">
+                <div className="absolute inset-0 flex items-center gap-[3.5vw] flex-col self-padd justify-center h-full z-999 pointer-events-none">
                     <h2
                         ref={infoTextRef}
                         className="text34 w-[45vw] mt-[5vw] leading-[1.6]! text-center pointer-events-auto"
@@ -568,14 +568,14 @@ export default function FeaturedStoryTelling() {
                         ref={infoTextRef2}
                         className="text140 absolute left-1/2 -translate-x-1/2 w-[60vw] text-center pointer-events-auto"
                     >
-                        Not another static component kit.
+                        Not another static <br /> component kit.
                     </h2>
                     <div
                         ref={infoButtonWrapperRef}
                         className="flex items-center justify-center gap-[2vw] pointer-events-auto"
                     >
                         <Button text="Install CLI" />
-                        <Button text="Work with Hyperiux" variant="white" />
+                        <Button text="Work with Hyperiux" className="border border-white" variant="white" />
                     </div>
                 </div>
 

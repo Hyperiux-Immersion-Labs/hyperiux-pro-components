@@ -1,15 +1,16 @@
 import React from 'react'
 import SplitLine from '../Reusable/SplitLine'
+import RandomBlur from '../Reusable/RandomBlur'
 import Button from '../Reusable/Button'
 
 export default function CTA() {
     return (
         <div className='h-screen max-sm:h-fit max-sm:py-[20vw] max-sm:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-sm:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full'>
-            <SplitLine as="h2" className='text110 pointer-events-auto max-sm:px-0! px-[10vw] text-center'>
-                Unlock Next-Level Digital Experiences.
-            </SplitLine>
+            <RandomBlur as="h2" className='text110 pointer-events-auto max-sm:px-0! px-[10vw] text-center'>
+                Unlock Next-Level Digital <br /> Experiences.
+            </RandomBlur>
             <SplitLine
-                delay={0.2}
+                delay={0.3}
                 as="p"
                 className="text34 text-center mt-[4vw] w-[60vw]"
             >
@@ -17,8 +18,8 @@ export default function CTA() {
 
             </SplitLine>
             <div className='flex items-center py-[2vw] mb-[2vw] justify-center gap-[2vw]'>
-                <Button text="Explore The Vault" />
-                <Button text="Let's Collaborate" variant="black" />
+                <Button text="Explore The Vault" className='border border-primary' />
+                <Button text="Let's Collaborate" className='border border-black' variant="black" />
             </div>
         </div>
     )

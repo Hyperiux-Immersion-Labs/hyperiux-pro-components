@@ -11,6 +11,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
+import useIsMobile from "@/hooks/useIsMobile";
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -390,21 +391,32 @@ function ParametricPlates({ isMobile }) {
 // Scene Root
 // ─────────────────────────────────────────────────────────────────────────────
 export default function GlowingPlates() {
-  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef(null);
+  const [inView, setInView] = useState(true);
+  const { isMobile } = useIsMobile();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.0 }
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return (
-    <div className="absolute z-10 bg-background inset-0 h-[140vh] w-full">
+    <div ref={containerRef} className="absolute z-10 bg-background inset-0 h-[140vh] w-full">
       <Canvas
         className="h-full w-full"
+        frameloop={inView ? "always" : "never"}
         dpr={CONFIG.canvasDpr}
         shadows={!isMobile}
         gl={{

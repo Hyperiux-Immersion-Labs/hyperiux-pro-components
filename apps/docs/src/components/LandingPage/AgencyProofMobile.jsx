@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
 import ProjectCard from "../Reusable/ProjectCard";
 import SplitLine from "../Reusable/SplitLine";
+import RandomBlur from "../Reusable/RandomBlur";
 import Button from "../Reusable/Button";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -49,9 +50,9 @@ export default function AgencyProofMobile() {
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 
-            <SplitLine as="h2" className="text140 text-center w-[80vw] max-sm:w-[90vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[80vw] max-sm:w-[90vw]">
                 A public proof of how Hyperiux thinks about digital experience.
-            </SplitLine>
+            </RandomBlur>
 
             <SplitLine
                 delay={0.2}

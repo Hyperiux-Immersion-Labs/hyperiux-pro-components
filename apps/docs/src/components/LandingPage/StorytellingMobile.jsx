@@ -347,7 +347,7 @@ export default function StorytellingMobile() {
                         ref={infoTextRef2}
                         className="text140 absolute left-1/2 -translate-x-1/2 w-[90vw] font-bold text-white text-center leading-[1.2] pointer-events-auto"
                     >
-                        Not another static component kit.
+                        Not another static <br /> component kit.
                     </h2>
                     <div
                         ref={infoButtonWrapperRef}
