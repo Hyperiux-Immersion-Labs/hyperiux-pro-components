@@ -38,8 +38,8 @@ export function CodeBlock({
             <div
                 className={`max-h-[30vw] overflow-y-auto ${
                     shouldShowHeader
-                        ? "max-sm:max-h-[50vh] max-sm:min-h-[18vh]"
-                        : "max-sm:h-[5vh]"
+                        ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[18vh]"
+                        : "max-sm:h-[5vh] max-md:h-[5.5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
@@ -48,9 +48,9 @@ export function CodeBlock({
                         <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
                         <button
                             onClick={handleCopy}
-                            className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground max-sm:text-xl"
+                            className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground  max-sm:text-xl"
                         >
-                            <Copy size={16} />
+                             <Copy className="size-4 max-md:size-6 max-sm:size-4" />
                         </button>
                     </div>
                 ) : (
@@ -58,18 +58,18 @@ export function CodeBlock({
                         onClick={handleCopy}
                         className="absolute top-5 right-5 max-sm:top-3.5 max-sm:right-6  z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
                     >
-                        <Copy className="size-4" />
+                        <Copy className="size-4 max-md:size-6 max-sm:size-4" />
                     </button>
                 )}
                 <div className="relative">
                     <pre
                         className={`overflow-x-auto bg-[#272727] text-xs ${
-                            shouldShowHeader ? "max-sm:text-xs" : "max-sm:text-sm"
+                            shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : "max-sm:text-sm"
                         }`}
                     >
                         {highlighted ? (
                             <code
-                                className={`hljs bg-[#272727]! max-sm:text-xs language-${language}`}
+                                className={`hljs bg-[#272727]! max-sm:text-xs max-md:text-sm language-${language}`}
                                 dangerouslySetInnerHTML={{ __html: highlighted }}
                             />
                         ) : (

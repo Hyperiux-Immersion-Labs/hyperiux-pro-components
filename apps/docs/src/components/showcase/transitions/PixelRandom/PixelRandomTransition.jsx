@@ -37,8 +37,20 @@ function easeOutQuart(t) {
   return 1 - (--t) * t * t * t
 }
 
-const getCols = () => (window.innerWidth < 640 ? 12 : 30)
-const getRows = () => (window.innerWidth < 640 ? 22 : 20)
+const getCols = () => {
+  if (window.innerWidth < 640) return 12
+  if (window.innerWidth < 1025) return 24
+  return 30
+}
+
+const getRows = () => {
+  if (window.innerWidth < 640) return 22
+  if (window.innerWidth < 1025) {
+    const cols = getCols()
+    return Math.round(window.innerHeight / (window.innerWidth / cols))
+  }
+  return 20
+}
 
 export default function PixelRandom({
   children,

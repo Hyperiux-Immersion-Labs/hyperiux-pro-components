@@ -183,7 +183,7 @@ export default function MyComponent() {
         <Link
           href={previewHref}
           target="_blank"
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 backdrop-blur-md text-foreground bg-primary duration-300 ease-in-out hover:bg-primary/80 hover:text-white rounded-md hover:border-transparent transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 backdrop-blur-md text-foreground bg-primary duration-300 ease-in-out hover:bg-primary/80 hover:text-white rounded-md hover:border-transparent transition-colors "
         >
           <svg
             className="w-4 h-4"
@@ -297,13 +297,13 @@ export default function MyComponent() {
           />
         </Suspense>
 
-        <main className="mx-auto w-full relative z-500 bg-[#0E0E0E]  px-15 max-sm:px-0 pt-28 pb-12  max-sm:pt-50">
+        <main className="mx-auto w-full relative z-500 bg-[#0E0E0E]  px-15 max-md:px-0 pt-28 pb-12  max-sm:pt-50">
           <section className="space-y-7 ">
-            <div className="flex items-start max-sm:px-4 justify-between gap-5">
+            <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw]  justify-between gap-5">
               <div className="w-full space-y-5 ">
                 {categorySlug && (
                   <Copy>
-                    <p className="mb-3 max-sm:mb-6 text20 max-sm:w-fit max-sm:mx-auto font-medium capitalize text-primary">
+                    <p className="mb-3 max-md:mb-6 text20 max-md:w-fit max-md:mx-auto font-medium capitalize text-primary">
                       {categorySlug.replaceAll("-", " ")}
                     </p>
                   </Copy>
@@ -311,7 +311,7 @@ export default function MyComponent() {
 
                 {pageTitle && (
                   <HeadAnim>
-                    <h1 className="w-full max-sm:text-[6vw] max-sm:font-bold max-sm:w-[80%] max-sm:mx-auto max-sm:text-center font-semibold leading-[1.05] max-sm:leading-[1.3] text-foreground text80 ">
+                    <h1 className="w-full max-sm:text-[6vw] max-md: max-sm:font-bold max-md:w-[90%] max-sm:w-[80%] max-md:mx-auto max-md:text-center font-semibold leading-[1.05] max-sm:leading-[1.3] text-foreground text80 ">
                       {pageTitle}
                     </h1>
                   </HeadAnim>
@@ -321,7 +321,7 @@ export default function MyComponent() {
 
                 {pageSummary && (
                   <Copy delay={0.5}>
-                    <p className="mt-4 w-full max-sm:text-center max-sm:w-[90%] max-sm:mx-auto text-foreground opacity-90 text22 leading-relaxed max-sm:leading-[1.3]">
+                    <p className="mt-4 w-full max-md:text-center max-md:w-[90%] max-md:mx-auto text-foreground opacity-90 text22 leading-relaxed max-md:leading-[1.3]">
                       {pageSummary}
                     </p>
                   </Copy>
@@ -332,14 +332,14 @@ export default function MyComponent() {
                       {dependencies.map((dep) => (
                         <span
                           key={dep}
-                          className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground max-sm:text-muted"
+                          className="rounded-full bg-[#272727] px-4 py-2 text20 capitalize text-foreground max-sm:text-muted"
                         >
                           {dep}
                         </span>
                       ))}
 
                       {effect.tier === "pro" && (
-                        <span className="rounded-full bg-primary px-4 py-2 text-xs font-medium text-white">
+                        <span className="rounded-full bg-primary px-4 py-2 max-sm:px-[7vw] max-md:px-[6vw]   text-xs max-md:text-xl max-sm:text-xs font-medium text-white">
                           Pro
                         </span>
                       )}
@@ -359,7 +359,7 @@ export default function MyComponent() {
               </div>
             </div>
 
-            <div className="fadeup max-sm:px-4 h-[46vw] rounded-sm w-full">
+            <div className="fadeup max-sm:px-[7vw] max-md:px-[6vw]  h-[46vw] rounded-sm w-full">
               <div className="relative h-full w-full aspect-video overflow-hidden rounded-sm bg-black isolate">
                 <Image
                   src={coverImage}
@@ -396,7 +396,7 @@ export default function MyComponent() {
 
             </div>
 
-            <div className="max-sm:flex max-sm:px-4 w-full max-sm:pt-4 justify-center shrink-0  hidden">
+            <div className="max-sm:flex max-sm:px-[7vw] max-md:px-[6vw]  w-full max-sm:pt-4 justify-center shrink-0  hidden">
               <Button
                 text="Live Preview"
                 href={previewHref}
@@ -412,23 +412,23 @@ export default function MyComponent() {
                 <div className="relative z-10  mx-auto flex max-w-312 flex-col items-center">
                   <LockKeyhole className="h-20 w-20 text-white max-sm:h-16 max-sm:w-16" strokeWidth={1.5} />
 
-                  <h2 className="mt-10 text-[3.5vw] font-semibold leading-[0.96] tracking-tight text-white max-sm:mt-7 max-sm:text-[11vw]">
+                  <h2 className="mt-10 text-[3.5vw] font-semibold leading-[0.96] tracking-tight text-white max-sm:mt-7 max-md:text-[5vw] max-sm:text-[11vw]">
                     {effect.title} is Locked
                   </h2>
 
-                  <p className="mt-6 mx-10 text-[1.2vw] leading-[1.45] text-white/90 max-sm:text-[4vw]">
+                  <p className="mt-6 mx-10 text-[1.2vw] max-md:text-[3vw] max-md:leading-[1.2] max-sm:leading-[1.4] leading-[1.45] text-white/90 max-sm:text-[4vw]">
                     Subscribe to Hyperiux Pro to access this effect and 100+ others. Unlimited installs via CLI, full source
                     code, forever.
                   </p>
 
-                  <div className="mt-10 flex items-center gap-8 max-sm:flex-col max-sm:gap-4">
+                  <div className="mt-10 flex items-center gap-8 max-md:gap-4 max-sm:flex-col">
                     <Button
                       text="Sign In"
                       href="/sign-in"
                       variant="orange"
                       className="shrink-0"
                       innerClassName="max-sm:group-hover:translate-x-0"
-                      pillClassName="px-8 py-3 text-[1.5vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
+                      pillClassName="px-8 py-3 text-[1.5vw] max-md:text-[3vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
                       circleWrapperClassName="max-sm:hidden"
                       circleClassName="size-12 max-sm:size-11"
                     />
@@ -444,14 +444,14 @@ export default function MyComponent() {
                     />
                   </div>
 
-                  <p className="mt-6 text-[0.9vw] text-white/45 max-sm:text-[3.6vw]">
+                  <p className="mt-6 text-[0.9vw] max-md:text-[2vw] text-white/45 max-sm:text-[3.6vw]">
                     Cancel anytime · Instant access after payment
                   </p>
                 </div>
               </section>
             ) : (
               <>
-                <div className="relative max-sm:px-4">
+                <div className="relative max-sm:px-[7vw] max-md:px-[6vw] ">
                   <div className="fixed  right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                     <TableOfContents
                       containerRef={contentRef}
@@ -466,7 +466,7 @@ export default function MyComponent() {
                   />
                 </div>
 
-                <div className="max-sm:px-4">
+                <div className="max-sm:px-[7vw] max-md:px-[6vw] ">
 
 
                 <EffectCtaSection
@@ -476,15 +476,15 @@ export default function MyComponent() {
                   </div>
 
                 {relatedEffects?.length > 0 && (
-                  <section ref={relatedEffectsRef} className="my-20  relative  max-sm:pt-[5vh] space-y-10">
-                    <div className="flex items-center justify-between gap-5 max-sm:flex-col">
+                  <section ref={relatedEffectsRef} className="my-20  relative   max-sm:pt-[5vh] space-y-10 max-md:space-y-16">
+                    <div className="flex items-center justify-between gap-5 max-md:flex-col">
                       <HeadAnim>
-                        <h2 className="text-center text-[3.32vw] max-sm:text-[2rem] font-medium text-foreground">
+                        <h2 className="text-center text-[3.32vw] max-md:text-[5vw] max-sm:text-[2rem] font-medium text-foreground">
                           Related Effects
                         </h2>
                       </HeadAnim>
 
-                      <div className="fadeup flex max-sm:hidden flex-col justify-center items-end gap-5 max-sm:w-full max-sm:items-stretch">
+                      <div className="fadeup flex max-md:hidden flex-col justify-center items-end gap-5 max-md:w-full max-md:items-stretch">
                         <Button
                           text="Explore all effects"
                           href='/effects'
@@ -498,9 +498,9 @@ export default function MyComponent() {
                       
                     </div>
 
-                    <div>
+                    <div className="max-md:hidden">
                         {showRelatedSliderControls && (
-                          <div className="flex items-center  justify-end gap-2 max-sm:justify-center">
+                          <div className="flex items-center  justify-end gap-2 max-md:justify-center">
                             <CircularButton
                               onClick={() => scrollRelatedEffects("previous")}
                               aria-label="Show previous related effects"
@@ -531,12 +531,12 @@ export default function MyComponent() {
                         onPointerCancel={handleRelatedPointerEnd}
                         onClickCapture={handleRelatedClickCapture}
                         onDragStart={(event) => event.preventDefault()}
-                        className="flex cursor-grab  snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-4 active:cursor-grabbing "
+                        className="flex cursor-grab  snap-x snap-mandatory select-none gap-6 overflow-x-auto max-sm:gap-6 max-md:gap-2 scroll-smooth pb-4 active:cursor-grabbing "
                       >
                         {relatedEffects.map((relatedEffect) => (
                           <div
                             key={relatedEffect.name}
-                            className="min-w-[31vw] max-sm:px-4 snap-start max-lg:min-w-[44vw] max-sm:min-w-full!"
+                            className="min-w-[31vw] max-sm:px-[7vw] max-md:px-[6vw]   snap-start max-lg:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
                           >
                             <EffectCard
                               effect={relatedEffect}
@@ -546,7 +546,30 @@ export default function MyComponent() {
                       </div>
                     </div>
 
-                     <div className="fadeup max-sm:mx-auto max-sm:flex hidden flex-col justify-center items-end gap-5 max-sm:w-fit max-sm:items-stretch">
+                      <div className="hidden max-md:block">
+                        {showRelatedSliderControls && (
+                          <div className="flex items-center  justify-end gap-2 max-md:justify-center">
+                            <CircularButton
+                              onClick={() => scrollRelatedEffects("previous")}
+                              aria-label="Show previous related effects"
+                              className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              bgColor="#ff5f00"
+                            >
+                              <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                            </CircularButton>
+                            <CircularButton
+                              onClick={() => scrollRelatedEffects("next")}
+                              aria-label="Show next related effects"
+                              className="h-11 p-4 w-11 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              bgColor="#ff5f00"
+                            >
+                              <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                            </CircularButton>
+                          </div>
+                        )}
+                    </div>
+
+                     <div className="fadeup max-md:mx-auto max-md:flex hidden flex-col justify-center items-end gap-5 max-md:w-fit max-md:items-stretch">
                         <Button
                           text="Explore all effects"
                           href='/effects'
@@ -578,7 +601,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
   if (!content) return null;
 
   return (
-    <div ref={ref} className={`space-y-8 w-[70%] max-sm:w-full ${styles.content}`}>
+    <div ref={ref} className={`space-y-8 w-[70%] max-md:w-full ${styles.content}`}>
       <SanityBodyRenderer body={content.body} />
     </div>
   );
@@ -591,7 +614,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   const isExternalLink = /^https?:\/\//.test(buttonLink);
 
   return (
-    <section ref={sectionRef} className={`fadeup max-sm:px-4 ${styles.ctaBanner}`}>
+    <section ref={sectionRef} className={`fadeup max-sm:px-[7vw] max-md:px-[6vw]  ${styles.ctaBanner}`}>
       {cta.heading && (
         <h2 className={styles.ctaBannerHeading}>{cta.heading}</h2>
       )}

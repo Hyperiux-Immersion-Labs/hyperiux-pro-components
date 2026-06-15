@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="h-fit   z-200 relative w-full">
       <ReflectiveRods />
-      <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-sm:min-h-0 max-sm:py-[15vw]">
+      <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-sm:space-y-[8vw] h-fit relative">
           <RandomBlur
             as="h2"
