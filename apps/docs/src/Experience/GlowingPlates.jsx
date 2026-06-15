@@ -12,6 +12,7 @@ import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
+import gsap from "gsap";
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -392,6 +393,7 @@ function ParametricPlates({ isMobile }) {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function GlowingPlates() {
   const containerRef = useRef(null);
+  const canvasWrapperRef = useRef(null);
   const [inView, setInView] = useState(true);
   const { isMobile } = useIsMobile();
 
@@ -412,51 +414,84 @@ export default function GlowingPlates() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = canvasWrapperRef.current;
+    if (!el) return;
+
+    const isLoaderActive = typeof document !== "undefined" && document.body.classList.contains("loader-active");
+
+    // Immediately hide to prevent flash
+    gsap.set(el, { opacity: 0 });
+
+    const playFadeIn = () => {
+      gsap.to(el, {
+        opacity: 1,
+        duration: 2,
+        ease: "power2.out",
+        delay: 0.45,
+      });
+    };
+
+    if (isLoaderActive) {
+      const handleLoaderComplete = () => {
+        playFadeIn();
+      };
+      window.addEventListener("loaderComplete", handleLoaderComplete);
+      return () => {
+        window.removeEventListener("loaderComplete", handleLoaderComplete);
+      };
+    } else {
+      playFadeIn();
+    }
+  }, []);
+
   return (
     <div ref={containerRef} className="absolute z-10 bg-background inset-0 h-[140vh] w-full">
-      <Canvas
-        className="h-full w-full"
-        frameloop={inView ? "always" : "never"}
-        dpr={CONFIG.canvasDpr}
-        shadows={!isMobile}
-        gl={{
-          antialias: true,
-          powerPreference: "high-performance",
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: CONFIG.toneMappingExposure,
-        }}
-      >
-        <PerspectiveCamera makeDefault position={CONFIG.cameraPosition} fov={CONFIG.cameraFov} />
-        <Environment preset={CONFIG.environmentPreset} environmentIntensity={CONFIG.environmentIntensity} />
+      <div ref={canvasWrapperRef} className="h-full w-full opacity-0">
+        <Canvas
+          className="h-full w-full"
+          frameloop={inView ? "always" : "never"}
+          dpr={CONFIG.canvasDpr}
+          shadows={!isMobile}
+          gl={{
+            antialias: true,
+            powerPreference: "high-performance",
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: CONFIG.toneMappingExposure,
+          }}
+        >
+          <PerspectiveCamera makeDefault position={CONFIG.cameraPosition} fov={CONFIG.cameraFov} />
+          <Environment preset={CONFIG.environmentPreset} environmentIntensity={CONFIG.environmentIntensity} />
 
-        {/* Key light — warm orange, tight frustum for crisp inter-plate shadows */}
-        <directionalLight
-          castShadow={!isMobile}
-          color={CONFIG.lightColor}
-          intensity={CONFIG.lightIntensity}
-          position={CONFIG.lightPosition}
-        />
-        <group position={CONFIG.wrapperPosition}>
-          <group 
-            position={CONFIG.groupPosition} 
-            rotation={CONFIG.groupRotation}
-          >
-            <ParametricPlates key={isMobile ? "mobile" : "desktop"} isMobile={isMobile} />
+          {/* Key light — warm orange, tight frustum for crisp inter-plate shadows */}
+          <directionalLight
+            castShadow={!isMobile}
+            color={CONFIG.lightColor}
+            intensity={CONFIG.lightIntensity}
+            position={CONFIG.lightPosition}
+          />
+          <group position={CONFIG.wrapperPosition}>
+            <group
+              position={CONFIG.groupPosition}
+              rotation={CONFIG.groupRotation}
+            >
+              <ParametricPlates key={isMobile ? "mobile" : "desktop"} isMobile={isMobile} />
+            </group>
           </group>
-        </group>
 
-        {!isMobile && (
-          <EffectComposer>
-            <Bloom
-              intensity={CONFIG.bloomIntensity}
-              luminanceThreshold={CONFIG.bloomThreshold}
-              luminanceSmoothing={CONFIG.bloomSmoothing}
-              mipmapBlur
-              radius={CONFIG.bloomRadius}
-            />
-          </EffectComposer>
-        )}
-      </Canvas>
+          {!isMobile && (
+            <EffectComposer>
+              <Bloom
+                intensity={CONFIG.bloomIntensity}
+                luminanceThreshold={CONFIG.bloomThreshold}
+                luminanceSmoothing={CONFIG.bloomSmoothing}
+                mipmapBlur
+                radius={CONFIG.bloomRadius}
+              />
+            </EffectComposer>
+          )}
+        </Canvas>
+      </div>
     </div>
   );
 }

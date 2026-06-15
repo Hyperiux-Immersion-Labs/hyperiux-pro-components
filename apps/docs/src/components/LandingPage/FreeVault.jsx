@@ -208,7 +208,7 @@ export default function FreeVault() {
                                 </li>
                             ))}
                         </ul>
-                        <div className="space-y-[1vw] max-sm:space-y-[4vw]">
+                        <div className="flex flex-col items-start space-y-[1vw] max-sm:space-y-[4vw]">
                             <Button text="Get Free Access" href="/effects" />
                             <p className="text20 text-light-grey ">
                                 No Credit Card Required
@@ -235,7 +235,7 @@ export default function FreeVault() {
                             ))}
                         </ul>
 
-                        <div className="space-y-[1vw] max-sm:space-y-[4vw]">
+                        <div className="flex flex-col items-start space-y-[1vw] max-sm:space-y-[4vw]">
                             <Button text="Join Waitlist" href="/waitlist" variant="black" />
                             <p className="text20">
                                 No Spam. Unsubscribe Anytime.

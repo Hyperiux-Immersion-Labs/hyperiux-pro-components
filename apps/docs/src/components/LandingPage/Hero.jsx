@@ -5,7 +5,9 @@ import RandomBlur from "../Reusable/RandomBlur";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 
-gsap.registerPlugin(SplitText);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(SplitText);
+}
 
 export default function Hero() {
   const pRef = useRef(null);
