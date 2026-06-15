@@ -16,7 +16,7 @@ export default function Page() {
  {/* LEFT VIDEO */}
  <div className="aspect-video h-[27vw] w-[43vw] max-md:h-auto max-md:w-full">
  <VideoPlayer
- videoSrc="showreel.mp4"
+ videoSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
  poster="/assets/videoplayer/poster.png"
  autoPlay
  startMuted
