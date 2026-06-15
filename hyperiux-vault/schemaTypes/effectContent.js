@@ -304,6 +304,12 @@ const ctaBanner = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 4,
+    }),
+    defineField({
       name: 'buttonText',
       title: 'Button Text',
       type: 'string',

@@ -25,11 +25,12 @@ import {
 import { getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Button from "@/components/Reusable/Button";
+import CircularButton from "@/components/Reusable/CirclularButton";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
-import { fadeUp } from "@/components/Animations/gsapAnimations";
+import { fadeUp, lineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
-import Footer from "@/components/Footer";
+import Footer from "@/components/LandingPage/Footer";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 
 export function EffectDetailContent({
@@ -44,6 +45,7 @@ export function EffectDetailContent({
   userPlan = "free",
 }) {
   fadeUp();
+  lineAnim();
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
@@ -287,7 +289,7 @@ export default function MyComponent() {
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen bg-black text-foreground">
+      <div className="min-h-screen  text-foreground">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
@@ -295,29 +297,31 @@ export default function MyComponent() {
           />
         </Suspense>
 
-        <main className="mx-auto w-full  px-15 pt-28 pb-12 max-sm:px-4 max-sm:pt-24">
-          <section className="space-y-7">
-            <div className="flex items-start justify-between gap-5">
-              <div className="w-full space-y-5">
-                {/* {categorySlug && (
+        <main className="mx-auto w-full relative z-500 bg-[#0E0E0E]  px-15 max-sm:px-0 pt-28 pb-12  max-sm:pt-50">
+          <section className="space-y-7 ">
+            <div className="flex items-start max-sm:px-4 justify-between gap-5">
+              <div className="w-full space-y-5 ">
+                {categorySlug && (
                   <Copy>
-                    <p className="mb-3 text20 font-medium capitalize text-primary">
+                    <p className="mb-3 max-sm:mb-6 text20 max-sm:w-fit max-sm:mx-auto font-medium capitalize text-primary">
                       {categorySlug.replaceAll("-", " ")}
                     </p>
                   </Copy>
-                )} */}
+                )}
 
                 {pageTitle && (
                   <HeadAnim>
-                    <h1 className="w-full max-sm:text-[4vw] font-semibold leading-[1.05] text-foreground text80 ">
+                    <h1 className="w-full max-sm:text-[6vw] max-sm:font-bold max-sm:w-[80%] max-sm:mx-auto max-sm:text-center font-semibold leading-[1.05] max-sm:leading-[1.3] text-foreground text80 ">
                       {pageTitle}
                     </h1>
                   </HeadAnim>
                 )}
 
+                
+
                 {pageSummary && (
                   <Copy delay={0.5}>
-                    <p className="mt-4 w-full text-foreground opacity-90 text22 leading-relaxed">
+                    <p className="mt-4 w-full max-sm:text-center max-sm:w-[90%] max-sm:mx-auto text-foreground opacity-90 text22 leading-relaxed max-sm:leading-[1.3]">
                       {pageSummary}
                     </p>
                   </Copy>
@@ -328,7 +332,7 @@ export default function MyComponent() {
                       {dependencies.map((dep) => (
                         <span
                           key={dep}
-                          className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground"
+                          className="rounded-full bg-[#272727] px-4 py-2 text-20 capitalize text-foreground max-sm:text-muted"
                         >
                           {dep}
                         </span>
@@ -355,15 +359,15 @@ export default function MyComponent() {
               </div>
             </div>
 
-            <div className="fadeup h-[46vw]">
-              <div className="relative h-full w-full aspect-video overflow-hidden rounded-lg bg-black isolate">
+            <div className="fadeup max-sm:px-4 h-[46vw] rounded-sm w-full">
+              <div className="relative h-full w-full aspect-video overflow-hidden rounded-sm bg-black isolate">
                 <Image
                   src={coverImage}
                   alt={effect.title || slug}
                   fill
                   sizes="(max-width: 1024px) 100vw, 980px"
                   priority
-                  className={`rounded-[inherit] object-contain transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
+                  className={`rounded-[inherit] object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
                     }`}
                 />
 
@@ -382,7 +386,7 @@ export default function MyComponent() {
                     onCanPlay={handleVideoReady}
                     onPlaying={handleVideoReady}
                     onError={() => setVideoError(true)}
-                    className={`absolute inset-0 h-full w-full rounded-[inherit] object-contain transition-opacity duration-500 ${showVideo
+                    className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${showVideo
                       ? "opacity-100"
                       : "opacity-0"
                       }`}
@@ -392,7 +396,7 @@ export default function MyComponent() {
 
             </div>
 
-            <div className="max-sm:flex w-full max-sm:pt-4 justify-center shrink-0  hidden">
+            <div className="max-sm:flex max-sm:px-4 w-full max-sm:pt-4 justify-center shrink-0  hidden">
               <Button
                 text="Live Preview"
                 href={previewHref}
@@ -402,10 +406,10 @@ export default function MyComponent() {
               />
             </div>
             {isLocked ? (
-              <section className="relative my-14 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup max-sm:px-4 max-sm:py-12">
+              <section className="relative my-14 max-sm:mx-4 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup  max-sm:py-12">
 
 
-                <div className="relative z-10 mx-auto flex max-w-312 flex-col items-center">
+                <div className="relative z-10  mx-auto flex max-w-312 flex-col items-center">
                   <LockKeyhole className="h-20 w-20 text-white max-sm:h-16 max-sm:w-16" strokeWidth={1.5} />
 
                   <h2 className="mt-10 text-[3.5vw] font-semibold leading-[0.96] tracking-tight text-white max-sm:mt-7 max-sm:text-[11vw]">
@@ -447,8 +451,8 @@ export default function MyComponent() {
               </section>
             ) : (
               <>
-                <div className="relative">
-                  <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                <div className="relative max-sm:px-4">
+                  <div className="fixed  right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                     <TableOfContents
                       containerRef={contentRef}
                       stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
@@ -462,21 +466,25 @@ export default function MyComponent() {
                   />
                 </div>
 
+                <div className="max-sm:px-4">
+
+
                 <EffectCtaSection
                   cta={content?.ctaBanner}
                   sectionRef={ctaSectionRef}
-                />
+                  />
+                  </div>
 
                 {relatedEffects?.length > 0 && (
-                  <section ref={relatedEffectsRef} className="my-20 space-y-14">
-                    <div className="flex items-start justify-between gap-5 max-sm:flex-col">
+                  <section ref={relatedEffectsRef} className="my-20  relative  max-sm:pt-[5vh] space-y-10">
+                    <div className="flex items-center justify-between gap-5 max-sm:flex-col">
                       <HeadAnim>
-                        <h2 className="text-center text-[3.32vw] font-medium text-foreground">
+                        <h2 className="text-center text-[3.32vw] max-sm:text-[2rem] font-medium text-foreground">
                           Related Effects
                         </h2>
                       </HeadAnim>
 
-                      <div className="fadeup flex flex-col items-end gap-5 max-sm:w-full max-sm:items-stretch">
+                      <div className="fadeup flex max-sm:hidden flex-col justify-center items-end gap-5 max-sm:w-full max-sm:items-stretch">
                         <Button
                           text="Explore all effects"
                           href='/effects'
@@ -484,27 +492,33 @@ export default function MyComponent() {
                           className="shrink-0"
                         />
 
+                      
+                      </div>
+
+                      
+                    </div>
+
+                    <div>
                         {showRelatedSliderControls && (
-                          <div className="flex items-center justify-end gap-2 max-sm:justify-center">
-                            <button
-                              type="button"
+                          <div className="flex items-center  justify-end gap-2 max-sm:justify-center">
+                            <CircularButton
                               onClick={() => scrollRelatedEffects("previous")}
-                              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-[#272727] text-white transition-colors hover:bg-white hover:text-black"
                               aria-label="Show previous related effects"
+                              className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              bgColor="#ff5f00"
                             >
-                              <ChevronLeft className="h-5 w-5" />
-                            </button>
-                            <button
-                              type="button"
+                              <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                            </CircularButton>
+                            <CircularButton
                               onClick={() => scrollRelatedEffects("next")}
-                              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-[#272727] text-white transition-colors hover:bg-white hover:text-black"
                               aria-label="Show next related effects"
+                              className="h-11 p-4 w-11 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              bgColor="#ff5f00"
                             >
-                              <ChevronRight className="h-5 w-5" />
-                            </button>
+                              <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                            </CircularButton>
                           </div>
                         )}
-                      </div>
                     </div>
 
                     <div className="rounded-xl fadeup">
@@ -517,12 +531,12 @@ export default function MyComponent() {
                         onPointerCancel={handleRelatedPointerEnd}
                         onClickCapture={handleRelatedClickCapture}
                         onDragStart={(event) => event.preventDefault()}
-                        className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-4 active:cursor-grabbing [scrollbar-color:#CC4C04_transparent] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CC4C04]"
+                        className="flex cursor-grab  snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-4 active:cursor-grabbing "
                       >
                         {relatedEffects.map((relatedEffect) => (
                           <div
                             key={relatedEffect.name}
-                            className="min-w-[31vw] snap-start max-lg:min-w-[44vw] max-sm:min-w-[86vw]"
+                            className="min-w-[31vw] max-sm:px-4 snap-start max-lg:min-w-[44vw] max-sm:min-w-full!"
                           >
                             <EffectCard
                               effect={relatedEffect}
@@ -532,6 +546,17 @@ export default function MyComponent() {
                       </div>
                     </div>
 
+                     <div className="fadeup max-sm:mx-auto max-sm:flex hidden flex-col justify-center items-end gap-5 max-sm:w-fit max-sm:items-stretch">
+                        <Button
+                          text="Explore all effects"
+                          href='/effects'
+                          variant="orange"
+                          className="shrink-0"
+                        />
+
+                      
+                      </div>
+
                   </section>
                 )}
               </>
@@ -539,7 +564,7 @@ export default function MyComponent() {
           </section>
         </main>
 
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </VaultLayout>
   );
@@ -566,9 +591,13 @@ function EffectCtaSection({ cta, sectionRef }) {
   const isExternalLink = /^https?:\/\//.test(buttonLink);
 
   return (
-    <section ref={sectionRef} className={`fadeup ${styles.ctaBanner}`}>
+    <section ref={sectionRef} className={`fadeup max-sm:px-4 ${styles.ctaBanner}`}>
       {cta.heading && (
         <h2 className={styles.ctaBannerHeading}>{cta.heading}</h2>
+      )}
+
+       {cta.description && (
+        <p className={styles.ctaBannerDescription}>{cta.description}</p>
       )}
 
       {cta.buttonText && (
@@ -590,7 +619,7 @@ function SanityBodyRenderer({ body = [] }) {
   const groupedBlocks = groupBodyBlocks(body);
 
   return (
-    <div className="space-y-6 max-sm:px-4">
+    <div className="space-y-6 max-sm:px-2">
       {groupedBlocks.map((block, index) => (
         <SanityBodyBlock
           key={block._key || block._groupKey || `${block._type}-${index}`}
@@ -691,12 +720,12 @@ function SanityBodyBlock({ block }) {
                   iconSize={18}
                   iconStrokeWidth={1.8}
                 >
-                  <FAQTitle className="pb-0">
+                  <FAQTitle className="pb-0 justify-start gap-3" iconPosition="left" iconMode="rotate-left-down">
                     <h3 className={styles.faqAccordionQuestionHeading}>
                       {item.question}
                     </h3>
                   </FAQTitle>
-                  <FAQContent className={styles.faqAccordionAnswer}>
+                  <FAQContent className={`${styles.faqAccordionAnswer} pl-2`}>
                     {item.answer}
                   </FAQContent>
                 </FAQWrapper>

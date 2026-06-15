@@ -89,7 +89,7 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50  px-10 py-5  max-md:px-6 max-sm:px-4 max-sm:w-screen ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
+        className={`fixed top-0 left-0 right-0 z-600  px-10 py-5  max-md:px-6 max-sm:px-4 max-sm:w-screen ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
@@ -193,7 +193,7 @@ export function VaultHeader({
             <motion.button
               type="button"
               aria-label="Close mobile menu overlay"
-              className="fixed inset-0 z-40 bg-black/60 max-sm:block"
+              className="fixed inset-0 z-600 bg-black/60 max-sm:block"
               onClick={() => {
                 closeMobileMenu();
                 closeMobileDropdowns();
@@ -205,7 +205,7 @@ export function VaultHeader({
             />
 
             <motion.div
-              className="fixed right-0 top-0 z-50 h-screen w-[88vw] max-w-[360px] overflow-y-auto border-l border-white/10 bg-[#060606] px-4 py-5 text-white shadow-2xl max-sm:block sm:hidden"
+              className="fixed right-0 top-0 z-600 h-screen w-[88vw] max-w-[360px] overflow-y-auto border-l border-white/10 bg-[#060606] px-4 py-5 text-white shadow-2xl max-sm:block sm:hidden"
               initial={{ x: "100%", opacity: 0.9 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0.9 }}

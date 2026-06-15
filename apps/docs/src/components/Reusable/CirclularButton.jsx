@@ -6,12 +6,15 @@ import Link from 'next/link';
 
 export default function CircularButton({
     href = "/",
+    type = "button",
     variant,
     children,
     className = "",
+    iconClassName = "",
     fill = "",
     menuSocial = false,
     bgColor,
+    onClick,
     ...rest
 }) {
     const spanRef = useRef(null);
@@ -41,17 +44,11 @@ export default function CircularButton({
         }
     };
 
-    return (
-        <Link
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`rounded-full overflow-hidden socials cursor-pointer relative border border-white w-fit h-fit group duration-500 ease-in-out flex items-center justify-center ${menuSocial ? "menusocials" : "hover:border-[#ff5f00]"
-                }`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            {...rest}
-        >
+    const sharedClassName = `rounded-full overflow-hidden socials cursor-pointer relative border border-white w-fit h-fit group duration-500 ease-in-out flex items-center justify-center ${menuSocial ? "menusocials" : "hover:border-[#ff5f00]"
+        } ${className}`;
+
+    const innerContent = (
+        <>
             <span
                 ref={spanRef}
                 className="absolute aspect-square rounded-full pointer-events-none"
@@ -63,8 +60,37 @@ export default function CircularButton({
                 }}
             />
             <span className="relative z-2 flex items-center justify-center">
-                {Icon ? <Icon className={className} fill={fill} /> : children}
+                {Icon ? <Icon className={iconClassName} fill={fill} /> : children}
             </span>
+        </>
+    );
+
+    if (onClick) {
+        return (
+            <button
+                type={type}
+                className={sharedClassName}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={onClick}
+                {...rest}
+            >
+                {innerContent}
+            </button>
+        );
+    }
+
+    return (
+        <Link
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={sharedClassName}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            {...rest}
+        >
+            {innerContent}
         </Link>
     );
 }

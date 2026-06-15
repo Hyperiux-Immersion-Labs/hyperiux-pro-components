@@ -8,7 +8,7 @@ export default function Heading({ children, text, className, ...props }) {
     <HeadAnim>
     <h1
       className={[
-        "font-display text-5xl md:text-6xl leading-[1.05] tracking-tighter text-foreground",
+        "font-display max-sm:text-3xl! text-6xl leading-[1.05] tracking-tighter text-foreground",
         className,
       ]
         .filter(Boolean)

@@ -38,8 +38,8 @@ export function CodeBlock({
             <div
                 className={`max-h-[30vw] overflow-y-auto ${
                     shouldShowHeader
-                        ? "max-sm:max-h-[38vh] max-sm:min-h-[18vh]"
-                        : "max-sm:h-[8vh]"
+                        ? "max-sm:max-h-[50vh] max-sm:min-h-[18vh]"
+                        : "max-sm:h-[5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
@@ -56,9 +56,9 @@ export function CodeBlock({
                 ) : (
                     <button
                         onClick={handleCopy}
-                        className="absolute top-5 right-5 z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
+                        className="absolute top-5 right-5 max-sm:top-3.5 max-sm:right-6  z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
                     >
-                        <Copy />
+                        <Copy className="size-4" />
                     </button>
                 )}
                 <div className="relative">
@@ -69,7 +69,7 @@ export function CodeBlock({
                     >
                         {highlighted ? (
                             <code
-                                className={`hljs bg-[#272727]! language-${language}`}
+                                className={`hljs bg-[#272727]! max-sm:text-xs language-${language}`}
                                 dangerouslySetInnerHTML={{ __html: highlighted }}
                             />
                         ) : (

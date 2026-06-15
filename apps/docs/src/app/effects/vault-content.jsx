@@ -13,6 +13,7 @@ import {
   getEffectCategoryBySlug,
   getEffectCategoryHref,
 } from "@/lib/categories";
+
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
@@ -243,7 +244,7 @@ export function VaultContent({
             </HeadAnim>
             <div>
               <Copy delay={0.3}>
-                <p className="max-w-[65vw] mx-auto text-lg text-muted max-sm:text-base">
+                <p className="max-w-[65vw] max-md:max-w-full mx-auto text-lg text-muted max-sm:text-base">
                   {activeCategoryDescription}
                 </p>
               </Copy>
@@ -253,7 +254,7 @@ export function VaultContent({
         </div>
 
         {/* Filter pills — desktop wraps, mobile single-line scroll */}
-        <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20">
+        <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20 max-md:pt-10">
           <div className="relative max-sm:w-full">
             {/* Right fade hint on mobile */}
             <div
@@ -412,7 +413,7 @@ export function VaultContent({
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
         <div className="px-10 py-8">
-          {/* <Footer/> */}
+          <Footer/>
         </div>
       </div>
       )}

@@ -185,17 +185,17 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-0 bottom-0 z-40 text-white transition-[width] duration-300 ease-out max-sm:hidden ${
+      className={`fixed left-0 top-0 bottom-0 z-500 bg-[#0E0E0E] text-white transition-[width] duration-300 ease-out max-md:hidden ${
         isExpanded ? "w-[288px]" : "w-22"
       }`}
     >
       <div
-        className={`flex h-full flex-col border-r  rounded-tr-md border-white/10 bg-[#060606] transition-all duration-300 ${
+        className={`flex h-full flex-col border-r  rounded-tr-md border-white/10 transition-all duration-300 ${
           isExpanded ? "pl-3 pr-1 py-3" : "items-center px-0 py-3"
         }`}
       >
         <div
-          className={`mb-10 flex items-center overflow-hidden border-b border-white/10 bg-[#080808] ${
+          className={`mb-10 flex items-center overflow-hidden border-b border-white/10  ${
             isExpanded ? "h-16 w-full justify-start px-4" : "h-16 w-full justify-center"
           }`}
         >

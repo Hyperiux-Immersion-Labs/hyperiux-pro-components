@@ -35,7 +35,9 @@ export function fadeUp() {
 export function lineAnim() {
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const lineDraws = document.querySelectorAll(".lineDraw");
+      const lineDraws = document.querySelectorAll(
+        '.lineDraw, [class*="contentDivider"]'
+      );
       lineDraws.forEach((lineDraw) => {
         gsap.from(lineDraw, {
           scrollTrigger: {
