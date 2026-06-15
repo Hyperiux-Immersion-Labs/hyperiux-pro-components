@@ -1,12 +1,11 @@
 "use client";
-
-import DotScaleFillCharBtn from "@/components/Buttons/PrimaryButtons/DotBgFillPrimaryBtn/DotBgFillPrimaryBtn";
 import Image from "next/image";
 import { Modal } from "@/components/Modal/Modal";
 import ScrollablePopupContent from "@/components/ScrollablePopupContent/ScrollablePopupContent";
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 import { useState } from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import DotFillBtn from "@/components/DotFillButton";
 
 const popupSections = [
   {
@@ -129,7 +128,7 @@ export default function Page() {
             </button>
           </div>
 
-          <DotScaleFillCharBtn
+          <DotFillBtn
             href="#"
             onClick={(e) => {
               e.preventDefault();

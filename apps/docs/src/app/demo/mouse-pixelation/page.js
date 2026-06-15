@@ -1,4 +1,4 @@
-import MousePixelation, { PixelCircle } from '@/components/mouse-pixelation'
+import MousePixelation from '@/components/mouse-pixelation'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import React from 'react'
 

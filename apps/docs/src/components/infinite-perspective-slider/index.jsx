@@ -1,8 +1,6 @@
 
 import { InfiniteScrollSlider } from "./InfiniteScrollSlider";
-
-export default function InfinitePerspectiveSlider() {
-    const images = [
+const images = [
         {
             number: '01',
             src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
@@ -64,6 +62,8 @@ export default function InfinitePerspectiveSlider() {
             desc: 'Minimal composition',
         },
     ];
+export default function InfinitePerspectiveSlider() {
+    
     return (
         <>
             <div className=" bg-white flex flex-col justify-center gap-20">

@@ -1,5 +1,5 @@
 import React from'react'
-import SmoothAnim from'@/components/ScrollAnimation/SmoothAnim'
+import SmoothAnim from'@/components/InertiaScrollEffect/InertiaScrollEffectComp'
 import { ReactLenis } from"lenis/react";
 
 
