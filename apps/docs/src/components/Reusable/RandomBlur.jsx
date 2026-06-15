@@ -53,37 +53,62 @@ export default function RandomBlur({
       return () => split.revert()
     }
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        split.chars,
-        {
-          opacity: 0,
-          filter: `blur(${blur})`,
-          force3D: true,
-        },
-        {
-          opacity: 1,
-          filter: 'blur(0px)',
-          force3D: true,
-          delay,
-          duration,
-          ease,
-          stagger: {
-            amount: staggerAmount,
-            from: 'random',
-          },
-          scrollTrigger: {
-            trigger: container,
-            start,
-            once,
-          },
-        }
-      )
-    }, container)
+    // Hide characters immediately to prevent visual flash before loader complete
+    gsap.set(split.chars, { opacity: 0, filter: `blur(${blur})`, force3D: true })
 
-    return () => {
-      ctx.revert()
-      split.revert()
+    const isLoaderActive = typeof document !== 'undefined' && document.body.classList.contains("loader-active");
+
+    let ctx;
+    const runAnimation = () => {
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          split.chars,
+          {
+            opacity: 0,
+            filter: `blur(${blur})`,
+            force3D: true,
+          },
+          {
+            opacity: 1,
+            filter: 'blur(0px)',
+            force3D: true,
+            delay,
+            duration,
+            ease,
+            stagger: {
+              amount: staggerAmount,
+              from: 'random',
+            },
+            scrollTrigger: isLoaderActive ? undefined : {
+              trigger: container,
+              start,
+              once,
+            },
+          }
+        )
+      }, container)
+    };
+
+    if (isLoaderActive) {
+      const handleLoaderComplete = () => {
+        runAnimation();
+        // Force ScrollTrigger refresh on loader complete to adjust all triggers
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
+      };
+      window.addEventListener("loaderComplete", handleLoaderComplete);
+      return () => {
+        window.removeEventListener("loaderComplete", handleLoaderComplete);
+        if (ctx) ctx.revert();
+        split.revert();
+      };
+    } else {
+      runAnimation();
+      return () => {
+        if (ctx) ctx.revert();
+        split.revert();
+      };
     }
   }, [children, start, once, duration, staggerAmount, ease, delay, blur])
 

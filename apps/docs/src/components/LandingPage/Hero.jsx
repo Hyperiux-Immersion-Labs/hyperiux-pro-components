@@ -13,14 +13,13 @@ export default function Hero() {
               Hyperiux Vault
             </span>
             <RandomBlur as="span">
-              <span className="opacity-0">dum</span>  Creative interaction effects for websites that need to be remembered.
+              <span className="opacity-0 max-md:hidden">dum</span>  Creative interaction effects for websites that need to be remembered.
             </RandomBlur>
           </h1>
         </div>
         <SplitLine delay={.4} className="text22 max-sm:text-center" as='p'>
-
-            Creative interaction systems built with React, GSAP, Motion, Three.js,
-            and WebGL.
+          Creative interaction systems built with React, GSAP, Motion, Three.js,
+          and WebGL.
         </SplitLine>
       </div>
     </section>

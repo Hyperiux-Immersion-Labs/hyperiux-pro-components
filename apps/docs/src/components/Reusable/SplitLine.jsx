@@ -46,66 +46,106 @@ export default function SplitLine({
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
 
+    let split;
     if (children) {
-      const split = SplitText.create(wrapper, {
+      split = SplitText.create(wrapper, {
         type: 'lines',
         mask: 'lines',
       })
-
       if (reduceMotion) {
         gsap.set(split.lines, { yPercent: 0 })
         return () => split.revert()
       }
-
-      const ctx = gsap.context(() => {
-        gsap.fromTo(
-          split.lines,
-          { yPercent: 100 },
-          {
-            yPercent: 0,
-            delay,
-            duration,
-            ease,
-            stagger,
-            scrollTrigger: {
-              trigger: wrapper,
-              start,
-              once,
-            },
-          }
-        )
-      }, wrapper)
-
-      return () => {
-        ctx.revert()
-        split.revert()
+      // Hide lines immediately to prevent visual flash before loader complete
+      gsap.set(split.lines, { opacity: 0, yPercent: 100 })
+    } else {
+      const el = lineRef.current
+      if (el) {
+        if (reduceMotion) {
+          gsap.set(el, { scaleX: 1, transformOrigin: origin })
+          return () => {}
+        }
+        // Hide line immediately to prevent visual flash before loader complete
+        gsap.set(el, { opacity: 0, scaleX: 0, transformOrigin: origin })
       }
     }
 
-    const el = lineRef.current
-    if (!el) return
+    const isLoaderActive = typeof document !== 'undefined' && document.body.classList.contains("loader-active");
 
-    if (reduceMotion) {
-      gsap.set(el, { scaleX: 1, transformOrigin: origin })
-      return
+    const runAnimation = () => {
+      if (children) {
+        const innerCtx = gsap.context(() => {
+          gsap.fromTo(
+            split.lines,
+            { opacity: 0, yPercent: 100 },
+            {
+              opacity: 1,
+              yPercent: 0,
+              delay,
+              duration,
+              ease,
+              stagger,
+              scrollTrigger: isLoaderActive ? undefined : {
+                trigger: wrapper,
+                start,
+                once,
+              },
+            }
+          )
+        }, wrapper)
+
+        return () => {
+          innerCtx.revert()
+        }
+      } else {
+        const el = lineRef.current
+        if (!el) return () => {}
+
+        const innerCtx = gsap.context(() => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, scaleX: 0, transformOrigin: origin },
+            {
+              opacity: 1,
+              scaleX: 1,
+              delay,
+              duration,
+              ease,
+              scrollTrigger: isLoaderActive ? undefined : {
+                trigger: el,
+                start,
+                once,
+              },
+            }
+          )
+        }, el)
+
+        return () => innerCtx.revert()
+      }
+    };
+
+    let cleanup;
+    if (isLoaderActive) {
+      const handleLoaderComplete = () => {
+        cleanup = runAnimation();
+        // Force ScrollTrigger refresh on loader complete to adjust all triggers
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 100);
+      };
+      window.addEventListener("loaderComplete", handleLoaderComplete);
+      return () => {
+        window.removeEventListener("loaderComplete", handleLoaderComplete);
+        if (cleanup) cleanup();
+        if (split) split.revert();
+      };
+    } else {
+      cleanup = runAnimation();
+      return () => {
+        if (cleanup) cleanup();
+        if (split) split.revert();
+      };
     }
-
-    const ctx = gsap.context(() => {
-      gsap.set(el, { scaleX: 0, transformOrigin: origin })
-      gsap.to(el, {
-        scaleX: 1,
-        delay,
-        duration,
-        ease,
-        scrollTrigger: {
-          trigger: el,
-          start,
-          once,
-        },
-      })
-    }, el)
-
-    return () => ctx.revert()
   }, [children, start, once, duration, ease, origin, delay, stagger])
 
   if (children) {

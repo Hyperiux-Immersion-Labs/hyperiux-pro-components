@@ -24,6 +24,9 @@ export default function Loader() {
     // Stop Lenis scrolling on mount
     lenis?.stop();
 
+    // Mark loader as active on body
+    document.body.classList.add("loader-active");
+
     const counter = { value: 0 };
     const ctx = gsap.context(() => {
       const updateDigits = (value) => {
@@ -59,6 +62,9 @@ export default function Loader() {
         onComplete: () => {
           setIsComplete(true);
           lenis?.start();
+          document.body.classList.remove("loader-active");
+          document.body.classList.add("loader-complete");
+          window.dispatchEvent(new Event("loaderComplete"));
         }
       });
 
@@ -113,6 +119,7 @@ export default function Loader() {
     return () => {
       ctx.revert();
       lenis?.start(); // Safeguard to restore scroll if unmounted early
+      document.body.classList.remove("loader-active");
     };
   }, [lenis]);
 
