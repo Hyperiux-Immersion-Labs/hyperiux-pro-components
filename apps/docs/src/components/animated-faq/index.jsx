@@ -11,7 +11,7 @@ import React, {
   useState,
 } from "react";
 import gsap from "gsap";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 const FAQContext = createContext(null);
 const FAQGroupContext = createContext(null);
@@ -159,19 +159,23 @@ export function FAQWrapper({
       gsap.set(outer, {
         display: "block",
         overflow: "hidden",
+        height: "auto",
       });
+
+      const targetHeight = outer.scrollHeight;
+      gsap.set(outer, {height: 0});
 
       gsap.fromTo(
         outer,
         { height: 0 },
         {
-          height: inner.offsetHeight,
+          height: targetHeight,
           duration,
           ease: "power3.out",
           onComplete: () => {
             gsap.set(outer, {
               height: "auto",
-              overflow: "visible",
+              overflow: "hidden",
             });
           },
         }
@@ -230,6 +234,7 @@ export function FAQTitle({
   className = "",
   showIcon = true,
   iconPosition = "right",
+  iconMode = "rotate",
 }) {
   const {
     isOpen,
@@ -241,20 +246,31 @@ export function FAQTitle({
 
   const icon = showIcon ? (
     <div className={`shrink-0 ${iconClassName}`}>
-      <ChevronDown
-        size={iconSize}
-        strokeWidth={iconStrokeWidth}
-        className={`transition-transform duration-300 ease-out ${
-          isOpen ? "rotate-180" : "rotate-0"
-        }`}
-        aria-hidden="true"
-      />
+      {iconMode === "rotate-left-down" ? (
+        <ChevronRight
+          size={iconSize}
+          strokeWidth={iconStrokeWidth}
+          className={`transition-transform duration-300 ease-out ${
+            isOpen ? "rotate-90" : "rotate-0"
+          }`}
+          aria-hidden="true"
+        />
+      ) : (
+        <ChevronDown
+          size={iconSize}
+          strokeWidth={iconStrokeWidth}
+          className={`transition-transform duration-300 ease-out ${
+            isOpen ? "rotate-180" : "rotate-0"
+          }`}
+          aria-hidden="true"
+        />
+      )}
     </div>
   ) : null;
 
   return (
     <div
-      className={`flex w-full items-start justify-between gap-6 ${titleClassName} ${className}`}
+      className={`flex w-full items-center justify-between gap-6 ${titleClassName} ${className}`}
     >
       {iconPosition === "left" ? (
         <>

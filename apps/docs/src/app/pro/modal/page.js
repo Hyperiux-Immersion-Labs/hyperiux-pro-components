@@ -161,7 +161,7 @@ export default function Page() {
         showCloseButton={false}
       >
         <VideoPlayer
-          videoSrc="showreel.mp4"
+          videoSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
           poster="/assets/cover-showreel.png"
           onRequestClose={() => setIsOpen(false)}
           showCloseButton

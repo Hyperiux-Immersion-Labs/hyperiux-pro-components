@@ -41,12 +41,63 @@
   font-weight: 400;
 }
 
+@media (max-width: 1024px) and (min-width: 641px) {
+  .self-padd {
+    padding: 0 5vw;
+  }
+
+  .text18 {
+    font-size: 2vw;
+  }
+
+  .text20 {
+    font-size: 2.5vw;
+  }
+
+  .text22 {
+    font-size: 3vw;
+    line-height: 1.3;
+  }
+
+  .text24 {
+    font-size: 2.6vw;
+  }
+
+  .text32 {
+    font-size: 3.2vw;
+  }
+
+  .text34 {
+    font-size: 3.4vw;
+  }
+
+  .text80 {
+    font-size: 7vw;
+    line-height: 1.15;
+  }
+
+  .text110 {
+    font-size: 7vw;
+    line-height: 1.15;
+  }
+
+  .text140 {
+    font-size: 8vw;
+    line-height: 1.1;
+  }
+
+  .text180 {
+    font-size: 10vw;
+    line-height: 1.1;
+  }
+}
+
 @media (max-width: 640px) {
   .self-padd {
     padding: 0 8vw;
   }
   .text80 {
-    font-size: 7vw;
+    font-size: 9vw;
   }
   .text140 {
     font-size: 10vw;

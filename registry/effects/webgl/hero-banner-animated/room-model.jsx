@@ -116,7 +116,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  TVtexture.flipY = false;
 
  const videoTexture = useVideoTexture(
-"/showreel.mp4",
+"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
  { start: false }
  );
  videoTexture.colorSpace = THREE.SRGBColorSpace;

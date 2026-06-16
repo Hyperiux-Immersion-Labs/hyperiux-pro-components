@@ -13,6 +13,7 @@ import {
   getEffectCategoryBySlug,
   getEffectCategoryHref,
 } from "@/lib/categories";
+
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
@@ -243,7 +244,7 @@ export function VaultContent({
             </HeadAnim>
             <div>
               <Copy delay={0.3}>
-                <p className="max-w-[65vw] mx-auto text-lg text-muted max-sm:text-base">
+                <p className="max-w-[65vw] max-md:max-w-full mx-auto text-lg text-muted max-sm:text-base">
                   {activeCategoryDescription}
                 </p>
               </Copy>
@@ -252,12 +253,12 @@ export function VaultContent({
 
         </div>
 
-        {/* Filter pills — desktop wraps, mobile single-line scroll */}
-        <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20">
-          <div className="relative max-sm:w-full">
-            {/* Right fade hint on mobile */}
+  
+        <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20 max-md:pt-10">
+          <div className="relative max-md:w-full">
+            {/* Right fade hint on mobile/tablet */}
             <div
-              className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 hidden max-sm:block"
+              className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 hidden max-md:block"
               style={{
                 background:
                   "linear-gradient(to left, var(--background, #000) 0%, transparent 100%)",
@@ -268,14 +269,14 @@ export function VaultContent({
                 "flex items-center gap-2.5 fadeup",
                 // desktop: wrapping
                 "flex-wrap",
-                // mobile: horizontal scroll, no wrap, padded edges
-                "max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:px-6",
+                // mobile/tablet: horizontal scroll, no wrap, padded edges
+                "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
                 // always-visible orange scrollbar
                 "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
                 "[&::-webkit-scrollbar]:h-1",
                 "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
                 "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
-                "max-sm:pb-3 ",
+                "max-md:pb-3 ",
               ].join(" ")}
             >
               {quickCategories.map((cat) => {
@@ -411,8 +412,8 @@ export function VaultContent({
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
-        <div className="px-10 py-8">
-          {/* <Footer/> */}
+        <div className="px-10 py-8 max-sm:block max-md:hidden">
+          <Footer/>
         </div>
       </div>
       )}
@@ -462,7 +463,7 @@ function EffectsGrid({
     <>
       <div
         ref={gridRef}
-        className="grid gap-6 rounded-xl grid-cols-3 max-sm:grid-cols-1 max-sm:gap-16"
+        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16 "
       >
         {filteredEffects.map((effect, i) => (
           <div

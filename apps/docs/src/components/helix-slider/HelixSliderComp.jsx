@@ -8,12 +8,12 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const defaultItems = [
-    { id: 1, title: "Card 01", image: "/img/1.png", backText: "Back 01" },
-    { id: 2, title: "Card 02", image: "/img/2.png", backText: "Back 02" },
-    { id: 3, title: "Card 03", image: "/img/3.png", backText: "Back 03" },
-    { id: 4, title: "Card 04", image: "/img/4.png", backText: "Back 04" },
-    { id: 5, title: "Card 05", image: "/img/5.png", backText: "Back 05" },
-    { id: 6, title: "Card 06", image: "/img/6.png", backText: "Back 06" },
+    { id: 1, title: "Card 01", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg" , backText: "Back 01" },
+    { id: 2, title: "Card 02", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", backText: "Back 02" },
+    { id: 3, title: "Card 03",image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", backText: "Back 03" },
+    { id: 4, title: "Card 04", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", backText: "Back 04" },
+    { id: 5, title: "Card 05", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", backText: "Back 05" },
+    { id: 6, title: "Card 06", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", backText: "Back 06" },
 ];
 
 function clamp(value, min, max) {

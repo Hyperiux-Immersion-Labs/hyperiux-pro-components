@@ -108,7 +108,7 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-xl mx-4 bg-neutral-950/90 backdrop-blur-xl rounded-xl  overflow-hidden border border-neutral-800/60 flex flex-col h-113  ring-1 ring-white/5">
+      <div className="relative w-full max-w-xl mx-4 bg-neutral-950/90 backdrop-blur-xl rounded-xl  overflow-hidden border border-neutral-800/60 flex flex-col h-113 max-md:h-140 max-sm:h-113  ring-1 ring-white/5">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-neutral-800/50 bg-black/20">
           <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Sidebar } from "./Sidebar";
 
 
+
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
   { href: "/docs/installation", label: "Installation" },
@@ -17,7 +18,7 @@ const DOCS_TOP_LINKS = [
 function SidebarFallback({ totalEffects }) {
   return (
     <aside
-      className="fixed left-0 top-0 bottom-0 z-40 w-18 border-r border-white/10 bg-[#060606] text-foreground"
+      className="fixed left-0 top-0 bottom-0 z-40 w-18 border-r border-white/10 bg-[#060606] text-foreground max-md:hidden"
     >
       <div className="flex h-full items-start justify-center px-2 py-3">
         <div className="h-29.5 w-full border-b border-white/10 bg-[#080808]" />
