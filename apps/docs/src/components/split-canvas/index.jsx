@@ -21,16 +21,16 @@ export default function SplitCanvas() {
                     style={{ height: `${sections.length * 100}vh` }}
                 >
                     {/* Fixed Canvas Container - higher z-index to be visible */}
-                    <div className="sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-sm:items-end max-sm:pb-4">
+                    <div className="sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-sm:items-center">
                         <PixelScrollCanvas wrapperRef={wrapperRef} />
                     </div>
 
                     {/* Content Sections */}
-                    <div className="absolute inset-0 z-30 pointer-events-none px-10 max-md:px-6">
+                    <div className="absolute inset-0 z-30 pointer-events-none px-10 max-md:px-6 ">
                         {sections.map((section, i) => (
                             <div
                                 key={i}
-                                className="h-screen flex py-24 max-sm:py-10 border-t border-black/40"
+                                className="h-screen flex py-24 max-sm:py-10 border-t border-black/40 "
                             >
                                 <div className="w-full h-full mx-auto px-16 max-md:px-0 max-sm:px-0 flex flex-row justify-between items-start max-sm:flex-col max-sm:justify-end max-sm:items-center pb-0 max-sm:pb-0">
                                     {/* Left Column - Number & Title */}
