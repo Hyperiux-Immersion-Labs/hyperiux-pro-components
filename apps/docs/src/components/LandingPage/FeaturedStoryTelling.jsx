@@ -263,8 +263,22 @@ export default function FeaturedStoryTelling() {
         // Run once initially
         updatePositions();
 
+        let cachedMoveX = 0;
+        let cachedMoveY = 0;
+
+        const cacheMoveTarget = () => {
+            if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return;
+            const stickyRect = stickyContainerRef.current.getBoundingClientRect();
+            const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
+            cachedMoveX = targetRect.left - stickyRect.left;
+            cachedMoveY = targetRect.top - stickyRect.top;
+        };
+
+        cacheMoveTarget();
+
         // Register ScrollTrigger refreshInit listener
         ScrollTrigger.addEventListener("refreshInit", updatePositions);
+        ScrollTrigger.addEventListener("refreshInit", cacheMoveTarget);
 
         // --- 3. Master Scroll Sequence Timeline ---
         const ctx = gsap.context(() => {
@@ -457,12 +471,7 @@ export default function FeaturedStoryTelling() {
             masterTL.to(
                 vaultMoveTextRef.current,
                 {
-                    x: () => {
-                        if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return 0;
-                        const stickyRect = stickyContainerRef.current.getBoundingClientRect();
-                        const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
-                        return targetRect.left - stickyRect.left;
-                    },
+                    x: () => cachedMoveX,
                     duration: 0.6,
                     // ease: "power2.inOut"
                 },
@@ -472,12 +481,7 @@ export default function FeaturedStoryTelling() {
             masterTL.to(
                 vaultMoveTextRef.current,
                 {
-                    y: () => {
-                        if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return 0;
-                        const stickyRect = stickyContainerRef.current.getBoundingClientRect();
-                        const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
-                        return targetRect.top - stickyRect.top;
-                    },
+                    y: () => cachedMoveY,
                     duration: 0.6,
                     // ease: "power2.inOut"
                 },
@@ -531,6 +535,7 @@ export default function FeaturedStoryTelling() {
 
         return () => {
             ScrollTrigger.removeEventListener("refreshInit", updatePositions);
+            ScrollTrigger.removeEventListener("refreshInit", cacheMoveTarget);
             ctx.revert();
             splittedParagraph.revert();
             if (splittedText2) splittedText2.revert();

@@ -127,6 +127,7 @@ function ParametricPlates({ isMobile }) {
   const mainRef = useRef();
   const glowRef = useRef();
   const hoveredRef = useRef(-1);
+  const prevRotation = useRef(0);
   const accumulator = useRef(0);
   const tmpColor = useRef(new THREE.Color());
   const dummy = useRef(new THREE.Object3D());
@@ -134,6 +135,7 @@ function ParametricPlates({ isMobile }) {
   const projPos = useRef(new THREE.Vector3());
   const groupMat = useRef(new THREE.Matrix4());
   const ndcPointer = useRef(new THREE.Vector2(-9999, -9999));
+  const rectRef = useRef(null);
   const tempEuler = useRef(new THREE.Euler());
   const tempQuat = useRef(new THREE.Quaternion());
 
@@ -147,6 +149,7 @@ function ParametricPlates({ isMobile }) {
       sinThetaArr: new Float32Array(count),
       cosThetaArr: new Float32Array(count),
       prevGlowArr: new Float32Array(count).fill(-999),
+      prevScaleArr: new Float32Array(count).fill(1.0),
     };
   }
 
@@ -179,8 +182,16 @@ function ParametricPlates({ isMobile }) {
     const el = gl.domElement;
     const pointer = ndcPointer.current;
 
+    rectRef.current = el.getBoundingClientRect();
+
+    const ro = new ResizeObserver(() => {
+      rectRef.current = el.getBoundingClientRect();
+    });
+    ro.observe(el);
+
     const handlePointer = (clientX, clientY) => {
-      const r = el.getBoundingClientRect();
+      const r = rectRef.current;
+      if (!r) return;
       pointer.x = ((clientX - r.left) / r.width) * 2 - 1;
       pointer.y = -((clientY - r.top) / r.height) * 2 + 1;
     };
@@ -204,6 +215,7 @@ function ParametricPlates({ isMobile }) {
     el.addEventListener("touchend", onLeave, { passive: true });
 
     return () => {
+      ro.disconnect();
       el.removeEventListener("mousemove", onMouseMove);
       el.removeEventListener("mouseleave", onLeave);
       el.removeEventListener("touchstart", onTouchMove);
@@ -226,6 +238,7 @@ function ParametricPlates({ isMobile }) {
       sinThetaArr,
       cosThetaArr,
       prevGlowArr,
+      prevScaleArr,
     } = arraysRef.current;
     const pointer = ndcPointer.current;
     const dummyObj = dummy.current;
@@ -284,13 +297,17 @@ function ParametricPlates({ isMobile }) {
       hoveredRef.current = -1;
       hovId = -1;
 
-      // Still need updated sin/cos for the transform loop
       for (let i = 0; i < count; i++) {
         const theta = baseTheta[i] + rotation;
         cosThetaArr[i] = Math.cos(theta);
         sinThetaArr[i] = Math.sin(theta);
       }
     }
+
+    let matrixDirty =
+      hovId !== -1 ||
+      Math.abs(rotation - prevRotation.current) > 0.00001;
+    prevRotation.current = rotation;
 
     let colorsDirty = false;
 
@@ -307,6 +324,12 @@ function ParametricPlates({ isMobile }) {
       scaleArr[i] = lerp(scaleArr[i], 1.0 + (hoverScale - 1) * influence, hoverSpeed);
       tiltXArr[i] = lerp(tiltXArr[i], localTiltX * (1 - influence), hoverSpeed);
       tiltYArr[i] = lerp(tiltYArr[i], localTiltY * (1 - influence), hoverSpeed);
+
+      const scaleDelta = Math.abs(scaleArr[i] - prevScaleArr[i]);
+      if (scaleDelta > 0.0001) {
+        matrixDirty = true;
+        prevScaleArr[i] = scaleArr[i];
+      }
 
       // Helix position
       position.set(cosT * radius, (i - count / 2) * heightStep, sinT * radius);
@@ -359,8 +382,10 @@ function ParametricPlates({ isMobile }) {
       }
     }
 
-    main.instanceMatrix.needsUpdate = true;
-    glow.instanceMatrix.needsUpdate = true;
+    if (matrixDirty) {
+      main.instanceMatrix.needsUpdate = true;
+      glow.instanceMatrix.needsUpdate = true;
+    }
     if (colorsDirty && glow.instanceColor) {
       glow.instanceColor.needsUpdate = true;
     }
