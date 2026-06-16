@@ -6,7 +6,7 @@ import CardDrift from '@/components/CardDrift'
 const page = () => {
  return (
  <>
- <DemoHeader logoColor='#ffffff'/>
+ <DemoHeader logoColor='#ffffff' textColor='white'/>
  <CardDrift/>
  </>
  )

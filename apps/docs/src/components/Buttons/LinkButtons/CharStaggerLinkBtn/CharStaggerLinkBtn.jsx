@@ -218,6 +218,7 @@ export default function CharStaggerLinkBtn({
                 ref={lineRef}
                 aria-hidden="true"
                 className="char-stagger-link-btn__line"
+                style={{ transform: `scaleX(${isActive ? 1 : 0})` }}
               />
             )}
           </span>
