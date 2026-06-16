@@ -8,7 +8,7 @@ const CharacterTrail = () => {
 
   useEffect(() => {
     const check = () => {
-      setIsMobile(window.innerWidth < 640)
+      setIsMobile(window.innerWidth < 1025)
     }
 
     check()
@@ -34,7 +34,7 @@ export default CharacterTrail
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute max-sm:bottom-30 max-md:bottom-30 max-sm:left-1/2 max-md:-translate-x-1/2  hidden  max-sm:w-full max-md:w-[50%] mx-auto  max-md:flex h-fit w-[90%] px-6 text-center text-white">
+    <div className="absolute max-sm:bottom-30 max-md:bottom-30 max-md:left-1/2 max-md:-translate-x-1/2  hidden  max-sm:w-full max-md:w-[50%] mx-auto  max-md:flex h-fit w-[90%] px-6 text-center text-white">
       <p className="rounded-full bg-black/10 px-5 py-3 leading-[1.2] max-sm:text-base max-md:text-xl text-black backdrop-blur-sm">
         Not just something to watch, something to move. Open on desktop
       </p>

@@ -1,17 +1,17 @@
 'use client'
 import * as THREE from 'three'
-import { useEffect, useRef, useReducer, useMemo, useCallback } from 'react'
+import { useEffect, useRef, useReducer, useMemo, useCallback, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import {
   useGLTF,
   MeshTransmissionMaterial,
   Environment,
   Lightformer,
+  Text,
 } from '@react-three/drei'
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
 import { EffectComposer, N8AO, Bloom } from '@react-three/postprocessing'
 import { easing } from 'maath'
-import { Text } from '@react-three/drei'
 import Link from 'next/link'
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00','#ff5f00']
@@ -33,12 +33,27 @@ const shuffle = (accent = 0) => [
 
 function Scene() {
   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
+  const [showTitle, setShowTitle] = useState(true)
   const connectors = useMemo(() => shuffle(accent), [accent])
   const connectorRefs = useRef([])
   const registerConnector = useCallback((index, api) => {
     connectorRefs.current[index] = api
     return () => {
       connectorRefs.current[index] = null
+    }
+  }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1025px)')
+    const updateTitleVisibility = (event) => {
+      setShowTitle(event.matches)
+    }
+
+    updateTitleVisibility(mediaQuery)
+    mediaQuery.addEventListener('change', updateTitleVisibility)
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateTitleVisibility)
     }
   }, [])
 
@@ -51,17 +66,19 @@ function Scene() {
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
       className="h-full w-full"
     >
-      <Text
-        position={[0, 0, 0]}
-        fontSize={1.15}
-        color={accents[accent]}
-        fontWeight={500}
-        anchorX="center"
-        anchorY="middle"
-        letterSpacing={0.000}
-      >
-        HYPERIUX
-      </Text>
+      {showTitle && (
+        <Text
+          position={[0, 0, 0]}
+          fontSize={1.15}
+          color={accents[accent]}
+          fontWeight={500}
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0}
+        >
+          HYPERIUX
+        </Text>
+      )}
       <color attach="background" args={['#141518']} />
       <ambientLight intensity={0.4} />
       <spotLight
@@ -297,29 +314,14 @@ function Model({ children, color = 'white', roughness = 0 }) {
 }
 
 
-export default function CollidingModel() {
+export default function CollidingModels() {
   return (
     <div className="fixed inset-0 h-screen w-screen bg-white flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="flex items-start justify-between px-12 pt-10 w-screen max-sm:px-6 max-md:px-10">
-        <h1 className="text-3xl font-bold text-black">HYPERIUX</h1>
-        <div className=" mx-12 max-md:hidden">
-          <p className="text-3xl text-black ">
-            We build 3D visual experiences<br/>
-and interactive web worlds that<br/>
-help bold brands stand apart
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <Link href="https://hyperiux.com" className="px-6 py-2 bg-black text-white rounded-full text-sm font-medium hover:opacity-90">
-           Visit Hyperiux
-          </Link>
-          
-        </div>
-      </header>
+ 
+     
 
-<div className=" mx-12 max-md:block hidden mt-10 max-sm:mx-6 max-md:mx-10 max-md:w-[60%] max-sm:w-[80%]">
-          <p className="text-3xl text-black ">
+<div className=" max-md:block w-[50%] mx-auto pt-20 max-md:mt-10  max-md:w-[80%] max-sm:w-[90%]">
+          <p className="text-3xl max-sm:text-2xl text-black text-center">
             We build 3D visual experiences
 and interactive web worlds that
 help bold brands stand apart
@@ -329,12 +331,15 @@ help bold brands stand apart
       <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
         <div className="relative h-[90%] w-full overflow-hidden rounded-2xl bg-black">
           <Scene />
-          <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 max-w-[520px] -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-sm:bottom-4 max-sm:text-xs">
+          <p className="pointer-events-none max-md:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-sm:bottom-4 max-sm:text-xs">
             Move through the field and let the models collide - click to change their spark.
+          </p>
+
+          <p className='hidden max-md:block absolute bottom-6 left-1/2 z-10 max-md:max-w-130 max-sm:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-md:text-lg max-sm:text-sm text-center '>
+            Touch the field and let the models collide , tap to change their spark.
           </p>
         </div>
       </div>
     </div>
   )
 }
-

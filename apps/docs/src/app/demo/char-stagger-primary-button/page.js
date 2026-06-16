@@ -1,4 +1,4 @@
-import CharStaggerPrimaryBtn from "@/components/Buttons/PrimaryButtons/CharStaggerPrimaryBtn/CharStaggerPrimaryBtn";
+import CharStaggerPrimaryButton from "@/components/char-stagger-primary-button";
 import Image from "next/image";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
@@ -21,7 +21,7 @@ export default function Page() {
                 </div>
 
                 <div className="">
-                    <CharStaggerPrimaryBtn
+                    <CharStaggerPrimaryButton
                         href="#"
                         text="Hover me"
                         bgClassName="rounded-full bg-[#ff6b00] "

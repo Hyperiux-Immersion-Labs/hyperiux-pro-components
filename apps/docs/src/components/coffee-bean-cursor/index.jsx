@@ -229,7 +229,7 @@ function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, t
   return null
 }
 
-export default function Coffee() {
+export default function CoffeeBeanCursor() {
  const mousePositionRef = useRef({ x: 0, y: 0 })
  const mouseVelocityRef = useRef({ x: 0, y: 0 })
  const targetPositionRef = useRef({ x: 0, y: 0 })
@@ -263,14 +263,14 @@ export default function Coffee() {
  onMouseMove={handleMouseMove}
  >
  <p className='absolute text-[#3D1C0C] text-[8vw] w-full text-center font-bold left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>COFFEE BEANS</p>
- <p className="pointer-events-none absolute bottom-8 left-1/2 z-10 hidden max-w-[520px] -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-[#ffd4a3]/80 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] sm:block">
+ <p className="pointer-events-none absolute bottom-8 max-md:hidden left-1/2 z-10  max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-[#ffd4a3]/80 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] ">
    Stir the air with your cursor - the beans drift, and the light follows like warm espresso steam.
  </p>
- <div className="absolute max-sm:block hidden top-12 left-1/2 -translate-x-1/2 text-center w-full z-10 pointer-events-none">
-   <p className="font-serif text-[#ffd4a3] opacity-80 text-[6vw] leading-none">
+ <div className="absolute max-md:block hidden top-30 left-1/2 -translate-x-1/2 text-center w-full z-10 pointer-events-none">
+   <p className="font-serif text-[#ffd4a3] opacity-80 max-md:text-[4vw] max-sm:text-[6vw] leading-none">
      Touch to see effect
    </p>
-   <p className="text-[#ffd4a3] opacity-60 leading-none text-[3.5vw] mt-2">
+   <p className="text-[#ffd4a3] opacity-60 leading-none max-md:text-[2.5vw] max-sm:text-[3.5vw] mt-2">
      Open in desktop for better experience
    </p>
  </div>

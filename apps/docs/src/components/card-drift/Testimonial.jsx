@@ -181,7 +181,7 @@ export default function Testimonial({ testimonials = [], bgColor = "#ffffff" }) 
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-sm:min-h-[100vh] bg-white flex flex-col justify-between overflow-hidden text-black py-5"
+        <section className="relative w-full min-h-screen max-sm:min-h-screen bg-white flex flex-col justify-between overflow-hidden text-black py-5"
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}

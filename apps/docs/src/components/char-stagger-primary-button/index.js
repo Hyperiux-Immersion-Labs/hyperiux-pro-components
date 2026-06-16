@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from"react";
 import Link from"next/link";
 import { ArrowRight } from"lucide-react";
 
-const CharStaggerPrimaryBtn = ({
+const CharStaggerPrimaryButton = ({
  text ="",
  href ="#",
  btnClassName ="",
@@ -120,4 +120,4 @@ const CharStaggerPrimaryBtn = ({
  );
 };
 
-export default CharStaggerPrimaryBtn;
+export default CharStaggerPrimaryButton;

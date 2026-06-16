@@ -1,5 +1,5 @@
 import React from'react'
-import Testimonial from'@/components/CardDrift/Testimonial'
+import Testimonial from'@/components/card-drift/Testimonial'
 
 const page = () => {
  return (

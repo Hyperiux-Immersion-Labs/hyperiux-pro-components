@@ -1,7 +1,7 @@
 import React from 'react'
 import { ClippathSliderComp } from './ClippathSliderComp'
 
-const ClippathSlider = () => {
+const ClipPathSlider = () => {
   return (
     <>
     <ClippathSliderComp slides={slides}
@@ -10,7 +10,7 @@ const ClippathSlider = () => {
   )
 }
 
-export default ClippathSlider
+export default ClipPathSlider
 
 const slides = [
   {

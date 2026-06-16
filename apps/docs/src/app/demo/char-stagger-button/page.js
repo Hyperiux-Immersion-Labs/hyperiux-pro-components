@@ -1,4 +1,4 @@
-import CharStaggerLinkBtn from "@/components/Buttons/LinkButtons/CharStaggerLinkBtn/CharStaggerLinkBtn";
+import CharStaggerButton from "@/components/char-stagger-button";
 import Image from "next/image";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
@@ -16,7 +16,7 @@ export default function Page() {
                 </div>
 
                 <div className="">
-                    <CharStaggerLinkBtn
+                    <CharStaggerButton
                         href="#"
                         showLine
                         text="Hover me"

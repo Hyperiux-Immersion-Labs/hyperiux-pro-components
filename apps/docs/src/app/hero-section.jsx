@@ -1,7 +1,7 @@
 "use client";
 
 import Link from"next/link";
-import { BlurText } from"@/components/effects/BlurText";
+import { BlurText } from "@/components/blur-text";
 
 export function HeroSection({ effectCount }) {
  return (
