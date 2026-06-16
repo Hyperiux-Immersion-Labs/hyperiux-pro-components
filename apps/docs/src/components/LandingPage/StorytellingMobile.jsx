@@ -10,15 +10,15 @@ import Button from "../Reusable/Button";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const IMAGES = [
-    "/img/1.png",
-    "/img/2.png",
-    "/img/3.png",
-    "/img/4.png",
-    "/img/5.png",
-    "/img/6.png",
-    "/img/7.png",
-    "/img/8.png",
-    "/img/1.png",
+    "/img/spiral/1.png",
+    "/img/spiral/2.png",
+    "/img/spiral/3.png",
+    "/img/spiral/4.png",
+    "/img/spiral/5.png",
+    "/img/spiral/6.png",
+    "/img/spiral/7.png",
+    "/img/spiral/8.png",
+    "/img/spiral/9.png",
 ];
 
 const TOTAL = IMAGES.length;

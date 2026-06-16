@@ -26,7 +26,7 @@ export default function LinkHover({
   hoverColor = "#ff5f00",
   underlineColor = "#ff5f00",
   showUnderline = true,
-  textShadowClass = "[text-shadow:0_1px_1px_rgba(17,17,17,0.9)]",
+  textShadowClass = "",
 }) {
   const linkRef = useRef(null);
   const layersRef = useRef({ chars: null, shadows: null, line: null });
