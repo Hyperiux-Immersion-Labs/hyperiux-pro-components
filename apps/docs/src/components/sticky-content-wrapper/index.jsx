@@ -55,7 +55,7 @@ const stickyItems = [
  },
 ];
 
-export function StickyContentWrapper() {
+export default function StickyContentWrapper() {
  return (
  <ReactLenis root>
  <section className="bg-white">
