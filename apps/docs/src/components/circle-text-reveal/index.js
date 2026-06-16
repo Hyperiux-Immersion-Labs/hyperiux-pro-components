@@ -33,11 +33,10 @@ function useIsPointerFine() {
  return isPointerFine;
 }
 
-export default function CircleReveal({
+export default function CircleTextReveal({
  textColor ='#111',
  Text ="We craft emotionally intelligent user experiences that are adored globally!",
  revealText ="A visual designer — with skills that haven't been replaced by A.I",
- clueText,
  circleColorBg ='#E76F2E',
  RevealedTextColor ='#fefefe'
 }) {
@@ -113,13 +112,6 @@ export default function CircleReveal({
  {Text}
  </h2>
  </div>
-
- {clueText && (
- <p className="absolute bottom-8 left-1/2 z-20 max-w-[420px] -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-black/55 max-sm:bottom-6 max-sm:text-xs">
- {clueText}
- </p>
- )}
-
  </section>
  );
 }

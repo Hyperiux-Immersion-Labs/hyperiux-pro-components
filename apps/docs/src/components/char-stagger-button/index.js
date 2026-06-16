@@ -65,7 +65,7 @@ const CHAR_STAGGER_LINK_BTN_STYLES = `
   }
 `;
 
-export default function CharStaggerLinkBtn({
+export default function CharStaggerButton({
   text = "",
   href = DEFAULT_HREF,
   className = "",
