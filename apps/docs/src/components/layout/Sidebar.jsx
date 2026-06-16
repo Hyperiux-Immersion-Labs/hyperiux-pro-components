@@ -241,7 +241,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`sticky bottom-0 left-0 top-0 z-500 h-screen bg-[#0E0E0E] text-white max-md:hidden ${
+      className={`sticky bottom-0 left-0 top-0 z-51 h-screen bg-[#0E0E0E] text-white max-md:hidden ${
         disableInitialTransition
           ? "transition-none"
           : "transition-[width] duration-300 ease-out"

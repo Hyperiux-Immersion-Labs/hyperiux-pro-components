@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useRef } from"react";
+import Link from "next/link";
 import { gsap } from"gsap";
 import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
@@ -62,7 +63,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 
  return (
  <>
- {/* Desktop */}
+
  <section
  ref={outerRef}
  className="hidden lg:block relative"
@@ -72,7 +73,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  ref={stickyRef}
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
  >
- <div className="w-full flex justify-center pt-[3%]">
+ <div className="w-full flex justify-center pt-[6%]">
  <h2 className="text-[2.5vw] uppercase tracking-widest text-center">
  {heading}
  </h2>
@@ -105,6 +106,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  <SliderCard
  heading={product.heading}
  text={product.text}
+ link={product.link}
  bgColor={product.bgColor}
  textColor={product.textColor}
  />
@@ -122,23 +124,27 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </section>
 
  {/* Mobile / Tablet */}
- <section className="lg:hidden py-[15vw] px-[5vw]">
- <h2 className="text-center text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
+ <section className="hidden max-md:block py-[15vw] px-[5vw]">
+ <h2 className="text-center max-md:text-[3.5vw] max-sm:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {heading}
  </h2>
- <div className="flex flex-col items-center gap-[10vw]">
+ <div className="flex flex-col items-center gap-[5vw] max-sm:gap-[10vw]">
  {data.map((product, i) => (
- <div key={i} className="w-[85vw] h-[100vw] max-sm:h-[30vh] rounded-[5vw] overflow-hidden">
+ <div
+ key={i}
+ className="w-[85vw] max-md:w-full rounded-[5vw] overflow-hidden"
+ >
  <SliderCard
  heading={product.heading}
  text={product.text}
+ link={product.link}
  bgColor={product.bgColor}
  textColor={product.textColor}
  />
  </div>
  ))}
  </div>
- <p className="text-center font-light uppercase tracking-widest text-[6vw] mt-[10vw]">
+ <p className="text-center font-light uppercase tracking-widest max-md:text-[2.5vw] max-sm:text-[6vw] mt-[10vw]">
  {para}
  </p>
  </section>
@@ -149,10 +155,10 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 export default CircularSliderComp;
 
 
-const SliderCard = ({ heading, text, bgColor, textColor }) => {
- return (
+const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
+ const cardContent = (
  <div
- className="h-full w-full rounded-[1.5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-sm:px-6 py-20 max-sm:py-10"
+ className="w-full lg:h-full rounded-[1.5vw] max-md:rounded-[5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-md:gap-8 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-md:px-[8%] max-sm:px-6 py-20 max-md:py-12 max-sm:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
@@ -160,13 +166,13 @@ const SliderCard = ({ heading, text, bgColor, textColor }) => {
  >
  <div className="flex flex-col items-center gap-4 max-sm:gap-4 justify-center">
  <h2
- className="text-center font-medium text-[1.8vw] max-sm:text-2xl uppercase"
+ className="text-center font-medium text-[1.8vw] max-md:text-3xl max-sm:text-2xl uppercase"
  style={{ color: textColor ||"inherit" }}
  >
  {heading}
  </h2>
  <p
- className="text-[1.15vw] max-sm:text-lg text-center mt-[0.5vw] max-sm:mt-1"
+ className="text-[1.15vw] max-sm:text-lg max-md:text-xl text-center mt-[0.5vw] max-sm:mt-1"
  style={{ color: textColor ||"inherit" }}
  >
  {text}
@@ -175,7 +181,7 @@ const SliderCard = ({ heading, text, bgColor, textColor }) => {
 
  <div className="mt-[1vw] max-sm:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-sm:gap-2 group/btn">
  <span
- className="text-[1vw] max-sm:text-xs uppercase tracking-widest"
+ className="text-[1vw] max-sm:text-xs max-md:text-lg uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}
  >
  See More
@@ -184,4 +190,14 @@ const SliderCard = ({ heading, text, bgColor, textColor }) => {
  </div>
  </div>
  );
-};
+
+ if (!link) {
+ return cardContent;
+ }
+
+ return (
+ <Link href={link} className="block w-full lg:h-full">
+ {cardContent}
+ </Link>
+ );
+ };

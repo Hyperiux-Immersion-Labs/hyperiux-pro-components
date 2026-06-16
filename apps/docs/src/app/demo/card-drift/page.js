@@ -1,6 +1,6 @@
 import React from'react'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import CardDrift from '@/components/CardDrift'
+import CardDrift from '@/components/card-drift'
 
 
 const page = () => {

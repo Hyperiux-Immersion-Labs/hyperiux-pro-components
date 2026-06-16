@@ -1,4 +1,4 @@
-import ButterflyTrailCursor from '@/components/ButterflyTrailCursor'
+import ButterflyTrailCursor from '@/components/butterfly-trail-cursor'
 import React from 'react'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 

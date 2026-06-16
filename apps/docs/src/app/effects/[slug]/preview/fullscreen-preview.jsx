@@ -5,7 +5,8 @@ import Link from"next/link";
 import { getEffectHref } from"@/lib/categories";
 
 // Import all effects
-import { BlurText } from"@/components/effects/BlurText";
+
+import { BlurText } from "@/components/blur-text";
 import { TextReveal } from"@/components/effects/text-reveal";
 
 // Effects that need special handling

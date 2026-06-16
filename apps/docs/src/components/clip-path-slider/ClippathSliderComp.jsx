@@ -558,9 +558,9 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         </h2>
         
         {/* TAGS (right middle stacked) */}
-        <div className="absolute right-[5%] top-[50%] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
+        <div className="absolute right-[5%] max-sm:right-[5%] max-md:right-[10%] top-[50%] max-md:w-[40vw] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
          
-            <p className="text-[1.5vw] max-md:text-[4vw] font-light about-slider-text text-shadow-black">
+            <p className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-light about-slider-text text-shadow-black">
                {slides[currentSlide].description}
             </p>
        
@@ -571,10 +571,10 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
       {/* CURSOR FOLLOWER */}
       <div
         ref={cursorRef}
-        className="fixed max-sm:hidden  top-0 left-0 pointer-events-none z-100"
+        className="fixed max-md:hidden  top-0 left-0 pointer-events-none z-100"
       >
         <div
-          className="w-15 h-15 max-sm:hidden  rounded-full flex items-center justify-center relative"
+          className="w-15 h-15 max-md:hidden  rounded-full flex items-center justify-center relative"
           style={{ backgroundColor: cursorBg }}
         >
           <div className="relative w-7.5 h-7.5">
@@ -597,7 +597,7 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
       </div>
 
       {clueText && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-md max-sm:bottom-6 max-sm:text-xs">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-sm leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-6 ">
           {clueText}
         </p>
       )}

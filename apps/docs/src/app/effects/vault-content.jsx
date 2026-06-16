@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import CharStaggerLinkBtn from "@/components/Buttons/LinkButtons/CharStaggerLinkBtn/CharStaggerLinkBtn";
+import CharStaggerButton from "@/components/char-stagger-button";
 import {
   effectCategories,
   getEffectCategory,
@@ -228,7 +228,7 @@ export function VaultContent({
       onCategoryNavigate={updateCategoryFilter}
     >
       {({ isSidebarOpen }) => (
-      <div className="min-h-screen text-foreground relative effects-comp ">
+      <div className="min-h-screen text-foreground relative effects-comp  ">
         <VaultHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -459,7 +459,7 @@ function EffectsGrid({
 
       {filteredEffects.length > 10 && !showAllMobileCards && (
         <div className="mt-10 hidden justify-center max-sm:flex">
-          <CharStaggerLinkBtn
+          <CharStaggerButton
             href="#"
             text="View more"
             showLine
