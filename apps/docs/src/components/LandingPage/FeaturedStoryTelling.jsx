@@ -456,34 +456,34 @@ export default function FeaturedStoryTelling() {
             );
             masterTL.set(cardsContainerRef.current, { pointerEvents: "none" }, 10.2);
 
-            // 3f. Vault Grid First Text Reveal (Duration: 11.0 to 13.5)
+            // 3f. Vault Grid First Text Reveal (Duration: 11.5 to ~14.0)
             masterTL.to(
                 [vaultTextRef.current, vaultMoveTextRef.current],
-                { opacity: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" },
+                { opacity: 1, filter: "blur(0px)", duration: 1.5, ease: "power2.out" },
                 9.8
             );
             masterTL.to(
                 vaultSplit.chars,
                 {
                     keyframes: [
-                        { color: "#ff5f00", duration: 0.02 },
-                        { color: "#ffffff", duration: 0.15 }
+                        { color: "#ff5f00", duration: 0.03 },
+                        { color: "#ffffff", duration: 0.225 }
                     ],
-                    stagger: 0.01
+                    stagger: 0.015
                 },
-                11.0
+                11.5
             );
             masterTL.to(
                 vaultMoveSplit.chars,
                 {
                     keyframes: [
-                        { color: "#ff5f00", duration: 0.02, ease: "power1.out" },
-                        { color: "#ffffff", duration: 0.15, ease: "power1.inOut" }
+                        { color: "#ff5f00", duration: 0.03, ease: "power1.out" },
+                        { color: "#ffffff", duration: 0.225, ease: "power1.inOut" }
                     ],
-                    stagger: { amount: 0.01 },
+                    stagger: { amount: 0.015 },
                     ease: "none"
                 },
-                12
+                13.0
             );
 
             // 3g. Vault Grid First Text Exit & "move" Text Transition (Duration: 13.8 to 15.0)

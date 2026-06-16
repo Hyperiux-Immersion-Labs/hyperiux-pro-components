@@ -177,16 +177,17 @@ export default function StorytellingMobile() {
                 key={src}
                 style={{
                     position: "absolute",
-                    left: `calc(${centerVW}vw + ${x}vw - ${imageDiameterVW / 2}vw)`,
-                    top: `calc(${centerVH}vh + ${y}vw - ${imageDiameterVW / 2}vw)`, // notice y in vw for circle shape
-                    width: `${imageDiameterVW}vw`,
+                    left: `calc(${centerVW}vw + ${x}vw - ${(imageDiameterVW * 1.5) / 2}vw)`, // adjust for landscape width
+                    top: `calc(${centerVH}vh + ${y}vw - ${imageDiameterVW / 2}vw)`, // keep vertical centered
+                    width: `${imageDiameterVW * 1.5}vw`, // landscape ratio, e.g., 3:2 width:height
                     height: `${imageDiameterVW}vw`,
-                    borderRadius: "10px",
+                    borderRadius: "5px",
                     overflow: "hidden",
                     boxShadow: "0 0 16px rgba(0,0,0,0.11)",
                     zIndex: 1,
                     transform: `rotate(${imgExtraRot - circleRotation}deg) scale(${imgScale})`,
                     pointerEvents: "none",
+                    aspectRatio: "3 / 2",
                 }}
             >
                 <Image
@@ -195,12 +196,13 @@ export default function StorytellingMobile() {
                     fill
                     style={{
                         objectFit: "cover",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                     }}
-                    sizes={`${imageDiameterVW}vw`}
+                    sizes={`${imageDiameterVW * 1.5}vw`}
                     priority={i < 3}
                 />
             </div>
+      
         );
     });
 
