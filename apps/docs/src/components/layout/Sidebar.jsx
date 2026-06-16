@@ -185,7 +185,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-0 bottom-0 z-500 bg-[#0E0E0E] text-white transition-[width] duration-300 ease-out max-md:hidden ${
+      className={`fixed left-0 top-0 bottom-0 text-white transition-[width] duration-300 ease-out max-md:hidden ${
         isExpanded ? "w-[288px]" : "w-22"
       }`}
     >

@@ -342,7 +342,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="mx-auto relative z-500 bg-[#0E0E0E] px-10 pb-12 fadeup max-sm:px-6">
+        <div className="mx-auto relative  px-10 pb-12 fadeup max-sm:px-6">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"

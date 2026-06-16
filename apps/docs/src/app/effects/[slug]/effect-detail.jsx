@@ -297,7 +297,7 @@ export default function MyComponent() {
           />
         </Suspense>
 
-        <main className="mx-auto w-full relative z-500 bg-[#0E0E0E]  px-15 max-md:px-0 pt-28 pb-12  max-sm:pt-50">
+        <main className="mx-auto w-full relative   px-15 max-md:px-0 pt-28 pb-12  max-sm:pt-50">
           <section className="space-y-7 ">
             <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw]  justify-between gap-5">
               <div className="w-full space-y-5 ">
