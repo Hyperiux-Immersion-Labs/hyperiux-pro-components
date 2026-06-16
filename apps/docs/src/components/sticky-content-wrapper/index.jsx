@@ -1,6 +1,30 @@
 import { ReactLenis } from"lenis/react";
 import { StickyContentComp } from "./StickyContentComp";
 
+
+
+export default function StickyContentWrapper() {
+ return (
+ <ReactLenis root>
+ <section className="bg-white">
+ <StickyContentComp
+ items={stickyItems}
+ className=""
+ leftClassName="text-black"
+ contentEnterYPercent={2}
+ contentExitYPercent={-2}
+ contentTransitionDuration={0.9}
+ contentDelay={0.35}
+ stepGap={2.1}
+  initialImageScale={1.5}
+ activeImageScale={1.2}
+ exitImageScale={1}
+ />
+ </section>
+ </ReactLenis>
+ );
+}
+
 const stickyItems = [
  {
  heading:"Designed for Modern Living",
@@ -54,28 +78,6 @@ const stickyItems = [
  image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
  },
 ];
-
-export default function StickyContentWrapper() {
- return (
- <ReactLenis root>
- <section className="bg-white">
- <StickyContentComp
- items={stickyItems}
- className=""
- leftClassName="text-black"
- contentEnterYPercent={2}
- contentExitYPercent={-2}
- contentTransitionDuration={0.9}
- contentDelay={0.35}
- stepGap={2.1}
-  initialImageScale={1.5}
- activeImageScale={1.2}
- exitImageScale={1}
- />
- </section>
- </ReactLenis>
- );
-}
 
 
 

@@ -1,5 +1,6 @@
 import React from 'react'
-import { ListHover } from './ListHover';
+;
+import InteractiveListPreviewComp from './InteractiveListPreviewComp';
 
 const InteractiveListPreview = () => {
   return (
@@ -16,7 +17,7 @@ const InteractiveListPreview = () => {
 
         </div>
 
-        <ListHover items={projects} />
+        <InteractiveListPreviewComp items={projects} />
       </div>
     </>
   )

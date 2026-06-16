@@ -8,47 +8,7 @@ import {
 } from "@/components/animated-faq";
 import React from "react";
 
-const faqItems = [
-  {
-    id: "faq-1",
-    title: "What makes this FAQ package more reusable?",
-    content: (
-      <>
-        You are no longer locked into a plain data object. You can pass rich
-        JSX, custom markup, inline links, badges, icons, or even other
-        components inside the title and content.
-      </>
-    ),
-    defaultOpen: true,
-  },
-  {
-    id: "faq-2",
-    title: "Can I put custom content inside the answer?",
-    content: (
-      <div className="space-y-3">
-        <p>Yes. This content area accepts full React nodes, not just text.</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Paragraphs</li>
-          <li>Lists</li>
-          <li>Buttons</li>
-          <li>Inline links</li>
-        </ul>
-      </div>
-    ),
-    defaultOpen: false,
-  },
-  {
-    id: "faq-3",
-    title: "Does it use the ChevronBird trigger?",
-    content: (
-      <>
-        Yes. The open and close state is visually driven by ChevronBird, so your
-        motion language stays consistent across the whole system.
-      </>
-    ),
-    defaultOpen: false,
-  },
-];
+
 
 export default function FAQDemo() {
   const defaultOpenItems = faqItems
@@ -93,3 +53,44 @@ export default function FAQDemo() {
     </section>
   );
 }
+const faqItems = [
+  {
+    id: "faq-1",
+    title: "What makes this FAQ package more reusable?",
+    content: (
+      <>
+        You are no longer locked into a plain data object. You can pass rich
+        JSX, custom markup, inline links, badges, icons, or even other
+        components inside the title and content.
+      </>
+    ),
+    defaultOpen: true,
+  },
+  {
+    id: "faq-2",
+    title: "Can I put custom content inside the answer?",
+    content: (
+      <div className="space-y-3">
+        <p>Yes. This content area accepts full React nodes, not just text.</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Paragraphs</li>
+          <li>Lists</li>
+          <li>Buttons</li>
+          <li>Inline links</li>
+        </ul>
+      </div>
+    ),
+    defaultOpen: false,
+  },
+  {
+    id: "faq-3",
+    title: "Does it use the ChevronBird trigger?",
+    content: (
+      <>
+        Yes. The open and close state is visually driven by ChevronBird, so your
+        motion language stays consistent across the whole system.
+      </>
+    ),
+    defaultOpen: false,
+  },
+];

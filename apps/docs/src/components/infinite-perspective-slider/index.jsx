@@ -1,5 +1,26 @@
 import { InfinitePerspectiveSliderComp } from "./InfinitePerspectiveSliderComp";
 
+
+export default function InfinitePerspectiveSlider() {
+    
+    return (
+        <>
+            <div className=" bg-white h-screen flex flex-col justify-center gap-20">
+                <div className="w-full px-[7vw] flex flex-col gap-[1vw] text-[#111111] items-center text-center">
+                    <h1 className="text-[5vw] max-sm:lg:text-[7vw] max-sm:text-[11vw]">
+                        Infinite Perspective Slider
+                    </h1>
+                    <p>
+                        scroll for the perspective effect and hover on the cards for the card detail
+                    </p>
+
+                </div>
+                <InfinitePerspectiveSliderComp images={images} />
+            </div>
+        </>
+    );
+}
+
 const images = [
         {
             number: '01',
@@ -62,22 +83,3 @@ const images = [
             desc: 'Minimal composition',
         },
     ];
-export default function InfinitePerspectiveSlider() {
-    
-    return (
-        <>
-            <div className=" bg-white h-screen flex flex-col justify-center gap-20">
-                <div className="w-full px-[7vw] flex flex-col gap-[1vw] text-[#111111] items-center text-center">
-                    <h1 className="text-[5vw] max-sm:lg:text-[7vw] max-sm:text-[11vw]">
-                        Infinite Perspective Slider
-                    </h1>
-                    <p>
-                        scroll for the perspective effect and hover on the cards for the card detail
-                    </p>
-
-                </div>
-                <InfinitePerspectiveSliderComp images={images} />
-            </div>
-        </>
-    );
-}

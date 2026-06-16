@@ -2,44 +2,7 @@ import React from"react";
 import { ReactLenis } from"lenis/react";
 import RectangularTextReveal from "@/components/rectangular-text-reveal";
 
-const showcaseSections = [
- {
- eyebrow:"Bottom Reveal",
- direction:"bottom",
- title:"Bold headlines can arrive with a grounded upward motion.",
- body:"Use the bottom direction when you want the color block to push up through the line, giving larger statements a heavier and more cinematic entrance.",
- baseColor:"#ff6b00",
- overlayColor:"#111111",
- useOverlay: true,
- },
- {
- eyebrow:"Right Reveal",
- direction:"right",
- title:"Dense editorial copy feels sharper when the wipe snaps in from the right.",
- body:"This variation works well for supporting paragraphs, callouts, and smaller moments where the reveal should feel precise without overpowering the content around it.",
- baseColor:"#111111",
- overlayColor:"#f97316",
- useOverlay: false,
- },
- {
- eyebrow:"Top Reveal",
- direction:"top",
- title:"Vertical motion brings a more structured, architectural rhythm.",
- body:"Top-to-bottom reveals are helpful when the composition already has strong vertical alignment and you want the animation to reinforce that visual system.",
- baseColor:"#111111",
- overlayColor:"#eab308",
- useOverlay: true,
- },
- {
- eyebrow:"Left Reveal",
- direction:"left",
- title:"The default leftward sweep is still the most versatile all-rounder.",
- body:"It reads quickly, feels familiar, and gives product storytelling sections an energetic but controlled sense of progression as the user scrolls.",
- baseColor:"#2563eb",
- overlayColor:"#dbeafe",
- useOverlay: true,
- },
-];
+
 
 export default function Page() {
  return (
@@ -146,3 +109,42 @@ export default function Page() {
  </ReactLenis>
  );
 }
+
+const showcaseSections = [
+ {
+ eyebrow:"Bottom Reveal",
+ direction:"bottom",
+ title:"Bold headlines can arrive with a grounded upward motion.",
+ body:"Use the bottom direction when you want the color block to push up through the line, giving larger statements a heavier and more cinematic entrance.",
+ baseColor:"#ff6b00",
+ overlayColor:"#111111",
+ useOverlay: true,
+ },
+ {
+ eyebrow:"Right Reveal",
+ direction:"right",
+ title:"Dense editorial copy feels sharper when the wipe snaps in from the right.",
+ body:"This variation works well for supporting paragraphs, callouts, and smaller moments where the reveal should feel precise without overpowering the content around it.",
+ baseColor:"#111111",
+ overlayColor:"#f97316",
+ useOverlay: false,
+ },
+ {
+ eyebrow:"Top Reveal",
+ direction:"top",
+ title:"Vertical motion brings a more structured, architectural rhythm.",
+ body:"Top-to-bottom reveals are helpful when the composition already has strong vertical alignment and you want the animation to reinforce that visual system.",
+ baseColor:"#111111",
+ overlayColor:"#eab308",
+ useOverlay: true,
+ },
+ {
+ eyebrow:"Left Reveal",
+ direction:"left",
+ title:"The default leftward sweep is still the most versatile all-rounder.",
+ body:"It reads quickly, feels familiar, and gives product storytelling sections an energetic but controlled sense of progression as the user scrolls.",
+ baseColor:"#2563eb",
+ overlayColor:"#dbeafe",
+ useOverlay: true,
+ },
+];

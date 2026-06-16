@@ -6,7 +6,7 @@ import ScrollTrigger from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const State = ({ bgColor ="bg-white", cards = [] }) => {
+const ScrollStackComp = ({cards = [] }) => {
  const sectionRef = useRef(null);
  const rowRefs = useRef([]);
  const cardRefs = useRef([]);
@@ -77,7 +77,7 @@ const State = ({ bgColor ="bg-white", cards = [] }) => {
  <section
  id="state"
  ref={sectionRef}
- className={`main ${bgColor} py-[7%] max-sm:py-[15%]`}
+ className={`main bg-white py-[7%] max-sm:py-[15%]`}
  >
  <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw]">
  {cards.map((item, index) => (
@@ -113,7 +113,7 @@ const State = ({ bgColor ="bg-white", cards = [] }) => {
  );
 };
 
-export default State;
+export default ScrollStackComp;
 
 const Card = ({ title, description, bgColor, textColor, cardRef }) => {
  return (
