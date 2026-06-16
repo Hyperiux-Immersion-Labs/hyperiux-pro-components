@@ -1,56 +1,56 @@
-'use client'
+"use client";
 
-import { TransitionRouter } from 'next-transition-router'
-import { useCallback, useEffect, useRef } from 'react'
-import gsap from 'gsap'
+import { TransitionRouter } from "next-transition-router";
+import { useCallback, useEffect, useRef } from "react";
+import gsap from "gsap";
 
-const DURATION_LEAVE = 0.6
-const DURATION_ENTER = 0.4
-const COLOR = '#111111'
+const DURATION_LEAVE = 0.6;
+const DURATION_ENTER = 0.4;
+const COLOR = "#111111";
 
-// Generate a seeded deterministic shuffle for consistent pixel order per session
 function generatePixelOrder(cols, rows, seed = 42) {
-  const total = cols * rows
-  const indices = Array.from({ length: total }, (_, i) => i)
-  // Simple seeded LCG shuffle
-  let s = seed
+  const total = cols * rows;
+  const indices = Array.from({ length: total }, (_, i) => i);
+
+  let s = seed;
+
   const rand = () => {
-    s = (s * 1664525 + 1013904223) & 0xffffffff
-    return (s >>> 0) / 0xffffffff
-  }
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+
   for (let i = total - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1))
-    ;[indices[i], indices[j]] = [indices[j], indices[i]]
+    const j = Math.floor(rand() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
   }
-  return indices
+
+  return indices;
 }
 
 function easeInOutQuad(t) {
-  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-}
-
-function easeInQuart(t) {
-  return t * t * t * t
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
 function easeOutQuart(t) {
-  return 1 - (--t) * t * t * t
+  return 1 - --t * t * t * t;
 }
 
 const getCols = () => {
-  if (window.innerWidth < 640) return 12
-  if (window.innerWidth < 1025) return 24
-  return 30
-}
+  if (window.innerWidth < 640) return 12;
+  if (window.innerWidth < 1025) return 24;
+  return 30;
+};
 
 const getRows = () => {
-  if (window.innerWidth < 640) return 22
+  if (window.innerWidth < 640) return 22;
+
   if (window.innerWidth < 1025) {
-    const cols = getCols()
-    return Math.round(window.innerHeight / (window.innerWidth / cols))
+    const cols = getCols();
+    return Math.round(window.innerHeight / (window.innerWidth / cols));
   }
-  return 20
-}
+
+  return 20;
+};
 
 export default function PixelRandom({
   children,
@@ -58,134 +58,194 @@ export default function PixelRandom({
   durationLeave = DURATION_LEAVE,
   durationEnter = DURATION_ENTER,
 }) {
-  const wrapperRef = useRef(null)
-  const canvasRef = useRef(null)
-  const tweenRef = useRef(null)
-  const stateRef = useRef({ progress: 0 })
-  const pixelOrderRef = useRef(null)
+  const wrapperRef = useRef(null);
+  const canvasRef = useRef(null);
+  const tweenRef = useRef(null);
+  const stateRef = useRef({ progress: 0 });
+  const pixelOrderRef = useRef(null);
 
   const resizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const dpr = window.devicePixelRatio || 1
-    const w = window.innerWidth
-    const h = window.innerHeight
-    canvas.width = Math.ceil(w * dpr)
-    canvas.height = Math.ceil(h * dpr)
-    canvas.style.width = `${w}px`
-    canvas.style.height = `${h}px`
-    const ctx = canvas.getContext('2d')
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    const canvas = canvasRef.current;
 
-    // Regenerate pixel order on resize
-    const cols = getCols()
-    const rows = getRows()
-    pixelOrderRef.current = generatePixelOrder(cols, rows)
-  }, [])
+    if (!canvas) return;
 
-  // Draw the pixel grid at a given progress (0 = empty, 1 = full)
-  // isEnter = true means we're revealing (dissolving away pixels)
-  const drawPixels = (canvas, progress, isEnter) => {
-    if (!canvas) return
+    const dpr = window.devicePixelRatio || 1;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    const ctx = canvas.getContext('2d')
-    const w = canvas.clientWidth
-    const h = canvas.clientHeight
-    const cols = getCols()
-    const rows = getRows()
+    canvas.width = Math.ceil(w * dpr);
+    canvas.height = Math.ceil(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
 
-    const cellW = w / cols
-    const cellH = h / rows
-    const total = cols * rows
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    ctx.clearRect(0, 0, w, h)
-    ctx.fillStyle = color
+    const cols = getCols();
+    const rows = getRows();
 
-    const order = pixelOrderRef.current
-    if (!order || order.length !== total) {
-      pixelOrderRef.current = generatePixelOrder(cols, rows)
-    }
+    pixelOrderRef.current = generatePixelOrder(cols, rows);
+  }, []);
 
-    // Each pixel gets a staggered trigger based on its position in the random order
-    // Pixels appear/disappear at different rates to create organic spread effect
-    for (let i = 0; i < total; i++) {
-      const idx = order ? order[i] : i
-      const c = idx % cols
-      const r = Math.floor(idx / cols)
+  const drawPixels = useCallback(
+    (canvas, progress, isEnter) => {
+      if (!canvas) return;
 
-      // Stagger: earlier pixels in the order appear first
-      // Use a wave-like stagger with slight clustering
-      const normalizedPos = i / total
+      const ctx = canvas.getContext("2d");
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const cols = getCols();
+      const rows = getRows();
+      const total = cols * rows;
 
-      // Add slight randomness via pixel position hash to break up uniformity
-      const posHash = ((c * 7 + r * 13) % 23) / 23
-      const staggerStart = normalizedPos * 0.92 + posHash * 0.04
-      const staggerEnd = staggerStart + 0.08
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 1;
 
-      let local = (progress - staggerStart) / (staggerEnd - staggerStart)
-      local = Math.max(0, Math.min(1, local))
+      /**
+       * Hard states.
+       * These prevent the transition from stopping at 90–95% coverage.
+       */
+      if (!isEnter && progress >= 0.999) {
+        ctx.fillRect(0, 0, w, h);
+        return;
+      }
 
-      const easedLocal = isEnter ? easeOutQuart(local) : easeInOutQuad(local)
-      const opacity = isEnter ? 1 - easedLocal : easedLocal
+      if (isEnter && progress <= 0.001) {
+        ctx.fillRect(0, 0, w, h);
+        return;
+      }
 
-      if (opacity < 0.01) continue
+      if (
+        !pixelOrderRef.current ||
+        pixelOrderRef.current.length !== total
+      ) {
+        pixelOrderRef.current = generatePixelOrder(cols, rows);
+      }
 
-      const x1 = Math.floor(c * cellW)
-      const x2 = Math.ceil((c + 1) * cellW)
-      const y1 = Math.floor(r * cellH)
-      const y2 = Math.ceil((r + 1) * cellH)
+      const order = pixelOrderRef.current;
 
-      ctx.globalAlpha = opacity
-      ctx.fillRect(x1, y1, x2 - x1, y2 - y1)
-    }
-    ctx.globalAlpha = 1
-  }
+      const cellW = w / cols;
+      const cellH = h / rows;
 
-  const animatePixels = ({ from, to, duration, isEnter, onComplete }) => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      onComplete()
-      return null
-    }
+      for (let i = 0; i < total; i++) {
+        const idx = order[i];
+        const c = idx % cols;
+        const r = Math.floor(idx / cols);
 
-    canvas.style.opacity = '1'
-    stateRef.current.progress = from
-    drawPixels(canvas, from, isEnter)
+        const normalizedPos = total <= 1 ? 0 : i / (total - 1);
+        const posHash = ((c * 7 + r * 13) % 23) / 23;
 
-    tweenRef.current?.kill()
+        /**
+         * Important:
+         * staggerStart + staggerWindow must never exceed 1.
+         * This guarantees every pixel reaches full opacity at progress 1.
+         */
+        const staggerWindow = 0.12;
+        const staggerStart =
+          normalizedPos * (1 - staggerWindow) + posHash * 0.015;
+        const safeStaggerStart = Math.min(staggerStart, 1 - staggerWindow);
+        const staggerEnd = safeStaggerStart + staggerWindow;
 
-    const tween = gsap.to(stateRef.current, {
-      progress: to,
-      duration,
-      ease: 'none',
-      onUpdate: () => drawPixels(canvas, stateRef.current.progress, isEnter),
-      onComplete: () => {
-        drawPixels(canvas, to, isEnter)
-        if (isEnter) canvas.style.opacity = '0'
-        onComplete()
-      },
-    })
+        let local =
+          (progress - safeStaggerStart) / (staggerEnd - safeStaggerStart);
 
-    tweenRef.current = tween
-    return tween
-  }
+        local = Math.max(0, Math.min(1, local));
+
+        const easedLocal = isEnter ? easeOutQuart(local) : easeInOutQuad(local);
+        const opacity = isEnter ? 1 - easedLocal : easedLocal;
+
+        if (opacity < 0.01) continue;
+
+        const x1 = Math.floor(c * cellW);
+        const x2 = Math.ceil((c + 1) * cellW);
+        const y1 = Math.floor(r * cellH);
+        const y2 = Math.ceil((r + 1) * cellH);
+
+        ctx.globalAlpha = opacity;
+        ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+      }
+
+      ctx.globalAlpha = 1;
+    },
+    [color]
+  );
+
+  const animatePixels = useCallback(
+    ({ from, to, duration, isEnter, onComplete }) => {
+      const canvas = canvasRef.current;
+
+      if (!canvas) {
+        onComplete?.();
+        return null;
+      }
+
+      canvas.style.opacity = "1";
+      stateRef.current.progress = from;
+
+      drawPixels(canvas, from, isEnter);
+
+      tweenRef.current?.kill();
+
+      const tween = gsap.to(stateRef.current, {
+        progress: to,
+        duration,
+        ease: "none",
+        onUpdate: () => {
+          drawPixels(canvas, stateRef.current.progress, isEnter);
+        },
+        onComplete: () => {
+          stateRef.current.progress = to;
+          drawPixels(canvas, to, isEnter);
+
+          if (isEnter) {
+            canvas.style.opacity = "0";
+          } else {
+            canvas.style.opacity = "1";
+          }
+
+          onComplete?.();
+        },
+      });
+
+      tweenRef.current = tween;
+
+      return tween;
+    },
+    [drawPixels]
+  );
 
   useEffect(() => {
-    resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
+    resizeCanvas();
+
+    window.addEventListener("resize", resizeCanvas);
+
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
-      tweenRef.current?.kill()
-    }
-  }, [resizeCanvas])
+      window.removeEventListener("resize", resizeCanvas);
+      tweenRef.current?.kill();
+    };
+  }, [resizeCanvas]);
 
   return (
     <TransitionRouter
       auto
       leave={(next) => {
-        const timeline = gsap.timeline({ onComplete: next })
+        const timeline = gsap.timeline({ onComplete: next });
 
-        timeline.fromTo(wrapperRef.current, { opacity: 1, y: 0 }, { opacity: 0, duration: durationLeave, y: -50 }, 0)
+        timeline.fromTo(
+          wrapperRef.current,
+          {
+            opacity: 1,
+            y: 0,
+          },
+          {
+            opacity: 0,
+            duration: durationLeave,
+            y: -50,
+            ease: "power2.inOut",
+          },
+          0
+        );
 
         const tween = animatePixels({
           from: 0,
@@ -193,28 +253,32 @@ export default function PixelRandom({
           duration: durationLeave,
           isEnter: false,
           onComplete: () => {},
-        })
+        });
 
         return () => {
-          timeline.kill()
-          tween?.kill()
-        }
+          timeline.kill();
+          tween?.kill();
+        };
       }}
       enter={(next) => {
-        const timeline = gsap.timeline({ onComplete: next })
+        const timeline = gsap.timeline({ onComplete: next });
 
         timeline.fromTo(
           wrapperRef.current,
-          { opacity: 0, y: 50 },
+          {
+            opacity: 0,
+            y: 50,
+          },
           {
             opacity: 1,
             duration: durationEnter,
             delay: durationLeave,
             y: 0,
-            clearProps: 'all',
+            ease: "power2.out",
+            clearProps: "all",
           },
           0
-        )
+        );
 
         const tween = animatePixels({
           from: 0,
@@ -222,17 +286,17 @@ export default function PixelRandom({
           duration: durationEnter,
           isEnter: true,
           onComplete: () => {},
-        })
+        });
 
         return () => {
-          timeline.kill()
-          tween?.kill()
-        }
+          timeline.kill();
+          tween?.kill();
+        };
       }}
     >
       <canvas
         ref={canvasRef}
-        className="pointer-events-none fixed top-0 left-0 z-999 h-screen w-screen opacity-0"
+        className="pointer-events-none fixed left-0 top-0 z-999 h-screen w-screen opacity-0"
       />
 
       <div className="relative z-2 h-full w-full">
@@ -241,5 +305,5 @@ export default function PixelRandom({
         </div>
       </div>
     </TransitionRouter>
-  )
+  );
 }

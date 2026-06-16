@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
@@ -17,7 +17,6 @@ import {
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
-import Footer from "@/components/LandingPage/Footer";
 import FAQSection from "@/components/LandingPage/FAQ";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 
@@ -30,16 +29,16 @@ export function VaultContent({
   fadeUp();
   const pathname = usePathname();
   const isProUser = userPlan === "pro";
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const featuredEffects = useMemo(() => getFeaturedEffects(effects), [effects]);
   const featuredEffectNames = useMemo(
     () => new Set(featuredEffects.map((effect) => effect.name)),
     [featuredEffects],
   );
 
-  const categoryFilter = useMemo(() => {
+  const categoryFromUrl = useMemo(() => {
     const queryCategory = searchParams.get("category");
     if (queryCategory) return queryCategory === "all" ? initialCategory : queryCategory;
 
@@ -48,6 +47,7 @@ export function VaultContent({
 
     return getEffectCategoryBySlug(categorySlug)?.id || initialCategory;
   }, [initialCategory, pathname, searchParams]);
+  const categoryFilter = selectedCategory || categoryFromUrl;
 
   const updateCategoryFilter = useCallback((nextCategory) => {
     const resolvedCategory = nextCategory || "all";
@@ -56,24 +56,26 @@ export function VaultContent({
 
     params.delete("category");
 
-    if (resolvedCategory === "free") {
-      const nextQuery = params.toString();
-      router.push(nextQuery ? `/effects/free?${nextQuery}` : "/effects/free");
-      return;
-    }
-
-    if (resolvedCategory === "featured") {
-      const nextQuery = params.toString();
-      router.push(nextQuery ? `/effects/featured?${nextQuery}` : "/effects/featured");
-      return;
-    }
-
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
     const nextUrl = nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
 
-    router.push(nextUrl);
-  }, [router, searchParams]);
+    setSelectedCategory(resolvedCategory);
+
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", nextUrl);
+    }
+  }, [searchParams]);
+
+  const showAllEffects = useCallback(() => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", "/effects");
+    }
+  }, []);
+
   const quickCategories = useMemo(() => {
     const knownCategories = effectCategories
       .filter((category) => category.id !== "featured" && effectCounts?.[category.id])
@@ -222,9 +224,11 @@ export function VaultContent({
       effectCounts={effectCounts}
       effects={effects}
       activeCategory={categoryFilter}
+      onOverviewNavigate={showAllEffects}
+      onCategoryNavigate={updateCategoryFilter}
     >
       {({ isSidebarOpen }) => (
-      <div className="min-h-screen text-foreground relative ">
+      <div className="min-h-screen text-foreground relative effects-comp ">
         <VaultHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -233,8 +237,11 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16">
-            <HeadAnim>
+          <div
+            key={`category-intro-${categoryFilter}`}
+            className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16"
+          >
+            <HeadAnim animateOnScroll={false}>
               <h1
                 className="mb-4 font-display text110 w-[80%] mx-auto font-normal max-sm:w-[90%]  text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.1" }}
@@ -243,7 +250,7 @@ export function VaultContent({
               </h1>
             </HeadAnim>
             <div>
-              <Copy delay={0.3}>
+              <Copy animateOnScroll={false} delay={0.3}>
                 <p className="max-w-[65vw] max-md:max-w-full mx-auto text-lg text-muted max-sm:text-base">
                   {activeCategoryDescription}
                 </p>
@@ -256,7 +263,6 @@ export function VaultContent({
   
         <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20 max-md:pt-10">
           <div className="relative max-md:w-full">
-            {/* Right fade hint on mobile/tablet */}
             <div
               className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 hidden max-md:block"
               style={{
@@ -310,31 +316,7 @@ export function VaultContent({
                       {label}
                     </span>
 
-                    {/* <span
-                      className={`
-      absolute right-5 top-1/2 -translate-y-1/2
-      flex items-center overflow-hidden
-      transition-all duration-300 ease-in-out
-      ${isSelected
-                          ? "opacity-100 scale-100 delay-150"
-                          : "opacity-0 scale-75 delay-0"
-                        }
-    `}
-                    >
-                      <svg
-                        className="w-4 h-4 shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </span> */}
+                    
                   </button>
                 );
               })}
@@ -349,11 +331,7 @@ export function VaultContent({
               : "mb-0 min-h-0 opacity-0 pointer-events-none"
               }`}
           >
-            {/* {searchQuery && (
-              <span className="text-sm text-muted font-sans max-sm:text-xs">
-                Showing {filteredEffects.length} of {totalEffects} effects
-              </span>
-            )} */}
+           
             {searchQuery && (
               <>
                 <span
@@ -412,9 +390,6 @@ export function VaultContent({
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
-        <div className="">
-          <Footer/>
-        </div>
       </div>
       )}
     </VaultLayout>

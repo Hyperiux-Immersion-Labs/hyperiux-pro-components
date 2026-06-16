@@ -88,7 +88,6 @@ export default async function EffectsCategoryPage({ params }) {
   return (
     <Suspense fallback={<VaultFallback />}>
       <VaultContent
-        key={isFreeListing ? "free" : isFeaturedListing ? "featured" : category.id}
         effects={sortedEffects}
         effectCounts={effectCounts}
         initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : category.id}
