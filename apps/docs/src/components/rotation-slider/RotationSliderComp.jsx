@@ -158,10 +158,12 @@ export function RotationSliderComp({ images }) {
 
     return (
         <div ref={outerRef} className="relative bg-white">
+            
             <div
                 className="sticky top-0 flex h-screen items-center overflow-hidden"
                 style={{ perspective: "1200px" }}
             >
+              
                 <div
                     ref={trackRef}
                     className="

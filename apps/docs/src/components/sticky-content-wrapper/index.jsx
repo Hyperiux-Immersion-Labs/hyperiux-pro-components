@@ -1,5 +1,5 @@
-import { StickyContentWrapper } from "./StickyContentWrapper";
 import { ReactLenis } from"lenis/react";
+import { StickyContentComp } from "./StickyContentComp";
 
 const stickyItems = [
  {
@@ -55,11 +55,11 @@ const stickyItems = [
  },
 ];
 
-export function StickyContent() {
+export function StickyContentWrapper() {
  return (
  <ReactLenis root>
  <section className="bg-white">
- <StickyContentWrapper
+ <StickyContentComp
  items={stickyItems}
  className=""
  leftClassName="text-black"

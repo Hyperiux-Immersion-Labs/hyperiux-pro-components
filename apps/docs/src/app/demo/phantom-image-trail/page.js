@@ -1,4 +1,4 @@
-import { PhantomImage } from "@/components/phantom-image-trail";
+import PhantomImageTrail from "@/components/phantom-image-trail";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import React from "react";
 
@@ -29,7 +29,7 @@ const page = () => {
                     </span>
                 </p>
             </div>
-            <PhantomImage
+            <PhantomImageTrail
                 images={images}
                 enableRotation={true}
                 idleSpawn={false}

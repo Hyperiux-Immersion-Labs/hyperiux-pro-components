@@ -1,5 +1,4 @@
-import dynamic from 'next/dynamic'
-import { MilkyWay } from '@/components/milkyway'
+import MilkyWay from "@/components/milkyway"
 
 
 const page = () => {

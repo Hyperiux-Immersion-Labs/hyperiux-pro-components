@@ -119,12 +119,12 @@ export function PixelateSvgFilter({
  );
 }
 
-export function PixelatedImageEffect({
+export default function PixelatedImageEffect({
  src ="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
  alt ="Pixelated nature scene",
  priority = true,
  imageClassName ="",
- heading ="Slide left for a clear image, right for more pixelation.",
+  heading ="Move cursor left in the image block for a clear image, right for more pixelation.",
 }) {
  const imageRef = useRef(null);
  const isTouching = useRef(false);
@@ -193,4 +193,4 @@ export function PixelatedImageEffect({
  );
 }
 
-export default PixelateSvgFilter;
+

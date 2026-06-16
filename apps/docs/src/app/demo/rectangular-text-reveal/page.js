@@ -1,6 +1,6 @@
-import { RectangularTextReveal as TextBlockReveal } from"@/components/rectangular-text-reveal";
 import React from"react";
 import { ReactLenis } from"lenis/react";
+import RectangularTextReveal from "@/components/rectangular-text-reveal";
 
 const showcaseSections = [
  {
@@ -51,7 +51,7 @@ export default function Page() {
  Rectangular Text Reveal
  </p>
 
- <TextBlockReveal
+ <RectangularTextReveal
  overlayEnterDuration={0.35}
  overlayExitDuration={0.35}
  direction="bottom"
@@ -65,10 +65,12 @@ export default function Page() {
  A directional rectangular reveal built for expressive,
  editorial motion systems.
  </h1>
- </TextBlockReveal>
+
+ </RectangularTextReveal>
+
 
  <div className="max-w-160">
- <TextBlockReveal
+ <RectangularTextReveal
  baseColor="#111111"
  coverDuration={0.32}
  direction="left"
@@ -81,7 +83,7 @@ export default function Page() {
  different, so the component reads like a flexible motion
  primitive instead of a one-note effect.
  </p>
- </TextBlockReveal>
+ </RectangularTextReveal>
  </div>
  </div>
  </section>
@@ -105,7 +107,7 @@ export default function Page() {
  </div>
 
  <div className="flex flex-col gap-6">
- <TextBlockReveal
+ <RectangularTextReveal
  direction={section.direction}
  baseColor={section.baseColor}
  overlayColor={section.overlayColor}
@@ -118,10 +120,10 @@ export default function Page() {
  <h2 className="max-w-3xl text-[clamp(2rem,4.3vw,4.75rem)] leading-[1.02] font-semibold">
  {section.title}
  </h2>
- </TextBlockReveal>
+ </RectangularTextReveal>
 
  <div className="max-w-136">
- <TextBlockReveal
+ <RectangularTextReveal
  direction={section.direction}
  baseColor={section.baseColor}
  overlayColor={section.overlayColor}
@@ -133,7 +135,7 @@ export default function Page() {
  <p className="text-[clamp(1rem,1.35vw,1.2rem)] leading-[1.75] text-black/70">
  {section.body}
  </p>
- </TextBlockReveal>
+ </RectangularTextReveal>
  </div>
  </div>
  </div>

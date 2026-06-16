@@ -1,6 +1,6 @@
 
 import React from "react";
-import { StackHoveredCards } from "./StackedHoverCards";
+import HoverStackComp from "./HoverStackComp";
 
 const cards = [
     {
@@ -70,7 +70,7 @@ const HoverStack = () => {
 
                 </div>
 
-                <StackHoveredCards
+                <HoverStackComp
                     cards={cards}
                     cardWidth={280}
                     cardHeight={360}

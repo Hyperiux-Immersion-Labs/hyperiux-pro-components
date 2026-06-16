@@ -3,8 +3,8 @@
 import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ArrowFillButton } from "@/components/arrow-fill-button";
-import { LinkButton } from "@/components/link-button";
+import LinkButton from "../link-button";
+import { ArrowFillButton } from "../arrow-fill-button";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
