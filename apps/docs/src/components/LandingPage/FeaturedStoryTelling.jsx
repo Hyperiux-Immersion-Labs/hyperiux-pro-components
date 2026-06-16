@@ -8,7 +8,9 @@ import { SplitText } from "gsap/SplitText";
 import Button from "../Reusable/Button";
 import VaultBox from "../Reusable/VaultBoxes";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 
 const IMAGES = [
     "/img/1.png",
@@ -43,6 +45,28 @@ function seededRand(seed, min, max) {
 
 const CARD_CONFIGS = IMAGES.map((src) => ({ src }));
 
+const CARD_META = IMAGES.map((_, i) => {
+    const category = Math.floor(seededRand(i + 2157, 0, 3));
+    let scale = 1;
+    let blur = 0;
+
+    if (category === 0) {
+        // Small (0.3 size)
+        scale = seededRand(i + 45, 0.3, 0.35);
+        blur = 0;
+    } else if (category === 1) {
+        // Middle (0.5 size)
+        scale = seededRand(i + 45, 0.45, 0.55);
+        blur = 2.5;
+    } else {
+        // Big (randomized size range, slightly lesser bigger)
+        scale = seededRand(i + 45, 1.1, 1.35);
+        blur = 8.0;
+    }
+
+    return { scale, blur };
+});
+
 
 const BOXES = [
     {
@@ -57,14 +81,14 @@ const BOXES = [
         styles: "w-[25%]",
         img: '/video/2.mp4',
         number: "02",
-        label: "Hover Reveal"
+        label: "Cusor Effects"
     },
     {
         id: "block-top-layer-3",
         styles: "w-[37.5%]",
         img: '/video/3.mp4',
         number: "03",
-        label: "Parallax Layers"
+        label: "WebGL"
     }
 ];
 
@@ -74,21 +98,21 @@ const BOXES_BOTTOM = [
         styles: "w-[20%]",
         img: '/video/4.mp4',
         number: "04",
-        label: "Transitions"
+        label: "Text Animations"
     },
     {
         id: "block-bottom-layer-2",
         styles: "w-[50%]",
         img: '/video/1.mp4',
         number: "05",
-        label: "Text Split"
+        label: "Page Transitions"
     },
     {
         id: "block-bottom-layer-3",
         styles: "w-[30%]",
         img: '/video/6.mp4',
         number: "06",
-        label: "GSAP Magic"
+        label: "Navigations"
     }
 ];
 
@@ -187,7 +211,14 @@ export default function FeaturedStoryTelling() {
         const xSet = cards.map((c) => gsap.quickSetter(c, "x", "px"));
         const ySet = cards.map((c) => gsap.quickSetter(c, "y", "px"));
         const blurSet = cards.map((c) => (v) => (c.style.filter = `blur(${v}px)`));
-        const scaleSet = cards.map((c) => gsap.quickSetter(c, "scale"));
+        const scaleSet = cards.map((c) => {
+            const setX = gsap.quickSetter(c, "scaleX");
+            const setY = gsap.quickSetter(c, "scaleY");
+            return (val) => {
+                setX(val);
+                setY(val);
+            };
+        });
 
         const previousZ = Array(TOTAL).fill(-1);
 
@@ -293,22 +324,8 @@ export default function FeaturedStoryTelling() {
 
                             const yVal = Math.sin(currentAngle);
 
-                            // Determine size/blur level: small, medium, big based on index
-                            let cardBaseScale = 1.0;
-                            let cardBaseBlur = 0;
-                            if (i % 3 === 0) {
-                                // Small
-                                cardBaseScale = 0.65;
-                                cardBaseBlur = 0;
-                            } else if (i % 3 === 1) {
-                                // Medium
-                                cardBaseScale = 1.0;
-                                cardBaseBlur = 2.5;
-                            } else {
-                                // Big
-                                cardBaseScale = 1.45;
-                                cardBaseBlur = 6.0;
-                            }
+                            // Retrieve precomputed size/blur levels
+                            const { scale: cardBaseScale, blur: cardBaseBlur } = CARD_META[i];
 
                             // Interpolate scale from 1.0 to base scale as card flies out
                             const finalBaseScale = 1.0 + (cardBaseScale - 1.0) * easedCardP2;
@@ -408,13 +425,26 @@ export default function FeaturedStoryTelling() {
             );
             masterTL.to(
                 vaultSplit.chars,
-                { color: "#ff5f00", stagger: { amount: 1.5 }, ease: "power4.out", duration: 1.5 },
+                {
+                    keyframes: [
+                        { color: "#ff5f00", duration: 0.02 },
+                        { color: "#ffffff", duration: 0.15 }
+                    ],
+                    stagger: 0.01
+                },
                 11.0
             );
             masterTL.to(
                 vaultMoveSplit.chars,
-                { color: "#ff5f00", stagger: { amount: .1 }, ease: "power4.out", duration: 0.5 },
-                12.6
+                {
+                    keyframes: [
+                        { color: "#ff5f00", duration: 0.02, ease: "power1.out" },
+                        { color: "#ffffff", duration: 0.15, ease: "power1.inOut" }
+                    ],
+                    stagger: { amount: 0.01 },
+                    ease: "none"
+                },
+                12
             );
 
             // 3g. Vault Grid First Text Exit & "move" Text Transition (Duration: 13.8 to 15.0)

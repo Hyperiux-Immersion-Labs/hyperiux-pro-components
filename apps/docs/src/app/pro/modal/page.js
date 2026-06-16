@@ -1,12 +1,11 @@
 "use client";
-
-import DotScaleFillCharBtn from "@/components/Buttons/PrimaryButtons/DotBgFillPrimaryBtn/DotBgFillPrimaryBtn";
 import Image from "next/image";
 import { Modal } from "@/components/Modal/Modal";
 import ScrollablePopupContent from "@/components/ScrollablePopupContent/ScrollablePopupContent";
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 import { useState } from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import DotFillBtn from "@/components/DotFillButton";
 
 const popupSections = [
   {
@@ -129,7 +128,7 @@ export default function Page() {
             </button>
           </div>
 
-          <DotScaleFillCharBtn
+          <DotFillBtn
             href="#"
             onClick={(e) => {
               e.preventDefault();
@@ -162,7 +161,7 @@ export default function Page() {
         showCloseButton={false}
       >
         <VideoPlayer
-          videoSrc="showreel.mp4"
+          videoSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
           poster="/assets/cover-showreel.png"
           onRequestClose={() => setIsOpen(false)}
           showCloseButton

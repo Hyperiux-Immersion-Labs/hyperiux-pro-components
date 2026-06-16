@@ -1,5 +1,4 @@
 "use client";
-
 import { useMemo, useState } from "react";
 import PixelCircle from "./PixelCircle";
 import PixelShift from "./PixelShift";

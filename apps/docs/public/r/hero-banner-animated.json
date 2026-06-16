@@ -61,10 +61,10 @@
       "source": "/601/tvtexture.png"
     },
     {
-      "path": "showreel.mp4",
+      "path": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
       "type": "registry:asset",
-      "target": "public/showreel.mp4",
-      "source": "/showreel.mp4"
+      "target": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
+      "source": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
     },
     {
       "path": "601/normal.webp",

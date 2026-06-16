@@ -10,8 +10,11 @@ import ProjectCard from "../Reusable/ProjectCard";
 import SplitLine from "../Reusable/SplitLine";
 import RandomBlur from "../Reusable/RandomBlur";
 import Button from "../Reusable/Button";
+import TextConvergence from "../Reusable/TextConvergence";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 const agencyProjects = [
     {
@@ -122,6 +125,13 @@ export default function AgencyProofMobile() {
                         <ChevronRight size={32} className="text-white" />
                     </div>
                 </div>
+            </div>
+
+            <div className="w-full flex items-center justify-center min-h-[35vh] py-[10vw] mt-[10vw] select-none">
+                <TextConvergence
+                    text="Prediction is not decoration. It's a core interaction design principle."
+                    className="text140 text-center w-[90vw] leading-[1.1]"
+                />
             </div>
         </section>
     );

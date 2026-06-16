@@ -289,7 +289,7 @@ export default function MyComponent() {
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen  text-foreground">
+      <div className="min-h-screen text-foreground">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}

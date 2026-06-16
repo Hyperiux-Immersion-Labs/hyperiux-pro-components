@@ -58,27 +58,27 @@ void main() {
 `;
 
 const column1Images = [
-  "/assets/img/image01.webp",
-  "/assets/img/image02.webp",
-  "/assets/img/image03.webp",
-  "/assets/img/image04.png",
-  "/assets/img/image05.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
 ];
 
 const column2Images = [
-  "/assets/img/image01.webp",
-  "/assets/img/image02.webp",
-  "/assets/img/image03.webp",
-  "/assets/img/image04.png",
-  "/assets/img/image05.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
 ];
 
 const column3Images = [
-  "/assets/img/image01.webp",
-  "/assets/img/image02.webp",
-  "/assets/img/image03.webp",
-  "/assets/img/image04.png",
-  "/assets/img/image05.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
 ];
 
 const columnImages = [column1Images, column2Images, column3Images];
@@ -104,7 +104,7 @@ function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
-const CurvedSwiperVertical = ({ routes }) => {
+const CurvedPlaneVertical = ({ routes }) => {
   const containerRef = useRef(null);
   const sceneRef = useRef();
   const cameraRef = useRef();
@@ -490,4 +490,4 @@ const CurvedSwiperVertical = ({ routes }) => {
   );
 };
 
-export default CurvedSwiperVertical;
+export default CurvedPlaneVertical;

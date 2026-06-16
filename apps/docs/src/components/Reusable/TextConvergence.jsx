@@ -5,19 +5,21 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 
 export default function TextConvergence({
     text,
     containerAnimation,
     className = "",
-    start = "left 110%",
-    end = "left 80%",
+    start,
+    end,
 }) {
     const textRef = useRef(null);
 
     useEffect(() => {
-        if (!containerAnimation || !textRef.current) return;
+        if (!textRef.current) return;
 
         let split;
         let ctx;
@@ -31,8 +33,11 @@ export default function TextConvergence({
             if (!textEl) return;
 
             split = SplitText.create(textEl, {
-                type: "chars",
+                type: "words,chars",
             });
+
+            const defaultStart = containerAnimation ? "left 110%" : "top 90%";
+            const defaultEnd = containerAnimation ? "left 80%" : "top 60%";
 
             ctx = gsap.context(() => {
                 if (split.chars && Array.isArray(split.chars)) {
@@ -49,9 +54,9 @@ export default function TextConvergence({
                                 ease: "linear",
                                 scrollTrigger: {
                                     trigger: char,
-                                    containerAnimation: containerAnimation,
-                                    start: start,
-                                    end: end,
+                                    containerAnimation: containerAnimation || undefined,
+                                    start: start || defaultStart,
+                                    end: end || defaultEnd,
                                     scrub: true,
                                     markers: false,
                                 },

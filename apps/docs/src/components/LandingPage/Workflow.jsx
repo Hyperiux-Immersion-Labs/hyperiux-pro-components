@@ -59,7 +59,7 @@ export default function Workflow() {
 
                 <div ref={videoRef} className="w-full h-[90vh] max-sm:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
                     {/* <video
-                        src="/showreel.mp4"
+                        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
                         autoPlay
                         loop
                         muted

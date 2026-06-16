@@ -9,7 +9,7 @@ import { EffectComposer, Vignette } from'@react-three/postprocessing'
 import {ArrowRight, Stars } from'lucide-react'
 import Link from'next/link'
 import EdgeBlurEffect from './EdgeBlurEffect'
-import CircularText from'@/components/Valley/CircularText'
+import CircularText from'@/components/ProgressiveBloomValleyComp/CircularText'
 
 
 const CFG = {

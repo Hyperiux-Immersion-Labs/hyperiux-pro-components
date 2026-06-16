@@ -65,11 +65,11 @@ void main() {
 `;
 
 const imagesArr = [
-  "/assets/img/image01.webp",
-  "/assets/img/image02.webp",
-  "/assets/img/image03.webp",
-  "/assets/img/image04.png",
-  "/assets/img/image05.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
 
 ];
 
@@ -103,7 +103,7 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-const CurvedImageSwiper = () => {
+const CurvedPlaneHorizontal = () => {
   const containerRef = useRef(null);
   const meshesRef = useRef([]);
   const sceneRef = useRef();
@@ -495,4 +495,4 @@ const CurvedImageSwiper = () => {
   );
 };
 
-export default CurvedImageSwiper;
+export default CurvedPlaneHorizontal;
