@@ -6,7 +6,7 @@ const PRESET_ROTATIONS = [-8, 4, -3, 5, -4, 6, 3, -6, 2, -5];
 
 const BREAKPOINT = 1025;
 
-const StackHoveredCards = ({
+const HoverStackComp = ({
   cards = [],
   cardWidth = 280,
   cardHeight = 360,
@@ -197,4 +197,4 @@ const StackHoveredCards = ({
   );
 };
 
-export { StackHoveredCards };
+export default HoverStackComp;

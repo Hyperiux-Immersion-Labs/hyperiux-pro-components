@@ -1,84 +1,84 @@
 'use client'
 
-import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from'react'
-import { Canvas, useFrame, useThree } from'@react-three/fiber'
-import { Center } from'@react-three/drei'
-import * as THREE from'three'
-import { degToRad } from'three/src/math/MathUtils'
-import { EffectComposer, Vignette } from'@react-three/postprocessing'
-import {ArrowRight, Stars } from'lucide-react'
-import Link from'next/link'
+import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Center } from '@react-three/drei'
+import * as THREE from 'three'
+import { degToRad } from 'three/src/math/MathUtils'
+import { EffectComposer, Vignette } from '@react-three/postprocessing'
+import { ArrowRight, Stars } from 'lucide-react'
+import Link from 'next/link'
 import EdgeBlurEffect from './EdgeBlurEffect'
-import CircularText from'@/components/ProgressiveBloomValleyComp/CircularText'
+import CircularText from './CircularText'
 
 
 const CFG = {
- texSize: 400,
- maxRadius: 3.5,
- holeRadius: 1.2,
- holeEdgeBand: 1.5,
- arms: 1,
- spiralTightness: 10.75,
- armWidth: 0.38,
- diskHeight: 0.5,
- coreRadius: 0.22,
- coreHeight: 0.28,
- seed: 91,
- colorParticleRatio: 0.01,
- baseSize: 8,
- sparkleSize: 12.0,
- twinkleSpeed: 4.5,
- colorLevels: {
- core: 1.15,
- mid: 1.0,
- outer: 0.9,
- sparkle: 1.1,
- },
- colors: {
- core: [0.96, 0.96, 1.0],
- mid: [1.0, 0.9, 0.68],
- outer: [0.88, 0.36, 0.07],
- sparkleA: [0.4, 0.78, 1.0],
- sparkleB: [0.25, 0.95, 0.88],
- sparkleC: [1.0, 0.85, 0.25],
- sparkleD: [1.0, 0.22, 0.06],
- sparkleE: [0.65, 0.3, 1.0],
- },
+   texSize: 400,
+   maxRadius: 3.5,
+   holeRadius: 1.2,
+   holeEdgeBand: 1.5,
+   arms: 1,
+   spiralTightness: 10.75,
+   armWidth: 0.38,
+   diskHeight: 0.5,
+   coreRadius: 0.22,
+   coreHeight: 0.28,
+   seed: 91,
+   colorParticleRatio: 0.01,
+   baseSize: 8,
+   sparkleSize: 12.0,
+   twinkleSpeed: 4.5,
+   colorLevels: {
+      core: 1.15,
+      mid: 1.0,
+      outer: 0.9,
+      sparkle: 1.1,
+   },
+   colors: {
+      core: [0.96, 0.96, 1.0],
+      mid: [1.0, 0.9, 0.68],
+      outer: [0.88, 0.36, 0.07],
+      sparkleA: [0.4, 0.78, 1.0],
+      sparkleB: [0.25, 0.95, 0.88],
+      sparkleC: [1.0, 0.85, 0.25],
+      sparkleD: [1.0, 0.22, 0.06],
+      sparkleE: [0.65, 0.3, 1.0],
+   },
 }
 
 const SMOKE_CFG = {
- texSize: 50,
- maxRadius: 3.5,
- holeRadius: 1.2,
- holeEdgeBand: 1.5,
- arms: 2,
- spiralTightness: 10.75,
- armWidth: 0.9,
- diskHeight: 0.18,
- orbSpeedBase: 0.2,
- noiseScale: 0.0,
- noiseStrength: 0.01,
- noiseSpeed: 0.0,
- tangentFlow: 0.3,
- armRestore: 1.7,
- radialRestore: 0.8,
- particleSize: 92.0,
- opacity: 0.05,
- colorLevels: {
- core: 1.25,
- cyan: 1.05,
- magenta: 1.1,
- violet: 0.95,
- outer: 0.75,
- },
- colors: {
- core: [0.98, 0.97, 1.0],
- cyan: [0.32, 0.84, 1.0],
- magenta: [0.96, 0.42, 1.0],
- violet: [0.52, 0.38, 0.95],
- outer: [0.18, 0.24, 0.58],
- },
- seed: 7777,
+   texSize: 50,
+   maxRadius: 3.5,
+   holeRadius: 1.2,
+   holeEdgeBand: 1.5,
+   arms: 2,
+   spiralTightness: 10.75,
+   armWidth: 0.9,
+   diskHeight: 0.18,
+   orbSpeedBase: 0.2,
+   noiseScale: 0.0,
+   noiseStrength: 0.01,
+   noiseSpeed: 0.0,
+   tangentFlow: 0.3,
+   armRestore: 1.7,
+   radialRestore: 0.8,
+   particleSize: 92.0,
+   opacity: 0.05,
+   colorLevels: {
+      core: 1.25,
+      cyan: 1.05,
+      magenta: 1.1,
+      violet: 0.95,
+      outer: 0.75,
+   },
+   colors: {
+      core: [0.98, 0.97, 1.0],
+      cyan: [0.32, 0.84, 1.0],
+      magenta: [0.96, 0.42, 1.0],
+      violet: [0.52, 0.38, 0.95],
+      outer: [0.18, 0.24, 0.58],
+   },
+   seed: 7777,
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -389,339 +389,339 @@ void main(){
 // Inline GPUCompute
 // ─────────────────────────────────────────────────────────────
 class GPUCompute {
- constructor(w, h, renderer) {
- this.w = w
- this.h = h
- this.gl = renderer
- this.vars = {}
- // Re-use PlaneGeometry and OrthographicCamera instead of newing every frame
- if (!GPUCompute.sharedGeo) GPUCompute.sharedGeo = new THREE.PlaneGeometry(2, 2)
- if (!GPUCompute.sharedCam) GPUCompute.sharedCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
- if (!GPUCompute.sharedScene) GPUCompute.sharedScene = new THREE.Scene()
- this._geo = GPUCompute.sharedGeo
- this._cam = GPUCompute.sharedCam
- this._scene = GPUCompute.sharedScene
- }
+   constructor(w, h, renderer) {
+      this.w = w
+      this.h = h
+      this.gl = renderer
+      this.vars = {}
+      // Re-use PlaneGeometry and OrthographicCamera instead of newing every frame
+      if (!GPUCompute.sharedGeo) GPUCompute.sharedGeo = new THREE.PlaneGeometry(2, 2)
+      if (!GPUCompute.sharedCam) GPUCompute.sharedCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+      if (!GPUCompute.sharedScene) GPUCompute.sharedScene = new THREE.Scene()
+      this._geo = GPUCompute.sharedGeo
+      this._cam = GPUCompute.sharedCam
+      this._scene = GPUCompute.sharedScene
+   }
 
- _rt() {
- return new THREE.WebGLRenderTarget(this.w, this.h, {
- wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping,
- minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
- format: THREE.RGBAFormat, type: THREE.FloatType,
- depthBuffer: false, stencilBuffer: false,
- })
- }
+   _rt() {
+      return new THREE.WebGLRenderTarget(this.w, this.h, {
+         wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping,
+         minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+         format: THREE.RGBAFormat, type: THREE.FloatType,
+         depthBuffer: false, stencilBuffer: false,
+      })
+   }
 
- addVar(name, fragShader, initTex) {
- const simMat = new THREE.ShaderMaterial({
- uniforms: {
- uPosition: { value: initTex },
- uData: { value: null },
- uDelta: { value: 0 },
- uTime: { value: 0 },
- },
- vertexShader: /* glsl */`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
- fragmentShader: fragShader,
- })
- const rtA = this._rt(), rtB = this._rt()
- // One-time initTex → rtA
- const blit = new THREE.Mesh(this._geo, new THREE.MeshBasicMaterial({ map: initTex }))
- this._scene.add(blit)
- this.gl.setRenderTarget(rtA); this.gl.render(this._scene, this._cam)
- this._scene.remove(blit); blit.material.dispose()
- this.gl.setRenderTarget(null)
- this.vars[name] = { simMat, mesh: new THREE.Mesh(this._geo, simMat), rtA, rtB }
- return this.vars[name]
- }
+   addVar(name, fragShader, initTex) {
+      const simMat = new THREE.ShaderMaterial({
+         uniforms: {
+            uPosition: { value: initTex },
+            uData: { value: null },
+            uDelta: { value: 0 },
+            uTime: { value: 0 },
+         },
+         vertexShader: /* glsl */`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
+         fragmentShader: fragShader,
+      })
+      const rtA = this._rt(), rtB = this._rt()
+      // One-time initTex → rtA
+      const blit = new THREE.Mesh(this._geo, new THREE.MeshBasicMaterial({ map: initTex }))
+      this._scene.add(blit)
+      this.gl.setRenderTarget(rtA); this.gl.render(this._scene, this._cam)
+      this._scene.remove(blit); blit.material.dispose()
+      this.gl.setRenderTarget(null)
+      this.vars[name] = { simMat, mesh: new THREE.Mesh(this._geo, simMat), rtA, rtB }
+      return this.vars[name]
+   }
 
- compute(name, time, delta, dataTex) {
- const v = this.vars[name]
- v.simMat.uniforms.uTime.value = time
- v.simMat.uniforms.uDelta.value = delta
- v.simMat.uniforms.uData.value = dataTex
- // swap ping-pong
- const tmp = v.rtA; v.rtA = v.rtB; v.rtB = tmp
- v.simMat.uniforms.uPosition.value = v.rtB.texture
- this._scene.add(v.mesh)
- this.gl.setRenderTarget(v.rtA); this.gl.render(this._scene, this._cam)
- this._scene.remove(v.mesh)
- this.gl.setRenderTarget(null)
- return v.rtA.texture
- }
+   compute(name, time, delta, dataTex) {
+      const v = this.vars[name]
+      v.simMat.uniforms.uTime.value = time
+      v.simMat.uniforms.uDelta.value = delta
+      v.simMat.uniforms.uData.value = dataTex
+      // swap ping-pong
+      const tmp = v.rtA; v.rtA = v.rtB; v.rtB = tmp
+      v.simMat.uniforms.uPosition.value = v.rtB.texture
+      this._scene.add(v.mesh)
+      this.gl.setRenderTarget(v.rtA); this.gl.render(this._scene, this._cam)
+      this._scene.remove(v.mesh)
+      this.gl.setRenderTarget(null)
+      return v.rtA.texture
+   }
 
- dispose() {
- Object.values(this.vars).forEach(v => {
- v.rtA.dispose(); v.rtB.dispose(); v.simMat.dispose(); v.mesh.geometry.dispose()
- })
- /* Do not dispose static geo/cam/scene, they are shared */
- }
+   dispose() {
+      Object.values(this.vars).forEach(v => {
+         v.rtA.dispose(); v.rtB.dispose(); v.simMat.dispose(); v.mesh.geometry.dispose()
+      })
+      /* Do not dispose static geo/cam/scene, they are shared */
+   }
 }
 
 // ─────────────────────────────────────────────────────────────
 // Seeded RNG (mulberry32)
 // ─────────────────────────────────────────────────────────────
 function mulberry32(seed) {
- let t = seed >>> 0
- return () => {
- t += 0x6D2B79F5
- let r = Math.imul(t ^ (t >>> 15), 1 | t)
- r ^= r + Math.imul(r ^ (r >>> 7), 61 | r)
- return ((r ^ (r >>> 14)) >>> 0) / 4294967296
- }
+   let t = seed >>> 0
+   return () => {
+      t += 0x6D2B79F5
+      let r = Math.imul(t ^ (t >>> 15), 1 | t)
+      r ^= r + Math.imul(r ^ (r >>> 7), 61 | r)
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296
+   }
 }
 
 // ─────────────────────────────────────────────────────────────
 // Build DataTextures for initial positions and static data
 // ─────────────────────────────────────────────────────────────
 function buildTextures(cfg) {
- const { texSize: S, maxRadius, holeRadius, holeEdgeBand, arms, spiralTightness, armWidth,
- diskHeight, coreRadius, coreHeight, seed } = cfg
+   const { texSize: S, maxRadius, holeRadius, holeEdgeBand, arms, spiralTightness, armWidth,
+      diskHeight, coreRadius, coreHeight, seed } = cfg
 
- const total = S * S
- const posArr = new Float32Array(total * 4)
- const dataArr = new Float32Array(total * 4)
+   const total = S * S
+   const posArr = new Float32Array(total * 4)
+   const dataArr = new Float32Array(total * 4)
 
- const rand = mulberry32(seed)
+   const rand = mulberry32(seed)
 
- for (let i = 0; i < total; i++) {
- const r0 = rand()
- let r, radiusFrac, inBulge = false
- if (r0 < 0.18) {
- r = Math.abs(rand() + rand() + rand() - 1.5) * coreRadius * 1.1
- inBulge = true
- } else {
- r = -Math.log(1.0 - rand() * 0.9999) * (maxRadius * 0.35)
- r = Math.min(r, maxRadius)
- }
+   for (let i = 0; i < total; i++) {
+      const r0 = rand()
+      let r, radiusFrac, inBulge = false
+      if (r0 < 0.18) {
+         r = Math.abs(rand() + rand() + rand() - 1.5) * coreRadius * 1.1
+         inBulge = true
+      } else {
+         r = -Math.log(1.0 - rand() * 0.9999) * (maxRadius * 0.35)
+         r = Math.min(r, maxRadius)
+      }
 
- let inHoleEdge = false
- if (r < holeRadius) {
- r = holeRadius + rand() * holeEdgeBand
- inBulge = false
- inHoleEdge = true
- }
- radiusFrac = Math.min(r / maxRadius, 1.0)
- const armIdx = Math.floor(rand() * arms)
- const armBase = (armIdx / arms) * Math.PI * 2
+      let inHoleEdge = false
+      if (r < holeRadius) {
+         r = holeRadius + rand() * holeEdgeBand
+         inBulge = false
+         inHoleEdge = true
+      }
+      radiusFrac = Math.min(r / maxRadius, 1.0)
+      const armIdx = Math.floor(rand() * arms)
+      const armBase = (armIdx / arms) * Math.PI * 2
 
- let g = rand() + rand() + rand()
- g = (g / 3 - 0.5) * 2.0
- const scatter = armWidth * r * (inBulge ? 3.0 : 1.0)
+      let g = rand() + rand() + rand()
+      g = (g / 3 - 0.5) * 2.0
+      const scatter = armWidth * r * (inBulge ? 3.0 : 1.0)
 
- const theta = inHoleEdge
- ? (rand() * Math.PI * 2 + g * (armWidth * holeRadius * 3.0))
- : (armBase + r * spiralTightness + g * scatter)
+      const theta = inHoleEdge
+         ? (rand() * Math.PI * 2 + g * (armWidth * holeRadius * 3.0))
+         : (armBase + r * spiralTightness + g * scatter)
 
- let gz = rand() + rand() + rand()
- gz = (gz / 3 - 0.5) * 2.0
- const zScale = inBulge ? coreHeight : diskHeight * (0.5 + radiusFrac * 0.5)
- const z = gz * zScale
+      let gz = rand() + rand() + rand()
+      gz = (gz / 3 - 0.5) * 2.0
+      const zScale = inBulge ? coreHeight : diskHeight * (0.5 + radiusFrac * 0.5)
+      const z = gz * zScale
 
- const x = r * Math.cos(theta)
- const y = r * Math.sin(theta)
- posArr[i * 4] = x
- posArr[i * 4 + 1] = y
- posArr[i * 4 + 2] = z
- posArr[i * 4 + 3] = rand()
- const orbSpeed = inBulge ? 0.55 + rand() * 0.15 : 0.30 + radiusFrac * 0.22 + rand() * 0.08
- dataArr[i * 4] = radiusFrac
- dataArr[i * 4 + 1] = rand()
- dataArr[i * 4 + 2] = orbSpeed
- dataArr[i * 4 + 3] = armIdx / arms
- }
+      const x = r * Math.cos(theta)
+      const y = r * Math.sin(theta)
+      posArr[i * 4] = x
+      posArr[i * 4 + 1] = y
+      posArr[i * 4 + 2] = z
+      posArr[i * 4 + 3] = rand()
+      const orbSpeed = inBulge ? 0.55 + rand() * 0.15 : 0.30 + radiusFrac * 0.22 + rand() * 0.08
+      dataArr[i * 4] = radiusFrac
+      dataArr[i * 4 + 1] = rand()
+      dataArr[i * 4 + 2] = orbSpeed
+      dataArr[i * 4 + 3] = armIdx / arms
+   }
 
- const mkTex = (arr) => {
- const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
- t.needsUpdate = true
- t.minFilter = t.magFilter = THREE.NearestFilter
- return t
- }
+   const mkTex = (arr) => {
+      const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
+      t.needsUpdate = true
+      t.minFilter = t.magFilter = THREE.NearestFilter
+      return t
+   }
 
- return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
+   return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
 }
 
 // ─────────────────────────────────────────────────────────────
 // Build particle geometry (attributes only — positions on GPU)
 // ─────────────────────────────────────────────────────────────
 function buildGeo(cfg) {
- const { texSize: S, maxRadius, holeRadius, coreRadius, seed } = cfg
- const count = S * S
- const refs = new Float32Array(count * 2)
- const rfrac = new Float32Array(count)
- const seeds = new Float32Array(count)
- const colors = new Float32Array(count)
- const rand = mulberry32(seed + 99)
+   const { texSize: S, maxRadius, holeRadius, coreRadius, seed } = cfg
+   const count = S * S
+   const refs = new Float32Array(count * 2)
+   const rfrac = new Float32Array(count)
+   const seeds = new Float32Array(count)
+   const colors = new Float32Array(count)
+   const rand = mulberry32(seed + 99)
 
- for (let i = 0; i < count; i++) {
- refs[i * 2] = ((i % S) + 0.5) / S
- refs[i * 2 + 1] = (Math.floor(i / S) + 0.5) / S
- const r0 = rand()
- let r
- if (r0 < 0.18) {
- r = Math.abs(rand() + rand() + rand() - 1.5) * coreRadius * 1.1
- } else {
- r = -Math.log(1.0 - rand() * 0.9999) * (maxRadius * 0.35)
- r = Math.min(r, maxRadius)
- }
- if (r < holeRadius) {
- r = holeRadius + rand() * 0.06
- }
- rfrac[i] = Math.min(r / maxRadius, 1.0)
- seeds[i] = rand()
- colors[i] = rand()
- }
+   for (let i = 0; i < count; i++) {
+      refs[i * 2] = ((i % S) + 0.5) / S
+      refs[i * 2 + 1] = (Math.floor(i / S) + 0.5) / S
+      const r0 = rand()
+      let r
+      if (r0 < 0.18) {
+         r = Math.abs(rand() + rand() + rand() - 1.5) * coreRadius * 1.1
+      } else {
+         r = -Math.log(1.0 - rand() * 0.9999) * (maxRadius * 0.35)
+         r = Math.min(r, maxRadius)
+      }
+      if (r < holeRadius) {
+         r = holeRadius + rand() * 0.06
+      }
+      rfrac[i] = Math.min(r / maxRadius, 1.0)
+      seeds[i] = rand()
+      colors[i] = rand()
+   }
 
- const geo = new THREE.BufferGeometry()
- geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
- geo.setAttribute('aRef', new THREE.BufferAttribute(refs, 2))
- geo.setAttribute('aRadiusFrac', new THREE.BufferAttribute(rfrac, 1))
- geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1))
- geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 1))
- return geo
+   const geo = new THREE.BufferGeometry()
+   geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+   geo.setAttribute('aRef', new THREE.BufferAttribute(refs, 2))
+   geo.setAttribute('aRadiusFrac', new THREE.BufferAttribute(rfrac, 1))
+   geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1))
+   geo.setAttribute('aColor', new THREE.BufferAttribute(colors, 1))
+   return geo
 }
 
 // ─────────────────────────────────────────────────────────────
 // Build smoke DataTextures (initial positions + static data)
 // ─────────────────────────────────────────────────────────────
 function buildSmokeTextures(cfg) {
- const S = cfg.texSize
- const total = S * S
- const posArr = new Float32Array(total * 4)
- const dataArr = new Float32Array(total * 4)
- const rand = mulberry32(cfg.seed)
+   const S = cfg.texSize
+   const total = S * S
+   const posArr = new Float32Array(total * 4)
+   const dataArr = new Float32Array(total * 4)
+   const rand = mulberry32(cfg.seed)
 
- for (let i = 0; i < total; i++) {
- let r = -Math.log(1.0 - rand() * 0.9999) * (cfg.maxRadius * 0.34)
- r = Math.min(r, cfg.maxRadius)
- let inHoleEdge = false
- if (r < cfg.holeRadius) {
- r = cfg.holeRadius + rand() * cfg.holeEdgeBand
- inHoleEdge = true
- }
- const radiusFrac = Math.min(r / cfg.maxRadius, 1.0)
+   for (let i = 0; i < total; i++) {
+      let r = -Math.log(1.0 - rand() * 0.9999) * (cfg.maxRadius * 0.34)
+      r = Math.min(r, cfg.maxRadius)
+      let inHoleEdge = false
+      if (r < cfg.holeRadius) {
+         r = cfg.holeRadius + rand() * cfg.holeEdgeBand
+         inHoleEdge = true
+      }
+      const radiusFrac = Math.min(r / cfg.maxRadius, 1.0)
 
- const armIdx = Math.floor(rand() * cfg.arms)
- const armBase = (armIdx / cfg.arms) * Math.PI * 2
- let g = rand() + rand() + rand()
- g = (g / 3 - 0.5) * 2.0
- const scatter = cfg.armWidth * r
- const theta = inHoleEdge
- ? (rand() * Math.PI * 2 + g * (cfg.armWidth * cfg.holeRadius * 2.0))
- : (armBase + r * cfg.spiralTightness + g * scatter)
- let gz = rand() + rand() + rand()
- gz = (gz / 3 - 0.5) * 2.0
- const z = gz * cfg.diskHeight * (0.6 + radiusFrac * 0.4)
- posArr[i * 4] = r * Math.cos(theta)
- posArr[i * 4 + 1] = r * Math.sin(theta)
- posArr[i * 4 + 2] = z
- posArr[i * 4 + 3] = rand()
- const orbSpeed = cfg.orbSpeedBase + radiusFrac * 0.08 + rand() * 0.04
- dataArr[i * 4] = radiusFrac
- dataArr[i * 4 + 1] = rand()
- dataArr[i * 4 + 2] = orbSpeed
- dataArr[i * 4 + 3] = armIdx / cfg.arms
- }
+      const armIdx = Math.floor(rand() * cfg.arms)
+      const armBase = (armIdx / cfg.arms) * Math.PI * 2
+      let g = rand() + rand() + rand()
+      g = (g / 3 - 0.5) * 2.0
+      const scatter = cfg.armWidth * r
+      const theta = inHoleEdge
+         ? (rand() * Math.PI * 2 + g * (cfg.armWidth * cfg.holeRadius * 2.0))
+         : (armBase + r * cfg.spiralTightness + g * scatter)
+      let gz = rand() + rand() + rand()
+      gz = (gz / 3 - 0.5) * 2.0
+      const z = gz * cfg.diskHeight * (0.6 + radiusFrac * 0.4)
+      posArr[i * 4] = r * Math.cos(theta)
+      posArr[i * 4 + 1] = r * Math.sin(theta)
+      posArr[i * 4 + 2] = z
+      posArr[i * 4 + 3] = rand()
+      const orbSpeed = cfg.orbSpeedBase + radiusFrac * 0.08 + rand() * 0.04
+      dataArr[i * 4] = radiusFrac
+      dataArr[i * 4 + 1] = rand()
+      dataArr[i * 4 + 2] = orbSpeed
+      dataArr[i * 4 + 3] = armIdx / cfg.arms
+   }
 
- const mkTex = (arr) => {
- const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
- t.needsUpdate = true
- t.minFilter = t.magFilter = THREE.NearestFilter
- return t
- }
- return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
+   const mkTex = (arr) => {
+      const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
+      t.needsUpdate = true
+      t.minFilter = t.magFilter = THREE.NearestFilter
+      return t
+   }
+   return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
 }
 
 function buildSmokeGeo(cfg) {
- const S = cfg.texSize
- const count = S * S
- const refs = new Float32Array(count * 2)
- const rfrac = new Float32Array(count)
- const seeds = new Float32Array(count)
- const rand = mulberry32(cfg.seed + 200)
+   const S = cfg.texSize
+   const count = S * S
+   const refs = new Float32Array(count * 2)
+   const rfrac = new Float32Array(count)
+   const seeds = new Float32Array(count)
+   const rand = mulberry32(cfg.seed + 200)
 
- for (let i = 0; i < count; i++) {
- refs[i * 2] = ((i % S) + 0.5) / S
- refs[i * 2 + 1] = (Math.floor(i / S) + 0.5) / S
- let r = -Math.log(1.0 - rand() * 0.9999) * (cfg.maxRadius * 0.34)
- r = Math.min(r, cfg.maxRadius)
- if (r < cfg.holeRadius) {
- r = cfg.holeRadius + rand() * cfg.holeEdgeBand
- }
- rfrac[i] = Math.min(r / cfg.maxRadius, 1.0)
- seeds[i] = rand()
- }
+   for (let i = 0; i < count; i++) {
+      refs[i * 2] = ((i % S) + 0.5) / S
+      refs[i * 2 + 1] = (Math.floor(i / S) + 0.5) / S
+      let r = -Math.log(1.0 - rand() * 0.9999) * (cfg.maxRadius * 0.34)
+      r = Math.min(r, cfg.maxRadius)
+      if (r < cfg.holeRadius) {
+         r = cfg.holeRadius + rand() * cfg.holeEdgeBand
+      }
+      rfrac[i] = Math.min(r / cfg.maxRadius, 1.0)
+      seeds[i] = rand()
+   }
 
- const geo = new THREE.BufferGeometry()
- geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
- geo.setAttribute('aRef', new THREE.BufferAttribute(refs, 2))
- geo.setAttribute('aRadiusFrac', new THREE.BufferAttribute(rfrac, 1))
- geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1))
- return geo
+   const geo = new THREE.BufferGeometry()
+   geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+   geo.setAttribute('aRef', new THREE.BufferAttribute(refs, 2))
+   geo.setAttribute('aRadiusFrac', new THREE.BufferAttribute(rfrac, 1))
+   geo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 1))
+   return geo
 }
 
 // ─────────────────────────────────────────────────────────────
 // SmokeFlow — GPGPU-driven flowing nebula layer
 // ─────────────────────────────────────────────────────────────
 const SmokeFlow = React.memo(function SmokeFlow() {
- const { gl } = useThree()
- const gpuRef = useRef(null)
- const matRef = useRef(null)
- const dataRef = useRef(null)
- const { geo, posTex, dataTex } = useMemo(() => {
- const { posTex, dataTex } = buildSmokeTextures(SMOKE_CFG)
- const geo = buildSmokeGeo(SMOKE_CFG)
- return { geo, posTex, dataTex }
- }, [])
+   const { gl } = useThree()
+   const gpuRef = useRef(null)
+   const matRef = useRef(null)
+   const dataRef = useRef(null)
+   const { geo, posTex, dataTex } = useMemo(() => {
+      const { posTex, dataTex } = buildSmokeTextures(SMOKE_CFG)
+      const geo = buildSmokeGeo(SMOKE_CFG)
+      return { geo, posTex, dataTex }
+   }, [])
 
- const mat = useMemo(() => new THREE.ShaderMaterial({
- uniforms: {
- uPosition: { value: posTex },
- uPixelRatio: { value: Math.min(typeof window !=='undefined' ? window.devicePixelRatio : 1, 2) },
- uTime: { value: 0 },
- },
- vertexShader: SMOKE_VERT,
- fragmentShader: SMOKE_FRAG,
- transparent: true,
- depthWrite: false,
- blending: THREE.AdditiveBlending,
- }), [posTex])
+   const mat = useMemo(() => new THREE.ShaderMaterial({
+      uniforms: {
+         uPosition: { value: posTex },
+         uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) },
+         uTime: { value: 0 },
+      },
+      vertexShader: SMOKE_VERT,
+      fragmentShader: SMOKE_FRAG,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+   }), [posTex])
 
- useEffect(() => {
- const gpu = new GPUCompute(SMOKE_CFG.texSize, SMOKE_CFG.texSize, gl)
- gpu.addVar('smokePos', SMOKE_SIM_FRAG, posTex)
- gpuRef.current = gpu
- matRef.current = mat
- dataRef.current = dataTex
+   useEffect(() => {
+      const gpu = new GPUCompute(SMOKE_CFG.texSize, SMOKE_CFG.texSize, gl)
+      gpu.addVar('smokePos', SMOKE_SIM_FRAG, posTex)
+      gpuRef.current = gpu
+      matRef.current = mat
+      dataRef.current = dataTex
 
- return () => {
- gpu.dispose()
- posTex.dispose()
- dataTex.dispose()
- geo.dispose()
- mat.dispose()
- matRef.current = null
- }
- }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
+      return () => {
+         gpu.dispose()
+         posTex.dispose()
+         dataTex.dispose()
+         geo.dispose()
+         mat.dispose()
+         matRef.current = null
+      }
+   }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
 
- useFrame((state, rawDelta) => {
- const gpu = gpuRef.current
- const material = matRef.current
- if (!gpu || !material) return
- const dt = Math.min(rawDelta, 0.05)
- const tex = gpu.compute('smokePos', state.clock.elapsedTime, dt, dataRef.current)
- material.uniforms.uPosition.value = tex
- material.uniforms.uTime.value = state.clock.elapsedTime
- })
+   useFrame((state, rawDelta) => {
+      const gpu = gpuRef.current
+      const material = matRef.current
+      if (!gpu || !material) return
+      const dt = Math.min(rawDelta, 0.05)
+      const tex = gpu.compute('smokePos', state.clock.elapsedTime, dt, dataRef.current)
+      material.uniforms.uPosition.value = tex
+      material.uniforms.uTime.value = state.clock.elapsedTime
+   })
 
- return (
- <group
- scale={1.65}
- position={[-1.45, 0.5, 0]}
- rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
- >
- <points geometry={geo} material={mat} />
- </group>
- )
+   return (
+      <group
+         scale={1.65}
+         position={[-1.45, 0.5, 0]}
+         rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
+      >
+         <points geometry={geo} material={mat} />
+      </group>
+   )
 })
 
 
@@ -732,277 +732,278 @@ const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
 const MOUSE_LERP_LAMBDA = 1
 
 function GalaxyMouseGroup({ children }) {
- const groupRef = useRef(null)
- const mouseRef = useRef({ x: 0, y: 0 })
- const smoothRef = useRef({ x: 0, y: 0 })
+   const groupRef = useRef(null)
+   const mouseRef = useRef({ x: 0, y: 0 })
+   const smoothRef = useRef({ x: 0, y: 0 })
 
- useEffect(() => {
- const onMove = (e) => {
- const w = window.innerWidth || 1
- const h = window.innerHeight || 1
- mouseRef.current.x = (e.clientX / w) * 2 - 1
- mouseRef.current.y = (e.clientY / h) * 2 - 1
- }
- window.addEventListener('mousemove', onMove)
- return () => window.removeEventListener('mousemove', onMove)
- }, [])
+   useEffect(() => {
+      const onMove = (e) => {
+         const w = window.innerWidth || 1
+         const h = window.innerHeight || 1
+         mouseRef.current.x = (e.clientX / w) * 2 - 1
+         mouseRef.current.y = (e.clientY / h) * 2 - 1
+      }
+      window.addEventListener('mousemove', onMove)
+      return () => window.removeEventListener('mousemove', onMove)
+   }, [])
 
- useFrame((_, dt) => {
- const g = groupRef.current
- if (!g) return
- const m = mouseRef.current
- const s = smoothRef.current
- const t = 1 - Math.exp(-MOUSE_LERP_LAMBDA * dt)
- s.x = THREE.MathUtils.lerp(s.x, m.x, t)
- s.y = THREE.MathUtils.lerp(s.y, m.y, t)
- g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x
- g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y
- // g.rotation.z = GALAXY_BASE_ROT[2] + s.x * s.y * MOUSE_TILT.z
- })
+   useFrame((_, dt) => {
+      const g = groupRef.current
+      if (!g) return
+      const m = mouseRef.current
+      const s = smoothRef.current
+      const t = 1 - Math.exp(-MOUSE_LERP_LAMBDA * dt)
+      s.x = THREE.MathUtils.lerp(s.x, m.x, t)
+      s.y = THREE.MathUtils.lerp(s.y, m.y, t)
+      g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x
+      g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y
+      // g.rotation.z = GALAXY_BASE_ROT[2] + s.x * s.y * MOUSE_TILT.z
+   })
 
- return (
- <group ref={groupRef} position={[-2, 2.2, 0]} rotation={GALAXY_BASE_ROT}>
- {children}
- </group>
- )
+   return (
+      <group ref={groupRef} position={[-2, 2.2, 0]} rotation={GALAXY_BASE_ROT}>
+         {children}
+      </group>
+   )
 }
 
 
 const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
- const { gl } = useThree()
- const groupRef = useRef()
- const gpuRef = useRef(null)
- const matRef = useRef(null)
- const dataRef = useRef(null)
- const { geo, posTex, dataTex } = useMemo(() => {
- const { posTex, dataTex } = buildTextures(CFG)
- const geo = buildGeo(CFG)
- return { geo, posTex, dataTex }
- }, [])
+   const { gl } = useThree()
+   const groupRef = useRef()
+   const gpuRef = useRef(null)
+   const matRef = useRef(null)
+   const dataRef = useRef(null)
+   const { geo, posTex, dataTex } = useMemo(() => {
+      const { posTex, dataTex } = buildTextures(CFG)
+      const geo = buildGeo(CFG)
+      return { geo, posTex, dataTex }
+   }, [])
 
- const mat = useMemo(() => new THREE.ShaderMaterial({
- uniforms: {
- uPosition: { value: posTex },
- uPixelRatio: { value: Math.min(typeof window !=='undefined' ? window.devicePixelRatio : 1, 2) },
- },
- vertexShader: PARTICLE_VERT,
- fragmentShader: PARTICLE_FRAG,
- transparent: true,
- depthWrite: false,
- blending: THREE.AdditiveBlending,
- }), [posTex])
+   const mat = useMemo(() => new THREE.ShaderMaterial({
+      uniforms: {
+         uPosition: { value: posTex },
+         uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) },
+      },
+      vertexShader: PARTICLE_VERT,
+      fragmentShader: PARTICLE_FRAG,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+   }), [posTex])
 
- useEffect(() => {
- const gpu = new GPUCompute(CFG.texSize, CFG.texSize, gl)
- gpu.addVar('pos', SIM_FRAG, posTex)
- gpuRef.current = gpu
- dataRef.current = dataTex
- matRef.current = mat
+   useEffect(() => {
+      const gpu = new GPUCompute(CFG.texSize, CFG.texSize, gl)
+      gpu.addVar('pos', SIM_FRAG, posTex)
+      gpuRef.current = gpu
+      dataRef.current = dataTex
+      matRef.current = mat
 
- return () => {
- gpu.dispose()
- posTex.dispose()
- dataTex.dispose()
- geo.dispose()
- mat.dispose()
- matRef.current = null
- }
- }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
+      return () => {
+         gpu.dispose()
+         posTex.dispose()
+         dataTex.dispose()
+         geo.dispose()
+         mat.dispose()
+         matRef.current = null
+      }
+   }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
 
- useFrame((state, rawDelta) => {
- const gpu = gpuRef.current
- const material = matRef.current
- if (!gpu || !material) return
- const dt = Math.min(rawDelta, 0.05)
- const tex = gpu.compute('pos', state.clock.elapsedTime, dt, dataRef.current)
- material.uniforms.uPosition.value = tex
- })
+   useFrame((state, rawDelta) => {
+      const gpu = gpuRef.current
+      const material = matRef.current
+      if (!gpu || !material) return
+      const dt = Math.min(rawDelta, 0.05)
+      const tex = gpu.compute('pos', state.clock.elapsedTime, dt, dataRef.current)
+      material.uniforms.uPosition.value = tex
+   })
 
- return (
- <group
- ref={groupRef}
- scale={1.65}
- position={[-1.45, 0.5, 0]}
- rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
- >
- <points geometry={geo} material={mat} />
- </group>
- )
+   return (
+      <group
+         ref={groupRef}
+         scale={1.65}
+         position={[-1.45, 0.5, 0]}
+         rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
+      >
+         <points geometry={geo} material={mat} />
+      </group>
+   )
 })
 
 
 const BackgroundStars = React.memo(function BackgroundStars() {
- const mesh = useMemo(() => {
- const count = 4000
- const pos = new Float32Array(count * 3)
- const rand = mulberry32(12345)
- for (let i = 0; i < count; i++) {
- const theta = rand() * Math.PI * 2
- const phi = Math.acos(2 * rand() - 1)
- const r = 40 + rand() * 20
- pos[i * 3] = r * Math.sin(phi) * Math.cos(theta)
- pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
- pos[i * 3 + 2] = r * Math.cos(phi)
- }
- const geo = new THREE.BufferGeometry()
- geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
- const mat = new THREE.PointsMaterial({
- color: 0xffffff, size: 0.055, sizeAttenuation: true,
- transparent: true, opacity: 0.7, depthWrite: false,
- })
- return new THREE.Points(geo, mat)
- }, [])
+   const mesh = useMemo(() => {
+      const count = 4000
+      const pos = new Float32Array(count * 3)
+      const rand = mulberry32(12345)
+      for (let i = 0; i < count; i++) {
+         const theta = rand() * Math.PI * 2
+         const phi = Math.acos(2 * rand() - 1)
+         const r = 40 + rand() * 20
+         pos[i * 3] = r * Math.sin(phi) * Math.cos(theta)
+         pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+         pos[i * 3 + 2] = r * Math.cos(phi)
+      }
+      const geo = new THREE.BufferGeometry()
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+      const mat = new THREE.PointsMaterial({
+         color: 0xffffff, size: 0.055, sizeAttenuation: true,
+         transparent: true, opacity: 0.7, depthWrite: false,
+      })
+      return new THREE.Points(geo, mat)
+   }, [])
 
- return <primitive object={mesh} />
+   return <primitive object={mesh} />
 })
 
 const MOBILE_QUERY = '(max-width: 767px)'
 
 function SceneReady({ onReady }) {
- const frameCountRef = useRef(0)
- const readyRef = useRef(false)
+   const frameCountRef = useRef(0)
+   const readyRef = useRef(false)
 
- useFrame(() => {
- if (readyRef.current) return
- frameCountRef.current += 1
- if (frameCountRef.current < 24) return
- readyRef.current = true
- onReady()
- })
+   useFrame(() => {
+      if (readyRef.current) return
+      frameCountRef.current += 1
+      if (frameCountRef.current < 24) return
+      readyRef.current = true
+      onReady()
+   })
 
- return null
+   return null
 }
 
-export function MilkyWay() {
- const [isPageLoaded, setIsPageLoaded] = useState(false)
- const [viewport, setViewport] = useState(null)
- const [isSceneReady, setIsSceneReady] = useState(false)
+export default function MilkyWay() {
+   const [isPageLoaded, setIsPageLoaded] = useState(false)
+   const [viewport, setViewport] = useState(null)
+   const [isSceneReady, setIsSceneReady] = useState(false)
 
- useLayoutEffect(() => {
- const markLoaded = () => setIsPageLoaded(true)
- if (document.readyState === 'complete') {
- markLoaded()
- } else {
- window.addEventListener('load', markLoaded, { once: true })
- }
+   useLayoutEffect(() => {
+      const markLoaded = () => setIsPageLoaded(true)
+      if (document.readyState === 'complete') {
+         markLoaded()
+      } else {
+         window.addEventListener('load', markLoaded, { once: true })
+      }
 
- const updateViewport = () => {
- setViewport({
- dpr: Math.max(1, Math.min(2, window.devicePixelRatio || 1)),
- isMobile: window.matchMedia(MOBILE_QUERY).matches,
- })
- }
+      const updateViewport = () => {
+         setViewport({
+            dpr: Math.max(1, Math.min(2, window.devicePixelRatio || 1)),
+            isMobile: window.matchMedia(MOBILE_QUERY).matches,
+         })
+      }
 
- updateViewport()
- window.addEventListener('resize', updateViewport)
- const mobileQuery = window.matchMedia(MOBILE_QUERY)
- mobileQuery.addEventListener('change', updateViewport)
+      updateViewport()
+      window.addEventListener('resize', updateViewport)
+      const mobileQuery = window.matchMedia(MOBILE_QUERY)
+      mobileQuery.addEventListener('change', updateViewport)
 
- return () => {
- window.removeEventListener('load', markLoaded)
- window.removeEventListener('resize', updateViewport)
- mobileQuery.removeEventListener('change', updateViewport)
- }
- }, [])
+      return () => {
+         window.removeEventListener('load', markLoaded)
+         window.removeEventListener('resize', updateViewport)
+         mobileQuery.removeEventListener('change', updateViewport)
+      }
+   }, [])
 
- useEffect(() => {
- if (viewport?.isMobile) {
- setIsSceneReady(false)
- }
- }, [viewport?.isMobile])
+   useEffect(() => {
+      if (viewport?.isMobile) {
+         setIsSceneReady(false)
+      }
+   }, [viewport?.isMobile])
 
- const showDesktopScene = isPageLoaded && viewport !== null && !viewport.isMobile
- const showMobileFallback = isPageLoaded && viewport !== null && viewport.isMobile
- const showDesktopContent = showDesktopScene && isSceneReady
- const showMobileContent = showMobileFallback
+   const showDesktopScene = isPageLoaded && viewport !== null && !viewport.isMobile
+   const showMobileFallback = isPageLoaded && viewport !== null && viewport.isMobile
+   const showDesktopContent = showDesktopScene && isSceneReady
+   const showMobileContent = showMobileFallback
 
- return (
- <section style={{ width:'100%', height:'100vh', background:'#000' }}>
+   return (
+      <section style={{ width: '100%', height: '100vh', background: '#000' }}>
 
 
- {showDesktopScene ? (
- <Canvas
- dpr={viewport.dpr}
- gl={{ antialias: false, powerPreference:'high-performance' }}
- camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}
- style={{ opacity: isSceneReady ? 1 : 0 }}
- >
- <SceneReady onReady={() => setIsSceneReady(true)} />
- <BackgroundStars />
- <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
- <GalaxyMouseGroup>
- <MilkyWayGPGPU />
- {isSceneReady && <SmokeFlow />}
- </GalaxyMouseGroup>
- </Center>
- <EffectComposer>
- {/* <Bloom
+         {showDesktopScene ? (
+            <Canvas
+               dpr={viewport.dpr}
+               gl={{ antialias: false, powerPreference: 'high-performance' }}
+               camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}
+               style={{ opacity: isSceneReady ? 1 : 0 }}
+            >
+               <SceneReady onReady={() => setIsSceneReady(true)} />
+               <BackgroundStars />
+               <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
+                  <GalaxyMouseGroup>
+                     <MilkyWayGPGPU />
+                     {isSceneReady && <SmokeFlow />}
+                  </GalaxyMouseGroup>
+               </Center>
+               <EffectComposer>
+                  {/* <Bloom
  luminanceThreshold={0.05}
  luminanceSmoothing={0.85}
  intensity={2.2}
  radius={0.80}
  /> */}
- <EdgeBlurEffect blurStrength={1.2} blurStart={0.2} />
- <EdgeBlurEffect blurType='classic' blurStrength={.3} blurStart={0.1} />
- <Vignette opacity={.5} offset={.8} darkness={.7}/>
- </EffectComposer>
- </Canvas>
- ) : showMobileContent ? (
- <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
- <p className=' rounded-full bg-white/10 px-5 py-3 w-[60%] text-base backdrop-blur-sm'>
- Open in desktop to experience this effect.
- </p>
- </div>
- ) : null}
+                  <EdgeBlurEffect blurStrength={1.2} blurStart={0.2} />
+                  <EdgeBlurEffect blurType='classic' blurStrength={.3} blurStart={0.1} />
+                  <Vignette opacity={.5} offset={.8} darkness={.7} />
+               </EffectComposer>
+            </Canvas>
+         ) : showMobileContent ? (
+            <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
+               <p className=' rounded-full bg-white/10 px-5 py-3 w-[60%] text-base backdrop-blur-sm'>
+                  Open in desktop to experience this effect.
+               </p>
+            </div>
+         ) : null}
 
- {(showDesktopContent || showMobileContent) && (
- <div className=" h-screen w-full absolute left-0 top-0 max-sm:top-5 z-299 flex items-center justify-center">
-
-
- <div className='h-full w-full relative'>
- {/* Navbar (leave unchanged) */}
- <div className='w-full absolute top-0 left-0 pt-[2vw] px-[2vw] flex items-center max-sm:flex-col max-sm:gap-5 justify-between h-fit'>
- <p className='text-4xl font-medium'>Galaxy</p>
- <div className='w-60 space-y-2'>
-
- <p className='leading-[1.2]'>
-    Move your cursor around and watch the scene respond.
- </p>
-     <button className="pr-4 py-1.5 flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
-              <Link href={"/effects"}>Explore Platform</Link>
-              <ArrowRight className='h-4 w-4' />
-            </button>
- </div>
-
- 
- </div>
- {/* Enhanced cosmic hero section */}
- <div className="absolute bottom-[4vw] max-sm:bottom-[12vw] left-[4vw] max-w-[70vw]">
- <p className='flex items-center bg-white/20  max-sm:text-sm backdrop-blur-sm rounded-full text-xs px-[1vw] py-[.5vw] w-fit gap-2'><Stars size={12} />Data Driven And Creative</p>
- <h1 className="text-[7vw] mt-[1vw] max-sm:mt-[3vw] font leading-[1.1] text-white drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]">
- Particles Galaxy
-
- </h1>
- <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
- </div>
-
- {!viewport?.isMobile && (
- <div className='h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
+         {(showDesktopContent || showMobileContent ) && (
+            
+            <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-299 flex items-center justify-center max-md:hidden">
 
 
- <CircularText
- text="EXPLORE THE GALAXY "
- spinDuration={20}
- onHover="speedUp"
- />
+               <div className='h-full w-full relative'>
+                  {/* Navbar (leave unchanged) */}
+                  <div className='w-full absolute top-0 left-0 pt-[2vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
+                     <p className='text-4xl font-medium'>Galaxy</p>
+                     <div className='w-60 space-y-2'>
 
- </div>
-  )}
+                        <p className='leading-[1.2]'>
+                           Move your cursor around and watch the scene respond.
+                        </p>
+                        <button className="pr-4 py-1.5 flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
+                           <Link href={"/effects"}>Explore Platform</Link>
+                           <ArrowRight className='h-4 w-4' />
+                        </button>
+                     </div>
 
- </div>
 
- </div>
- )}
- </section>
- )
+                  </div>
+                  {/* Enhanced cosmic hero section */}
+                  <div className="absolute bottom-[4vw] max-md:bottom-[12vw] left-[4vw] max-w-[70vw]">
+                     <p className='flex items-center bg-white/20  max-md:text-sm backdrop-blur-sm rounded-full text-xs px-[1vw] py-[.5vw] w-fit gap-2'><Stars size={12} />Data Driven And Creative</p>
+                     <h1 className="text-[7vw] mt-[1vw] max-md:mt-[3vw] font leading-[1.1] text-white drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]">
+                        Particles Galaxy
+
+                     </h1>
+                     <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
+                  </div>
+
+                  {!viewport?.isMobile && (
+                     <div className='h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
+
+
+                        <CircularText
+                           text="EXPLORE THE GALAXY "
+                           spinDuration={20}
+                           onHover="speedUp"
+                        />
+
+                     </div>
+                  )}
+
+               </div>
+
+            </div>
+         )}
+      </section>
+   )
 }

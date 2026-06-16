@@ -1,5 +1,5 @@
+import SpiderParticles from '@/components/spider-particles'
 import React from'react'
-import { SpiderParticles } from'@/components/spider-particles'
 
 const spiderParticlesProps = {
  particleCount:180,

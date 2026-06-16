@@ -5,7 +5,7 @@ import { ReactLenis } from 'lenis/react';
 import PixelScrollCanvas from './PixelScrollCanvas';
 import { sections } from './content';
 
-export function SplitCanvas() {
+export default function SplitCanvas() {
     const wrapperRef = useRef(null);
 
     return (

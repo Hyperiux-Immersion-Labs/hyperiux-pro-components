@@ -20,7 +20,7 @@ function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
 
-export function CylindricalScrollCards({
+export function HelixSliderComp({
     items = defaultItems,
     cardWidth = 220,
     cardHeight = 300,

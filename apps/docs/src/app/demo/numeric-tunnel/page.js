@@ -1,9 +1,9 @@
+import NumericTunnel from '@/components/numeric-tunnel'
 import React from 'react'
-import {Tunnel} from '@/components/numeric-tunnel'
 
 const page = () => {
   return (
-    <Tunnel />
+    <NumericTunnel />
   )
 }
 

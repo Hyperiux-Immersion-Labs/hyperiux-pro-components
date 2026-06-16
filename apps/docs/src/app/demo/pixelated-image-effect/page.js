@@ -1,6 +1,6 @@
 
 
-import { PixelatedImageEffect } from "@/components/pixelated-image-effect";
+import PixelatedImageEffect from "@/components/pixelated-image-effect";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 export default function Page() {

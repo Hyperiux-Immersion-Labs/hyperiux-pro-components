@@ -34,7 +34,7 @@ const TEXT_LEAVE_STAGGER = 0.04;
 
 const getItemData = (item) => (typeof item === "string" ? { src: item } : item);
 
-export function InfiniteScrollSlider({ images = [] }) {
+export  function InfinitePerspectiveSliderComp({ images = [] }) {
   const stripRef = useRef(null);
   const settersRef = useRef([]);
   const cardRefs = useRef([]);
@@ -520,7 +520,7 @@ export function InfiniteScrollSlider({ images = [] }) {
   }, [images]);
 
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    <div className="h-fit w-screen overflow-hidden">
       <div className="pointer-events-none relative flex h-full items-center overflow-hidden perspective-[2200px] max-md:items-center ">
         <div
           ref={stripRef}

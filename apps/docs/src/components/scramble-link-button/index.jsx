@@ -42,7 +42,7 @@ function getScrambledText({
   return output;
 }
 
-export function ScrambleLinkButton({
+export default function ScrambleLinkButton({
   text = DEFAULT_TEXT,
   href = DEFAULT_HREF,
   className = "",

@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { OverFlowStagAnim } from "@/components/overflow-stagger-text";
 import { ReactLenis } from "lenis/react";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import OverflowStaggerText from "@/components/overflow-stagger-text";
+// import { OverflowStaggerText } from "@/components/overflow-stagger-text";
 
 const details = [
   { label: "Split", value: "characters" },
@@ -37,16 +38,16 @@ const Page = () => {
 
             <div className="grid  gap-10 px-6 py-14 lg:grid-cols-[1.08fr_0.92fr] max-sm:px-4 max-sm:py-10">
               <div className="flex flex-col gap-[2vw] max-sm:gap-[4vw]">
-                <OverFlowStagAnim scrub={false} start="top bottom">
+                <OverflowStaggerText scrub={false} start="top bottom">
                   <h1 className=" text-[7vw] uppercase leading-[0.82] tracking-normal text-[#151515] max-md:text-[10vw] max-sm:text-[15vw] max-sm:leading-[0.86]">
                     Text that steps into frame.
                   </h1>
-                </OverFlowStagAnim>
+                </OverflowStaggerText>
                 <button
                   onClick={() => window.location.reload()}
                   className="w-fit cursor-pointer rounded-full bg-black px-[1.5vw] py-[1vw] text-white leading-[1] max-sm:px-[7vw] max-sm:py-[4vw] max-md:px-[3vw] max-md:py-[2vw]"
                 >
-                  <div className="mt-[-0.2vw]">Replay The Animation</div>
+                  Replay The Animation
                 </button>
               </div>
 
@@ -64,7 +65,7 @@ const Page = () => {
                     Overflow hidden / characters visible
                   </div>
                 </div>
-                <OverFlowStagAnim
+                <OverflowStaggerText
                   scrub={false}
                   start="top bottom"
                   stagger={0.008}
@@ -74,7 +75,7 @@ const Page = () => {
                     clipped line with a tiny rotation. It feels playful, but the
                     layout stays calm.
                   </p>
-                </OverFlowStagAnim>
+                </OverflowStaggerText>
               </div>
             </div>
 
@@ -99,20 +100,20 @@ const Page = () => {
         <section className="px-8 py-24 max-sm:px-4 max-sm:py-16">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <OverFlowStagAnim scrub={true}>
+              <OverflowStaggerText scrub={true}>
                 <h2 className="text-6xl font-black uppercase leading-[0.9] max-sm:text-[3.15rem]">
                   Use it where words need a first step.
                 </h2>
-              </OverFlowStagAnim>
+              </OverflowStaggerText>
             </div>
 
             <div className="grid gap-3">
               {lines.map((line) => (
-                <OverFlowStagAnim key={line} scrub={true}>
+                <OverflowStaggerText key={line} scrub={true}>
                   <p className="border-b border-[#151515]/15 py-5 text-5xl font-black uppercase leading-none text-[#151515] max-sm:py-4 max-sm:text-[2.45rem]">
                     {line}
                   </p>
-                </OverFlowStagAnim>
+                </OverflowStaggerText>
               ))}
             </div>
           </div>
@@ -132,11 +133,11 @@ const Page = () => {
             </div>
 
             <div className="flex flex-col justify-between gap-12">
-              <OverFlowStagAnim scrub={true} start="top 80%" end="bottom 80%">
+              <OverflowStaggerText scrub={true} start="top 80%" end="bottom 80%">
                 <h2 className="text-6xl font-black uppercase leading-[0.9] max-sm:text-[3.1rem]">
                   Simple setup, expressive entrance.
                 </h2>
-              </OverFlowStagAnim>
+              </OverflowStaggerText>
 
               <div className="space-y-5">
                 {notes.map((note, index) => (

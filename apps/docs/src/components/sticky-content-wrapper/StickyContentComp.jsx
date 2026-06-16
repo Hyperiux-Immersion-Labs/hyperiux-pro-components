@@ -85,7 +85,7 @@ const renderStickyContent = (item) => {
   );
 };
 
-export function StickyContentWrapper({
+export function StickyContentComp({
   items = [],
   className = "",
   leftClassName = "",

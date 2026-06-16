@@ -1,5 +1,5 @@
-import { HorizontalScroll } from "./HorizontalFeatureReveal";
 import React from "react";
+import HorizontalScrollComp from "./HorizontalFeatureRevealComp";
 
 
 const PROPERTIES_DATA = [
@@ -85,10 +85,13 @@ export const HorizontalFeatureReveal = () => {
   return (
 
       <div>
-        <HorizontalScroll propertiesData={PROPERTIES_DATA} />
+        <HorizontalScrollComp propertiesData={PROPERTIES_DATA} />
       </div>
 
   );
 };
+
+export default HorizontalFeatureReveal;
+
 
 

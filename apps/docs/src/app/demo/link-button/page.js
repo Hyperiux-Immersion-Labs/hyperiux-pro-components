@@ -1,4 +1,4 @@
-import { LinkButton } from"@/components/link-button";
+import LinkButton from "@/components/link-button";
 import Image from "next/image";
 
 export default function Page() {

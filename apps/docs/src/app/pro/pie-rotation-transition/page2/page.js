@@ -1,10 +1,10 @@
+import RectangularTextReveal from '@/components/rectangular-text-reveal'
 import React from'react'
-import { RectangularTextReveal as TextBlockReveal } from'@/components/rectangular-text-reveal'
 
 export default function page() {
  return (
  <section className='h-screen w-full bg-sky-200 flex items-center justify-center'>
- <TextBlockReveal
+ <RectangularTextReveal
  overlayEnterDuration={0.35}
  overlayExitDuration={0.35}
  direction="bottom"
@@ -15,7 +15,7 @@ export default function page() {
  delay={1.5}
  >
  <p className='text-[6vw] block text-center font-medium text-white w-full tracking-tight leading-[.9]'>PIE CHART PAGE II</p>
- </TextBlockReveal>
+ </RectangularTextReveal>
 
   </section>
  )
