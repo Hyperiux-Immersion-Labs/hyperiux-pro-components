@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
@@ -29,16 +29,16 @@ export function VaultContent({
   fadeUp();
   const pathname = usePathname();
   const isProUser = userPlan === "pro";
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const featuredEffects = useMemo(() => getFeaturedEffects(effects), [effects]);
   const featuredEffectNames = useMemo(
     () => new Set(featuredEffects.map((effect) => effect.name)),
     [featuredEffects],
   );
 
-  const categoryFilter = useMemo(() => {
+  const categoryFromUrl = useMemo(() => {
     const queryCategory = searchParams.get("category");
     if (queryCategory) return queryCategory === "all" ? initialCategory : queryCategory;
 
@@ -47,6 +47,7 @@ export function VaultContent({
 
     return getEffectCategoryBySlug(categorySlug)?.id || initialCategory;
   }, [initialCategory, pathname, searchParams]);
+  const categoryFilter = selectedCategory || categoryFromUrl;
 
   const updateCategoryFilter = useCallback((nextCategory) => {
     const resolvedCategory = nextCategory || "all";
@@ -55,24 +56,26 @@ export function VaultContent({
 
     params.delete("category");
 
-    if (resolvedCategory === "free") {
-      const nextQuery = params.toString();
-      router.push(nextQuery ? `/effects/free?${nextQuery}` : "/effects/free");
-      return;
-    }
-
-    if (resolvedCategory === "featured") {
-      const nextQuery = params.toString();
-      router.push(nextQuery ? `/effects/featured?${nextQuery}` : "/effects/featured");
-      return;
-    }
-
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
     const nextUrl = nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
 
-    router.push(nextUrl);
-  }, [router, searchParams]);
+    setSelectedCategory(resolvedCategory);
+
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", nextUrl);
+    }
+  }, [searchParams]);
+
+  const showAllEffects = useCallback(() => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", "/effects");
+    }
+  }, []);
+
   const quickCategories = useMemo(() => {
     const knownCategories = effectCategories
       .filter((category) => category.id !== "featured" && effectCounts?.[category.id])
@@ -221,6 +224,8 @@ export function VaultContent({
       effectCounts={effectCounts}
       effects={effects}
       activeCategory={categoryFilter}
+      onOverviewNavigate={showAllEffects}
+      onCategoryNavigate={updateCategoryFilter}
     >
       {({ isSidebarOpen }) => (
       <div className="min-h-screen text-foreground relative effects-comp ">
@@ -232,8 +237,11 @@ export function VaultContent({
         />
 
         <div className="">
-          <div className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16">
-            <HeadAnim>
+          <div
+            key={`category-intro-${categoryFilter}`}
+            className=" mx-auto px-8 max-sm:px-7 pt-28 pb-12 text-center space-y-8 max-sm:pt-32 max-sm:pb-16"
+          >
+            <HeadAnim animateOnScroll={false}>
               <h1
                 className="mb-4 font-display text110 w-[80%] mx-auto font-normal max-sm:w-[90%]  text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.1" }}
@@ -242,7 +250,7 @@ export function VaultContent({
               </h1>
             </HeadAnim>
             <div>
-              <Copy delay={0.3}>
+              <Copy animateOnScroll={false} delay={0.3}>
                 <p className="max-w-[65vw] max-md:max-w-full mx-auto text-lg text-muted max-sm:text-base">
                   {activeCategoryDescription}
                 </p>
