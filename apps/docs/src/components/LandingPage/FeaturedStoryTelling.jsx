@@ -13,15 +13,15 @@ if (typeof window !== 'undefined') {
 }
 
 const IMAGES = [
-    "/img/1.png",
-    "/img/2.png",
-    "/img/3.png",
-    "/img/4.png",
-    "/img/5.png",
-    "/img/6.png",
-    "/img/7.png",
-    "/img/8.png",
-    "/img/1.png",
+    "/img/spiral/1.png",
+    "/img/spiral/2.png",
+    "/img/spiral/3.png",
+    "/img/spiral/4.png",
+    "/img/spiral/5.png",
+    "/img/spiral/6.png",
+    "/img/spiral/7.png",
+    "/img/spiral/8.png",
+    "/img/spiral/9.png",
 ];
 
 const TOTAL = IMAGES.length;
@@ -136,10 +136,13 @@ export default function FeaturedStoryTelling() {
     const vaultExploreTextRef = useRef(null);
     const stickyContainerRef = useRef(null);
     const vaultTargetMoveRef = useRef(null);
+    const animationActiveRef = useRef(false);
 
     useEffect(() => {
         const section = sectionRef.current;
         const cards = cardRefs.current;
+
+        animationActiveRef.current = true;
 
         gsap.ticker.lagSmoothing(500, 33);
 
@@ -208,10 +211,20 @@ export default function FeaturedStoryTelling() {
         );
 
 
-        const xSet = cards.map((c) => gsap.quickSetter(c, "x", "px"));
-        const ySet = cards.map((c) => gsap.quickSetter(c, "y", "px"));
-        const blurSet = cards.map((c) => (v) => (c.style.filter = `blur(${v}px)`));
+        const xSet = cards.map((c) =>
+            c ? gsap.quickSetter(c, "x", "px") : () => {},
+        );
+        const ySet = cards.map((c) =>
+            c ? gsap.quickSetter(c, "y", "px") : () => {},
+        );
+        const blurSet = cards.map(
+            (c) => (v) => {
+                if (!c) return;
+                c.style.filter = `blur(${v}px)`;
+            },
+        );
         const scaleSet = cards.map((c) => {
+            if (!c) return () => {};
             const setX = gsap.quickSetter(c, "scaleX");
             const setY = gsap.quickSetter(c, "scaleY");
             return (val) => {
@@ -299,6 +312,8 @@ export default function FeaturedStoryTelling() {
                 duration: 8,
                 ease: "none",
                 onUpdate: () => {
+                    if (!animationActiveRef.current) return;
+
                     const prog = spiralProxy.progress;
                     const p1 = Math.min(prog / 0.1, 1);
                     const t = Math.min(Math.max((prog - 0.1) / 0.9, 0), 1); // Single phase from 0.1 to 1.0
@@ -313,6 +328,8 @@ export default function FeaturedStoryTelling() {
                     const expandProgress = Math.pow(t, 2.2);
 
                     cards.forEach((card, i) => {
+                        if (!card) return;
+
                         const nextZ = p1 >= i / TOTAL ? TOTAL + i : i;
                         const staggerFrac = 0.82;
                         const reverseIdx = TOTAL - 1 - i;
@@ -534,6 +551,7 @@ export default function FeaturedStoryTelling() {
         }, section);
 
         return () => {
+            animationActiveRef.current = false;
             ScrollTrigger.removeEventListener("refreshInit", updatePositions);
             ScrollTrigger.removeEventListener("refreshInit", cacheMoveTarget);
             ctx.revert();
