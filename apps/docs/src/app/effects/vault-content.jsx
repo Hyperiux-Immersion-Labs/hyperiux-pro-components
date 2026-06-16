@@ -224,7 +224,7 @@ export function VaultContent({
       activeCategory={categoryFilter}
     >
       {({ isSidebarOpen }) => (
-      <div className="min-h-screen text-foreground relative ">
+      <div className="min-h-screen text-foreground relative effects-comp ">
         <VaultHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -256,7 +256,6 @@ export function VaultContent({
   
         <div className="mx-auto px-10 pb-7 max-sm:px-0 pt-20 max-md:pt-10">
           <div className="relative max-md:w-full">
-            {/* Right fade hint on mobile/tablet */}
             <div
               className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 hidden max-md:block"
               style={{
@@ -310,31 +309,7 @@ export function VaultContent({
                       {label}
                     </span>
 
-                    {/* <span
-                      className={`
-      absolute right-5 top-1/2 -translate-y-1/2
-      flex items-center overflow-hidden
-      transition-all duration-300 ease-in-out
-      ${isSelected
-                          ? "opacity-100 scale-100 delay-150"
-                          : "opacity-0 scale-75 delay-0"
-                        }
-    `}
-                    >
-                      <svg
-                        className="w-4 h-4 shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </span> */}
+                    
                   </button>
                 );
               })}
@@ -349,11 +324,7 @@ export function VaultContent({
               : "mb-0 min-h-0 opacity-0 pointer-events-none"
               }`}
           >
-            {/* {searchQuery && (
-              <span className="text-sm text-muted font-sans max-sm:text-xs">
-                Showing {filteredEffects.length} of {totalEffects} effects
-              </span>
-            )} */}
+           
             {searchQuery && (
               <>
                 <span

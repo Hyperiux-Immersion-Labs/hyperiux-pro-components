@@ -229,16 +229,15 @@ export function Sidebar({
           type="button"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
           onClick={toggle}
-          className={`absolute top-4 z-50 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-sm bg-[#272727] text-white transition-[left,background-color,transform] duration-500 ease-out hover:bg-white/15 sm:flex ${
+          className={`absolute top-6 z-50 hidden size-8 cursor-pointer items-center justify-center rounded-sm  text-white transition-[left,background-color,transform] duration-300 ease-out  hover:bg-white/15 sm:flex ${
             isExpanded ? "left-75" : "left-25"
           }`}
         >
-          <motion.span
-            animate={{ rotate: isExpanded ? 0 : 180 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+          <div
+          className={isExpanded?"":"-scale-x-100"}
           >
             <PanelLeft className="h-5 w-5" />
-          </motion.span>
+          </div>
         </button>
 
         <nav
