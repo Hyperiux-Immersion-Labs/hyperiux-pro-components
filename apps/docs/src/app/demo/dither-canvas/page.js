@@ -1,10 +1,10 @@
 
-import BinaryEffect from "@/components/binary-effect";
+import DitherCanvas from "@/components/dither-canvas";
 
 export default function Page() {
   return (
     <main className="relative min-h-screen w-screen overflow-hidden bg-black">
-      <BinaryEffect
+      <DitherCanvas
         charColumns={100}
         colorizeFromVideo
         videoZoom={1.9}

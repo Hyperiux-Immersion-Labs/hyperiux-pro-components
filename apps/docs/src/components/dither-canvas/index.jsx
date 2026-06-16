@@ -8,6 +8,8 @@ const FR = 60;
 const FN = FC * FR;
 
 const DEFAULT_CHAR_COLUMNS = 145;
+const TABLET_MAX_WIDTH = 1025;
+const MOBILE_MAX_WIDTH = 639;
 const EDGE_LO = 90;
 const EDGE_HI = 125;
 
@@ -32,6 +34,18 @@ const TRAIL_CFG = {
   fir: 0.8,
   firl: 1.0,
 };
+
+function getResponsiveCharColumns(width, baseCharColumns) {
+  if (width <= MOBILE_MAX_WIDTH) {
+    return Math.round(baseCharColumns * 0.45);
+  }
+
+  if (width <= TABLET_MAX_WIDTH) {
+    return Math.round(baseCharColumns * 0.55);
+  }
+
+  return baseCharColumns;
+}
 
 /* ── shaders ───────────────────────────────────────────────────── */
 const VS = `#version 300 es
@@ -432,7 +446,7 @@ async function loadVideoSource(source) {
 }
 
 /* ── component ─────────────────────────────────────────────────── */
-export default function BinaryEffect({
+export default function DitherCanvas({
   videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 
   /**
@@ -594,7 +608,6 @@ export default function BinaryEffect({
     gl.uniform1i(loc("uFluid"), 1);
     gl.uniform1i(loc("uAtlas"), 2);
 
-    gl.uniform1f(loc("uCharColumns"), charColumns);
     gl.uniform1f(loc("uVideoZoom"), videoZoom);
     gl.uniform1f(loc("uCharZoom"), charZoom);
     gl.uniform1f(loc("uColorBoost"), colorBoost);
@@ -673,6 +686,7 @@ export default function BinaryEffect({
       height = canvas.height = window.innerHeight;
 
       gl.viewport(0, 0, width, height);
+      gl.uniform1f(loc("uCharColumns"), getResponsiveCharColumns(width, charColumns));
     };
 
     resize();
@@ -836,12 +850,12 @@ export default function BinaryEffect({
         className={`absolute inset-0 block h-full w-full bg-black ${className}`.trim()}
       />
 
-      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-sm:hidden">
+      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-md:hidden">
         {cursorHint}
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center text-xs text-white/50 max-sm:block">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-sm:text-sm max-md:text-lg text-white/50 max-md:block">
           Open on desktop for the full experience — cursor effect included.
         </p>
       )}
@@ -849,4 +863,4 @@ export default function BinaryEffect({
   );
 }
 
-export { BinaryEffect };
+

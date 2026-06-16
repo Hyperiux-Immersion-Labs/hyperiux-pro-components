@@ -452,7 +452,7 @@ export default function MyComponent() {
               </section>
             ) : (
               <>
-                <div className="relative max-sm:px-[7vw] max-md:px-[6vw] ">
+                <div className="relative max-sm:px-[7vw] max-md:px-[6vw] pt-[1.5vw] ">
                   <div className="fixed  right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                     <TableOfContents
                       containerRef={contentRef}
@@ -624,15 +624,20 @@ function EffectCtaSection({ cta, sectionRef }) {
         <p className={styles.ctaBannerDescription}>{cta.description}</p>
       )}
 
+
+      <div className="w-fit">
+
       {cta.buttonText && (
         <Button
-          text={cta.buttonText}
-          href={buttonLink}
-          target="_blank"
-          variant="white"
-          className="shrink-0"
+        text={cta.buttonText}
+        href={buttonLink}
+        scaleClass='group-hover:scale-[100]!'
+        target="_blank"
+        variant="white"
+        className="shrink-0"
         />
       )}
+      </div>
     </section>
   );
 }
@@ -749,7 +754,7 @@ function SanityBodyBlock({ block }) {
                       {item.question}
                     </h3>
                   </FAQTitle>
-                  <FAQContent className={`${styles.faqAccordionAnswer} pl-2`}>
+                  <FAQContent className={`${styles.faqAccordionAnswer} pl-10`}>
                     {item.answer}
                   </FAQContent>
                 </FAQWrapper>

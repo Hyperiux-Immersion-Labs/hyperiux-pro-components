@@ -180,7 +180,7 @@ function ButterflyTrail() {
 
 useGLTF.preload('/assets/cursors/butterflies/butterfly3.glb')
 
-export default function Butterflies() {
+export default function ButterflyTrailCursor() {
  return (
  <div
   className="w-full h-screen relative bg-[#EAEAE9]"

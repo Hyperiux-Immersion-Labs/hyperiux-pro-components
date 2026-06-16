@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import LiquidCursor from './LiquidCursor'
+import LiquidGlassCursor from '@/components/liquid-glass-cursor'
 import { ChevronRight, Play } from 'lucide-react'
 
 const CustomIcon = ({ className = "w-6 h-6" }) => (
@@ -32,17 +32,17 @@ export default function MinimalPage() {
   return (
     <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
       {!isMobile && (
-        <LiquidCursor baseSize={30} textHoverSize={130} borderColor="rgba(0,0,0,0.05)" />
+        <LiquidGlassCursor baseSize={30} textHoverSize={130} borderColor="rgba(0,0,0,0.05)" />
       )}
 
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-white rounded-full filter blur-[100px] opacity-60 pointer-events-none"></div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4 space-y-8 max-w-5xl mx-auto">
-        <div data-cursor="text" className="mb-[2vw] h-[5vw] w-[5vw] max-sm:w-[9vw] max-sm:h-[9vw] text-[#1D1D1F]">
+      <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4 space-y-8 max-md:space-y-20 max-sm:space-y-10 max-w-5xl mx-auto">
+        <div data-cursor="text" className="mb-[2vw] h-[5vw] w-[5vw] max-md:w-[8vw] max-md:h-[8vw] max-sm:w-[9vw] max-sm:h-[9vw] text-[#1D1D1F]">
           <CustomIcon className="w-full h-full object-contain" />
         </div>
 
-        <div data-cursor="button" className="px-5 py-1.5 bg-white border border-[#E5E5EA] rounded-full text-xs font-semibold text-[#86868B] tracking-wide uppercase mb-6 cursor-none hover:scale-105 transition-transform duration-300">
+        <div data-cursor="button" className="px-5 py-1.5 max-md:mt-4 bg-white border border-[#E5E5EA] rounded-full text-xs font-semibold text-[#86868B] tracking-wide uppercase mb-6 cursor-none hover:scale-105 transition-transform duration-300">
           New
         </div>
 
@@ -50,23 +50,23 @@ export default function MinimalPage() {
           <h1 data-cursor="text" className="text-6xl md:text-[88px] leading-tight font-semibold tracking-[-0.04em] text-[#1D1D1F] inline-block px-4 py-2">
             LIQUID PRO.
           </h1>
-          <p data-cursor="text" className="text-2xl md:text-3xl text-[#86868B] font-medium tracking-tight max-w-2xl mx-auto inline-block px-4">
+          <p data-cursor="text" className="max-md:text-2xl text-3xl text-[#86868B] font-medium tracking-tight max-w-2xl mx-auto inline-block px-4">
             Mind-blowing fluidity. <br className="hidden md:block" /> Design that simply flows.
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-6 mt-10">
-          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-[17px] rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95 cursor-none">
-            Buy <ChevronRight className="w-4 h-4" />
+          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-lg max-sm:text-lg max-md:text-xl rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95 cursor-none">
+            Buy <ChevronRight className="w-4 h-4 max-sm:w-5 max-sm:h-5 max-md:w-6 max-md:h-6" />
           </button>
-          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-[17px] rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95 cursor-none">
-            Watch the film <Play className="w-4 h-4 fill-current" />
+          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-lg max-sm:text-lg max-md:text-xl rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95 cursor-none">
+            Watch the film <Play className="w-4 h-4 max-sm:w-5 max-sm:h-5 max-md:w-6 max-md:h-6 fill-current" />
           </button>
         </div>
 
         {isMobile && (
-          <p className="text-lg text-[#86868B] text-center mt-4 leading-[1.2]">
-            This page has a secret<br />
+          <p className="max-sm:text-lg max-md:text-2xl text-[#86868B] w-[80%] mx-auto text-center mt-4 leading-[1.2]">
+            This page has a secret
 life on desktop.<br />
 Best experienced where hover exists.
           </p>
