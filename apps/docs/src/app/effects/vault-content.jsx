@@ -224,7 +224,7 @@ export function VaultContent({
       activeCategory={categoryFilter}
     >
       {({ isSidebarOpen }) => (
-      <div className="min-h-screen text-foreground relative">
+      <div className="min-h-screen text-foreground relative ">
         <VaultHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -342,7 +342,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="mx-auto px-10 pb-12 fadeup max-sm:px-6">
+        <div className="mx-auto relative z-500 bg-[#0E0E0E] px-10 pb-12 fadeup max-sm:px-6">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"
@@ -412,7 +412,7 @@ export function VaultContent({
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
-        <div className="px-10 py-8 max-sm:block max-md:hidden">
+        <div className="">
           <Footer/>
         </div>
       </div>

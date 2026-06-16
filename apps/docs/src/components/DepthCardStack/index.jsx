@@ -1,5 +1,6 @@
 import React from 'react'
-import DepthCardStackComp from './DepthCardstackComp';
+import DepthCardStackComp from './DepthCardStackComp';
+
 
 const DepthCardStack = () => {
   return (
