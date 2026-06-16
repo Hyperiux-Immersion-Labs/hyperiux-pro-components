@@ -25,23 +25,12 @@ export default function Page() {
       <Hero />
       <GlowingPlates />
 
-      {!isMounted ? (
-        // SSR / hydration fallback: desktop layout until client width is known
-        <>
-          <FeaturedStoryTelling />
-          <FeaturedEffects />
-          <Workflow />
-          <FreeVault />
-          <AgencyProof />
-          <CTA />
-          <Footer />
-        </>
-      ) : isMobile ? (
+      { isMobile ? (
         // Compact layout: phones + tablets (< 1025px)
         <>
           <StorytellingMobile />
           <VaultGridMobile />
-          <FeaturedEffects />
+          {/* <FeaturedEffects /> */}
           <Workflow />
           <FreeVault />
           <AgencyProofMobile />
@@ -52,7 +41,7 @@ export default function Page() {
         // Desktop-only render
         <>
           <FeaturedStoryTelling />
-          <FeaturedEffects />
+          {/* <FeaturedEffects /> */}
           <Workflow />
           <FreeVault />
           <AgencyProof />
