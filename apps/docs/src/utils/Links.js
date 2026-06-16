@@ -9,8 +9,8 @@ export const vaultLinks = [
     { label: 'Effects', href: '/' },
     { label: 'Categories', href: '/' },
     { label: 'Docs', href: '/' },
-    { label: 'Pricing', href: '/' },
-    { label: 'Github', href: 'https://github.com/hyperiux' },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Github', href: 'https://github.com/Hyperiux-Immersion-Labs/hyperiux-components' },
 ]
 
 export const socialLinksList = [

@@ -189,9 +189,9 @@ export default function FreeVault() {
 
             <div className="w-full max-md:flex-col-reverse flex max-md:gap-[6vw] max-md:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
                 <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
-                    <Button text="Explore All Effects" href="/effects" />
+                    <Button className='border border-primary' text="Explore All Effects" href="/effects" />
                 </div>
-                <div className="w-full max-md:flex-col-reverse max-md:flex-col max-md:gap-[8vw] max-md:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">
+                <div className="w-full max-md:flex-col-reverse max-md:gap-[8vw] max-md:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">
                     <div
                         ref={freeRef}
                         className="w-1/2 max-md:w-full py-[4vw] max-md:py-[8vw] text-background! px-[3vw] max-md:px-[6vw] h-full max-md:h-auto flex flex-col items-start justify-between rounded-md bg-[#F6F6F6] max-md:gap-[8vw]"
