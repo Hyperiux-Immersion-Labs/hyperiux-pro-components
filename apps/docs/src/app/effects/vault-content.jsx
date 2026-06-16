@@ -17,7 +17,6 @@ import {
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp } from "@/components/Animations/gsapAnimations";
-import Footer from "@/components/LandingPage/Footer";
 import FAQSection from "@/components/LandingPage/FAQ";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 
@@ -383,9 +382,6 @@ export function VaultContent({
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
-        <div className="">
-          <Footer/>
-        </div>
       </div>
       )}
     </VaultLayout>

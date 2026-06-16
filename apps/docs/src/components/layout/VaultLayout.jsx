@@ -80,33 +80,31 @@ export function VaultLayout({
         </div>
       ) : null}
 
-      <Suspense fallback={<SidebarFallback totalEffects={totalEffects} />}>
-        <Sidebar
-          effects={effects}
-          effectCounts={effectCounts}
-          totalEffects={totalEffects}
-          isExpanded={isSidebarOpen}
-          onToggle={() => setIsSidebarOpen((v) => !v)}
-          onClose={() => setIsSidebarOpen(false)}
-          activeCategory={activeCategory}
-          topLinks={DOCS_TOP_LINKS}
-        />
-        {isSidebarOpen && (
-          <button
-            aria-label="Close sidebar overlay"
-            className="fixed inset-0 z-30 cursor-default bg-black/45 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
+      <div className="relative z-10 flex items-start">
+        <Suspense fallback={<SidebarFallback totalEffects={totalEffects} />}>
+          <Sidebar
+            effects={effects}
+            effectCounts={effectCounts}
+            totalEffects={totalEffects}
+            isExpanded={isSidebarOpen}
+            onToggle={() => setIsSidebarOpen((v) => !v)}
+            onClose={() => setIsSidebarOpen(false)}
+            activeCategory={activeCategory}
+            topLinks={DOCS_TOP_LINKS}
           />
-        )}
-      </Suspense>
+          {isSidebarOpen && (
+            <button
+              aria-label="Close sidebar overlay"
+              className="fixed inset-0 z-30 cursor-default bg-black/45 md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+        </Suspense>
 
-      <main
-        className={`relative z-10 transition-[margin-left] duration-300 ease-out ${
-          isSidebarOpen ? "md:ml-[288px]" : "md:ml-[72px]"
-        }`}
-      >
-        {renderedChildren}
-      </main>
+        <main className="relative min-w-0 flex-1">
+          {renderedChildren}
+        </main>
+      </div>
     </div>
   );
 }

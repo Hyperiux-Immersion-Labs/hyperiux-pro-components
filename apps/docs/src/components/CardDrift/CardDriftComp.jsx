@@ -24,7 +24,8 @@ export default function CardDriftComp({
  const containerRect = container.getBoundingClientRect();
 
  const isMobile = containerRect.width < 640;
- const cols = isMobile ? 2 : Math.ceil(Math.sqrt(cards.length));
+ const isTablet = containerRect.width >= 640 && containerRect.width < 1025;
+ const cols = isMobile || isTablet ? 2 : Math.ceil(Math.sqrt(cards.length));
  const rows = Math.ceil(cards.length / cols);
 
  const cellWidth = containerRect.width / cols;
@@ -33,7 +34,9 @@ export default function CardDriftComp({
  const firstCardRect = cards[0]?.getBoundingClientRect();
  const cardHeight = firstCardRect?.height || 0;
  const cellHeight = isMobile
- ? cardHeight + 50
+ ? cardHeight + 60
+ : isTablet
+ ? cardHeight + 110
  : containerRect.height / rows;
 
  // Shared z-index counter across all cards
@@ -50,9 +53,16 @@ export default function CardDriftComp({
  (cellWidth - cardRect.width) / 2 +
  gsap.utils.random(-30, 30);
 
+ const verticalOffset = isMobile
+ ? containerRect.height * 0.16
+ : isTablet
+ ? containerRect.height * 0.08
+ : 0;
+
  let y =
  row * cellHeight +
  (cellHeight - cardRect.height) / 2 +
+ verticalOffset +
  gsap.utils.random(-30, 30);
 
  x = Math.max(0, Math.min(x, containerRect.width - cardRect.width));
@@ -190,17 +200,17 @@ export default function CardDriftComp({
 function Card({ item, cardBg, cardTextColor, barBg }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
- <div className={`w-96 max-sm:w-50 shadow-2xl ${cardBg} ${cardTextColor}`}>
+ <div className={`w-96 max-sm:w-42 max-md:w-60 ${cardBg} ${cardTextColor}`}>
  {/* Top bar */}
  <div
- className={`flex justify-between text-xs px-3 py-1 ${barBg}`}
+ className={`flex justify-between text-xs px-3 max-sm:px-2 py-1 ${barBg}`}
  >
  <span>{item.year}</span>
  <span>{item.tag}</span>
  </div>
 
  {/* Content */}
- <div className="p-6 text-lg leading-none font-light">
+ <div className="p-6 max-md:p-3  text-lg max-md:text-lg max-sm:text-base leading-none font-light">
  {item.text}
  </div>
  </div>

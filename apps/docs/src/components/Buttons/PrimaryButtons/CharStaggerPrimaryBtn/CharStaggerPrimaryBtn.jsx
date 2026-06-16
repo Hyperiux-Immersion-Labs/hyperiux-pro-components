@@ -81,9 +81,9 @@ const CharStaggerPrimaryBtn = ({
  className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-(--char-hover-color) focus-visible:text-(--char-hover-color) max-md:h-[11vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] ${hoverStateClass} ${btnClassName}`}
  style={{"--char-hover-color": hoverColor }}
  >
- <div className="relative z-2 mt-[0.3vw]">
+ <div className="relative z-2">
  <span
- className="relative inline-block"
+ className="relative  flex items-center justify-center"
  >
  <span
  className={`relative inline-block overflow-hidden leading-[1.2] ${textClassName}`}

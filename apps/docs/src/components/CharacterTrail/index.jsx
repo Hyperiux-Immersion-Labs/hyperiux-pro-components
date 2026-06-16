@@ -34,8 +34,8 @@ export default CharacterTrail
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute top-60 hidden left-5 max-sm:flex h-fit w-[90%] px-6 text-center text-white">
-      <p className="rounded-full bg-black/10 px-5 py-3 leading-[1.2] text-base text-black backdrop-blur-sm">
+    <div className="absolute max-sm:bottom-30 max-md:bottom-30 max-sm:left-1/2 max-md:-translate-x-1/2  hidden  max-sm:w-full max-md:w-[50%] mx-auto  max-md:flex h-fit w-[90%] px-6 text-center text-white">
+      <p className="rounded-full bg-black/10 px-5 py-3 leading-[1.2] max-sm:text-base max-md:text-xl text-black backdrop-blur-sm">
         Not just something to watch, something to move. Open on desktop
       </p>
     </div>
@@ -43,17 +43,17 @@ const Content = () => (
     {/* content */}
     <section className="flex min-h-screen items-center justify-center px-8 pb-8">
       <div>
-        <h1 className="font-mono text-[12vh] max-sm:text-[15vw] leading-[1.2]  font-black uppercase">
+        <h1 className="font-mono text-[12vh] max-md:text-[13vw] max-sm:w-full max-md:w-[90%] max-sm:text-[15vw] leading-[1.2]  font-black uppercase">
           Snake Cursor Trail
         </h1>
 
-        <p className="mt-6 font-mono text-[11px] text-center uppercase tracking-[0.25em] text-black/40">
+        <p className="mt-6 font-mono text-sm max-sm:text-xs max-md:text-sm text-center uppercase tracking-[0.25em] text-black/40">
           Sequential · Reactive · Grid Based
         </p>
       </div>
     </section>
 
-    <p className="absolute bottom-8 right-8 max-w-[420px] text-right font-mono text-sm leading-relaxed text-black/55 max-sm:hidden">
+    <p className="absolute bottom-8 right-8 max-w-105 text-right font-mono text-sm leading-relaxed text-black/55 max-md:hidden">
       Wake the grid with your cursor. Draw slow corners, quick turns,
       little loops - the letters will stitch your path into a living trail.
     </p>
