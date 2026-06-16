@@ -12,6 +12,7 @@ const DEFAULT_HREF = "#";
 export default function LinkButton({
   text,
   mobileText = DEFAULT_MOBILE_TEXT,
+  textColor,
   clickedColor = DEFAULT_CLICKED_COLOR,
   href = DEFAULT_HREF,
   className = "",
@@ -23,6 +24,7 @@ export default function LinkButton({
   onClick,
   ...props
 }) {
+  const { style: customStyle, ...restProps } = props;
   const [isCompactViewport, setIsCompactViewport] = useState(false);
   const [hasMeasuredViewport, setHasMeasuredViewport] = useState(false);
   const [isIconRotated, setIsIconRotated] = useState(false);
@@ -58,6 +60,11 @@ export default function LinkButton({
     hasMeasuredViewport && isCompactViewport && isIconRotated
       ? { color: clickedColor }
       : undefined;
+  const mergedStyle = {
+    ...(textColor ? { color: textColor } : null),
+    ...customStyle,
+    ...clickedStyle,
+  };
   const iconClassNames = `${isIconRotated ? "-rotate-45" : ""} ${
     !isCompactViewport ? "group-hover:-rotate-45" : ""
   } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-300 ${iconClassName}`;
@@ -67,10 +74,10 @@ export default function LinkButton({
       <Link
         href={href}
         {...linkProps}
-        {...props}
+        {...restProps}
         onClick={onLinkClick}
         className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-md:text-[4vw] max-sm:text-[5.5vw] ${className}`}
-        style={clickedStyle}
+        style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">
           <span

@@ -97,23 +97,19 @@ export default function DemoHeader({
                 <ArrowFillButton
                   href={href}
                   btnText={text}
-                  // bgColor={resolvedTextColor}
                   textColor="#ffffff"
-                  // fillBgColor="#ffffff"
-                  // fillTextColor={resolvedTextColor}
-                  // hoverFillBgColor="#ffffff"
                   hoverFillTextColor="#ff6b00"
-                  arrowColor='#ff6b00'
-                  hoverArrowColor='#ff6b00'
+                  arrowColor="#ff6b00"
+                  hoverArrowColor="#ff6b00"
                   className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
                 />
                 <LinkButton
                   href={href}
-                  
                   text={text}
                   mobileText={text}
-                  clickedColor="#ff6b00"
-                  className="hidden origin-right text-xl scale-[0.7] text-black transition-transform duration-200  max-md:block max-sm:block"
+                  textColor={resolvedTextColor}
+                  clickedColor={resolvedTextColor}
+                  className="hidden origin-right text-xl scale-[0.7] transition-transform duration-200 max-md:block max-sm:block"
                   iconClassName="h-5 w-5 max-md:h-6 max-md:w-6 max-sm:h-6 max-sm:w-6"
                 />
               </>

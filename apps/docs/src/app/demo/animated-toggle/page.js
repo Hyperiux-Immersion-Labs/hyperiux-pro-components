@@ -1,4 +1,4 @@
-"use client";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 
 import AnimatedToggle from "@/components/animated-toggle";
@@ -7,6 +7,7 @@ import Image from "next/image";
 export default function AnimatedTogglePage() {
   return (
     <>
+    <DemoHeader textColor="white" logoColor="white" />
       <section className="min-h-dvh w-full flex items-center relative justify-center">
         <div className="z-1 space-y-[4vw] max-md:px-[7vw] max-md:space-y-[10vw]">
           <div className="flex flex-col items-center justify-center gap-[1vw] text-center max-md:gap-[3vw]">
