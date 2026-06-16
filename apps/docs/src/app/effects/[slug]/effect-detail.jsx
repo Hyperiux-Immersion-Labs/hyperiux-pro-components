@@ -350,6 +350,7 @@ export default function MyComponent() {
                     <Button
                       text="Live Preview"
                       href={previewHref}
+                      target_blank ={true}
                       target="_blank"
                       variant="orange"
                       className="shrink-0"
