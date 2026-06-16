@@ -30,22 +30,22 @@ export default function SplitCanvas() {
                         {sections.map((section, i) => (
                             <div
                                 key={i}
-                                className="h-screen flex py-24 max-sm:py-10 border-t border-black/40 "
+                                className="h-screen flex py-24 max-sm:py-10 border-t border-black/40 max-md:pb-20 max-sm:pb-20 "
                             >
                                 <div className="w-full h-full mx-auto px-16 max-md:px-0 max-sm:px-0 flex flex-row justify-between items-start max-sm:flex-col max-sm:justify-end max-sm:items-center pb-0 max-sm:pb-0">
                                     {/* Left Column - Number & Title */}
-                                    <div className="w-80 shrink-0 flex flex-col items-start text-left max-md:w-52 max-sm:w-full max-sm:items-center max-sm:text-center">
-                                        <span className="text-[11px] tracking-wider text-black/40 block mb-2">
+                                    <div className="w-80 shrink-0 flex flex-col items-start text-left max-md:w-[40%] max-sm:w-full max-sm:items-center max-sm:text-center">
+                                        <span className="text-[1.5vw] tracking-wider text-black/40 block mb-2 max-md:text-[3vw] max-sm:text-[5vw]">
                                             {section.number}
                                         </span>
                                         <h2
-                                            className="text-[44px] max-md:text-[40px] max-sm:text-[32px] leading-[1.05] font-normal"
+                                            className="text-[3.5vw] max-md:text-[7vw] max-sm:text-[9vw] leading-[1.05] font-normal"
                                             style={{ fontFamily: '"Times New Roman", Georgia, serif' }}
                                         >
                                             {section.title}
                                         </h2>
                                         {/* Mobile Description */}
-                                        <p className="hidden max-sm:block mt-4 text-[13px] leading-[1.2] max-md:text-[2.5vw] max-sm:text-[3.5vw] text-black/60 max-w-70">
+                                        <p className="hidden max-sm:block mt-4 text-[1.2vw] leading-[1.2] max-md:text-[2.5vw] max-sm:text-[4.2vw] text-black/60 max-w-70">
                                             {section.description}
                                         </p>
                                     </div>
@@ -54,8 +54,8 @@ export default function SplitCanvas() {
                                     <div className="w-125 shrink-0 max-md:hidden" />
 
                                     {/* Right Column - Description */}
-                                    <div className="w-70 shrink-0 mt-auto max-md:w-52 max-sm:hidden">
-                                        <p className="text-[14px] leading-[1.2] max-md:text-[2.5vw] max-sm:text-[3vw]   text-black/60 text-right">
+                                    <div className="w-70 shrink-0 mt-auto max-md:w-[50%] max-sm:hidden">
+                                        <p className="text-[1.2vw] leading-[1.2] max-md:text-[2.5vw] max-sm:text-[3vw]   text-black/60 text-right">
                                             {section.description}
                                         </p>
                                     </div>
