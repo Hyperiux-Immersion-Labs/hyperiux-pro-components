@@ -1,6 +1,6 @@
 import { ArrowUpRightIcon } from "@/utils/Icons";
 
-export default function VaultBox({ id, styles, img, number, label, videoClassName }) {
+export default function VaultBox({ id, styles, img, number, label, textColor='text-foreground' }) {
     return (
         <div
             id={id}
@@ -13,13 +13,13 @@ export default function VaultBox({ id, styles, img, number, label, videoClassNam
                     playsInline
                     muted
                     src={img}
-                    className={`object-cover ${videoClassName} h-full w-full`}
+                    className={`object-cover  h-full w-full`}
                 />
             </div>
             <div className='relative z-2 flex justify-between h-full w-full'>
-                <div className='text24' style={{ textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)' }}>
-                    <p>{number}</p>
-                    <p>{label}</p>
+                <div className='text24'>
+                    {/* <p>{number}</p> */}
+                    <p className={textColor}>{label}</p>
                 </div>
             </div>
         </div>

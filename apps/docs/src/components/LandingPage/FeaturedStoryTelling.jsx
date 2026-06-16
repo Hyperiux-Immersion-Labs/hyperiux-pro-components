@@ -30,7 +30,10 @@ const RADIUS_X = 600;
 const RADIUS_Y = 400;
 
 // Config: how much the orbit radius expands in Phase 3 (e.g. 0.70 = 70% expansion)
-const EXPAND_RADIUS_FACTOR = 0.72;
+const EXPAND_RADIUS_FACTOR = 0.67;
+
+// Fraction of spiral phase (t) before card blur begins — keeps early fly-out sharp
+const SPIRAL_BLUR_DELAY = 0.35;
 
 // NO ease: linear mapping from 0 to 1
 function linear(t) {
@@ -88,7 +91,8 @@ const BOXES = [
         styles: "w-[37.5%]",
         img: '/video/3.mp4',
         number: "03",
-        label: "WebGL"
+        label: "WebGL",
+        textColor: "text-black",
     }
 ];
 
@@ -103,9 +107,10 @@ const BOXES_BOTTOM = [
     {
         id: "block-bottom-layer-2",
         styles: "w-[50%]",
-        img: '/video/1.mp4',
+        img: '/video/5.mp4',
         number: "05",
-        label: "Page Transitions"
+        label: "Page Transitions",
+        textColor: "text-black",
     },
     {
         id: "block-bottom-layer-3",
@@ -361,7 +366,10 @@ export default function FeaturedStoryTelling() {
                             // Interpolate scale from 1.0 to base scale as card flies out
                             const finalBaseScale = 1.0 + (cardBaseScale - 1.0) * easedCardP2;
                             // Interpolate blur from 0 to base blur as card flies out
-                            const finalBaseBlur = cardBaseBlur * easedCardP2;
+                            const blurGate = linear(
+                                (t - SPIRAL_BLUR_DELAY) / (1 - SPIRAL_BLUR_DELAY),
+                            );
+                            const finalBaseBlur = cardBaseBlur * easedCardP2 * blurGate;
 
                             // Apply dynamic depth scale scaling based on single-phase t
                             const scaleRange = yVal * 0.25 * finalBaseScale;
@@ -370,7 +378,7 @@ export default function FeaturedStoryTelling() {
 
                             // Apply dynamic depth blur based on single-phase t
                             const depthBlur = Math.max(0, -yVal * 4.5);
-                            const currentBlur = finalBaseBlur + depthBlur * t;
+                            const currentBlur = finalBaseBlur + depthBlur * t * blurGate;
                             blurSet[i](currentBlur);
 
                             // Calculate dynamic zIndex
@@ -566,7 +574,7 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[1100vh] bg-background max-sm:hidden"
+            className="relative w-full h-[1100vh] bg-background max-md:hidden"
         >
             <div
                 ref={stickyContainerRef}
@@ -683,6 +691,7 @@ export default function FeaturedStoryTelling() {
                         {BOXES_BOTTOM.map(box => (
                             <VaultBox key={box.id} {...box} />
                         ))}
+                  
                     </div>
                 </div>
             </div>

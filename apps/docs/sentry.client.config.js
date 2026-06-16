@@ -11,7 +11,10 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
 
   integrations: [
-    Sentry.replayIntegration(),
+    Sentry.replayIntegration({
+      // Prevent cross-origin iframe access errors (e.g. CodeSandbox embeds)
+      block: ["iframe"],
+    }),
   ],
 
   debug: false,

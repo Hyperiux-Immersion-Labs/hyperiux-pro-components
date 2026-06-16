@@ -41,7 +41,7 @@
   font-weight: 400;
 }
 
-@media (max-width: 1024px) and (min-width: 641px) {
+@media (max-width: 1025px) and (min-width: 641px) {
   .self-padd {
     padding: 0 5vw;
   }

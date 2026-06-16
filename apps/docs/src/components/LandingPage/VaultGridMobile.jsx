@@ -15,40 +15,42 @@ const MOBILE_BOXES = [
         id: "mobile-block-top-layer-2",
         img: '/video/2.mp4',
         number: "02",
-        label: "Hover Reveal"
+        label: "Cusor Effects"
     },
     {
         id: "mobile-block-top-layer-3",
         img: '/video/3.mp4',
         number: "03",
-        label: "Parallax Layers"
+        label: "WebGL",
+        textColor: "text-black",
     },
     {
         id: "mobile-block-bottom-layer-1",
         img: '/video/4.mp4',
         number: "04",
-        label: "Transitions"
+        label: "Text Animations"
     },
     {
         id: "mobile-block-bottom-layer-3",
         img: '/video/6.mp4',
         number: "05",
-        label: "GSAP Magic"
+        label: "Navigations"
     },
     {
         id: "mobile-block-bottom-layer-2",
-        img: '/video/1.mp4',
+        img: '/video/5.mp4',
         number: "06",
-        label: "Text Split"
+        label: "Page Transitions",
+        textColor: "text-black",
     },
-    
+
 ];
 
 export default function VaultGridMobile() {
     return (
         <section
             id="vault-grid-mobile"
-            className="w-full self-padd overflow-x-hidden py-[20vw] gap-[20vw] flex flex-col items-center justify-center sm:hidden"
+            className="w-full self-padd overflow-x-hidden py-[20vw] gap-[20vw] flex flex-col items-center justify-center md:hidden"
         >
             {/* Intro Text Block */}
             <h2
@@ -60,12 +62,12 @@ export default function VaultGridMobile() {
             </h2>
 
             {/* Vertically Stacked Card Boxes (Exact same UI structure and classnames as desktop VaultBox) */}
-            <div className="flex flex-col w-full gap-[8vw]">
+            <div className="flex items-center justify-center flex-wrap max-sm:flex-col w-full max-sm:gap-[8vw] gap-[4vw]">
                 {MOBILE_BOXES.map((box) => (
-                    <VaultBox 
-                        key={box.id} 
-                        {...box} 
-                        styles="w-full aspect-[16/10] max-sm:!p-5" 
+                    <VaultBox
+                        key={box.id}
+                        {...box}
+                        styles="w-[45%]  shrink-0 max-sm:w-full aspect-[16/10] max-md:!p-5"
                     />
                 ))}
             </div>
