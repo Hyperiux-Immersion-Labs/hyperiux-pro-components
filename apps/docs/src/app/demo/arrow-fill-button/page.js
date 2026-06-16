@@ -16,7 +16,7 @@ export default function Page() {
 
                 <div className="">
                     <ArrowFillButton
-                        className="bg-linear-to-r from-[#ff6b00] to-[#ff5f00] scale-150"
+                        className="bg-linear-to-r from-[#ff6b00] to-[#ff5f00]"
                         href="#"
                         btnText="Hover me"
                     />

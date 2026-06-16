@@ -11,7 +11,7 @@ export default function BrushStrokesTransition({
   children,
   config = {
     enableBlur: false,
-    strokeColor: '#82A0FF',
+    strokeColor: '#ffffff',
     strokeWidth: 2,
     duration: 1.5,
   },
