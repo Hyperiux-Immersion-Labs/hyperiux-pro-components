@@ -1,7 +1,7 @@
 'use client'
 import { Environment, Instances, RoundedBoxGeometry } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import React, { useMemo, useEffect, useRef } from 'react'
+import React, { useMemo, useEffect, useRef, useState } from 'react'
 import RodsGroup1 from './RodsGroup1'
 import RodsGroup2 from './RodsGroup2'
 
@@ -34,11 +34,30 @@ function RodsGroupWrapper({ mouse, RodInstance }) {
 }
 
 export default function ReflectiveRods() {
+    const containerRef = useRef(null)
     const mouse = useRef({ x: 0, y: 0 })
+    const [inView, setInView] = useState(false)
 
     useEffect(() => {
+        const el = containerRef.current
+        if (!el) return
+
+        const observer = new IntersectionObserver(
+            ([entry]) => setInView(entry.isIntersecting),
+            { threshold: 0.0 },
+        )
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [])
+
+    useEffect(() => {
+        if (!inView) {
+            mouse.current.x = 0
+            mouse.current.y = 0
+            return
+        }
+
         const handleMouseMove = (e) => {
-            // Normalized coordinates (-1 to 1)
             mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
             mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1
         }
@@ -54,11 +73,11 @@ export default function ReflectiveRods() {
             window.removeEventListener('mousemove', handleMouseMove)
             window.removeEventListener('mouseleave', handleMouseLeave)
         }
-    }, [])
+    }, [inView])
 
     const commonProps = useMemo(() => ({
         radius: 0.18, // increased to offset scaling of Y/Z dimensions (0.25 and 0.3)
-        smoothness: 10,
+        smoothness: 6,
         materialProps: {
             color: '#ffffff',
             metalness: 1.0,
@@ -74,12 +93,14 @@ export default function ReflectiveRods() {
 
     return (
         <section
+            ref={containerRef}
             className="h-[200vh] max-sm:hidden w-full z-50 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
             id="reflectiveRoadsCanvas"
         >
             <Canvas
+                frameloop={inView ? 'always' : 'never'}
                 camera={{ fov: 55, position: [0, 0.3, 8] }}
-                dpr={[1]}
+                dpr={[0.8, 1]}
                 gl={{ antialias: true, alpha: true }}
                 style={{
                     // center the canvas content explicitly
