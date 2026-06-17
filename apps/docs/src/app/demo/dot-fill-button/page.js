@@ -1,4 +1,4 @@
-import DotFillBtn from "@/components/DotFillButton";
+import DotFillBtn from "@/components/dot-fill-button";
 import Image from "next/image";
 
 export default function Page() {
@@ -15,9 +15,9 @@ export default function Page() {
 
                 <div className="">
                     <DotFillBtn
-                    className="scale-120"
+                    className=""
                         href="#"
-                        btnText="Hover me"
+                        btnText="Try demo"
                         bgColor="#ff6b00"
                         textColor="#ffffff"
                         fillColor="#ffffff"

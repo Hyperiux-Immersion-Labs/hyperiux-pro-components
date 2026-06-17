@@ -5,7 +5,7 @@ import ScrollablePopupContent from "@/components/ScrollablePopupContent/Scrollab
 import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
 import { useState } from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import DotFillBtn from "@/components/DotFillButton";
+import DotFillBtn from "@/components/dot-fill-button";
 
 const popupSections = [
   {

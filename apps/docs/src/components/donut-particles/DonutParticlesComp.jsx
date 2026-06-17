@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from"@react-three/fiber";
-import { useEffect, useMemo, useRef } from"react";
+import { useEffect, useMemo, useRef, useState } from"react";
 import * as THREE from"three";
 import { degToRad } from"three/src/math/MathUtils";
 
@@ -21,6 +21,7 @@ function DonutParticle({
  position = [0, 0, 0],
  scale = 2.5,
  rotation = [degToRad(-100), degToRad(45), 0],
+ interactive = true,
 }) {
  const pointsRef = useRef(null);
  const simulationRef = useRef(null);
@@ -45,6 +46,13 @@ function DonutParticle({
  const worldIntersection = useMemo(() => new THREE.Vector3(), []);
 
  useEffect(() => {
+ if (!interactive) {
+ mouse3D.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ smoothMouse.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ prevSmoothMouse.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ return;
+ }
+
  const handleMouseMove = (event) => {
  if (!pointsRef.current) {
  return;
@@ -92,6 +100,7 @@ function DonutParticle({
  raycaster,
  size,
  worldIntersection,
+ interactive,
  ]);
 
  const simulation = useMemo(() => {
@@ -575,11 +584,43 @@ export default function DonutParticlesComp({
  cameraFov = 50,
  dpr = [1, 2],
 }) {
+ const [viewportWidth, setViewportWidth] = useState(1280);
+
+ useEffect(() => {
+ const updateViewportWidth = () => {
+ setViewportWidth(window.innerWidth);
+ };
+
+ updateViewportWidth();
+ window.addEventListener("resize", updateViewportWidth);
+
+ return () => {
+ window.removeEventListener("resize", updateViewportWidth);
+ };
+ }, []);
+
+ const isTablet = viewportWidth > 640 && viewportWidth <= 1025;
+ const isMobile = viewportWidth <= 640;
+ const responsiveScale = isMobile
+ ? donutScale * 0.48
+ : isTablet
+ ? donutScale * 0.52
+ : donutScale;
+ const responsivePosition = isMobile
+ ? [donutPosition[0] - 0.5, donutPosition[1], donutPosition[2]]
+ : isTablet
+ ? [donutPosition[0] - 0.35, donutPosition[1], donutPosition[2]]
+ : donutPosition;
 
  return (
  <div className={`h-screen w-full bg-black ${className}`}>
  <Canvas className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr}>
- <DonutParticle position={donutPosition} scale={donutScale} rotation={donutRotation} />
+ <DonutParticle
+ position={responsivePosition}
+ scale={responsiveScale}
+ rotation={donutRotation}
+ interactive={!isTablet && !isMobile}
+ />
  </Canvas>
  </div>
  );

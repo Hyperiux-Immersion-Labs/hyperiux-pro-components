@@ -1,6 +1,8 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
 
+const DESKTOP_CURSOR_MOVE_QUERY = "(min-width: 1025px) and (pointer: fine)";
+
 function mapRange(value, inMin, inMax, outMin, outMax) {
   const clamped = Math.min(Math.max(value, inMin), inMax);
   return outMin + ((clamped - inMin) / (inMax - inMin)) * (outMax - outMin);
@@ -8,32 +10,58 @@ function mapRange(value, inMin, inMax, outMin, outMax) {
 
 function useMousePosition(containerRef) {
   const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia(DESKTOP_CURSOR_MOVE_QUERY);
+    const updateIsDesktop = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+
+    updateIsDesktop();
+    mediaQuery.addEventListener?.("change", updateIsDesktop);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", updateIsDesktop);
+    };
+  }, []);
 
   useEffect(() => {
     const el = containerRef?.current;
     if (!el) return;
-    const onMove = (e) => {
-      const rect = el.getBoundingClientRect();
-      setPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        width: rect.width,
-        height: rect.height,
-      });
-    };
     const rect = el.getBoundingClientRect();
     setPos((prev) => ({
-      ...prev,
+      x: isDesktop ? prev.x : rect.width / 2,
+      y: isDesktop ? prev.y : rect.height / 2,
       width: rect.width,
       height: rect.height,
     }));
+
+    if (!isDesktop) {
+      return;
+    }
+
+    const onMove = (e) => {
+      const nextRect = el.getBoundingClientRect();
+      setPos({
+        x: e.clientX - nextRect.left,
+        y: e.clientY - nextRect.top,
+        width: nextRect.width,
+        height: nextRect.height,
+      });
+    };
 
     let ro;
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(() => {
         const nextRect = el.getBoundingClientRect();
         setPos((prev) => ({
-          ...prev,
+          x: prev.x,
+          y: prev.y,
           width: nextRect.width,
           height: nextRect.height,
         }));
@@ -46,9 +74,9 @@ function useMousePosition(containerRef) {
       el.removeEventListener("mousemove", onMove);
       ro?.disconnect?.();
     };
-  }, [containerRef]);
+  }, [containerRef, isDesktop]);
 
-  return pos;
+  return { ...pos, isDesktop };
 }
 
 function VariableFontAndCursor({
@@ -63,12 +91,12 @@ function VariableFontAndCursor({
   transformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
 }) {
-  const { x, y, width, height } = useMousePosition(containerRef);
+  const { x, y, width, height, isDesktop } = useMousePosition(containerRef);
 
   let fontVariationSettings = '"wght" 400';
   let skewX = 0;
 
-  if (width > 0 && height > 0) {
+  if (isDesktop && width > 0 && height > 0) {
     const { y: yAxis } = fontVariationMapping;
     const yVal = mapRange(y, 0, height, yAxis.min, yAxis.max);
     fontVariationSettings = `"${yAxis.name}" ${yVal.toFixed(1)}`;
@@ -114,7 +142,7 @@ export default function CursorMove({
   cursorDotStyle = {},
   text = "fancy!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
-  textClassName = "text-9xl text-orange-500 select-none leading-none",
+  textClassName = "text-9xl max-md:text-6xl max-sm:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",
   fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
@@ -124,10 +152,10 @@ export default function CursorMove({
   skewXRange = { min: 0, max: -20 },
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
-  coordinatesTextClassName = "text-xs text-white/40 tabular-nums",
+  coordinatesTextClassName = "text-xs max-md:text-sm text-white/40 tabular-nums",
 }) {
   const containerRef = useRef(null);
-  const { x, y } = useMousePosition(containerRef);
+  const { x, y, isDesktop } = useMousePosition(containerRef);
 
   const isPatternCrosshair = crosshairVariant === "dotted" || crosshairVariant === "dashed";
   const patternLength =
@@ -148,7 +176,7 @@ export default function CursorMove({
       ref={containerRef}
       className={`relative w-screen h-screen overflow-hidden cursor-none flex items-center justify-center ${backgroundClassName} ${paddingClassName} ${containerClassName} ${interClassName}`}
     >
-      {showCrosshair ? (
+      {showCrosshair && isDesktop ? (
         <>
           <div
             className={
@@ -181,7 +209,7 @@ export default function CursorMove({
         </>
       ) : null}
 
-      {showCursorDot ? (
+      {showCursorDot && isDesktop ? (
         <div
           className={`absolute pointer-events-none z-20 ${cursorDotClassName}`}
           style={{ left: x, top: y, transform: "translate(-50%, -50%)", ...cursorDotStyle }}

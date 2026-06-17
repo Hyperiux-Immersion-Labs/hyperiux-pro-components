@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from"react";
 import { gsap } from"gsap";
 import { ChevronLeft, ChevronRight } from"lucide-react";
-import SliderCard from"../Slider/SliderCard";
+import SliderCard from "./SliderCard";
 
 const CARD_W = 300;
 const CARD_H = 450;
+const TABLET_CARD_W = 340;
+const TABLET_CARD_H = 500;
 const AUTO_PLAY_DELAY = 5000;
 
 function getSlotProps(slot) {
@@ -72,15 +74,22 @@ export default function DepthCardStackComp({ cards }) {
  const countdown = useCountdown(presaleEnd);
  const pad = (n) => String(n).padStart(2,"0");
  const [isMobile, setIsMobile] = useState(false);
+ const [isTablet, setIsTablet] = useState(false);
+ const [isStackReady, setIsStackReady] = useState(false);
 
  useEffect(() => {
  const check = () => {
- setIsMobile(window.innerWidth <= 640);
+ const width = window.innerWidth;
+ setIsMobile(width <= 640);
+ setIsTablet(width > 640 && width <= 1024);
  };
  check();
  window.addEventListener("resize", check);
  return () => window.removeEventListener("resize", check);
  }, []);
+
+ const cardWidth = isTablet ? TABLET_CARD_W : CARD_W;
+ const cardHeight = isTablet ? TABLET_CARD_H : CARD_H;
 
  const applyLayout = useCallback((animate) => {
  const total = cards.length;
@@ -101,10 +110,15 @@ export default function DepthCardStackComp({ cards }) {
  }, [cards]);
 
  useEffect(() => {
+ setIsStackReady(false);
  applyLayout(false);
  const cards = cardRefs.current;
+ const readyFrame = requestAnimationFrame(() => {
+ setIsStackReady(true);
+ });
 
  return () => {
+ cancelAnimationFrame(readyFrame);
  timelineRef.current?.kill();
  timelineRef.current = null;
  cards.forEach((el) => el && gsap.killTweensOf(el));
@@ -165,7 +179,7 @@ export default function DepthCardStackComp({ cards }) {
  }
 
  if (i === oldCenter) {
- const swingX = dir > 0 ? -(CARD_W * 0.9) : (CARD_W * 0.9);
+ const swingX = dir > 0 ? -(cardWidth * 0.9) : (cardWidth * 0.9);
  const swingRotateY = dir > 0 ? -30 : 30;
 
  gsap.set(cardEl, { zIndex: 30 });
@@ -324,16 +338,16 @@ export default function DepthCardStackComp({ cards }) {
  }, []);
 
  return (
- <section className="flex flex-col items-center px-6 pt-20 pb-12 select-none bg-white">
-<p className="text-sm font-medium text-blue-500 mb-2">
+ <section className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen pb-5 select-none bg-white">
+<p className="text-sm max-sm:text-sm max-md:text-lg font-medium text-blue-500 mb-1 max-md:mb-3">
   Hyperiux-UI Library
 </p>
 
-<h3 className="text-5xl font-medium text-center mb-2 leading-none tracking-tight text-gray-900">
+<h3 className="text-5xl max-md:text-4xl max-sm:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-900">
   Build futuristic interfaces.
 </h3>
 
-<p className="text-5xl text-center text-gray-400 leading-none tracking-tight mb-10">
+<p className="text-5xl text-center max-md:text-4xl max-sm:text-2xl text-gray-400 leading-none tracking-tight mb-4 max-md:mb-10">
   Crafted for modern web experiences.
 </p>
 
@@ -343,19 +357,20 @@ export default function DepthCardStackComp({ cards }) {
  navigate(-1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="max-sm:hidden w-9 h-9 rounded-full border cursor-pointer border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
+ className="max-sm:hidden w-9 h-9 max-md:h-15 max-md:w-15 rounded-full border cursor-pointer border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
  aria-label="Previous card"
  >
- <ChevronLeft size={16} strokeWidth={2} />
+ <ChevronLeft size={20} strokeWidth={2} />
  </button>
 
  <div
- className="relative shrink-0 max-sm:row-start-1 max-sm:col-span-2"
+ className="relative shrink-0 max-sm:row-start-1 max-sm:col-span-2 transition-opacity duration-200"
  style={{
  width: isMobile
  ? window.innerWidth - 32
- : CARD_W + 112 * 2 + 40,
- height: CARD_H + 70,
+ : cardWidth + 112 * 2 + 40,
+ height: cardHeight + 70,
+ opacity: isStackReady ? 1 : 0,
  perspective: 900,
  perspectiveOrigin:"50% 50%",
  }}
@@ -368,6 +383,8 @@ export default function DepthCardStackComp({ cards }) {
  cardRefs={cardRefs}
  cardFaceRefs={cardFaceRefs}
  textureRefs={textureRefs}
+ cardWidth={cardWidth}
+ cardHeight={cardHeight}
  />
  ))}
  </div>
@@ -377,22 +394,22 @@ export default function DepthCardStackComp({ cards }) {
  navigate(1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="max-sm:hidden w-9 h-9 cursor-pointer rounded-full border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
+ className="max-sm:hidden w-9 h-9 max-md:h-15 max-md:w-15 cursor-pointer rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
  aria-label="Next card"
  >
- <ChevronRight size={16} strokeWidth={2} />
+ <ChevronRight size={20} strokeWidth={2} />
  </button>
  </div>
- <div className="hidden max-sm:flex items-center justify-center gap-3 mt-4">
+ <div className="hidden max-sm:flex items-center justify-center gap-8 mt-4">
  <button
  onClick={() => {
  navigate(-1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="w-10 h-10 rounded-full border border-gray-200  flex items-center justify-center text-gray-400 hover:bg-gray-100  transition-colors"
+ className="w-15 h-15 rounded-full border border-gray-400  flex items-center justify-center text-gray-600 hover:bg-gray-100  transition-colors"
  aria-label="Previous card"
  >
- <ChevronLeft size={18} strokeWidth={2} />
+ <ChevronLeft size={25} strokeWidth={2} />
  </button>
 
  <button
@@ -400,16 +417,16 @@ export default function DepthCardStackComp({ cards }) {
  navigate(1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="w-10 h-10 rounded-full border border-gray-200  flex items-center justify-center text-gray-400 hover:bg-gray-100  transition-colors"
+ className="w-15 h-15 rounded-full border border-gray-400  flex items-center justify-center text-gray-600 hover:bg-gray-100  transition-colors"
  aria-label="Next card"
  >
- <ChevronRight size={18} strokeWidth={2} />
+ <ChevronRight size={25} strokeWidth={2} />
  </button>
  </div>
 
  <p
  key={claimedText}
- className="mt-4 text-xs text-gray-400 h-5"
+ className="mt-4 max-md:mt-8 text-xs max-md:text-lg max-sm:text-base text-gray-400 h-5"
  style={{ animation:"fadeUp 0.4s ease forwards" }}
  >
  {claimedText}

@@ -7,6 +7,8 @@ export default function SliderCard({
  cardRefs: cardRefsRef,
  cardFaceRefs: cardFaceRefsRef,
  textureRefs: textureRefsRef,
+ cardWidth = CARD_W,
+ cardHeight = CARD_H,
 }) {
  return (
  <div
@@ -14,12 +16,12 @@ export default function SliderCard({
  ref={(el) => { cardRefsRef.current[index] = el; }}
  className="absolute will-change-transform cursor-pointer"
  style={{
- width: CARD_W,
- height: CARD_H,
+ width: cardWidth,
+ height: cardHeight,
  top:"50%",
  left:"50%",
- marginTop: -(CARD_H / 2),
- marginLeft: -(CARD_W / 2),
+ marginTop: -(cardHeight / 2),
+ marginLeft: -(cardWidth / 2),
  transformOrigin:"center bottom",
  transformStyle:"preserve-3d",
  }}
@@ -54,21 +56,21 @@ export default function SliderCard({
 
  {/* Card content */}
  <div className="relative z-10 flex flex-col justify-between h-full p-5">
- <p className="text-white">hero</p>
+ <p className="text-white text-base">hero</p>
  <div className="text-center">
- <p className="text-[26px] font-bold text-white tracking-tight leading-tight">
+ <p className="text-3xl font-semibold text-white tracking-tight leading-tight">
  {card.name}
  </p>
- <p className="text-[10px] text-white/40 font-medium mt-0.5">Early Access</p>
+ <p className="text-sm text-white/40 font-medium mt-0.5">Early Access</p>
  </div>
  <div className="flex justify-between">
  <div>
- <p className="text-[9px] text-white/35 font-medium">Joined</p>
- <p className="text-[13px] text-white/50 font-semibold">{card.joined}</p>
+ <p className="text-xs text-white/35 font-medium">Joined</p>
+ <p className="text-sm text-white/50 font-semibold">{card.joined}</p>
  </div>
  <div className="text-right">
- <p className="text-[9px] text-white/35 font-medium">Member</p>
- <p className="text-[13px] text-white/50 font-semibold">#{card.num}</p>
+ <p className="text-xs text-white/35 font-medium">Member</p>
+ <p className="text-sm text-white/50 font-semibold">#{card.num}</p>
  </div>
  </div>
  </div>

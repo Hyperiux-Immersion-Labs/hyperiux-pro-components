@@ -1,4 +1,4 @@
-import DonutParticles from '@/components/DonutParticles'
+import DonutParticles from '@/components/donut-particles'
 import React from 'react'
 
 const index = () => {

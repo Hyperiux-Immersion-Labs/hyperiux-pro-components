@@ -81,7 +81,7 @@ export default function GridScale() {
         0
       )
 
-    const blockTranslate = isMobile ? 50 : 100
+    const blockTranslate = isMobile ? 90 : 100
 const blockSide = isMobile ? '18%' : '35%'
 const blockTop = isMobile ? '25%' : '20%'
 
@@ -148,6 +148,7 @@ tl.fromTo(
 
   useEffect(() => {
     const isMobile = window.innerWidth < 640
+    const floatingWordSelectors = floatingWords.map((_, i) => `.floating-word-${i}`)
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -160,14 +161,18 @@ tl.fromTo(
         },
       });
 
+      gsap.set(floatingWordSelectors, { opacity: 0 });
+
       floatingWords.forEach((word, i) => {
-  gsap.set(
-    `.floating-word-${i}`,
-    isMobile && word.mobile
-      ? word.mobile
-      : word.start
-  );
-});
+        gsap.set(
+          `.floating-word-${i}`,
+          isMobile && word.mobile
+            ? word.mobile
+            : word.start
+        );
+      });
+
+      gsap.set(floatingWordSelectors, { opacity: 1 });
 
       tl.fromTo(centeredTextRef.current, { opacity: 0 }, {
         opacity: 1,
@@ -225,7 +230,7 @@ tl.fromTo(
           {floatingWords.map((word, i) => (
             <div
               key={i}
-              className={`floating-word-${i} z-300 absolute px-4 py-1 font-bold text-sm max-md:text-[2vw] uppercase tracking-wider ${word.color}`}
+              className={`floating-word-${i} z-300 absolute opacity-0 px-4 py-1 font-bold text-sm max-md:text-[2vw] max-sm:text-[2.5vw] uppercase tracking-wider ${word.color}`}
             >
               <p className='mix-blend-difference text-white'> {word.text}</p>
             </div>
