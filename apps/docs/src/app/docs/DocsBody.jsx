@@ -210,14 +210,12 @@ function TableOfContents({ containerRef, watchKey }) {
             >
               <span
                 className={[
-                  "block h-[2px] rounded-full transition-all duration-300 ease-out",
+                  "block h-0.5 rounded-full transition-all duration-300 ease-out",
                   activeId === it.id
-                    ? "w-12 bg-white"
-                    : "w-7 bg-white/35 hover:w-9 hover:bg-white/65",
+                    ? "w-8 bg-primary"
+                    : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
                 ].join(" ")}
-              >
-                <span className="sr-only">{it.text}</span>
-              </span>
+              />
             </a>
           </li>
         ))}
