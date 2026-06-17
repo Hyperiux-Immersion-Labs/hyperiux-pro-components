@@ -70,8 +70,6 @@ export function VaultLayout({
   onDocumentationNavigate,
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-
   const router = useRouter();
 
   const totalEffects =
@@ -84,7 +82,9 @@ export function VaultLayout({
   const lenis = useLenis();
   const refreshTimeoutsRef = useRef([]);
 
-  const isEffectsRoute = pathname === "/effects" || pathname.startsWith("/effects/");
+  const isEffectsRoute =
+    pathname === "/effects" || pathname.startsWith("/effects/");
+
   const isDocsRoute = pathname === "/docs" || pathname.startsWith("/docs/");
 
   const clearRefreshTimeouts = useCallback(() => {
