@@ -89,7 +89,7 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-600  px-10 py-5  max-md:px-6 max-sm:px-4 max-md:w-screen ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
+        className={`fixed top-0 z-50 left-0 right-0  px-10 pr-[4vw] py-5 max-md:z-600 max-md:px-6 max-sm:px-4 max-md:w-screen ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
@@ -132,7 +132,7 @@ export function VaultHeader({
             {showSearch && (
               <button
                 onClick={() => setOpenTrigger((n) => n + 1)}
-                className="group flex h-10 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-md:gap-3 max-md:hidden"
+                className="group flex h-12 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-md:gap-3 max-md:hidden"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">

@@ -1,5 +1,6 @@
 import { Tabs } from"@/components/Tabs/Tabs";
-import CharStaggerPrimaryBtn from"@/components/Buttons/PrimaryButtons/CharStaggerPrimaryBtn/CharStaggerPrimaryBtn";
+
+import CharStaggerPrimaryButton from "@/components/char-stagger-primary-button";
 
 const tabsData = [
  {
@@ -94,7 +95,7 @@ const tabsData = [
  </div>
  </div>
 
- <CharStaggerPrimaryBtn
+ <CharStaggerPrimaryButton
  href="#"
  text=" Book a Visit"
  bgClassName="rounded-full bg-[#ff6b00]"

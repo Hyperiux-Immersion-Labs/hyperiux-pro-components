@@ -30,7 +30,6 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp, lineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
-import Footer from "@/components/LandingPage/Footer";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 
 export function EffectDetailContent({
@@ -289,7 +288,7 @@ export default function MyComponent() {
         effect.categories?.[0] || effect.category
       }
     >
-      <div className="min-h-screen text-foreground">
+      <div className="min-h-screen text-foreground ">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
@@ -587,8 +586,6 @@ export default function MyComponent() {
             )}
           </section>
         </main>
-
-        <Footer />
       </div>
     </VaultLayout>
   );

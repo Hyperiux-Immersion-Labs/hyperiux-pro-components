@@ -1,18 +1,18 @@
 import { withSentryConfig } from "@sentry/nextjs";
-import path from 'path'
-import { fileURLToPath } from 'url'
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const shouldUploadSentrySourceMaps = Boolean(
-  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true"
+  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true",
 );
 const hasSentryBuildConfig = Boolean(
   shouldUploadSentrySourceMaps &&
   process.env.NEXT_PUBLIC_SENTRY_DSN &&
-    process.env.SENTRY_ORG &&
-    process.env.SENTRY_PROJECT &&
-    process.env.SENTRY_AUTH_TOKEN
+  process.env.SENTRY_ORG &&
+  process.env.SENTRY_PROJECT &&
+  process.env.SENTRY_AUTH_TOKEN,
 );
 
 const allowedIframeSources = [
@@ -41,108 +41,104 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      
       {
-        source: '/',
-        destination: '/effects',
+        source: "/effects/components/book-flip",
+        destination: "/effects/webgl-effects/book-flip",
         permanent: false,
       },
       {
-        source: '/effects/components/book-flip',
-        destination: '/effects/webgl-effects/book-flip',
+        source: "/effects/components/book-flip/preview",
+        destination: "/effects/webgl-effects/book-flip/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/book-flip/preview',
-        destination: '/effects/webgl-effects/book-flip/preview',
+        source: "/effects/components/colliding-models",
+        destination: "/effects/webgl-effects/colliding-models",
         permanent: false,
       },
       {
-        source: '/effects/components/colliding-models',
-        destination: '/effects/webgl-effects/colliding-models',
+        source: "/effects/components/colliding-models/preview",
+        destination: "/effects/webgl-effects/colliding-models/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/colliding-models/preview',
-        destination: '/effects/webgl-effects/colliding-models/preview',
+        source: "/effects/components/file-encryption",
+        destination: "/effects/webgl-effects/file-encryption",
         permanent: false,
       },
       {
-        source: '/effects/components/file-encryption',
-        destination: '/effects/webgl-effects/file-encryption',
+        source: "/effects/components/file-encryption/preview",
+        destination: "/effects/webgl-effects/file-encryption/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/file-encryption/preview',
-        destination: '/effects/webgl-effects/file-encryption/preview',
+        source: "/effects/components/hyperiux-glitter-concept",
+        destination: "/effects/webgl-effects/hyperiux-glitter-concept",
         permanent: false,
       },
       {
-        source: '/effects/components/hyperiux-glitter-concept',
-        destination: '/effects/webgl-effects/hyperiux-glitter-concept',
+        source: "/effects/components/hyperiux-glitter-concept/preview",
+        destination: "/effects/webgl-effects/hyperiux-glitter-concept/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/hyperiux-glitter-concept/preview',
-        destination: '/effects/webgl-effects/hyperiux-glitter-concept/preview',
+        source: "/effects/components/infinite-grid-gallery",
+        destination: "/effects/webgl-effects/infinite-grid-gallery",
         permanent: false,
       },
       {
-        source: '/effects/components/infinite-grid-gallery',
-        destination: '/effects/webgl-effects/infinite-grid-gallery',
+        source: "/effects/components/infinite-grid-gallery/preview",
+        destination: "/effects/webgl-effects/infinite-grid-gallery/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/infinite-grid-gallery/preview',
-        destination: '/effects/webgl-effects/infinite-grid-gallery/preview',
+        source: "/effects/components/interactive-hover-slider",
+        destination: "/effects/webgl-effects/interactive-hover-slider",
         permanent: false,
       },
       {
-        source: '/effects/components/interactive-hover-slider',
-        destination: '/effects/webgl-effects/interactive-hover-slider',
+        source: "/effects/components/interactive-hover-slider/preview",
+        destination: "/effects/webgl-effects/interactive-hover-slider/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/interactive-hover-slider/preview',
-        destination: '/effects/webgl-effects/interactive-hover-slider/preview',
+        source: "/effects/components/gooey-counter",
+        destination: "/effects/others/gooey-counter",
         permanent: false,
       },
       {
-        source: '/effects/components/gooey-counter',
-        destination: '/effects/others/gooey-counter',
+        source: "/effects/components/gooey-counter/preview",
+        destination: "/effects/others/gooey-counter/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/gooey-counter/preview',
-        destination: '/effects/others/gooey-counter/preview',
+        source: "/effects/components/interactive-list-preview",
+        destination: "/effects/others/interactive-list-preview",
         permanent: false,
       },
       {
-        source: '/effects/components/interactive-list-preview',
-        destination: '/effects/others/interactive-list-preview',
+        source: "/effects/components/interactive-list-preview/preview",
+        destination: "/effects/others/interactive-list-preview/preview",
         permanent: false,
       },
       {
-        source: '/effects/components/interactive-list-preview/preview',
-        destination: '/effects/others/interactive-list-preview/preview',
+        source: "/effects/components/portfolio-concept",
+        destination: "/effects/others/portfolio-concept",
         permanent: false,
       },
       {
-        source: '/effects/components/portfolio-concept',
-        destination: '/effects/others/portfolio-concept',
+        source: "/effects/components/portfolio-concept/preview",
+        destination: "/effects/others/portfolio-concept/preview",
         permanent: false,
       },
-      {
-        source: '/effects/components/portfolio-concept/preview',
-        destination: '/effects/others/portfolio-concept/preview',
-        permanent: false,
-      },
-    ]
+    ];
   },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },
@@ -165,4 +161,6 @@ const sentryConfig = hasSentryBuildConfig
     })
   : nextConfig;
 
-export default process.env.NODE_ENV === "development" ? nextConfig : sentryConfig;
+export default process.env.NODE_ENV === "development"
+  ? nextConfig
+  : sentryConfig;

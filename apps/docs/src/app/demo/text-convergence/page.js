@@ -1,5 +1,4 @@
 import React from'react'
-// import {TextBreak} from'@/components/text-convergence'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import TextConvergence from '@/components/text-convergence'
 

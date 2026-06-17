@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef } from"react";
-import { BlurText } from"@/components/effects/BlurText";
+import { BlurText } from "@/components/blur-text";
 import ParallaxAnim from"@/components/ParallaxAnim/ParallaxAnim";
 import { ReactLenis } from"lenis/react";
 import { gsap } from"gsap";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -108,6 +109,7 @@ const Page = () => {
 
  return (
  <ReactLenis root>
+    <DemoHeader />
  <div ref={containerRef} className="overflow-x-hidden bg-[#f7f1e3]">
  <section
  style={{ backgroundColor:"#f7f1e3", color:"#111827" }}
@@ -123,12 +125,12 @@ const Page = () => {
  />
 
  <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:items-center">
- <div className="relative">
- <div className="mb-6 inline-flex -rotate-3 rounded-full border border-black/10 bg-black px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white shadow-xl">
+ <div className="relative pt-5">
+ {/* <div className="mb-6 inline-flex -rotate-3 rounded-full border border-black/10 bg-black px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white shadow-xl">
  <span data-accent style={{ color: accents[2] }}>
  Blur Text Reveal
  </span>
- </div>
+ </div> */}
 
  <div className="max-w-4xl">
  <BlurText

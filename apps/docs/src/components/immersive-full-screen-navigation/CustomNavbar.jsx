@@ -19,7 +19,7 @@ const LOCATION_DELAY_OFFSET = 0.25;
 
 export default function CustomNavbar({
   links = [],
-  images = ["/assets/img/image01.webp", "/assets/img/image02.webp"],
+  images = ["https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"],
   agencyName = "Hyperiux®",
   socials = [
     { type: "instagram", href: "#" },

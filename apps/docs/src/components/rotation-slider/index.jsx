@@ -1,6 +1,13 @@
 import { RotationSliderComp } from "./RotationSliderComp";
 
 export default function RotationSlider() {
+ return (
+ <>
+ <RotationSliderComp images={images} />
+ </>
+ );
+}
+
    const images = [
  { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", text:"Initialize Motion Layer" },
  { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", text:"Inject Depth Matrix" },
@@ -15,10 +22,3 @@ export default function RotationSlider() {
  { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", text:"Deploy Experience Layer" },
  { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", text:"Finalize Hyperiux State" },
  ];
-
- return (
- <>
- <RotationSliderComp images={images} />
- </>
- );
-}

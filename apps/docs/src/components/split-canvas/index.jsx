@@ -2,8 +2,8 @@
 
 import { useRef } from 'react';
 import { ReactLenis } from 'lenis/react';
-import PixelScrollCanvas from './PixelScrollCanvas';
 import { sections } from './content';
+import SplitCanvasComp from './SplitCanvasComp';
 
 export default function SplitCanvas() {
     const wrapperRef = useRef(null);
@@ -11,10 +11,6 @@ export default function SplitCanvas() {
     return (
         <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>
             <main className="bg-[#F5F5F0] min-h-screen text-black">
-                {/* Hero Section */}
-               
-
-                {/* Scrollable Content */}
                 <div
                     ref={wrapperRef}
                     className="relative"
@@ -22,7 +18,7 @@ export default function SplitCanvas() {
                 >
                     {/* Fixed Canvas Container - higher z-index to be visible */}
                     <div className="sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-sm:items-center">
-                        <PixelScrollCanvas wrapperRef={wrapperRef} />
+                        <SplitCanvasComp wrapperRef={wrapperRef} />
                     </div>
 
                     {/* Content Sections */}

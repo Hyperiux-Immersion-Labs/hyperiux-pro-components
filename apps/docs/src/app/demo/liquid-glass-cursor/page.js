@@ -2,6 +2,7 @@
 import React from 'react'
 import LiquidGlassCursor from '@/components/liquid-glass-cursor'
 import { ChevronRight, Play } from 'lucide-react'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
 const CustomIcon = ({ className = "w-6 h-6" }) => (
   <svg viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -30,6 +31,8 @@ export default function MinimalPage() {
   const isMobile = useIsMobile()
 
   return (
+    <>
+      <DemoHeader />
     <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
       {!isMobile && (
         <LiquidGlassCursor baseSize={30} textHoverSize={130} borderColor="rgba(0,0,0,0.05)" />
@@ -73,5 +76,6 @@ Best experienced where hover exists.
         )}
       </div>
     </div>
+     </>
   )
 }

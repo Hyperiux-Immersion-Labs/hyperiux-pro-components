@@ -24,7 +24,7 @@ export function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-12 pr-4 py-3.5 bg-neutral-100 border border-neutral-200 rounded-xl text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all"
+        className="w-full pl-12 pr-4 py-3.5 bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all"
       />
       {totalCount > 0 && (
         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-neutral-400">
@@ -108,7 +108,7 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-xl mx-4 bg-neutral-950/90 backdrop-blur-xl rounded-xl  overflow-hidden border border-neutral-800/60 flex flex-col h-113 max-md:h-140 max-sm:h-113  ring-1 ring-white/5">
+      <div className="relative w-full max-w-xl mx-4 bg-neutral-950/90 backdrop-blur-xl rounded-lg  overflow-hidden border border-neutral-800/60 flex flex-col h-113 max-md:h-140 max-sm:h-113  ring-1 ring-white/5">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-4 border-b border-neutral-800/50 bg-black/20">
           <svg className="w-5 h-5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,9 +143,9 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
                 <button
                   key={effect.name}
                   onClick={() => handleSelect(effect)}
-                  className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-xl hover:bg-neutral-800/50 text-left transition-all duration-200 group"
+                  className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
                 >
-                  <div className="w-10 h-10 bg-neutral-900 border border-neutral-800/60 rounded-lg flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-colors">
+                  <div className="w-10 h-10 bg-neutral-900 border border-neutral-800/60 rounded-md flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-colors">
                     {effect.category?.[0]?.toUpperCase() || "E"}
                   </div>
                   <div className="flex-1">

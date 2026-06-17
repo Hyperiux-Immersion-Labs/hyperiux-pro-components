@@ -15,7 +15,7 @@ const AnimatedToggle = () => {
         className={`cursor-pointer size-24 max-sm:size-18 rounded-lg flex group items-center justify-center transition-all duration-300 active:scale-90 ${chevronActive ? "bg-primary" : "bg-zinc-400"}`}
       >
         <ChevronBird
-          className="mt-2 group-hover:rotate-180 group-hover:-translate-y-[30%] duration-300 transition-all"
+          className="mt-2 group-hover:rotate-180 group-hover:translate-y-[-30%] duration-300 transition-all"
           size={32}
           isActive={chevronActive}
         />
