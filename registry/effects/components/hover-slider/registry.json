@@ -1,0 +1,11 @@
+{
+  "name": "hover-slider",
+  "type": "registry:component",
+  "title": "Hover Slider",
+  "description": "Interactive hover-based slider (placeholder registry entry).",
+  "category": "components",
+  "dependencies": [],
+  "registryDependencies": [],
+  "previewUrl": "/hover-slider",
+  "tier": "free"
+}
