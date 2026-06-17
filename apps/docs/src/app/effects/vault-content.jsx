@@ -401,7 +401,7 @@ export function VaultContent({
         )}
       </VaultLayout>
 
-      <div className="relative z-300 text-foreground px-8">
+      <div className="relative z-300 text-foreground px-8 max-md:px-[7vw]">
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}

@@ -35,9 +35,9 @@ export default function FAQDemo({faqItems}) {
               iconStrokeWidth={2}
               duration={0.5}
             >
-              <FAQTitle className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">{item.title}</FAQTitle>
+              <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">{item.title}</FAQTitle>
 
-              <FAQContent className="pt-4 text-neutral-400 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]!">
+              <FAQContent className="pt-4 pl-10 max-md:pl-8 text-neutral-400 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]!">
                 {item.content}
               </FAQContent>
             </FAQWrapper>

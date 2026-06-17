@@ -65,6 +65,8 @@ export default function GridLift() {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
 
+ const [isDesktop, setIsDesktop] = useState(true);
+
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef([]);
  const svgImageRef = useRef(null);
@@ -192,17 +194,31 @@ export default function GridLift() {
  event.target.value ="";
  };
 
- // Default SVG mask (Hyperiux wordmark)
- useEffect(() => {
- const image = new Image();
- image.onload = () => {
- svgImageRef.current = image;
- setSvgVersion((v) => v + 1);
- };
- image.src ="/hyperiux-wordmark.svg";
- }, []);
 
- useEffect(() => {
+useEffect(() => {
+  const updateDesktop = () => {
+    const gw = typeof window !== "undefined" && typeof window.globalWidth === "number"
+      ? window.globalWidth
+      : (typeof window !== "undefined" ? window.innerWidth : 0);
+    setIsDesktop(!(gw < 1025));
+  };
+  updateDesktop();
+  window.addEventListener("resize", updateDesktop);
+  return () => window.removeEventListener("resize", updateDesktop);
+}, []);
+
+// Default SVG mask (Hyperiux wordmark)
+useEffect(() => {
+  const image = new Image();
+  image.onload = () => {
+    svgImageRef.current = image;
+    setSvgVersion((v) => v + 1);
+  };
+  image.src = "/hyperiux-wordmark.svg";
+}, []);
+
+useEffect(() => {
+ if (!isDesktop) return;
  const canvas = canvasRef.current;
  const ctx = canvas.getContext("2d", { alpha: false });
  const maskCanvas = document.createElement("canvas");
@@ -382,28 +398,38 @@ export default function GridLift() {
  };
 
  const onPointerMove = (e) => {
- mouseRef.current.x = e.clientX;
- mouseRef.current.y = e.clientY;
- mouseRef.current.active = true;
+  if (!isDesktop) return;
+  mouseRef.current.x = e.clientX;
+  mouseRef.current.y = e.clientY;
+  mouseRef.current.active = true;
  };
  const onPointerLeave = () => { mouseRef.current.active = false; };
 
  resize(); render();
  window.addEventListener("resize", resize);
- window.addEventListener("pointermove", onPointerMove);
- window.addEventListener("pointerleave", onPointerLeave);
+ // Only attach pointer listeners on desktop-capable devices
+ if (isDesktop) {
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerleave", onPointerLeave);
+ } else {
+  // ensure no active hover state on non-desktop
+  mouseRef.current.active = false;
+ }
 
  return () => {
  cancelAnimationFrame(animationFrame);
- window.removeEventListener("resize", resize);
- window.removeEventListener("pointermove", onPointerMove);
- window.removeEventListener("pointerleave", onPointerLeave);
+  window.removeEventListener("resize", resize);
+  if (isDesktop) {
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerleave", onPointerLeave);
+  }
  };
  }, [
  maskSource, safeText, fontSize, fontWeight, maskScale,
  gridSpacing, strokeSize, hoverRadius, hoverFalloff, interactionRange,
  liftHeight, liftRotation, liftSmoothness, baseOpacity, hoverOpacity,
  backgroundColor, gridColor, hoverColor, svgVersion,
+ isDesktop,
  ]);
 
  return (
@@ -470,6 +496,15 @@ export default function GridLift() {
  style={{ background: backgroundColor }}
  />
  
+  {/* Message for non-desktop devices */}
+  {!isDesktop && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="px-4 py-2 rounded bg-black/70 text-white text-sm font-medium">
+        Interactive effect available on desktop only.
+      </div>
+    </div>
+  )}
+ 
  {/* Creative clue hint */}
  <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-sm:bottom-4 max-sm:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
@@ -484,7 +519,7 @@ export default function GridLift() {
  onChange={handleSVGUpload}
  style={{ display:"none" }}
  />
- <div className="grid-lift-right-controls fixed right-4 top-4 z-60 pointer-events-auto">
+ <div className="grid-lift-right-controls max-sm:hidden fixed right-4 top-4 z-60 pointer-events-auto">
  <LevaPanel
  theme={levaTheme}
  collapsed={false}

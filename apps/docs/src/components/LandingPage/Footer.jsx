@@ -10,7 +10,7 @@ import ReflectiveRods from "@/Experience/ReflectiveRods";
 
 export default function Footer() {
   return (
-    <footer className="h-fit overflow-hidden max-md:mt-[-10vw] max-sm:mt-0  z-200 relative w-full">
+    <footer className="h-fit overflow-hidden max-md:mt-20   z-200 relative w-full">
       <ReflectiveRods />
       <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative">

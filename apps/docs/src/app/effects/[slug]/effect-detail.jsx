@@ -576,7 +576,7 @@ function EffectCtaSection({ cta, sectionRef }) {
       )}
 
 
-      <div className="w-fit">
+      <div className="w-fit ">
 
       {cta.buttonText && (
         <Button
