@@ -5,6 +5,8 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+// import Button from "../Reusable/Button";
+import useIsMobile, { COMPACT_LAYOUT_BREAKPOINT, PHONE_BREAKPOINT } from "@/hooks/useIsMobile";
 import Button from "../WebsiteComps/Button";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
