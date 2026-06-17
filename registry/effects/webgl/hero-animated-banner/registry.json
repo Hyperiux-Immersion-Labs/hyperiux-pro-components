@@ -1,0 +1,13 @@
+{
+  "name": "hero-animated-banner",
+  "type": "registry:component",
+  "title": "Hero Animated Banner",
+  "description": "Placeholder registry entry for a WebGL hero animated banner.",
+  "category": "webgl",
+  "dependencies": [
+    "three"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/hero-animated-banner",
+  "tier": "pro"
+}
