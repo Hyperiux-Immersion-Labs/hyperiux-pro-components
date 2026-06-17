@@ -30,13 +30,13 @@ const variations = [
     frameClassName: "border-white/15 bg-black",
     component: ArrowsLimit,
   },
-  {
-    id: "particle-morph",
-    label: "Particle",
-    theme: "light",
-    frameClassName: "border-black/15 bg-white",
-    component: Points,
-  },
+  // {
+  //   id: "particle-morph",
+  //   label: "Particle",
+  //   theme: "light",
+  //   frameClassName: "border-black/15 bg-white",
+  //   component: Points,
+  // },
   {
     id: "vector-lines",
     label: "Lines",
