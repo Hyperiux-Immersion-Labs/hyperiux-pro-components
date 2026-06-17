@@ -360,9 +360,13 @@ export default function Navbar() {
 
     return (
         <nav
-        id='navigation'
+            id='navigation'
             ref={navbarRef}
-            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] backdrop-blur-sm max-md:hidden"
+            style={{
+                opacity: 0,
+                transform: "translateY(-18px)",
+            }}
+            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] backdrop-blur-sm max-md:hidden "
         >
             <Link href="/">
                 <HyperiuxLogo className="h-auto w-[10vw] text-primary" />
@@ -403,7 +407,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center justify-center gap-[2.5vw]">
-                <Button text="Install CLI" href="/effects" />
+                <Button text="Install CLI" href="#" />
             </div>
         </nav>
     )
