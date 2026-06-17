@@ -17,7 +17,7 @@ import {
 
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
-import { fadeUp } from "@/components/Animations/gsapAnimations";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import FAQSection from "@/components/LandingPage/FAQ";
 import Button from "@/components/Reusable/Button";
 import { getFeaturedEffects } from "@/lib/featured-effects";
@@ -28,7 +28,7 @@ export function VaultContent({
   initialCategory = "all",
   userPlan = "free",
 }) {
-  fadeUp();
+  useFadeUp();
   const pathname = usePathname();
   const isProUser = userPlan === "pro";
   const searchParams = useSearchParams();

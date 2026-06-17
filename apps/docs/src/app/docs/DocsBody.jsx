@@ -229,6 +229,13 @@ function TableOfContents({ containerRef, watchKey }) {
 export default function DocsBody({ children }) {
   const contentRef = useRef(null);
   const pathname = usePathname();
+  const isDocsPath = pathname.startsWith("/docs");
+  const prevDocsPathRef = useRef(false);
+  const shouldAnimateDocsTransition = isDocsPath && !prevDocsPathRef.current;
+
+  useEffect(() => {
+    prevDocsPathRef.current = isDocsPath;
+  }, [isDocsPath]);
 
   return (
     <>
@@ -241,9 +248,17 @@ export default function DocsBody({ children }) {
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={pathname}
-                initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+                initial={
+                  shouldAnimateDocsTransition
+                    ? { opacity: 0, y: 10, filter: "blur(6px)" }
+                    : false
+                }
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+                exit={
+                  shouldAnimateDocsTransition
+                    ? { opacity: 0, y: -10, filter: "blur(6px)" }
+                    : false
+                }
                 transition={{ duration: 0.35, ease: "easeInOut" }}
               >
                 {children}

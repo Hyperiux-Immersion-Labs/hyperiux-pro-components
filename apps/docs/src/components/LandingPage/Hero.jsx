@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
 import React, { useEffect, useRef } from "react";
-import RandomBlur from "../Reusable/RandomBlur";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
+
+const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.5;
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -16,25 +18,45 @@ export default function Hero() {
   const pRef = useRef(null);
 
   useEffect(() => {
-    const vaultEls = [vaultDesktopRef.current, vaultMobileRef.current].filter(Boolean);
+    const vaultEls = [vaultDesktopRef.current, vaultMobileRef.current].filter(
+      Boolean
+    );
     const pEl = pRef.current;
-    if (!vaultEls.length && !pEl) return;
+    const navigationEl =
+      typeof document !== "undefined"
+        ? document.querySelector("#navigation")
+        : null;
+
+    if (!vaultEls.length && !pEl && !navigationEl) return;
 
     const isLoaderActive =
-      typeof document !== 'undefined' &&
+      typeof document !== "undefined" &&
       document.body.classList.contains("loader-active");
 
-    if (isLoaderActive) {
-      vaultEls.forEach((el) => gsap.set(el, { opacity: 0 }));
-      if (pEl) gsap.set(pEl, { opacity: 0 });
+    vaultEls.forEach((el) => gsap.set(el, { opacity: 0 }));
+
+    if (pEl) {
+      gsap.set(pEl, { opacity: 0 });
+    }
+
+    if (navigationEl) {
+      gsap.set(navigationEl, {
+        opacity: 0,
+        y: -18,
+      });
     }
 
     const splits = [];
     let ctx;
+    let delayedCall;
+    let navigationTween;
 
     const runAnimation = () => {
       vaultEls.forEach((el) => gsap.set(el, { opacity: 1 }));
-      if (pEl) gsap.set(pEl, { opacity: 1 });
+
+      if (pEl) {
+        gsap.set(pEl, { opacity: 1 });
+      }
 
       ctx = gsap.context(() => {
         vaultEls.forEach((el) => {
@@ -43,7 +65,10 @@ export default function Hero() {
 
           gsap.fromTo(
             split.words,
-            { y: 20, opacity: 0 },
+            {
+              y: 20,
+              opacity: 0,
+            },
             {
               y: 0,
               opacity: 1,
@@ -51,7 +76,7 @@ export default function Hero() {
               duration: 0.85,
               ease: "power3.out",
               stagger: 0.12,
-            },
+            }
           );
         });
 
@@ -61,7 +86,10 @@ export default function Hero() {
 
           gsap.fromTo(
             split.lines,
-            { y: 24, opacity: 0 },
+            {
+              y: 24,
+              opacity: 0,
+            },
             {
               y: 0,
               opacity: 1,
@@ -69,27 +97,54 @@ export default function Hero() {
               duration: 0.95,
               ease: "power3.out",
               stagger: 0.08,
-            },
+            }
           );
         }
       }, containerRef);
+
+      if (navigationEl) {
+        navigationTween = gsap.to(navigationEl, {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          delay: 0.1,
+          ease: "power3.out",
+          clearProps: "opacity,transform",
+        });
+      }
+    };
+
+    const startAfterDelay = () => {
+      delayedCall?.kill();
+
+      delayedCall = gsap.delayedCall(
+        HERO_ANIMATION_DELAY_AFTER_LOADER,
+        runAnimation
+      );
     };
 
     const cleanup = () => {
-      if (ctx) ctx.revert();
+      delayedCall?.kill();
+      navigationTween?.kill();
+
+      if (ctx) {
+        ctx.revert();
+      }
+
       splits.forEach((split) => split.revert());
     };
 
     if (isLoaderActive) {
-      const handleLoaderComplete = () => runAnimation();
-      window.addEventListener("loaderComplete", handleLoaderComplete);
+      window.addEventListener("loaderComplete", startAfterDelay);
+
       return () => {
-        window.removeEventListener("loaderComplete", handleLoaderComplete);
+        window.removeEventListener("loaderComplete", startAfterDelay);
         cleanup();
       };
     }
 
-    runAnimation();
+    startAfterDelay();
+
     return cleanup;
   }, []);
 
@@ -105,7 +160,8 @@ export default function Hero() {
         >
           Hyperiux Vault
         </p>
-        <div className="h-fit flex max-md:flex-col max-md:justify-center items-center w-full ">
+
+        <div className="h-fit flex max-md:flex-col max-md:justify-center items-center w-full">
           <h1 className="text140 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full">
             <span
               ref={vaultDesktopRef}
@@ -113,11 +169,14 @@ export default function Hero() {
             >
               Hyperiux Vault
             </span>
+
             <RandomBlur as="span">
-              <span className="opacity-0 max-md:hidden">dum</span>  Creative interaction effects for websites that need to be remembered.
+              <span className="opacity-0 max-md:hidden">dum</span> Creative
+              interaction effects for websites that need to be remembered.
             </RandomBlur>
           </h1>
         </div>
+
         <p ref={pRef} className="text22 max-md:text-center">
           Creative interaction systems built with React, GSAP, Motion, Three.js,
           and WebGL.

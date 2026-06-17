@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import gsap from "gsap";
 import { useEffect } from "react";
@@ -6,36 +5,41 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+function getFadeTargets(containerRef) {
+  if (containerRef && containerRef.current) {
+    return containerRef.current.querySelectorAll(".fadeup");
+  }
 
-
-export function fadeUp() {
-  // const router = useRouter();
-  useEffect(() => {
-      const ctx = gsap.context(() => {
-        const content = document.querySelectorAll(".fadeup");
-        content.forEach((content) => {
-          gsap.set(content, { opacity: 0, y: 50 });
-          gsap.to(content, {
-            scrollTrigger: {
-              trigger: content,
-              start: "top 90%",
-              // markers:true
-            },
-            opacity: 1,
-            y: 0,
-            ease: "power3.out",
-            duration: 2,
-          });
-        });
-      });
-      return () => ctx.revert();
-  }, []);
+  return document.querySelectorAll(".fadeup");
 }
 
-export function lineAnim() {
+export function useFadeUp(containerRef) {
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const lineDraws = document.querySelectorAll(
+      const content = getFadeTargets(containerRef);
+      content.forEach((element) => {
+        gsap.set(element, { opacity: 0, y: 50 });
+        gsap.to(element, {
+          scrollTrigger: {
+            trigger: element,
+            start: "top 90%",
+          },
+          opacity: 1,
+          y: 0,
+          ease: "power3.out",
+          duration: 2,
+        });
+      });
+    });
+    return () => ctx.revert();
+  }, [containerRef]);
+}
+
+export function useLineAnim(containerRef) {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const root = containerRef && containerRef.current ? containerRef.current : document;
+      const lineDraws = root.querySelectorAll(
         '.lineDraw, [class*="contentDivider"]'
       );
       lineDraws.forEach((lineDraw) => {
@@ -55,5 +59,5 @@ export function lineAnim() {
     const st = gsap.ScrollTrigger || ScrollTrigger;
     st?.refresh?.();
     return () => ctx.revert();
-  }, []);
+  }, [containerRef]);
 }

@@ -3,6 +3,16 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import crypto from "crypto";
 
+const ALLOWED_USER_TYPES = [
+  "student",
+  "founder",
+  "designer",
+  "developer",
+  "agency",
+  "organisation",
+  "other",
+];
+
 function generateTemporaryPassword() {
   const alphabet =
     "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
@@ -42,59 +52,77 @@ function getResendErrorMessage(error) {
   );
 }
 
-async function sendTemporaryPasswordEmail({
+async function sendWaitingListEmail({
   email,
   firstName,
-  temporaryPassword,
-  isRegenerated = false,
+  userType,
+  organisationName,
+  isExisting = false,
 }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const signInUrl = `${appUrl}/sign-in`;
+  const vaultUrl = `${appUrl}/effects`;
+
+  const readableUserType =
+    userType === "agency"
+      ? "Agency / Studio"
+      : userType
+      ? userType.charAt(0).toUpperCase() + userType.slice(1)
+      : "Vault explorer";
 
   const resend = new Resend(process.env.RESEND_API_KEY);
+
   const result = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL,
     to: [email],
-    subject: isRegenerated
-      ? "Your new Hyperiux Vault temporary password"
-      : "Your Hyperiux Vault free account is ready",
+    subject: "You’re on the Hyperiux Vault waiting list",
     html: `
       <div style="font-family: Arial, sans-serif; background: #050505; color: #ffffff; padding: 32px;">
-        <div style="max-width: 560px; margin: 0 auto; background: #111111; border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; padding: 32px;">
-          <p style="color: #ff6b00; text-transform: uppercase; letter-spacing: 0.18em; font-size: 12px; margin: 0 0 16px;">
+        <div style="max-width: 620px; margin: 0 auto; background: #111111; border: 1px solid rgba(255,255,255,0.12); border-radius: 28px; padding: 34px;">
+          <p style="color: #ff5f00; text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; margin: 0 0 18px;">
             Hyperiux Vault
           </p>
 
-          <h1 style="font-size: 28px; line-height: 1.1; margin: 0 0 16px;">
-            ${
-              isRegenerated
-                ? "Your new temporary password is ready."
-                : "Your free account is ready."
-            }
+          <h1 style="font-size: 32px; line-height: 1.05; letter-spacing: -0.04em; margin: 0 0 18px;">
+            Thank you for your interest.
           </h1>
 
-          <p style="color: rgba(255,255,255,0.68); font-size: 15px; line-height: 1.7; margin: 0 0 24px;">
-            Hi ${firstName || "there"}, ${
-              isRegenerated
-                ? "we generated a new temporary password for your Hyperiux Vault account."
-                : "your Hyperiux Vault free account has been created."
-            } Use the credentials below to sign in.
+          <p style="color: rgba(255,255,255,0.68); font-size: 15px; line-height: 1.75; margin: 0 0 22px;">
+            Hi ${firstName || "there"}, you’re now on the Hyperiux Vault waiting list.
+            We’re reviewing early access requests and will notify you when your account is ready to use.
           </p>
 
-          <div style="background: #050505; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 20px; margin-bottom: 24px;">
-            <p style="margin: 0 0 10px; color: rgba(255,255,255,0.55); font-size: 13px;">Email</p>
-            <p style="margin: 0 0 18px; font-size: 16px;">${email}</p>
+          <div style="background: #050505; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 20px; margin: 0 0 24px;">
+            <p style="margin: 0 0 10px; color: rgba(255,255,255,0.48); font-size: 13px;">Request details</p>
 
-            <p style="margin: 0 0 10px; color: rgba(255,255,255,0.55); font-size: 13px;">Temporary password</p>
-            <p style="margin: 0; font-size: 20px; letter-spacing: 0.06em; font-weight: 700;">${temporaryPassword}</p>
+            <p style="margin: 0 0 8px; font-size: 15px;">
+              <strong>Email:</strong> ${email}
+            </p>
+
+            <p style="margin: 0 0 8px; font-size: 15px;">
+              <strong>I am:</strong> ${readableUserType}
+            </p>
+
+            ${
+              organisationName
+                ? `<p style="margin: 0; font-size: 15px;"><strong>Organisation:</strong> ${organisationName}</p>`
+                : ""
+            }
           </div>
 
-          <a href="${signInUrl}" style="display: inline-block; background: #ff6b00; color: #ffffff; text-decoration: none; border-radius: 999px; padding: 13px 22px; font-size: 14px; font-weight: 700;">
-            Sign in to Hyperiux Vault
+          <p style="color: rgba(255,255,255,0.62); font-size: 15px; line-height: 1.7; margin: 0 0 24px;">
+            While you wait, you can still explore the public Vault pages, preview effects, and shortlist the interactions you want to try first.
+          </p>
+
+          <a href="${vaultUrl}" style="display: inline-block; background: #ff5f00; color: #ffffff; text-decoration: none; border-radius: 999px; padding: 13px 24px; font-size: 14px; font-weight: 700;">
+            Explore Hyperiux Vault
           </a>
 
-          <p style="color: rgba(255,255,255,0.45); font-size: 13px; line-height: 1.6; margin: 24px 0 0;">
-            Only the latest temporary password will work. If you request another password before signing in, this password will be replaced.
+          <p style="color: rgba(255,255,255,0.38); font-size: 13px; line-height: 1.6; margin: 26px 0 0;">
+            ${
+              isExisting
+                ? "We found an earlier request with this email, so we refreshed your waiting list details."
+                : "You do not need to submit another request. We’ll contact you when access opens."
+            }
           </p>
         </div>
       </div>
@@ -131,17 +159,17 @@ export async function POST(request) {
       );
     }
 
-    if (!["student", "organisation", "other"].includes(userType)) {
+    if (!ALLOWED_USER_TYPES.includes(userType)) {
       return NextResponse.json(
-        {
-          message:
-            "Please select whether you are a student, organisation, or other.",
-        },
+        { message: "Please choose the option that best describes you." },
         { status: 400 }
       );
     }
 
-    if (userType === "organisation" && !organisationName) {
+    if (
+      (userType === "organisation" || userType === "agency") &&
+      !organisationName
+    ) {
       return NextResponse.json(
         { message: "Please enter your organisation name." },
         { status: 400 }
@@ -181,42 +209,32 @@ export async function POST(request) {
     const existingUser = existingUsersResponse?.data?.[0];
 
     if (existingUser) {
-      const hasLoggedIn = Boolean(existingUser.lastSignInAt);
-
-      if (hasLoggedIn) {
-        return NextResponse.json(
-          {
-            message:
-              "This account has already been used. Please sign in with your existing password.",
-          },
-          { status: 409 }
-        );
-      }
-
       await client.users.updateUser(existingUser.id, {
-        password: temporaryPassword,
         firstName,
         lastName,
         publicMetadata: {
           ...existingUser.publicMetadata,
           plan: existingUser.publicMetadata?.plan || "free",
-          accountStatus: "active",
+          accountStatus: "waitlist",
           userType,
           organisationName: organisationName || null,
           source: "custom-access-request",
         },
         privateMetadata: {
           ...existingUser.privateMetadata,
-          temporaryPasswordIssued: true,
-          temporaryPasswordRegeneratedAt: new Date().toISOString(),
+          waitlistRequestedAt:
+            existingUser.privateMetadata?.waitlistRequestedAt ||
+            new Date().toISOString(),
+          waitlistUpdatedAt: new Date().toISOString(),
         },
       });
 
-      const { error } = await sendTemporaryPasswordEmail({
+      const { error } = await sendWaitingListEmail({
         email,
         firstName,
-        temporaryPassword,
-        isRegenerated: true,
+        userType,
+        organisationName,
+        isExisting: true,
       });
 
       if (error) {
@@ -225,10 +243,9 @@ export async function POST(request) {
         if (process.env.NODE_ENV === "development") {
           return NextResponse.json({
             ok: true,
-            mode: "regenerated-dev",
+            mode: "waitlist-existing-dev",
             message:
-              "Dev mode: a new Clerk password was generated, but Resend failed. Use the password below.",
-            temporaryPassword,
+              "Dev mode: your waiting list request was saved, but Resend failed.",
             resendError,
           });
         }
@@ -236,7 +253,7 @@ export async function POST(request) {
         return NextResponse.json(
           {
             message:
-              "A new password was generated, but the email could not be sent. Please contact support.",
+              "Your waiting list request was saved, but the email could not be sent. Please contact support.",
           },
           { status: 500 }
         );
@@ -244,9 +261,9 @@ export async function POST(request) {
 
       return NextResponse.json({
         ok: true,
-        mode: "regenerated",
+        mode: "waitlist-existing",
         message:
-          "A new temporary password has been generated. Check your email for the latest login password.",
+          "Thank you for your interest. We refreshed your waiting list request and sent a confirmation email.",
       });
     }
 
@@ -257,22 +274,22 @@ export async function POST(request) {
       lastName,
       publicMetadata: {
         plan: "free",
-        accountStatus: "active",
+        accountStatus: "waitlist",
         userType,
         organisationName: organisationName || null,
         source: "custom-access-request",
       },
       privateMetadata: {
-        temporaryPasswordIssued: true,
-        requestedAt: new Date().toISOString(),
+        waitlistRequestedAt: new Date().toISOString(),
       },
     });
 
-    const { error } = await sendTemporaryPasswordEmail({
+    const { error } = await sendWaitingListEmail({
       email,
       firstName,
-      temporaryPassword,
-      isRegenerated: false,
+      userType,
+      organisationName,
+      isExisting: false,
     });
 
     if (error) {
@@ -281,10 +298,9 @@ export async function POST(request) {
       if (process.env.NODE_ENV === "development") {
         return NextResponse.json({
           ok: true,
-          mode: "created-dev",
+          mode: "waitlist-created-dev",
           message:
-            "Dev mode: your Clerk account was created, but Resend failed. Use the password below.",
-          temporaryPassword,
+            "Dev mode: your waiting list request was saved, but Resend failed.",
           resendError,
           userId: user.id,
         });
@@ -293,7 +309,7 @@ export async function POST(request) {
       return NextResponse.json(
         {
           message:
-            "Your account was created, but the email could not be sent. Please contact support.",
+            "Your waiting list request was saved, but the email could not be sent. Please contact support.",
           userId: user.id,
         },
         { status: 500 }
@@ -302,9 +318,9 @@ export async function POST(request) {
 
     return NextResponse.json({
       ok: true,
-      mode: "created",
+      mode: "waitlist-created",
       message:
-        "Your free account has been created. Check your email for the login password.",
+        "Thank you for your interest. You are now on the Hyperiux Vault waiting list. We sent a confirmation email to your inbox.",
     });
   } catch (error) {
     console.error("REQUEST_ACCESS_ERROR:", error);
@@ -318,7 +334,7 @@ export async function POST(request) {
       {
         message:
           clerkErrorMessage ||
-          "Something went wrong while creating your account.",
+          "Something went wrong while submitting your request.",
       },
       { status: 500 }
     );

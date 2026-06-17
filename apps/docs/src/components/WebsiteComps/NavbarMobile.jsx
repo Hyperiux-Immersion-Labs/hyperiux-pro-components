@@ -9,7 +9,7 @@ import { ChevronDown, Menu, X } from 'lucide-react'
 import gsap from 'gsap'
 
 import { HyperiuxLogo } from '@/utils/Icons'
-import Button from '@/components/Reusable/Button'
+import Button from './Button'
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -212,6 +212,7 @@ export default function NavbarMobile() {
         <>
             {/* Navbar Bar */}
             <nav
+               id='navigation'
                 ref={navbarRef}
                 className="fixed top-0 left-0 z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
             >

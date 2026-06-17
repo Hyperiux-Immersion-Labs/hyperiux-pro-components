@@ -3,13 +3,12 @@ import Footer from "@/components/LandingPage/Footer";
 import React from 'react'
 
 export default function layout({ children }) {
-    return (
-        <PixelRandom color='#ff5f00'>
-            <div className="w-full">
-                {children}
-            
-                <Footer />
-            </div>
-        </PixelRandom>
-    )
+ return (
+ <PixelRandom color='#ff5f00'>
+ <div className="w-full">
+ {children}
+ <Footer animations={false} />
+ </div>
+ </PixelRandom>
+ )
 }

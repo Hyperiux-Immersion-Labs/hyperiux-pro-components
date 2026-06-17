@@ -1,11 +1,11 @@
 'use client'
 
-import Button from '../Reusable/Button'
+import Button from '../WebsiteComps/Button'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import TechMarquee from './TechMarquee'
-import RandomBlur from '../Reusable/RandomBlur'
+import RandomBlur from '../WebsiteComps/RandomBlur'
 
 gsap.registerPlugin(ScrollTrigger)
 

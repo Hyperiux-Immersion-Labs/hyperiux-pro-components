@@ -4,12 +4,12 @@ import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
-import ProjectCard from "../Reusable/ProjectCard";
-import SplitLine from "../Reusable/SplitLine";
-import RandomBlur from "../Reusable/RandomBlur";
-import Button from "../Reusable/Button";
-import CircularButton from "../Reusable/CirclularButton";
-import TextConvergence from "../Reusable/TextConvergence";
+import ProjectCard from "../WebsiteComps/ProjectCard";
+import SplitLine from "../WebsiteComps/SplitLine";
+import RandomBlur from "../WebsiteComps/RandomBlur";
+import Button from "../WebsiteComps/Button";
+import CircularButton from "../WebsiteComps/CirclularButton";
+import TextConvergence from "../WebsiteComps/TextConvergence";
 
 const agencyProjects = [
     {
