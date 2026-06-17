@@ -7,12 +7,12 @@ import InfiniteCarouselComp from "./InfiniteCarouselComp";
 
 function CarouselCard({ title, subtitle, description, themeClass, points }) {
  return (
- <div className="w-lg px-3 max-md:w-md max-md:min-w-md max-md:max-w-md max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
+ <div className="w-lg px-3 max-md:w-md max-md:min-w-md  max-md:max-w-[calc(100vw-5.5rem)] max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
  <Card
  title={title}
  subtitle={subtitle}
  content={description}
- className={`min-h-140 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
+ className={`min-h-120 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
  >
  <div className="flex h-full flex-col gap-5">
  <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-sm:text-[0.68rem]">{subtitle}</span>
@@ -35,10 +35,10 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 export default function InfiniteCarousel() {
  return (
  <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12">
- <div className=" flex items-center justify-center px-4 max-md:mb-5 max-sm:mb-10">
+ <div className=" flex items-center mt-15 max-md:pt-20 max-sm:pt-15 justify-center px-4 max-md:mb-5 max-sm:mb-10">
  <div className="text-center">
  <h1 className="m-0 text-center text-7xl leading-[0.9] tracking-tighter text-[#111] max-md:text-6xl max-sm:text-5xl">Cards Carousel</h1>
- <p className="mt-3 text-[1rem] max-md:text-[0.95rem] text-[#111]/70">Give it a nudge - drag a card or tap the arrows to set the lineup in motion, watch it glide, loop, and reveal.</p>
+ <p className="mt-3 max-md:pt-6 max-md:pb-8 max-sm:pb-1 max-sm:pt-5 text-[1rem] w-[80%] max-sm:w-[90%] mx-auto max-md:text-[2.5vw] max-sm:text-[3.5vw] text-[#111]/70">Give it a nudge - drag a card or tap the arrows to set the lineup in motion, watch it glide, loop, and reveal.</p>
  </div>
  </div>
 
@@ -64,7 +64,7 @@ export default function InfiniteCarousel() {
  itemClassName=""
  draggable={true}
  speed={1}
- mobileBreakpoint={1024}
+ mobileBreakpoint={640}
  >
  {cardsData.map((card) => (
  <CarouselCard key={card.id} {...card} />

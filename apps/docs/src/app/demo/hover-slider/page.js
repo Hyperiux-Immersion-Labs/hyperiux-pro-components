@@ -1,6 +1,6 @@
 import React from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import HoverSlider from "@/components/HoverSlider";
+import HoverSlider from "@/components/hover-slider";
 
 const page = () => {
   return (

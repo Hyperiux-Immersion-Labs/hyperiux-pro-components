@@ -1,13 +1,33 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Center } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import MouseTrailParticles from "@/components/HyperiuxGlitter/MouseTrailParticles";
-import MorphingParticleModel from "@/components/HyperiuxGlitter/MorphingParticleModelNew";
+import MouseTrailParticles from "@/components/hyperiux-glitter/MouseTrailParticles";
+import MorphingParticleModel from "@/components/hyperiux-glitter/MorphingParticleModelNew";
 
 export default function HyperiuxGlitter() {
+
+  const [modelScale, setModelScale] = useState(0.15);
+
+useEffect(() => {
+  const updateScale = () => {
+    if (window.innerWidth < 768) {
+      setModelScale(0.09); // mobile
+    } else if (window.innerWidth < 1024) {
+      setModelScale(0.12); // tablet
+    } else {
+      setModelScale(0.15); // desktop
+    }
+  };
+
+  updateScale();
+  window.addEventListener("resize", updateScale);
+
+  return () => window.removeEventListener("resize", updateScale);
+}, []);
+
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black">
       <Canvas
@@ -23,7 +43,7 @@ export default function HyperiuxGlitter() {
           <Center>
             <MorphingParticleModel
               url="/assets/models/hyperiux-new-model.glb"
-              scale={0.15}
+              scale={modelScale}
               particleCount={10000}
               color="#ffffff"
               size={0.18}
@@ -72,6 +92,10 @@ export default function HyperiuxGlitter() {
       </Canvas>
         <div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
        Sweep your cursor across the canvas - leave a glittering comet trail and watch the model respond.
+        </div>
+
+        <div className="absolute bottom-[10vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white hidden max-md:block text-[2.5vw] max-sm:text-[3.5vw] text-center">
+        Tap to interact. Best experienced on desktop.
         </div>
       </div>
   );

@@ -365,7 +365,7 @@ function HeroContent() {
   Hyperiux Vault.
 </h1>
 
-        <p className="mx-auto mt-5 max-w-[60vw] text-[1.3vw] font-medium leading-tight text-neutral-600 max-sm:text-[4vw] max-sm:max-w-[90vw]! max-sm:mt-10">
+        <p className="mx-auto mt-5 max-w-[60vw] text-[1.3vw] max-md:text-[2.5vw] font-medium leading-tight text-neutral-600 max-sm:text-[4vw] max-sm:max-w-[90vw]! max-sm:mt-10">
           A curated collection of modern UI components, smooth animations,
           creative backgrounds and premium interactions for
           <span className="text-[#ff5f00]"> Next.js developers.</span>

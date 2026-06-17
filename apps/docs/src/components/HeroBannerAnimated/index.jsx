@@ -26,7 +26,8 @@ const ENV_INTENSITY_CONFIG = {
 // Camera z positions for zoomed / out states per device
 const CAMERA_CONFIG = {
   desktop: { zoomedZ: 2.5, outZ: 4.8 },
-  mobile:  { zoomedZ: 4.5, outZ: 7.5 }
+  tablet:  { zoomedZ: 4.5, outZ: 5.6 },
+  mobile:  { zoomedZ: 6.0, outZ: 7.9 }
 }
 
 function MovingPointLight({ lightRef }) {
@@ -68,7 +69,7 @@ function MovingPointLight({ lightRef }) {
   )
 }
 
-function SceneContent({ isZoomed, setIsZoomed, videoRef, isMobile }) {
+function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
   const groupRef = useRef()
   const lightRef = useRef()
   const { camera } = useThree()
@@ -95,7 +96,7 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, isMobile }) {
   useEffect(() => {
     const duration = 1.5
     const ease = 'power3.inOut'
-    const cfg = isMobile ? CAMERA_CONFIG.mobile : CAMERA_CONFIG.desktop
+    const cfg = CAMERA_CONFIG[deviceType] ?? CAMERA_CONFIG.desktop
 
     gsap.killTweensOf(camera.position)
     if (groupRef.current) gsap.killTweensOf(groupRef.current.rotation)
@@ -115,7 +116,7 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, isMobile }) {
       ease,
       onUpdate: () => setEnvironmentIntensity(intensityState.current.env),
     })
-  }, [isZoomed, camera, isMobile])
+  }, [isZoomed, camera, deviceType])
 
   useFrame(() => {
     if (lightRef.current) {
@@ -147,15 +148,35 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, isMobile }) {
 
 export default function HeroBannerAnimated() {
   const [isZoomed, setIsZoomed] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 640px)')
-    const update = (e) => setIsMobile(e.matches)
-    update(mq)
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
+    const tabletMq = window.matchMedia('(max-width: 1025px)')
+    const mobileMq = window.matchMedia('(max-width: 767px)')
+
+    const update = () => {
+      if (mobileMq.matches) {
+        setDeviceType('mobile')
+        return
+      }
+
+      if (tabletMq.matches) {
+        setDeviceType('tablet')
+        return
+      }
+
+      setDeviceType('desktop')
+    }
+
+    update()
+    tabletMq.addEventListener('change', update)
+    mobileMq.addEventListener('change', update)
+
+    return () => {
+      tabletMq.removeEventListener('change', update)
+      mobileMq.removeEventListener('change', update)
+    }
   }, [])
 
   return (
@@ -185,7 +206,7 @@ export default function HeroBannerAnimated() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                  className='uppercase w-[25vw] -translate-y-[6vw] text-[1vw]  flex items-center justify-center text-left max-sm:w-[45vw] max-sm:text-[2.8vw] max-sm:-translate-y-[8vw]'
+                  className='uppercase w-[25vw] translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-md:w-[45vw] max-sm:w-[45vw] max-md:text-[2vw] max-sm:text-[2.8vw] max-sm:translate-y-[-8vw]'
                 >
                   Hyperiux immersion labs is an independent design agency in india.
                   <span className='w-6 h-3 flex mt-[1.5vw] bg-[#ECE4B4] max-sm:hidden items-center justify-center mr-[3vw] max-sm:mt-[3vw]'>
@@ -208,15 +229,15 @@ export default function HeroBannerAnimated() {
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
   className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-sm:text-[3vw] max-sm:bottom-[4vw]'
 >
-  <span className='max-sm:hidden'>
+  <span className='max-md:hidden'>
     Explore The Space
   </span>
 
-  <span className='hidden max-sm:block'>
+  <span className='hidden max-sm:text-sm max-md:text-lg max-md:block'>
     Open on desktop for the full effect
   </span>
 
-  <Play className='w-4 h-4 max-sm:hidden' fill='#ECE4B4' />
+  <Play className='w-4 h-4 max-md:hidden' fill='#ECE4B4' />
 </motion.p>
 
               <motion.div
@@ -238,14 +259,14 @@ export default function HeroBannerAnimated() {
 
         <Canvas
           dpr={[1, 2]}
-          camera={{ position: [0, 0, isMobile ? 7.5 : 4.8], fov: 55 }}
+          camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
         >
           <Center>
             <SceneContent
               isZoomed={isZoomed}
               setIsZoomed={setIsZoomed}
               videoRef={videoRef}
-              isMobile={isMobile}
+              deviceType={deviceType}
             />
           </Center>
 

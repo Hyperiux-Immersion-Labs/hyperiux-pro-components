@@ -122,11 +122,11 @@ function InertiaImageComp({ images = [] }) {
  ref={rootRef}
  className="relative grid min-h-[50vh] w-full place-items-center overflow-hidden"
  >
- <div className="grid grid-cols-4 gap-[1vw] max-sm:gap-[5vw] max-md:grid-cols-3 max-sm:grid-cols-2">
+ <div className="grid grid-cols-4 gap-[1vw] max-md:gap-[3.5vw] max-sm:gap-[5vw] max-md:grid-cols-3 max-sm:grid-cols-2">
  {images.map((src, i) => (
  <div
  key={i}
- className="media-item relative h-[12vw] w-[12vw] max-sm:h-[35vw] max-sm:w-[35vw]"
+ className="media-item relative h-[12vw] w-[12vw] max-md:h-[22vw] max-md:w-[22vw] max-sm:h-[35vw] max-sm:w-[35vw]"
  >
  <Image
  src={src}
@@ -140,12 +140,7 @@ function InertiaImageComp({ images = [] }) {
  </div>
  </section>
 
- {/* Creative interaction clue */}
- <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-sm:bottom-4 max-sm:hidden">
- <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
- Interact to unwind & let momentum take over
- </div>
- </div>
+
  </>
  );
 }

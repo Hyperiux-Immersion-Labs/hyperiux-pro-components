@@ -199,7 +199,7 @@ export default function InfiniteCarouselComp({
  wrapperClassName ="",
  itemClassName ="",
 
- mobileBreakpoint = 1024,
+ mobileBreakpoint = 640,
  mobileMode ="swiper",
 }) {
  const wrapperRef = useRef(null);

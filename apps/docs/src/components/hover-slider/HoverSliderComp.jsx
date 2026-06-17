@@ -91,6 +91,7 @@ export default function HoverSliderComp({ items = [] }) {
  const glRef = useRef(null);
  const isDesktopRef = useRef(false);
  const stateRef = useRef({ activeIndex: 0, hovering: false, hasClicked: false });
+ const DESKTOP_BREAKPOINT = 1025;
 
  const [highlightedIndex, setHighlightedIndex] = useState(null);
 
@@ -254,7 +255,7 @@ export default function HoverSliderComp({ items = [] }) {
  const wasDesktop = isDesktopRef.current;
  W = mount.offsetWidth;
  H = W < 768 ? window.innerHeight : mount.offsetHeight;
- isDesktopRef.current = W >= 768;
+ isDesktopRef.current = W >= DESKTOP_BREAKPOINT;
  Object.assign(renderer.domElement.style, {
  position: W < 768 ?"fixed" :"absolute",
  bottom: W < 768 ?"auto" :"0",
@@ -432,11 +433,11 @@ const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
  <section
  ref={mountRef}
  onPointerLeave={onLeave}
- className="relative isolate min-h-screen overflow-visible max-sm:px-0 bg-[#f0ede6] px-4 text-[#1e1c18] md:overflow-hidden md:px-10  py-9 relative"
+ className="relative isolate min-h-screen overflow-visible max-sm:px-0 bg-[#f0ede6] px-4 text-[#1e1c18] md:overflow-hidden md:px-10  py-9 max-sm:pb-20 "
  style={{ cursor:"crosshair" }}
  >
 	<div className="relative max-sm:px-2 z-20  w-full overflow-x-auto pb-8  md:max-w-205 md:overflow-x-visible md:pb-0">
-		<div className="absolute top-[1vw] right-[-40vw] z-30 bg-white/6 backdrop-blur-sm px-3 py-2 rounded-full text-[#1e1c18] text-[0.9rem] max-sm:hidden shadow-md w-[20vw]">
+		<div className="absolute top-[1vw] right-[-40vw] z-30 bg-black/6 backdrop-blur-sm px-3 py-2 rounded-[1vw] text-[#1e1c18] text-[0.9rem] max-sm:hidden shadow-md w-[20vw]">
 			Tip: hover the list rows - watch the images move and reveal.
 		</div>
  <div
@@ -483,10 +484,14 @@ const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
  </div>
 
  <p
- className="pointer-events-none max-sm:hidden z-20 max-w-[350px] text-right text-sm leading-relaxed md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0 absolute bottom-[8%] right-0"
+ className="pointer-events-none max-sm:hidden z-20 max-w-87.5 max-md:hidden text-right text-sm leading-relaxed md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0 absolute bottom-[8%] right-0"
  style={{ color:"rgba(30,28,24,0.6)" }}
  >
  A curated collection of futuristic UI experiments, motion systems, and interactive components — crafted to push modern web experiences beyond the ordinary.
+ </p>
+
+ <p className="hidden max-md:block rounded-lg z-40 text-lg max-sm:text-sm max-sm:w-[80vw] bg-black/10 backdrop-blur-xl p-3 absolute bottom-15 max-sm:bottom-2 text-center max-md:w-[50vw] right-10">
+ Click on an item to see the animation. Hover effects available on desktop.
  </p>
  </section>
  );

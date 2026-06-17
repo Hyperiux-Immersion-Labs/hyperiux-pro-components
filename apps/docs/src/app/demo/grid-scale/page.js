@@ -1,4 +1,4 @@
-import GridScale from '@/components/GridScale'
+import GridScale from '@/components/grid-scale'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'

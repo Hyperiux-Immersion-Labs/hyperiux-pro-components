@@ -434,11 +434,11 @@ useEffect(() => {
 
  return (
  <>
- <div className="fixed inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
- <div className="fixed left-4 top-4 z-50 pointer-events-auto max-sm:bottom-3 max-sm:left-3 max-sm:right-3 max-sm:top-auto">
+ <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
+ <div className="fixed max-md:hidden left-4 top-25 z-50 pointer-events-auto max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:top-auto">
  <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-sm:w-full max-sm:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
- <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
+  <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
  <div className="inline-flex gap-[6px] rounded-[10px] border border-[#2a2a2a] bg-[#141414] p-1">
  <button
  type="button"
@@ -453,7 +453,7 @@ useEffect(() => {
  </button>
  <button
  type="button"
- className={`h-6.5 cursor-pointer rounded-md border px-2.5 text-[12px] font-semibold ${
+  className={`h-6.5 cursor-pointer rounded-md border px-2.5 text-[12px] font-semibold ${
  maskSourceState ==="SVG"
  ? "border-[#ff5f00] bg-[#ff5f00] text-black"
  : "border-transparent bg-transparent text-[#bdbdbd] hover:bg-[#1f1f1f] hover:text-white"
@@ -495,18 +495,19 @@ useEffect(() => {
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />
- 
-  {/* Message for non-desktop devices */}
+
   {!isDesktop && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-      <div className="px-4 py-2 rounded bg-black/70 text-white text-sm font-medium">
+    <div className="absolute -translate-x-1/2  left-1/2 bottom-20 z-50 flex items-center justify-center pointer-events-none">
+      <div className="px-4 py-2 rounded text-center bg-black/70 text-white text-lg max-sm:text-sm font-medium">
         Interactive effect available on desktop only.
       </div>
     </div>
   )}
  
+ 
+ 
  {/* Creative clue hint */}
- <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-sm:bottom-4 max-sm:hidden">
+ <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-md:bottom-4 max-md:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
