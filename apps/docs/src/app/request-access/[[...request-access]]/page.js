@@ -12,7 +12,6 @@ export default function SignUpPage() {
     <AuthShell>
       <Navbar />
       <NavbarMobile />
-
       <AccessRequestForm />
     </AuthShell>
   );

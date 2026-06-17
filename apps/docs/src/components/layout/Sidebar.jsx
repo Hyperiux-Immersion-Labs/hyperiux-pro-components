@@ -337,7 +337,7 @@ export function Sidebar({
                       key={category.id}
                       type="button"
                       onClick={() => navigateCategory(category.id)}
-                      className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors ${
+                      className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
                           : "text-white/42 hover:text-white/75"
@@ -396,7 +396,7 @@ export function Sidebar({
                       key={link.href}
                       type="button"
                       onClick={() => navigateDocumentation(link.href)}
-                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors ${
+                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
                           : "text-white/42 hover:text-white/75"

@@ -4,6 +4,7 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import DocsBody from "./DocsBody";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import Footer from "@/components/LandingPage/Footer";
+import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 
 function VaultLayoutFallback() {
   return (
@@ -28,6 +29,8 @@ export default function Layout({ children }) {
   return (
     <>
       <Suspense fallback={<VaultLayoutFallback />}>
+          <NavbarMobile/>
+      
         <VaultLayout effectCounts={effectCounts} totalEffects={totalEffects}>
           <div className=" h-fit bg-[#1111111] text-foreground px-15 max-md:px-[6vw] max-sm:px-[7vw] pb-8">
             <React.Suspense fallback={<div className="h-12" />}>

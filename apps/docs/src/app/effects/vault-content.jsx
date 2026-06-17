@@ -255,7 +255,6 @@ export function VaultContent({
               </h1>
             </HeadAnim>
             <div>
-              {/* <Copy animateOnScroll={false} delay={0.3}> */}
                 <div className="mx-auto flex max-w-[50vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base fadeup">
                   {activeCategoryDescriptions.map((description, index) => (
                     <p key={`${categoryFilter}-description-${index}`} className="mt-3">
@@ -263,7 +262,6 @@ export function VaultContent({
                     </p>
                   ))}
                 </div>
-              {/* </Copy> */}
             </div>
           </div>
 
