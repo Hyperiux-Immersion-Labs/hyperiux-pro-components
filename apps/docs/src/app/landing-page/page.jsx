@@ -25,19 +25,8 @@ export default function Page() {
       <Hero />
       <GlowingPlates />
 
-      {!isMounted ? (
-        // SSR / Initial hydration fallback: render desktop to preserve HTML structure
-        <>
-          <FeaturedStoryTelling />
-          {/* <FeaturedEffects /> */}
-          <Workflow />
-          <FreeVault />
-          <AgencyProof />
-          <CTA />
-          <Footer />
-        </>
-      ) : isMobile ? (
-        // Mobile-only render
+      { isMobile ? (
+        // Compact layout: phones + tablets (< 1025px)
         <>
           <StorytellingMobile />
           <VaultGridMobile />

@@ -26,7 +26,7 @@ function MarqueeRow({ rowRef, hidden = false }) {
             {TECH_LOGOS.map((logo) => (
                 <div
                     key={`${hidden ? 'clone' : 'base'}-${logo.alt}`}
-                    className="flex items-center justify-center px-[4vw] max-sm:px-[6vw]"
+                    className="flex items-center justify-center px-[4vw] max-md:px-[6vw]"
                 >
                     <Image
                         src={logo.src}
@@ -36,7 +36,7 @@ function MarqueeRow({ rowRef, hidden = false }) {
                         draggable={false}
                         id='marquee-svg'
 
-                        className="h-full w-[8vw] max-sm:w-[22vw] object-contain"
+                        className="h-full w-[8vw] max-md:w-[22vw] object-contain"
                     />
                 </div>
             ))}
@@ -84,7 +84,7 @@ export default function TechMarquee() {
     }, [])
 
     return (
-        <section id='TechMarquee' className="relative pt-[10vw] max-sm:pt-[25vw] w-full overflow-hidden">
+        <section id='TechMarquee' className="relative pt-[10vw] max-md:pt-[25vw] w-full overflow-hidden">
             <div className="overflow-hidden">
                 <div
                     ref={trackRef}
@@ -96,10 +96,10 @@ export default function TechMarquee() {
             </div>
 
             {/* Left Blur */}
-            <div id='LeftBlur' className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[10vw] max-sm:w-[20vw] bg-linear-to-r from-background via-background/70 to-transparent" />
+            <div id='LeftBlur' className="pointer-events-none absolute left-0 top-0 z-10 h-full w-[10vw] max-md:w-[20vw] bg-linear-to-r from-background via-background/70 to-transparent" />
 
             {/* Right Blur */}
-            <div id='RightBlur' className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[10vw] max-sm:w-[20vw] max-ms:-right-4 bg-linear-to-l from-background via-background/70 to-transparent" />
+            <div id='RightBlur' className="pointer-events-none absolute right-0 top-0 z-10 h-full w-[10vw] max-md:w-[20vw] max-ms:-right-4 bg-linear-to-l from-background via-background/70 to-transparent" />
         </section>
     )
 }

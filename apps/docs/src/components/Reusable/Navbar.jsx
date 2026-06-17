@@ -46,7 +46,7 @@ export default function Navbar() {
     return (
         <nav
             ref={navbarRef}
-            className="fixed max-sm:hidden overflow-x-hidden top-0 left-0 z-999 backdrop-blur-sm flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
+            className="fixed max-md:hidden overflow-x-hidden top-0 left-0 z-999 backdrop-blur-sm flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
         >
             <Link href="/">
                 <HyperiuxLogo className="w-[10vw] h-auto text-primary" />

@@ -2,8 +2,8 @@
 
 import React, { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { SplitText } from 'gsap/SplitText'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { SplitText } from 'gsap/dist/SplitText'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -85,7 +85,7 @@ export default function SplitLine({
               duration,
               ease,
               stagger,
-              scrollTrigger: isLoaderActive ? undefined : {
+              scrollTrigger: {
                 trigger: wrapper,
                 start,
                 once,
@@ -111,7 +111,7 @@ export default function SplitLine({
               delay,
               duration,
               ease,
-              scrollTrigger: isLoaderActive ? undefined : {
+              scrollTrigger: {
                 trigger: el,
                 start,
                 once,

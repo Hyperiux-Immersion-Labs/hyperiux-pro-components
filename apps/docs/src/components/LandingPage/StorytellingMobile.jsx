@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Button from "../Reusable/Button";
+import useIsMobile, { COMPACT_LAYOUT_BREAKPOINT, PHONE_BREAKPOINT } from "@/hooks/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -21,76 +22,40 @@ const IMAGES = [
     "/img/spiral/9.png",
 ];
 
-const TOTAL = IMAGES.length;
-const EXPAND_RADIUS_FACTOR = 1.8;
-
-function linear(t) {
-    return Math.min(Math.max(t, 0), 1);
+// For reproducible randomness
+function pseudoRandom(seed, i, min, max) {
+    const x = Math.sin(seed * 100 + i * 999) * 10000;
+    return min + ((x - Math.floor(x)) * (max - min));
 }
-
-function seededRand(seed, min, max) {
-    const x = Math.sin(seed * 9301 + 49297) * 233280;
-    return min + (x - Math.floor(x)) * (max - min);
-}
-
-const CARD_CONFIGS = IMAGES.map((src) => ({ src }));
 
 export default function StorytellingMobile() {
     const sectionRef = useRef(null);
-    const stickyContainerRef = useRef(null);
-    const cardsContainerRef = useRef(null);
-    const cardRefs = useRef([]);
     const infoTextRef = useRef(null);
     const infoButtonWrapperRef = useRef(null);
     const infoTextRef2 = useRef(null);
+    const circleRef = useRef(null);
+
+    // Use state to track rotation to avoid ref read in render
+    const [circleRotation, setCircleRotation] = useState(0);
+
+    // Phone (<768px) vs tablet (768–1024px) — not the compact layout breakpoint (1025px)
+    const { isMounted, isMobile: isPhone } = useIsMobile(PHONE_BREAKPOINT);
 
     useEffect(() => {
-        const section = sectionRef.current;
-        const cards = cardRefs.current;
-        if (!section) return;
+        if (!isMounted) return;
+        ScrollTrigger.refresh();
+    }, [isMounted, isPhone]);
+
+    useEffect(() => {
+        if (!sectionRef.current) return;
 
         let splittedParagraph = null;
         let splittedText2 = null;
+        let scrollTween = null;
 
+        // Only mobile
         const mm = gsap.matchMedia();
-
-        mm.add("(max-width: 640px)", () => {
-            gsap.ticker.lagSmoothing(500, 33);
-
-            // --- 1. Initial State Setup ---
-            gsap.set(cards, {
-                x: 0,
-                y: 0,
-                xPercent: -50,
-                yPercent: -50,
-                rotation: 0,
-                scale: 1,
-                zIndex: (i) => i,
-                opacity: 1,
-            });
-
-            gsap.set(infoButtonWrapperRef.current, {
-                opacity: 0,
-                yPercent: 100,
-            });
-
-            gsap.set(infoTextRef2.current, {
-                opacity: 1,
-                filter: "blur(0px)",
-            });
-
-            const finalAngles = cards.map(
-                (_, i) => -(i / TOTAL) * 2 * Math.PI - Math.PI / 6,
-            );
-
-            const xSet = cards.map((c) => gsap.quickSetter(c, "x", "px"));
-            const ySet = cards.map((c) => gsap.quickSetter(c, "y", "px"));
-            const blurSet = cards.map((c) => (v) => (c.style.filter = `blur(${v}px)`));
-            const scaleSet = cards.map((c) => gsap.quickSetter(c, "scale"));
-
-            const previousZ = Array(TOTAL).fill(-1);
-
-            // --- 2. SplitText Initialization ---
+        mm.add(`(max-width: ${COMPACT_LAYOUT_BREAKPOINT - 1}px)`, () => {
             splittedParagraph = SplitText.create(infoTextRef.current, {
                 type: "lines",
                 mask: "lines",
@@ -103,14 +68,9 @@ export default function StorytellingMobile() {
                 });
             }
 
-            // Measure dynamic mobile bounds matching desktop aspect ratio (1.5:1)
-            const rx = window.innerWidth * 0.65;
-            const ry = rx / 1.5;
-
-            // --- 3. Scroll Sequence Timeline ---
             const masterTL = gsap.timeline({
                 scrollTrigger: {
-                    trigger: section,
+                    trigger: sectionRef.current,
                     start: "top top",
                     end: "bottom bottom",
                     scrub: true,
@@ -118,225 +78,171 @@ export default function StorytellingMobile() {
                 },
             });
 
-            // 3a. Spiral Cards Path Animation (Duration: 0 to 8)
-            const spiralProxy = { progress: 0 };
-            masterTL.to(spiralProxy, {
-                progress: 1,
-                duration: 8,
-                ease: "none",
-                onUpdate: () => {
-                    const prog = spiralProxy.progress;
-                    const p1 = Math.min(prog / 0.1, 1);
-                    const t = Math.min(Math.max((prog - 0.1) / 0.9, 0), 1); // Single phase from 0.1 to 1.0
-
-                    // flyProgress goes from 0 to 1 as t goes from 0 to 0.5
-                    const flyProgress = Math.min(t / 0.5, 1);
-
-                    // orbitProgress goes from 0 to 1 as t goes from 0 to 1.0
-                    const orbitProgress = Math.pow(t, 2);
-
-                    // expandProgress goes from 0 to 1 as t goes from 0 to 1.0
-                    const expandProgress = Math.pow(t, 2.2);
-
-                    cards.forEach((card, i) => {
-                        const nextZ = p1 >= i / TOTAL ? TOTAL + i : i;
-                        const staggerFrac = 0.82;
-                        const reverseIdx = TOTAL - 1 - i;
-                        const startFrac = (reverseIdx / TOTAL) * staggerFrac;
-
-                        // flyout progress staggered within flyProgress
-                        const cardP2 = linear(
-                            (flyProgress - startFrac) / (1 - startFrac),
-                        );
-
-                        if (cardP2 > 0) {
-                            const easedCardP2 = 1 - Math.pow(1 - cardP2, 2);
-
-                            // Angle incorporates continuous global rotation
-                            const maxOrbitRotation = Math.PI * 2 * 0.55;
-                            let currentAngle = easedCardP2 * finalAngles[i] - orbitProgress * maxOrbitRotation;
-
-                            const radiusP = easedCardP2;
-                            const radiusExpand = 1.0 + expandProgress * EXPAND_RADIUS_FACTOR;
-
-                            xSet[i](Math.cos(currentAngle) * radiusP * radiusExpand * rx);
-                            ySet[i](Math.sin(currentAngle) * radiusP * radiusExpand * ry);
-
-                            const yVal = Math.sin(currentAngle);
-
-                            // Determine size/blur level: small, medium, big based on index
-                            let cardBaseScale = 1.0;
-                            let cardBaseBlur = 0;
-                            if (i % 3 === 0) {
-                                // Small
-                                cardBaseScale = 0.65;
-                                cardBaseBlur = 0;
-                            } else if (i % 3 === 1) {
-                                // Medium
-                                cardBaseScale = 1.0;
-                                cardBaseBlur = 2.5;
-                            } else {
-                                // Big
-                                cardBaseScale = 1.45;
-                                cardBaseBlur = 6.0;
-                            }
-
-                            // Interpolate scale from 1.0 to base scale as card flies out
-                            const finalBaseScale = 1.0 + (cardBaseScale - 1.0) * easedCardP2;
-                            // Interpolate blur from 0 to base blur as card flies out
-                            const finalBaseBlur = cardBaseBlur * easedCardP2;
-
-                            // Apply dynamic depth scale scaling based on single-phase t
-                            const scaleRange = yVal * 0.25 * finalBaseScale;
-                            const currentScale = finalBaseScale + scaleRange * t;
-                            scaleSet[i](currentScale);
-
-                            // Apply dynamic depth blur based on single-phase t
-                            const depthBlur = Math.max(0, -yVal * 4.5);
-                            const currentBlur = finalBaseBlur + depthBlur * t;
-                            blurSet[i](currentBlur);
-
-                            // Calculate dynamic zIndex
-                            let depthZ = nextZ;
-                            const targetZ = TOTAL + Math.round((yVal + 1) * TOTAL);
-                            depthZ = Math.round(nextZ + (targetZ - nextZ) * t);
-
-                            if (depthZ !== previousZ[i]) {
-                                card.style.zIndex = depthZ;
-                                previousZ[i] = depthZ;
-                            }
-                        } else {
-                            xSet[i](0);
-                            ySet[i](0);
-                            blurSet[i](0);
-                            scaleSet[i](1);
-                            if (nextZ !== previousZ[i]) {
-                                card.style.zIndex = nextZ;
-                                previousZ[i] = nextZ;
-                            }
-                        }
-                    });
-                }
-            }, 0);
-
-            // 3b. Spiral Information Reveal (Duration: 3.5 to 5.5)
             masterTL.fromTo(
                 splittedParagraph.lines,
-                { yPercent: 100 },
-                { yPercent: 0, ease: "power2.out", stagger: 0.04, duration: 1.5 },
-                4.5
+                { yPercent: 100, opacity: 0 },
+                { yPercent: 0, opacity: 1, ease: "power2.out", stagger: 0.04, duration: 1.5 },
+                0.2
             );
             masterTL.fromTo(
                 infoButtonWrapperRef.current,
                 { opacity: 0, yPercent: 100 },
                 { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
-                4.6
+                0.35
             );
-
-            // 3c. Spiral Information Exit (Duration: 6.0 to 7.2)
             masterTL.to(
                 splittedParagraph.lines,
                 { yPercent: -130, opacity: 0, ease: "power2.in", stagger: 0.02, duration: 1.0 },
-                6.0
+                1.6
             );
             masterTL.to(
                 infoButtonWrapperRef.current,
                 { opacity: 0, ease: "power2.in", duration: 0.8 },
-                6.0
+                1.75
             );
-
-            // 3d. Large H2 "Not another static component kit." Reveal (Duration: 7.2 to 8.8)
             if (splittedText2 && splittedText2.chars) {
                 masterTL.fromTo(
                     splittedText2.chars,
-                    { opacity: 0, filter: "blur(10px)" },
-                    { opacity: 1, filter: "blur(0px)", stagger: 0.03, ease: "none", duration: 1.2 },
-                    7.2
+                    { opacity: 0 },
+                    { opacity: 1, stagger: 0.03, ease: "none", duration: 1.2 },
+                    2.2
                 );
-            }
-
-            // 3e. Large H2 Exit & Cards Fade Out (Duration: 9.0 to 10.8)
-            if (splittedText2 && splittedText2.chars) {
                 masterTL.to(
                     splittedText2.chars,
-                    { opacity: 0, filter: "blur(15px)", stagger: 0.02, ease: "none", duration: 1.0 },
-                    9.0
+                    { opacity: 0, stagger: 0.02, ease: "none", duration: 1.0 },
+                    3.6
                 );
             }
-            masterTL.set(infoTextRef2.current, { display: "none" }, 10.8);
-            masterTL.to(
-                cardsContainerRef.current,
-                { opacity: 0, duration: 1.2, ease: "power2.inOut" },
-                9.0
-            );
-            masterTL.set(cardsContainerRef.current, { pointerEvents: "none" }, 10.2);
+            masterTL.set(infoTextRef2.current, { display: "none" }, 5);
+
+            // --- Rotating circle on scroll ---
+            if (circleRef.current) {
+                let updateRotation = (angle) => setCircleRotation(angle);
+
+                // Remove any direct transform as we control via React
+                circleRef.current.style.transform = "";
+
+                scrollTween = ScrollTrigger.create({
+                    trigger: sectionRef.current,
+                    start: "top 90%",
+                    end: "bottom 10%",
+                    scrub: true,
+                    onUpdate: (self) => {
+                        // angle in degrees, slow full turn for drama
+                        // more dramatic and longer (e.g. 420 deg)
+                        const angle = self.progress * 420;
+                        updateRotation(angle);
+                    },
+                    markers: false
+                });
+            }
 
             return () => {
                 if (splittedParagraph) splittedParagraph.revert();
                 if (splittedText2) splittedText2.revert();
+                if (scrollTween && scrollTween.kill) scrollTween.kill();
             };
         });
 
-        ScrollTrigger.refresh();
-        const timer = setTimeout(() => {
-            ScrollTrigger.refresh();
-        }, 300);
-
         return () => {
-            clearTimeout(timer);
             mm.revert();
         };
     }, []);
+
+    // Circle settings (make it a proper circle, not an oval)
+    const imageCount = IMAGES.length;
+    const centerVW = 50;
+    const centerVH = 50;
+    const SEED = 42;
+    const imageDiameterVW = 19;
+
+    // Phone: wider spread (70vw). Tablet: tighter circle (50vw).
+    const radiusVW = isMounted && isPhone ? 70 : 50;
+
+    // Images: compensate for the circle rotation to keep them upright!
+    const circleImages = IMAGES.map((src, i) => {
+        const baseAngle = (2 * Math.PI * i) / imageCount - Math.PI / 2;
+        const angleRandom = pseudoRandom(SEED, i, -0.21, 0.21);
+        const angle = baseAngle + angleRandom;
+        const radiusMod = pseudoRandom(SEED, i + 99, 0.88, 1.12);
+        const x = Math.cos(angle) * radiusVW * radiusMod;
+        const y = Math.sin(angle) * radiusVW * radiusMod; // use radiusVW for y too (circle!)
+
+        const imgExtraRot = pseudoRandom(SEED, i + 33, -8, 8);
+        const imgScale = pseudoRandom(SEED, i + 66, 0.93, 1.13);
+
+        // Subtract the current circle rotation so image stays upright
+        return (
+            <div
+                key={src}
+                style={{
+                    position: "absolute",
+                    left: `calc(${centerVW}vw + ${x}vw - ${(imageDiameterVW * 1.5) / 2}vw)`, // adjust for landscape width
+                    top: `calc(${centerVH}vh + ${y}vw - ${imageDiameterVW / 2}vw)`, // keep vertical centered
+                    width: `${imageDiameterVW * 1.5}vw`, // landscape ratio, e.g., 3:2 width:height
+                    height: `${imageDiameterVW}vw`,
+                    borderRadius: "5px",
+                    overflow: "hidden",
+                    boxShadow: "0 0 16px rgba(0,0,0,0.11)",
+                    zIndex: 1,
+                    transform: `rotate(${imgExtraRot - circleRotation}deg) scale(${imgScale})`,
+                    pointerEvents: "none",
+                    aspectRatio: "3 / 2",
+                }}
+            >
+                <Image
+                    src={src}
+                    alt="circle-img"
+                    fill
+                    style={{
+                        objectFit: "cover",
+                        borderRadius: "5px",
+                    }}
+                    sizes={`${imageDiameterVW * 1.5}vw`}
+                    priority={i < 3}
+                />
+            </div>
+      
+        );
+    });
 
     return (
         <section
             ref={sectionRef}
             id="storytelling-mobile"
-            className="relative w-full h-[600vh] bg-background sm:hidden"
+            className="relative w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
         >
             <div
-                ref={stickyContainerRef}
                 className="sticky top-0 flex items-center justify-center w-full h-screen overflow-hidden"
             >
-                {/* 1. Spiral Images Layer */}
+                {/* 1. Scattered Images Layer */}
                 <div
-                    ref={cardsContainerRef}
-                    className="absolute inset-0 flex items-center justify-center w-full h-full z-10 pointer-events-none"
+                    style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+                    className="z-10"
                 >
-                    <div className="relative flex items-center justify-center w-full h-full">
-                        {CARD_CONFIGS.map(({ src }, i) => (
-                            <div
-                                key={i}
-                                ref={(el) => (cardRefs.current[i] = el)}
-                                className="absolute overflow-hidden rounded-md"
-                                style={{
-                                    left: "50%",
-                                    top: "50%",
-                                    width: "22vw",
-                                    aspectRatio: "16/9",
-                                    zIndex: i,
-                                    willChange: "transform, width, filter",
-                                    backfaceVisibility: "hidden",
-                                }}
-                            >
-                                <Image
-                                    src={src}
-                                    alt={`card-${i}`}
-                                    fill
-                                    className="object-cover"
-                                    sizes="22vw"
-                                    priority={i < 3}
-                                />
-                            </div>
-                        ))}
+                    <div 
+                        className="relative w-full h-full"
+                        style={{
+                            width: "100vw",
+                            height: "100vh",
+                            transformOrigin: "50% 50%",
+                            willChange: "transform",
+                            transform: `rotate(${circleRotation}deg)`,
+                        }}
+                        ref={circleRef}
+                    >
+                        {circleImages}
                     </div>
                 </div>
 
-                {/* 2. Spiral Information Layer */}
-                <div className="absolute inset-0 flex items-center gap-[6vw] flex-col justify-center h-full z-20 pointer-events-none px-6">
+                {/* 2. Info Layer, CENTERED by absolute full container flexbox */}
+                <div className="absolute inset-0 flex flex-col justify-center items-center h-full z-20 pointer-events-none px-6">
                     <h2
                         ref={infoTextRef}
-                        className="text22 w-[90vw] mt-[5vw] leading-[1.6]! text-center text-white pointer-events-auto"
+                        className="text22 w-[90vw] max-w-[500px] leading-[1.6]! text-center text-white pointer-events-auto"
+                        style={{
+                            margin: 0,
+                        }}
                     >
                         Explore 100+ scroll effects, cursor systems, text animations, page
                         transitions, WebGL scenes, navigation patterns, and creative UI
@@ -345,15 +251,20 @@ export default function StorytellingMobile() {
                     </h2>
                     <h2
                         ref={infoTextRef2}
-                        className="text140 absolute left-1/2 -translate-x-1/2 w-[90vw] font-bold text-white text-center leading-[1.2] pointer-events-auto"
+                        className="text140 mt-8 absolute  font-bold text-white text-center leading-[1.2] pointer-events-auto max-w-[700px] w-full"
+                        style={{
+                            margin: 0,
+                        }}
                     >
                         Not another static <br /> component kit.
                     </h2>
                     <div
                         ref={infoButtonWrapperRef}
-                        className="flex flex-col gap-4 w-[80vw] pointer-events-auto mt-4"
+                        className="flex flex-col items-center gap-4 w-fit pointer-events-auto mt-8"
                     >
-                        <Button text="Install CLI" />
+                        <div className="w-fit">
+                            <Button text="Install CLI" />
+                        </div>
                         <Button text="Work with Hyperiux" variant="white" />
                     </div>
                 </div>

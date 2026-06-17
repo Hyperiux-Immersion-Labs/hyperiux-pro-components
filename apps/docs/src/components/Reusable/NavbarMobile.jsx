@@ -74,10 +74,10 @@ export default function NavbarMobile() {
     return (
         <nav
             ref={navbarRef}
-            className="fixed sm:hidden top-0 left-0 z-999 w-full  backdrop-blur-md px-6 py-5 flex items-center justify-between border-b border-white/5"
+            className="fixed hidden top-0 left-0 z-999 w-full  backdrop-blur-md max-md:px-6 max-md:py-5 px-[5vw] py-[4vw] max-md:flex items-center justify-between border-b border-white/5"
         >
             <Link href="/">
-                <HyperiuxLogo className="w-[125px] h-auto text-primary" />
+                <HyperiuxLogo className="max-md:w-[125px] w-[20vw] h-auto text-primary" />
             </Link>
 
             <button
@@ -86,9 +86,9 @@ export default function NavbarMobile() {
                 aria-label="Toggle Menu"
             >
                 {isMenuOpen ? (
-                    <X size={26} className="text-white" />
+                    <X size={26} className="text-white max-md:size-[5vw] size-[5vw]" />
                 ) : (
-                    <Menu size={26} className="text-white" />
+                    <Menu size={26} className="text-white max-md:size-[5vw] size-[5vw]" />
                 )}
             </button>
 
