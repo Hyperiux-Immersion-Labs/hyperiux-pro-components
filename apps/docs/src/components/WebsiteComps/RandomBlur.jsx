@@ -2,8 +2,8 @@
 
 import React, { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { SplitText } from 'gsap/SplitText'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { SplitText } from 'gsap/dist/SplitText'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -39,19 +39,10 @@ export default function RandomBlur({
     const container = containerRef.current
     if (!container) return
 
-    const reduceMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
-
     const split = SplitText.create(container, {
       type: 'words,chars',
       charsClass: 'inline-block',
     })
-
-    if (reduceMotion) {
-      gsap.set(split.chars, { opacity: 1, filter: 'blur(0px)' })
-      return () => split.revert()
-    }
 
     // Hide characters immediately to prevent visual flash before loader complete
     gsap.set(split.chars, { opacity: 0, filter: `blur(${blur})`, force3D: true })
@@ -79,10 +70,11 @@ export default function RandomBlur({
               amount: staggerAmount,
               from: 'random',
             },
-            scrollTrigger: isLoaderActive ? undefined : {
+            scrollTrigger: {
               trigger: container,
               start,
               once,
+              markers: false,
             },
           }
         )

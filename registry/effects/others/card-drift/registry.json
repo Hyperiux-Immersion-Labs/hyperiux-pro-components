@@ -3,7 +3,7 @@
   "type": "registry:component",
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
-  "category": "others",
+  "category": "components",
   "dependencies": [
     "gsap"
   ],

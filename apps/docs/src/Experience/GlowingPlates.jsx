@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // PlatesScene — 51 metallic discs arranged in a helix ring.
 // Hover: screen-space nearest-plate detection → Gaussian neighbourhood glow.
-// Rendering: MeshStandardMaterial + separate additive glow overlay + Bloom.
+// Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
@@ -19,7 +19,6 @@ const lerp = (a, b, t) => a + (b - a) * t;
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const CONFIG = {
-  // Helix Geometry
   count: 51,
   radius: 4.5,
   heightStep: 0.0,
@@ -32,20 +31,18 @@ const CONFIG = {
 
   // Material Properties
   roughness: 0.3,
-  metalness: 0.75, // 0.95 → 0.75 so diffuse channel (where shadows live) is visible
+  metalness: 0.75,
   plateColor: "#0e0e0e",
 
   // Hover Physics & Animation
-  hoverSigma: 2.0,       // Gaussian spread (plates)
-  hoverSpeed: 0.09,      // lerp rate per frame
-  hoverScale: 1.40,      // max XZ scale at hover centre
-  rotationSpeed: 0.05,   // helix rotation speed factor
-  hoverThreshold: 0.48,  // screen-space distance threshold for hover
+  hoverSigma: 2.0,
+  hoverSpeed: 0.09,
+  hoverScale: 1.25,
+  rotationSpeed: 0.05,
+  hoverThreshold: 0.48,
 
-  // Glow Settings
-  glowIntensity: 1.5,   // HDR multiplier for additive overlay
-  glowColor: "#ff7c00",   // base material color
-  glowRGB: { r: 1.0, g: 0.25, b: 0.0 }, // real-time instanceColor multiplication factor
+  // Glow/Heat Gradient Shader Settings
+  glowIntensity: 1.8,
 
   // Lighting & Environment
   lightColor: "#ff4f00",
@@ -53,13 +50,12 @@ const CONFIG = {
   lightPosition: [20, 10.5, -20],
   lightShadowNear: 1,
   lightShadowFar: 60,
-  lightShadowFrustum: 12, // shadow camera boundary (top/bottom/left/right)
+  lightShadowFrustum: 12,
   shadowBias: 0.0,
   shadowNormalBias: 0.04,
   environmentIntensity: 0.1,
   environmentPreset: "city",
 
-  // Placement & Group Orientation
   wrapperPosition: [1, 0, 0],
   groupPosition: [4.15, 3.93, -0.5],
   groupRotation: [1.41, 0.01, -0.14],
@@ -68,16 +64,15 @@ const CONFIG = {
   cameraPosition: [0, 0.8, 7.0],
   cameraFov: 62,
   toneMappingExposure: 1.1,
-  canvasDpr: 1.0,        // Device Pixel Ratio limit for performance
+  canvasDpr: 1.0, 
 
   // Bloom Post-processing
-  bloomIntensity: 1.5,
-  bloomThreshold: 0.15,
-  bloomSmoothing: 0.98,
+  bloomIntensity: 1.35,
+  bloomThreshold: 0.22,
+  bloomSmoothing: 0.99,
   bloomRadius: 0.,
 
-  // Performance throttling
-  updateFPS: 0,         // FPS limit for matrix updates (e.g. 30, 60 or 0 for uncapped)
+  updateFPS: 0,
 };
 
 // ─── Materials ────────────────────────────────────────────────────────────────
@@ -89,24 +84,63 @@ function makePlateMaterial(roughness, metalness) {
   });
 }
 
-function makeGlowMaterial() {
-  return new THREE.MeshBasicMaterial({
-    color: CONFIG.glowColor,
+function makePlateGeometry(r, h) {
+  return new THREE.CylinderGeometry(r, r, h, 64, 1, false);
+}
+
+// ─── Custom glow shader — linear gradient across disc face ─────────────────────
+function makeGlowShaderMaterial() {
+  const vertexShader = `
+    attribute float instanceIntensity;
+    varying float vIntensity;
+    varying vec2 vUv;
+    varying float vCapMask;
+
+    void main() {
+      vUv = uv;
+      vIntensity = instanceIntensity;
+      vCapMask = smoothstep(0.15, 0.7, abs(normal.y));
+      gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    varying float vIntensity;
+    varying vec2 vUv;
+    varying float vCapMask;
+
+    void main() {
+      if (vCapMask <= 0.001 || vIntensity <= 0.001) discard;
+
+      // Linear gradient left → right (UV.x)
+      float t = smoothstep(0.0, 1.0, vUv.x);
+      vec3 leftColor = vec3(1.0, 0.14, 0.0);   // #ff5f00
+      vec3 rightColor = vec3(1.0, 0.07, 0.0);  // #ff5f00
+
+      vec3 col = mix(leftColor, rightColor, t);
+
+      // Silhouette AA only — no radial color falloff
+      float radial = length(vUv - 0.5) * 1.0;
+      float aa = fwidth(radial) * 1.5;
+      float discAlpha = 1.0 - smoothstep(1.0 - aa, 1.0 + aa, radial);
+
+      float strength = vIntensity * vCapMask * discAlpha;
+      gl_FragColor = vec4(col * strength, strength);
+    }
+  `;
+
+  return new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
     transparent: true,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
     side: THREE.DoubleSide,
     toneMapped: false,
-    // Same geometry as main — polygon offset renders it in front without Z-fight
     polygonOffset: true,
-    polygonOffsetFactor: -1,
-    polygonOffsetUnits: -1,
+    polygonOffsetFactor: -0.5,
+    polygonOffsetUnits: -0.5,
   });
-}
-
-// ─── Geometry ─────────────────────────────────────────────────────────────────
-function makePlateGeometry(r, h) {
-  return new THREE.CylinderGeometry(r, r, h, 36);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -120,7 +154,7 @@ function ParametricPlates({ isMobile }) {
     localTiltX, localTiltY, localTiltZ,
     plateRadius, plateThickness, roughness, metalness,
     hoverSigma, hoverSpeed, hoverScale, glowIntensity,
-    rotationSpeed, hoverThreshold, glowRGB, updateFPS
+    rotationSpeed, hoverThreshold, updateFPS
   } = CONFIG;
 
   // ── Refs ────────────────────────────────────────────────────────────────────
@@ -129,7 +163,6 @@ function ParametricPlates({ isMobile }) {
   const hoveredRef = useRef(-1);
   const prevRotation = useRef(0);
   const accumulator = useRef(0);
-  const tmpColor = useRef(new THREE.Color());
   const dummy = useRef(new THREE.Object3D());
   const pos = useRef(new THREE.Vector3());
   const projPos = useRef(new THREE.Vector3());
@@ -139,6 +172,7 @@ function ParametricPlates({ isMobile }) {
   const tempEuler = useRef(new THREE.Euler());
   const tempQuat = useRef(new THREE.Quaternion());
 
+  // Per-instance glow/heat intensities
   const arraysRef = useRef(null);
   if (arraysRef.current === null) {
     arraysRef.current = {
@@ -150,6 +184,7 @@ function ParametricPlates({ isMobile }) {
       cosThetaArr: new Float32Array(count),
       prevGlowArr: new Float32Array(count).fill(-999),
       prevScaleArr: new Float32Array(count).fill(1.0),
+      intensityArr: new Float32Array(count).fill(0) // for shader
     };
   }
 
@@ -162,19 +197,24 @@ function ParametricPlates({ isMobile }) {
     return arr;
   }, [count, turns]);
 
-  // ── Materials & Geometries (Shared single geometry) ────────────────────────
+  // ── Materials & Geometries ─────────────────────────────────────────────────
   const mainMat = useMemo(() => makePlateMaterial(roughness, metalness), [roughness, metalness]);
-  const glowMat = useMemo(() => makeGlowMaterial(), []);
   const geo = useMemo(() => makePlateGeometry(plateRadius, plateThickness), [plateRadius, plateThickness]);
+  // Only create once per mount to persist uniform/attribute state
+  const glowMat = useMemo(() => makeGlowShaderMaterial(), []);
 
-  // ── Initialise glow instanceColor to black before first render ──────────────
+  // ── Add instanceIntensity attribute to glow instanced mesh before first frame ──
   useLayoutEffect(() => {
-    const mesh = glowRef.current;
-    if (!mesh) return;
-    const black = new THREE.Color(0, 0, 0);
-    for (let i = 0; i < count; i++) mesh.setColorAt(i, black);
-    mesh.instanceColor.needsUpdate = true;
-  }, [count]);
+    if (!glowRef.current) return;
+
+    // Provide the "instanceIntensity" instanced attribute
+    const instancedMesh = glowRef.current;
+    const array = arraysRef.current.intensityArr;
+    if (!instancedMesh.geometry.getAttribute("instanceIntensity")) {
+      const attr = new THREE.InstancedBufferAttribute(array, 1);
+      instancedMesh.geometry.setAttribute("instanceIntensity", attr);
+    }
+  }, [count, geo]);
 
   const { camera, gl } = useThree();
 
@@ -239,13 +279,14 @@ function ParametricPlates({ isMobile }) {
       cosThetaArr,
       prevGlowArr,
       prevScaleArr,
+      intensityArr
     } = arraysRef.current;
+
     const pointer = ndcPointer.current;
     const dummyObj = dummy.current;
     const position = pos.current;
     const projected = projPos.current;
     const parentMatrix = groupMat.current;
-    const color = tmpColor.current;
 
     // Optional FPS throttling
     if (updateFPS > 0) {
@@ -258,7 +299,6 @@ function ParametricPlates({ isMobile }) {
     const time = clock.getElapsedTime();
     const rotation = time * rotationSpeed;
 
-    // Cache parent world matrix for screen-space projection
     if (main.parent) {
       main.parent.updateWorldMatrix(true, false);
       parentMatrix.copy(main.parent.matrixWorld);
@@ -296,7 +336,6 @@ function ParametricPlates({ isMobile }) {
     } else {
       hoveredRef.current = -1;
       hovId = -1;
-
       for (let i = 0; i < count; i++) {
         const theta = baseTheta[i] + rotation;
         cosThetaArr[i] = Math.cos(theta);
@@ -309,14 +348,13 @@ function ParametricPlates({ isMobile }) {
       Math.abs(rotation - prevRotation.current) > 0.00001;
     prevRotation.current = rotation;
 
-    let colorsDirty = false;
+    let intensitiesDirty = false;
 
-    // Single unified transform pass
     for (let i = 0; i < count; i++) {
       const cosT = cosThetaArr[i];
       const sinT = sinThetaArr[i];
 
-      // Gaussian influence: peak 1.0 at hovered plate, smooth falloff over ±5
+      // Gaussian hover influence
       const dist = hovId === -1 ? Infinity : Math.abs(i - hovId);
       const influence = hovId === -1 ? 0 : Math.exp(-(dist ** 2) / (2 * hoverSigma ** 2));
 
@@ -335,50 +373,37 @@ function ParametricPlates({ isMobile }) {
       position.set(cosT * radius, (i - count / 2) * heightStep, sinT * radius);
       dummyObj.position.copy(position);
 
-      // Tangent-align cylinder axis to the circle using optimized arithmetic quaternion
+      // Tangent align & local tilt
       const tx = -sinT;
       const ty = heightStep > 0 ? heightStep / radius : 0;
       const tz = cosT;
-
-      let nx = tx;
-      let ny = ty;
-      let nz = tz;
-
+      let nx = tx, ny = ty, nz = tz;
       if (heightStep > 0) {
         const len = Math.sqrt(tx * tx + ty * ty + tz * tz);
-        nx /= len;
-        ny /= len;
-        nz /= len;
+        nx /= len; ny /= len; nz /= len;
       }
-
       const r = ny + 1.0;
       if (r < 0.0001) {
         dummyObj.quaternion.set(1, 0, 0, 0);
       } else {
         dummyObj.quaternion.set(nz, 0, -nx, r).normalize();
       }
-
       tempEuler.current.set(tiltXArr[i], tiltYArr[i], localTiltZ);
       tempQuat.current.setFromEuler(tempEuler.current);
       dummyObj.quaternion.multiply(tempQuat.current);
+
       dummyObj.scale.set(scaleArr[i], 1.0, scaleArr[i]);
       dummyObj.updateMatrix();
 
       main.setMatrixAt(i, dummyObj.matrix);
       glow.setMatrixAt(i, dummyObj.matrix);
 
-      // Glow brightness driven by influence (single warm-orange tone)
-      // Optimization: Only setColorAt when color has changed significantly
-      const g = glowArr[i];
+      // Per-instance glow/heat gradient via instanceIntensity attribute
+      const g = glowArr[i] * glowIntensity;
       if (Math.abs(g - prevGlowArr[i]) > 0.001) {
         prevGlowArr[i] = g;
-        color.setRGB(
-          g * glowIntensity * glowRGB.r,
-          g * glowIntensity * glowRGB.g,
-          g * glowIntensity * glowRGB.b
-        );
-        glow.setColorAt(i, color);
-        colorsDirty = true;
+        intensityArr[i] = g;
+        intensitiesDirty = true;
       }
     }
 
@@ -386,8 +411,12 @@ function ParametricPlates({ isMobile }) {
       main.instanceMatrix.needsUpdate = true;
       glow.instanceMatrix.needsUpdate = true;
     }
-    if (colorsDirty && glow.instanceColor) {
-      glow.instanceColor.needsUpdate = true;
+
+    // Upload per-instance glow/heat to shader attribute only if dirty
+    if (intensitiesDirty) {
+      if (glow.geometry.getAttribute("instanceIntensity")) {
+        glow.geometry.getAttribute("instanceIntensity").needsUpdate = true;
+      }
     }
   });
 
@@ -398,13 +427,15 @@ function ParametricPlates({ isMobile }) {
         ref={mainRef}
         args={[geo, mainMat, count]}
         castShadow
+        rotation={[0,0,0]}
         receiveShadow
         frustumCulled={false}
       />
-      {/* Additive glow overlay — same geometry, polygon-offset in front */}
+      {/* Additive linear-gradient overlay with custom shader */}
       <instancedMesh
         ref={glowRef}
-        args={[geo, glowMat, count]}
+        args={[geo, null, count]}
+        material={glowMat}
         castShadow={false}
         receiveShadow={false}
         frustumCulled={false}
@@ -445,7 +476,6 @@ export default function GlowingPlates() {
 
     const isLoaderActive = typeof document !== "undefined" && document.body.classList.contains("loader-active");
 
-    // Immediately hide to prevent flash
     gsap.set(el, { opacity: 0 });
 
     const playFadeIn = () => {
@@ -488,7 +518,6 @@ export default function GlowingPlates() {
           <PerspectiveCamera makeDefault position={CONFIG.cameraPosition} fov={CONFIG.cameraFov} />
           <Environment preset={CONFIG.environmentPreset} environmentIntensity={CONFIG.environmentIntensity} />
 
-          {/* Key light — warm orange, tight frustum for crisp inter-plate shadows */}
           <directionalLight
             castShadow={!isMobile}
             color={CONFIG.lightColor}

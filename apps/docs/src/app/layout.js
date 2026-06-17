@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "highlight.js/styles/night-owl.css";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const layGrotesk = localFont({
   src: [
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
         <body className="min-h-dvh bg-background text-foreground font-sans">
           {children}
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>

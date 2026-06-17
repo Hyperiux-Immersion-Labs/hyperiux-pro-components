@@ -7,7 +7,7 @@
   "categories": [
     "components"
   ],
-  "tier": "pro",
+  "tier": "free",
   "dependencies": [
     "gsap"
   ],

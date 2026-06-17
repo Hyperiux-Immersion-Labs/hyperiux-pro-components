@@ -32,6 +32,19 @@ function setStoredSidebarExpanded(value) {
   );
 }
 
+function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!isSidebarReady) return;
+
+    onRouteChange();
+  }, [pathname, searchParams, isSidebarReady, onRouteChange]);
+
+  return null;
+}
+
 function SidebarFallback({ isExpanded }) {
   return (
     <aside
@@ -159,12 +172,6 @@ export function VaultLayout({
   useEffect(() => {
     if (!isSidebarReady) return;
 
-    refreshScrollTrigger();
-  }, [pathname, searchParams, isSidebarReady, refreshScrollTrigger]);
-
-  useEffect(() => {
-    if (!isSidebarReady) return;
-
     const mediaQuery = window.matchMedia("(max-width: 767px)");
 
     const syncLenis = () => {
@@ -245,7 +252,12 @@ export function VaultLayout({
 
   return (
     <div className="relative min-h-screen text-foreground">
-     
+      <Suspense fallback={null}>
+        <RouteChangeWatcher
+          isSidebarReady={isSidebarReady}
+          onRouteChange={refreshScrollTrigger}
+        />
+      </Suspense>
 
       <div className="relative z-300 flex min-h-screen items-start">
         <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>

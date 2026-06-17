@@ -8,6 +8,7 @@ import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import CharStaggerButton from "@/components/char-stagger-button";
 import {
+  effectsOverviewContent,
   effectCategories,
   getEffectCategory,
   getEffectCategoryBySlug,
@@ -16,8 +17,9 @@ import {
 
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
-import { fadeUp } from "@/components/Animations/gsapAnimations";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import FAQSection from "@/components/LandingPage/FAQ";
+import Button from "@/components/Reusable/Button";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 
 export function VaultContent({
@@ -26,7 +28,7 @@ export function VaultContent({
   initialCategory = "all",
   userPlan = "free",
 }) {
-  fadeUp();
+  useFadeUp();
   const pathname = usePathname();
   const isProUser = userPlan === "pro";
   const searchParams = useSearchParams();
@@ -197,44 +199,46 @@ export function VaultContent({
     }).length;
   }, [effects, categoryFilter, featuredEffects]);
   const activeCategory = getEffectCategory(categoryFilter);
+  const activeCategoryContent =
+    categoryFilter === "all" ? effectsOverviewContent : activeCategory;
   const activeCategoryName =
-    categoryFilter === "all"
-      ? "All"
-      : categoryFilter === "free"
+    categoryFilter === "free"
       ? "Free"
-      : activeCategory?.name || categoryFilter;
+      : activeCategoryContent?.name || categoryFilter;
   const activeCategoryDescription =
-    categoryFilter === "all"
-      ? "Browse the full Hyperiux vault across motion, WebGL, cursor, scroll, component, loader, navigation, and transition effects."
-      : activeCategory?.description ||
-        "Explore free effects from the Hyperiux vault, ready to install, remix, and use in real projects.";
+    activeCategoryContent?.description ||
+    "Explore free effects from the Hyperiux vault, ready to install, remix, and use in real projects.";
+  const activeCategoryDescriptions = Array.isArray(activeCategoryDescription)
+    ? activeCategoryDescription
+    : [activeCategoryDescription];
   const activeCategoryFaqItems = useMemo(
     () =>
-      (activeCategory?.faqs || []).map((item, index) => ({
+      (activeCategoryContent?.faqs || []).map((item, index) => ({
         id: `${categoryFilter}-faq-${index + 1}`,
         title: item.question,
         content: item.answer,
         defaultOpen: index === 0,
       })),
-    [activeCategory?.faqs, categoryFilter],
+    [activeCategoryContent?.faqs, categoryFilter],
   );
 
   return (
-    <VaultLayout
-      effectCounts={effectCounts}
-      effects={effects}
-      activeCategory={categoryFilter}
-      onOverviewNavigate={showAllEffects}
-      onCategoryNavigate={updateCategoryFilter}
-    >
-      {({ isSidebarOpen }) => (
-      <div className="min-h-screen text-foreground relative effects-comp  ">
-        <VaultHeader
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          totalEffects={totalEffects}
-          effects={effects}
-        />
+    <>
+      <VaultLayout
+        effectCounts={effectCounts}
+        effects={effects}
+        activeCategory={categoryFilter}
+        onOverviewNavigate={showAllEffects}
+        onCategoryNavigate={updateCategoryFilter}
+      >
+        {({ isSidebarOpen }) => (
+          <div className="min-h-screen text-foreground relative effects-comp">
+            <VaultHeader
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              totalEffects={totalEffects}
+              effects={effects}
+            />
 
         <div className="">
           <div
@@ -246,15 +250,19 @@ export function VaultContent({
                 className="mb-4 font-display text110 w-[80%] mx-auto font-normal max-sm:w-[90%]  text-foreground max-sm:text-4xl"
                 style={{ lineHeight: "1.1" }}
               >
-                {activeCategoryName} Effects
+                {activeCategoryName}
               </h1>
             </HeadAnim>
             <div>
-              <Copy animateOnScroll={false} delay={0.3}>
-                <p className="max-w-[65vw] max-md:max-w-full mx-auto text-lg text-muted max-sm:text-base">
-                  {activeCategoryDescription}
-                </p>
-              </Copy>
+              {/* <Copy animateOnScroll={false} delay={0.3}> */}
+                <div className="mx-auto flex max-w-[50vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base fadeup">
+                  {activeCategoryDescriptions.map((description, index) => (
+                    <p key={`${categoryFilter}-description-${index}`} className="mt-3">
+                      {description}
+                    </p>
+                  ))}
+                </div>
+              {/* </Copy> */}
             </div>
           </div>
 
@@ -387,12 +395,44 @@ export function VaultContent({
             </>
           )}
         </div>
+       
+
+          </div>
+        )}
+      </VaultLayout>
+
+      <div className="relative z-300 text-foreground px-8">
         {activeCategoryFaqItems.length > 0 && (
           <FAQSection faqItems={activeCategoryFaqItems} />
         )}
+
+        {activeCategoryContent?.cta && (activeCategoryContent?.cta.heading || activeCategoryContent?.cta.buttonText) && (
+          <section className="fadeup w-full bg-[#272727] rounded-md max-w-[78%] text-center my-[5vw] mx-auto">
+            <div className="mx-auto w-full max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+              {activeCategoryContent.cta.heading && (
+                <h2 className="text-[4vw] font-medium text-foreground">{activeCategoryContent.cta.heading}</h2>
+              )}
+
+              {activeCategoryContent.cta.description && (
+                <p className="mt-4 mx-auto max-w-3xl text20 text-muted">{activeCategoryContent.cta.description}</p>
+              )}
+
+              {activeCategoryContent.cta.buttonText && (
+                <div className="mt-6">
+                  <Button
+                    text={activeCategoryContent.cta.buttonText}
+                    href={activeCategoryContent.cta.buttonLink || "#"}
+                    variant="white"
+                    className="shrink-0 w-fit mx-auto"
+                    scaleClass="group-hover:scale-[100]"
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       </div>
-      )}
-    </VaultLayout>
+    </>
   );
 }
 

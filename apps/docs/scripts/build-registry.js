@@ -38,7 +38,6 @@ const CATEGORY_ORDER = [
   "navigation",
   "loaders",
   "webgl",
-  "others",
 ];
 
 function toPascalCase(value) {

@@ -27,12 +27,13 @@ export default function Button({
   variant = "orange",
   className = "",
   target_blank = false,
-  scaleClass = 'group-hover:scale-[50]'
+  scaleClass = 'group-hover:scale-[50]',
+  hoverTextClassName,
 }) {
   const styles = VARIANT_STYLES[variant] ?? VARIANT_STYLES.orange;
   const isDarkText = variant === "white";
   const circleColorClass = isDarkText ? "bg-black" : "bg-white";
-  const hoverTextClass = isDarkText ? "group-hover:text-white" : "group-hover:text-black";
+  const hoverTextClass = hoverTextClassName || (isDarkText ? "group-hover:text-white" : "group-hover:text-black");
 
   return (
     <Link

@@ -35,7 +35,7 @@ const loadSvgAsCanvas = (src, size) => {
  });
 };
 
-export default function PixelScrollCanvas({ wrapperRef }) {
+export default function SplitCanvasComp({ wrapperRef }) {
  const containerRef = useRef(null);
  const hasInit = useRef(false);
 

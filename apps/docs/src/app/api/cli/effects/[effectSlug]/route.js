@@ -50,7 +50,7 @@ export async function GET(request, { params }) {
     title: effect.title,
     description: effect.description,
     category: effect.category,
-    categories: effect.categories || [effect.category || "others"],
+    categories: effect.categories || [effect.category || "components"],
     tier: effectTier,
     dependencies: effect.dependencies || [],
     registryDependencies: effect.registryDependencies || [],

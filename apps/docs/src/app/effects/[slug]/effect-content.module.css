@@ -204,7 +204,8 @@
 }
 
 .ctaBanner {
-  display: flex-col;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
   margin-top: 3rem;
@@ -214,7 +215,7 @@
   padding-bottom: 5vw;
   background: #272727;
   color: #fff;
-  width:70%;
+  width: 100%;
 }
 
 .ctaBannerHeading {

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "swiper/css";
@@ -46,18 +44,18 @@ export default function AgencyProofMobile() {
     return (
         <section
             id="AgencyProof"
-            className="h-fit relative z-200 py-[10vw] max-sm:py-[20vw] gap-[2vw] max-sm:gap-[8vw] flex flex-col w-full items-center justify-center sm:hidden"
+            className="h-fit relative z-200 py-[10vw] max-md:py-[20vw] gap-[2vw] max-md:gap-[8vw] flex flex-col w-full items-center justify-center md:hidden"
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 
-            <RandomBlur as="h2" className="text140 text-center w-[80vw] max-sm:w-[90vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[80vw] max-md:w-[90vw]">
                 A public proof of how Hyperiux thinks about digital experience.
             </RandomBlur>
 
             <SplitLine
                 delay={0.2}
                 as="p"
-                className="text34 text-center mt-[4vw] max-sm:mt-[6vw] w-[80vw] max-sm:w-[85vw]"
+                className="text34 text-center mt-[4vw] max-md:mt-[6vw] w-[80vw] max-md:w-[85vw]"
             >
                 The Vault is a public slice of Hyperiux’s interaction design and
                 creative frontend thinking - the same discipline used for premium
@@ -65,9 +63,9 @@ export default function AgencyProofMobile() {
                 systems.
             </SplitLine>
 
-            <div className="w-full flex justify-end max-sm:justify-center px-[10vw] max-sm:px-[8vw] mt-[2vw] mb-[8vw]">
-                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw]">
-                    <Button text="Read Installation Docs" />
+            <div className="w-full flex justify-end max-md:justify-center px-[10vw] max-md:px-[8vw] mt-[2vw] mb-[8vw]">
+                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
+                    <Button text="Work with Hyperiux" />
                 </div>
             </div>
 
@@ -96,31 +94,23 @@ export default function AgencyProofMobile() {
                 </div>
 
                 {/* Custom Navigation Buttons */}
-                <div className="flex gap-[4vw] justify-center  mt-[8vw]">
-                    <div
-                        href="#"
-                        target="_self"
-                        rel=""
-                        onClick={(e) => {
-                            e.preventDefault();
-                            swiperRef.current?.slidePrev();
-                        }}
-                        className="p-[.5vw]  aspect-square border-foreground rounded-full border flex items-center justify-center"
+                <div className="flex items-center justify-center gap-2 mt-[8vw]">
+                    <CircularButton
+                        onClick={() => swiperRef.current?.slidePrev()}
+                        aria-label="Show previous project"
+                        className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                        bgColor="#ff5f00"
                     >
-                        <ChevronLeft size={32} className="text-white" />
-                    </div>
-                    <div
-                        href="#"
-                        target="_self"
-                        rel=""
-                        onClick={(e) => {
-                            e.preventDefault();
-                            swiperRef.current?.slideNext();
-                        }}
-                        className="p-[.5vw]  aspect-square rounded-full border border-foreground flex items-center justify-center"
+                        <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                    </CircularButton>
+                    <CircularButton
+                        onClick={() => swiperRef.current?.slideNext()}
+                        aria-label="Show next project"
+                        className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                        bgColor="#ff5f00"
                     >
-                        <ChevronRight size={32} className="text-white" />
-                    </div>
+                        <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
+                    </CircularButton>
                 </div>
             </div>
 

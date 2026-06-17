@@ -41,23 +41,23 @@ export default function Workflow() {
         <section
             ref={sectionRef}
             id="Workflow"
-            className="h-fit overflow-x-hidden bg-background py-[10vw]! max-sm:py-[30vw]! gap-[2vw] max-sm:gap-[8vw] flex-col w-full flex items-center justify-center"
+            className="h-fit overflow-x-hidden bg-background py-[10vw]! max-md:py-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full flex items-center justify-center"
         >
             <p className="text22 text-light-grey">
                 Workflow
             </p>
 
-            <RandomBlur as="h2" className="text140 text-center w-[60vw] max-sm:w-[70vw]">
+            <RandomBlur as="h2" className="text140 text-center w-[60vw] max-md:w-[70vw]">
                 Preview it. Install it. Make it yours.
             </RandomBlur>
 
-            <div className="w-full self-padd max-sm:flex-col-reverse flex max-sm:gap-[6vw] max-sm:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
-                <div className="w-fit max-sm:mx-auto! max-sm:mt-[6vw]">
+            <div className="w-full self-padd max-md:flex-col-reverse flex max-md:gap-[6vw] max-md:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
+                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
                     <Button text="Read Installation Docs" href="/effects" />
                 </div>
 
 
-                <div ref={videoRef} className="w-full h-[90vh] max-sm:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
+                <div ref={videoRef} className="w-full h-[90vh] max-md:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
                     {/* <video
                         src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
                         autoPlay

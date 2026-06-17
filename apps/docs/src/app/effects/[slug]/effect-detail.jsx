@@ -28,7 +28,7 @@ import Button from "@/components/WebsiteComps/Button";
 import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
-import { fadeUp, lineAnim } from "@/components/Animations/gsapAnimations";
+import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 
@@ -43,8 +43,8 @@ export function EffectDetailContent({
   isLocked = false,
   userPlan = "free",
 }) {
-  fadeUp();
-  lineAnim();
+  useFadeUp();
+  useLineAnim();
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
@@ -405,52 +405,7 @@ export default function MyComponent() {
                 className="shrink-0"
               />
             </div>
-            {isLocked ? (
-              <section className="relative my-14 max-sm:mx-4 overflow-hidden rounded-md bg-[#272727] backdrop-blur-sm px-6 py-16 text-center text-white fadeup  max-sm:py-12">
-
-
-                <div className="relative z-10  mx-auto flex max-w-312 flex-col items-center">
-                  <LockKeyhole className="h-20 w-20 text-white max-sm:h-16 max-sm:w-16" strokeWidth={1.5} />
-
-                  <h2 className="mt-10 text-[3.5vw] font-semibold leading-[0.96] tracking-tight text-white max-sm:mt-7 max-md:text-[5vw] max-sm:text-[11vw]">
-                    {effect.title} is Locked
-                  </h2>
-
-                  <p className="mt-6 mx-10 text-[1.2vw] max-md:text-[3vw] max-md:leading-[1.2] max-sm:leading-[1.4] leading-[1.45] text-white/90 max-sm:text-[4vw]">
-                    Subscribe to Hyperiux Pro to access this effect and 100+ others. Unlimited installs via CLI, full source
-                    code, forever.
-                  </p>
-
-                  <div className="mt-10 flex items-center gap-8 max-md:gap-4 max-sm:flex-col">
-                    <Button
-                      text="Sign In"
-                      href="/sign-in"
-                      variant="orange"
-                      className="shrink-0"
-                      innerClassName="max-sm:group-hover:translate-x-0"
-                      pillClassName="px-8 py-3 text-[1.5vw] max-md:text-[3vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
-                      circleWrapperClassName="max-sm:hidden"
-                      circleClassName="size-12 max-sm:size-11"
-                    />
-
-                    <Button
-                      text="Explore Free Effects"
-                      href="/effects"
-                      variant="white"
-                      className="shrink-0"
-                      pillClassName="px-8 py-3 text-[1.5vw] max-sm:px-7 max-sm:py-3 max-sm:text-[5vw]"
-                      showArrow={false}
-                      disableHoverShift
-                    />
-                  </div>
-
-                  <p className="mt-6 text-[0.9vw] max-md:text-[2vw] text-white/45 max-sm:text-[3.6vw]">
-                    Cancel anytime · Instant access after payment
-                  </p>
-                </div>
-              </section>
-            ) : (
-              <>
+            <>
                 <div className="relative max-sm:px-[7vw] max-md:px-[6vw] pt-[1.5vw] ">
                   <div className="fixed  right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                     <TableOfContents
@@ -463,17 +418,16 @@ export default function MyComponent() {
                   <EffectDynamicContent
                     ref={contentRef}
                     content={content}
+                    isLocked={isLocked}
                   />
                 </div>
 
-                <div className="max-sm:px-[7vw] max-md:px-[6vw] ">
-
-
-                <EffectCtaSection
-                  cta={content?.ctaBanner}
-                  sectionRef={ctaSectionRef}
+                <div className="w-[70%] max-md:w-full max-sm:px-[7vw] max-md:px-[6vw]">
+                  <EffectCtaSection
+                    cta={content?.ctaBanner}
+                    sectionRef={ctaSectionRef}
                   />
-                  </div>
+                </div>
 
                 {relatedEffects?.length > 0 && (
                   <section ref={relatedEffectsRef} className="my-20  relative   max-sm:pt-[5vh] space-y-10 max-md:space-y-16">
@@ -583,7 +537,6 @@ export default function MyComponent() {
                   </section>
                 )}
               </>
-            )}
           </section>
         </main>
       </div>
@@ -593,6 +546,7 @@ export default function MyComponent() {
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
   {
     content,
+    isLocked = false,
   },
   ref
 ) {
@@ -600,7 +554,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
 
   return (
     <div ref={ref} className={`space-y-8 w-[70%] max-md:w-full ${styles.content}`}>
-      <SanityBodyRenderer body={content.body} />
+      <SanityBodyRenderer body={content.body} isLocked={isLocked} />
     </div>
   );
 });
@@ -612,7 +566,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   const isExternalLink = /^https?:\/\//.test(buttonLink);
 
   return (
-    <section ref={sectionRef} className={`fadeup max-sm:px-[7vw] max-md:px-[6vw]  ${styles.ctaBanner}`}>
+    <section ref={sectionRef} className={`fadeup ${styles.ctaBanner}`}>
       {cta.heading && (
         <h2 className={styles.ctaBannerHeading}>{cta.heading}</h2>
       )}
@@ -639,7 +593,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   );
 }
 
-function SanityBodyRenderer({ body = [] }) {
+function SanityBodyRenderer({ body = [], isLocked = false }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
@@ -650,17 +604,18 @@ function SanityBodyRenderer({ body = [] }) {
         <SanityBodyBlock
           key={block._key || block._groupKey || `${block._type}-${index}`}
           block={block}
+          isLocked={isLocked}
         />
       ))}
     </div>
   );
 }
 
-function SanityBodyBlock({ block }) {
+function SanityBodyBlock({ block, isLocked = false }) {
   if (!block) return null;
 
   if (block._type === "block") {
-    return <PortableTextBlock block={block} />;
+    return <PortableTextBlock block={block} isLocked={isLocked} />;
   }
 
   if (block._type === "listGroup") {
@@ -700,6 +655,15 @@ function SanityBodyBlock({ block }) {
   }
 
   if (block._type === "effectCodeBlock") {
+    if (isLocked) {
+      return (
+        <LockedCodePlaceholder
+          filename={block.filename}
+          language={block.language || "jsx"}
+        />
+      );
+    }
+
     return (
       <div className="fadeup">
         <CodeBlock
@@ -820,7 +784,7 @@ function SanityBodyBlock({ block }) {
         {shouldRenderAsCardGrid ? (
           <CalloutCardGrid body={block.content || []} />
         ) : (
-          <SanityBodyRenderer body={block.content || []} />
+          <SanityBodyRenderer body={block.content || []} isLocked={isLocked} />
         )}
       </section>
     );
@@ -849,11 +813,70 @@ function CalloutCardGrid({ body = [] }) {
   );
 }
 
-function PortableTextBlock({ block }) {
+function LockedCodePlaceholder({ filename, language = "jsx" }) {
+  return (
+    <section className="fadeup overflow-hidden rounded-xl border border-white/10 bg-[#171717] text-white shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
+      <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#202020] px-5 py-3 max-sm:flex-col max-sm:items-start">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+            <LockKeyhole className="h-4 w-4" strokeWidth={1.8} />
+          </span>
+
+          <div className="min-w-0 flex flex-col items-start justify-between space-y-[-1vw]!">
+            <p className="text-sm font-medium text-white">
+              Pro source code locked
+            </p>
+
+            <p className="truncate text-xs text-white/45">
+              {`Protected ${language.toUpperCase()} snippet`}
+            </p>
+          </div>
+        </div>
+
+        <Button
+          text="Unlock Code"
+          href="#"
+          variant="orange"
+          className="shrink-0"
+          hoverTextClassName="group-hover:!text-primary"
+          pillClassName="px-5 py-2 text-sm"
+          circleWrapperClassName="hidden"
+          showArrow={false}
+          disableHoverShift
+        />
+      </div>
+
+      <div className="relative p-5">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#171717]/50 to-[#171717]" />
+
+        <div className="space-y-3 opacity-55 blur-[1px]">
+          <div className="h-3 w-4/5 rounded-full bg-white/12" />
+          <div className="h-3 w-3/5 rounded-full bg-white/10" />
+          <div className="h-3 w-11/12 rounded-full bg-white/12" />
+          <div className="h-3 w-2/3 rounded-full bg-white/10" />
+          <div className="h-3 w-5/6 rounded-full bg-white/12" />
+        </div>
+
+        <div className="relative z-10 mt-7 rounded-lg border border-white/10 bg-black/30 p-4 text-sm leading-relaxed text-white/70">
+          You can read the full implementation notes for this Pro effect. The
+          copy-paste source code is available after upgrading.
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PortableTextBlock({ block, isLocked = false }) {
   if (isCodeOnlyBlock(block)) {
     const code = normalizeCodeString(getBlockText(block));
 
     if (!code.trim()) return null;
+
+    if (isLocked) {
+      return (
+        <LockedCodePlaceholder language={inferCodeLanguage(code)} />
+      );
+    }
 
     return (
       <div className="fadeup">

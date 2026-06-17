@@ -5,8 +5,8 @@ import Button from '../WebsiteComps/Button'
 
 export default function CTA() {
     return (
-        <div className='h-screen max-sm:h-fit max-sm:py-[20vw] max-sm:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-sm:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full'>
-            <RandomBlur as="h2" className='text110 pointer-events-auto max-sm:px-0! px-[10vw] text-center'>
+        <div className='h-screen max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-md:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full'>
+            <RandomBlur as="h2" className='text110 pointer-events-auto max-md:px-0! px-[10vw] text-center'>
                 Unlock Next-Level Digital <br /> Experiences.
             </RandomBlur>
             <SplitLine

@@ -7,7 +7,7 @@ import { effectCategories, getEffectCategory } from "@/lib/categories";
 function getEffectCategories(effect) {
   return effect.categories?.length
     ? effect.categories
-    : [effect.category || "others"];
+    : [effect.category || "components"];
 }
 
 export default function SavedPage() {

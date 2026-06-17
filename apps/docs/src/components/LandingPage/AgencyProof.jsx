@@ -193,7 +193,7 @@ export default function AgencyProof() {
     return (
         <section
             id="AgencyProof"
-            className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-sm:hidden"
+            className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-md:hidden"
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 
@@ -212,7 +212,7 @@ export default function AgencyProof() {
                 systems.
             </SplitLine>
             <div className="w-full flex justify-end px-[10vw] mt-[2vw]">
-                <Button text="Read Installation Docs" />
+                <Button text="Work with Hyperiux" />
             </div>
 
             <div id="SwiperDiv" className="h-[500vh] w-full relative">

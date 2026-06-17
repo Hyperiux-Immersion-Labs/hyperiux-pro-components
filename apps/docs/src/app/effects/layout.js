@@ -1,6 +1,6 @@
 import PixelRandom from '@/components/showcase/transitions/PixelRandom/PixelRandomTransition'
 import Footer from "@/components/LandingPage/Footer";
-import React from'react'
+import React from 'react'
 
 export default function layout({ children }) {
  return (

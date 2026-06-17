@@ -69,7 +69,7 @@ export function EffectCard({
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
   const categories = (effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean);
-  const primaryCategoryLabel = formatLabel(categories[0] || "others");
+  const primaryCategoryLabel = formatLabel(categories[0] || "components");
   const dependencyPills = (effect.dependencies || [])
     .slice(0, 2)
     .map(formatLabel)
