@@ -2,6 +2,7 @@ import { notFound } from"next/navigation";
 import { getEffectBySlug, getAllEffectSlugs } from"@/lib/registry";
 import { getEffectConfig } from"@/lib/effect-configs";
 import { FullscreenPreview } from"./fullscreen-preview";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
 export async function generateStaticParams() {
  const slugs = getAllEffectSlugs();
@@ -13,13 +14,18 @@ export async function generateMetadata({ params }) {
  const effect = getEffectBySlug(slug);
 
  if (!effect) {
- return { title:"Preview Not Found" };
+ return createPageMetadata({
+ title:"Preview Not Found",
+ description: "Effect preview not found.",
+ path: `/effects/${slug}/preview`,
+ });
  }
 
- return {
+ return createPageMetadata({
  title: `${effect.title} Preview | Hyperiux Vault`,
  description: `Live preview of ${effect.title}`,
- };
+ path: `/effects/${slug}/preview`,
+ });
 }
 
 export default async function PreviewPage({ params }) {

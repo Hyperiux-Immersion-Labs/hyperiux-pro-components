@@ -18,9 +18,9 @@ export default function FAQDemo({faqItems}) {
     <section className="h-full px-8 max-sm:px-4 py-15 text-white">
         <div className="mx-auto text-center text-white mb-12">
                 <HeadAnim>
-                <h1 className="text80 max-sm:text-[11vw] max-md:text-[8vw]">
+                <h2 className="text80 max-sm:text-[11vw] max-md:text-[8vw]">
                 Frequently Asked Questions
-                </h1>
+                </h2>
                 </HeadAnim>
               </div>
       <div className="mx-auto max-w-[75vw] max-md:max-w-[90vw] space-y-4 max-md:space-y-8 max-sm:space-y-6">

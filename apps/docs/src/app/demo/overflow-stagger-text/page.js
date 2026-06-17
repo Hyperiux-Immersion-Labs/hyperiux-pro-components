@@ -55,7 +55,7 @@ const Page = () => {
                 <div className="relative size-[30vw]  overflow-hidden bg-[#dbeafe] max-md:size-[85vw]">
                   <Image
                     src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
-                    alt=""
+                    alt="asset-image"
                     fill
                     priority
                     sizes=""
@@ -124,7 +124,7 @@ const Page = () => {
             <div className="relative min-h-130 overflow-hidden max-sm:min-h-80">
               <Image
                 src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
-                alt=""
+                alt="asset-image"
                 fill
                 sizes="(max-width: 640px) 100vw, 54vw"
                 className="object-cover"

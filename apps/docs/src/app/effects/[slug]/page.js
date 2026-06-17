@@ -1,12 +1,17 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEffectCategoryBySlug } from "@/lib/categories";
+import {
+  getEffectCategoryBySlug,
+  getEffectCategoryContent,
+  getEffectCategoryMetadata,
+} from "@/lib/categories";
 import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
 import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
 function VaultFallback() {
   return (
@@ -33,30 +38,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
 
-  if (slug === "free") {
-    return {
-      title: "Free Effects | Hyperiux Vault",
-      description: "Browse free effects in the Hyperiux Vault",
-    };
-  }
-
-  if (slug === "featured") {
-    return {
-      title: "Featured Effects | Hyperiux Vault",
-      description: "Browse featured effects in the Hyperiux Vault",
-    };
-  }
-
   const category = getEffectCategoryBySlug(slug);
 
-  if (category) {
-    return {
-      title: `${category.name} | Hyperiux Vault`,
-      description: `Browse ${category.name.toLowerCase()} in the Hyperiux Vault`,
-    };
+  if (slug === "free" || slug === "featured" || category) {
+    return getEffectCategoryMetadata(slug);
   }
 
-  return { title: "Category Not Found" };
+  return getEffectCategoryMetadata("all", {
+    title: "Category Not Found",
+    description: "Effect category not found.",
+    url: `/effects/${slug}`,
+  });
 }
 
 export default async function EffectsCategoryPage({ params }) {
@@ -85,14 +77,26 @@ export default async function EffectsCategoryPage({ params }) {
     notFound();
   }
 
+  const pageMetadata = getEffectCategoryMetadata(
+    isFreeListing ? "free" : isFeaturedListing ? "featured" : category
+  );
+  const pageContent = getEffectCategoryContent(
+    isFreeListing ? "free" : isFeaturedListing ? "featured" : category
+  );
+
   return (
-    <Suspense fallback={<VaultFallback />}>
-      <VaultContent
-        effects={sortedEffects}
-        effectCounts={effectCounts}
-        initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : category.id}
-        userPlan={userPlan}
-      />
-    </Suspense>
+    <>
+      <WebpageJsonLd metadata={pageMetadata} />
+      <BreadcrumbsJSONLD pathname={pageMetadata.url} />
+      {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
+      <Suspense fallback={<VaultFallback />}>
+        <VaultContent
+          effects={sortedEffects}
+          effectCounts={effectCounts}
+          initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : category.id}
+          userPlan={userPlan}
+        />
+      </Suspense>
+    </>
   );
 }

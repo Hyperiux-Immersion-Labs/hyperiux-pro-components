@@ -240,7 +240,7 @@ export function Cappen({
               className="cappen-loader__img-slot"
               style={{ opacity: 0 }}
             >
-              <img src={src} alt="" />
+              <img src={src} alt="asset-image" />
             </div>
           ))}
         </div>

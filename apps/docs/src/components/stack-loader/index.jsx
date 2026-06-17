@@ -291,7 +291,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
                 width={1000}
                 height={1000}
                 className="h-full w-full object-cover"
-                alt=""
+                alt="asset-image"
                 priority={index === 0}
               />
             </div>

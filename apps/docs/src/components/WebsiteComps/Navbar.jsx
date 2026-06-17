@@ -39,7 +39,7 @@ function NavDropdownItem({ label, href, icon }) {
             className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.5vw] transition-colors duration-300 hover:bg-black"
         >
             <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
-                <Image src={icon} alt="" width={35} height={35} aria-hidden className="size-full object-contain" />
+                <Image src={icon} alt="icon" width={35} height={35} aria-hidden className="size-full object-contain" />
             </span>
             <span className="text-[0.95vw] font-medium whitespace-nowrap text-white/75 transition-colors duration-300 group-hover:text-white">
                 {label}

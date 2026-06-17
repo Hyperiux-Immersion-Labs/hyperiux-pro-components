@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,6 +12,7 @@ import CharStaggerButton from "@/components/char-stagger-button";
 import {
   effectsOverviewContent,
   effectCategories,
+  freeEffectsContent,
   getEffectCategory,
   getEffectCategoryBySlug,
   getEffectCategoryHref,
@@ -281,13 +283,13 @@ export function VaultContent({
   const activeCategory = getEffectCategory(categoryFilter);
 
   const activeCategoryContent =
-    categoryFilter === "all" ? effectsOverviewContent : activeCategory;
-
+    categoryFilter === "all"
+      ? effectsOverviewContent
+      : categoryFilter === "free"
+        ? freeEffectsContent
+        : activeCategory;
   const activeCategoryName =
-    categoryFilter === "free"
-      ? "Free"
-      : activeCategoryContent?.name || categoryFilter;
-
+    activeCategoryContent?.name || categoryFilter;
   const activeCategoryDescription =
     activeCategoryContent?.description ||
     "Explore free effects from the Hyperiux vault, ready to install, remix, and use in real projects.";
@@ -295,7 +297,21 @@ export function VaultContent({
   const activeCategoryDescriptions = Array.isArray(activeCategoryDescription)
     ? activeCategoryDescription
     : [activeCategoryDescription];
+  const breadcrumbItems = useMemo(() => {
+    const items = [
+      { label: "Home", href: "/" },
+      { label: "Effects", href: "/effects" },
+    ];
 
+    if (categoryFilter !== "all") {
+      items.push({
+        label: activeCategoryName,
+        href: getEffectCategoryHref(categoryFilter),
+      });
+    }
+
+    return items;
+  }, [activeCategoryName, categoryFilter]);
   const activeCategoryFaqItems = useMemo(
     () =>
       (activeCategoryContent?.faqs || []).map((item, index) => ({
@@ -330,7 +346,39 @@ export function VaultContent({
                 key={`category-intro-${categoryFilter}`}
                 className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-sm:px-7 max-sm:pt-32 max-sm:pb-16"
               >
-                <HeadAnim animateOnScroll={false}>
+               
+              <nav
+                aria-label="Breadcrumb"
+                className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text-sm text-muted max-sm:text-xs fadeup"
+              >
+                {breadcrumbItems.map((item, index) => {
+                  const isLast = index === breadcrumbItems.length - 1;
+
+                  return (
+                    <span key={item.href} className="flex items-center gap-2">
+                      {index > 0 && (
+                        <span className="text-white/25">/</span>
+                      )}
+
+                      {isLast ? (
+                        <span className="capitalize text-primary">
+                          {item.label}
+                        </span>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="capitalize transition-colors hover:text-primary"
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                    </span>
+                  );
+                })}
+              </nav>
+            
+
+            <HeadAnim animateOnScroll={false}>
                   <h1
                     className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-sm:w-[90%] max-sm:text-4xl"
                     style={{ lineHeight: "1.1" }}
@@ -480,7 +528,7 @@ export function VaultContent({
         )}
       </VaultLayout>
 
-      <div className="relative z-300 text-foreground px-8 max-md:px-[7vw]">
+      <div className="relative z-50 text-foreground px-8 max-md:px-[7vw]">
         {activeCategoryFaqItems.length > 0 && (
           <div key={`category-faq-${categoryFilter}`}>
             <FAQSection faqItems={activeCategoryFaqItems} />

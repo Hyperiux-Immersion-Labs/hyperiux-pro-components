@@ -99,7 +99,7 @@ const Page = () => {
                   >
                     <Image
                       src={src}
-                      alt=""
+                      alt="asset-image"
                       fill
                       sizes="(max-width: 640px) 72vw, 320px"
                       className="object-cover"
@@ -180,7 +180,7 @@ const Page = () => {
             <div className="relative overflow-hidden border-2 border-white/80 bg-[#f8f2df] p-4 text-[#111111] shadow-[14px_14px_0_#d7ff48] max-sm:p-3">
               <Image
                 src="/assets/img/image08.jpg"
-                alt=""
+                alt="asset-image"
                 width={3840}
                 height={2160}
                 sizes="(max-width: 640px) 100vw, 42vw"

@@ -5,11 +5,11 @@ import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
 import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { getEffectCategoryContent, getEffectCategoryMetadata } from "@/lib/categories";
+import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
-export const metadata = {
- title:"The Vault | Hyperiux Vault",
- description:"Browse all available effects and animations",
-};
+export const metadata = getEffectCategoryMetadata("all");
+const pageContent = getEffectCategoryContent("all");
 
 function VaultFallback() {
  return (
@@ -35,14 +35,17 @@ export default async function EffectsPage() {
 const { userId } = await auth();
  const userPlan = await getUserPlan(userId);
  return (
- <Suspense fallback={<VaultFallback />}>
-   
- <VaultContent
- effects={sortedEffects}
- effectCounts={effectCounts}
-  userPlan={userPlan}
- />
- 
- </Suspense>
+ <>
+   <WebpageJsonLd metadata={metadata} />
+   <BreadcrumbsJSONLD pathname={metadata.url} />
+   {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
+   <Suspense fallback={<VaultFallback />}>
+    <VaultContent
+      effects={sortedEffects}
+      effectCounts={effectCounts}
+      userPlan={userPlan}
+    />
+   </Suspense>
+ </>
  );
 }

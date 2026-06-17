@@ -82,6 +82,8 @@ export default function MyComponent() {
   const showRelatedSliderControls = relatedEffects.length > 3;
   const pageTitle = content ? content.title?.trim() : effect.title;
   const pageSummary = content ? content.summary?.trim() : effect.description;
+  const categoryLabel = categorySlug?.replaceAll("-", " ");
+  const categoryHref = categorySlug ? `/effects/${categorySlug}` : "/effects";
   const hasCtaSection = Boolean(
     content?.ctaBanner?.heading || content?.ctaBanner?.buttonText
   );
@@ -300,13 +302,45 @@ export default function MyComponent() {
           <section className="space-y-7 ">
             <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw]  justify-between gap-5">
               <div className="w-full space-y-5 ">
-                {categorySlug && (
-                  <Copy>
-                    <p className="mb-3 max-md:mb-6 text20 max-md:w-fit max-md:mx-auto font-medium capitalize text-primary">
-                      {categorySlug.replaceAll("-", " ")}
-                    </p>
-                  </Copy>
-                )}
+                
+                  <nav
+                    aria-label="Breadcrumb"
+                    className="mb-3 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup"
+                  >
+                    <Link
+                      href="/"
+                      className="transition-colors hover:text-primary"
+                    >
+                      Home
+                    </Link>
+                    <span className="text-white/25">/</span>
+                    <Link
+                      href="/effects"
+                      className="transition-colors hover:text-primary"
+                    >
+                      Effects
+                    </Link>
+                    {categorySlug && (
+                      <>
+                        <span className="text-white/25">/</span>
+                        <Link
+                          href={categoryHref}
+                          className="capitalize transition-colors hover:text-primary"
+                        >
+                          {categoryLabel}
+                        </Link>
+                      </>
+                    )}
+                    {pageTitle && (
+                      <>
+                        <span className="text-white/25">/</span>
+                        <span className="max-w-[32vw] truncate text-primary max-md:max-w-[72vw]">
+                          {pageTitle}
+                        </span>
+                      </>
+                    )}
+                  </nav>
+                
 
                 {pageTitle && (
                   <HeadAnim>

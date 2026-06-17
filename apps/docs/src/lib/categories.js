@@ -1,7 +1,12 @@
 import { getEffectRouteSlug } from "./effect-slugs";
+import { createPageMetadata } from "./seo-metadata";
 
 export const effectsOverviewContent = {
   name: "Hyperiux Vault Components",
+  metadata: {
+    title: "The Vault by Hyperiux UI | Modern UI Effects & Components",
+    description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
+  },
   description: [
     "Explore every Hyperiux Vault effect in one place, from scroll stories and cursor systems to WebGL heroes, page transitions, buttons, loaders, navigation, and creative UI components.",
     "Use this page when you are looking for the right interaction before you know its category. Scan the catalog, compare patterns, and choose the effect that makes the page clearer, sharper, or harder to forget.",
@@ -36,11 +41,28 @@ export const effectsOverviewContent = {
   ],
 };
 
+export const freeEffectsContent = {
+  id: "free",
+  name: "Free Effects",
+  slug: "free",
+  metadata: {
+    title: "Free Effects | Hyperiux Vault",
+    description: "Browse free Hyperiux Vault effects and UI components you can install, remix, and use in real projects.",
+  },
+  description: [
+    "Explore free effects from the Hyperiux Vault, ready to install, remix, and use in real projects.",
+  ],
+};
+
 export const effectCategories = [
   {
     id: "featured",
     name: "Featured Components",
     slug: "featured",
+    metadata: {
+      title: "Featured Components | Hyperiux Vault",
+      description: "Browse curated featured Hyperiux Vault components selected for strong craft, practical use, and brand impact.",
+    },
     description: [
       "Featured is the curated category inside Hyperiux Vault. Instead of showing every component, this page highlights effects the Hyperiux team believes deserve extra attention.",
       "These components may be selected because they solve a common page problem, create a memorable interaction, demonstrate strong craft, or work especially well for SaaS, AI, agency, portfolio, product, developer-tool, and brand-led websites. Use this page as a sharper starting point when the full catalog feels too broad."
@@ -91,6 +113,10 @@ export const effectCategories = [
     name: "Text Animations",
     slug: "text-animations",
     aliases: ["text-effects"],
+    metadata: {
+    title: "Text Animations for React & Next.js | Hyperiux Vault",
+    description: "React text animations for real HTML text: scramble, mask, overflow, blur, fill, spotlight, and reveal effects for headlines, launch copy, and short statements.",
+  },
     description: ["Text animation should help important words arrive with intent. Hyperiux Vault text effects are for hero headlines, section intros, product claims, launch statements, and short labels where timing adds emphasis. The final text must remain real DOM text, not a canvas-only magic trick. Under reduced motion, the readable final state should appear immediately because legibility is the product."],
     cta: {
       heading: "Request a Custom Text Animation",
@@ -155,6 +181,10 @@ export const effectCategories = [
     id: "backgrounds",
     name: "Animated Backgrounds",
     slug: "backgrounds",
+    metadata: {
+    title: "Animated Backgrounds for React & Next.js | Hyperiux Vault",
+    description: "React animated backgrounds for SaaS and AI heroes: dotted grids, particle fields, and dithered canvas textures, with guidance on contrast, density, and cost.",
+  },
     description: ["Animated backgrounds should support the message and then stop auditioning for the lead role. Hyperiux Vault backgrounds create engineered atmosphere without defaulting to slow video: dotted grids, particle fields, and dithered canvas textures that sit behind readable HTML content. Dotted Grid is the safest default for SaaS and AI pages because it can remain lightweight; particle and canvas effects need density caps and offscreen pauses."],
     cta: {
       heading: "Request a Custom Background Animation",
@@ -218,6 +248,10 @@ export const effectCategories = [
     id: "buttons",
     name: "Animated Buttons",
     slug: "buttons",
+     metadata: {
+    title: "Animated Buttons for React & Next.js | Hyperiux Vault",
+    description: "Accessible animated buttons for React and Next.js: CTA microinteractions, staggered labels, arrow fills, and scramble links that preserve semantics and focus.",
+  },
     description: "Buttons do not need drama. They need feedback. Hyperiux Vault button effects make actions feel responsive without slowing the click: letters stagger, arrows fill, dots expand, labels scramble, and toggles verify state. The semantics stay honest: use buttons for actions, anchors for navigation, visible focus for keyboard users, and reduced-motion states that still look intentional.",
     cta: {
       heading: "Request a Custom Button Animation",
@@ -281,6 +315,10 @@ export const effectCategories = [
     id: "carousels",
     name: "Carousel Effects",
     slug: "carousels",
+    metadata: {
+    title: "Carousel Effects for React & Next.js | Hyperiux Vault",
+    description: "React carousel effects for visual showcases: clip-path reveals and zoom sliders with visible controls, swipe, keyboard support, and guidance on when a grid wins.",
+  },
     description: [
       "Most carousels hide important content and then act surprised when nobody reads it. Hyperiux Vault carousel effects are for equal-weight visual browsing: project images, product showcases, campaign visuals, and editorial sequences where a directed slide experience makes sense. They must keep controls visible, support keyboard and swipe, pause autoplay on interaction, and avoid burying critical information."
     ],
@@ -345,6 +383,10 @@ export const effectCategories = [
     id: "scroll",
     name: "Scroll Effects",
     slug: "scroll-effects",
+    metadata: {
+    title: "Scroll Animations for React & Next.js | Hyperiux Vault",
+    description: "React scroll animations for product stories, feature tours, and portfolio chapters. Compare behavior, mobile fallbacks, and GSAP/Lenis needs before production.",
+  },
     description: ["Scroll is the most common interaction on a page, so it deserves discipline. Hyperiux Vault scroll effects are for sections that need sequence, depth, pacing, or reveal logic: feature stories, product tours, case studies, process pages, portfolio chapters, and long-form brand pages where the visitor should feel a deliberate progression. The strongest scroll effects preserve the real document order first, then add movement on top. They do not hijack the wheel, trap the visitor, or turn a simple landing page into an obstacle course."],
      cta: {
       heading: "Request a Custom Scroll Animation",
@@ -407,6 +449,10 @@ export const effectCategories = [
     id: "components",
     name: "Creative Components",
     slug: "components",
+    metadata: {
+    title: "Creative Components for React & Next.js | Hyperiux Vault",
+    description: "Creative React components for conversion pages: animated FAQ, forms, tabs, modals, video, and testimonial components, built with ARIA-first, crawlable markup.",
+  },
     description: "This is the conversion category. These components answer objections, collect leads, organize product depth, reveal proof, and help users act. Animated FAQ, Form, Tabs, and Modal are production-sensitive because they touch revenue and accessibility at the same time. The motion should clarify state or reveal supporting content; it should never delay validation, focus movement, submission, or a purchase decision.",
     cta: {
       heading: "Request a Custom Creative Component",
@@ -469,6 +515,10 @@ export const effectCategories = [
     id: "navigation",
     name: "Navigation Effects",
     slug: "navigation",
+    metadata: {
+    title: "Navigation Effects for React & Next.js | Hyperiux Vault",
+    description: "React navigation effects for menus and navbars: directional menus, immersive overlays, elevated headers, and expanding navbars, with keyboard and focus guidance.",
+  },
     description: "Navigation is the riskiest place to be clever because every visitor needs it. Hyperiux Vault navigation effects add spatial presence without stealing reliability: panels enter from pointer direction, full-screen menus create deliberate pauses, navbars elevate as the page moves, and compact headers expand when needed. The menu must work before animation is added.",
     cta: {
       heading: "Request a Custom Navigation",
@@ -531,6 +581,10 @@ export const effectCategories = [
     id: "cursor",
     name: "Cursor Effects",
     slug: "cursor-effects",
+     metadata: {
+    title: "Cursor Effects for React & Next.js | Hyperiux Vault",
+    description: "Custom cursor effects for React and Next.js: glass lenses, image trails, pixel blooms, and aura cursors, each with touch-device and reduced-motion fallbacks.",
+  },
     description: "Cursor effects belong on pages where the pointer can become part of the brand without interfering with meaning. They can make a homepage feel tactile in the first movement: a glass lens bends the surface, an image trail reveals work, pixels bloom behind the pointer, or a rope follows with delayed weight. They should disappear on touch devices and stay away from utility screens where precision matters more than atmosphere.",
     cta: {
       heading: "Request a Custom Cursor Effect",
@@ -593,6 +647,10 @@ export const effectCategories = [
     id: "transitions",
     name: "Page Transitions",
     slug: "page-transitions",
+    metadata: {
+    title: "Page Transitions for React & Next.js | Hyperiux Vault",
+    description: "Next.js page transitions for branded route changes: pixel wipes, block reveals, SVG draws, and flips, with App Router, focus, and reduced-motion guidance.",
+  },
     description: ["A route change is a free cut between scenes. Hyperiux Vault page transitions use that cut as a short branded moment: pixels dissolve, blocks sweep, SVG lines draw, pages flip, or grids close and open. The transition should never become a toll booth. It must follow real route state, finish quickly, restore focus predictably, and collapse to an instant or subtle fade for reduced-motion users."],
     cta: {
       heading: "Request a Custom Page Transition",
@@ -656,6 +714,10 @@ export const effectCategories = [
     name: "Loaders",
     slug: "loaders",
     aliases: ["website-loaders"],
+    metadata: {
+    title: "Loaders & Preloaders for React & Next.js | Hyperiux Vault",
+    description: "React loaders and preloaders for real wait states: numeric progress, line, and stack loaders tied to actual latency, with aria-busy and skeleton guidance.",
+  },
     description: "A loader is an apology for a wait. Hyperiux Vault loaders are for moments where something genuinely takes time: route transition, asset loading, upload progress, WebGL warm-up, or a data request. They should be honest, brief, and connected to real state. If the page is already fast, do not add a fake preloader. You solved the loading problem; do not reintroduce it wearing a nicer coat.",
     cta: {
       heading: "Request a Custom Loader",
@@ -719,6 +781,10 @@ export const effectCategories = [
     name: "WebGL & 3D Effects",
     slug: "webgl-effects",
     aliases: ["webgl"],
+     metadata: {
+    title: "WebGL and 3D Effects for React & Next.js | Hyperiux Vault",
+    description: "WebGL and 3D React effects for shader-led heroes: bloom, glass, tunnels, and interactive canvas scenes, with device-tier GPU budgets and poster fallbacks.",
+  },
     description: "This is the proof-of-craft category, and it carries the highest production cost. Hyperiux Vault WebGL and 3D effects bring real GPU work to the page: glass shaders, bloom scenes, grid tunnels, curved planes, pixelation, and draggable canvases. Use them for premium heroes, AI/product launches, creative portfolios, and immersive brand work where the visual payoff justifies the cost.",
     cta: {
       heading: "Request a Custom WebGL Effect",
@@ -838,6 +904,63 @@ export function getEffectCategoryHref(id) {
 
   const category = getEffectCategory(id);
   return `/effects/${category?.slug || id}`;
+}
+
+function getCategoryDescriptionText(category) {
+  const description = category?.metadata?.description || category?.metaDescription || category?.description;
+
+  return Array.isArray(description)
+    ? description.filter(Boolean).join(" ")
+    : description || "";
+}
+
+export function getEffectCategoryMetadata(categoryOrId, overrides = {}) {
+  const requestedId =
+    typeof categoryOrId === "string"
+      ? categoryOrId.toLowerCase()
+      : categoryOrId?.id;
+  const category =
+    typeof categoryOrId === "string"
+      ? getEffectCategoryBySlug(categoryOrId) || getEffectCategory(categoryOrId)
+      : categoryOrId;
+
+  const isFree = requestedId === "free";
+  const isOverview = !isFree && (!category || category?.id === "all");
+  const content = isFree ? freeEffectsContent : isOverview ? effectsOverviewContent : category;
+  const title =
+    overrides.title ||
+    content?.metadata?.title ||
+    content?.metaTitle ||
+    `${content?.name || "The Vault"} | Hyperiux Vault`;
+  const description =
+    overrides.description ||
+    getCategoryDescriptionText(content) ||
+    "Browse Hyperiux Vault effects, animations, and UI components.";
+  const url =
+    overrides.url ||
+    (isOverview ? "/effects" : getEffectCategoryHref(content.id));
+
+  return createPageMetadata({
+    title,
+    description,
+    path: url,
+  });
+}
+
+export function getEffectCategoryContent(categoryOrId) {
+  const requestedId =
+    typeof categoryOrId === "string"
+      ? categoryOrId.toLowerCase()
+      : categoryOrId?.id;
+
+  if (requestedId === "free") return freeEffectsContent;
+  if (requestedId === "all") return effectsOverviewContent;
+
+  return (
+    (typeof categoryOrId === "string"
+      ? getEffectCategoryBySlug(categoryOrId) || getEffectCategory(categoryOrId)
+      : categoryOrId) || effectsOverviewContent
+  );
 }
 
 export function getEffectPrimaryCategory(effect) {

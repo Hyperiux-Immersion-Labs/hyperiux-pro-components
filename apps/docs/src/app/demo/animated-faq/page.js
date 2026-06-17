@@ -6,8 +6,16 @@ import {
   FAQTitle,
   FAQWrapper,
 } from "@/components/animated-faq";
+import { WebpageJsonLd } from "@/lib/json-ld";
 import React from "react";
 
+const metadata = {
+    title: "The Vault by Hyperiux UI | Modern UI Effects & Components",
+    description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
+    url: "",
+    date_published: "2026-06-17T00:00",
+    date_modified: "2026-06-17T00:00",
+  }
 
 
 export default function FAQDemo() {
@@ -16,6 +24,8 @@ export default function FAQDemo() {
     .map((item) => item.id);
 
   return (
+    <>
+     <WebpageJsonLd metadata={metadata} />
     <section className="bg-black h-screen px-8 py-20 text-white">
         <div className="max-w-5xl mx-auto text-center text-white mb-12">
                 {/* Heading */}
@@ -51,6 +61,7 @@ export default function FAQDemo() {
         </FAQGroup>
       </div>
     </section>
+    </>
   );
 }
 const faqItems = [
