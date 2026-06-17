@@ -14,7 +14,7 @@ import GlowingPlates from "@/Experience/GlowingPlates";
 import VaultShell from "@/Layouts/VaultShell";
 import CTA from "@/components/LandingPage/CTA";
 import useIsMobile from "@/hooks/useIsMobile";
-import Loader from "@/components/Reusable/Loader";
+import Loader from "@/components/WebsiteComps/Loader";
 
 export default function Page() {
   const { isMounted, isMobile } = useIsMobile();

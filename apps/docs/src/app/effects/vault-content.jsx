@@ -17,10 +17,11 @@ import {
 
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
-import { fadeUp } from "@/components/Animations/gsapAnimations";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import FAQSection from "@/components/LandingPage/FAQ";
-import Button from "@/components/Reusable/Button";
+// import Button from "@/components/Reusable/Button";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import Button from "@/components/WebsiteComps/Button";
 
 export function VaultContent({
   effects,
@@ -28,7 +29,7 @@ export function VaultContent({
   initialCategory = "all",
   userPlan = "free",
 }) {
-  fadeUp();
+  useFadeUp();
   const pathname = usePathname();
   const isProUser = userPlan === "pro";
   const searchParams = useSearchParams();
@@ -254,7 +255,6 @@ export function VaultContent({
               </h1>
             </HeadAnim>
             <div>
-              {/* <Copy animateOnScroll={false} delay={0.3}> */}
                 <div className="mx-auto flex max-w-[50vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base fadeup">
                   {activeCategoryDescriptions.map((description, index) => (
                     <p key={`${categoryFilter}-description-${index}`} className="mt-3">
@@ -262,7 +262,6 @@ export function VaultContent({
                     </p>
                   ))}
                 </div>
-              {/* </Copy> */}
             </div>
           </div>
 

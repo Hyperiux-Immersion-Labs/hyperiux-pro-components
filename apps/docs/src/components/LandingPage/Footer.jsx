@@ -1,25 +1,31 @@
 import React from "react";
-import Button from "../Reusable/Button";
-import Link from "next/link";
-import CircularButton from "../Reusable/CirclularButton";
+import Button from "../WebsiteComps/Button";
+import CircularButton from "../WebsiteComps/CirclularButton";
 import { socialLinks, socialLinksList, vaultLinks } from "../../utils/Links";
-import LinkHover from "../Reusable/LinksHover";
-import SplitLine from "../Reusable/SplitLine";
-import RandomBlur from "../Reusable/RandomBlur";
+import LinkHover from "../WebsiteComps/LinksHover";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 import ReflectiveRods from "@/Experience/ReflectiveRods";
 
-export default function Footer() {
+export default function Footer({ animations=true }) {
   return (
     <footer className="h-fit overflow-hidden max-md:mt-20   z-200 relative w-full">
       <ReflectiveRods />
       <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative">
-          <RandomBlur
-            as="h2"
-            className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
-          >
-            Build the interaction layer your website is missing.
-          </RandomBlur>
+          {
+            animations ? <RandomBlur
+              as="h2"
+              className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
+            >
+              Build the interaction layer your website is missing.
+            </RandomBlur> : <h2
+
+              className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
+            >
+              Build the interaction layer your website is missing.
+            </h2>
+          }
+
           <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw]">
             <Button text="Install CLI" />
             <Button text="Work with Hyperiux" className="border border-white" variant="white" />

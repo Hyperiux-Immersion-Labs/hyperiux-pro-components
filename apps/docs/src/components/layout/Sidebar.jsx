@@ -4,14 +4,17 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  ChevronRight,
-  FileText,
-  Grid2X2,
-  Home,
-  PanelLeft,
-} from "lucide-react";
+import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { Overview, Documentation, Category } from "../WebsiteComps/Icons";
+
+const DEFAULT_DOCS_TOP_LINKS = [
+  { href: "/docs", label: "Introduction" },
+  { href: "/docs/installation", label: "Installation" },
+  { href: "/docs/cli", label: "CLI" },
+  { href: "/docs/dependencies", label: "Dependencies" },
+  { href: "/docs/license", label: "License" },
+];
 
 function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
@@ -76,7 +79,7 @@ function SectionButton({
       <motion.span
         animate={{ rotate: isOpen ? 90 : 0, x: isOpen ? 2 : 0 }}
         transition={{ duration: 0.22, ease: "easeOut" }}
-        className={`shrink-0 `}
+        className="shrink-0"
       >
         <ChevronRight className="h-4 w-4" />
       </motion.span>
@@ -87,12 +90,10 @@ function SectionButton({
 export function Sidebar({
   effects = [],
   effectCounts = {},
-  totalEffects,
   isExpanded = false,
   onToggle,
-  onClose,
   activeCategory,
-  topLinks = [],
+  topLinks = DEFAULT_DOCS_TOP_LINKS,
   onOverviewNavigate,
   onCategoryNavigate,
   onDocumentationNavigate,
@@ -102,19 +103,23 @@ export function Sidebar({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const resolvedTopLinks = topLinks?.length ? topLinks : DEFAULT_DOCS_TOP_LINKS;
+
   const pathSegments = pathname.split("/").filter(Boolean);
   const lastPathSegment = pathSegments[pathSegments.length - 1] || "";
 
   const [activeHash, setActiveHash] = useState("");
   const [fetchedEffects, setFetchedEffects] = useState([]);
+  const [openSection, setOpenSection] = useState("");
 
   const isDocsActive =
     pathname.startsWith("/docs") ||
-    topLinks.some((link) => {
+    resolvedTopLinks.some((link) => {
       const [basePath, hash] = link.href.split("#");
 
       return pathname === basePath && (!hash || activeHash === `#${hash}`);
     });
+
   const currentCategory = isDocsActive
     ? ""
     : activeCategory || searchParams.get("category") || "";
@@ -149,14 +154,14 @@ export function Sidebar({
   useEffect(() => {
     router.prefetch?.("/effects");
 
-    for (const link of topLinks) {
+    for (const link of resolvedTopLinks) {
       router.prefetch?.(link.href);
     }
 
     for (const category of effectCategories) {
       router.prefetch?.(getEffectCategoryHref(category.id));
     }
-  }, [router, topLinks]);
+  }, [router, resolvedTopLinks]);
 
   const sidebarEffects = effects.length ? effects : fetchedEffects;
 
@@ -177,20 +182,22 @@ export function Sidebar({
 
   const isOverviewActive =
     pathname === "/effects" && (!currentCategory || currentCategory === "all");
+
   const isCategoriesActive =
     !isDocsActive &&
     (isCategoryRoute ||
       (pathname === "/effects" &&
         Boolean(currentCategory) &&
         currentCategory !== "all"));
+
   const isDocumentationActive = isDocsActive;
-  const [openSection, setOpenSection] = useState("");
 
   const navigateOverview = () => {
     setOpenSection("");
 
-    if (onOverviewNavigate) {
-      onOverviewNavigate();
+    const wasHandled = onOverviewNavigate?.();
+
+    if (wasHandled === true) {
       return;
     }
 
@@ -198,8 +205,11 @@ export function Sidebar({
   };
 
   const navigateCategory = (categoryId) => {
-    if (onCategoryNavigate) {
-      onCategoryNavigate(categoryId);
+    setOpenSection("categories");
+
+    const wasHandled = onCategoryNavigate?.(categoryId);
+
+    if (wasHandled === true) {
       return;
     }
 
@@ -209,8 +219,9 @@ export function Sidebar({
   const navigateDocumentation = (href) => {
     setOpenSection("docs");
 
-    if (onDocumentationNavigate) {
-      onDocumentationNavigate(href);
+    const wasHandled = onDocumentationNavigate?.(href);
+
+    if (wasHandled === true) {
       return;
     }
 
@@ -292,7 +303,7 @@ export function Sidebar({
         <nav data-lenis-prevent className="space-y-4">
           <NavIconLink
             label="Overview"
-            icon={Home}
+            icon={Overview}
             isExpanded={isExpanded}
             isActive={isOverviewActive}
             onClick={navigateOverview}
@@ -300,7 +311,7 @@ export function Sidebar({
 
           <SectionButton
             label="Categories"
-            icon={Grid2X2}
+            icon={Category}
             isExpanded={isExpanded}
             isOpen={openSection === "categories"}
             isActive={isCategoriesActive}
@@ -326,7 +337,7 @@ export function Sidebar({
                       key={category.id}
                       type="button"
                       onClick={() => navigateCategory(category.id)}
-                      className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors ${
+                      className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
                           : "text-white/42 hover:text-white/75"
@@ -356,7 +367,7 @@ export function Sidebar({
 
           <SectionButton
             label="Documentation"
-            icon={FileText}
+            icon={Documentation}
             isExpanded={isExpanded}
             isOpen={openSection === "docs"}
             isActive={isDocumentationActive}
@@ -373,7 +384,7 @@ export function Sidebar({
                 transition={{ duration: 0.24, ease: "easeOut" }}
                 className="ml-[19px] space-y-1 overflow-hidden border-l border-white/12 pl-7"
               >
-                {topLinks.map((link) => {
+                {resolvedTopLinks.map((link) => {
                   const [basePath, hash] = link.href.split("#");
 
                   const isActive =
@@ -385,7 +396,7 @@ export function Sidebar({
                       key={link.href}
                       type="button"
                       onClick={() => navigateDocumentation(link.href)}
-                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors ${
+                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
                           : "text-white/42 hover:text-white/75"

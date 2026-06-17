@@ -2,9 +2,10 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
+import { getEffectCategoryHref } from "@/lib/categories";
 
 const SIDEBAR_EXPANDED_STORAGE_KEY = "hyperiux-sidebar-expanded";
 
@@ -68,6 +69,9 @@ export function VaultLayout({
   onCategoryNavigate,
   onDocumentationNavigate,
 }) {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const totalEffects =
     propTotalEffects !== undefined ? propTotalEffects : effects.length;
 
@@ -78,7 +82,14 @@ export function VaultLayout({
   const lenis = useLenis();
   const refreshTimeoutsRef = useRef([]);
 
+  const isEffectsRoute =
+    pathname === "/effects" || pathname.startsWith("/effects/");
+
+  const isDocsRoute = pathname === "/docs" || pathname.startsWith("/docs/");
+
   const clearRefreshTimeouts = useCallback(() => {
+    if (typeof window === "undefined") return;
+
     refreshTimeoutsRef.current.forEach((timeoutId) => {
       window.clearTimeout(timeoutId);
     });
@@ -196,18 +207,44 @@ export function VaultLayout({
   };
 
   const handleOverviewNavigate = () => {
-    onOverviewNavigate?.();
+    if (isEffectsRoute && onOverviewNavigate) {
+      onOverviewNavigate();
+      refreshScrollTrigger();
+      return true;
+    }
+
+    router.push("/effects", { scroll: false });
     refreshScrollTrigger();
+    return true;
   };
 
   const handleCategoryNavigate = (categoryId) => {
-    onCategoryNavigate?.(categoryId);
+    const categoryHref = getEffectCategoryHref(categoryId);
+
+    if (isEffectsRoute && onCategoryNavigate) {
+      onCategoryNavigate(categoryId);
+      refreshScrollTrigger();
+      return true;
+    }
+
+    router.push(categoryHref, { scroll: false });
     refreshScrollTrigger();
+    return true;
   };
 
   const handleDocumentationNavigate = (href) => {
-    onDocumentationNavigate?.(href);
+    if (isDocsRoute && onDocumentationNavigate) {
+      const wasHandled = onDocumentationNavigate(href);
+
+      if (wasHandled === true) {
+        refreshScrollTrigger();
+        return true;
+      }
+    }
+
+    router.push(href, { scroll: false });
     refreshScrollTrigger();
+    return true;
   };
 
   const renderedChildren =
@@ -238,8 +275,6 @@ export function VaultLayout({
             onDocumentationNavigate={handleDocumentationNavigate}
             disableInitialTransition={!allowSidebarTransition}
           />
-
-          
         </Suspense>
 
         <main className="relative min-w-0 flex-1">{renderedChildren}</main>

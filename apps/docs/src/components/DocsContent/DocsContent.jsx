@@ -1,16 +1,19 @@
 "use client";
 
-import React from "react";
-import { lineAnim } from "@/components/Animations/gsapAnimations";
+import React, { useRef } from "react";
+import { useLineAnim } from "@/components/Animations/gsapAnimations";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
 }
 
 export default function DocsContent({ className, children, ...props }) {
-  lineAnim();
+  const contentRef = useRef(null);
+  useLineAnim(contentRef);
+
   return (
     <div
+      ref={contentRef}
       className={cx(
         "w-full py-10 md:py-14 space-y-6",
         className
