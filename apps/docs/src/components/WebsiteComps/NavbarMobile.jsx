@@ -139,7 +139,7 @@ function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
       }`}
     >
       {icon && (
-        <span className="flex size-5 shrink-0 items-center justify-center">
+        <span className="flex max-sm:size-5 max-md:size-[4vw] shrink-0 items-center justify-center">
           <Image
             src={icon}
             alt=""
@@ -150,7 +150,7 @@ function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
         </span>
       )}
 
-      <span className="text-[4vw] font-medium">{label}</span>
+      <span className="max-sm:text-[4vw] max-md:text-[3vw] font-medium">{label}</span>
     </Link>
   );
 }
@@ -199,7 +199,7 @@ function MobileDropdown({
         className="flex w-full items-center justify-between py-5 text-left"
       >
         <span
-          className={`text-[5vw] font-medium transition-colors duration-200 ${
+          className={`max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
             isActive ? "text-primary" : "text-white/90"
           }`}
         >
@@ -207,7 +207,7 @@ function MobileDropdown({
         </span>
 
         <ChevronDown
-          className={`size-5 transition-transform duration-300 ${
+          className={`size-5 transition-transform duration-300 max-md:size-[4vw] ${
             isOpen || isActive ? "text-primary" : "text-white/50"
           } ${isOpen ? "rotate-180" : ""}`}
         />
@@ -383,17 +383,17 @@ export default function NavbarMobile() {
         className="fixed left-0 top-0 z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
       >
         <Link href="/" onClick={closeMenu}>
-          <HyperiuxLogo className="h-auto w-[120px] text-primary" />
+          <HyperiuxLogo className="h-auto max-sm:w-[40vw] text-primary max-md:w-[25vw]" />
         </Link>
 
         <button
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
-          className="relative flex size-10 items-center justify-center rounded-full bg-white/5 text-white transition-colors hover:bg-white/10"
+          className="relative flex max-sm:size-[11vw] max-md:size-[8vw] items-center justify-center rounded-full  text-white transition-colors"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
-          {isMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          {isMenuOpen ? <X className="max-sm:size-[7vw] max-md:size-[4vw]" /> : <Menu className="max-sm:size-[7vw] max-md:size-[4vw]" />}
         </button>
       </nav>
 
@@ -436,7 +436,7 @@ export default function NavbarMobile() {
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
                   onClick={closeMenu}
-                  className={`border-b border-white/5 py-5 text-[5vw] font-medium transition-colors duration-200 ${
+                  className={`border-b border-white/5 py-5 max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-primary"
                       : "text-white/90 hover:text-white"
