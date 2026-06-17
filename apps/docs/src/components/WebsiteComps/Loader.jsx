@@ -11,12 +11,43 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
+export const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
+
 const PIXEL_COLOR = "#ffffff";
 const LOGO_REVEAL_DURATION = 1;
 const LOGO_HIDE_DURATION = 1;
 const LOGO_DELAY = 0.3;
 const PIXEL_DISSOLVE_DURATION = 1;
 const PIXEL_DISSOLVE_DELAY = 0.5;
+
+function hasLoaderRun() {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(LOADER_STORAGE_KEY) === "true";
+}
+
+function markLoaderAsRun() {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LOADER_STORAGE_KEY, "true");
+}
+
+function setLoaderRuntimeState({ running, complete }) {
+  if (typeof window === "undefined") return;
+
+  window.__HYPERIUX_LOADER_RUNNING__ = running;
+  window.__HYPERIUX_LOADER_COMPLETE__ = complete;
+}
+
+function dispatchLoaderComplete(skipped = false) {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent("loaderComplete", {
+      detail: {
+        skipped,
+      },
+    })
+  );
+}
 
 function generatePixelOrder(cols, rows, seed = 42) {
   const total = cols * rows;
@@ -64,7 +95,8 @@ function getRows() {
 }
 
 export default function Loader() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRun, setShouldRun] = useState(false);
 
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
@@ -80,6 +112,7 @@ export default function Loader() {
   const pixelOrderRef = useRef(null);
   const canvasStateRef = useRef({ progress: 0 });
   const splitRefs = useRef([]);
+  const timelineRef = useRef(null);
 
   const lenis = useLenis();
 
@@ -179,8 +212,36 @@ export default function Loader() {
   }, [drawWhitePixels]);
 
   useEffect(() => {
+    if (hasLoaderRun()) {
+      document.body.classList.remove("loader-active");
+      setLoaderRuntimeState({ running: false, complete: true });
+      lenis?.start();
+
+      setIsVisible(false);
+      setShouldRun(false);
+
+      requestAnimationFrame(() => {
+        dispatchLoaderComplete(true);
+      });
+
+      return;
+    }
+
+    document.body.classList.add("loader-active");
+    setLoaderRuntimeState({ running: true, complete: false });
+
+    lenis?.stop();
+
+    setShouldRun(true);
+    setIsVisible(true);
+  }, [lenis]);
+
+  useEffect(() => {
+    if (!shouldRun || !isVisible) return;
+
     lenis?.stop();
     document.body.classList.add("loader-active");
+    setLoaderRuntimeState({ running: true, complete: false });
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -198,7 +259,7 @@ export default function Loader() {
 
       splitRefs.current = [textOneSplit, textTwoSplit];
 
-      gsap.set([textOneRef.current, textTwoRef.current,textWrapRef.current], {
+      gsap.set([textOneRef.current, textTwoRef.current, textWrapRef.current], {
         opacity: 1,
       });
 
@@ -214,12 +275,21 @@ export default function Loader() {
 
       const tl = gsap.timeline({
         onComplete: () => {
+          markLoaderAsRun();
+
           document.body.classList.remove("loader-active");
-          window.dispatchEvent(new Event("loaderComplete"));
+          setLoaderRuntimeState({ running: false, complete: true });
+
+          dispatchLoaderComplete(false);
+
           setIsVisible(false);
+          setShouldRun(false);
+
           lenis?.start();
         },
       });
+
+      timelineRef.current = tl;
 
       tl.set(canvasStateRef.current, {
         progress: 0,
@@ -237,9 +307,10 @@ export default function Loader() {
         scaleX: 0,
         transformOrigin: "left",
       });
-      const bl = gsap.timeline()
 
-      bl.to(
+      const textTimeline = gsap.timeline();
+
+      textTimeline.to(
         textOneSplit.chars,
         {
           yPercent: 0,
@@ -254,7 +325,7 @@ export default function Loader() {
         0.25
       );
 
-      bl.to(
+      textTimeline.to(
         textOneSplit.chars,
         {
           yPercent: -110,
@@ -269,7 +340,7 @@ export default function Loader() {
         ">+=1"
       );
 
-      bl.to(
+      textTimeline.to(
         textTwoSplit.chars,
         {
           yPercent: 0,
@@ -378,7 +449,13 @@ export default function Loader() {
     }, rootRef);
 
     return () => {
+      timelineRef.current?.kill();
       document.body.classList.remove("loader-active");
+
+      if (!hasLoaderRun()) {
+        setLoaderRuntimeState({ running: false, complete: false });
+      }
+
       window.removeEventListener("resize", resizeCanvas);
       lenis?.start();
 
@@ -390,7 +467,7 @@ export default function Loader() {
 
       ctx.revert();
     };
-  }, [drawWhitePixels, resizeCanvas, lenis]);
+  }, [shouldRun, isVisible, drawWhitePixels, resizeCanvas, lenis]);
 
   if (!isVisible) return null;
 
@@ -444,18 +521,18 @@ export default function Loader() {
 
       <div
         ref={textWrapRef}
-        className="pointer-events-none absolute bottom-[5%] left-1/2 z-20 h-[3.6em] w-[26vw] -translate-x-1/2 overflow-hidden text-center text-[#111111] max-md:w-[70vw] max-sm:bottom-[7%] max-sm:w-[84vw] opacity-0"
+        className="pointer-events-none absolute bottom-[5%] left-1/2 z-20 h-[3.6em] w-[26vw] -translate-x-1/2 overflow-hidden text-center text-[#111111] opacity-0 max-md:w-[70vw] max-sm:bottom-[7%] max-sm:w-[84vw]"
       >
         <p
           ref={textOneRef}
-          className="absolute inset-0 flex items-center justify-center text-[1.2vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-medium leading-tight"
+          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-md:text-[2.5vw] max-sm:text-[4vw]"
         >
           Hold Up !!!
         </p>
 
         <p
           ref={textTwoRef}
-          className="absolute inset-0 flex items-center justify-center text-[1.2vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-medium leading-tight"
+          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-md:text-[2.5vw] max-sm:text-[4vw]"
         >
           The Effects are loading under the hood...
         </p>

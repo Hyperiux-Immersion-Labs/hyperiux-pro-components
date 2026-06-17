@@ -264,7 +264,7 @@ export default function StorytellingMobile() {
                         className="flex flex-col items-center gap-4 w-fit pointer-events-auto mt-8"
                     >
                         <div className="w-fit">
-                            <Button text="Install CLI" />
+                            <Button text="Install CLI" href="#"  />
                         </div>
                         <Button text="Work with Hyperiux" variant="white" />
                     </div>

@@ -574,7 +574,7 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[1100vh] bg-background max-md:hidden"
+            className="relative w-full h-[1100vh] bg-background max-md:hidden z-50"
         >
             <div
                 ref={stickyContainerRef}
@@ -595,7 +595,7 @@ export default function FeaturedStoryTelling() {
                                     left: "50%",
                                     top: "50%",
                                     width: "18vw",
-                                    aspectRatio: "16/9",
+                                    height:"11vw",
                                     zIndex: i,
                                     willChange: "transform, width, filter",
                                     backfaceVisibility: "hidden",
@@ -635,7 +635,7 @@ export default function FeaturedStoryTelling() {
                         ref={infoButtonWrapperRef}
                         className="flex items-center justify-center gap-[2vw] pointer-events-auto"
                     >
-                        <Button text="Install CLI" />
+                        <Button text="Install CLI" href="#" />
                         <Button text="Work with Hyperiux" className="border border-white" variant="white" />
                     </div>
                 </div>

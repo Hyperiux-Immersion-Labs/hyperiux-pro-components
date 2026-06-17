@@ -107,7 +107,7 @@ export default function AgencyProof() {
                                 trigger: project,
                                 containerAnimation: tween,
                                 start: "left 100%",
-                                end: "left 70%",
+                                end: "left 30%",
                                 scrub: true,
                                 markers:false,
                             },
