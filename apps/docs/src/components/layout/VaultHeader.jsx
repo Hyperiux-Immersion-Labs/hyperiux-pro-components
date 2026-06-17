@@ -7,7 +7,7 @@ import { useState } from "react";
 import ProfileDropdown from "./ProfileDropDown";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import Button from "@/components/Reusable/Button";
+import Button from "@/components/WebsiteComps/Button";
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
@@ -164,8 +164,8 @@ export function VaultHeader({
               <>
                 <div className="block max-md:hidden">
                   <Button
-                    text="Sign In"
-                    href="/sign-in"
+                    text="Request Access"
+                    href="/request-access"
                     variant="orange"
                     showArrow={false}
                     innerClassName="group-hover:!translate-x-0"

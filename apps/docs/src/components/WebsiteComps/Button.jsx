@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRightIcon } from "@/utils/Icons";
+import { BtnArrow } from "../WebsiteComps/Icons";
 
 const VARIANT_STYLES = {
   orange: {
@@ -43,8 +43,9 @@ export default function Button({
     >
       <span className={`size-[.5vw] max-md:size-2 max-sm:size-2 duration-500 transition-all rounded-full inline-block ${circleColorClass} ${scaleClass}`} />
       <p className={`relative z-10 ${hoverTextClass} duration-500 transition-all group-hover:-translate-x-[1vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5`}>{text}</p>
-      <span className={`size-[1.2vw] max-md:size-4 max-sm:size-4 absolute right-[1vw] max-md:right-4 max-sm:right-4 ${hoverTextClass} opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block`}>
-        <ArrowUpRightIcon className='rotate-45' stroke={2.5} />
+      <span className={`size-[1.4vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw]  right-[0.7vw] max-md:right-4 max-sm:right-4 ${hoverTextClass} opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block`}>
+        <BtnArrow />
+
       </span>
     </Link>
   );

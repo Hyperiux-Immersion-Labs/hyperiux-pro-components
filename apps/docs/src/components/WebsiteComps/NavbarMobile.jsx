@@ -8,7 +8,7 @@ import { Menu, X } from 'lucide-react'
 import gsap from 'gsap'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
-import Button from '@/components/Reusable/Button'
+import Button from '@/components/WebsiteComps/Button'
 import { vaultLinks } from '@/utils/Links'
 
 export default function NavbarMobile() {
@@ -73,6 +73,7 @@ export default function NavbarMobile() {
 
     return (
         <nav
+            id='navigation-mobile'
             ref={navbarRef}
             className="fixed sm:hidden top-0 left-0 z-999 w-full  backdrop-blur-md px-6 py-5 flex items-center justify-between border-b border-white/5"
         >

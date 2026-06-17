@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useRef } from "react";
-import Button from "../Reusable/Button";
-import SplitLine from "../Reusable/SplitLine";
-import RandomBlur from "../Reusable/RandomBlur";
+import Button from "../WebsiteComps/Button";
+import SplitLine from "../WebsiteComps/SplitLine";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 

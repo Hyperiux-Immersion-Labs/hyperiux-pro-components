@@ -1,5 +1,5 @@
-import Navbar from '@/components/Reusable/Navbar'
-import NavbarMobile from '@/components/Reusable/NavbarMobile'
+import Navbar from '@/components/WebsiteComps/Navbar'
+import NavbarMobile from '@/components/WebsiteComps/NavbarMobile'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import React from 'react'
 

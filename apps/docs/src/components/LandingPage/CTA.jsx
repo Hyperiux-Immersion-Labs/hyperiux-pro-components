@@ -1,7 +1,7 @@
 import React from 'react'
-import SplitLine from '../Reusable/SplitLine'
-import RandomBlur from '../Reusable/RandomBlur'
-import Button from '../Reusable/Button'
+import SplitLine from '../WebsiteComps/SplitLine'
+import RandomBlur from '../WebsiteComps/RandomBlur'
+import Button from '../WebsiteComps/Button'
 
 export default function CTA() {
     return (

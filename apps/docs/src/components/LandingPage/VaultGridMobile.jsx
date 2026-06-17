@@ -2,7 +2,8 @@
 
 import React from "react";
 import { ArrowUpRightIcon } from "@/utils/Icons";
-import VaultBox from "../Reusable/VaultBoxes";
+import VaultBox from "../WebsiteComps/VaultBoxes";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 
 const MOBILE_BOXES = [
     {

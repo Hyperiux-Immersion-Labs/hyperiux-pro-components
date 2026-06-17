@@ -7,7 +7,7 @@ export default function layout({ children }) {
  <PixelRandom color='#ff5f00'>
  <div className="w-full">
  {children}
- <Footer />
+ <Footer animations={false} />
  </div>
  </PixelRandom>
  )

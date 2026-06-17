@@ -24,8 +24,8 @@ import {
 } from "@/components/animated-faq";
 import { getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
-import Button from "@/components/Reusable/Button";
-import CircularButton from "@/components/Reusable/CirclularButton";
+import Button from "@/components/WebsiteComps/Button";
+import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { fadeUp, lineAnim } from "@/components/Animations/gsapAnimations";

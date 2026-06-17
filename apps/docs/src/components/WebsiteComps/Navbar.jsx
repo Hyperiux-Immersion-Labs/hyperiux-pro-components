@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import gsap from 'gsap'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
-import Button from '@/components/Reusable/Button'
+import Button from '@/components/WebsiteComps/Button'
 import { vaultLinks } from '@/utils/Links'
 
 export default function Navbar() {
@@ -46,6 +46,7 @@ export default function Navbar() {
     return (
         <nav
             ref={navbarRef}
+            id='navigation'
             className="fixed max-sm:hidden overflow-x-hidden top-0 left-0 z-999 backdrop-blur-sm flex w-full items-center justify-between px-[3.5vw] py-[2vw]"
         >
             <Link href="/">

@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import SplitLine from "../Reusable/SplitLine";
-import RandomBlur from "../Reusable/RandomBlur";
-import TextConvergence from "../Reusable/TextConvergence";
-import ProjectCard from "../Reusable/ProjectCard";
-import Button from "../Reusable/Button";
+import SplitLine from "../WebsiteComps/SplitLine";
+import RandomBlur from "../WebsiteComps/RandomBlur";
+import TextConvergence from "../WebsiteComps/TextConvergence";
+import ProjectCard from "../WebsiteComps/ProjectCard";
+import Button from "../WebsiteComps/Button";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 

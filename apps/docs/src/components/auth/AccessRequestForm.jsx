@@ -1,13 +1,22 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+
+const USER_TYPE_OPTIONS = [
+  { label: "Student", value: "student" },
+  { label: "Founder", value: "founder" },
+  { label: "Designer", value: "designer" },
+  { label: "Developer", value: "developer" },
+  { label: "Agency / Studio", value: "agency" },
+  { label: "Organisation", value: "organisation" },
+  { label: "Other", value: "other" },
+];
 
 export default function AccessRequestForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    userType: "student",
+    userType: "",
     organisationName: "",
   });
 
@@ -50,17 +59,9 @@ export default function AccessRequestForm() {
       }
 
       setStatus("success");
-
-      if (data.temporaryPassword) {
-        setMessage(
-          `Dev mode password: ${data.temporaryPassword}. Use this with your email on the sign-in page.`
-        );
-        return;
-      }
-
       setMessage(
         data.message ||
-          "Your free account has been created. Check your email for the login password."
+          "Thank you for your interest. You are now on the Hyperiux Vault waiting list."
       );
     } catch {
       setStatus("error");
@@ -69,104 +70,98 @@ export default function AccessRequestForm() {
   };
 
   return (
-    <div className="rounded-[2rem] border border-white/10 p-8 backdrop-blur-xl max-sm:rounded-[1.5rem] max-sm:p-6">
-      <div className="mb-8 text-center">
-        <p className="mb-3 text-xs font-medium uppercase tracking-[0.28em] text-primary">
-          Hyperiux Vault
-        </p>
-
-        <h1 className="text-4xl font-normal tracking-[-0.05em]">
-          Request free access
-        </h1>
-
-        <p className="mt-3 text-sm leading-6 text-white/50">
-          Fill the form and we’ll create your free account. You’ll receive your
-          login password by email.
-        </p>
-      </div>
+    <div className="w-[43vw] rounded-[0.9vw] border border-white/5 bg-white/[0.02] backdrop-blur-lg  px-[8vw] py-[3.2vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] max-md:w-[95%] max-md:rounded-[2vw] max-sm:rounded-[3.5vw] max-md:py-[7vw]">
+     
 
       {isSuccess ? (
         <div>
-          <div className="rounded-3xl border border-primary/25 bg-primary/10 p-5 text-center">
-            <p className="text-base font-medium text-white">
-              Access request complete.
+          <div className="text-center space-y-6 max-sm:py-20 py-6 ">
+            <p className="text-[3vw] max-md:text-[7vw] max-sm:text-[9vw] font-medium text-white">
+              You’re on the list.
             </p>
-            <p className="mt-2 text-sm leading-6 text-white/65">{message}</p>
+
+            <p className="mx-auto mt-3 max-w-md text-[1.2vw] max-md:text-[2.5vw] max-sm:text-[4vw] text-white/55">
+              {message}
+            </p>
           </div>
 
-          <Link
-            href="/sign-in"
-            className="mt-5 block w-full rounded-full bg-primary px-6 py-3 text-center text-sm font-semibold text-white transition-colors duration-300 hover:bg-primary-hover"
-          >
-            Go to sign in
-          </Link>
+         
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <>
+        
+         <div className="mb-10 text-center max-sm:mb-8">
+        <h1 className="font-display text-[2.5vw] max-md:text-[7vw] max-sm:text-[9vw] font-normal leading-none text-white">
+          Unlock the Vault
+        </h1>
+
+        <p className="mx-auto mt-2 w-full text-center text-[1vw] max-md:text-[2.5vw] max-sm:text-[4vw] text-white/50 max-sm:mt-4 ">
+          Create your free account and start exploring the Vault.
+          <br className="max-sm:hidden" />
+          Your login details will be delivered to your inbox.
+        </p>
+      </div>
+        <form onSubmit={handleSubmit} className="space-y-5 max-sm:space-y-5">
           <div>
-            <label className="mb-2 block text-sm text-white/60">
-              Full name
+            <label className="mb-2 block text-[clamp(14px,0.9vw,18px)] font-medium text-white/90">
+              Name
             </label>
+
             <input
               type="text"
               value={formData.name}
               onChange={(event) => updateField("name", event.target.value)}
               required
-              placeholder="Your name"
-              className="auth-input w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-primary"
+              placeholder="your name"
+              className="h-[3vw] w-full rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/70 max-md:h-12 max-sm:px-5"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm text-white/60">
-              Email address
+            <label className="mb-2 block text-[clamp(14px,0.9vw,18px)] font-medium text-white/90">
+              Email
             </label>
+
             <input
               type="email"
               value={formData.email}
               onChange={(event) => updateField("email", event.target.value)}
               required
-              placeholder="you@company.com"
-              className="auth-input w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-primary"
+              placeholder="youremail@gmail.com"
+              className="h-[3vw] w-full rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/70 max-md:h-12 max-sm:px-5"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm text-white/60">
-              I am a
+            <label className="mb-2 block text-[clamp(14px,0.9vw,18px)] font-medium text-white/90">
+              I am
             </label>
 
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: "Student", value: "student" },
-                { label: "Organisation", value: "organisation" },
-                { label: "Other", value: "other" },
-              ].map((option) => {
-                const isActive = formData.userType === option.value;
+            <select
+              value={formData.userType}
+              onChange={(event) => updateField("userType", event.target.value)}
+              required
+              className="h-[3vw] w-full appearance-none rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white/80 outline-none transition-colors focus:border-primary/70 max-md:h-12 max-sm:px-5"
+            >
+              <option value="" disabled>
+                Choose an option
+              </option>
 
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => updateField("userType", option.value)}
-                    className={`rounded-full border px-3 py-2 text-xs font-semibold transition-colors duration-300 ${
-                      isActive
-                        ? "border-primary bg-primary text-white"
-                        : "border-white/10 bg-white/[0.03] text-white/50 hover:text-white"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
+              {USER_TYPE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {formData.userType === "organisation" && (
+          {formData.userType === "organisation" ||
+          formData.userType === "agency" ? (
             <div>
-              <label className="mb-2 block text-sm text-white/60">
+              <label className="mb-2 block text-[clamp(14px,0.9vw,18px)] font-medium text-white/90">
                 Organisation name
               </label>
+
               <input
                 type="text"
                 value={formData.organisationName}
@@ -174,14 +169,14 @@ export default function AccessRequestForm() {
                   updateField("organisationName", event.target.value)
                 }
                 required
-                placeholder="Company / college / team name"
-                className="auth-input w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-primary"
+                placeholder="Company / studio / team name"
+                className="h-[3vw] w-full rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white outline-none transition-colors placeholder:text-white/35 focus:border-primary/70 max-md:h-12 max-sm:px-5"
               />
             </div>
-          )}
+          ) : null}
 
           {message && (
-            <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm leading-6 text-red-200">
+            <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200">
               {message}
             </p>
           )}
@@ -189,20 +184,17 @@ export default function AccessRequestForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-12 flex h-[3.3vw] min-h-12 w-full items-center justify-center rounded-full bg-primary px-6 text-[clamp(16px,1.05vw,22px)] font-medium text-white transition-colors duration-300 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-55 max-sm:mt-8 max-md:h-12 cursor-pointer"
           >
-            {isSubmitting ? "Creating account..." : "Request free account"}
+            {isSubmitting ? "Submitting..." : "Continue"}
           </button>
         </form>
+        </>
+        
       )}
+      
 
-      <p className="mt-6 text-center text-sm text-white/45">
-        Already have your password?{" "}
-        <Link href="/sign-in" className="text-primary hover:text-primary-hover">
-          Sign in
-        </Link>
-      </p>
-
+      
     </div>
   );
 }
