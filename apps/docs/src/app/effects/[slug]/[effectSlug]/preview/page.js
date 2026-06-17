@@ -13,7 +13,7 @@ import { FullscreenPreview } from"../../preview/fullscreen-preview";
 function effectBelongsToCategory(effect, categoryId) {
  const categories = effect.categories?.length
  ? effect.categories
- : [effect.category ||"others"];
+ : [effect.category ||"components"];
 
  return categories.includes(categoryId);
 }

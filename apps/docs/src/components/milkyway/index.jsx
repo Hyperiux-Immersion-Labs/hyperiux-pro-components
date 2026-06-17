@@ -81,9 +81,8 @@ const SMOKE_CFG = {
    seed: 7777,
 }
 
-// ─────────────────────────────────────────────────────────────
 // SHADERS (do not remove/modify except for whitespace)
-// ─────────────────────────────────────────────────────────────
+
 const SIM_FRAG = /* glsl */`
 precision highp float;
 uniform sampler2D uPosition;
@@ -385,9 +384,7 @@ void main(){
 }
 `
 
-// ─────────────────────────────────────────────────────────────
 // Inline GPUCompute
-// ─────────────────────────────────────────────────────────────
 class GPUCompute {
    constructor(w, h, renderer) {
       this.w = w
@@ -457,9 +454,7 @@ class GPUCompute {
    }
 }
 
-// ─────────────────────────────────────────────────────────────
 // Seeded RNG (mulberry32)
-// ─────────────────────────────────────────────────────────────
 function mulberry32(seed) {
    let t = seed >>> 0
    return () => {
@@ -470,9 +465,7 @@ function mulberry32(seed) {
    }
 }
 
-// ─────────────────────────────────────────────────────────────
 // Build DataTextures for initial positions and static data
-// ─────────────────────────────────────────────────────────────
 function buildTextures(cfg) {
    const { texSize: S, maxRadius, holeRadius, holeEdgeBand, arms, spiralTightness, armWidth,
       diskHeight, coreRadius, coreHeight, seed } = cfg
@@ -540,9 +533,7 @@ function buildTextures(cfg) {
    return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
 }
 
-// ─────────────────────────────────────────────────────────────
 // Build particle geometry (attributes only — positions on GPU)
-// ─────────────────────────────────────────────────────────────
 function buildGeo(cfg) {
    const { texSize: S, maxRadius, holeRadius, coreRadius, seed } = cfg
    const count = S * S
@@ -580,9 +571,7 @@ function buildGeo(cfg) {
    return geo
 }
 
-// ─────────────────────────────────────────────────────────────
 // Build smoke DataTextures (initial positions + static data)
-// ─────────────────────────────────────────────────────────────
 function buildSmokeTextures(cfg) {
    const S = cfg.texSize
    const total = S * S
@@ -659,9 +648,7 @@ function buildSmokeGeo(cfg) {
    return geo
 }
 
-// ─────────────────────────────────────────────────────────────
 // SmokeFlow — GPGPU-driven flowing nebula layer
-// ─────────────────────────────────────────────────────────────
 const SmokeFlow = React.memo(function SmokeFlow() {
    const { gl } = useThree()
    const gpuRef = useRef(null)

@@ -102,36 +102,6 @@ const nextConfig = {
         destination: "/effects/webgl-effects/interactive-hover-slider/preview",
         permanent: false,
       },
-      {
-        source: "/effects/components/gooey-counter",
-        destination: "/effects/others/gooey-counter",
-        permanent: false,
-      },
-      {
-        source: "/effects/components/gooey-counter/preview",
-        destination: "/effects/others/gooey-counter/preview",
-        permanent: false,
-      },
-      {
-        source: "/effects/components/interactive-list-preview",
-        destination: "/effects/others/interactive-list-preview",
-        permanent: false,
-      },
-      {
-        source: "/effects/components/interactive-list-preview/preview",
-        destination: "/effects/others/interactive-list-preview/preview",
-        permanent: false,
-      },
-      {
-        source: "/effects/components/portfolio-concept",
-        destination: "/effects/others/portfolio-concept",
-        permanent: false,
-      },
-      {
-        source: "/effects/components/portfolio-concept/preview",
-        destination: "/effects/others/portfolio-concept/preview",
-        permanent: false,
-      },
     ];
   },
   images: {
