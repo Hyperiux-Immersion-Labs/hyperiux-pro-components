@@ -19,8 +19,9 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import FAQSection from "@/components/LandingPage/FAQ";
-import Button from "@/components/Reusable/Button";
+// import Button from "@/components/Reusable/Button";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import Button from "@/components/WebsiteComps/Button";
 
 export function VaultContent({
   effects,
