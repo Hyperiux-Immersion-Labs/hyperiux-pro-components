@@ -91,7 +91,7 @@ export async function POST(req) {
     const category =
       effect.categories?.[0] ||
       effect.category ||
-      "others";
+      "components";
 
     const { data: existing } = await supabase
       .from("wishlisted_effects")

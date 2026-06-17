@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
-import Image from "next/image";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 
 const SIDEBAR_EXPANDED_STORAGE_KEY = "hyperiux-sidebar-expanded";
@@ -30,6 +31,19 @@ function setStoredSidebarExpanded(value) {
   );
 }
 
+function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!isSidebarReady) return;
+
+    onRouteChange();
+  }, [pathname, searchParams, isSidebarReady, onRouteChange]);
+
+  return null;
+}
+
 function SidebarFallback({ isExpanded }) {
   return (
     <aside
@@ -49,7 +63,6 @@ export function VaultLayout({
   effectCounts = {},
   effects = [],
   totalEffects: propTotalEffects,
-  bgImageSrc = "",
   activeCategory,
   onOverviewNavigate,
   onCategoryNavigate,
@@ -63,6 +76,46 @@ export function VaultLayout({
   const [allowSidebarTransition, setAllowSidebarTransition] = useState(false);
 
   const lenis = useLenis();
+  const refreshTimeoutsRef = useRef([]);
+
+  const clearRefreshTimeouts = useCallback(() => {
+    refreshTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+
+    refreshTimeoutsRef.current = [];
+  }, []);
+
+  const refreshScrollTrigger = useCallback(
+    (includeSidebarDelay = false) => {
+      if (typeof window === "undefined") return;
+
+      clearRefreshTimeouts();
+
+      const runRefresh = () => {
+        ScrollTrigger.refresh(true);
+      };
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          runRefresh();
+
+          refreshTimeoutsRef.current.push(
+            window.setTimeout(runRefresh, 80),
+            window.setTimeout(runRefresh, 180),
+            window.setTimeout(runRefresh, 360)
+          );
+
+          if (includeSidebarDelay) {
+            refreshTimeoutsRef.current.push(
+              window.setTimeout(runRefresh, 520)
+            );
+          }
+        });
+      });
+    },
+    [clearRefreshTimeouts]
+  );
 
   useEffect(() => {
     let frameTwo;
@@ -75,6 +128,7 @@ export function VaultLayout({
       frameTwo = requestAnimationFrame(() => {
         frameThree = requestAnimationFrame(() => {
           setAllowSidebarTransition(true);
+          refreshScrollTrigger(true);
         });
       });
     });
@@ -84,13 +138,25 @@ export function VaultLayout({
       cancelAnimationFrame(frameTwo);
       cancelAnimationFrame(frameThree);
     };
-  }, []);
+  }, [refreshScrollTrigger]);
+
+  useEffect(() => {
+    return () => {
+      clearRefreshTimeouts();
+    };
+  }, [clearRefreshTimeouts]);
 
   useEffect(() => {
     if (!isSidebarReady) return;
 
     setStoredSidebarExpanded(isSidebarOpen);
   }, [isSidebarOpen, isSidebarReady]);
+
+  useEffect(() => {
+    if (!isSidebarReady) return;
+
+    refreshScrollTrigger(true);
+  }, [isSidebarOpen, isSidebarReady, refreshScrollTrigger]);
 
   useEffect(() => {
     if (!isSidebarReady) return;
@@ -103,6 +169,8 @@ export function VaultLayout({
       } else {
         lenis?.start();
       }
+
+      refreshScrollTrigger();
     };
 
     syncLenis();
@@ -112,16 +180,34 @@ export function VaultLayout({
       mediaQuery.removeEventListener("change", syncLenis);
       lenis?.start();
     };
-  }, [isSidebarOpen, isSidebarReady, lenis]);
+  }, [isSidebarOpen, isSidebarReady, lenis, refreshScrollTrigger]);
 
   const toggleSidebar = (nextValue) => {
     setIsSidebarOpen((currentValue) =>
       typeof nextValue === "boolean" ? nextValue : !currentValue
     );
+
+    refreshScrollTrigger(true);
   };
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
+    refreshScrollTrigger(true);
+  };
+
+  const handleOverviewNavigate = () => {
+    onOverviewNavigate?.();
+    refreshScrollTrigger();
+  };
+
+  const handleCategoryNavigate = (categoryId) => {
+    onCategoryNavigate?.(categoryId);
+    refreshScrollTrigger();
+  };
+
+  const handleDocumentationNavigate = (href) => {
+    onDocumentationNavigate?.(href);
+    refreshScrollTrigger();
   };
 
   const renderedChildren =
@@ -129,12 +215,15 @@ export function VaultLayout({
 
   return (
     <div className="relative min-h-screen text-foreground">
-    
+      <Suspense fallback={null}>
+        <RouteChangeWatcher
+          isSidebarReady={isSidebarReady}
+          onRouteChange={refreshScrollTrigger}
+        />
+      </Suspense>
 
-      <div className="relative z-10 flex min-h-screen items-start">
-        <Suspense
-          fallback={<SidebarFallback isExpanded={isSidebarOpen} />}
-        >
+      <div className="relative z-300 flex min-h-screen items-start">
+        <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
           <Sidebar
             effects={effects}
             effectCounts={effectCounts}
@@ -144,19 +233,13 @@ export function VaultLayout({
             onClose={closeSidebar}
             activeCategory={activeCategory}
             topLinks={DOCS_TOP_LINKS}
-            onOverviewNavigate={onOverviewNavigate}
-            onCategoryNavigate={onCategoryNavigate}
-            onDocumentationNavigate={onDocumentationNavigate}
+            onOverviewNavigate={handleOverviewNavigate}
+            onCategoryNavigate={handleCategoryNavigate}
+            onDocumentationNavigate={handleDocumentationNavigate}
             disableInitialTransition={!allowSidebarTransition}
           />
 
-          {isSidebarOpen && (
-            <button
-              aria-label="Close sidebar overlay"
-              className="fixed inset-0 z-30 cursor-default bg-black/45 md:hidden"
-              onClick={closeSidebar}
-            />
-          )}
+          
         </Suspense>
 
         <main className="relative min-w-0 flex-1">{renderedChildren}</main>

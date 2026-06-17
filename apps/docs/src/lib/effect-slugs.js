@@ -3,6 +3,18 @@ const effectSlugAliasGroups = [
     slug: "immersive-full-screen-nav",
     aliases: ["immersive-full-screen-navigation"],
   },
+  {
+    slug: "char-stagger-button",
+    aliases: ["character-stagger-button"],
+  },
+  {
+    slug: "char-stagger-primary-button",
+    aliases: ["character-stagger-primary-button"],
+  },
+  {
+    slug: "clippath-slider",
+    aliases: ["clip-path-slider"],
+  },
 ];
 
 const effectSlugAliasMap = new Map(

@@ -3,15 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
+//  Constants
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 
 const LERP_SPEED = 0.1;
 const FADE_SPEED = 0.04;
 
-// ─── GLSL Shaders ─────────────────────────────────────────────────────────────
+// GLSL Shaders 
 
 const PARTICLE_VERT = /* glsl */ `
   uniform float uSize;
@@ -65,8 +64,7 @@ const POINT_FRAG = /* glsl */ `
   }
 `;
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
+// Component 
 export default function SpiderParticles({
   particleCount = 180,
   gridGap = 0,
@@ -110,8 +108,7 @@ export default function SpiderParticles({
     );
     camera.position.z = 1;
 
-    // ─── Mouse State ───────────────────────────────────────────────────────────
-
+    // Mouse State
     const mouse       = new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
     const smoothMouse = new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
     let mouseEntryAlpha = 0;
@@ -177,7 +174,7 @@ export default function SpiderParticles({
     mount.addEventListener("touchmove", onTouch,      { passive: true });
     mount.addEventListener("touchend",  onTouchEnd);
 
-    // ─── Grid Layout ───────────────────────────────────────────────────────────
+    // Grid Layout 
 
     let cols, rows, actualCount, spacingX, spacingY;
 
@@ -207,7 +204,7 @@ export default function SpiderParticles({
       positions[i * 3 + 2] = 0;
     }
 
-    // ─── Particle Points ───────────────────────────────────────────────────────
+    //  Particle Points 
 
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -232,7 +229,7 @@ export default function SpiderParticles({
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // ─── Cursor Dot ────────────────────────────────────────────────────────────
+    // Cursor Dot 
 
     const cursorGeo = new THREE.BufferGeometry();
     cursorGeo.setAttribute(
@@ -258,8 +255,7 @@ export default function SpiderParticles({
     const cursorPoint = new THREE.Points(cursorGeo, cursorMat);
     scene.add(cursorPoint);
 
-    // ─── Web Lines ─────────────────────────────────────────────────────────────
-
+    //Web Lines 
     const mouseLinePositions = new Float32Array(actualCount * 6);
     const mouseLineColors    = new Float32Array(actualCount * 6);
 
@@ -278,7 +274,7 @@ export default function SpiderParticles({
     const mouseLines = new THREE.LineSegments(mouseLineGeo, mouseLineMat);
     scene.add(mouseLines);
 
-    // ─── Resize ────────────────────────────────────────────────────────────────
+    // Resize 
 
     const onResize = () => {
       width  = mount.clientWidth;
@@ -292,7 +288,7 @@ export default function SpiderParticles({
     };
     window.addEventListener("resize", onResize);
 
-    // ─── Animation Loop ────────────────────────────────────────────────────────
+    //  Animation Loop 
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
@@ -375,7 +371,7 @@ export default function SpiderParticles({
 
     animate();
 
-    // ─── Cleanup ───────────────────────────────────────────────────────────────
+    //  Cleanup 
 
     return () => {
       cancelAnimationFrame(animId);
@@ -411,7 +407,7 @@ export default function SpiderParticles({
     centerColor,
   ]);
 
-  // ─── UI ───────────────────────────────────────────────────────────────────────
+  // UI 
 
   const stats = [
     { label: "Particles", value: particleCount },

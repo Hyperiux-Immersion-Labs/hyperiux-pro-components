@@ -969,7 +969,7 @@
       "exportName": "CircleTextReveal",
       "exportKind": "named",
       "previewUrl": "/circle-reveal",
-      "coverImage": "circle-text-reveal",
+      "coverImage": "text-reveal",
       "videoUrl": "circle-text-reveal.mp4",
       "addedAt": 1780566951470.5496
     },
@@ -988,7 +988,7 @@
       "exportName": "Counter",
       "exportKind": "named",
       "previewUrl": "/counter",
-      "coverImage": "image12",
+      "coverImage": "counter",
       "videoUrl": "/counter.mp4",
       "addedAt": 1781160379987.6763
     },
@@ -1488,7 +1488,7 @@
       "exportName": "CustomVideoPlayer",
       "exportKind": "named",
       "previewUrl": "/video-player",
-      "coverImage": "custom-video-player",
+      "coverImage": "video-player",
       "videoUrl": "custom-video-player.mp4",
       "addedAt": 1780566951461.5632
     },
@@ -1760,7 +1760,7 @@
       "exportName": "WebGLPortfolioSlider",
       "exportKind": "named",
       "previewUrl": "/webgl-portfolio-slider",
-      "coverImage": "webgl-portfolio-slider",
+      "coverImage": "3d-portfolio-slider",
       "videoUrl": "webgl-portfolio-slider.mp4",
       "addedAt": 1780566951473.3435
     },
@@ -2141,9 +2141,9 @@
       "name": "card-drift",
       "title": "Card Drift",
       "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
-      "category": "others",
+      "category": "components",
       "categories": [
-        "others"
+        "components"
       ],
       "tier": "pro",
       "dependencies": [
@@ -2160,9 +2160,9 @@
       "name": "gooey-counter",
       "title": "Gooey Counter",
       "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
-      "category": "others",
+      "category": "components",
       "categories": [
-        "others"
+        "components"
       ],
       "tier": "free",
       "dependencies": [],
@@ -2177,9 +2177,9 @@
       "name": "interactive-list-preview",
       "title": "Interactive List Preview",
       "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
-      "category": "others",
+      "category": "components",
       "categories": [
-        "others"
+        "components"
       ],
       "tier": "free",
       "dependencies": [
@@ -2196,9 +2196,9 @@
       "name": "portfolio-concept",
       "title": "Portfolio Concept",
       "description": "Motion-led portfolio landing concept with GSAP ScrollTrigger + SplitText and image strips.",
-      "category": "others",
+      "category": "components",
       "categories": [
-        "others"
+        "components"
       ],
       "tier": "pro",
       "dependencies": [

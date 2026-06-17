@@ -212,7 +212,7 @@ export default function AgencyProof() {
                 systems.
             </SplitLine>
             <div className="w-full flex justify-end px-[10vw] mt-[2vw]">
-                <Button text="Read Installation Docs" />
+                <Button text="Work with Hyperiux" />
             </div>
 
             <div id="SwiperDiv" className="h-[500vh] w-full relative">

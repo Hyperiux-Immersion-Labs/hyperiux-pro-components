@@ -65,7 +65,7 @@ export default function AgencyProofMobile() {
 
             <div className="w-full flex justify-end max-md:justify-center px-[10vw] max-md:px-[8vw] mt-[2vw] mb-[8vw]">
                 <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
-                    <Button text="Read Installation Docs" />
+                    <Button text="Work with Hyperiux" />
                 </div>
             </div>
 
