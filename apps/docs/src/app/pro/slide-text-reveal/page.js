@@ -10,7 +10,7 @@ const page = () => {
       <section className="relative min-h-screen overflow-hidden bg-[#080808]">
         <Image
           src="/assets/gradient/image1.png"
-          alt=""
+          alt="asset-image"
           fill
           priority
           className="object-cover opacity-45"
@@ -46,7 +46,7 @@ const page = () => {
       <section className="relative min-h-screen overflow-hidden bg-[#f7f2ff]">
         <Image
           src="/assets/gradient/image2.png"
-          alt=""
+          alt="asset-image"
           fill
           className="object-cover opacity-40"
         />
@@ -85,7 +85,7 @@ const page = () => {
                   <div className="relative h-60">
                     <Image
                       src={src}
-                      alt=""
+                      alt="asset-image"
                       fill
                       className="object-cover transition duration-700 group-hover:scale-110"
                     />
@@ -101,7 +101,7 @@ const page = () => {
       <section className="relative min-h-screen overflow-hidden bg-black">
         <Image
           src="/assets/gradient/image5.png"
-          alt=""
+          alt="asset-image"
           fill
           className="object-cover opacity-45"
         />

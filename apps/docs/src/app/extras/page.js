@@ -1,11 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Extra | Hyperiux UI",
   description: "Browse all extra demos",
-};
+  path: "/extras",
+});
 
 async function getExtraFolderNames() {
   const extrasDir = path.join(process.cwd(), "src/app/extras");

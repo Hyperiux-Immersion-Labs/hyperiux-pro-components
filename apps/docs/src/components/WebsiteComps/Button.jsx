@@ -23,7 +23,7 @@ const VARIANT_STYLES = {
 
 export default function Button({
   text = "Install CLI",
-  href = "/effects",
+  href = "#",
   variant = "orange",
   className = "",
   target_blank = false,

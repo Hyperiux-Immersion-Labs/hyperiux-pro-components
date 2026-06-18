@@ -16,6 +16,62 @@ import {
 } from "@/lib/sanity";
 import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { EffectDetailContent } from "../effect-detail";
+import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
+import { createPageMetadata } from "@/lib/seo-metadata";
+
+function getEffectPageMetadata(effect, content, slug, effectSlug) {
+  const title =
+    content?.seo?.metaTitle ||
+    content?.seo?.title ||
+    `${effect.title} | Hyperiux Vault`;
+  const description =
+    content?.seo?.metaDescription ||
+    content?.seo?.description ||
+    content?.summary ||
+    effect.description;
+
+  return createPageMetadata({
+    title,
+    description,
+    path: `/effects/${slug}/${effectSlug}`,
+    keywords: [
+      content?.seo?.primaryKeyword,
+      ...(content?.seo?.secondaryKeywords || []),
+    ].filter(Boolean),
+  });
+}
+
+function normalizeFaqText(value) {
+  if (!value) return "";
+
+  if (typeof value === "string") return value;
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizeFaqText(item))
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  if (typeof value === "object") {
+    if (value.text) return value.text;
+    if (value.children) return normalizeFaqText(value.children);
+    if (value.content) return normalizeFaqText(value.content);
+  }
+
+  return "";
+}
+
+function getSanityFaqs(content) {
+  return (content?.body || [])
+    .filter((block) => block?._type === "effectFaqAccordion")
+    .flatMap((block) => block.items || [])
+    .map((item) => ({
+      question: normalizeFaqText(item.question).trim(),
+      answer: normalizeFaqText(item.answer).trim(),
+    }))
+    .filter((item) => item.question && item.answer);
+}
 
 function normalize(value = "") {
   return value
@@ -59,19 +115,14 @@ export async function generateMetadata({ params }) {
   const content = await getSanityEffectContent(slug, effectSlug);
 
   if (!effect) {
-    return {
+    return createPageMetadata({
       title: "Effect Not Found",
-    };
+      description: "Effect not found.",
+      path: `/effects/${slug}/${effectSlug}`,
+    });
   }
 
-  return {
-    title: content?.seo?.title || `${effect.title} | Hyperiux Vault`,
-    description: content?.seo?.description || effect.description,
-    keywords: [
-      content?.seo?.primaryKeyword,
-      ...(content?.seo?.secondaryKeywords || []),
-    ].filter(Boolean),
-  };
+  return getEffectPageMetadata(effect, content, slug, effectSlug);
 }
 
 export default async function EffectPage({ params }) {
@@ -163,19 +214,26 @@ export default async function EffectPage({ params }) {
     ...pinnedRelatedEffects,
     ...remainingSanityEffects,
   ];
+  const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
+  const faqItems = getSanityFaqs(content);
 
 
   return (
-    <EffectDetailContent
-      slug={effectSlug}
-      categorySlug={slug}
-      effect={effect}
-      content={content}
-      relatedEffects={relatedEffects}
-      effectCounts={effectCounts}
-      totalEffects={getAllEffectSlugs().length}
-      isLocked={isLocked}
-      userPlan={userPlan}
-    />
+    <>
+      <WebpageJsonLd metadata={pageMetadata} />
+      <BreadcrumbsJSONLD pathname={pageMetadata.url} />
+      {faqItems.length > 0 && <FAQJSONLD faqs={faqItems} />}
+      <EffectDetailContent
+        slug={effectSlug}
+        categorySlug={slug}
+        effect={effect}
+        content={content}
+        relatedEffects={relatedEffects}
+        effectCounts={effectCounts}
+        totalEffects={getAllEffectSlugs().length}
+        isLocked={isLocked}
+        userPlan={userPlan}
+      />
+    </>
   );
 }

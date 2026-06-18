@@ -227,7 +227,7 @@ export function PixelBloom({  src,  type ='video',  className ='h-[30vw] w-auto 
  <Image
  ref={mediaRef}
  src={src}
- alt=""
+ alt="asset-image"
  fill
  sizes="100vw"
  className='w-full h-full object-cover absolute inset-0 opacity-0'

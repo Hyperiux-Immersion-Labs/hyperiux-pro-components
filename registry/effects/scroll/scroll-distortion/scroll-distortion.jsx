@@ -245,7 +245,7 @@ export function ScrollDistortion({
                 imageRefs.current[index] = element
               }}
               src={section.src}
-              alt=""
+              alt="asset-image"
             />
           ))}
           <img
@@ -253,7 +253,7 @@ export function ScrollDistortion({
               imageRefs.current[sections.length] = element
             }}
             src={displacementSrc}
-            alt=""
+            alt="asset-image"
           />
         </div>
 

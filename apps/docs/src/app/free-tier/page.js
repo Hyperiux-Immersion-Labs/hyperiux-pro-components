@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Free Tier | Hyperiux UI",
   description: "Quick links for what’s available on the free tier",
-};
+  path: "/free-tier",
+});
 
 const FREE_TIER_LINKS = [
   { label: "Helix Slider", href: "/effects/scroll-effects/helix-slider" },

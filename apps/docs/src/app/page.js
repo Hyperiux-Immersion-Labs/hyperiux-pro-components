@@ -20,6 +20,8 @@ export default function Page() {
   const { isMounted, isMobile } = useIsMobile();
 
   return (
+    <>
+    
     <VaultShell>
       <Loader />
       <Hero />
@@ -61,5 +63,6 @@ export default function Page() {
         </>
       )}
     </VaultShell>
+    </>
   );
 }

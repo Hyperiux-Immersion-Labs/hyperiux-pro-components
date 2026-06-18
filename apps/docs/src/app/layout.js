@@ -4,6 +4,8 @@ import "highlight.js/styles/night-owl.css";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { ImageObjectJsonLd, LocalBusiness, OrganizationJsonLd, WebsiteJsonLd } from "@/lib/json-ld";
+import { createRootMetadata } from "@/lib/seo-metadata";
 
 const layGrotesk = localFont({
   src: [
@@ -22,27 +24,22 @@ const layGrotesk = localFont({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Hyperiux Vault - Beautiful Effects for Your Website",
-  description:
-    "A collection of animated effects and UI components. Copy-paste or use our CLI to add stunning animations to your Next.js project.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+export const metadata = createRootMetadata();
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${layGrotesk.className} antialiased`}>
-        <body className="min-h-dvh bg-background text-foreground font-sans">
-          {children}
-          <Analytics />
-          <SpeedInsights />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${layGrotesk.className} antialiased`}>
+      <body className="min-h-dvh bg-background text-foreground font-sans">
+        <ClerkProvider>
+          <OrganizationJsonLd />
+          <LocalBusiness />
+          <ImageObjectJsonLd />
+          <WebsiteJsonLd />
+            {children}
+            <Analytics />
+            <SpeedInsights />
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
-

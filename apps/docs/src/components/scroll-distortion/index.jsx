@@ -555,7 +555,7 @@ export default function ScrollDistortion({
               referrerPolicy="no-referrer"
               src={url}
               onLoad={() => markImageDecoded(url)}
-              alt=""
+              alt="asset-image"
             />
           </div>
         ))}
@@ -573,7 +573,7 @@ export default function ScrollDistortion({
             referrerPolicy="no-referrer"
             src={objectUrls[sections.length]}
             onLoad={() => markImageDecoded(objectUrls[sections.length])}
-            alt=""
+            alt="asset-image"
           />
         )}
       </div>
@@ -585,7 +585,7 @@ export default function ScrollDistortion({
             isSceneReady ? "opacity-0" : "opacity-100"
           }`}
           src={objectUrls?.[0] || resolveImageSource(sections[0].src)}
-          alt=""
+          alt="asset-image"
           decoding="async"
         />
       )}

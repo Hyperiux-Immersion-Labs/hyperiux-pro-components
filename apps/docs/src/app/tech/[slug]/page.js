@@ -6,6 +6,7 @@ import TechDetailShowcase from "@/components/Tech/TechDetailShowcase";
 import { getRegistryIndex, getEffectsByCategory, getAllEffectSlugs } from "@/lib/registry";
 import { TECHNOLOGIES } from "@/components/Tech/tech-data";
 import TechBackground from "@/components/Tech/TechBackground";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
 export async function generateStaticParams() {
   return TECHNOLOGIES.map((tech) => ({ slug: tech.slug }));
@@ -14,11 +15,18 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const tech = TECHNOLOGIES.find((t) => t.slug === slug);
-  if (!tech) return { title: "Technology Not Found | Hyperiux UI" };
-  return {
+  if (!tech) {
+    return createPageMetadata({
+      title: "Technology Not Found | Hyperiux UI",
+      description: "Technology page not found.",
+      path: `/tech/${slug}`,
+    });
+  }
+  return createPageMetadata({
     title: `${tech.title} | Hyperiux UI`,
     description: tech.description,
-  };
+    path: `/tech/${slug}`,
+  });
 }
 
 export default async function TechDetailPage({ params }) {

@@ -215,7 +215,7 @@ function ImageChunkContent({ images, slotIndex }) {
  {panels.map((panel) => (
  <Suspense key={panel.id} fallback={null}>
  <Image
- alt=""
+ alt="asset-image"
  url={panel.url}
  position={panel.position}
  rotation={panel.rotation}

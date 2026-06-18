@@ -137,7 +137,7 @@ export function InteractiveListPreview({ items = [] }) {
               willChange: "clip-path, opacity", zIndex: 10,
             }}
           >
-            <img src={item.img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <img src={item.img} alt="asset-image" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </div>
         ))}
       </div>

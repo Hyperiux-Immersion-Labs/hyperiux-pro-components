@@ -9,6 +9,7 @@ import {
 import { getEffectBySlug, getRegistryIndex } from"@/lib/registry";
 import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { FullscreenPreview } from"../../preview/fullscreen-preview";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
 function effectBelongsToCategory(effect, categoryId) {
  const categories = effect.categories?.length
@@ -38,13 +39,18 @@ export async function generateMetadata({ params }) {
  const category = getEffectCategoryBySlug(slug);
 
  if (!effect || !category || !effectBelongsToCategory(effect, category.id)) {
- return { title:"Preview Not Found" };
+ return createPageMetadata({
+ title:"Preview Not Found",
+ description: "Effect preview not found.",
+ path: `/effects/${slug}/${effectSlug}/preview`,
+ });
  }
 
- return {
+ return createPageMetadata({
  title: `${effect.title} Preview | Hyperiux Vault`,
  description: `Live preview of ${effect.title}`,
- };
+ path: `/effects/${slug}/${effectSlug}/preview`,
+ });
 }
 
 export default async function PreviewPage({ params }) {

@@ -129,7 +129,7 @@ function InertiaImage({ images = [] }) {
  >
  <Image
  src={src}
- alt=""
+ alt="asset-image"
  fill
  sizes="(max-width: 640px) 35vw, 11vw"
  className="pointer-events-none block rounded-[4%] object-contain will-change-transform"

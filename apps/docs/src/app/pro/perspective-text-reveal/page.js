@@ -33,7 +33,7 @@ const Page = () => {
           <div className="absolute inset-0">
             <Image
               src="/assets/gradient/image7.png"
-              alt=""
+              alt="asset-image"
               fill
               priority
               sizes="100vw"
@@ -68,7 +68,7 @@ const Page = () => {
                 <div className="absolute bottom-16 left-24 right-0 h-48 skew-y-[-5deg] overflow-hidden border border-white/35 bg-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.45)] max-sm:bottom-12 max-sm:left-10 max-sm:h-36">
                   <Image
                     src="/assets/parallax-img/p-img-2.jpg"
-                    alt=""
+                    alt="asset-image"
                     fill
                     sizes="(max-width: 640px) 86vw, 560px"
                     className="object-cover"
@@ -144,7 +144,7 @@ const Page = () => {
             <div className="relative min-h-170 overflow-hidden max-sm:min-h-105">
               <Image
                 src="/assets/gradient/image13.png"
-                alt=""
+                alt="asset-image"
                 fill
                 sizes="(max-width: 640px) 100vw, 58vw"
                 className="object-cover"

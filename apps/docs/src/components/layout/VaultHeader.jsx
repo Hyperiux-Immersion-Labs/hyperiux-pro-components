@@ -89,7 +89,7 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed top-0 z-50 left-0 right-0  px-10 pr-[4vw] py-5 max-md:z-600 max-md:px-6 max-sm:px-4 max-md:hidden ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
+        className={`fixed top-0 z-99 left-0 right-0  px-10 pr-[4vw] py-5 max-md:z-600 max-md:px-6 max-sm:px-4 max-md:hidden ${isScrolled ? "bg-black/20 backdrop-blur-sm shadow-md" : ""}`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
