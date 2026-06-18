@@ -32,7 +32,7 @@ export default function Page() {
           <StorytellingMobile />
           <VaultGridMobile />
           {/* <FeaturedEffects/> */}
-          <Workflow />
+          {/* <Workflow /> */}
           <FreeVault />
           <AgencyProofMobile />
           <CTA />
@@ -43,7 +43,7 @@ export default function Page() {
         <>
           <FeaturedStoryTelling />
           {/* <FeaturedEffects/> */}
-          <Workflow />
+          {/* <Workflow /> */}
           <FreeVault />
           <AgencyProof />
           <CTA />
