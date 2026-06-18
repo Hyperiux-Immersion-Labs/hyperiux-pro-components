@@ -91,7 +91,7 @@
       "exportName": "HorizonScroll",
       "exportKind": "named",
       "previewUrl": "/horizontal-feature-reveal",
-      "coverImage": "horizon-scroll",
+      "coverImage": "horizontal-feature-reveal",
       "videoUrl": "horizontal-feature-reveal.mp4",
       "addedAt": 1780573510917.2134
     },
@@ -2064,7 +2064,7 @@
       ],
       "exportName": "HoverSlider",
       "exportKind": "default",
-      "previewUrl": "/interactive-hover-slider",
+      "previewUrl": "/hover-slider",
       "coverImage": "interactive-hover-slider",
       "videoUrl": "interactive-hover-slider.mp4",
       "addedAt": 1780566951477.4316

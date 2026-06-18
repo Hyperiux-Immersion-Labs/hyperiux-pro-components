@@ -3,7 +3,7 @@
 import * as THREE from"three";
 import { Canvas, useFrame, useThree } from"@react-three/fiber";
 import { Image, Preload } from"@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef } from"react";
+import { Suspense, useEffect, useMemo, useRef, useState } from"react";
 import Link from "next/link";
 
 const TUNNEL_DEPTH = 90;
@@ -446,7 +446,71 @@ export default function GridTunnelComp({ images = [] }) {
    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
 ];
- const imageList = images.length > 0 ? images : fallbackImages;
+  // Validate image URLs on the client before passing to the three.js Image loader.
+  // This prevents CORS/network failures from flooding the loader with bad URLs.
+  const [validatedImages, setValidatedImages] = useState([]);
+  const [validating, setValidating] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    const list = images && images.length > 0 ? images : fallbackImages;
+
+    const validateUrl = (url) =>
+      new Promise((res) => {
+        try {
+          const img = new window.Image();
+          // Attempt anonymous CORS fetch so we can detect CORS failures.
+          img.crossOrigin = "anonymous";
+
+          let settled = false;
+          const onSuccess = () => {
+            if (settled) return;
+            settled = true;
+            cleanup();
+            res({ ok: true, url });
+          };
+          const onFail = () => {
+            if (settled) return;
+            settled = true;
+            cleanup();
+            res({ ok: false, url });
+          };
+
+          const timeout = setTimeout(onFail, 8000);
+          const cleanup = () => {
+            clearTimeout(timeout);
+            img.onload = null;
+            img.onerror = null;
+          };
+
+          img.onload = onSuccess;
+          img.onerror = onFail;
+          img.src = url;
+        } catch (e) {
+          res({ ok: false, url });
+        }
+      });
+
+    (async () => {
+      try {
+        const results = await Promise.allSettled(list.map((u) => validateUrl(u)));
+        const valids = results
+          .filter((r) => r.status === "fulfilled" && r.value && r.value.ok)
+          .map((r) => r.value.url);
+
+        if (!mounted) return;
+        setValidatedImages(valids);
+      } finally {
+        if (mounted) setValidating(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [images]);
+
+  const imageList = !validating && validatedImages && validatedImages.length > 0 ? validatedImages : images.length > 0 ? images : fallbackImages;
 
  return (
  <section className="relative h-screen w-full overflow-hidden bg-white">

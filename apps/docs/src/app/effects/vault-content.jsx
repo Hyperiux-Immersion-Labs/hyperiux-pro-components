@@ -349,7 +349,7 @@ export function VaultContent({
                
               <nav
                 aria-label="Breadcrumb"
-                className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text-sm text-muted max-sm:text-xs fadeup"
+                className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text20 text-muted max-sm:text-xs fadeup"
               >
                 {breadcrumbItems.map((item, index) => {
                   const isLast = index === breadcrumbItems.length - 1;

@@ -595,7 +595,7 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
         </div>
       </div>
 
-      <div className="absolute bottom-[5%] left-1/2 flex -translate-x-1/2 flex-col items-center justify-center gap-[1vw] text-black">
+      <div className="absolute bottom-[1%] left-1/2 flex -translate-x-1/2 flex-col items-center justify-center gap-[1vw] text-black">
         scroll
 
         <svg

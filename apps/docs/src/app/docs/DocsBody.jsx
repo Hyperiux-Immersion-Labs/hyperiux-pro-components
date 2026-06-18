@@ -245,7 +245,7 @@ function BreadcrumbNav() {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="fadeup flex items-center gap-2 text-sm text-muted max-sm:text-xs pb-3 px-8 max-md:px-0"
+      className="fadeup flex items-center gap-2 text20 text-muted max-sm:text-xs pb-3 px-8 max-md:px-0"
     >
       {breadcrumbItems.map((item, index, items) => {
         const isLast = index === items.length - 1;
