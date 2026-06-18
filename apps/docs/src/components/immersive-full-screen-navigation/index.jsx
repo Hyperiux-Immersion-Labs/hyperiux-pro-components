@@ -56,7 +56,7 @@ export default function ImmersiveFullscreenNav({
 
 
           {/* Heading */}
-          <h1 className="text-[7vw] max-sm:text-[9vw]">
+          <h1 className="text-[7vw] max-md:w-[90%] max-md:mx-auto max-sm:text-[9vw]">
             Immersive Full Screen Navigation
           </h1>
 

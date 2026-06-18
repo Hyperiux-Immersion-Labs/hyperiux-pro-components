@@ -3,7 +3,10 @@ import MilkyWay from "@/components/milkyway"
 
 const page = () => {
   return (
+    <>
+   
    <MilkyWay />
+    </>
   )
 }
 

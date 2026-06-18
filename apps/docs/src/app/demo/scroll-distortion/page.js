@@ -22,7 +22,7 @@ const shaderConfig = {
 export default function page() {
  return (
     <>
-    <DemoHeader logoColor="text-white"/>
+    <DemoHeader logoColor="text-white" textColor='#ffffff'/>
     <ScrollDistortion
     sections={sections}
     shaderConfig={shaderConfig}

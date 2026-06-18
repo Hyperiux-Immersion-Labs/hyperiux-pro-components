@@ -10,19 +10,19 @@ export default function page() {
         <h1 className="text-[7vw] max-sm:text-[9vw]">Hyperiux Vault</h1>
 
         {/* Subtext */}
-        <p className="mt-8 text-[1.4vw] max-sm:text-[4.5vw] max-md:text-[3vw]">
+        <p className="mt-8 text-[1.4vw] max-md:w-[80%] max-md:mx-auto max-sm:text-[4.5vw] max-md:text-[3vw]">
           You've just seen the chess grid transition , now if you want to see
           again click on the "click here" button.
         </p>
 
         <div className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center">
           <ArrowFillButton
-            className="border-[#ff5f00] border text-[#ffffff] cursor-pointer"
+            className="border-[#ff5f00] max-sm:w-56! border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
             href={"/demo/chess-grid-transition"}
           />
           <ArrowFillButton
-            className="border-[#ff5f00] border text-[#ff5f00] cursor-pointer"
+            className="border-[#ff5f00] border max-sm:w-56! text-[#ff5f00] cursor-pointer"
             btnText={"Browse effects"}
             hoverFillTextColor={"#ffffff"}
             arrowColor={"#ffffff"}

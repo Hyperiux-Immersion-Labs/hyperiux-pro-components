@@ -31,8 +31,6 @@ const CircularText = ({
 
  return () => tweenRef.current?.kill()
  }, [spinDuration, text])
-
- // ───────── Hover ─────────
  const handleEnter = () => {
  if (!tweenRef.current) return
 
@@ -72,8 +70,7 @@ const CircularText = ({
 
  return (
  <div>
- {/* Central Juice Icon */}
- {/* Central Juice Icon replaced with Lucide cup-soda */}
+
  <span
  style={{
  position:'absolute',

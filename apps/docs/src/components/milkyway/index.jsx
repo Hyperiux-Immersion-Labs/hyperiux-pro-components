@@ -843,7 +843,7 @@ const BackgroundStars = React.memo(function BackgroundStars() {
    return <primitive object={mesh} />
 })
 
-const MOBILE_QUERY = '(max-width: 767px)'
+const MOBILE_QUERY = '(max-width: 1024px)'
 
 function SceneReady({ onReady }) {
    const frameCountRef = useRef(0)
@@ -936,9 +936,17 @@ export default function MilkyWay() {
             </Canvas>
          ) : showMobileContent ? (
             <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
-               <p className=' rounded-full bg-white/10 px-5 py-3 w-[60%] text-base backdrop-blur-sm'>
-                  Open in desktop to experience this effect.
-               </p>
+               <div className='flex flex-col items-center gap-6'>
+                  <p className='rounded-full bg-white/10 px-5 py-3 w-full max-w-[60vw] max-md:max-w-[70vw] max-sm:max-w-full text-2xl max-sm:text-base backdrop-blur-sm'>
+                     Open in desktop to experience this effect.
+                  </p>
+                  <Link
+                     href={"/effects"}
+                     className='rounded-full  bg-primary  px-6 py-3 max-sm:text-sm font-medium text-base text-white'
+                  >
+                     Explore effects
+                  </Link>
+               </div>
             </div>
          ) : null}
 
