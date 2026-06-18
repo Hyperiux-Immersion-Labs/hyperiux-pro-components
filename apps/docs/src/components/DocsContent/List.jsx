@@ -2,6 +2,7 @@
 
 import React from "react";
 import Para from "@/components/DocsContent/Para";
+import { useFadeUp } from "../Animations/gsapAnimations";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -23,8 +24,9 @@ export default function DocsList({
   children,
   ...props
 }) {
+  useFadeUp();
   return (
-    <ul className={cx("list-disc pl-6 space-y-5", className)} {...props}>
+    <ul className={cx("list-disc pl-6 space-y-1.5 fadeup", className)} {...props}>
       {items
         ? items.map((item, idx) => (
             <DocsListItem

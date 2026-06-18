@@ -7,6 +7,7 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
+import Heading3 from "@/components/DocsContent/HEading3";
 
 const cliHelpCommand = `npx hyperiux --help`;
 
@@ -172,7 +173,7 @@ export default function DocsCli() {
 
       <Para>Small details. Big “who built this?” energy.</Para>
 
-      <Heading2 id="cli-package">CLI package</Heading2>
+      <Heading2 id="cli-package">CLI Package</Heading2>
 
       <Para>
         The CLI package is <code>hyperiux</code>.
@@ -182,30 +183,30 @@ export default function DocsCli() {
         Use it with <code>npx</code>:
       </Para>
 
-      <CodeBlock code={cliHelpCommand} language="bash" />
+      <CodeBlock code={cliHelpCommand} />
 
       <Para>
         For most projects, you do not need to install the CLI globally. Running it with npx
         keeps the command fresh and avoids version drift across machines.
       </Para>
 
-      <Heading2 id="quick-start">Quick start</Heading2>
+      <Heading2 id="quick-start">Quick Start</Heading2>
 
       <Para>Initialize Vault in your project.</Para>
 
-      <CodeBlock code={initCommand} language="bash" />
+      <CodeBlock code={initCommand}  />
 
       <Para>Add an effect.</Para>
 
-      <CodeBlock code={addScrollStackCommand} language="bash" />
+      <CodeBlock code={addScrollStackCommand}  />
 
       <Para>Run your app.</Para>
 
-      <CodeBlock code={devCommand} language="bash" />
+      <CodeBlock code={devCommand}  />
 
       <Para>Check your setup.</Para>
 
-      <CodeBlock code={doctorCommand} language="bash" />
+      <CodeBlock code={doctorCommand}  />
 
       <Para>
         Then inspect the generated files, tune the motion, test the page, and commit the
@@ -250,7 +251,7 @@ export default function DocsCli() {
 
       <Para>That is the point. You get the code. You own the edits.</Para>
 
-      <Heading2 id="command-reference">Command reference</Heading2>
+      <Heading2 id="command-reference">Command Reference</Heading2>
 
       <DocsTable
         columns={[
@@ -293,13 +294,13 @@ export default function DocsCli() {
         ]}
       />
 
-      <Heading2 id="help-commands">Help commands</Heading2>
+      <Heading2 id="help-commands">Help Commands</Heading2>
 
       <Para>Use help when you need the shape of a command without opening the docs.</Para>
 
-      <CodeBlock code={helpCommands} language="bash" />
+      <CodeBlock code={helpCommands} />
 
-      <Heading2 id="global-options">Global options</Heading2>
+      <Heading2 id="global-options">Global Options</Heading2>
 
       <DocsTable
         columns={[
@@ -335,7 +336,7 @@ export default function DocsCli() {
         file-generation problems.
       </Para>
 
-      <Heading2 id="exit-behavior">Exit behavior</Heading2>
+      <Heading2 id="exit-behavior">Exit Behavior</Heading2>
 
       <Para>
         The CLI exits with a non-zero status code when a command fails. This makes it
@@ -362,11 +363,11 @@ export default function DocsCli() {
 
       <Para>It is a flashlight. Not a priest.</Para>
 
-      <Heading2 id="init">init</Heading2>
+      <Heading2 id="init" className="text-[#7D9A50]!">init</Heading2>
 
       <Para>Prepares your project for Vault effects.</Para>
 
-      <CodeBlock code={initCommand} language="bash" />
+      <CodeBlock code={initCommand}/>
 
       <Para>The init command creates or updates the local configuration used by Vault.</Para>
 
@@ -394,15 +395,15 @@ export default function DocsCli() {
 
       <Para>If your components live somewhere else, tell Vault where the floor is.</Para>
 
-      <Heading2 id="add">add</Heading2>
+      <Heading2 id="add" className="text-[#7D9A50]!">add</Heading2>
 
       <Para>Adds an effect to your workspace.</Para>
 
-      <CodeBlock code={addEffectCommand} language="bash" />
+      <CodeBlock code={addEffectCommand} />
 
       <Para>Example:</Para>
 
-      <CodeBlock code={addScrollStackCommand} language="bash" />
+      <CodeBlock code={addScrollStackCommand} />
 
       <Para>
         Each effect includes a manifest. The CLI reads that manifest and adds only the
@@ -431,15 +432,15 @@ export default function DocsCli() {
 
       <Para>No drive-by Three.js.</Para>
 
-      <Heading2 id="upgrade">upgrade</Heading2>
+      <Heading2 id="upgrade" className="text-[#7D9A50]!">upgrade</Heading2>
 
       <Para>Updates an installed Vault effect.</Para>
 
-      <CodeBlock code={upgradeEffectCommand} language="bash" />
+      <CodeBlock code={upgradeEffectCommand} />
 
       <Para>Example:</Para>
 
-      <CodeBlock code={upgradeScrollStackCommand} language="bash" />
+      <CodeBlock code={upgradeScrollStackCommand} />
 
       <Para>
         Vault effects are editable source files. That makes upgrades more sensitive than
@@ -453,9 +454,9 @@ export default function DocsCli() {
 
       <Para>Recommended upgrade flow:</Para>
 
-      <CodeBlock code={upgradeFlow} language="bash" />
+      <CodeBlock code={upgradeFlow} />
 
-      <Heading2 id="upgrade-safety-options">Upgrade safety options</Heading2>
+      <Heading2 id="upgrade-safety-options">Upgrade Safety Options</Heading2>
 
       <DocsTable
         columns={[
@@ -490,15 +491,15 @@ export default function DocsCli() {
 
       <Para>Source ownership is useful only if updates respect the source.</Para>
 
-      <Heading2 id="uninstall">uninstall</Heading2>
+      <Heading2 id="uninstall" className="text-[#7D9A50]!">uninstall</Heading2>
 
       <Para>Removes an installed effect.</Para>
 
-      <CodeBlock code={uninstallEffectCommand} language="bash" />
+      <CodeBlock code={uninstallEffectCommand} />
 
       <Para>Example:</Para>
 
-      <CodeBlock code={uninstallScrollStackCommand} language="bash" />
+      <CodeBlock code={uninstallScrollStackCommand} />
 
       <Para>The command removes effect-owned files listed in the effect manifest.</Para>
 
@@ -525,11 +526,11 @@ export default function DocsCli() {
         No one wants an uninstall command that behaves like a raccoon in a server room.
       </Para>
 
-      <Heading2 id="list">list</Heading2>
+      <Heading2 id="list" className="text-[#7D9A50]!">list</Heading2>
 
       <Para>Lists installed Vault effects.</Para>
 
-      <CodeBlock code={listCommand} language="bash" />
+      <CodeBlock code={listCommand} />
 
       <Para>Example output:</Para>
 
@@ -539,11 +540,11 @@ export default function DocsCli() {
 
       <Para>It is especially useful before upgrades, audits, and cleanup.</Para>
 
-      <Heading2 id="doctor">doctor</Heading2>
+      <Heading2 id="doctor" className="text-[#7D9A50]!">doctor</Heading2>
 
       <Para>Diagnoses Vault setup issues.</Para>
 
-      <CodeBlock code={doctorCommand} language="bash" />
+      <CodeBlock code={doctorCommand} />
 
       <Para>The doctor command checks common integration problems.</Para>
 
@@ -573,11 +574,11 @@ export default function DocsCli() {
         It will not fix your taste. It will fix a surprising number of setup issues.
       </Para>
 
-      <Heading2 id="env">env</Heading2>
+      <Heading2 id="env" className="text-[#7D9A50]!">env</Heading2>
 
       <Para>Prints environment details.</Para>
 
-      <CodeBlock code={envCommand} language="bash" />
+      <CodeBlock code={envCommand} />
 
       <Para>Use this when debugging or reporting an issue.</Para>
 
@@ -592,13 +593,13 @@ export default function DocsCli() {
 
       <Para>A repo with three package managers is not a tech stack. It is a cry for help.</Para>
 
-      <Heading2 id="auth">auth</Heading2>
+      <Heading2 id="auth" className="text-[#7D9A50]!">auth</Heading2>
 
       <Para>Connects Pro or private registry access.</Para>
 
       <Para>Use interactive login when possible.</Para>
 
-      <CodeBlock code={authLoginCommand} language="bash" />
+      <CodeBlock code={authLoginCommand} />
 
       <Para>
         The CLI prompts for your access token and stores it according to your local
@@ -612,15 +613,15 @@ export default function DocsCli() {
 
       <Para>Prefer this:</Para>
 
-      <CodeBlock code={authLoginCommand} language="bash" />
+      <CodeBlock code={authLoginCommand} />
 
       <Para>Instead of this:</Para>
 
-      <CodeBlock code={authTokenCommand} language="bash" />
+      <CodeBlock code={authTokenCommand} />
 
       <Para>For CI, use an environment variable.</Para>
 
-      <CodeBlock code={ciTokenCommand} language="bash" />
+      <CodeBlock code={ciTokenCommand} />
 
       <Para>
         Do not commit access tokens. Do not place tokens inside public config files. Do not
@@ -629,7 +630,7 @@ export default function DocsCli() {
 
       <Para>The internet has enough haunted secrets.</Para>
 
-      <Heading2 id="dependency-behavior">Dependency behavior</Heading2>
+      <Heading2 id="dependency-behavior">Dependency Behavior</Heading2>
 
       <Para>Vault resolves dependencies per effect.</Para>
 
@@ -652,7 +653,7 @@ export default function DocsCli() {
 
       <Para>Motion should earn its place in the bundle.</Para>
 
-      <Heading2 id="upgrade-safety">Upgrade safety</Heading2>
+      <Heading2 id="upgrade-safety">Upgrade Safety</Heading2>
 
       <Para>
         Because Vault writes source files into your project, upgrades should be handled
@@ -661,23 +662,23 @@ export default function DocsCli() {
 
       <Para>Before upgrading:</Para>
 
-      <CodeBlock code={gitStatusCommand} language="bash" />
+      <CodeBlock code={gitStatusCommand} />
 
       <Para>Check what will change:</Para>
 
-      <CodeBlock code={upgradeDryRunCommand} language="bash" />
+      <CodeBlock code={upgradeDryRunCommand} />
 
       <Para>Preview the diff:</Para>
 
-      <CodeBlock code={upgradeDiffCommand} language="bash" />
+      <CodeBlock code={upgradeDiffCommand} />
 
       <Para>Then upgrade:</Para>
 
-      <CodeBlock code={upgradeScrollStackCommand} language="bash" />
+      <CodeBlock code={upgradeScrollStackCommand} />
 
       <Para>After upgrading:</Para>
 
-      <CodeBlock code={`git diff`} language="bash" />
+      <CodeBlock code={`git diff`} />
 
       <Para>
         If you heavily customized an effect, review the update manually before accepting
@@ -690,15 +691,15 @@ export default function DocsCli() {
         It should not make decisions for your codebase while you are looking away.
       </Para>
 
-      <Heading2 id="global-installation">Global installation</Heading2>
+      <Heading2 id="global-installation">Global Installation</Heading2>
 
       <Para>You can install the CLI globally if your team prefers.</Para>
 
-      <CodeBlock code={globalInstallCommand} language="bash" />
+      <CodeBlock code={globalInstallCommand} />
 
       <Para>Then run:</Para>
 
-      <CodeBlock code={globalHelpCommand} language="bash" />
+      <CodeBlock code={globalHelpCommand} />
 
       <Para>
         Global installation can be useful for frequent usage, but it can create version
@@ -707,39 +708,38 @@ export default function DocsCli() {
 
       <Para>For shared projects, prefer npx or pin the CLI version in project scripts.</Para>
 
-      <CodeBlock code={npxLatestCommand} language="bash" />
+      <CodeBlock code={npxLatestCommand} />
 
       <Para>Or:</Para>
 
       <CodeBlock code={packageScripts} language="json" />
 
-      <Heading2 id="version-check">Version check</Heading2>
+      <Heading2 id="version-check">Version Check</Heading2>
 
       <Para>Print the current CLI version.</Para>
 
-      <CodeBlock code={versionCommand} language="bash" />
+      <CodeBlock code={versionCommand} />
 
       <Para>Or:</Para>
 
-      <CodeBlock code={versionShortCommand} language="bash" />
+      <CodeBlock code={versionShortCommand} />
 
       <Para>
         Use this when debugging registry behavior, command output, or compatibility issues.
       </Para>
 
       <Heading2 id="troubleshooting">Troubleshooting</Heading2>
-
       <Para>
         <strong>Command not found</strong>
       </Para>
 
       <Para>Use npx.</Para>
 
-      <CodeBlock code={cliHelpCommand} language="bash" />
+      <CodeBlock code={cliHelpCommand} />
 
       <Para>If using a global install, reinstall the CLI.</Para>
 
-      <CodeBlock code={npmInstallGlobalCommand} language="bash" />
+      <CodeBlock code={npmInstallGlobalCommand} />
 
       <Para>
         <strong>Effect not found</strong>
@@ -747,7 +747,7 @@ export default function DocsCli() {
 
       <Para>Check the effect name.</Para>
 
-      <CodeBlock code={listCommand} language="bash" />
+      <CodeBlock code={listCommand} />
 
       <Para>For registry effects, confirm the registry configuration and network access.</Para>
 
@@ -757,11 +757,11 @@ export default function DocsCli() {
 
       <Para>Install the dependency reported by the CLI.</Para>
 
-      <CodeBlock code={npmInstallGsapCommand} language="bash" />
+      <CodeBlock code={npmInstallGsapCommand} />
 
       <Para>Then run:</Para>
 
-      <CodeBlock code={doctorCommand} language="bash" />
+      <CodeBlock code={doctorCommand} />
 
       <Para>
         <strong>Import alias does not resolve</strong>
@@ -820,11 +820,11 @@ export default function DocsCli() {
 
       <Para>Check local changes.</Para>
 
-      <CodeBlock code={gitStatusCommand} language="bash" />
+      <CodeBlock code={gitStatusCommand} />
 
       <Para>Preview the upgrade.</Para>
 
-      <CodeBlock code={upgradeDiffCommand} language="bash" />
+      <CodeBlock code={upgradeDiffCommand} />
 
       <Para>
         If your local version is heavily customized, copy the updated effect into a
@@ -841,19 +841,19 @@ export default function DocsCli() {
 
       <Para>Check authentication.</Para>
 
-      <CodeBlock code={authLoginCommand} language="bash" />
+      <CodeBlock code={authLoginCommand} />
 
       <Para>Then run:</Para>
 
-      <CodeBlock code={doctorCommand} language="bash" />
+      <CodeBlock code={doctorCommand} />
 
       <Para>In CI, confirm that HYPERIUX_TOKEN is available to the command.</Para>
 
-      <Heading2 id="recommended-workflow">Recommended workflow</Heading2>
+      <Heading2 id="recommended-workflow">Recommended Workflow</Heading2>
 
       <Para>For most teams:</Para>
 
-      <CodeBlock code={recommendedWorkflowCommands} language="bash" />
+      <CodeBlock code={recommendedWorkflowCommands} />
 
       <Para>Then:</Para>
 
@@ -870,7 +870,7 @@ export default function DocsCli() {
 
       <Para>That is the workflow. Install the effect. Own the files.</Para>
 
-      <Heading2 id="command-summary">Command summary</Heading2>
+      <Heading2 id="command-summary">Command Summary</Heading2>
 
       <DocsTable
         columns={[

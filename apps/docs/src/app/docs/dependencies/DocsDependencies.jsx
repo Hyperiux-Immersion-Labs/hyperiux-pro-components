@@ -119,7 +119,7 @@ export default function DocsDependencies() {
 
       <Para>No surprise engines. No drive-by Three.js.</Para>
 
-      <Heading2 id="the-dependency-model">The dependency model</Heading2>
+      <Heading2 id="the-dependency-model">The Dependency Model</Heading2>
 
       <Para>Vault dependencies fall into two groups.</Para>
 
@@ -154,7 +154,7 @@ export default function DocsDependencies() {
 
       <Para>Motion should earn its place in the build.</Para>
 
-      <Heading2 id="structural-requirements">Structural requirements</Heading2>
+      <Heading2 id="structural-requirements">Structural Requirements</Heading2>
 
       <Para>Every Vault effect assumes a modern React setup.</Para>
 
@@ -217,7 +217,7 @@ export default function DocsDependencies() {
 
       <Para>They are not GPU theatres.</Para>
 
-      <Heading2 id="peer-engines">Peer engines</Heading2>
+      <Heading2 id="peer-engines">Peer Engines</Heading2>
 
       <Para>Peer engines are libraries used by specific Vault effects.</Para>
 
@@ -291,7 +291,7 @@ export default function DocsDependencies() {
       </Para>
 
       <Heading2 id="how-the-cli-handles-dependencies">
-        How the CLI handles dependencies
+        How the CLI Handles Dependencies
       </Heading2>
 
       <Para>
@@ -339,7 +339,7 @@ export default function DocsDependencies() {
       </Para>
 
       <Heading2 id="manual-dependency-installation">
-        Manual dependency installation
+        Manual Dependency Installation
       </Heading2>
 
       <Para>
@@ -371,7 +371,7 @@ export default function DocsDependencies() {
         Do not install the entire creative internet just to animate a headline.
       </Para>
 
-      <Heading2 id="recommended-versions">Recommended versions</Heading2>
+      <Heading2 id="recommended-versions">Recommended Versions</Heading2>
 
       <Para>The effect page or registry manifest is the source of truth.</Para>
 
@@ -405,7 +405,7 @@ export default function DocsDependencies() {
         to reproduce.
       </Para>
 
-      <Heading2 id="bundle-behavior">Bundle behavior</Heading2>
+      <Heading2 id="bundle-behavior">Bundle Behavior</Heading2>
 
       <Para>Vault is designed to keep effects local and modular.</Para>
 
@@ -433,7 +433,7 @@ export default function DocsDependencies() {
 
       <Para>The bundle is where the truth comes out.</Para>
 
-      <Heading2 id="tree-shaking">Tree-shaking</Heading2>
+      <Heading2 id="tree-shaking">Tree-Shaking</Heading2>
 
       <Para>Vault effect files are structured to support clean imports.</Para>
 
@@ -464,7 +464,7 @@ export default function DocsDependencies() {
       <Para>Your layout is not a storage unit.</Para>
 
       <Heading2 id="webgl-and-canvas-dependencies">
-        WebGL and canvas dependencies
+        WebGL and Canvas Dependencies
       </Heading2>
 
       <Para>WebGL and canvas effects need extra care.</Para>
@@ -483,8 +483,6 @@ export default function DocsDependencies() {
         <DocsListItem>animation loops</DocsListItem>
       </DocsList>
 
-      <Para>These effects should usually be rendered only where needed.</Para>
-
       <Para>
         For Next.js, heavy WebGL components often work best with dynamic imports.
       </Para>
@@ -499,7 +497,7 @@ export default function DocsDependencies() {
       </Para>
 
       <Heading2 id="css-and-tailwind-dependencies">
-        CSS and Tailwind dependencies
+        CSS and Tailwind Dependencies
       </Heading2>
 
       <Para>
@@ -536,7 +534,7 @@ export default function DocsDependencies() {
         briefly, blame yourself.
       </Para>
 
-      <Heading2 id="performance-impact">Performance impact</Heading2>
+      <Heading2 id="performance-impact">Performance Impact</Heading2>
 
       <Para>Dependencies are not just installation details.</Para>
 
@@ -577,7 +575,7 @@ export default function DocsDependencies() {
         For deeper testing guidance, see Performance Notes.
       </Para>
 
-      <Heading2 id="reduced-motion">Reduced motion</Heading2>
+      <Heading2 id="reduced-motion">Reduced Motion</Heading2>
 
       <Para>Motion should respect the person watching it.</Para>
 
@@ -624,7 +622,7 @@ export default function DocsDependencies() {
 
       <Para>For deeper guidance, see Reduced Motion.</Para>
 
-      <Heading2 id="accessibility-impact">Accessibility impact</Heading2>
+      <Heading2 id="accessibility-impact">Accessibility Impact</Heading2>
 
       <Para>Dependencies are not only a bundle concern.</Para>
 
@@ -653,7 +651,7 @@ export default function DocsDependencies() {
       <Para>For deeper implementation guidance, see Accessibility.</Para>
 
       <Heading2 id="checking-dependencies-with-doctor">
-        Checking dependencies with doctor
+        Checking Dependencies with Doctor
       </Heading2>
 
       <Para>Use the CLI doctor command to inspect your setup.</Para>
@@ -690,7 +688,7 @@ export default function DocsDependencies() {
       </Para>
 
       <Heading2 id="dependency-troubleshooting">
-        Dependency troubleshooting
+        Dependency Troubleshooting
       </Heading2>
 
       <Para>
@@ -780,7 +778,7 @@ export default function DocsDependencies() {
       </Para>
 
       <Heading2 id="dependency-rules-worth-keeping">
-        Dependency rules worth keeping
+        Dependency Rules Worth Keeping
       </Heading2>
 
       <Para>Use these as a final check before shipping.</Para>

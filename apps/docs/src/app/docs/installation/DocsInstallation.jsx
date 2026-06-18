@@ -101,7 +101,7 @@ export default function DocsInstallation() {
 
       <Para>Vault gives you the source. You make it yours.</Para>
 
-      <Heading2 id="quick-start">Quick start</Heading2>
+      <Heading2 id="quick-start">Quick Start</Heading2>
 
       <Para>Run the init command from your project root.</Para>
 
@@ -165,7 +165,7 @@ export default function DocsInstallation() {
         fewer reasons to mutter at the screen.
       </Para>
 
-      <Heading2 id="choose-your-setup-path">Choose your setup path</Heading2>
+      <Heading2 id="choose-your-setup-path">Choose Your Setup Path</Heading2>
 
       <Para>There are two ways to add Vault effects.</Para>
 
@@ -197,9 +197,6 @@ export default function DocsInstallation() {
       <Heading2 id="method-a-install-with-the-hyperiux-cli">
         Method A: Install with the Hyperiux CLI
       </Heading2>
-
-      <Para>This is the recommended path.</Para>
-
       <Para>
         The Hyperiux CLI adds effect source files directly into your workspace. It adds the
         selected effect files and prompts before installing any required dependencies.
@@ -265,7 +262,7 @@ export default function DocsInstallation() {
       <Para>A demo can lie. A real page usually tells the truth.</Para>
 
       <Heading2 id="what-vault-adds-to-your-project">
-        What Vault adds to your project
+        What Vault Adds to Your Project
       </Heading2>
 
       <Para>Vault only adds files required for the selected effect.</Para>
@@ -296,7 +293,7 @@ export default function DocsInstallation() {
       <Para>Small effects stay small. Heavier effects bring the files they need.</Para>
 
       <Heading2 id="optional-registry-configuration">
-        Optional: Registry configuration
+        Optional: Registry Configuration
       </Heading2>
 
       <Para>
@@ -317,7 +314,7 @@ export default function DocsInstallation() {
       </Para>
 
       <Heading2 id="why-dependencies-are-per-effect">
-        Why dependencies are per effect
+        Why Dependencies are Per Effect
       </Heading2>
 
       <Para>
@@ -352,7 +349,7 @@ export default function DocsInstallation() {
       </Para>
 
       <Heading2 id="method-b-manual-installation">
-        Method B: Manual installation
+        Method B: Manual Installation
       </Heading2>
 
       <Para>
@@ -375,7 +372,7 @@ export default function DocsInstallation() {
         Manual installation skips the CLI and treats each effect as a source blueprint.
       </Para>
 
-      <Heading2 id="manual-install-checklist">Manual install checklist</Heading2>
+      <Heading2 id="manual-install-checklist">Manual Install Checklist</Heading2>
 
       <Para>Use this checklist before running the effect in your project:</Para>
 
@@ -537,7 +534,7 @@ export default function DocsInstallation() {
         <DocsListItem>frame rate</DocsListItem>
       </DocsList>
 
-      <Heading2 id="using-an-installed-effect">Using an installed effect</Heading2>
+      <Heading2 id="using-an-installed-effect">Using an Installed Effect</Heading2>
 
       <Para>After installation, import the effect from your local project files.</Para>
 
@@ -555,7 +552,7 @@ export default function DocsInstallation() {
         site.
       </Para>
 
-      <Heading2 id="next-js-notes">Next.js notes</Heading2>
+      <Heading2 id="next-js-notes">Next.js Notes</Heading2>
 
       <Para>
         Many Vault effects use browser APIs. That means they may need to run as client
@@ -579,7 +576,7 @@ export default function DocsInstallation() {
 
       <Para>Servers are many things. They are not GPU theatres.</Para>
 
-      <Heading2 id="tailwind-notes">Tailwind notes</Heading2>
+      <Heading2 id="tailwind-notes">Tailwind Notes</Heading2>
 
       <Para>
         Vault effects may use Tailwind classes for layout, styling, responsive behavior,
@@ -677,7 +674,7 @@ export default function DocsInstallation() {
 
       <Para>Not every desktop interaction deserves a mobile twin.</Para>
 
-      <Heading2 id="before-you-ship">Before you ship</Heading2>
+      <Heading2 id="before-you-ship">Before You Ship</Heading2>
 
       <Para>Installation is not the finish line. Before publishing, check:</Para>
 
@@ -693,7 +690,7 @@ export default function DocsInstallation() {
         <DocsListItem>performance is acceptable on real devices</DocsListItem>
       </DocsList>
 
-      <Heading2 id="installation-path">Installation path</Heading2>
+      <Heading2 id="installation-path">Installation Path</Heading2>
 
       <Para>For most teams:</Para>
 

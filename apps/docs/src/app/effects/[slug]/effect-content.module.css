@@ -103,7 +103,7 @@
 
 .content a {
   color: var(--color-primary, #f97316);
-  text-decoration: underline;
+  /* text-decoration: underline; */
   text-underline-offset: 0.22em;
 }
 

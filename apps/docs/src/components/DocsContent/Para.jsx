@@ -1,19 +1,18 @@
 "use client";
 
 import React from "react";
-import Copy from "../Animations/Copy";
-
+import { useFadeUp } from "../Animations/gsapAnimations";
 export default function Para({ children, text, className, ...props }) {
+  useFadeUp();
   return (
-    <Copy>
     <p
-      className={["font-sans text-base md:text-lg leading-relaxed text-muted", className]
+      className={["font-sans text-base md:text-lg leading-relaxed text-muted fadeup", className]
         .filter(Boolean)
         .join(" ")}
       {...props}
     >
       {children ?? text}
     </p>
-    </Copy>
+    
   );
 }

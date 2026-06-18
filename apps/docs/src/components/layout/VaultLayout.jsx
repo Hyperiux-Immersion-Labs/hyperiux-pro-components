@@ -97,6 +97,38 @@ export function VaultLayout({
     refreshTimeoutsRef.current = [];
   }, []);
 
+  useEffect(() => {
+      if (typeof window === "undefined") return;
+  
+      const previousScrollRestoration = window.history.scrollRestoration;
+  
+      window.history.scrollRestoration = "manual";
+  
+      const scrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "auto",
+        });
+      };
+  
+      scrollToTop();
+  
+      const rafOne = requestAnimationFrame(scrollToTop);
+      const rafTwo = requestAnimationFrame(() => {
+        requestAnimationFrame(scrollToTop);
+      });
+  
+      const timeout = window.setTimeout(scrollToTop, 120);
+  
+      return () => {
+        cancelAnimationFrame(rafOne);
+        cancelAnimationFrame(rafTwo);
+        window.clearTimeout(timeout);
+        window.history.scrollRestoration = previousScrollRestoration;
+      };
+    }, []);
+
   const refreshScrollTrigger = useCallback(
     (includeSidebarDelay = false) => {
       if (typeof window === "undefined") return;

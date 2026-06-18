@@ -7,6 +7,7 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import { CodeBlock } from "@/components/ui/CodeBlock";
+import Heading3 from "@/components/DocsContent/HEading3";
 
 const cliCommands = `npx hyperiux init
 npx hyperiux add scroll-stack`;
@@ -115,7 +116,7 @@ export default function DocsIntro() {
         black box theatre.
       </Para>
 
-      <Heading2 id="why-vault-exists">Why Vault exists</Heading2>
+      <Heading2 id="why-vault-exists">Why Vault Exists</Heading2>
 
       <Para>The modern web is painfully efficient at looking the same.</Para>
 
@@ -141,7 +142,7 @@ export default function DocsIntro() {
         <strong>Copy the code. Tune the motion. Ship the moment.</strong>
       </Para>
 
-      <Heading2 id="whats-inside">What&rsquo;s inside</Heading2>
+      <Heading2 id="whats-inside">What&rsquo;s Inside</Heading2>
 
       <Para>Vault is organized by interaction type.</Para>
 
@@ -195,13 +196,11 @@ export default function DocsIntro() {
         taste.
       </Para>
 
-      <Heading2 id="how-vault-works">How Vault works</Heading2>
+      <Heading2 id="how-vault-works">How Vault Works</Heading2>
 
       <Para>Vault follows a simple workflow.</Para>
 
-      <Para>
-        <strong>Preview</strong>
-      </Para>
+      <Heading3>Preview</Heading3>
 
       <Para>
         Browse the effect and see what it does before adding it to your project. Pick by
@@ -209,18 +208,15 @@ export default function DocsIntro() {
         cleaner page transition, or a WebGL scene that earns its rent.
       </Para>
 
-      <Para>
-        <strong>Install</strong>
-      </Para>
+<Heading3>Install</Heading3>
+
 
       <Para>
         Use the CLI to add the selected effect. Vault adds the files needed for that
         pattern, not a full interaction circus.
       </Para>
-
-      <Para>
-        <strong>Tune</strong>
-      </Para>
+<Heading3>Tune</Heading3>
+     
 
       <Para>
         Edit the generated files in your project. Depending on the effect, you can adjust:
@@ -268,11 +264,7 @@ export default function DocsIntro() {
       <Para>
         Vault gives you the motion structure. You decide how it behaves in the room.
       </Para>
-
-      <Para>
-        <strong>Ship</strong>
-      </Para>
-
+<Heading3>Ship</Heading3>
       <Para>Test the effect where it will actually live.</Para>
 
       <Para>
@@ -280,23 +272,14 @@ export default function DocsIntro() {
         real content, real images, real devices, and real performance limits is the work.
       </Para>
 
-      <Heading2 id="using-an-effect">Using an effect</Heading2>
+      <Heading2 id="using-an-effect">Using an Effect</Heading2>
 
       <Para>After adding an effect, import it from your generated files.</Para>
 
       <CodeBlock code={usageCode} language="tsx" />
 
-      <Para>Exact usage may change by effect.</Para>
-
-      <Para>
-        Some patterns are simple components. Others may include hooks, utilities, styles,
-        shaders, animation setup, or client-side behavior.
-      </Para>
-
-      <Para>Check the implementation notes before shipping.</Para>
-
       <Heading2 id="built-for-modern-frontend-stacks">
-        Built for modern frontend stacks
+        Built for Modern Frontend Stacks
       </Heading2>
 
       <Para>Vault is built for React and Next.js workflows.</Para>
@@ -350,10 +333,10 @@ export default function DocsIntro() {
         actually deserves.
       </Para>
 
-      <Heading2 id="before-you-ship">Before you ship</Heading2>
+      <Heading2 id="before-you-ship">Before You Ship</Heading2>
 
       <Para>
-        Creative frontend work has tradeoffs. Vault does not pretend otherwise. Before
+        Creative frontend work has tradeoffs.Before
         shipping an effect, check the implementation notes for:
       </Para>
 
@@ -399,7 +382,7 @@ export default function DocsIntro() {
 
       <Para>No surprise dependencies. Nobody likes those.</Para>
 
-      <Heading2 id="when-to-use-vault">When to use Vault</Heading2>
+      <Heading2 id="when-to-use-vault">When to Use Vault</Heading2>
 
       <Para>Use Vault when you need:</Para>
 
@@ -438,7 +421,7 @@ export default function DocsIntro() {
         interface something to do when people touch it.
       </Para>
 
-      <Heading2 id="when-not-to-use-vault">When not to use Vault</Heading2>
+      <Heading2 id="when-not-to-use-vault">When Not to Use Vault</Heading2>
 
       <Para>Do not use Vault when:</Para>
 
@@ -468,7 +451,7 @@ export default function DocsIntro() {
 
       <Para>Animation is not seasoning for weak strategy. Fix the meal first.</Para>
 
-      <Heading2 id="free-core-and-licensing">Free core and licensing</Heading2>
+      <Heading2 id="free-core-and-licensing">Free Core and Licensing</Heading2>
 
       <Para>
         Vault includes a free core of creative interaction patterns. For the free core:
@@ -517,29 +500,6 @@ export default function DocsIntro() {
         Premium effects, Pro packs, templates, bundles, team usage, and implementation
         support may use separate commercial terms.
       </Para>
-
-      <Para>Before publishing, confirm the final license model for:</Para>
-
-      <DocsList>
-        <DocsListItem>
-          free core
-        </DocsListItem>
-        <DocsListItem>
-          paid effects
-        </DocsListItem>
-        <DocsListItem>
-          agency/client usage
-        </DocsListItem>
-        <DocsListItem>
-          template or starter-kit usage
-        </DocsListItem>
-        <DocsListItem>
-          redistribution
-        </DocsListItem>
-        <DocsListItem>
-          SaaS/product embedding
-        </DocsListItem>
-      </DocsList>
 
       <Para>
         Creative freedom is better when legal does not arrive later wearing a helmet.

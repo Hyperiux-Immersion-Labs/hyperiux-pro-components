@@ -33,7 +33,7 @@ export default function DocsLicense() {
         checkout terms, or signed agreement controls if there is ever a conflict.
       </Para>
 
-      <Heading2 id="the-short-version">The short version</Heading2>
+      <Heading2 id="the-short-version">The Short Version</Heading2>
 
       <DocsTable
         columns={[
@@ -96,7 +96,7 @@ export default function DocsLicense() {
       </Para>
 
       <Heading2 id="source-ownership-not-catalog-ownership">
-        Source ownership, not catalog ownership
+        Source Ownership, Not Catalog Ownership
       </Heading2>
 
       <Para>Vault effects are added to your project as source files.</Para>
@@ -118,7 +118,7 @@ export default function DocsLicense() {
 
       <Para>Important distinction. Conveniently, also the obvious one.</Para>
 
-      <Heading2 id="license-tiers">License tiers</Heading2>
+      <Heading2 id="license-tiers">License Tiers</Heading2>
 
       <Para>Hyperiux Vault has two main licensing groups.</Para>
 
@@ -155,7 +155,7 @@ export default function DocsLicense() {
         implementation details. That is the point. Drop in the interaction. Keep the taste.
       </Para>
 
-      <Heading2 id="mit-licensed-files">MIT-licensed files</Heading2>
+      <Heading2 id="mit-licensed-files">MIT-licensed Files</Heading2>
 
       <Para>
         Some Free Core files may be released under the MIT License. If a file is marked as
@@ -222,7 +222,7 @@ export default function DocsLicense() {
 
       <Para>Check your plan before shipping. The checkout page is not decoration.</Para>
 
-      <Heading2 id="project-usage">Project usage</Heading2>
+      <Heading2 id="project-usage">Project Usage</Heading2>
 
       <Para>Vault Pro usage depends on your license scope.</Para>
 
@@ -258,7 +258,7 @@ export default function DocsLicense() {
 
       <Para>Simple rules age well.</Para>
 
-      <Heading2 id="client-work">Client work</Heading2>
+      <Heading2 id="client-work">Client Work</Heading2>
 
       <Para>
         You can use licensed Vault effects in client projects if your license allows client
@@ -287,7 +287,7 @@ export default function DocsLicense() {
 
       <Para>Build the site. Do not resell the toolbox.</Para>
 
-      <Heading2 id="saas-and-product-platforms">SaaS and product platforms</Heading2>
+      <Heading2 id="saas-and-product-platforms">SaaS and Product Platforms</Heading2>
 
       <Para>Vault can be used inside monetized products when your license allows it.</Para>
 
@@ -314,7 +314,7 @@ export default function DocsLicense() {
         marketplace pack selling that transition as your own is not.
       </Para>
 
-      <Heading2 id="redistribution-and-resale">Redistribution and resale</Heading2>
+      <Heading2 id="redistribution-and-resale">Redistribution and Resale</Heading2>
 
       <Para>Unless your license explicitly allows it, you may not:</Para>
 
@@ -337,7 +337,7 @@ export default function DocsLicense() {
         does not make it your motorcycle.
       </Para>
 
-      <Heading2 id="templates-themes-and-starters">Templates, themes, and starters</Heading2>
+      <Heading2 id="templates-themes-and-starters">Templates, Themes, and Starters</Heading2>
 
       <Para>Templates are different from websites.</Para>
 
@@ -377,7 +377,7 @@ export default function DocsLicense() {
 
       <Para>Private source notices are not visual clutter. They are receipts.</Para>
 
-      <Heading2 id="seats-and-team-usage">Seats and team usage</Heading2>
+      <Heading2 id="seats-and-team-usage">Seats and Team Usage</Heading2>
 
       <Para>Some Pro plans may be licensed by seat, team, organization, or workspace.</Para>
 
@@ -393,7 +393,7 @@ export default function DocsLicense() {
         incident report.
       </Para>
 
-      <Heading2 id="updates-and-support">Updates and support</Heading2>
+      <Heading2 id="updates-and-support">Updates and Support</Heading2>
 
       <Para>
         Access to future updates, premium variants, implementation notes, and support
@@ -415,7 +415,7 @@ export default function DocsLicense() {
         not always a license to receive every future asset.
       </Para>
 
-      <Heading2 id="enterprise-licensing">Enterprise licensing</Heading2>
+      <Heading2 id="enterprise-licensing">Enterprise Licensing</Heading2>
 
       <Para>Enterprise teams may need custom terms.</Para>
 
@@ -465,7 +465,7 @@ export default function DocsLicense() {
 
       <Para>We prefer building. We are also capable of reading logs.</Para>
 
-      <Heading2 id="before-you-ship">Before you ship</Heading2>
+      <Heading2 id="before-you-ship">Before You Ship</Heading2>
 
       <Para>Before using Vault in a commercial project, check:</Para>
 

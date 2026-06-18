@@ -30,7 +30,6 @@ export default function Layout({ children }) {
     <>
       <Suspense fallback={<VaultLayoutFallback />}>
           <NavbarMobile/>
-      
         <VaultLayout effectCounts={effectCounts} totalEffects={totalEffects}>
           <div className=" h-fit bg-[#1111111] text-foreground px-15 max-md:px-[6vw] max-sm:px-[7vw] pb-8">
             <React.Suspense fallback={<div className="h-12" />}>
