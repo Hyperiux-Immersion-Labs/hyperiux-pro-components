@@ -109,7 +109,7 @@ export default function DemoHeader({
                   mobileText={text}
                   textColor={resolvedTextColor}
                   clickedColor={resolvedTextColor}
-                  className="hidden origin-right text-xl scale-[0.7] transition-transform duration-200 max-md:block max-sm:block"
+                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-md:block max-sm:block"
                   iconClassName="h-5 w-5 max-md:h-6 max-md:w-6 max-sm:h-6 max-sm:w-6"
                 />
               </>
