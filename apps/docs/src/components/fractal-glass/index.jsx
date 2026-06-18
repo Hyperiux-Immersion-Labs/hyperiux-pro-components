@@ -327,7 +327,7 @@ export default function FractalGlass({
         bottom-6
         left-1/2
         -translate-x-1/2
-        z-50
+        z-50 text-lg
         px-4
         py-2
         rounded-full
@@ -335,7 +335,7 @@ export default function FractalGlass({
         backdrop-blur-md
         text-white
         text-center
-        text-sm
+        max-sm:text-sm
         leading-tight
         pointer-events-none
         max-sm:px-[7vw] max-sm:py-[4vw]

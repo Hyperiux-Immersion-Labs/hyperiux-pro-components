@@ -1,7 +1,10 @@
 import RopeCursor from '@/components/RopeCursor'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import React from'react'
 export default function page() {
  return (
+        <>
+       <DemoHeader />
  <div className='h-screen w-full bg-[#F1EADE] text-[#bda985] overflow-hidden'>
  <RopeCursor ropeColor='#bda985' ropeWidth={2} ropeOpacity={0.6} segmentLength={0} segmentCount={8} />
  <div className='flex items-center max-md:hidden justify-center flex-col h-full pointer-events-none'>
@@ -15,5 +18,6 @@ export default function page() {
 
  </div>
  </div>
+  </>
  )
 }

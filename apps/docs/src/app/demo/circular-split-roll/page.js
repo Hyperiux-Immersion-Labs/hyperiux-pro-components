@@ -1,13 +1,15 @@
 "use client";
 
 import CircularSplitRoll from "@/components/circular-split-roll";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import React from "react";
 
 export default function Page() {
   return (
     <>
-    <div className="hidden max-md:block flex flex-col justify-center items-center gap-[2vw] text-center pt-[10vw]">
+    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <div className="hidden max-md:block flex flex-col justify-center items-center gap-[2vw] text-center max-sm:pt-[18vw]  pt-[10vw]">
       <h1 className="text-[7vw] max-sm:text-[11vw]">
         Circular Split Roll
       </h1>

@@ -121,6 +121,8 @@ export function CircularSplitRollComp({
 
         if (!total) return;
 
+        gsap.set([...leftNodes, ...rightNodes], { opacity: 1 });
+
         const render = (scrollProgress) => {
           progressRef.current = scrollProgress;
 
@@ -314,7 +316,7 @@ export function CircularSplitRollComp({
               {safeItems.map((item) => (
                 <div
                   key={item.id}
-                  className="circular-scroll-showcase__left-item pointer-events-none absolute left-1/2 top-1/2 w-full origin-center whitespace-nowrap text-center text-(length:--css-title-size,clamp(28px,3vw,56px)) font-medium leading-none tracking-[-0.04em] will-change-[transform,opacity]"
+                  className="circular-scroll-showcase__left-item pointer-events-none absolute left-1/2 top-1/2 w-full origin-center whitespace-nowrap text-center text-(length:--css-title-size,clamp(28px,3vw,56px)) font-medium leading-none tracking-[-0.04em] opacity-0 will-change-[transform,opacity]"
                 >
                   {item.title}
                 </div>
@@ -327,7 +329,7 @@ export function CircularSplitRollComp({
               {safeItems.map((item) => (
                 <div
                   key={item.id}
-                  className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center will-change-[transform,opacity]"
+                  className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center opacity-0 will-change-[transform,opacity]"
                 >
                   <div className="relative h-full w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_30px_60px_rgba(0,0,0,0.28),0_8px_20px_rgba(0,0,0,0.16)]">
                     <Image

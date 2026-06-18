@@ -1,6 +1,7 @@
-"use client";
+
 
 import FractalGlass from "@/components/fractal-glass";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 const images = {
   blob: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
@@ -9,6 +10,7 @@ const images = {
 export default function Home() {
   return (
     <>
+    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
       <FractalGlass
         imageSrc={images.blob}
         stripesFrequency={40}
@@ -21,7 +23,7 @@ export default function Home() {
       <div className="w-fit absolute bottom-8 left-1/2 -translate-x-1/2  text-center max-md:hidden">
         Move the cursor left and right to see the fractal effect
       </div>
-      <div className="w-fit absolute  left-1/2 -translate-x-1/2 bottom-[85%] text-center hidden max-md:block">
+      <div className="w-fit absolute text-lg max-sm:text-sm  left-1/2 -translate-x-1/2 bottom-[85%] text-center hidden max-md:block">
         Drag left and right to see the fractal effect
       </div>
     </>

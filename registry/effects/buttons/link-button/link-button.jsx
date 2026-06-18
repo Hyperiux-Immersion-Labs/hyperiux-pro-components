@@ -74,7 +74,7 @@ export function LinkButton({
       >
         <div className="flex items-center justify-start gap-2">
           <span
-            className={`btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[1.5px] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] max-md:text-[3vw] max-sm:text-[5vw] ${
+            className={`btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[1.5px] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] text-nowrap max-md:text-[3vw] max-sm:text-[5vw] ${
               hasMeasuredViewport && isCompactViewport
                 ? isIconRotated
                   ? "after:origin-left after:scale-x-100"

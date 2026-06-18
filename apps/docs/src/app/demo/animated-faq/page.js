@@ -6,6 +6,7 @@ import {
   FAQTitle,
   FAQWrapper,
 } from "@/components/animated-faq";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { WebpageJsonLd } from "@/lib/json-ld";
 import React from "react";
 
@@ -25,6 +26,7 @@ export default function FAQDemo() {
 
   return (
     <>
+    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
      <WebpageJsonLd metadata={metadata} />
     <section className="bg-black h-screen px-8 py-20 text-white">
         <div className="max-w-5xl mx-auto text-center text-white mb-12">
