@@ -47,6 +47,8 @@
     "resend": "^6.12.4",
     "stripe": "^22.2.0",
     "swiper": "^12.2.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwind-variants": "^3.2.2",
     "three": "^0.183.2"
   },
   "devDependencies": {
