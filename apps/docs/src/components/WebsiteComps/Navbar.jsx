@@ -294,7 +294,7 @@ function NavDropdown({ panel }) {
         <div className="absolute top-full left-1/2 z-50 w-max -translate-x-1/2 pt-[0.75vw]">
             <div
                 ref={shellRef}
-                className="overflow-hidden rounded-[1.1vw] border border-white/8 bg-grey p-[1.5vw] shadow-[0_1.2vw_3.5vw_rgba(0,0,0,0.55)]"
+                className="overflow-hidden rounded-[1.1vw] border border-white/8 bg-grey p-[1vw] shadow-[0_1.2vw_3.5vw_rgba(0,0,0,0.55)]"
                 style={{ width: currentPanel ? PANELS[currentPanel].width : PANELS.categories.width }}
             >
                 <div ref={viewportRef} className="relative">
