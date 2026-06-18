@@ -122,7 +122,7 @@
   {
     "title": "Animated FAQ",
     "name": "animated-faq",
-    "tier": "pro",
+    "tier": "free",
     "category": "components",
     "detailRoute": "https://components.hyperiux.com/effects/components/animated-faq",
     "demoRoute": "https://components.hyperiux.com/demo/animated-faq"
@@ -434,7 +434,7 @@
   {
     "title": "Horizontal Feature Reveal",
     "name": "horizontal-feature-reveal",
-    "tier": "free",
+    "tier": "pro",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/horizontal-feature-reveal",
     "demoRoute": "https://components.hyperiux.com/demo/horizontal-feature-reveal"
@@ -490,7 +490,7 @@
   {
     "title": "Parallax Slider",
     "name": "parallax-slider",
-    "tier": "free",
+    "tier": "pro",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/parallax-slider",
     "demoRoute": "https://components.hyperiux.com/pro/parallax-slider"
@@ -530,7 +530,7 @@
   {
     "title": "Scroll Stack",
     "name": "scroll-stack",
-    "tier": "free",
+    "tier": "pro",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/scroll-stack",
     "demoRoute": "https://components.hyperiux.com/demo/scroll-stack"
@@ -538,7 +538,7 @@
   {
     "title": "Split Canvas",
     "name": "split-canvas",
-    "tier": "pro",
+    "tier": "free",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/split-canvas",
     "demoRoute": "https://components.hyperiux.com/demo/split-canvas"
@@ -826,7 +826,7 @@
   {
     "title": "Fractal Glass",
     "name": "fractal-glass",
-    "tier": "pro",
+    "tier": "free",
     "category": "webgl",
     "detailRoute": "https://components.hyperiux.com/effects/webgl-effects/fractal-glass",
     "demoRoute": "https://components.hyperiux.com/demo/fractal-glass"
@@ -890,7 +890,7 @@
   {
     "title": "Milky Way",
     "name": "milkyway",
-    "tier": "pro",
+    "tier": "free",
     "category": "webgl",
     "detailRoute": "https://components.hyperiux.com/effects/webgl-effects/milkyway",
     "demoRoute": "https://components.hyperiux.com/demo/milkyway"
@@ -898,7 +898,7 @@
   {
     "title": "Mouse Pixelation",
     "name": "mouse-pixelation",
-    "tier": "free",
+    "tier": "pro",
     "category": "webgl",
     "detailRoute": "https://components.hyperiux.com/effects/webgl-effects/mouse-pixelation",
     "demoRoute": "https://components.hyperiux.com/demo/mouse-pixelation"

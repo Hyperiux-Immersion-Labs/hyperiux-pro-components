@@ -84,7 +84,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
@@ -197,7 +197,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap",
         "next"
@@ -320,7 +320,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
@@ -339,7 +339,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
+      "tier": "free",
       "dependencies": [
         "gsap",
         "three"
@@ -1462,7 +1462,7 @@
       "categories": [
         "components"
       ],
-      "tier": "pro",
+      "tier": "free",
       "dependencies": [
         "gsap"
       ],
@@ -1709,7 +1709,7 @@
       "categories": [
         "loaders"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap",
         "@react-three/fiber",
@@ -1917,7 +1917,7 @@
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
+      "tier": "free",
       "dependencies": [
         "three"
       ],
@@ -2077,7 +2077,7 @@
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
+      "tier": "free",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
@@ -2102,7 +2102,7 @@
       "categories": [
         "webgl"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber",
