@@ -113,7 +113,7 @@ async function sendWaitingListEmail({
             While you wait, you can still explore the public Vault pages, preview effects, and shortlist the interactions you want to try first.
           </p>
 
-          <a href="${vaultUrl}" style="display: inline-block; background: #ff5f00; color: #ffffff; text-decoration: none; border-radius: 999px; padding: 13px 24px; font-size: 14px; font-weight: 700;">
+          <a href="https://vault.hyperiux.com/" style="display: inline-block; background: #ff5f00; color: #ffffff; text-decoration: none; border-radius: 999px; padding: 13px 24px; font-size: 14px; font-weight: 700;">
             Explore Hyperiux Vault
           </a>
 
