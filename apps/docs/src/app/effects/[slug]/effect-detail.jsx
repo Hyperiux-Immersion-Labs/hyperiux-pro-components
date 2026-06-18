@@ -78,17 +78,7 @@ export function EffectDetailContent({
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join("");
 
-  const usageCode = `import { ${componentName} } from "@/components/effects/${slug}";
 
-export default function MyComponent() {
-  return (
-    <${componentName}>
-      Your content here
-    </${componentName}>
-  );
-}`;
-
-  const installCode = `npx hyperiux add ${slug}`;
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
   const showRelatedSliderControls = relatedEffects.length > 3;
@@ -203,108 +193,6 @@ export default function MyComponent() {
     }) ||
     "/assets/img/image01.webp";
 
-  const sidebarContent = (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link
-          href={previewHref}
-          target="_blank"
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 backdrop-blur-md text-foreground bg-primary duration-300 ease-in-out hover:bg-primary/80 hover:text-white rounded-md hover:border-transparent transition-colors "
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-
-          Live Preview
-        </Link>
-      </div>
-
-      <div className="bg-secondary-surface/60 backdrop-blur-md rounded-md border border-border/60 p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-medium text-foreground">Resource details</h3>
-          {effect.tier === "pro" && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/20 text-white/70 text-xs font-medium">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              Pro
-            </span>
-          )}
-        </div>
-
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">Category</span>
-
-            <span className="text-foreground capitalize text-right">
-              {(effect.categories?.length
-                ? effect.categories
-                : [effect.category]
-              ).join(", ")}
-            </span>
-          </div>
-
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">Dependencies</span>
-
-            <span className="text-foreground text-right">
-              {effect.dependencies?.join(", ") || "None"}
-            </span>
-          </div>
-
-          <div className="flex justify-between gap-6">
-            <span className="text-muted">License</span>
-
-            <span className="text-foreground text-right">
-              MIT
-            </span>
-          </div>
-        </div>
-
-        <div className="pt-3 border-t border-border/60">
-          <div className="flex flex-wrap gap-2">
-            {(effect.categories?.length
-              ? effect.categories
-              : [effect.category]
-            ).map((cat) => (
-              <span
-                key={cat}
-                className="px-2.5 py-1 border border-border/60 rounded-full text-xs text-white/80 capitalize"
-              >
-                {cat}
-              </span>
-            ))}
-
-            {effect.dependencies?.map((dep) => (
-              <span
-                key={dep}
-                className="px-2.5 py-1 capitalize border border-border/60 rounded-full text-xs text-white/80"
-              >
-                {dep}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <VaultLayout
@@ -319,18 +207,18 @@ export default function MyComponent() {
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader
             effectName={effect.title}
-            showSearch={false}
+            showSearch={true}
           />
         </Suspense>
 
-        <main className="mx-auto w-full relative   px-15 max-md:px-0 pt-28 pb-12  max-sm:pt-50">
+        <main className="mx-auto w-full relative   px-15 max-md:px-0 pt-28 pb-12  max-sm:pt-36">
           <section className="space-y-7 ">
             <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw]  justify-between gap-5">
-              <div className="w-full space-y-5 ">
+              <div className="w-full space-y-5  ">
                 
                   <nav
                     aria-label="Breadcrumb"
-                    className="mb-3 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup"
+                    className="mb-3 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup max-sm:mb-8"
                   >
                     <Link
                       href="/"
@@ -481,7 +369,7 @@ export default function MyComponent() {
                   />
                 </div>
 
-                <div className="w-[70%] max-md:w-full max-sm:px-[7vw] max-md:px-[6vw]">
+                <div className="w-[70%] max-md:w-full max-sm:px-[7vw] max-md:px-[6vw] max-sm:mt-[15vw]">
                   <EffectCtaSection
                     cta={content?.ctaBanner}
                     sectionRef={ctaSectionRef}
@@ -633,17 +521,19 @@ function EffectCtaSection({ cta, sectionRef }) {
   const isExternalLink = /^https?:\/\//.test(buttonLink);
 
   return (
-    <section ref={sectionRef} className={`fadeup ${styles.ctaBanner}`}>
+    <section ref={sectionRef} className={`fadeup w-full bg-[#272727] rounded-md max-w-[78%] text-center my-[5vw] max-md:max-w-full mx-auto`}>
+              <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+
       {cta.heading && (
-        <h2 className={styles.ctaBannerHeading}>{cta.heading}</h2>
+        <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">{cta.heading}</h2>
       )}
 
        {cta.description && (
-        <p className={styles.ctaBannerDescription}>{cta.description}</p>
+        <p className="mt-4 mx-auto max-w-3xl text20 text-muted">{cta.description}</p>
       )}
 
 
-      <div className="w-fit ">
+      <div className="w-fit  max-sm:mt-[4vw]">
 
       {cta.buttonText && (
         <Button
@@ -656,6 +546,7 @@ function EffectCtaSection({ cta, sectionRef }) {
         />
       )}
       </div>
+      </div>
     </section>
   );
 }
@@ -666,7 +557,7 @@ function SanityBodyRenderer({ body = [], isLocked = false }) {
   const groupedBlocks = groupBodyBlocks(body);
 
   return (
-    <div className="space-y-6 max-sm:px-2">
+    <div className="space-y-6 ">
       {groupedBlocks.map((block, index) => (
         <SanityBodyBlock
           key={block._key || block._groupKey || `${block._type}-${index}`}

@@ -528,7 +528,7 @@ export function VaultContent({
         )}
       </VaultLayout>
 
-      <div className="relative z-50 text-foreground px-8 max-md:px-[7vw]">
+      <div className="relative z-50 text-foreground  ">
         {activeCategoryFaqItems.length > 0 && (
           <div key={`category-faq-${categoryFilter}`}>
             <FAQSection faqItems={activeCategoryFaqItems} />
@@ -540,11 +540,11 @@ export function VaultContent({
             activeCategoryContent?.cta.buttonText) && (
             <section
               key={`category-cta-${categoryFilter}`}
-              className="category-fadeup w-full bg-[#272727] rounded-md max-w-[78%] text-center my-[5vw] mx-auto"
+              className="category-fadeup w-full bg-[#272727] rounded-md max-w-[78%] text-center my-[5vw] max-md:max-w-[90%] mx-auto"
             >
               <div className="mx-auto w-full max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
                 {activeCategoryContent.cta.heading && (
-                  <h2 className="text-[4vw] font-medium text-foreground">
+                  <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
                     {activeCategoryContent.cta.heading}
                   </h2>
                 )}

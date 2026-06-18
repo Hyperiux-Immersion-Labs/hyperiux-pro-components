@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import hljs from "highlight.js";
-import { Copy, Copi } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export function CodeBlock({
     code,
@@ -36,10 +36,10 @@ export function CodeBlock({
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
             
             <div
-                className={`max-h-[30vw] overflow-y-auto ${
+                className={`max-h-[30vw] overflow-y-auto w-full ${
                     shouldShowHeader
-                        ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[18vh]"
-                        : "max-sm:h-[5vh] max-md:h-[5.5vh]"
+                        ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[12vh]"
+                        : "max-sm:h-[8vh] max-sm:pt-[3vh] max-md:h-[5.5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
@@ -63,7 +63,7 @@ export function CodeBlock({
                 )}
                 <div className="relative">
                     <pre
-                        className={`overflow-x-auto bg-[#272727] text-xs ${
+                        className={`overflow-x-auto bg-[#272727] text-xs max-sm:pt-[7vw]  ${
                             shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : "max-sm:text-sm"
                         }`}
                     >
@@ -93,12 +93,12 @@ export function InstallCommand({ effect }) {
     };
 
     return (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800">
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 ">
             <span className="text-green-500">$</span>
-            <code className="flex-1 text-sm text-neutral-300 max-sm:text-lg!">{command}</code>
+            <code className="flex-1 text-sm text-neutral-300 max-sm:text-lg! max-sm:pt-[7vw]">{command}</code>
             <button
                 onClick={handleCopy}
-                className="text-xs px-3 py-1.5 rounded bg-white text-black hover:bg-neutral-200 transition-colors font-medium max-sm:text-[11px]"
+                className="text-xs px-3 py-1.5 rounded baxc bg-white text-black hover:bg-neutral-200 transition-colors font-medium max-sm:text-[11px]"
             >
                 {copied ? "Copied!" : "Copy"}
             </button>

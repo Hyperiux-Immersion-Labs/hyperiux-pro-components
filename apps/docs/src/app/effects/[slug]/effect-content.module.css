@@ -459,7 +459,7 @@
 @media (max-width: 639px) {
   .content h2,
   .calloutTitle {
-    font-size: 2rem;
+    font-size: 7vw;
   }
 
   .content h3 {

@@ -98,12 +98,12 @@ export function EffectCard({
     >
       <Link href={effectHref} className="block">
         <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
-          <div className="pointer-events-none absolute inset-x-3 top-3 max-md:top-7 z-20 flex items-center justify-between gap-3 max-md:inset-x-5 max-sm:inset-x-6 max-sm:top-7 max-sm:gap-2">
+          <div className="pointer-events-none absolute inset-x-3 top-3 max-md:top-7 z-20 flex items-start justify-between gap-3 max-md:inset-x-5 max-sm:inset-x-3 max-sm:top-3 max-sm:gap-2">
             <div className="flex min-w-0 flex-wrap items-center gap-2 max-sm:gap-1.5">
               {dependencyPills.map((pill) => (
                 <span
                   key={pill}
-                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-3 max-sm:py-1 max-sm:text-[11px]"
+                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!"
                 >
                   {pill}
                 </span>
@@ -111,7 +111,7 @@ export function EffectCard({
             </div>
 
             {effect.tier === "pro" && (
-              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[11px]">
+              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!">
                 Pro
               </span>
             )}
