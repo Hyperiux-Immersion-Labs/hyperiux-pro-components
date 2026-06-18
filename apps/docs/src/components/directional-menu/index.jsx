@@ -29,7 +29,7 @@ const menuItems = [
 
 export default function DirectionalMenu() {
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white max-sm:h-full max-sm:overflow-visible max-sm:pb-10">
+    <div className="relative h-screen overflow-hidden  text-white max-sm:h-full max-sm:overflow-visible max-sm:pb-10">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto max-md:hidden h-19 flex items-center justify-between">

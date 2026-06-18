@@ -98,7 +98,7 @@ export function MobileDirectionalMenu({ items = [] }) {
                     </span>
 
                     <ChevronDown
-                      className={`h-4 w-4 text-neutral-500 transition-transform duration-300 ease-in-out ${
+                      className={`h-4 w-4 max-sm:h-5 max-sm:w-5 max-md:h-6 max-md:w-6 text-neutral-500 transition-transform duration-300 ease-in-out ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
