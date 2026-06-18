@@ -233,7 +233,7 @@ export default function InteractiveListPreviewComp({ items }) {
                 zIndex: DEFAULT_IMAGE_Z_INDEX,
               }}
             >
-              <Image src={item.img} alt="" fill className="object-cover" />
+              <Image src={item.img} alt="asset-image" fill className="object-cover" />
             </div>
           ))}
         </div>

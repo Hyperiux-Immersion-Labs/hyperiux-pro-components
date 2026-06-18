@@ -139,7 +139,7 @@ function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
         <span className="flex max-sm:size-5 max-md:size-[4vw] shrink-0 items-center justify-center">
           <Image
             src={icon}
-            alt=""
+            alt="icon"
             width={28}
             height={28}
             className="size-full object-contain"

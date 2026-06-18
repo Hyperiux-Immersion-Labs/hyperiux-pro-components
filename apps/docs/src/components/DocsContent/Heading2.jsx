@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useFadeUp } from "../Animations/gsapAnimations";
+import React from "react";
 
 export default function Heading2({ children, text, className, ...props }) {
-  const headingRef = useRef(null);
-  useFadeUp(headingRef);
 
   return (
     <h2
-      ref={headingRef}
       className={[
         "relative font-display text-2xl md:text-3xl font-semibold tracking-tighter text-foreground mt-10 pt-6 first:mt-0 first:pt-0",
         className,

@@ -7,6 +7,7 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
+import Heading3 from "@/components/DocsContent/HEading3";
 
 const useClientCode = `"use client";`;
 
@@ -95,7 +96,7 @@ const tailwindContentPathCode = `content: [
 export default function DocsDependencies() {
   return (
     <DocsContent className="max-w-none mx-0">
-      <Heading>Hyperiux Vault Dependencies</Heading>
+      <Heading>Dependencies</Heading>
 
       <Para>Bring the engine you need. Not the whole garage.</Para>
 
@@ -690,10 +691,8 @@ export default function DocsDependencies() {
       <Heading2 id="dependency-troubleshooting">
         Dependency Troubleshooting
       </Heading2>
-
-      <Para>
-        <strong>Missing dependency</strong>
-      </Para>
+<Heading3>Missing Dependency</Heading3>
+      
 
       <Para>Install the package listed by the effect page or CLI output.</Para>
 
@@ -702,11 +701,8 @@ export default function DocsDependencies() {
       <Para>Then run:</Para>
 
       <CodeBlock code={doctorCommand} language="bash" />
-
-      <Para>
-        <strong>Duplicate animation packages</strong>
-      </Para>
-
+<Heading3>Duplicate Animation Packages</Heading3>
+     
       <Para>Check whether the project uses both framer-motion and motion.</Para>
 
       <Para>Keep both only if required.</Para>
@@ -714,11 +710,8 @@ export default function DocsDependencies() {
       <Para>
         If not, standardize around the package used by your installed effects.
       </Para>
-
-      <Para>
-        <strong>Tailwind styles do not apply</strong>
-      </Para>
-
+<Heading3>Tailwind Styles Do Not Apply</Heading3>
+     
       <Para>Make sure Tailwind scans the Vault directory.</Para>
 
       <CodeBlock code={tailwindContentPathCode} language="ts" />
@@ -728,10 +721,8 @@ export default function DocsDependencies() {
         assuming a traditional config file exists.
       </Para>
 
-      <Para>
-        <strong>WebGL effect crashes on load</strong>
-      </Para>
-
+<Heading3>WebGL Effect Crashes on Load</Heading3>
+      
       <Para>Check:</Para>
 
       <DocsList>
@@ -743,10 +734,8 @@ export default function DocsDependencies() {
         <DocsListItem>missing Three.js dependencies</DocsListItem>
       </DocsList>
 
-      <Para>
-        <strong>Effect works locally but fails in production</strong>
-      </Para>
-
+<Heading3>Effect Works Locally but Fails in Production</Heading3>
+     
       <Para>Check:</Para>
 
       <DocsList>
@@ -758,11 +747,7 @@ export default function DocsDependencies() {
         <DocsListItem>minification issues</DocsListItem>
         <DocsListItem>environment-specific paths</DocsListItem>
       </DocsList>
-
-      <Para>
-        <strong>Bundle size jumped</strong>
-      </Para>
-
+<Heading3>Bundle Size Jumped</Heading3>
       <Para>Check:</Para>
 
       <DocsList>

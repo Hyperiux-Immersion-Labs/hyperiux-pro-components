@@ -7,6 +7,7 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
+import Heading3 from "@/components/DocsContent/HEading3";
 
 const cliHelpCommand = `npx hyperiux --help`;
 
@@ -96,7 +97,7 @@ const authLoginCommand = `npx hyperiux auth login`;
 
 const authTokenCommand = `npx hyperiux auth hvlt_************************`;
 
-const ciTokenCommand = `HYPERIUX_TOKEN=hvlt_xxx npx hyperiux add pro-effect`;
+const ciTokenCommand = `HYPERIUX_TOKEN = hvlt_xxx npx hyperiux add pro-effect`;
 
 const upgradeDryRunCommand = `npx hyperiux upgrade scroll-stack --dry-run`;
 
@@ -154,7 +155,7 @@ npx hyperiux doctor`;
 export default function DocsCli() {
   return (
     <DocsContent className="max-w-none mx-0">
-      <Heading>Hyperiux Vault CLI</Heading>
+      <Heading>Vault CLI</Heading>
 
       <Para>Creative code should not arrive wearing a disguise.</Para>
 
@@ -362,7 +363,7 @@ export default function DocsCli() {
 
       <Para>It is a flashlight. Not a priest.</Para>
 
-      <Heading2 id="init" className="text-[#7D9A50]!">init</Heading2>
+      <Heading2 id="init" className="text-[#addb67]!">init</Heading2>
 
       <Para>Prepares your project for Vault effects.</Para>
 
@@ -394,7 +395,7 @@ export default function DocsCli() {
 
       <Para>If your components live somewhere else, tell Vault where the floor is.</Para>
 
-      <Heading2 id="add" className="text-[#7D9A50]!">add</Heading2>
+      <Heading2 id="add" className="text-[#addb67]!">add</Heading2>
 
       <Para>Adds an effect to your workspace.</Para>
 
@@ -431,7 +432,7 @@ export default function DocsCli() {
 
       <Para>No drive-by Three.js.</Para>
 
-      <Heading2 id="upgrade" className="text-[#7D9A50]!">upgrade</Heading2>
+      <Heading2 id="upgrade" className="text-[#addb67]!">upgrade</Heading2>
 
       <Para>Updates an installed Vault effect.</Para>
 
@@ -490,7 +491,7 @@ export default function DocsCli() {
 
       <Para>Source ownership is useful only if updates respect the source.</Para>
 
-      <Heading2 id="uninstall" className="text-[#7D9A50]!">uninstall</Heading2>
+      <Heading2 id="uninstall" className="text-[#addb67]!">uninstall</Heading2>
 
       <Para>Removes an installed effect.</Para>
 
@@ -525,7 +526,7 @@ export default function DocsCli() {
         No one wants an uninstall command that behaves like a raccoon in a server room.
       </Para>
 
-      <Heading2 id="list" className="text-[#7D9A50]!">list</Heading2>
+      <Heading2 id="list" className="text-[#addb67]!">list</Heading2>
 
       <Para>Lists installed Vault effects.</Para>
 
@@ -539,7 +540,7 @@ export default function DocsCli() {
 
       <Para>It is especially useful before upgrades, audits, and cleanup.</Para>
 
-      <Heading2 id="doctor" className="text-[#7D9A50]!">doctor</Heading2>
+      <Heading2 id="doctor" className="text-[#addb67]!">doctor</Heading2>
 
       <Para>Diagnoses Vault setup issues.</Para>
 
@@ -573,7 +574,7 @@ export default function DocsCli() {
         It will not fix your taste. It will fix a surprising number of setup issues.
       </Para>
 
-      <Heading2 id="env" className="text-[#7D9A50]!">env</Heading2>
+      <Heading2 id="env" className="text-[#addb67]!">env</Heading2>
 
       <Para>Prints environment details.</Para>
 
@@ -592,7 +593,7 @@ export default function DocsCli() {
 
       <Para>A repo with three package managers is not a tech stack. It is a cry for help.</Para>
 
-      <Heading2 id="auth" className="text-[#7D9A50]!">auth</Heading2>
+      <Heading2 id="auth" className="text-[#addb67]!">auth</Heading2>
 
       <Para>Connects Pro or private registry access.</Para>
 
@@ -728,9 +729,8 @@ export default function DocsCli() {
       </Para>
 
       <Heading2 id="troubleshooting">Troubleshooting</Heading2>
-      <Para>
-        <strong>Command not found</strong>
-      </Para>
+      <Heading3>Command Not Found</Heading3>
+      
 
       <Para>Use npx.</Para>
 
@@ -739,21 +739,15 @@ export default function DocsCli() {
       <Para>If using a global install, reinstall the CLI.</Para>
 
       <CodeBlock code={npmInstallGlobalCommand} />
-
-      <Para>
-        <strong>Effect not found</strong>
-      </Para>
-
+<Heading3>Effect Not Found</Heading3>
+     
       <Para>Check the effect name.</Para>
 
       <CodeBlock code={listCommand} />
 
       <Para>For registry effects, confirm the registry configuration and network access.</Para>
-
-      <Para>
-        <strong>Missing dependency</strong>
-      </Para>
-
+<Heading3>Missing Dependency</Heading3>
+      
       <Para>Install the dependency reported by the CLI.</Para>
 
       <CodeBlock code={npmInstallGsapCommand} />
@@ -761,11 +755,8 @@ export default function DocsCli() {
       <Para>Then run:</Para>
 
       <CodeBlock code={doctorCommand} />
-
-      <Para>
-        <strong>Import alias does not resolve</strong>
-      </Para>
-
+<Heading3>Import Alias Does Not Resolve</Heading3>
+     
       <Para>Check your project aliases.</Para>
 
       <Para>Common aliases include:</Para>
@@ -777,10 +768,7 @@ export default function DocsCli() {
       </DocsList>
 
       <Para>Update the generated imports or your TypeScript path mapping.</Para>
-
-      <Para>
-        <strong>Tailwind styles do not apply</strong>
-      </Para>
+<Heading3>Tailwind Styles Do Not Apply</Heading3>
 
       <Para>Check that Tailwind scans the folder where Vault files were added.</Para>
 
@@ -791,10 +779,8 @@ export default function DocsCli() {
       <Para>
         If the classes are not compiling, Tailwind probably does not know the files exist.
       </Para>
-
-      <Para>
-        <strong>Hydration warning</strong>
-      </Para>
+<Heading3>Hydration Warning</Heading3>
+     
 
       <Para>Check whether the effect uses browser-only APIs.</Para>
 
@@ -812,11 +798,8 @@ export default function DocsCli() {
       <Para>Servers are many things.</Para>
 
       <Para>They are not GPU theatres.</Para>
-
-      <Para>
-        <strong>Upgrade conflict</strong>
-      </Para>
-
+<Heading3>Upgrade Conflict</Heading3>
+      
       <Para>Check local changes.</Para>
 
       <CodeBlock code={gitStatusCommand} />
@@ -833,10 +816,8 @@ export default function DocsCli() {
       <Para>Taste is local.</Para>
 
       <Para>So are merge conflicts.</Para>
-
-      <Para>
-        <strong>Pro effect fails to install</strong>
-      </Para>
+<Heading3>Pro Effect Fails to Install</Heading3>
+      
 
       <Para>Check authentication.</Para>
 

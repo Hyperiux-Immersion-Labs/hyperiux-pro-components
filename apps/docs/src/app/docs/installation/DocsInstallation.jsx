@@ -7,6 +7,7 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import { CodeBlock } from "@/components/ui/CodeBlock";
+import Heading3 from "@/components/DocsContent/HEading3";
 
 const initCommand = `npx hyperiux init`;
 
@@ -204,10 +205,8 @@ export default function DocsInstallation() {
 
       <Para>No surprise machinery.</Para>
 
-      <Para>
-        <strong>1. Initialize Vault</strong>
-      </Para>
-
+<Heading3>1. Initialize Vault</Heading3>
+    
       <Para>Run this from the root of your project.</Para>
 
       <CodeBlock code={initCommand} language="bash" />
@@ -218,11 +217,8 @@ export default function DocsInstallation() {
         Depending on your setup, it may create or update configuration used to place
         components, utilities, styles, and generated files in the right folders.
       </Para>
-
-      <Para>
-        <strong>2. Add an effect</strong>
-      </Para>
-
+<Heading3>2. Add an Effect</Heading3>
+    
       <Para>Install the effect you want.</Para>
 
       <CodeBlock code={addEffectCommand} language="bash" />
@@ -239,11 +235,8 @@ export default function DocsInstallation() {
         A text reveal should not need the same machinery as a WebGL scene. That would be
         suspicious.
       </Para>
-
-      <Para>
-        <strong>3. Verify installation</strong>
-      </Para>
-
+<Heading3>3. Verify Installation</Heading3>
+      
       <Para>After adding an effect, run your project locally.</Para>
 
       <CodeBlock code={devCommand} language="bash" />
@@ -390,19 +383,13 @@ export default function DocsInstallation() {
           Check accessibility, reduced motion, and mobile behavior.
         </DocsListItem>
       </DocsList>
-
-      <Para>
-        <strong>1. Choose an effect</strong>
-      </Para>
-
+<Heading3>1. Choose an Effect</Heading3>
       <Para>
         Go to the effects index and open the pattern you want to use. Start with the moment
         you need, not the tool you want.
       </Para>
+<Heading3>2. Check the Implementation Notes</Heading3>
 
-      <Para>
-        <strong>2. Check the implementation notes</strong>
-      </Para>
 
       <Para>Before copying code, review the effect page.</Para>
 
@@ -426,9 +413,7 @@ export default function DocsInstallation() {
         there to save you from 2 a.m. archaeology.
       </Para>
 
-      <Para>
-        <strong>3. Install required dependencies</strong>
-      </Para>
+<Heading3>3. Install Required Dependencies</Heading3>
 
       <Para>Install only what the selected effect needs.</Para>
 
@@ -449,9 +434,7 @@ export default function DocsInstallation() {
         creative internet just to animate a headline.
       </Para>
 
-      <Para>
-        <strong>4. Copy the source files</strong>
-      </Para>
+<Heading3>4. Copy the Source Files</Heading3>
 
       <Para>Copy the component and supporting files into your project.</Para>
 
@@ -477,10 +460,7 @@ export default function DocsInstallation() {
       <Para>
         Creative code is easier to tune when the file paths are not playing hide-and-seek.
       </Para>
-
-      <Para>
-        <strong>5. Fix imports and aliases</strong>
-      </Para>
+<Heading3>5. Fix imports and aliases</Heading3>
 
       <Para>Update import paths to match your project.</Para>
 
@@ -507,11 +487,7 @@ export default function DocsInstallation() {
         <DocsListItem>client-only boundaries</DocsListItem>
         <DocsListItem>dynamic imports where needed</DocsListItem>
       </DocsList>
-
-      <Para>
-        <strong>6. Test locally</strong>
-      </Para>
-
+<Heading3>6. Test Locally</Heading3>
       <Para>Run your dev server.</Para>
 
       <CodeBlock code={devCommand} language="bash" />
@@ -599,10 +575,8 @@ export default function DocsInstallation() {
       </Para>
 
       <Heading2 id="troubleshooting">Troubleshooting</Heading2>
-
-      <Para>
-        <strong>The effect does not render</strong>
-      </Para>
+<Heading3>The effect does not render</Heading3>
+      
 
       <Para>Check:</Para>
 
@@ -613,19 +587,13 @@ export default function DocsInstallation() {
         <DocsListItem>whether required dependencies are installed</DocsListItem>
         <DocsListItem>whether required styles are imported</DocsListItem>
       </DocsList>
-
-      <Para>
-        <strong>Tailwind classes are missing</strong>
-      </Para>
-
+<Heading3>Tailwind classes are missing</Heading3>
+      
       <Para>Check your Tailwind content paths or v4 source scanning setup.</Para>
 
       <Para>Make sure the folder containing Vault files is included.</Para>
-
-      <Para>
-        <strong>The animation works locally but breaks in production</strong>
-      </Para>
-
+<Heading3>The animation works locally but breaks in production</Heading3>
+     
       <Para>Check:</Para>
 
       <DocsList>
@@ -636,10 +604,8 @@ export default function DocsInstallation() {
         <DocsListItem>environment-specific paths</DocsListItem>
         <DocsListItem>minification issues with animation libraries</DocsListItem>
       </DocsList>
-
-      <Para>
-        <strong>The page feels slow</strong>
-      </Para>
+<Heading3>The page feels slow</Heading3>
+      
 
       <Para>Profile before guessing.</Para>
 
@@ -656,10 +622,8 @@ export default function DocsInstallation() {
       </DocsList>
 
       <Para>If the fan starts negotiating, the effect needs attention.</Para>
-
-      <Para>
-        <strong>The effect works on desktop but not mobile</strong>
-      </Para>
+<Heading3>The effect works on desktop but not mobile</Heading3>
+      
 
       <Para>Check:</Para>
 

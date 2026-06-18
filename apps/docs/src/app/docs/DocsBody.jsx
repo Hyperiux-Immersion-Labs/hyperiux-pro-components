@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -224,6 +225,47 @@ function TableOfContents({ containerRef, watchKey }) {
   );
 }
 
+function BreadcrumbNav() {
+  const pathname = usePathname();
+
+  // Build breadcrumb items from pathname
+  const segments = pathname.split("/").filter(Boolean);
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    ...segments.map((segment, index) => {
+      const href = "/" + segments.slice(0, index + 1).join("/");
+      const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+      return { label, href };
+    }),
+  ];
+
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className="fadeup flex items-center gap-2 text-sm text-muted max-sm:text-xs pb-3 px-8 max-md:px-0"
+    >
+      {breadcrumbItems.map((item, index, items) => {
+        const isLast = index === items.length - 1;
+        return (
+          <span key={item.href} className="flex items-center gap-2">
+            {index > 0 && <span className="text-white/25">/</span>}
+            {isLast ? (
+              <span className="capitalize text-primary">{item.label}</span>
+            ) : (
+              <Link
+                href={item.href}
+                className="capitalize transition-colors hover:text-primary"
+              >
+                {item.label}
+              </Link>
+            )}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function DocsBody({ children }) {
   const contentRef = useRef(null);
   const pathname = usePathname();
@@ -237,8 +279,10 @@ export default function DocsBody({ children }) {
 
   return (
     <>
-      <div className="mx-auto w-full pt-16 ">
-        <div className="grid grid-cols-1 gap-1w0 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div className="mx-auto w-full pt-25 ">
+        <BreadcrumbNav />
+        
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
           <div
             ref={contentRef}
             className="px-8 max-md:px-0 [&_h1]:text-[4vw] [&_h1]:font-semibold [&_h1]:leading-[1.05] [&_h1]:text-white [&_h2]:text-[clamp(1.45rem,2vw,2rem)] [&_h2]:font-normal [&_h2]:leading-[1.12] [&_h2]:tracking-[-0.04em] [&_h2]:text-white [&_h3]:text-[clamp(1.05rem,1.45vw,1.35rem)] [&_h3]:font-normal [&_h3]:leading-[1.15] [&_h3]:tracking-[-0.03em] [&_h3]:text-white [&_p]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_p]:leading-[1.72] [&_p]:text-white [&_li]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_li]:leading-[1.65] [&_li]:text-white [&_strong]:text-white [&_.docs-heading2-line]:bg-white/20 [&_li::marker]:text-white max-sm:[&_h1]:text-[4vw]"

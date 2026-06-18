@@ -17,7 +17,7 @@ const licenseTiersCode = `Hyperiux Vault
 export default function DocsLicense() {
   return (
     <DocsContent className="max-w-none mx-0">
-      <Heading>Hyperiux Vault License</Heading>
+      <Heading>License</Heading>
 
       <Para>Use the code. Ship the work. Do not repackage the Vault.</Para>
 
@@ -155,7 +155,7 @@ export default function DocsLicense() {
         implementation details. That is the point. Drop in the interaction. Keep the taste.
       </Para>
 
-      <Heading2 id="mit-licensed-files">MIT-licensed Files</Heading2>
+      <Heading2 id="mit-licensed-files">MIT- Licensed Files</Heading2>
 
       <Para>
         Some Free Core files may be released under the MIT License. If a file is marked as
