@@ -78,7 +78,7 @@ function RodsScene({ mouse, active }) {
     return (
         <>
             <RenderKickstart active={active} />
-            <Environment preset="studio" />
+            <Environment files="/studio.exr" />
             <ambientLight intensity={0.5} />
             <pointLight
                 position={[-10, 5, 5]}
