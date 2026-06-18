@@ -333,7 +333,7 @@ export function VaultContent({
         onCategoryNavigate={updateCategoryFilter}
       >
         {({ isSidebarOpen }) => (
-          <div className="relative min-h-screen text-foreground effects-comp">
+          <div className="relative min-h-screen text-foreground effects-comp border-b border-white/10">
             <VaultHeader
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}

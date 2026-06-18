@@ -4,14 +4,14 @@ import React from 'react'
 import NavbarMobile from '@/components/WebsiteComps/NavbarMobile';
 
 export default function layout({ children }) {
- return (
- <PixelRandom color='#ff5f00'>
-    <NavbarMobile/>
- <div className="w-full">
+   return (
+      <PixelRandom color='#ff5f00'>
+         <NavbarMobile />
+         <div className="w-full">
 
- {children}
- <Footer animations={false} />
- </div>
- </PixelRandom>
- )
+            {children}
+            <Footer animations={false} />
+         </div>
+      </PixelRandom>
+   )
 }

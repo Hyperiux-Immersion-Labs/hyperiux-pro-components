@@ -15,7 +15,7 @@ export default function FAQDemo({ faqItems }) {
     .map((item) => item.id);
 
   return (
-    <section className="h-full px-8 max-sm:px-4 py-15 text-white">
+    <section className="h-full px-8 max-sm:px-4 py-24 text-white">
       <div className="mx-auto text-center text-white mb-12">
         <HeadAnim>
           <h2 className="text80 max-sm:text-[11vw] max-md:text-[8vw]">

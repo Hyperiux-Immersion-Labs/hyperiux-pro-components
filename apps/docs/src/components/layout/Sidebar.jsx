@@ -282,7 +282,7 @@ export function Sidebar({
         </div>
       </button>
 
-      <div className="flex h-full flex-col items-start overflow-hidden rounded-tr-md border-r border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
+      <div className="flex h-full flex-col items-start overflow-hidden border-r border-b border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
           <Link
           href={"/"}
