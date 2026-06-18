@@ -7,7 +7,6 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
-import Heading3 from "@/components/DocsContent/HEading3";
 
 const cliHelpCommand = `npx hyperiux --help`;
 
