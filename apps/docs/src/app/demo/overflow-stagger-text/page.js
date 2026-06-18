@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ReactLenis } from "lenis/react";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import OverflowStaggerText from "@/components/overflow-stagger-text";
-// import { OverflowStaggerText } from "@/components/overflow-stagger-text";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 const details = [
   { label: "Split", value: "characters" },
@@ -28,13 +28,11 @@ const notes = [
 const Page = () => {
   return (
     <ReactLenis root>
+      <DemoHeader />
       <main className="overflow-hidden bg-[#f4efe6] text-[#151515]">
-        <section className=" px-8 py-8 max-sm:px-4 max-md:py-18 max-sm:py-4">
+        <section className=" px-8 py-8 pt-22 max-md:pt-25 max-sm:pt-22 max-sm:px-4 max-md:py-18 max-sm:py-4">
           <div className="mx-auto grid  max-w-7xl grid-rows-[auto_1fr_auto] border border-[#151515]/15 bg-[#fbf8f1] max-sm:min-h-[calc(100vh-2rem)]">
-            <div className="flex items-center justify-between border-b border-[#151515]/15 px-6 py-5 text-xs max-sm:text-sm max-md:text-base font-semibold uppercase tracking-[0.24em] text-[#151515]/60 max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:px-4 max-sm:tracking-[0.16em]">
-              <span>Overflow Stagger Text</span>
-              <span>Character reveal system</span>
-            </div>
+           
 
             <div className="grid  gap-10 px-6 py-14 lg:grid-cols-[1.08fr_0.92fr] max-sm:px-4 max-sm:py-10">
               <div className="flex flex-col gap-[2vw] max-sm:gap-[4vw]">

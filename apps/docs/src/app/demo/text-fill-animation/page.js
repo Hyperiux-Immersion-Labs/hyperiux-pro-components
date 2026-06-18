@@ -1,12 +1,16 @@
 import React from'react'
 import { TextFillAnimation } from'@/components/text-fill-animation'
 import { ReactLenis } from'lenis/react'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 
 
 const page = () => {
  return (
  <>
  <ReactLenis root>
+    <DemoHeader />
+
  <TextFillAnimation
  text="Design systems should feel effortless, not like you're fighting your own components every time you build."
  textSize="3vw"
@@ -22,6 +26,7 @@ const page = () => {
  tabletTextSize='6vw'
  tabletTextWidth='88%'
  />
+ <ScrollBottom textColor='text-black' />
  </ReactLenis>
  </>
  )

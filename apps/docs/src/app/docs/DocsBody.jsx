@@ -179,14 +179,14 @@ function TableOfContents({ containerRef, watchKey }) {
         aria-hidden="true"
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 max-h-[70vh] w-[18vw] -translate-y-1/2 overflow-y-auto rounded-md scrollbar-hide bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
         <ul className="space-y-1">
           {items.map((it) => (
             <li key={it.id}>
               <a
                 href={`#${it.id}`}
                 className={[
-                  "block rounded-sm px-3 py-2 text20 font-medium leading-none text-white transition-colors duration-300 ease-out",
+                  "block rounded-sm px-3 py-2 leading-[1.2] text20 font-medium  text-white transition-colors duration-300 ease-out",
                   activeId === it.id
                     ? "bg-black"
                     : "hover:bg-black/55",
@@ -200,7 +200,7 @@ function TableOfContents({ containerRef, watchKey }) {
         </ul>
       </div>
 
-      <ul className="flex w-12 flex-col items-end gap-5">
+      <ul className="flex max-h-[70vh] w-12 flex-col items-end gap-5 overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {items.map((it) => (
           <li key={it.id}>
             <a

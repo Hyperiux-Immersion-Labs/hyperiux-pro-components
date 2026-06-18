@@ -8,7 +8,7 @@ const Page = () => {
         iChannel0="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
         iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png"
       />
-      <DemoHeader logoColor={"#ffffff"} />
+      <DemoHeader logoColor={"#ffffff"} textColor='#ffffff' />
       {/* Overlay copy (matches reference layout) */}
       <div className="pointer-events-none fixed inset-0 z-10 h-screen w-screen">
 
