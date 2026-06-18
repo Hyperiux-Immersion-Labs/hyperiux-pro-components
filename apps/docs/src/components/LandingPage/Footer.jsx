@@ -33,12 +33,15 @@ export default function Footer({ animations=true }) {
           <div className="w-full h-fit flex items-end pb-[2vw] max-md:pb-[15vw] justify-between relative max-sm:flex-col max-sm:items-center   max-sm:gap-[16vw] max-sm:pb-[8vw]">
             <div className="w-fit max-sm:mb-[-4vw] flex-col gap-[1vw] flex items-start justify-center h-full max-sm:order-2 max-sm:items-center max-sm:gap-[6vw]">
               <div className="space-y-[.5vw] max-sm:space-y-[3vw] max-sm:text-center">
-                <LinkHover className="text22 block" href="/">
-                  hi@hyperiux.com
+                <LinkHover className="text22 block" href="mailto:hello@hyperiux.com">
+                  hello@hyperiux.com
                 </LinkHover>
-                <LinkHover className="text22 block" href="/">
-                  +91817802636
+           
+           
+                <LinkHover className="text22 block" href="tel:+918178026136">
+                  +918178026136
                 </LinkHover>
+           
               </div>
               <div className="flex mt-4 gap-3 max-sm:mt-0 max-sm:gap-[4vw]">
                 {socialLinks.map(({ href, Icon, label }) => (

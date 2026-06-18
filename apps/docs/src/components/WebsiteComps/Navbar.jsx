@@ -542,6 +542,7 @@ export default function Navbar() {
                 <div className="relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] text20 font-medium">
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
+                        const isExternal = href.startsWith('http')
 
                         return (
                             <Link
@@ -549,6 +550,8 @@ export default function Navbar() {
                                     }`}
                                 key={label}
                                 href={href}
+                                target={isExternal ? '_blank' : undefined}
+                                rel={isExternal ? 'noopener noreferrer' : undefined}
                                 onMouseEnter={() => handleNavEnter(index, dropdown)}
                             >
                                 {label}

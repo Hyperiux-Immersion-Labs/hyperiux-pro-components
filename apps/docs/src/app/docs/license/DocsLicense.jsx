@@ -490,7 +490,7 @@ export default function DocsLicense() {
         unusual deployment environments, contact:
       </Para>
 
-      <Para>hi@hyperiux.com</Para>
+      <Para>hello@hyperiux.com</Para>
 
       <Para>Useful details to include:</Para>
 

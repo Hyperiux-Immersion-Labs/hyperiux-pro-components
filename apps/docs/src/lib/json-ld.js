@@ -21,7 +21,7 @@ export function OrganizationJsonLd() {
     description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
     url: homepage,
     telephone: "",
-    email: "hi@hyperiux.com",
+    email: "hello@hyperiux.com",
     address: {
       "@type": 'PostalAddress',
       streetAddress: '',

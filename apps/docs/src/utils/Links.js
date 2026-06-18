@@ -7,8 +7,8 @@ import {
 
 export const vaultLinks = [
     { label: 'Effects', href: '/effects' },
-    { label: 'Categories', href: '#', dropdown: 'categories' },
-    { label: 'Docs', href: '#', dropdown: 'docs' },
+    { label: 'Categories', href: '/effects/featured', dropdown: 'categories' },
+    { label: 'Docs', href: '/docs', dropdown: 'docs' },
     { label: 'Pricing', href: '#' },
     { label: 'Github', href: 'https://github.com/Hyperiux-Immersion-Labs/hyperiux-components' },
 ]
@@ -43,31 +43,31 @@ export const navDocsItems = [
 ]
 
 export const socialLinksList = [
-    { label: 'Github', href: 'https://github.com/hyperiux' },
-    { label: 'Facebook', href: 'https://facebook.com/hyperiux' },
-    { label: 'Linkedin', href: 'https://linkedin.com/company/hyperiux' },
-    { label: 'Instagram', href: 'https://instagram.com/hyperiux' },
-    { label: 'Twitter / X', href: 'https://twitter.com/hyperiux' },
+    { label: 'Github', href: 'https://github.com/Hyperiux-Immersion-Labs/hyperiux-components' },
+    { label: 'Facebook', href: '#' },
+    { label: 'Linkedin', href: '#' },
+    { label: 'Instagram', href: '#' },
+    { label: 'Twitter / X', href: '#' },
 ]
 
 export const socialLinks = [
     {
-        href: 'https://linkedin.com/company/hyperiux',
+        href: '#',
         Icon: LinkedinIcon,
         label: 'LinkedIn',
     },
     {
-        href: 'https://facebook.com/hyperiux',
+        href: '#',
         Icon: FacebookIcon,
         label: 'Facebook',
     },
     {
-        href: 'https://twitter.com/hyperiux',
+        href: '#',
         Icon: TwitterIcon,
         label: 'Twitter',
     },
     {
-        href: 'https://instagram.com/hyperiux',
+        href: '#',
         Icon: InstagramIcon,
         label: 'Instagram',
     },

@@ -54,6 +54,8 @@ const CONFIG = {
   plateColor: "#0e0e0e",
   glowLeftColor: "#662600",
   glowRightColor: "#cc4c00",
+  mobileGlowLeftColor: "#cc6600",
+  mobileGlowRightColor: "#ff9940",
 
   hoverSigma: 2.0,
   hoverSpeed: 0.09,
@@ -243,10 +245,9 @@ function ParametricPlates({ isMobile }) {
     return arr;
   }, [count, turns]);
 
-  // Use config defaults directly
   const plateCol = plateColor;
-  const leftGlowCol = glowLeftColor;
-  const rightGlowCol = glowRightColor;
+  const leftGlowCol = isMobile ? CONFIG.mobileGlowLeftColor : glowLeftColor;
+  const rightGlowCol = isMobile ? CONFIG.mobileGlowRightColor : glowRightColor;
 
   // The standard material for the metallic plates is configured with roughness, metalness, and color.
   const mainMat = useMemo(
@@ -687,13 +688,13 @@ export default function GlowingPlates() {
 
           <Environment
             preset={CONFIG.environmentPreset}
-            environmentIntensity={CONFIG.environmentIntensity}
+            environmentIntensity={isMobile? .4 : CONFIG.environmentIntensity}
           />
 
           <directionalLight
             castShadow={!isMobile}
-            color={CONFIG.glowLeftColor}
-            intensity={CONFIG.lightIntensity}
+            color={isMobile ? "#ffeedd" : CONFIG.glowLeftColor}
+            intensity={isMobile ? 1.8 : CONFIG.lightIntensity}
             position={CONFIG.lightPosition}
           />
 

@@ -17,6 +17,7 @@ function splitCharacters(text) {
 export default function LinkHover({
   href = "#",
   children,
+  target = "_blank",
   className = "",
   ease = DEFAULT_EASE,
   duration = 0.5,
@@ -137,6 +138,7 @@ export default function LinkHover({
     <Link
       ref={linkRef}
       href={href}
+      target={target}
       className={`relative block w-fit overflow-hidden text-16 leading-[1.15] ${textShadowClass} ${className}`}
       style={{ color: idleColor }}
       onMouseEnter={handleEnter}
