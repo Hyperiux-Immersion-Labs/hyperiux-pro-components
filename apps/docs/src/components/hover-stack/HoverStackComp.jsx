@@ -109,7 +109,7 @@ const HoverStackComp = ({
           {cards.map((card, index) => (
             <div
               key={card.id ?? index}
-              className={`relative flex min-h-[58.667vw] w-full cursor-default select-none flex-col justify-between overflow-hidden rounded-[4.8vw] border border-black/10 p-[4.8vw] ${card.accent || ""}`}
+              className={`relative flex min-h-[58vw] max-md:min-h-[30vh] max-sm:min-h-[25vh] w-full cursor-default select-none flex-col justify-between overflow-hidden rounded-[4.8vw] border border-black/10 p-[4.8vw] max-md:p-[4vw] ${card.accent || ""}`}
               style={{
                 background: card.bg,
               }}
@@ -117,7 +117,7 @@ const HoverStackComp = ({
               <div />
 
               <div className="relative z-2 flex flex-1 items-center">
-                <p className="m-0 max-w-full text-[1.2rem] leading-[1.05] tracking-[-0.04em]">
+                <p className="m-0 max-w-full text-[1.2rem] max-md:text-[3vw] leading-[1.05] max-sm:text-[5vw] tracking-[-0.04em]">
                   “{card.quote}”
                 </p>
               </div>
@@ -127,7 +127,7 @@ const HoverStackComp = ({
 
                 <div className="flex items-center justify-between gap-[3.2vw]">
                   <div className="flex items-center gap-[2.1vw]">
-                    <div className="flex size-[8.5vw] items-center justify-center rounded-full border border-black/10 bg-black text-[0.82rem] text-white shadow-[0_0.586vw_1.367vw_rgba(0,0,0,0.12)]">
+                    <div className="flex size-[8.5vw] items-center justify-center rounded-full border border-black/10 bg-black text-[0.82rem] max-md:text-[4vw] text-white shadow-[0_0.586vw_1.367vw_rgba(0,0,0,0.12)]">
                       ↗
                     </div>
 

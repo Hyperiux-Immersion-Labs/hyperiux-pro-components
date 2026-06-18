@@ -282,7 +282,7 @@ export function ZoomSliderComp({
       style={{ height: '100svh' }}
     >
       {title ? (
-        <div className="pointer-events-none absolute left-1/2 top-10 z-20 -translate-x-1/2 px-4 text-center">
+        <div className="pointer-events-none absolute left-1/2 top-20 max-md:top-25 z-20 -translate-x-1/2 px-4 text-center">
           <h2 className="text-4xl text-white max-sm:text-2xl">
             {title}
           </h2>

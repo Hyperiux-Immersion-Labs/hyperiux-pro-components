@@ -126,6 +126,7 @@ export default function PixelatedImageEffect({
  imageClassName ="",
   heading ="Move cursor left in the image block for a clear image, right for more pixelation.",
 }) {
+ const mobileHeading ="Click left in image block for clear image, right for more pixelated";
  const imageRef = useRef(null);
  const isTouching = useRef(false);
  const [pixelSize, setPixelSize] = useState(16);
@@ -155,14 +156,15 @@ export default function PixelatedImageEffect({
  };
 
  return (
- <div className="relative flex h-dvh w-dvw flex-col gap-15 items-center justify-center">
+ <div className="relative flex h-dvh w-dvw pt-6 flex-col gap-15 items-center justify-center">
 
 <h2 className="text-5xl text-center max-md:hidden w-[45%] mt-10">
   {heading}
 </h2>
 
- <h2 className="hidden max-md:block text-center text-2xl mt-10">
-   {heading}
+ <h2 className="hidden max-md:block  w-[60%] text-center mx-auto text-2xl">
+   {mobileHeading}
+
  </h2>
 
  <PixelateSvgFilter
@@ -191,5 +193,3 @@ export default function PixelatedImageEffect({
  </div>
  );
 }
-
-
