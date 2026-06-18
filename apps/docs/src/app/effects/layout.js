@@ -1,17 +1,16 @@
-import PixelRandom from '@/components/showcase/transitions/PixelRandom/PixelRandomTransition'
+import PixelRandom from "@/components/showcase/transitions/PixelRandom/PixelRandomTransition";
 import Footer from "@/components/LandingPage/Footer";
-import React from 'react'
-import NavbarMobile from '@/components/WebsiteComps/NavbarMobile';
+import React from "react";
+import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 
 export default function layout({ children }) {
-   return (
-      <PixelRandom color='#ff5f00'>
-         <NavbarMobile />
-         <div className="w-full">
-
-            {children}
-            <Footer animations={false} />
-         </div>
-      </PixelRandom>
-   )
+  return (
+    <PixelRandom color="#ff5f00">
+      <NavbarMobile />
+      <div className="w-full">
+        {children}
+        <Footer animations={false} />
+      </div>
+    </PixelRandom>
+  );
 }

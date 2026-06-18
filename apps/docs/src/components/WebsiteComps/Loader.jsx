@@ -22,12 +22,12 @@ const PIXEL_DISSOLVE_DELAY = 0.5;
 
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
-  return window.localStorage.getItem(LOADER_STORAGE_KEY) === "true";
+  return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
 }
 
 function markLoaderAsRun() {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(LOADER_STORAGE_KEY, "true");
+  window.sessionStorage.setItem(LOADER_STORAGE_KEY, "true");
 }
 
 function setLoaderRuntimeState({ running, complete }) {

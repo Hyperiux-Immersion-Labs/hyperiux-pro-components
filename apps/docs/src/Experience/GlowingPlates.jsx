@@ -13,6 +13,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
 import gsap from "gsap";
+import { useControls } from "leva";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
@@ -35,6 +36,8 @@ function isLoaderActive() {
 }
 
 // ─── Config ───────────────────────────────────────────────────────────────────
+// Material configuration for the metallic plates.
+// You can control roughness, metalness, and plate color here, as well as other scene globals.
 const CONFIG = {
   count: 51,
   radius: 4.5,
@@ -46,9 +49,10 @@ const CONFIG = {
   plateRadius: 1.5,
   plateThickness: 0.04,
 
-  roughness: 0.3,
-  metalness: 0.75,
-  plateColor: "#0e0e0e",
+  // ── Material configuration ──
+  roughness: 0.6, // updated from leva values
+  metalness: 0.16, // updated from leva values
+  plateColor: "#0e0e0e", // as seen on leva
 
   hoverSigma: 2.0,
   hoverSpeed: 0.09,
@@ -59,10 +63,10 @@ const CONFIG = {
   glowIntensity: 1.8,
 
   lightColor: "#ff4f00",
-  lightIntensity: 1.0,
-  lightPosition: [20, 10.5, -20],
+  lightIntensity: 10.0,
+  lightPosition: [20, 20.5, -20],
   lightShadowNear: 1,
-  lightShadowFar: 60,
+  lightShadowFar: 100,
   lightShadowFrustum: 12,
   shadowBias: 0.0,
   shadowNormalBias: 0.04,
@@ -87,9 +91,15 @@ const CONFIG = {
 };
 
 // ─── Materials ────────────────────────────────────────────────────────────────
-function makePlateMaterial(roughness, metalness) {
+/**
+ * Returns a MeshStandardMaterial with configurable roughness, metalness, and color.
+ * @param {number} roughness - 0.0 to 1.0 ("smudgy metal" to fully diffuse)
+ * @param {number} metalness - 0.0 to 1.0 ("plastic" to "chrome")
+ * @param {string} plateColor - color string, e.g. "#333" or "rgb(80,80,80)"
+ */
+function makePlateMaterial(roughness, metalness, plateColor) {
   return new THREE.MeshStandardMaterial({
-    color: CONFIG.plateColor,
+    color: plateColor,
     roughness,
     metalness,
   });
@@ -99,7 +109,15 @@ function makePlateGeometry(r, h) {
   return new THREE.CylinderGeometry(r, r, h, 64, 1, false);
 }
 
-function makeGlowShaderMaterial() {
+function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
+  // Convert RGB (0-255 range or #hex) to GLSL vec3 float code
+  // Assume input as something parseable by THREE.Color
+  const left = new THREE.Color(leftColorRGB);
+  const right = new THREE.Color(rightColorRGB);
+
+  const leftStr = `${left.r.toFixed(5)}, ${left.g.toFixed(5)}, ${left.b.toFixed(5)}`;
+  const rightStr = `${right.r.toFixed(5)}, ${right.g.toFixed(5)}, ${right.b.toFixed(5)}`;
+
   const vertexShader = `
     attribute float instanceIntensity;
     varying float vIntensity;
@@ -123,8 +141,9 @@ function makeGlowShaderMaterial() {
       if (vCapMask <= 0.001 || vIntensity <= 0.001) discard;
 
       float t = smoothstep(0.0, 1.0, vUv.x);
-      vec3 leftColor = vec3(1.0, 0.14, 0.0);
-      vec3 rightColor = vec3(1.0, 0.07, 0.0);
+
+      vec3 leftColor = vec3(${leftStr});
+      vec3 rightColor = vec3(${rightStr});
 
       vec3 col = mix(leftColor, rightColor, t);
 
@@ -154,10 +173,11 @@ function makeGlowShaderMaterial() {
 // ─────────────────────────────────────────────────────────────────────────────
 // ParametricPlates
 // ─────────────────────────────────────────────────────────────────────────────
-function ParametricPlates({ isMobile }) {
+function ParametricPlates({ isMobile, colors: levaColors }) {
   const count = CONFIG.count;
   const radius = CONFIG.radius;
 
+  // --- Material params from CONFIG for MeshStandardMaterial ---
   const {
     heightStep,
     turns,
@@ -166,8 +186,12 @@ function ParametricPlates({ isMobile }) {
     localTiltZ,
     plateRadius,
     plateThickness,
+
+    // Material config values:
     roughness,
     metalness,
+
+    // ...rest unchanged...
     hoverSigma,
     hoverSpeed,
     hoverScale,
@@ -218,9 +242,15 @@ function ParametricPlates({ isMobile }) {
     return arr;
   }, [count, turns]);
 
+  // Use leva colors for materials/etc
+  const plateCol = levaColors.plateColor;
+  const leftGlowCol = levaColors.glowLeftColor;
+  const rightGlowCol = levaColors.glowRightColor;
+
+  // The standard material for the metallic plates is configured with roughness, metalness, and color.
   const mainMat = useMemo(
-    () => makePlateMaterial(roughness, metalness),
-    [roughness, metalness]
+    () => makePlateMaterial(roughness, metalness, plateCol),
+    [roughness, metalness, plateCol]
   );
 
   const geo = useMemo(
@@ -228,7 +258,11 @@ function ParametricPlates({ isMobile }) {
     [plateRadius, plateThickness]
   );
 
-  const glowMat = useMemo(() => makeGlowShaderMaterial(), []);
+  // recreate shaderMaterial on color change!
+  const glowMat = useMemo(() => makeGlowShaderMaterial(leftGlowCol, rightGlowCol), [
+    leftGlowCol,
+    rightGlowCol,
+  ]);
 
   useLayoutEffect(() => {
     if (!glowRef.current) return;
@@ -507,6 +541,29 @@ export default function GlowingPlates() {
 
   const { isMobile } = useIsMobile();
 
+  // leva controls for plate and glow overlay colors AND material parameters
+  const colorsAndMaterial = useControls("Material Config", {
+    plateColor: { value: CONFIG.plateColor, label: "Plate Color" },
+    // Add adjustable material parameters for developer/design preview
+    roughness: { value: CONFIG.roughness, min: 0, max: 1, step: 0.01, label: "Roughness" },
+    metalness: { value: CONFIG.metalness, min: 0, max: 1, step: 0.01, label: "Metalness" },
+    glowLeftColor: { value: "#ff4f00", label: "Glow Left Color" },
+    glowRightColor: { value: "#ff2000", label: "Glow Right Color" },
+  });
+
+  // Compose a shader colors prop for plates: param split for legacy
+  const colors = {
+    plateColor: colorsAndMaterial.plateColor,
+    glowLeftColor: colorsAndMaterial.glowLeftColor,
+    glowRightColor: colorsAndMaterial.glowRightColor,
+    // pass-through for destructuring (in case more is needed)
+  };
+
+  // Override material config for runtime (leva panel) - quick live preview
+  CONFIG.roughness = colorsAndMaterial.roughness;
+  CONFIG.metalness = colorsAndMaterial.metalness;
+  CONFIG.plateColor = colorsAndMaterial.plateColor;
+
   const playFadeIfReady = () => {
     const el = canvasWrapperRef.current;
 
@@ -657,7 +714,7 @@ export default function GlowingPlates() {
 
           <directionalLight
             castShadow={!isMobile}
-            color={CONFIG.lightColor}
+            color={colors.glowLeftColor} // Lets light match the left glow color
             intensity={CONFIG.lightIntensity}
             position={CONFIG.lightPosition}
           />
@@ -670,6 +727,11 @@ export default function GlowingPlates() {
               <ParametricPlates
                 key={isMobile ? "mobile" : "desktop"}
                 isMobile={isMobile}
+                colors={{
+                  plateColor: colorsAndMaterial.plateColor,
+                  glowLeftColor: colorsAndMaterial.glowLeftColor,
+                  glowRightColor: colorsAndMaterial.glowRightColor,
+                }}
               />
             </group>
           </group>

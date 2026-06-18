@@ -16,7 +16,7 @@ const HERO_ANIMATION_DELAY_WITHOUT_LOADER = 0.15;
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
 
-  return window.localStorage.getItem(LOADER_STORAGE_KEY) === "true";
+  return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
 }
 
 function isLoaderActive() {
@@ -288,24 +288,24 @@ export default function Hero() {
         ref={containerRef}
         className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2"
       >
-        <p
+        {/* <p
           ref={vaultMobileRef}
           className="text24 hidden max-md:block text-light-grey max-md:text-center opacity-0"
         >
           Hyperiux Vault
-        </p>
+        </p> */}
 
         <div className="h-fit flex max-md:flex-col max-md:justify-center items-center w-full">
           <h1 className="text140 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full">
-            <span
+            {/* <span
               ref={vaultDesktopRef}
               className="text24 max-md:hidden text-light-grey absolute text-justify left-[1vw] top-[3vw] opacity-0"
             >
               Hyperiux Vault
-            </span>
+            </span> */}
 
             <span ref={headingRef} className="inline-block opacity-0">
-              <span className="opacity-0 max-md:hidden">sar</span>Creative
+              <span className="opacity-0 max-md:hidden">sariii</span>Creative
               interaction effects for websites that need to be remembered.
             </span>
           </h1>

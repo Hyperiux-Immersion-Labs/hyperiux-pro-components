@@ -7,8 +7,11 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
+
+gsap.registerPlugin(SplitText)
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 import Button from './Button'
 
@@ -24,6 +27,14 @@ const MENU_ANIM = {
     widthEase: 'power2.out',
 }
 
+const DROPDOWN_TEXT_ANIM = {
+    duration: 0.42,
+    stagger: 0.018,
+    ease: 'power3.out',
+    idleColor: 'rgba(255, 255, 255, 0.75)',
+    hoverColor: '#ffffff',
+}
+
 const useIsomorphicLayoutEffect =
     typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
@@ -33,15 +44,94 @@ function getPaneHeight(element) {
 }
 
 function NavDropdownItem({ label, href, icon }) {
+    const labelRef = useRef(null)
+    const splitRef = useRef(null)
+
+    useIsomorphicLayoutEffect(() => {
+        const labelEl = labelRef.current
+        if (!labelEl) return
+
+        let split = null
+        let cancelled = false
+
+        const initSplit = async () => {
+            await document.fonts.ready
+            if (cancelled || !labelRef.current) return
+
+            split = SplitText.create(labelRef.current, {
+                type: 'chars',
+                mask: 'chars',
+            })
+            splitRef.current = split
+
+            gsap.set(split.chars, {
+                yPercent: 0,
+                color: DROPDOWN_TEXT_ANIM.idleColor,
+            })
+        }
+
+        initSplit()
+
+        return () => {
+            cancelled = true
+            split?.revert()
+            splitRef.current = null
+        }
+    }, [label])
+
+    const handleTextEnter = useCallback(() => {
+        const split = splitRef.current
+        if (!split?.chars?.length) return
+
+        gsap.killTweensOf(split.chars)
+        gsap.fromTo(
+            split.chars,
+            { yPercent: 100 },
+            {
+                yPercent: 0,
+                duration: DROPDOWN_TEXT_ANIM.duration,
+                stagger: DROPDOWN_TEXT_ANIM.stagger,
+                ease: DROPDOWN_TEXT_ANIM.ease,
+            },
+        )
+        gsap.to(
+            split.chars,
+            {
+                color: DROPDOWN_TEXT_ANIM.hoverColor,
+                duration: DROPDOWN_TEXT_ANIM.duration * 0.65,
+                stagger: DROPDOWN_TEXT_ANIM.stagger,
+                ease: DROPDOWN_TEXT_ANIM.ease,
+            },
+            0,
+        )
+    }, [])
+
+    const handleTextLeave = useCallback(() => {
+        const split = splitRef.current
+        if (!split?.chars?.length) return
+
+        gsap.killTweensOf(split.chars)
+        gsap.to(split.chars, {
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+            duration: 0.25,
+            ease: 'power2.out',
+        })
+    }, [])
+
     return (
         <Link
             href={href}
             className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw] transition-colors duration-300 hover:bg-black"
+            onMouseEnter={handleTextEnter}
+            onMouseLeave={handleTextLeave}
         >
             <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
                 <Image src={icon} alt="icon" width={35} height={35} aria-hidden className="size-full object-contain" />
             </span>
-            <span className="text-[1.05vw] font-medium whitespace-nowrap text-white/75 transition-colors duration-300 group-hover:text-white">
+            <span
+                ref={labelRef}
+                className="text-[1.05vw] font-medium whitespace-nowrap"
+            >
                 {label}
             </span>
         </Link>
