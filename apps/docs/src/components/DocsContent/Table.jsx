@@ -48,7 +48,7 @@ export default function DocsTable({
   return (
     <div
   className={cx(
-    "w-full overflow-x-auto rounded-md border border-white/12 bg-white/4 fadeup",
+    "w-full overflow-x-auto rounded-md border border-white/12 bg-white/4",
     className
   )}
   {...props}
