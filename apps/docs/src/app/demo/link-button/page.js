@@ -1,9 +1,11 @@
 import LinkButton from "@/components/link-button";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import Image from "next/image";
 
 export default function Page() {
     return (
-   
+        <>
+        <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
@@ -38,6 +40,7 @@ export default function Page() {
                 <div className="absolute inset-0 bg-black/70" />
             </div>
         </div>
+        </>
 
     );
 }

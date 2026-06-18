@@ -423,7 +423,7 @@ export default function SpiderParticles({
       <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-10">
 
         {/* Top row */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start pt-15 justify-between">
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-2 max-md:hidden">
               <span

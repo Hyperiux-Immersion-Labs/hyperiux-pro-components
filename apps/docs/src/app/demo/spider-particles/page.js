@@ -1,4 +1,5 @@
 import SpiderParticles from '@/components/spider-particles'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import React from'react'
 
 const spiderParticlesProps = {
@@ -17,6 +18,7 @@ const spiderParticlesProps = {
 const page = () => {
  return (
  <div>
+    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
  <SpiderParticles {...spiderParticlesProps} />
  </div>
  )
