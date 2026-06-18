@@ -6,6 +6,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import TechMarquee from './TechMarquee'
 import RandomBlur from '../WebsiteComps/RandomBlur'
+import SplitLine from '../WebsiteComps/SplitLine'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -43,16 +44,19 @@ export default function Workflow() {
             id="Workflow"
             className="h-fit overflow-x-hidden bg-background py-[10vw]! max-md:py-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full flex items-center justify-center"
         >
-            <p className="text22 text-light-grey">
+            <SplitLine as="p"
+                className="text22 text-light-grey">
+
                 Workflow
-            </p>
+            </SplitLine>
+
 
             <RandomBlur as="h2" className="text140 text-center w-[60vw] max-md:w-[70vw]">
                 Preview it. Install it. Make it yours.
             </RandomBlur>
 
             <div className="w-full self-padd max-md:flex-col-reverse flex max-md:gap-[6vw] max-md:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
-                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
+                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw] fadeup">
                     <Button text="Read Installation Docs" href="/effects" />
                 </div>
 

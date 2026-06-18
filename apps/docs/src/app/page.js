@@ -2,7 +2,6 @@
 
 import AgencyProof from "@/components/LandingPage/AgencyProof";
 import AgencyProofMobile from "@/components/LandingPage/AgencyProofMobile";
-import FeaturedEffects from "@/components/LandingPage/FeaturedEffects";
 import Footer from "@/components/LandingPage/Footer";
 import FreeVault from "@/components/LandingPage/FreeVault";
 import Hero from "@/components/LandingPage/Hero";
@@ -15,9 +14,10 @@ import VaultShell from "@/Layouts/VaultShell";
 import CTA from "@/components/LandingPage/CTA";
 import useIsMobile from "@/hooks/useIsMobile";
 import Loader from "@/components/WebsiteComps/Loader";
+import FeaturedEffects from "@/components/LandingPage/FeaturedEffects";
 
 export default function Page() {
-  const { isMounted, isMobile } = useIsMobile();
+  const {isMobile } = useIsMobile();
 
   return (
     <>
@@ -26,24 +26,12 @@ export default function Page() {
       <Loader />
       <Hero />
       <GlowingPlates />
-
-      {!isMounted ? (
-        // SSR / Initial hydration fallback: render desktop to preserve HTML structure
-        <>
-          <FeaturedStoryTelling />
-          {/* <FeaturedEffects /> */}
-          <Workflow />
-          <FreeVault />
-          <AgencyProof />
-          <CTA />
-          <Footer />
-        </>
-      ) : isMobile ? (
+      { isMobile ? (
         // Mobile-only render
         <>
           <StorytellingMobile />
           <VaultGridMobile />
-          {/* <FeaturedEffects /> */}
+          {/* <FeaturedEffects/> */}
           <Workflow />
           <FreeVault />
           <AgencyProofMobile />
@@ -54,7 +42,7 @@ export default function Page() {
         // Desktop-only render
         <>
           <FeaturedStoryTelling />
-          {/* <FeaturedEffects /> */}
+          <FeaturedEffects/>
           <Workflow />
           <FreeVault />
           <AgencyProof />

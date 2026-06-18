@@ -266,7 +266,7 @@ export default function StorytellingMobile() {
                         <div className="w-fit">
                             <Button text="Install CLI" href="#"  />
                         </div>
-                        <Button text="Work with Hyperiux" variant="white" />
+                        <Button text="Work with Hyperiux" variant="white"  href="#" />
                     </div>
                 </div>
             </div>

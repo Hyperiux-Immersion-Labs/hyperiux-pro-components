@@ -11,6 +11,7 @@ import gsap from "gsap";
 import { HyperiuxLogo } from "@/utils/Icons";
 import Button from "./Button";
 import { navCategoryColumns, navDocsItems, vaultLinks } from "@/utils/Links";
+import { HamburgerIcon } from "./Icons";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -37,10 +38,6 @@ function cleanPath(path = "") {
 
 function isExternalHref(href = "") {
   return href.startsWith("http");
-}
-
-function isEffectsOverviewActive(pathname) {
-  return cleanPath(pathname) === "/effects";
 }
 
 function isEffectsCategoryRoute(pathname) {
@@ -150,7 +147,9 @@ function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
         </span>
       )}
 
-      <span className="max-sm:text-[4vw] max-md:text-[3vw] font-medium">{label}</span>
+      <span className="max-sm:text-[4vw] max-md:text-[3vw] font-medium">
+        {label}
+      </span>
     </Link>
   );
 }
@@ -250,7 +249,8 @@ export default function NavbarMobile() {
   };
 
   const toggleNavbar = (hide) => {
-    if (!navbarRef.current || hidden.current === hide) return;
+    if (!navbarRef.current) return;
+    if (hidden.current === hide) return;
 
     hidden.current = hide;
 
@@ -378,8 +378,13 @@ export default function NavbarMobile() {
   return (
     <>
       <nav
-        id="navigation"
+        id="mobile-navigation"
         ref={navbarRef}
+        style={{
+          opacity: 0,
+          visibility: "hidden",
+          transform: "translate3d(0, -18px, 0)",
+        }}
         className="fixed left-0 top-0 z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
       >
         <Link href="/" onClick={closeMenu}>
@@ -389,11 +394,16 @@ export default function NavbarMobile() {
         <button
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
-          className="relative flex max-sm:size-[11vw] max-md:size-[8vw] items-center justify-center rounded-full  text-white transition-colors"
+          className="relative flex max-sm:size-[11vw] max-md:size-[8vw] items-center justify-center rounded-full text-white transition-colors"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
-          {isMenuOpen ? <X className="max-sm:size-[7vw] max-md:size-[4vw]" /> : <Menu className="max-sm:size-[7vw] max-md:size-[4vw]" />}
+          {isMenuOpen ? (
+            <X className="max-sm:size-[7vw] max-md:size-[4vw]" />
+          ) : (
+            // <Menu className="max-sm:size-[7vw] max-md:size-[4vw]" />
+            <HamburgerIcon className="max-sm:size-[7vw] max-md:size-[4vw]" />
+          )}
         </button>
       </nav>
 
@@ -450,7 +460,7 @@ export default function NavbarMobile() {
 
           <div className="mt-8 border-t border-white/10 pt-8">
             <div className="flex w-full justify-center" onClick={closeMenu}>
-              <Button text="Install CLI" href="#"  />
+              <Button text="Install CLI" href="#" />
             </div>
           </div>
         </div>

@@ -276,7 +276,9 @@ export default function Loader() {
       const tl = gsap.timeline({
         onComplete: () => {
           markLoaderAsRun();
-
+          gsap.set(behindLogoRef.current,{
+            opacity:0,
+          })
           document.body.classList.remove("loader-active");
           setLoaderRuntimeState({ running: false, complete: true });
 
@@ -473,9 +475,10 @@ export default function Loader() {
 
   return (
     <div
-      ref={rootRef}
-      className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center overflow-hidden"
-    >
+  id="site-loader"
+  ref={rootRef}
+  className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center overflow-hidden"
+>
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-0 h-screen w-screen"
@@ -484,7 +487,7 @@ export default function Loader() {
 
       <div
         ref={behindLogoRef}
-        className="behind-logo relative z-10 flex w-fit items-center gap-[1vw] text-[#111111] max-md:gap-[3vw]"
+        className="behind-logo relative z-10 flex w-fit items-center gap-[1vw] text-[#0E0E0E] max-md:gap-[3vw]"
       >
         <div className="size-[4vw] max-md:size-[11vw]">
           <HyperiuxLogoIcon />

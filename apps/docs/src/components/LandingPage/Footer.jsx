@@ -26,7 +26,7 @@ export default function Footer({ animations=true }) {
             </h2>
           }
 
-          <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw]">
+          <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
             <Button text="Install CLI" href="#"  />
             <Button text="Work with Hyperiux" className="border border-white" variant="white" />
           </div>
