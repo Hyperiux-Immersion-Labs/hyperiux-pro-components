@@ -6,14 +6,13 @@
 // Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useMemo, useLayoutEffect, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
 import gsap from "gsap";
-import { LevaPanel, useControls } from "leva";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
@@ -90,50 +89,6 @@ const CONFIG = {
   bloomRadius: 0,
 
   updateFPS: 0,
-};
-
-const LEVA_THEME = {
-  colors: {
-    elevation1: "#0d0d0d",
-    elevation2: "#141414",
-    elevation3: "#1c1c1c",
-    accent1: "#ff5f00",
-    accent2: "#e05500",
-    accent3: "#ff8030",
-    highlight1: "#555555",
-    highlight2: "#999999",
-    highlight3: "#eeeeee",
-    vivid1: "#ff5f00",
-    folderWidgetColor: "#ff5f00",
-    toolTipBackground: "#1c1c1c",
-    toolTipText: "#cccccc",
-  },
-  radii: { xs: "3px", sm: "4px", lg: "6px" },
-  space: { sm: "4px", md: "6px", rowGap: "4px", colGap: "6px" },
-  fontSizes: { root: "11px" },
-  fonts: {
-    mono: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-  },
-  sizes: {
-    rootWidth: "270px",
-    controlWidth: "55%",
-    numberInputMinWidth: "48px",
-    rowHeight: "28px",
-    folderTitleHeight: "24px",
-    sliderHeight: "3px",
-    sliderKnobSize: "13px",
-    scrubberWidth: "8px",
-    scrubberHeight: "14px",
-  },
-  borderWidths: {
-    root: "0px",
-    input: "1px",
-    focus: "1px",
-    hover: "1px",
-    active: "1px",
-    folder: "0px",
-  },
 };
 
 // ─── Materials ────────────────────────────────────────────────────────────────
@@ -219,7 +174,7 @@ function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
 // ─────────────────────────────────────────────────────────────────────────────
 // ParametricPlates
 // ─────────────────────────────────────────────────────────────────────────────
-function ParametricPlates({ isMobile, colors: levaColors, roughness, metalness }) {
+function ParametricPlates({ isMobile }) {
   const count = CONFIG.count;
   const radius = CONFIG.radius;
 
@@ -240,6 +195,11 @@ function ParametricPlates({ isMobile, colors: levaColors, roughness, metalness }
     rotationSpeed,
     hoverThreshold,
     updateFPS,
+    plateColor,
+    roughness,
+    metalness,
+    glowLeftColor,
+    glowRightColor
   } = CONFIG;
 
   const mainRef = useRef();
@@ -283,9 +243,10 @@ function ParametricPlates({ isMobile, colors: levaColors, roughness, metalness }
     return arr;
   }, [count, turns]);
 
-  const plateCol = levaColors.plateColor;
-  const leftGlowCol = levaColors.glowLeftColor;
-  const rightGlowCol = levaColors.glowRightColor;
+  // Use config defaults directly
+  const plateCol = plateColor;
+  const leftGlowCol = glowLeftColor;
+  const rightGlowCol = glowRightColor;
 
   // The standard material for the metallic plates is configured with roughness, metalness, and color.
   const mainMat = useMemo(
@@ -581,20 +542,6 @@ export default function GlowingPlates() {
 
   const { isMobile } = useIsMobile();
 
-  const colorsAndMaterial = useControls("Material Config", {
-    plateColor: { value: CONFIG.plateColor, label: "Plate Color" },
-    roughness: { value: CONFIG.roughness, min: 0, max: 1, step: 0.01, label: "Roughness" },
-    metalness: { value: CONFIG.metalness, min: 0, max: 1, step: 0.01, label: "Metalness" },
-    glowLeftColor: { value: CONFIG.glowLeftColor, label: "Glow Left Color" },
-    glowRightColor: { value: CONFIG.glowRightColor, label: "Glow Right Color" },
-  });
-
-  const plateColors = {
-    plateColor: colorsAndMaterial.plateColor,
-    glowLeftColor: colorsAndMaterial.glowLeftColor,
-    glowRightColor: colorsAndMaterial.glowRightColor,
-  };
-
   const playFadeIfReady = () => {
     const el = canvasWrapperRef.current;
 
@@ -711,16 +658,6 @@ export default function GlowingPlates() {
       ref={containerRef}
       className="absolute z-10 bg-background inset-0 h-[140vh] w-full"
     >
-      <div className="glowing-plates-leva pointer-events-auto fixed right-4 top-4 z-9999 max-sm:hidden">
-        <LevaPanel
-          theme={LEVA_THEME}
-          collapsed={false}
-          oneLineLabels
-          flat={false}
-          hideCopyButton
-        />
-      </div>
-
       <div ref={canvasWrapperRef} className="h-full w-full opacity-0">
         <Canvas
           className="h-full w-full"
@@ -755,7 +692,7 @@ export default function GlowingPlates() {
 
           <directionalLight
             castShadow={!isMobile}
-            color={colorsAndMaterial.glowLeftColor}
+            color={CONFIG.glowLeftColor}
             intensity={CONFIG.lightIntensity}
             position={CONFIG.lightPosition}
           />
@@ -768,9 +705,6 @@ export default function GlowingPlates() {
               <ParametricPlates
                 key={isMobile ? "mobile" : "desktop"}
                 isMobile={isMobile}
-                colors={plateColors}
-                roughness={colorsAndMaterial.roughness}
-                metalness={colorsAndMaterial.metalness}
               />
             </group>
           </group>
@@ -789,18 +723,8 @@ export default function GlowingPlates() {
         </Canvas>
       </div>
 
-      <style jsx global>{`
-        .glowing-plates-leva [class*="TitleBar"] {
-          display: none !important;
-        }
+      {/* LEVA removed: style and panel */}
 
-        .glowing-plates-leva div[class*="Panel"] {
-          border-radius: 12px !important;
-          overflow: hidden !important;
-          border: 1px solid #232323 !important;
-          box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
-        }
-      `}</style>
     </div>
   );
 }
