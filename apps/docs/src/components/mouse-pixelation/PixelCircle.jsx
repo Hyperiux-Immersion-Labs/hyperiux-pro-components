@@ -162,10 +162,18 @@ function PixelCirclesPlane() {
 
   useEffect(() => {
     const context = gsap.context(() => {
+      gsap.set(".text-left", {
+        opacity: 1,
+      });
+
       gsap.from(".text-left", {
         xPercent: -25,
         duration: 3.5,
         ease: "expo.out",
+      });
+
+      gsap.set(".text-right", {
+        opacity: 1,
       });
 
       gsap.from(".text-right", {
@@ -277,13 +285,13 @@ export default function Pixelation({
         className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[12vw] px-[5vw] max-md:h-[90vh] max-md:gap-[7vw] max-sm:h-[90vh] max-sm:gap-[7vw]"
       >
         <h1 className="mt-[4vw] flex flex-col text-[8vw] font-medium leading-[1.2] text-white max-md:text-[12vw] max-sm:text-[15vw]">
-          <span className={firstLine.className}>
+          <span className={`${firstLine.className} opacity-0`}>
             {firstLine.prefix}
             <span className={firstLine.highlightClassName}>
               {firstLine.highlight}
             </span>
           </span>
-          <span className={secondLine.className}>
+          <span className={`${secondLine.className} opacity-0`}>
             {secondLine.prefix}
             <span className={secondLine.highlightClassName}>
               {secondLine.highlight}
