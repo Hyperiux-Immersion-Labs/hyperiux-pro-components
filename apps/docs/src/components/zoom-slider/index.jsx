@@ -17,19 +17,19 @@ export default ZoomSlider;
 const DEFAULT_SLIDER_DATA = [
   {
     number: '01',
-    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg',
     title: 'AURA',
     desc: 'Soft light and atmospheric tones',
   },
   {
     number: '02',
-    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg',
     title: 'DRIFT',
     desc: 'Floating through silence',
   },
   {
     number: '03',
-    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg',
     title: 'FORM',
     desc: 'Shapes carved by light',
   },
