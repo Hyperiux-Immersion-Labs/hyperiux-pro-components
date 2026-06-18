@@ -84,7 +84,7 @@ export default function TechMarquee() {
     }, [])
 
     return (
-        <section id='TechMarquee' className="relative pt-[10vw] max-md:pt-[25vw] w-full overflow-hidden">
+        <section id='TechMarquee' className="relative pt-[10vw] max-md:pt-[25vw] w-full overflow-hidden fadeup">
             <div className="overflow-hidden">
                 <div
                     ref={trackRef}

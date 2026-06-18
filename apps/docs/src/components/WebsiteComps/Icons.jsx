@@ -73,4 +73,26 @@ export const HyperiuxLogoIcon = () => {
         </>
     )
 }
+export const HamburgerIcon = ({className}) => {
+    return (
+        <>
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${className}`}>
+                <g clipPath="url(#clip0_800_8270)">
+                    <path d="M0.467773 4.73471H25.6678V7.53471H0.467773V4.73471ZM0.467773 11.7347H25.6678V14.5347H0.467773V11.7347ZM0.467773 18.7347H25.6678V21.5347H0.467773V18.7347Z" fill="white" className='fill-current' />
+                </g>
+                <defs>
+                    <clipPath id="clip0_800_8270">
+                        <rect width="25.2" height="25.2" fill="white"  className='fill-current'/>
+                    </clipPath>
+                </defs>
+            </svg>
+
+
+
+
+
+
+        </>
+    )
+}
 

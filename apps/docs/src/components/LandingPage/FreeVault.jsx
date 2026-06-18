@@ -178,7 +178,11 @@ export default function FreeVault() {
             id="FreeVault"
             className="h-fit relative z-10 bg-foreground text-background py-[10vw]! max-sm:pt-[20vw]! max-md:pb-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full px-[5vw] max-md:px-[8vw] flex items-center justify-center overflow-x-hidden"
         >
-            <p className="text22 text-light-grey">Free Vault</p>
+            <SplitLine as="p"
+                className="text22 text-light-grey">
+                Free Vault
+            </SplitLine>
+
             <RandomBlur as="h2" className="text140 text-center w-[75vw] max-md:w-[90vw]">
                 Everything you need today is free.
             </RandomBlur>
@@ -188,7 +192,7 @@ export default function FreeVault() {
             </SplitLine>
 
             <div className="w-full max-md:flex-col-reverse flex max-md:gap-[6vw] max-md:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
-                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw]">
+                <div className="w-fit max-md:mx-auto! max-md:mt-[6vw] fadeup">
                     <Button className='border border-primary' text="Explore All Effects" href="/effects" />
                 </div>
                 <div className="w-full max-md:flex-col-reverse max-md:gap-[8vw] max-md:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">
@@ -236,7 +240,7 @@ export default function FreeVault() {
                         </ul>
 
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
-                            <Button text="Join Waitlist" href="/waitlist" variant="black" />
+                            <Button text="Join Waitlist" href="/request-access" variant="black" />
                             <p className="text20">
                                 No Spam. Unsubscribe Anytime.
                             </p>

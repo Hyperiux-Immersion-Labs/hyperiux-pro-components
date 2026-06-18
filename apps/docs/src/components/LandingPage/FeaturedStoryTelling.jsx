@@ -165,7 +165,7 @@ export default function FeaturedStoryTelling() {
 
         gsap.set(infoButtonWrapperRef.current, {
             opacity: 0,
-            yPercent: 100,
+            yPercent: 30,
         });
 
         gsap.set(infoTextRef2.current, {
@@ -413,7 +413,7 @@ export default function FeaturedStoryTelling() {
             );
             masterTL.fromTo(
                 infoButtonWrapperRef.current,
-                { opacity: 0, yPercent: 100 },
+                { opacity: 0, yPercent: 30 },
                 { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
                 3.95
             );
@@ -460,7 +460,7 @@ export default function FeaturedStoryTelling() {
             masterTL.to(
                 [vaultTextRef.current, vaultMoveTextRef.current],
                 { opacity: 1, filter: "blur(0px)", duration: 1.5, ease: "power2.out" },
-                9.8
+                10
             );
             masterTL.to(
                 vaultSplit.chars,
@@ -471,46 +471,46 @@ export default function FeaturedStoryTelling() {
                     ],
                     stagger: 0.015
                 },
-                11.5
+                10.5
             );
             masterTL.to(
                 vaultMoveSplit.chars,
                 {
                     keyframes: [
-                        { color: "#ff5f00", duration: 0.03, ease: "power1.out" },
+                        { color: "#ff5f00", duration: 0.1, ease: "power1.out" },
                         { color: "#ffffff", duration: 0.225, ease: "power1.inOut" }
                     ],
-                    stagger: { amount: 0.015 },
-                    ease: "none"
+                    stagger: { amount: 0.2 },
+                   
                 },
-                13.0
+                12.0
             );
 
             // 3g. Vault Grid First Text Exit & "move" Text Transition (Duration: 13.8 to 15.0)
             masterTL.to(
                 [vaultSplit.words, '.dots'],
                 { opacity: 0, filter: "blur(10px)", stagger: { amount: 0.2, from: "random" }, ease: "power2.out", duration: 1.0 },
-                13.8
+                12.5
             );
 
             masterTL.to(
                 vaultMoveTextRef.current,
                 {
                     x: () => cachedMoveX,
-                    duration: 0.6,
-                    // ease: "power2.inOut"
+                    duration: 0.8,
+                    ease: "power2.inOut"
                 },
-                13.8
+                12.8
             );
 
             masterTL.to(
                 vaultMoveTextRef.current,
                 {
                     y: () => cachedMoveY,
-                    duration: 0.6,
+                    duration: 0.4,
                     // ease: "power2.inOut"
                 },
-                14.4
+                13.5
             );
 
             // 3h. Vault Grid Boxes Slide in & Second Text Reveal (Duration: 14.8 to 18.0)
@@ -518,14 +518,14 @@ export default function FeaturedStoryTelling() {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    14.8 + i * 0.15
+                    14 + i * 0.15
                 );
             });
             BOTTOM_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    15.3 + i * 0.15
+                    14.5 + i * 0.15
                 );
             });
             masterTL.to(
@@ -536,7 +536,7 @@ export default function FeaturedStoryTelling() {
                     vaultExploreTextRef.current
                 ],
                 { xPercent: 0, opacity: 1, filter: "blur(0px)", stagger: 0.15, ease: "power2.out", duration: 1.2 },
-                15.1
+                14.3
             );
 
             // 3i. Vault Grid Collapse & Fade Out (Duration: 18.5 to 20.0)
@@ -549,12 +549,12 @@ export default function FeaturedStoryTelling() {
                     vaultMoveTextRef.current,
                 ],
                 { opacity: 0, filter: 'blur(10px)', duration: 1.2, ease: "power2.out" },
-                17.5
+                16.8
             );
             masterTL.to(
                 "#heading-container",
                 { height: "1.5vw", duration: 1.2, transformOrigin: "center center", ease: "power2.inOut" },
-                17.5
+                16.5
             );
         }, section);
 
@@ -668,7 +668,7 @@ export default function FeaturedStoryTelling() {
                     </div>
 
                     {/* Middle Heading Container */}
-                    <div id="heading-container" className="w-full relative z-0 h-[30vh] flex items-center justify-center pointer-events-auto">
+                    <div id="heading-container" className="w-full relative z-0 h-[10vw] flex items-center justify-center pointer-events-auto">
                         <span ref={vaultTargetMoveRef} className="text80 opacity-0 text-center">
                             move
                         </span>

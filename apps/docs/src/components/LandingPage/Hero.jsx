@@ -3,6 +3,7 @@
 import React, { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { useFadeUp } from "../Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
@@ -33,6 +34,8 @@ export default function Hero() {
   const vaultDesktopRef = useRef(null);
   const vaultMobileRef = useRef(null);
   const pRef = useRef(null);
+
+  useFadeUp();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -75,12 +78,14 @@ export default function Hero() {
 
     const pEl = pRef.current;
 
-    const navigationEl =
+    const navigationEls =
       typeof document !== "undefined"
-        ? document.querySelector("#navigation")
-        : null;
+        ? gsap.utils.toArray("#navigation, #mobile-navigation")
+        : [];
 
-    if (!headingEl && !vaultEls.length && !pEl && !navigationEl) return;
+    if (!headingEl && !vaultEls.length && !pEl && !navigationEls.length) {
+      return;
+    }
 
     if (headingEl) {
       gsap.set(headingEl, {
@@ -100,10 +105,11 @@ export default function Hero() {
       });
     }
 
-    if (navigationEl) {
-      gsap.set(navigationEl, {
+    if (navigationEls.length) {
+      gsap.set(navigationEls, {
         autoAlpha: 0,
         y: -18,
+        yPercent: 0,
       });
     }
 
@@ -162,24 +168,23 @@ export default function Hero() {
           });
 
           const split = SplitText.create(el, {
-            type: "words",
+            type: "chars",
+            mask:"chars"
           });
 
           splits.push(split);
 
           gsap.fromTo(
-            split.words,
+            split.chars,
             {
-              y: 20,
-              opacity: 0,
+              yPercent:100,
             },
             {
-              y: 0,
-              opacity: 1,
+              yPercent: 0,
               delay: 0.15,
-              duration: 0.85,
+              duration: 0.3,
               ease: "power3.out",
-              stagger: 0.12,
+              stagger: 0.02,
             }
           );
         });
@@ -213,10 +218,11 @@ export default function Hero() {
         }
       }, containerRef);
 
-      if (navigationEl) {
-        navigationTween = gsap.to(navigationEl, {
+      if (navigationEls.length) {
+        navigationTween = gsap.to(navigationEls, {
           autoAlpha: 1,
           y: 0,
+          yPercent: 0,
           duration: 0.75,
           delay: 0.1,
           ease: "power3.out",

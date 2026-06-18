@@ -498,32 +498,62 @@ export default function GlowingPlates() {
   const containerRef = useRef(null);
   const canvasWrapperRef = useRef(null);
 
-  const [inView, setInView] = useState(true);
-  const [canvasReady, setCanvasReady] = useState(false);
-  const [loaderReady, setLoaderReady] = useState(false);
+  const canvasReadyRef = useRef(false);
+  const loaderReadyRef = useRef(false);
+  const fadePlayedRef = useRef(false);
+  const fadeTweenRef = useRef(null);
+  const pollRef = useRef(null);
+  const delayRef = useRef(null);
 
   const { isMobile } = useIsMobile();
 
-  useEffect(() => {
-    const el = containerRef.current;
+  const playFadeIfReady = () => {
+    const el = canvasWrapperRef.current;
 
     if (!el) return;
+    if (fadePlayedRef.current) return;
+    if (!canvasReadyRef.current) return;
+    if (!loaderReadyRef.current) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry.isIntersecting);
+    fadePlayedRef.current = true;
+
+    gsap.killTweensOf(el);
+
+    fadeTweenRef.current = gsap.fromTo(
+      el,
+      {
+        opacity: 0,
       },
       {
-        threshold: 0.0,
+        opacity: 1,
+        duration: 1.2,
+        delay: 0.15,
+        ease: "power2.out",
       }
     );
+  };
 
-    observer.observe(el);
+  const markLoaderReady = () => {
+    if (loaderReadyRef.current) return;
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+    loaderReadyRef.current = true;
+
+    if (pollRef.current) {
+      window.clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+
+    if (delayRef.current) {
+      window.clearTimeout(delayRef.current);
+      delayRef.current = null;
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        playFadeIfReady();
+      });
+    });
+  };
 
   useLayoutEffect(() => {
     const el = canvasWrapperRef.current;
@@ -536,69 +566,57 @@ export default function GlowingPlates() {
   }, []);
 
   useEffect(() => {
-    let poll;
-    let bootCheck;
-
-    const markLoaderReady = () => {
-      setLoaderReady(true);
+    const handleLoaderComplete = () => {
+      /*
+        The loaderComplete event fires before React visually removes
+        the loader component. Wait a little, but do not observe DOM or
+        update React state here.
+      */
+      delayRef.current = window.setTimeout(() => {
+        markLoaderReady();
+      }, 180);
     };
 
     if (hasLoaderRun() && !isLoaderActive()) {
-      markLoaderReady();
+      delayRef.current = window.setTimeout(() => {
+        markLoaderReady();
+      }, 180);
     } else {
-      window.addEventListener("loaderComplete", markLoaderReady, {
+      window.addEventListener("loaderComplete", handleLoaderComplete, {
         once: true,
       });
 
-      poll = window.setInterval(() => {
+      pollRef.current = window.setInterval(() => {
         if (hasLoaderRun() && !isLoaderActive()) {
-          window.clearInterval(poll);
-          poll = null;
           markLoaderReady();
         }
-      }, 60);
-
-      bootCheck = window.setTimeout(() => {
-        if (!isLoaderActive() && !hasLoaderRun()) {
-          markLoaderReady();
-        }
-      }, 250);
+      }, 80);
     }
 
     return () => {
-      window.removeEventListener("loaderComplete", markLoaderReady);
+      window.removeEventListener("loaderComplete", handleLoaderComplete);
 
-      if (poll) {
-        window.clearInterval(poll);
+      if (pollRef.current) {
+        window.clearInterval(pollRef.current);
+        pollRef.current = null;
       }
 
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
+      if (delayRef.current) {
+        window.clearTimeout(delayRef.current);
+        delayRef.current = null;
       }
     };
   }, []);
 
   useEffect(() => {
-    const el = canvasWrapperRef.current;
+    return () => {
+      fadeTweenRef.current?.kill();
 
-    if (!el) return;
-    if (!canvasReady || !loaderReady) return;
-
-    gsap.killTweensOf(el);
-
-    gsap.fromTo(
-      el,
-      {
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        duration: 1.2,
-        delay: 0.2,
-        ease: "power2.out",
+      if (canvasWrapperRef.current) {
+        gsap.killTweensOf(canvasWrapperRef.current);
       }
-    );
-  }, [canvasReady, loaderReady]);
+    };
+  }, []);
 
   return (
     <div
@@ -608,13 +626,14 @@ export default function GlowingPlates() {
       <div ref={canvasWrapperRef} className="h-full w-full opacity-0">
         <Canvas
           className="h-full w-full"
-          frameloop={inView ? "always" : "never"}
+          frameloop="always"
           dpr={CONFIG.canvasDpr}
           shadows={!isMobile}
           onCreated={() => {
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
-                setCanvasReady(true);
+                canvasReadyRef.current = true;
+                playFadeIfReady();
               });
             });
           }}

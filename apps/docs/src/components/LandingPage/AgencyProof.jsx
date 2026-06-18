@@ -101,7 +101,7 @@ export default function AgencyProof() {
                         { scale: 0.85 },
                         {
                             scale: 1,
-                            duration:1,
+                            duration: 1,
                             ease: "linear",
                             scrollTrigger: {
                                 trigger: project,
@@ -109,7 +109,7 @@ export default function AgencyProof() {
                                 start: "left 100%",
                                 end: "left 30%",
                                 scrub: true,
-                                markers:false,
+                                markers: false,
                             },
                         }
                     );
@@ -195,7 +195,10 @@ export default function AgencyProof() {
             id="AgencyProof"
             className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-md:hidden"
         >
-            <p className="text22 text-light-grey">Agency Proof</p>
+            <SplitLine as="p"
+                className="text22 text-light-grey">
+                Agency Proof
+            </SplitLine>
 
             <RandomBlur as="h2" className="text140 text-center w-[80vw]">
                 A public proof of how Hyperiux thinks about digital experience.
@@ -211,7 +214,7 @@ export default function AgencyProof() {
                 websites, product experiences, SaaS landing pages, and immersive digital
                 systems.
             </SplitLine>
-            <div className="w-full flex justify-end px-[10vw] mt-[2vw]">
+            <div className="w-full flex justify-end px-[10vw] mt-[2vw] fadeup">
                 <Button text="Work with Hyperiux" />
             </div>
 
@@ -226,7 +229,7 @@ export default function AgencyProof() {
                             className="flex h-full w-full gap-[2vw] items-center relative"
                         >
                             {/* Floating cursor per card */}
-                             {agencyProjects.map((project, idx) => (
+                            {agencyProjects.map((project, idx) => (
                                 <ProjectCard
                                     key={idx}
                                     project={project}
