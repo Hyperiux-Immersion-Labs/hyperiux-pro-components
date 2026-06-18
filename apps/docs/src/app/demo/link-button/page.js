@@ -13,7 +13,7 @@ export default function Page() {
                     <h1 className="text-5xl font-medium max-sm:text-4xl">Link Button</h1>
                 </div>
 
-                <div className="w-full ml-10">
+                <div className="w-fit mx-auto">
                     <LinkButton
                         text="Hover me"
                         href="#"
