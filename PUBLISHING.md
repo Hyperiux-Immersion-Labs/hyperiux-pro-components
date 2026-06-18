@@ -3,7 +3,7 @@
 ## Pre-publish Checklist
 
 ### 1. Make sure the registry is live
-The CLI fetches from `components.hyperiux.com/r` in production. Before publishing, confirm that domain resolves and effects are accessible — otherwise users will get fetch errors on `npx hyperiux add`.
+The CLI fetches from `vault.hyperiux.com/r` in production. Before publishing, confirm that domain resolves and effects are accessible — otherwise users will get fetch errors on `npx hyperiux add`.
 
 ### 2. Verify the CLI package metadata
 Check [`packages/cli/package.json`](packages/cli/package.json):

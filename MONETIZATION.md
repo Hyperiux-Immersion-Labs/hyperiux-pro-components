@@ -64,7 +64,7 @@ pnpm add @clerk/nextjs stripe @supabase/supabase-js
 - The docs site is a **Next.js App Router** app with **no TypeScript** (all `.js`/`.jsx`)
 - Registry effect metadata lives in `registry/effects/<category>/<name>/registry.json`
 - The build script at `apps/docs/scripts/build-registry.js` compiles all registry.json files into `apps/docs/public/r/index.json` and `apps/docs/public/r/<name>.json`
-- The CLI reads effect files from the public registry JSON at `https://components.hyperiux.com/r`
+- The CLI reads effect files from the public registry JSON at `https://vault.hyperiux.com/r`
 
 ---
 
@@ -491,7 +491,7 @@ const AUTH_FILE = path.join(CONFIG_DIR, 'auth.json')
 
 export async function login() {
   console.log(chalk.cyan('\nOpen this URL in your browser to get your CLI token:'))
-  console.log(chalk.white('https://components.hyperiux.com/cli-auth\n'))
+  console.log(chalk.white('https://vault.hyperiux.com/cli-auth\n'))
 
   const { token } = await prompts({
     type: 'text',
@@ -617,7 +617,7 @@ if (effect.tier === 'pro') {
     process.exit(1)
   }
 
-  const res = await fetch('https://components.hyperiux.com/api/cli/validate', {
+  const res = await fetch('https://vault.hyperiux.com/api/cli/validate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token }),
@@ -626,7 +626,7 @@ if (effect.tier === 'pro') {
 
   if (!valid) {
     console.log(chalk.red(`\nAccess denied: ${reason}`))
-    console.log(chalk.white('Subscribe at https://components.hyperiux.com\n'))
+    console.log(chalk.white('Subscribe at https://vault.hyperiux.com\n'))
     process.exit(1)
   }
 }
@@ -706,7 +706,7 @@ export async function fetchRegistry(name, options = {}) {
 
   // Pro effect — fetch full data from protected endpoint
   const token = getAuthToken()
-  const fullRes = await fetch(`https://components.hyperiux.com/api/effects/${name}`, {
+  const fullRes = await fetch(`https://vault.hyperiux.com/api/effects/${name}`, {
     headers: { Authorization: `Bearer ${token}` },
   })
 
@@ -763,7 +763,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 # App
-NEXT_PUBLIC_APP_URL=https://components.hyperiux.com
+NEXT_PUBLIC_APP_URL=https://vault.hyperiux.com
 
 # GitHub — private pro effects repo
 # Create a fine-grained personal access token with read-only Contents access to the private repo

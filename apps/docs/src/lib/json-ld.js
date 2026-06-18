@@ -79,7 +79,7 @@ export function LocalBusiness() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Hyperiux",
-    "image": `https://components.hyperiux.com/hyperiux.png`,
+    "image": `https://vault.hyperiux.com/hyperiux.png`,
     "@id": "",
     "url": `${homepage}`,
     "telephone": "",

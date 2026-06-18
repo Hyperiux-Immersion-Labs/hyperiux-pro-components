@@ -37,7 +37,7 @@ const initConfig = `{
     "utils": "@/lib/utils"
   },
   "registries": {
-    "@hyperiux": "https://components.hyperiux.com/r/{name}.json"
+    "@hyperiux": "https://vault.hyperiux.com/r/{name}.json"
   }
 }`;
 
