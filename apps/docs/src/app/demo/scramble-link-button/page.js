@@ -28,7 +28,7 @@ export default function Page() {
 
             <div className="fixed inset-0">
                 <Image
-                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg"
+                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
                     alt="bg image"
                     title="Scramble Link Button"
                     className="h-full w-full object-cover"
