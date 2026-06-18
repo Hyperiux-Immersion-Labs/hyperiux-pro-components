@@ -10,7 +10,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const freeEffects = [
-    "Scroll systems",
+    "Scroll Systems",
     "Cursor Interactions",
     "Text Animation",
     "Navigation Patterns",
@@ -213,7 +213,7 @@ export default function FreeVault() {
                             ))}
                         </ul>
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
-                            <Button text="Get Free Access" href="/effects" />
+                            <Button text="Get Free Access" href="/effects/free" />
                             <p className="text20 text-light-grey ">
                                 No Credit Card Required
                             </p>

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
@@ -179,14 +177,16 @@ function TableOfContents({ containerRef, watchKey }) {
         aria-hidden="true"
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 max-h-[70vh] w-[18vw] -translate-y-1/2 overflow-y-auto rounded-md scrollbar-hide bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+      
+      <div className="pointer-events-none absolute h-fit max-h-[60vh] overflow-y-auto  overflow-hidden right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
+      <div className="w-full h-fit">
         <ul className="space-y-1">
           {items.map((it) => (
             <li key={it.id}>
               <a
                 href={`#${it.id}`}
                 className={[
-                  "block rounded-sm px-3 py-2 leading-[1.2] text20 font-medium  text-white transition-colors duration-300 ease-out",
+                  "block rounded-sm px-3 py-2 text20 font-medium leading-[1.2] text-white transition-colors duration-300 ease-out",
                   activeId === it.id
                     ? "bg-black"
                     : "hover:bg-black/55",
@@ -198,6 +198,8 @@ function TableOfContents({ containerRef, watchKey }) {
             </li>
           ))}
         </ul>
+
+      </div>
       </div>
 
       <ul className="flex max-h-[70vh] w-12 flex-col items-end gap-5 overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -269,13 +271,6 @@ function BreadcrumbNav() {
 export default function DocsBody({ children }) {
   const contentRef = useRef(null);
   const pathname = usePathname();
-  const isDocsPath = pathname.startsWith("/docs");
-  const prevDocsPathRef = useRef(false);
-  const shouldAnimateDocsTransition = isDocsPath && !prevDocsPathRef.current;
-
-  useEffect(() => {
-    prevDocsPathRef.current = isDocsPath;
-  }, [isDocsPath]);
 
   return (
     <>
@@ -287,25 +282,7 @@ export default function DocsBody({ children }) {
             ref={contentRef}
             className="px-8 max-md:px-0 [&_h1]:text-[4vw] [&_h1]:font-semibold [&_h1]:leading-[1.05] [&_h1]:text-white [&_h2]:text-[clamp(1.45rem,2vw,2rem)] [&_h2]:font-normal [&_h2]:leading-[1.12] [&_h2]:tracking-[-0.04em] [&_h2]:text-white [&_h3]:text-[clamp(1.05rem,1.45vw,1.35rem)] [&_h3]:font-normal [&_h3]:leading-[1.15] [&_h3]:tracking-[-0.03em] [&_h3]:text-white [&_p]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_p]:leading-[1.72] [&_p]:text-white [&_li]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_li]:leading-[1.65] [&_li]:text-white [&_strong]:text-white [&_.docs-heading2-line]:bg-white/20 [&_li::marker]:text-white max-sm:[&_h1]:text-[4vw]"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={pathname}
-                initial={
-                  shouldAnimateDocsTransition
-                    ? { opacity: 0, y: 10, filter: "blur(6px)" }
-                    : false
-                }
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={
-                  shouldAnimateDocsTransition
-                    ? { opacity: 0, y: -10, filter: "blur(6px)" }
-                    : false
-                }
-                transition={{ duration: 0.35, ease: "easeInOut" }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
+            {children}
           </div>
           <aside className="hidden xl:block pr-6">
             <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">

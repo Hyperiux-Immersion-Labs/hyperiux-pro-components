@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -14,6 +15,8 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
   const triggers = useRef([]);
 
   useEffect(() => {
+    if (shouldSkipSidebarDocsAnimation()) return;
+
     const el = containerRef.current;
     if (!el) return;
 

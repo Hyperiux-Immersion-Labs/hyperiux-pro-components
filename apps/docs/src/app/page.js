@@ -42,7 +42,7 @@ export default function Page() {
         // Desktop-only render
         <>
           <FeaturedStoryTelling />
-          <FeaturedEffects/>
+          {/* <FeaturedEffects/> */}
           <Workflow />
           <FreeVault />
           <AgencyProof />

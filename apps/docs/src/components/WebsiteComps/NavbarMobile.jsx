@@ -5,7 +5,7 @@ import { useLenis } from "lenis/react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import gsap from "gsap";
 
 import { HyperiuxLogo } from "@/utils/Icons";
@@ -15,6 +15,8 @@ import { HamburgerIcon } from "./Icons";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+const NAVBAR_INTRO_DELAY = 0.15;
 
 const categoryLinks = navCategoryColumns.flat();
 
@@ -38,6 +40,16 @@ function cleanPath(path = "") {
 
 function isExternalHref(href = "") {
   return href.startsWith("http");
+}
+
+function isLoaderActive() {
+  if (typeof window === "undefined") return false;
+
+  return (
+    document.body.classList.contains("loader-active") ||
+    window.__HYPERIUX_LOADER_RUNNING__ === true ||
+    Boolean(document.querySelector("#site-loader"))
+  );
 }
 
 function isEffectsCategoryRoute(pathname) {
@@ -232,7 +244,10 @@ export default function NavbarMobile() {
   const navbarRef = useRef(null);
   const menuRef = useRef(null);
   const linksRef = useRef(null);
+
   const hidden = useRef(false);
+  const introPlayed = useRef(false);
+  const introTween = useRef(null);
 
   const pathname = usePathname();
 
@@ -248,8 +263,40 @@ export default function NavbarMobile() {
     setOpenDropdown((current) => (current === id ? null : id));
   };
 
+  const playNavbarIntro = () => {
+    const navbar = navbarRef.current;
+
+    if (!navbar) return;
+    if (introPlayed.current) return;
+
+    introPlayed.current = true;
+    hidden.current = false;
+
+    introTween.current?.kill();
+    gsap.killTweensOf(navbar);
+
+    introTween.current = gsap.delayedCall(NAVBAR_INTRO_DELAY, () => {
+      gsap.fromTo(
+        navbar,
+        {
+          autoAlpha: 0,
+          y: -18,
+          yPercent: 0,
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          yPercent: 0,
+          duration: 0.75,
+          ease: "power3.out",
+        }
+      );
+    });
+  };
+
   const toggleNavbar = (hide) => {
     if (!navbarRef.current) return;
+    if (!introPlayed.current) return;
     if (hidden.current === hide) return;
 
     hidden.current = hide;
@@ -277,6 +324,66 @@ export default function NavbarMobile() {
       toggleNavbar(false);
     }
   });
+
+  useIsomorphicLayoutEffect(() => {
+    const navbar = navbarRef.current;
+
+    if (!navbar) return;
+
+    gsap.set(navbar, {
+      autoAlpha: 0,
+      y: -18,
+      yPercent: 0,
+    });
+  }, []);
+
+  useEffect(() => {
+    let poll;
+    let fallbackTimeout;
+
+    const tryPlayIntro = () => {
+      if (!isLoaderActive()) {
+        if (poll) {
+          window.clearInterval(poll);
+          poll = null;
+        }
+
+        playNavbarIntro();
+      }
+    };
+
+    window.addEventListener("loaderComplete", tryPlayIntro, {
+      once: true,
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(tryPlayIntro);
+    });
+
+    poll = window.setInterval(tryPlayIntro, 80);
+
+    fallbackTimeout = window.setTimeout(() => {
+      /*
+        This is the important fallback for pages that do not have a loader at all.
+        If there is no loader running, the navbar becomes visible normally.
+      */
+      tryPlayIntro();
+    }, 500);
+
+    return () => {
+      window.removeEventListener("loaderComplete", tryPlayIntro);
+
+      if (poll) {
+        window.clearInterval(poll);
+      }
+
+      if (fallbackTimeout) {
+        window.clearTimeout(fallbackTimeout);
+      }
+
+      introTween.current?.kill();
+    };
+  }, []);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -401,7 +508,6 @@ export default function NavbarMobile() {
           {isMenuOpen ? (
             <X className="max-sm:size-[7vw] max-md:size-[4vw]" />
           ) : (
-            // <Menu className="max-sm:size-[7vw] max-md:size-[4vw]" />
             <HamburgerIcon className="max-sm:size-[7vw] max-md:size-[4vw]" />
           )}
         </button>
@@ -460,7 +566,7 @@ export default function NavbarMobile() {
 
           <div className="mt-8 border-t border-white/10 pt-8">
             <div className="flex w-full justify-center" onClick={closeMenu}>
-              <Button text="Install CLI" href="#" />
+              <Button text="Install CLI" href="/docs/installation" />
             </div>
           </div>
         </div>

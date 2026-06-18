@@ -407,7 +407,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center justify-center gap-[2.5vw]">
-                <Button text="Install CLI" href="#" />
+                <Button text="Install CLI" href="/docs/installation" />
             </div>
         </nav>
     )

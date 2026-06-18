@@ -3,7 +3,47 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLenis } from "lenis/react";
+import { X } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
+
+const DOC_SEARCH_ITEMS = [
+  {
+    href: "/",
+    title: "Home",
+    description: "Return to the Hyperiux Vault landing page.",
+    keywords: ["home", "landing", "index", "main"],
+  },
+  {
+    href: "/docs",
+    title: "Introduction",
+    description: "Overview of Hyperiux Vault, effects, categories, and workflow.",
+    keywords: ["docs", "documentation", "intro", "overview", "vault"],
+  },
+  {
+    href: "/docs/installation",
+    title: "Installation Guide",
+    description: "Install Hyperiux effects, initialize the CLI, and configure your project.",
+    keywords: ["install", "installation", "setup", "init", "configuration"],
+  },
+  {
+    href: "/docs/cli",
+    title: "Hyperiux Vault CLI",
+    description: "CLI commands for adding, upgrading, uninstalling, and managing effects.",
+    keywords: ["cli", "command", "add", "upgrade", "doctor"],
+  },
+  {
+    href: "/docs/dependencies",
+    title: "Dependencies",
+    description: "Dependency guidance for GSAP, Motion, Three.js, and generated effects.",
+    keywords: ["dependencies", "gsap", "motion", "three", "packages"],
+  },
+  {
+    href: "/docs/license",
+    title: "License",
+    description: "Usage rights for Free Core and Vault Pro effects.",
+    keywords: ["license", "licensing", "commercial", "pro", "free"],
+  },
+];
 
 export function SearchBar({
   value = "",
@@ -81,30 +121,62 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
     }
   }, [isOpen]);
 
+  const normalizedQuery = query.trim().toLowerCase();
+
   const filteredEffects = effects.filter((effect) => {
-    const q = query.toLowerCase();
+    if (!normalizedQuery) return true;
+
     const cats = effect.categories?.length ? effect.categories : [effect.category];
     return (
-      effect.name.toLowerCase().includes(q) ||
-      effect.title.toLowerCase().includes(q) ||
-      cats.some((c) => c?.toLowerCase().includes(q))
+      effect.name.toLowerCase().includes(normalizedQuery) ||
+      effect.title.toLowerCase().includes(normalizedQuery) ||
+      effect.description?.toLowerCase().includes(normalizedQuery) ||
+      cats.some((c) => c?.toLowerCase().includes(normalizedQuery))
     );
   });
 
-  const handleSelect = (effect) => {
-    router.push(getEffectHref(effect));
+  const filteredDocs = DOC_SEARCH_ITEMS.filter((item) => {
+    if (!normalizedQuery) return true;
+
+    return (
+      item.title.toLowerCase().includes(normalizedQuery) ||
+      item.description.toLowerCase().includes(normalizedQuery) ||
+      item.keywords.some((keyword) => keyword.includes(normalizedQuery))
+    );
+  });
+
+  const results = [
+    ...filteredDocs.map((item) => ({ ...item, type: "docs" })),
+    ...filteredEffects.map((effect) => ({
+      ...effect,
+      type: "effect",
+      href: getEffectHref(effect),
+    })),
+  ];
+
+  const closeSearch = () => {
     setIsOpen(false);
     setQuery("");
+  };
+
+  const handleSelect = (item) => {
+    router.push(item.href);
+    closeSearch();
+  };
+
+  const handleEffectSelect = (effect) => {
+    router.push(getEffectHref(effect));
+    closeSearch();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh]">
+    <div className="fixed inset-0 z-999 flex items-start justify-center pt-[20vh]">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={() => setIsOpen(false)}
+        onClick={closeSearch}
       />
 
       {/* Modal */}
@@ -122,27 +194,60 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
             placeholder="Search effects..."
             className="flex-1 bg-transparent text-white placeholder:text-neutral-500 text-base sm:text-lg focus:outline-none"
           />
-          <kbd className="hidden sm:inline-flex px-2 py-1 bg-neutral-900 border border-neutral-800 rounded text-xs text-neutral-400 font-medium">
+          <kbd className="hidden sm:inline-flex px-2 h-8 flex justify-center items-center bg-neutral-900 border border-neutral-800 rounded text-xs text-neutral-400 font-medium">
             ESC
           </kbd>
+          <button
+            type="button"
+            aria-label="Close search"
+            onClick={closeSearch}
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded border border-neutral-800 bg-neutral-900 text-neutral-400 transition-colors hover:border-neutral-700 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         {/* Results */}
         <div className="flex-1 overflow-y-auto" data-lenis-prevent="true">
-          {filteredEffects.length === 0 ? (
+          {results.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-neutral-500 px-4">
               <svg className="w-12 h-12 mb-4 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p>No effects found for &quot;<span className="text-neutral-300">{query}</span>&quot;</p>
+              <p>No results found for &quot;<span className="text-neutral-300">{query}</span>&quot;</p>
               <p className="text-sm mt-1 text-neutral-600">Try searching with a different term.</p>
             </div>
           ) : (
             <div className="p-2 space-y-1">
+              {filteredDocs.map((item) => {
+                const iconLabel = item.href === "/" ? "H" : "D";
+
+                return (
+                  <button
+                    key={item.href}
+                    onClick={() => handleSelect({ ...item, type: "docs" })}
+                    className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
+                  >
+                    <div className="w-10 h-10 bg-neutral-900 border border-neutral-800/60 rounded-md flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-colors">
+                      {iconLabel}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-neutral-200 group-hover:text-white transition-colors">{item.title}</div>
+                      <div className="text-xs text-neutral-500 mt-0.5 group-hover:text-neutral-400 transition-colors">
+                        Docs · {item.description}
+                      </div>
+                    </div>
+                    <svg className="w-5 h-5 text-neutral-600 opacity-0 group-hover:opacity-100 group-hover:text-neutral-400 transition-all transform -translate-x-2 group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                );
+              })}
+
               {filteredEffects.map((effect) => (
                 <button
                   key={effect.name}
-                  onClick={() => handleSelect(effect)}
+                  onClick={() => handleEffectSelect(effect)}
                   className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
                 >
                   <div className="w-10 h-10 bg-neutral-900 border border-neutral-800/60 rounded-md flex items-center justify-center text-neutral-400 group-hover:text-white group-hover:border-neutral-600 transition-colors">

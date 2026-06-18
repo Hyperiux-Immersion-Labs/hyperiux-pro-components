@@ -387,7 +387,7 @@ export function VaultContent({
                   </h1>
                 </HeadAnim>
 
-                <div className="category-fadeup mx-auto flex max-w-[50vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
+                <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                   {activeCategoryDescriptions.map((description, index) => (
                     <p
                       key={`${categoryFilter}-description-${index}`}

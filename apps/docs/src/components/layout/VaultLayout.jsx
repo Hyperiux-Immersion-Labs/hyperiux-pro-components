@@ -20,7 +20,9 @@ const DOCS_TOP_LINKS = [
 function getStoredSidebarExpanded() {
   if (typeof window === "undefined") return false;
 
-  return window.localStorage.getItem(SIDEBAR_EXPANDED_STORAGE_KEY) === "true";
+  const v = window.localStorage.getItem(SIDEBAR_EXPANDED_STORAGE_KEY);
+  // default to expanded (true) when no value is stored
+  return v === null ? true : v === "true";
 }
 
 function setStoredSidebarExpanded(value) {
@@ -75,7 +77,7 @@ export function VaultLayout({
   const totalEffects =
     propTotalEffects !== undefined ? propTotalEffects : effects.length;
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarReady, setIsSidebarReady] = useState(false);
   const [allowSidebarTransition, setAllowSidebarTransition] = useState(false);
 
@@ -97,37 +99,46 @@ export function VaultLayout({
     refreshTimeoutsRef.current = [];
   }, []);
 
-  useEffect(() => {
-      if (typeof window === "undefined") return;
-  
-      const previousScrollRestoration = window.history.scrollRestoration;
-  
-      window.history.scrollRestoration = "manual";
-  
-      const scrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: "auto",
-        });
-      };
-  
-      scrollToTop();
-  
-      const rafOne = requestAnimationFrame(scrollToTop);
-      const rafTwo = requestAnimationFrame(() => {
-        requestAnimationFrame(scrollToTop);
+  const scrollToTop = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    if (lenis) {
+      lenis.scrollTo(0, {
+        immediate: true,
+        force: true,
       });
-  
-      const timeout = window.setTimeout(scrollToTop, 120);
-  
-      return () => {
-        cancelAnimationFrame(rafOne);
-        cancelAnimationFrame(rafTwo);
-        window.clearTimeout(timeout);
-        window.history.scrollRestoration = previousScrollRestoration;
-      };
-    }, []);
+      return;
+    }
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [lenis]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+
+    window.history.scrollRestoration = "manual";
+    scrollToTop();
+
+    const rafOne = requestAnimationFrame(scrollToTop);
+    const rafTwo = requestAnimationFrame(() => {
+      requestAnimationFrame(scrollToTop);
+    });
+
+    const timeout = window.setTimeout(scrollToTop, 120);
+
+    return () => {
+      cancelAnimationFrame(rafOne);
+      cancelAnimationFrame(rafTwo);
+      window.clearTimeout(timeout);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, [scrollToTop]);
 
   const refreshScrollTrigger = useCallback(
     (includeSidebarDelay = false) => {
@@ -159,6 +170,18 @@ export function VaultLayout({
     },
     [clearRefreshTimeouts]
   );
+
+  const handleRouteChange = useCallback(() => {
+    scrollToTop();
+    refreshScrollTrigger();
+
+    if (typeof window === "undefined") return;
+
+    requestAnimationFrame(() => {
+      scrollToTop();
+      refreshScrollTrigger();
+    });
+  }, [refreshScrollTrigger, scrollToTop]);
 
   useEffect(() => {
     let frameTwo;
@@ -287,7 +310,7 @@ export function VaultLayout({
       <Suspense fallback={null}>
         <RouteChangeWatcher
           isSidebarReady={isSidebarReady}
-          onRouteChange={refreshScrollTrigger}
+          onRouteChange={handleRouteChange}
         />
       </Suspense>
 

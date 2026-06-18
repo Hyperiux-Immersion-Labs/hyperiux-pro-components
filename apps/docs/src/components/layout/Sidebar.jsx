@@ -6,7 +6,10 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { getFeaturedEffects } from "@/lib/featured-effects";
 import { Overview, Documentation, Category } from "../WebsiteComps/Icons";
+import { markSidebarDocsNavigation } from "@/lib/sidebar-navigation";
+import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -164,6 +167,10 @@ export function Sidebar({
   }, [router, resolvedTopLinks]);
 
   const sidebarEffects = effects.length ? effects : fetchedEffects;
+  const featuredCount = useMemo(
+    () => getFeaturedEffects(sidebarEffects).length,
+    [sidebarEffects]
+  );
 
   useMemo(
     () =>
@@ -202,6 +209,7 @@ export function Sidebar({
     }
 
     router.push("/effects", { scroll: false });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
   const navigateCategory = (categoryId) => {
@@ -214,10 +222,12 @@ export function Sidebar({
     }
 
     router.push(getEffectCategoryHref(categoryId), { scroll: false });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
   const navigateDocumentation = (href) => {
     setOpenSection("docs");
+    markSidebarDocsNavigation();
 
     const wasHandled = onDocumentationNavigate?.(href);
 
@@ -226,6 +236,7 @@ export function Sidebar({
     }
 
     router.push(href, { scroll: false });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
   const toggle = () => {
@@ -273,7 +284,8 @@ export function Sidebar({
 
       <div className="flex h-full flex-col items-start overflow-hidden rounded-tr-md border-r border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
-          <button
+          <Link
+          href={"/"}
             type="button"
             className="flex min-w-0 items-center gap-3"
             onClick={navigateOverview}
@@ -297,7 +309,7 @@ export function Sidebar({
                   : "opacity-0"
               }`}
             />
-          </button>
+          </Link>
         </div>
 
         <nav data-lenis-prevent className="space-y-4">
@@ -329,7 +341,9 @@ export function Sidebar({
                 className="ml-[19px] mb-4 max-h-[45vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3"
               >
                 {effectCategories.map((category) => {
-                  const count = effectCounts[category.id] || 0;
+                  const count =
+                    effectCounts[category.id] ??
+                    (category.id === "featured" ? featuredCount : 0);
                   const isActive = currentCategory === category.id;
 
                   return (

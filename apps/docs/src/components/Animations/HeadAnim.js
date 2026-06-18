@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -18,6 +19,8 @@ export default function HeadAnim({
   const chars = useRef([]);
 
   useEffect(() => {
+    if (shouldSkipSidebarDocsAnimation()) return;
+
     if (!containerRef.current) return;
 
     splitRefs.current = [];

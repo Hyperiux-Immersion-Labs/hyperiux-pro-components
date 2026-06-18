@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAnimate, useInView } from "motion/react";
@@ -68,6 +69,12 @@ export function EffectCard({
   const showVideo = shouldLoadVideo && videoReady;
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
+  const router = useRouter();
+
+  const handleCardClick = (event) => {
+    if (event.defaultPrevented) return;
+    router.push(effectHref);
+  };
   const categories = (effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean);
   const primaryCategoryLabel = formatLabel(categories[0] || "components");
   const dependencyPills = (effect.dependencies || [])
@@ -84,9 +91,10 @@ export function EffectCard({
         willChange: "opacity",
         position: "relative",
       }}
-      className="group w-full overflow-hidden rounded-md duration-500 ease-in-out"
+      className="group w-full overflow-hidden rounded-md duration-500 ease-in-out cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
     >
       <Link href={effectHref} className="block">
         <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">

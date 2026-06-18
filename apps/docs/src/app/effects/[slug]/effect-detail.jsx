@@ -4,12 +4,12 @@ import {
   useRef,
   useState,
   useEffect,
+  useCallback,
   Suspense,
   forwardRef,
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
@@ -59,7 +59,19 @@ export function EffectDetailContent({
     scrollLeft: 0,
     hasDragged: false,
   });
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
+
+  const updateRelatedScrollState = useCallback(() => {
+    const slider = relatedSliderRef.current;
+    if (!slider) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = slider;
+    setCanScrollPrev(scrollLeft > 8);
+    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 8);
+  }, []);
 
   const componentName = slug
     .split("-")
@@ -99,7 +111,20 @@ export default function MyComponent() {
       left: direction === "next" ? scrollAmount : -scrollAmount,
       behavior: "smooth",
     });
+
+    requestAnimationFrame(updateRelatedScrollState);
+    setTimeout(updateRelatedScrollState, 250);
   };
+
+  useEffect(() => {
+    const slider = relatedSliderRef.current;
+    if (!slider) return;
+
+    updateRelatedScrollState();
+    slider.addEventListener("scroll", updateRelatedScrollState, { passive: true });
+
+    return () => slider.removeEventListener("scroll", updateRelatedScrollState);
+  }, [updateRelatedScrollState, relatedEffects.length]);
 
   const handleRelatedPointerDown = (event) => {
     const slider = relatedSliderRef.current;
@@ -490,17 +515,21 @@ export default function MyComponent() {
                         {showRelatedSliderControls && (
                           <div className="flex items-center  justify-end gap-2 max-md:justify-center">
                             <CircularButton
+                              type="button"
                               onClick={() => scrollRelatedEffects("previous")}
+                              disabled={!canScrollPrev}
                               aria-label="Show previous related effects"
-                              className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev ? "cursor-not-allowed opacity-50 hover:border-white/10" : "hover:border-[#ff5f00]"}`}
                               bgColor="#ff5f00"
                             >
                               <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                             </CircularButton>
                             <CircularButton
+                              type="button"
                               onClick={() => scrollRelatedEffects("next")}
+                              disabled={!canScrollNext}
                               aria-label="Show next related effects"
-                              className="h-11 p-4 w-11 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext ? "cursor-not-allowed opacity-50 hover:border-white/10" : "hover:border-[#ff5f00]"}`}
                               bgColor="#ff5f00"
                             >
                               <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
@@ -538,17 +567,21 @@ export default function MyComponent() {
                         {showRelatedSliderControls && (
                           <div className="flex items-center  justify-end gap-2 max-md:justify-center">
                             <CircularButton
+                              type="button"
                               onClick={() => scrollRelatedEffects("previous")}
+                              disabled={!canScrollPrev}
                               aria-label="Show previous related effects"
-                              className="h-11 w-11 p-4 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev ? "cursor-not-allowed opacity-50 hover:border-white/10" : "hover:border-[#ff5f00]"}`}
                               bgColor="#ff5f00"
                             >
                               <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                             </CircularButton>
                             <CircularButton
+                              type="button"
                               onClick={() => scrollRelatedEffects("next")}
+                              disabled={!canScrollNext}
                               aria-label="Show next related effects"
-                              className="h-11 p-4 w-11 border-white/12 bg-[#272727] text-white hover:border-[#ff5f00]"
+                              className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext ? "cursor-not-allowed opacity-50 hover:border-white/10" : "hover:border-[#ff5f00]"}`}
                               bgColor="#ff5f00"
                             >
                               <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
@@ -1320,8 +1353,8 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
         aria-hidden="true"
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100">
-        <ul className="space-y-1">
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
+        <ul className="space-y-1 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2">
           {items.map((it) => (
             <li key={it.id}>
               <a

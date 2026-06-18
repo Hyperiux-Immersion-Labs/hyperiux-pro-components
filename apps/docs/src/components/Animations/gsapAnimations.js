@@ -2,6 +2,7 @@
 import gsap from "gsap";
 import { useEffect } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,8 @@ function getFadeTargets(containerRef) {
 
 export function useFadeUp(containerRef) {
   useEffect(() => {
+    if (shouldSkipSidebarDocsAnimation()) return;
+
     const ctx = gsap.context(() => {
       const content = getFadeTargets(containerRef);
       content.forEach((element) => {
@@ -37,6 +40,8 @@ export function useFadeUp(containerRef) {
 
 export function useLineAnim(containerRef) {
   useEffect(() => {
+    if (shouldSkipSidebarDocsAnimation()) return;
+
     const ctx = gsap.context(() => {
       const root = containerRef && containerRef.current ? containerRef.current : document;
       const lineDraws = root.querySelectorAll(

@@ -635,7 +635,7 @@ export default function FeaturedStoryTelling() {
                         ref={infoButtonWrapperRef}
                         className="flex items-center justify-center gap-[2vw] pointer-events-auto"
                     >
-                        <Button text="Install CLI" href="#" />
+                        <Button text="Install CLI" href="/docs/installation" />
                         <Button text="Work with Hyperiux" className="border border-white" variant="white" />
                     </div>
                 </div>
