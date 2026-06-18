@@ -6,7 +6,7 @@ import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 const page = () => {
   return (
     <>
-    <DemoHeader logoColor="#ffffff"  />
+    <DemoHeader logoColor="#ffffff" textColor='#ffffff'  />
    <HelixSlider />
    <ScrollBottom className='z-90 bottom-[5%] gap-[0.5vw] ' textColor={'text-white'} />
     </>
