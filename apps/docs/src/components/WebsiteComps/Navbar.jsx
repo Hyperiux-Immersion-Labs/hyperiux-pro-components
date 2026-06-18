@@ -10,10 +10,10 @@ import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 
 import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
-
-gsap.registerPlugin(SplitText)
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 import Button from './Button'
+
+gsap.registerPlugin(SplitText)
 
 const MENU_ANIM = {
     duration: 0.26,
@@ -43,29 +43,82 @@ function getPaneHeight(element) {
     return element.offsetHeight || element.scrollHeight || 0
 }
 
-function NavDropdownItem({ label, href, icon }) {
-    const labelRef = useRef(null)
-    const splitRef = useRef(null)
+function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
+    const defaultLabelRef = useRef(null)
+    const hoverLabelRef = useRef(null)
+    const splitRef = useRef({ default: null, hover: null })
+
+    const resetText = useCallback(() => {
+        const { default: defaultSplit, hover: hoverSplit } = splitRef.current
+        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) return
+
+        gsap.killTweensOf([...defaultSplit.chars, ...hoverSplit.chars])
+        gsap.set(defaultSplit.chars, {
+            yPercent: 0,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+        })
+        gsap.set(hoverSplit.chars, {
+            yPercent: 100,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+        })
+    }, [])
+
+    const playEnter = useCallback(() => {
+        const { default: defaultSplit, hover: hoverSplit } = splitRef.current
+        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) return
+
+        gsap.killTweensOf([...defaultSplit.chars, ...hoverSplit.chars])
+        gsap.to(defaultSplit.chars, {
+            yPercent: -100,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            duration: DROPDOWN_TEXT_ANIM.duration,
+            stagger: DROPDOWN_TEXT_ANIM.stagger,
+            ease: DROPDOWN_TEXT_ANIM.ease,
+            overwrite: 'auto',
+        })
+        gsap.fromTo(
+            hoverSplit.chars,
+            { yPercent: 100 },
+            {
+                yPercent: 0,
+                color: DROPDOWN_TEXT_ANIM.hoverColor,
+                duration: DROPDOWN_TEXT_ANIM.duration,
+                stagger: DROPDOWN_TEXT_ANIM.stagger,
+                ease: DROPDOWN_TEXT_ANIM.ease,
+                overwrite: 'auto',
+            },
+        )
+    }, [])
 
     useIsomorphicLayoutEffect(() => {
-        const labelEl = labelRef.current
-        if (!labelEl) return
+        const defaultEl = defaultLabelRef.current
+        const hoverEl = hoverLabelRef.current
+        if (!defaultEl || !hoverEl) return
 
-        let split = null
+        let defaultSplit = null
+        let hoverSplit = null
         let cancelled = false
 
         const initSplit = async () => {
             await document.fonts.ready
-            if (cancelled || !labelRef.current) return
+            if (cancelled || !defaultLabelRef.current || !hoverLabelRef.current) return
 
-            split = SplitText.create(labelRef.current, {
+            defaultSplit = SplitText.create(defaultLabelRef.current, {
                 type: 'chars',
                 mask: 'chars',
             })
-            splitRef.current = split
+            hoverSplit = SplitText.create(hoverLabelRef.current, {
+                type: 'chars',
+                mask: 'chars',
+            })
+            splitRef.current = { default: defaultSplit, hover: hoverSplit }
 
-            gsap.set(split.chars, {
+            gsap.set(defaultSplit.chars, {
                 yPercent: 0,
+                color: DROPDOWN_TEXT_ANIM.idleColor,
+            })
+            gsap.set(hoverSplit.chars, {
+                yPercent: 100,
                 color: DROPDOWN_TEXT_ANIM.idleColor,
             })
         }
@@ -74,53 +127,69 @@ function NavDropdownItem({ label, href, icon }) {
 
         return () => {
             cancelled = true
-            split?.revert()
-            splitRef.current = null
+            defaultSplit?.revert()
+            hoverSplit?.revert()
+            splitRef.current = { default: null, hover: null }
         }
     }, [label])
 
+    useEffect(() => {
+        if (!hoverGroupRef) return
+
+        const group = hoverGroupRef.current
+        group.resetters.set(label, resetText)
+
+        return () => {
+            group.resetters.delete(label)
+
+            if (group.activeKey === label) {
+                group.activeKey = null
+            }
+        }
+    }, [hoverGroupRef, label, resetText])
+
     const handleTextEnter = useCallback(() => {
-        const split = splitRef.current
-        if (!split?.chars?.length) return
+        if (hoverGroupRef) {
+            const group = hoverGroupRef.current
 
-        gsap.killTweensOf(split.chars)
-        gsap.fromTo(
-            split.chars,
-            { yPercent: 100 },
-            {
-                yPercent: 0,
-                duration: DROPDOWN_TEXT_ANIM.duration,
-                stagger: DROPDOWN_TEXT_ANIM.stagger,
-                ease: DROPDOWN_TEXT_ANIM.ease,
-            },
-        )
-        gsap.to(
-            split.chars,
-            {
-                color: DROPDOWN_TEXT_ANIM.hoverColor,
-                duration: DROPDOWN_TEXT_ANIM.duration * 0.65,
-                stagger: DROPDOWN_TEXT_ANIM.stagger,
-                ease: DROPDOWN_TEXT_ANIM.ease,
-            },
-            0,
-        )
-    }, [])
+            if (group.activeKey && group.activeKey !== label) {
+                group.resetters.get(group.activeKey)?.()
+            }
 
-    const handleTextLeave = useCallback(() => {
-        const split = splitRef.current
-        if (!split?.chars?.length) return
+            group.activeKey = label
+        }
 
-        gsap.killTweensOf(split.chars)
-        gsap.to(split.chars, {
-            color: DROPDOWN_TEXT_ANIM.idleColor,
-            duration: 0.25,
-            ease: 'power2.out',
-        })
-    }, [])
+        playEnter()
+    }, [hoverGroupRef, label, playEnter])
+
+    const handleTextLeave = useCallback(
+        (event) => {
+            const related = event.relatedTarget
+            const movingToSibling =
+                related instanceof Element && related.closest('[data-nav-dropdown-link]')
+
+            resetText()
+
+            if (!hoverGroupRef) return
+
+            if (movingToSibling) {
+                if (hoverGroupRef.current.activeKey === label) {
+                    hoverGroupRef.current.activeKey = null
+                }
+                return
+            }
+
+            if (hoverGroupRef.current.activeKey === label) {
+                hoverGroupRef.current.activeKey = null
+            }
+        },
+        [hoverGroupRef, label, resetText],
+    )
 
     return (
         <Link
             href={href}
+            data-nav-dropdown-link
             className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw] transition-colors duration-300 hover:bg-black"
             onMouseEnter={handleTextEnter}
             onMouseLeave={handleTextLeave}
@@ -128,23 +197,26 @@ function NavDropdownItem({ label, href, icon }) {
             <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
                 <Image src={icon} alt="icon" width={35} height={35} aria-hidden className="size-full object-contain" />
             </span>
-            <span
-                ref={labelRef}
-                className="text-[1.05vw] font-medium whitespace-nowrap"
-            >
-                {label}
+            <span className="relative block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap">
+                <span ref={defaultLabelRef} className="block" aria-hidden="true">
+                    {label}
+                </span>
+                <span ref={hoverLabelRef} className="absolute inset-0 block" aria-hidden="true">
+                    {label}
+                </span>
+                <span className="sr-only">{label}</span>
             </span>
         </Link>
     )
 }
 
-function CategoriesPanel() {
+function CategoriesPanel({ hoverGroupRef }) {
     return (
         <div className="grid grid-cols-2 gap-x-[1.6vw] gap-y-[0.15vw]">
             {navCategoryColumns.map((column, columnIndex) => (
                 <div key={columnIndex} className="flex flex-col">
                     {column.map((item) => (
-                        <NavDropdownItem key={item.label} {...item} />
+                        <NavDropdownItem key={item.label} hoverGroupRef={hoverGroupRef} {...item} />
                     ))}
                 </div>
             ))}
@@ -152,11 +224,11 @@ function CategoriesPanel() {
     )
 }
 
-function DocsPanel() {
+function DocsPanel({ hoverGroupRef }) {
     return (
         <div className="flex flex-col gap-[0.15vw]">
             {navDocsItems.map((item) => (
-                <NavDropdownItem key={item.label} {...item} />
+                <NavDropdownItem key={item.label} hoverGroupRef={hoverGroupRef} {...item} />
             ))}
         </div>
     )
@@ -173,6 +245,7 @@ function NavDropdown({ panel }) {
     const currentPaneRef = useRef(null)
     const nextPaneRef = useRef(null)
     const tlRef = useRef(null)
+    const hoverGroupRef = useRef({ activeKey: null, resetters: new Map() })
 
     const [currentPanel, setCurrentPanel] = useState(null)
     const [nextPanel, setNextPanel] = useState(null)
@@ -194,6 +267,9 @@ function NavDropdown({ panel }) {
     }
 
     const reset = () => {
+        hoverGroupRef.current.resetters.forEach((resetItem) => resetItem())
+        hoverGroupRef.current.activeKey = null
+
         animRef.current = {
             isOpen: false,
             hasOpenedOnce: false,
@@ -390,13 +466,13 @@ function NavDropdown({ panel }) {
                 <div ref={viewportRef} className="relative">
                     {Panel && (
                         <div key={`current-${currentPanel}`} ref={currentPaneRef} className="relative w-full">
-                            <Panel />
+                            <Panel hoverGroupRef={hoverGroupRef} />
                         </div>
                     )}
 
                     {NextPanel && (
                         <div key={`next-${nextPanel}`} ref={nextPaneRef} className="absolute left-0 top-0 w-full">
-                            <NextPanel />
+                            <NextPanel hoverGroupRef={hoverGroupRef} />
                         </div>
                     )}
                 </div>
