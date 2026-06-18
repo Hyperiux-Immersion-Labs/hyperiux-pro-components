@@ -434,7 +434,7 @@
   {
     "title": "Horizontal Feature Reveal",
     "name": "horizontal-feature-reveal",
-    "tier": "pro",
+    "tier": "free",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/horizontal-feature-reveal",
     "demoRoute": "https://components.hyperiux.com/demo/horizontal-feature-reveal"
@@ -514,7 +514,7 @@
   {
     "title": "Scroll Distortion",
     "name": "scroll-distortion",
-    "tier": "free",
+    "tier": "pro",
     "category": "scroll",
     "detailRoute": "https://components.hyperiux.com/effects/scroll-effects/scroll-distortion",
     "demoRoute": "https://components.hyperiux.com/demo/scroll-distortion"

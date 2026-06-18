@@ -84,7 +84,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
+      "tier": "free",
       "dependencies": [
         "gsap"
       ],
@@ -280,7 +280,7 @@
       "categories": [
         "scroll"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap",
         "lenis",
