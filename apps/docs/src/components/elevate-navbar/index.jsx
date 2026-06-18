@@ -54,7 +54,7 @@ export default function ElevateNavbar() {
 
   useEffect(() => {
     const checkWidth = () => {
-      setIsMobile(window.innerWidth < 541);
+      setIsMobile(window.innerWidth < 1025);
     };
 
     checkWidth();
@@ -77,7 +77,7 @@ export default function ElevateNavbar() {
       <h1 className="text-[8vw] font-black uppercase">
         Elevate Navbar
       </h1>
-      <p className="mt-4 text-[1.2vw] max-sm:text-[3vw]">
+      <p className="mt-4 text-[1.2vw] max-md:text-[2vw] max-md:w-[80%] max-md:mx-auto max-sm:text-[3vw]">
         Hover over the navbar to see the effect. Resize the window to see the responsive design in action.
       </p>
 
