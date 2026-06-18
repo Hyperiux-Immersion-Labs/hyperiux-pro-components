@@ -36,12 +36,12 @@ function NavDropdownItem({ label, href, icon }) {
     return (
         <Link
             href={href}
-            className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.5vw] transition-colors duration-300 hover:bg-black"
+            className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw] transition-colors duration-300 hover:bg-black"
         >
             <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
                 <Image src={icon} alt="icon" width={35} height={35} aria-hidden className="size-full object-contain" />
             </span>
-            <span className="text-[0.95vw] font-medium whitespace-nowrap text-white/75 transition-colors duration-300 group-hover:text-white">
+            <span className="text-[1.05vw] font-medium whitespace-nowrap text-white/75 transition-colors duration-300 group-hover:text-white">
                 {label}
             </span>
         </Link>
@@ -73,7 +73,7 @@ function DocsPanel() {
 }
 
 const PANELS = {
-    categories: { width: '32vw', Panel: CategoriesPanel, index: 0 },
+    categories: { width: '35vw', Panel: CategoriesPanel, index: 0 },
     docs: { width: '18vw', Panel: DocsPanel, index: 1 },
 }
 
@@ -294,7 +294,7 @@ function NavDropdown({ panel }) {
         <div className="absolute top-full left-1/2 z-50 w-max -translate-x-1/2 pt-[0.75vw]">
             <div
                 ref={shellRef}
-                className="overflow-hidden rounded-[1.1vw] border border-white/8 bg-grey p-[1.1vw] shadow-[0_1.2vw_3.5vw_rgba(0,0,0,0.55)]"
+                className="overflow-hidden rounded-[1.1vw] border border-white/8 bg-grey p-[1vw] shadow-[0_1.2vw_3.5vw_rgba(0,0,0,0.55)]"
                 style={{ width: currentPanel ? PANELS[currentPanel].width : PANELS.categories.width }}
             >
                 <div ref={viewportRef} className="relative">
@@ -369,7 +369,7 @@ export default function Navbar() {
             className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] backdrop-blur-sm max-md:hidden "
         >
             <Link href="/">
-                <HyperiuxLogo className="h-auto w-[10vw] text-primary" />
+                <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
             </Link>
 
             <div className="relative" onMouseLeave={handleNavLeave}>
@@ -379,7 +379,7 @@ export default function Navbar() {
 
                         return (
                             <Link
-                                className={`relative z-10 rounded-full p-[0.4vw] px-[1.2vw] transition-colors duration-300 ${highlighted ? 'text-foreground' : 'text-white/70'
+                                className={`relative z-10 text-[1.15vw] font-medium tracking-wide rounded-full p-[0.4vw] px-[1.2vw] transition-colors duration-300 ${highlighted ? 'text-foreground' : 'text-white/70'
                                     }`}
                                 key={label}
                                 href={href}

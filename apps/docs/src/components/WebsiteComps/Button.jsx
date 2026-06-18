@@ -27,7 +27,7 @@ export default function Button({
   variant = "orange",
   className = "",
   target_blank = false,
-  scaleClass = 'group-hover:scale-[50]',
+  scaleClass = 'group-hover:scale-[70]',
   hoverTextClassName,
 }) {
   const styles = VARIANT_STYLES[variant] ?? VARIANT_STYLES.orange;
@@ -40,11 +40,11 @@ export default function Button({
       href={href}
       target={target_blank ? "_blank" : undefined}
       rel={target_blank ? "noopener noreferrer" : undefined}
-      className={`group flex overflow-hidden items-center gap-[0.5vw] max-md:gap-2 max-sm:gap-2 rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-3 max-sm:px-6 max-sm:py-3 relative text-[1vw] max-md:text-lg max-sm:text-sm ${styles.pill} ${className}`}
+      className={`group flex overflow-hidden items-center gap-[1vw] max-md:gap-2 max-sm:gap-2 rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-3 max-sm:px-6 max-sm:py-3 relative text-[1.15vw] font-medium tracking-wide max-md:text-lg max-sm:text-sm ${styles.pill} ${className}`}
     >
       <span className={`size-[.5vw] max-md:size-2 max-sm:size-2 duration-500 transition-all rounded-full inline-block ${circleColorClass} ${scaleClass}`} />
-      <p className={`relative z-10 ${hoverTextClass} duration-500 transition-all group-hover:-translate-x-[1vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5`}>{text}</p>
-      <span className={`size-[1.4vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw]  right-[0.7vw] max-md:right-4 max-sm:right-4 ${hoverTextClass} opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block`}>
+      <p className={`relative z-10 ${hoverTextClass} duration-500 transition-all group-hover:-translate-x-[1.5vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5`}>{text}</p>
+      <span className={`size-[1.6vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw]  right-[0.7vw] max-md:right-4 max-sm:right-4 ${hoverTextClass} opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block`}>
         <BtnArrow />
 
       </span>
