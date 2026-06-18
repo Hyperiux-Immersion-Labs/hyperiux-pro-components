@@ -244,8 +244,9 @@ function ParametricPlates({ isMobile, colors: levaColors }) {
 
   // Use leva colors for materials/etc
   const plateCol = levaColors.plateColor;
-  const leftGlowCol = levaColors.glowLeftColor;
-  const rightGlowCol = levaColors.glowRightColor;
+  // Override the glow colors to be fixed values
+  const leftGlowCol = "#662600";
+  const rightGlowCol = "#cc4c00";
 
   // The standard material for the metallic plates is configured with roughness, metalness, and color.
   const mainMat = useMemo(
@@ -547,15 +548,16 @@ export default function GlowingPlates() {
     // Add adjustable material parameters for developer/design preview
     roughness: { value: CONFIG.roughness, min: 0, max: 1, step: 0.01, label: "Roughness" },
     metalness: { value: CONFIG.metalness, min: 0, max: 1, step: 0.01, label: "Metalness" },
-    glowLeftColor: { value: "#ff4f00", label: "Glow Left Color" },
-    glowRightColor: { value: "#ff2000", label: "Glow Right Color" },
+    // Use fixed colors for glowLeftColor and glowRightColor
+    glowLeftColor: { value: "#662600", label: "Glow Left Color" },
+    glowRightColor: { value: "#cc4c00", label: "Glow Right Color" },
   });
 
   // Compose a shader colors prop for plates: param split for legacy
   const colors = {
     plateColor: colorsAndMaterial.plateColor,
-    glowLeftColor: colorsAndMaterial.glowLeftColor,
-    glowRightColor: colorsAndMaterial.glowRightColor,
+    glowLeftColor: "#662600",
+    glowRightColor: "#cc4c00",
     // pass-through for destructuring (in case more is needed)
   };
 
@@ -714,7 +716,7 @@ export default function GlowingPlates() {
 
           <directionalLight
             castShadow={!isMobile}
-            color={colors.glowLeftColor} // Lets light match the left glow color
+            color="#662600" // Lets light match the left glow color (fixed)
             intensity={CONFIG.lightIntensity}
             position={CONFIG.lightPosition}
           />
@@ -729,8 +731,8 @@ export default function GlowingPlates() {
                 isMobile={isMobile}
                 colors={{
                   plateColor: colorsAndMaterial.plateColor,
-                  glowLeftColor: colorsAndMaterial.glowLeftColor,
-                  glowRightColor: colorsAndMaterial.glowRightColor,
+                  glowLeftColor: "#662600",
+                  glowRightColor: "#cc4c00",
                 }}
               />
             </group>
