@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
+import Link from "next/link";
 
 function TableOfContents({ containerRef, watchKey }) {
   const [items, setItems] = useState([]);
