@@ -1,10 +1,11 @@
 import InteractiveArrows from "@/components/InteractiveArrows";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 
 const arrows = () => {
   return (
     <>
-
+      <DemoHeader />
       <div className="max-md:hidden">
         <InteractiveArrows/>
         <div className="absolute bottom-[0.5vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-7 py-2 rounded-full text-[#545454] text-[1.1vw] max-md:hidden shadow-lg">
@@ -17,7 +18,7 @@ const arrows = () => {
 
   {/* Top */}
   <div className="w-full">
-    <p className="font-mono text-lg max-sm:text-sm uppercase tracking-[0.35em] text-black/80">
+    <p className="font-mono hidden text-lg max-sm:text-sm uppercase tracking-[0.35em] text-black/80">
       Desktop Experience
     </p>
 

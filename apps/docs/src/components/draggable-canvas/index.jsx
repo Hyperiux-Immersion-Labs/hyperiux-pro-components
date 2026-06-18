@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
-import MaskedContainer from "@/components/DraggableCanvas/MaskedContainer";
-import DragCursor from "@/components/DraggableCanvas/DragCursor";
+import MaskedContainer from "@/components/draggable-canvas/MaskedContainer";
+import DragCursor from "@/components/draggable-canvas/DragCursor";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
@@ -84,7 +84,7 @@ export default function DraggableCanvas() {
     <div className="relative w-full h-screen overflow-hidden  bg-black">
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
-        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] px-6 text-right font-mono text-sm leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-sm:bottom-6 max-sm:right-4 max-sm:text-xs z-99999">
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[75vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:bottom-6 max-sm:right-4 max-sm:text-sm z-99999">
           Drag the floating canvases - each window steals a different slice of the same moving dream.
         </p>
       {/* Hidden video element - single source for all masks */}

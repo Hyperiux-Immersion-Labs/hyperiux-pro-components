@@ -12,7 +12,7 @@ const DraggableMarquee = () => {
 					className="py-10"
 					itemClassName="select-none"
 				/>
-				<div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
+				<div className="absolute bottom-[3vw] max-md:bottom-[8vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:text-[2.5vw] max-sm:text-[3.5vw] text-center max-md:rounded-[2vw] shadow-lg">
 					Drag the strip left or right to reveal the scenes.
 				</div>
 			</section>

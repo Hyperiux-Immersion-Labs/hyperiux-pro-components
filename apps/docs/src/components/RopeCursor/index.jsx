@@ -19,7 +19,7 @@ export default function RopeCursor({
 
 	useEffect(() => {
 		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 640)
+			setIsMobile(window.innerWidth < 1025)
 		}
 
 		checkMobile()

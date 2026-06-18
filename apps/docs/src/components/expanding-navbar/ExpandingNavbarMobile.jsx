@@ -50,6 +50,7 @@ export function ExpandingNavbarMobile() {
             WebkitClipPath: "inset(100% 0% 0% 0%)",
             pointerEvents: "none",
             visibility: "hidden",
+            opacity:1,
         });
 
         tl.to(overlayRef.current, {
@@ -142,7 +143,7 @@ export function ExpandingNavbarMobile() {
                 {/* Content Panel with clip-path */}
                 <div
                     ref={contentRef}
-                    className="bg-[#111111] rounded-md p-6 mb-4 h-[75vh] flex flex-col overflow-hidden shadow-2xl relative invisible"
+                    className="bg-[#111111] opacity-0 rounded-md p-6 mb-4 h-[75vh] flex flex-col overflow-hidden shadow-2xl relative invisible"
                 >
                     <div className="flex-1 overflow-y-auto space-y-1 pb-10" style={{ scrollbarWidth: "none" }}>
                         {navigationData.map((item, mainIndex) => (
@@ -157,7 +158,7 @@ export function ExpandingNavbarMobile() {
                                 >
                                     <Link
                                         href={item.href}
-                                        className="text-3xl font-medium tracking-tight text-white"
+                                        className="text-3xl max-sm:text-3xl max-md:text-4xl font-medium tracking-tight text-white"
                                     >
                                         {item.name}
                                     </Link>
@@ -186,7 +187,7 @@ export function ExpandingNavbarMobile() {
                                                         >
                                                             <Link
                                                                 href={sub.href}
-                                                                className="text-xl text-white/80"
+                                                                className="max-sm:text-xl text-2xl text-white/80"
                                                             >
                                                                 {sub.name}
                                                             </Link>
@@ -238,8 +239,8 @@ export function ExpandingNavbarMobile() {
                 </div>
 
                 {/* Header Bar */}
-                <div className="bg-[#111111] rounded-md px-6 py-3 flex items-center justify-between shadow-2xl border border-white/5">
-                    <div className="w-24 h-auto relative">
+                <div className="bg-[#111111] rounded-md px-6 max-md:py-6 max-sm:py-3 flex items-center justify-between shadow-2xl border border-white/5">
+                    <div className="max-sm:w-24 w-40 h-auto relative">
                         <Image
                             src="/hyperiux-wordmark.svg"
                             alt="logo"
@@ -254,9 +255,9 @@ export function ExpandingNavbarMobile() {
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer items-center justify-center rounded-sm p-2.5 text-white transition-all duration-300 bg-[#2E2A2A]"
+                        className="flex cursor-pointer items-center justify-center max-md:rounded-md max-sm:rounded-sm max-sm:p-2.5 max-md:p-3 text-white transition-all duration-300 bg-[#2E2A2A]"
                     >
-                        <div className="relative h-3 w-4">
+                        <div className="relative max-sm:h-3 max-sm:w-4 max-md:w-7 max-md:h-5">
                             <span
                                 className={`absolute left-0 block h-px w-full origin-center bg-white transition-all duration-300 ${
                                     isMenuOpen

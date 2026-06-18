@@ -59,20 +59,20 @@ const FileEncryption = () => {
       />
 
       {/* Header */}
-      <div className="relative z-10 flex flex-col items-center gap-3 mb-16 text-center px-4">
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/60 bg-black/20">
+      <div className="relative z-10 flex flex-col items-center gap-3 max-sm:gap-3 max-md:gap-10 mb-16 text-center px-4">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/30 bg-black/20">
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse"
             style={{ background: "#ff5f00" }}
           />
-          <span className="font-mono text-[10px] tracking-widest uppercase text-primary opacity-80">
+          <span className="font-mono text-xs max-sm:text-sm max-md:text-base tracking-widest uppercase text-primary opacity-80">
             256-bit AES Encryption Active
           </span>
         </div>
-        <h1 className="font-mono text-[#ff5f00]! font-black text-5xl md:text-6xl tracking-tight">
+        <h1 className="font-mono text-[#ff5f00]! font-black max-md:text-6xl max-sm:text-5xl text-6xl tracking-tight">
           CARD VAULT
         </h1>
-        <p className="font-mono text-sm max-w-sm text-[#ff5f00] opacity-60 leading-[1.2]">
+        <p className="font-mono text-sm max-sm:text-sm max-md:text-base max-w-sm text-[#ff5f00] opacity-60 leading-[1.2]">
           Every card is encrypted in real-time as it passes through the beam.
           Zero plaintext. Zero exposure.
         </p>
@@ -84,7 +84,7 @@ const FileEncryption = () => {
       </div>
 
       {/* Bottom label */}
-      <div className="relative z-10 mt-12 flex items-center gap-6 font-mono text-[11px] text-white/20 tracking-widest uppercase">
+      <div className="relative z-10 mt-12 flex max-sm:flex-col items-center gap-6 max-md:gap-8 max-sm:gap-2 font-mono text-xs max-md:text-base max-sm:text-sm text-white/20 tracking-widest uppercase">
         <span>AES-256-GCM</span>
         <span className="w-1 h-1 rounded-full bg-white/20" />
         <span>RSA-4096</span>

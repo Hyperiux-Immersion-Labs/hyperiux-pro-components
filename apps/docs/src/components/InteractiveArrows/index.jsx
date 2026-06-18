@@ -70,7 +70,7 @@ const InteractiveArrows = () => {
       <div className="flex min-h-screen flex-col px-6 py-6 sm:px-8 sm:py-8">
         <div className="mx-auto flex w-full max-w-350 justify-center">
           <div
-            className={`inline-flex flex-wrap justify-center gap-2 rounded-full border p-2 backdrop-blur-sm ${
+            className={`inline-flex flex-wrap  relative z-200 justify-center gap-2 rounded-full border p-2 backdrop-blur-sm ${
               isDark
                 ? "border-white/15 bg-white/5"
                 : "border-black/10 bg-black/30"

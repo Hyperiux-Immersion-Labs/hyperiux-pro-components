@@ -189,6 +189,7 @@ export function ExpandingNavbarDesktop() {
             clipPath: "inset(100% 0% 0% 0%)",
             WebkitClipPath: "inset(100% 0% 0% 0%)",
             pointerEvents: "none",
+            opacity:1,
         });
         gsap.set(seprationLineRef.current, { opacity: 0 });
 
@@ -266,7 +267,7 @@ export function ExpandingNavbarDesktop() {
                 {/* FLOATING CONTENT PANEL */}
                 <div
                     ref={menuContentRef}
-                    className="absolute pb-[3vw] p-[1vw] bottom-[2vw] mb-[0.5vw] left-0 w-full h-[75vh] bg-[#111111] flex items-center justify-center gap-[1vw] rounded-md origin-bottom overflow-hidden"
+                    className="absolute pb-[3vw] opacity-0 p-[1vw] bottom-[2vw] mb-[0.5vw] left-0 w-full h-[75vh] bg-[#111111] flex items-center justify-center gap-[1vw] rounded-md origin-bottom overflow-hidden"
                 >
                     <div
                         className="bg-[#1A1A1A] flex items-start p-[2vw] rounded-md overflow-hidden h-full gap-[2vw] w-[70vw]"

@@ -6,6 +6,7 @@ import gsap from"gsap";
 const CARD_W = 380;
 const CARD_H = 240;
 const DESKTOP_CARD_GAP = 200;
+const TABLET_CARD_GAP=80;
 const MOBILE_CARD_GAP = 60;
 const AUTO_SPEED = 55;
 const PARTICLE_COUNT = 1500;
@@ -579,7 +580,13 @@ export function FileEncryptionComp({ cards = [] }) {
 
   useEffect(() => {
     const updateGap = () => {
-      setCardGap(window.innerWidth < 768 ? MOBILE_CARD_GAP : DESKTOP_CARD_GAP);
+      setCardGap(
+  window.innerWidth < 768
+    ? MOBILE_CARD_GAP
+    : window.innerWidth < 1025
+    ? TABLET_CARD_GAP
+    : DESKTOP_CARD_GAP
+);
     };
     updateGap();
     window.addEventListener("resize", updateGap);

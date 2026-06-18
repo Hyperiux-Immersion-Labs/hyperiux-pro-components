@@ -44,7 +44,7 @@ function DemoContent({
 
   const navItems = useMemo(
     () => [
-      { left: <span className="font-bold tracking-tighter max-sm:text-2xl">Hyperiux Vault</span> },
+      { left: <span className="font-bold tracking-tighter max-md:text-2xl max-sm:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
@@ -143,7 +143,7 @@ function DemoContent({
   return (
     <div
       className={[
-        "absolute inset-0 font-sans tracking-[-0.01em]",
+        "absolute inset-0 font-sans  tracking-[-0.01em]",
         isDark ? "bg-[#0b0b0b] text-white/90" : "bg-white text-neutral-900",
       ].join(" ")}
     >
@@ -519,7 +519,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2 cursor-pointer rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-[11px] tracking-widest text-neutral-900"
+          className="absolute bottom-7 max-md:bottom-10 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900"
         >
           Replay
         </button>
