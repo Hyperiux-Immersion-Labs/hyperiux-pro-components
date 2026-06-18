@@ -1,12 +1,14 @@
 import React from"react";
 import { ReactLenis } from"lenis/react";
 import RectangularTextReveal from "@/components/rectangular-text-reveal";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 
 
 export default function Page() {
  return (
  <ReactLenis root>
+    <DemoHeader />
  <div className="min-h-screen w-screen bg-white text-black">
  <section className="flex min-h-screen items-center justify-center px-[6vw]">
  <div className="flex w-full max-w-360 flex-col gap-[2vw] max-sm:gap-[10vw] max-md:gap-[6vw]">

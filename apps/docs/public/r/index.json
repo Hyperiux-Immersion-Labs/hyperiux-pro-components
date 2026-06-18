@@ -582,7 +582,7 @@
       "categories": [
         "transitions"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap",
         "next-transition-router"
@@ -717,7 +717,7 @@
       "categories": [
         "text"
       ],
-      "tier": "free",
+      "tier": "pro",
       "dependencies": [
         "gsap"
       ],

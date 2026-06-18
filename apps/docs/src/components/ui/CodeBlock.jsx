@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import hljs from "highlight.js";
-import { Copy } from "lucide-react";
+import { Copy, Copi } from "lucide-react";
 
 export function CodeBlock({
     code,
@@ -50,7 +50,7 @@ export function CodeBlock({
                             onClick={handleCopy}
                             className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground  max-sm:text-xl"
                         >
-                             <Copy className="size-4 max-md:size-6 max-sm:size-4" />
+                            {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
                         </button>
                     </div>
                 ) : (
@@ -58,7 +58,7 @@ export function CodeBlock({
                         onClick={handleCopy}
                         className="absolute top-5 right-5 max-sm:top-3.5 max-sm:right-6  z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
                     >
-                        <Copy className="size-4 max-md:size-6 max-sm:size-4" />
+                        {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
                     </button>
                 )}
                 <div className="relative">

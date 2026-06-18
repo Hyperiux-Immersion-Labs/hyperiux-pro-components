@@ -7,7 +7,7 @@
   "categories": [
     "transitions"
   ],
-  "tier": "free",
+  "tier": "pro",
   "dependencies": [
     "gsap",
     "next-transition-router"

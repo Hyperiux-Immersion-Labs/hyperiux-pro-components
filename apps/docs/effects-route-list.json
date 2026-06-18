@@ -690,7 +690,7 @@
   {
     "title": "Text Fill Animation",
     "name": "text-fill-animation",
-    "tier": "free",
+    "tier": "pro",
     "category": "text",
     "detailRoute": "https://components.hyperiux.com/effects/text-animations/text-fill-animation",
     "demoRoute": "https://components.hyperiux.com/pro/text-fill-animation"
@@ -714,7 +714,7 @@
   {
     "title": "Block Transition",
     "name": "block-transition",
-    "tier": "free",
+    "tier": "pro",
     "category": "transitions",
     "detailRoute": "https://components.hyperiux.com/effects/page-transitions/block-transition",
     "demoRoute": "https://components.hyperiux.com/pro/block-transition"

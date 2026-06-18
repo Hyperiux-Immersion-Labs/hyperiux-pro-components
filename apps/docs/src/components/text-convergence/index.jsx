@@ -154,17 +154,7 @@ export default function TextConvergence({
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_52%,rgba(255,255,255,0.06)_0%,transparent_70%)]"
           />
 
-          <span
-            className="absolute top-[2.2rem] left-[2.4rem] font-mono text-xs uppercase tracking-[0.22vw] text-gray-400"
-          >
-            scroll experience
-          </span>
-
-          <span
-            className="absolute top-[2.2rem] right-[2.4rem] font-mono text-xs uppercase tracking-[0.22vw] text-gray-400"
-          >
-            v1.0
-          </span>
+         
 
           <div
             className="absolute inset-0 flex flex-col items-center justify-center gap-[2.4rem]"

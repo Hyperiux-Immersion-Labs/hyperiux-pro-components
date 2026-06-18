@@ -151,11 +151,7 @@ export default async function EffectPage({ params }) {
   for (const [categoryId, effects] of Object.entries(categoriesMap)) {
     effectCounts[categoryId] = effects.length;
   }
-  /*
-    ----------------------------------------
-    RELATED EFFECTS FROM DATA
-    ----------------------------------------
-  */
+
 
   const relatedEffectNames = content?.relatedEffectNames || [];
   const sanityEffectSlugs = new Set(
