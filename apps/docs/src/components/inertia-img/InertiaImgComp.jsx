@@ -120,7 +120,7 @@ function InertiaImageComp({ images = [] }) {
  <>
  <section
  ref={rootRef}
- className="relative grid min-h-[50vh] w-full place-items-center overflow-hidden"
+ className="relative grid min-h-[50vh] w-full place-items-center "
  >
  <div className="grid grid-cols-4 gap-[1vw] max-md:gap-[3.5vw] max-sm:gap-[5vw] max-md:grid-cols-3 max-sm:grid-cols-2">
  {images.map((src, i) => (

@@ -96,7 +96,7 @@ const DotFillBtn = ({
 			<span className="relative z-20 flex h-full items-center">
 				<span
 					ref={textRef}
-					className={`relative flex items-center overflow-hidden leading-none ${textClassName}`}
+					className={`relative flex items-center overflow-hidden leading-[1.2] ${textClassName}`}
 					aria-hidden={false}
 				>
 					{btnText}
