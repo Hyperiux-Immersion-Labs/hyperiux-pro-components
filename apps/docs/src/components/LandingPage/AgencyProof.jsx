@@ -219,7 +219,7 @@ export default function AgencyProof() {
             </div>
 
             <div id="SwiperDiv" className="h-[500vh] w-full relative">
-                <div className="w-full flex sticky top-[5vw] h-fit gap-[2.5vw] items-end mt-[4vw] flex-col overflow-hidden">
+                <div className="w-full flex sticky top-[10vw] h-fit gap-[2.5vw] items-end mt-[4vw] flex-col overflow-hidden">
                     <div
                         ref={wrapperRef}
                         className="w-full flex h-fit items-center gap-[2vw] relative"

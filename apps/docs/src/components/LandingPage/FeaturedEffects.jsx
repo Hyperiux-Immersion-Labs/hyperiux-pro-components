@@ -257,8 +257,8 @@ export default function FeaturedEffects() {
             className="w-full h-full rounded-md overflow-hidden bg-[#151515] border border-white/10"
           >
             <DemoFrame
-              src="https://v8468r-3000.csb.app/"
-              title="Image-Trail-1"
+              src="/embed/phantom-image-trail"
+              title="Phantom Image Trail"
               shouldMount={shouldMountIframes}
             />
           </div>
@@ -268,8 +268,8 @@ export default function FeaturedEffects() {
             className="w-full h-full rounded-md overflow-hidden bg-[#151515] border border-white/10"
           >
             <DemoFrame
-              src="https://v8468r-3000.csb.app/card-stack"
-              title="Image-Trail-2"
+              src="/embed/hover-stack"
+              title="Hover Stack"
               shouldMount={shouldMountIframes}
             />
           </div>
