@@ -309,11 +309,11 @@ const handleRelatedCardClick = useCallback(
                         </span>
                       ))}
 
-                      {effect.tier === "pro" && (
+                      {/* {effect.tier === "pro" && (
                         <span className="rounded-full bg-primary px-4 py-2 max-sm:px-[7vw] max-md:px-[6vw] text-xs max-md:text-xl max-sm:text-xs font-medium text-white">
                           Pro
                         </span>
-                      )}
+                      )} */}
                     </div>
                   )}
 

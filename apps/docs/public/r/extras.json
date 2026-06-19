@@ -233,8 +233,8 @@
       "addedAt": 1780566951468.5398
     },
     {
-      "name": "rotating-carousel",
-      "title": "Rotating Carousel",
+      "name": "Circular Slider",
+      "title": "Circular Slider",
       "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
       "category": "scroll",
       "categories": [
@@ -248,8 +248,8 @@
       "exportName": "RotatingCarousel",
       "exportKind": "named",
       "previewUrl": "/circular-slider",
-      "coverImage": "rotating-carousel",
-      "videoUrl": "rotating-carousel.mp4",
+      "coverImage": "circular-slider",
+      "videoUrl": "circular-slider.mp4",
       "addedAt": 1780566951468.884
     },
     {
@@ -761,7 +761,7 @@
       "exportKind": "named",
       "previewUrl": "/cursors/rope",
       "coverImage": "rope-cursor",
-      "videoUrl": "rope-cursor",
+      "videoUrl": "rope-cursor.mp4",
       "addedAt": 1781160379985.403
     },
     {
@@ -2010,9 +2010,9 @@
       ],
       "exportName": "HyperiuxGlitterConcept",
       "exportKind": "named",
-      "previewUrl": "/hyperiux-glitter-concept",
-      "coverImage": "hyperiux-glitter-concept",
-      "videoUrl": "/hyperiux-glitter-concept.mp4",
+      "previewUrl": "/hyperiux-glitter",
+      "coverImage": "hyperiux-glitter",
+      "videoUrl": "/hyperiux-glitter.mp4",
       "addedAt": 1781160379989.7522
     },
     {

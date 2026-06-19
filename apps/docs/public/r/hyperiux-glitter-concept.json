@@ -18,9 +18,9 @@
   "registryDependencies": [],
   "exportName": "HyperiuxGlitterConcept",
   "exportKind": "named",
-  "previewUrl": "/hyperiux-glitter-concept",
-  "coverImage": "hyperiux-glitter-concept",
-  "videoUrl": "/hyperiux-glitter-concept.mp4",
+  "previewUrl": "/hyperiux-glitter",
+  "coverImage": "hyperiux-glitter",
+  "videoUrl": "/hyperiux-glitter.mp4",
   "files": [
     {
       "path": "hyperiux-glitter-concept.jsx",

@@ -9,6 +9,7 @@
     "build:registry": "node ./scripts/build-registry.js"
   },
   "dependencies": {
+    "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2"
   }
 }

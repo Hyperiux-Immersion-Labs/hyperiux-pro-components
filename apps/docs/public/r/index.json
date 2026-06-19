@@ -158,8 +158,8 @@
       "addedAt": 1780566951468.5398
     },
     {
-      "name": "rotating-carousel",
-      "title": "Rotating Carousel",
+      "name": "Circular Slider",
+      "title": "Circular Slider",
       "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
       "category": "scroll",
       "categories": [
@@ -173,8 +173,8 @@
       "exportName": "RotatingCarousel",
       "exportKind": "named",
       "previewUrl": "/circular-slider",
-      "coverImage": "rotating-carousel",
-      "videoUrl": "rotating-carousel.mp4",
+      "coverImage": "circular-slider",
+      "videoUrl": "circular-slider.mp4",
       "addedAt": 1780566951468.884
     },
     {
@@ -520,7 +520,7 @@
       "exportKind": "named",
       "previewUrl": "/cursors/rope",
       "coverImage": "rope-cursor",
-      "videoUrl": "rope-cursor",
+      "videoUrl": "rope-cursor.mp4",
       "addedAt": 1781160379985.403
     },
     {
@@ -1146,26 +1146,6 @@
       "addedAt": 1780566951474.5798
     },
     {
-      "name": "curved-plane-v2",
-      "title": "Curved Plane V2",
-      "description": "Three.js WebGL vertical image gallery with three columns. The center column scrolls in the opposite direction to the outer two, creating a parallax effect. A custom GLSL shader curves each card vertically on drag and scroll. Collapses to two columns on tablet.",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "tier": "pro",
-      "dependencies": [
-        "three",
-        "gsap"
-      ],
-      "exportName": "CurvedPlaneV2",
-      "exportKind": "named",
-      "previewUrl": "/curved-plane/v2",
-      "coverImage": "curved-plane-v2",
-      "videoUrl": "curved-plane-v2.mp4",
-      "addedAt": 1780566951474.3608
-    },
-    {
       "name": "donut-particles",
       "title": "Donut Particles",
       "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
@@ -1324,9 +1304,9 @@
       ],
       "exportName": "HyperiuxGlitterConcept",
       "exportKind": "named",
-      "previewUrl": "/hyperiux-glitter-concept",
-      "coverImage": "hyperiux-glitter-concept",
-      "videoUrl": "/hyperiux-glitter-concept.mp4",
+      "previewUrl": "/hyperiux-glitter",
+      "coverImage": "hyperiux-glitter",
+      "videoUrl": "/hyperiux-glitter.mp4",
       "addedAt": 1781160379989.7522
     },
     {

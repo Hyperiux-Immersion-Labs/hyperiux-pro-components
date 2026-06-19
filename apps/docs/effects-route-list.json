@@ -496,11 +496,11 @@
     "demoRoute": "https://vault.hyperiux.com/pro/parallax-slider"
   },
   {
-    "title": "Rotating Carousel",
-    "name": "rotating-carousel",
+    "title": "Circular Slider",
+    "name": "circular-slider",
     "tier": "pro",
     "category": "scroll",
-    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/rotating-carousel",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/circular-slider",
     "demoRoute": "https://vault.hyperiux.com/demo/circular-slider"
   },
   {
@@ -868,7 +868,7 @@
     "name": "hyperiux-glitter-concept",
     "tier": "pro",
     "category": "webgl",
-    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hyperiux-glitter-concept",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hyperiux-glitter",
     "demoRoute": "https://vault.hyperiux.com/demo/hyperiux-glitter"
   },
   {

@@ -35,8 +35,8 @@ function useIsPointerFine() {
 
 export default function CircleTextReveal({
  textColor ='#111',
- Text ="We craft emotionally intelligent user experiences that are adored globally!",
- revealText ="A visual designer — with skills that haven't been replaced by A.I",
+ Text="Some ideas only bloom when you move toward them.",
+ revealText="The hidden layer has been waiting for your cursor.",
  circleColorBg ='#E76F2E',
  RevealedTextColor ='#fefefe'
 }) {

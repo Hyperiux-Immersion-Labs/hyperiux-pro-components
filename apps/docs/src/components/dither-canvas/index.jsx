@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-/* ── constants ─────────────────────────────────────────────────── */
+/* ── constants  */
 const FC = 80;
 const FR = 60;
 const FN = FC * FR;
@@ -47,7 +47,7 @@ function getResponsiveCharColumns(width, baseCharColumns) {
   return baseCharColumns;
 }
 
-/* ── shaders ───────────────────────────────────────────────────── */
+/* ── shaders ── */
 const VS = `#version 300 es
 in vec2 a_pos;
 
@@ -198,7 +198,7 @@ void main() {
 }
 `;
 
-/* ── helpers ───────────────────────────────────────────────────── */
+/* ── helpers ── */
 function mkShader(gl, type, src) {
   const shader = gl.createShader(type);
 
@@ -248,7 +248,7 @@ function mkTex(gl, unit) {
   return texture;
 }
 
-/* ── fluid sim ─────────────────────────────────────────────────── */
+/* ── fluid sim  */
 function createFluid() {
   const vx = new Float32Array(FN);
   const vy = new Float32Array(FN);
@@ -445,7 +445,7 @@ async function loadVideoSource(source) {
   };
 }
 
-/* ── component ─────────────────────────────────────────────────── */
+/* ── component  */
 export default function DitherCanvas({
   videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 

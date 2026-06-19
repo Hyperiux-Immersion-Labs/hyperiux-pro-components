@@ -1,5 +1,5 @@
 {
-  "name": "rotating-carousel",
+  "name": "circular-slider",
   "type": "registry:component",
   "title": "Rotating Carousel",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
