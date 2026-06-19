@@ -219,25 +219,6 @@
       "addedAt": 1781160379987.0276
     },
     {
-      "name": "scroll-stack",
-      "title": "Scroll Stack",
-      "description": "Successive content cards that hand off focus and fade as the next section enters",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "tier": "pro",
-      "dependencies": [
-        "gsap"
-      ],
-      "exportName": "ScrollStack",
-      "exportKind": "named",
-      "previewUrl": "/stacked-card",
-      "coverImage": "scroll-stack",
-      "videoUrl": "scroll-stack.mp4",
-      "addedAt": 1781334107518.818
-    },
-    {
       "name": "split-canvas",
       "title": "Split Canvas",
       "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",
@@ -1308,23 +1289,6 @@
       "coverImage": "hyperiux-glitter",
       "videoUrl": "/hyperiux-glitter.mp4",
       "addedAt": 1781160379989.7522
-    },
-    {
-      "name": "infinite-grid-gallery",
-      "title": "Infinite Grid Gallery",
-      "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "tier": "pro",
-      "dependencies": [],
-      "exportName": "InfiniteGridGallery",
-      "exportKind": "named",
-      "previewUrl": "/infinite-grid-gallery",
-      "coverImage": "infinite-grid-gallery",
-      "videoUrl": "infinite-grid-gallery.mp4",
-      "addedAt": 1781160379989.966
     },
     {
       "name": "interactive-blur-reveal",

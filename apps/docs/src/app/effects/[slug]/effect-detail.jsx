@@ -238,13 +238,13 @@ const handleRelatedCardClick = useCallback(
           <VaultHeader effectName={effect.title} showSearch={true} />
         </Suspense>
 
-        <main className="mx-auto w-full relative px-10 max-md:px-0 pt-28 pb-12 max-sm:pt-36">
+        <main className="mx-auto w-full relative px-10 max-md:px-0 pt-25 pb-12 max-sm:pt-36">
           <section className="space-y-7">
             <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw] justify-between gap-5">
               <div className="w-full space-y-5">
                 <nav
                   aria-label="Breadcrumb"
-                  className="mb-3 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup max-sm:mb-8"
+                  className="mb-6 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup max-sm:mb-8"
                 >
                   <Link href="/" className="transition-colors hover:text-primary">
                     Home
@@ -1252,7 +1252,7 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
       />
 
       <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
-        <ul className="space-y-1 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2">
+        <ul className="space-y-1 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc ">
           {items.map((it) => (
             <li key={it.id}>
               <a

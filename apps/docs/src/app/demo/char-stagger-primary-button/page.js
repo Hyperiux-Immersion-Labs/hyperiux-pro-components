@@ -5,12 +5,8 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 export default function Page() {
     return (
-
         <>
-
         <DemoHeader logoColor="#ffffff"  textColor="#ffffff"/>
-      
-
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
