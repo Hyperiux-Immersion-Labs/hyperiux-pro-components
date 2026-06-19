@@ -20,14 +20,15 @@ export function OrganizationJsonLd() {
     name: "Hyperiux",
     description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
     url: homepage,
-    telephone: "",
+    telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
-    address: {
-      "@type": 'PostalAddress',
-      streetAddress: '',
-      addressLocality: '',
-      addressRegion: '',
-      addressCountry: 'India',
+   "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "#312, Tower A, Grandslam Ithum",
+      "addressLocality": "Sector-62",
+      "postalCode": "201301",
+      "addressCountry": "IN",
+      "addressRegion": "India"
     },
     logo: `${homepage}/favicon.ico`,
     sameAs: [
@@ -60,6 +61,75 @@ export function WebsiteJsonLd() {
   return <JsonLdScript id="website-jsonld" data={jsonLd} />;
 }
 
+export function SoftwareApplicationJsonLd() {
+  const ratingValue = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_VALUE);
+  const ratingCount = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_COUNT);
+  const hasAggregateRating = ratingValue > 0 && ratingCount > 0;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${homepage}/#software-application`,
+    name: "Hyperiux Vault",
+    description:
+      "Hyperiux Vault is a growing library of production-ready interactive components, motion systems, WebGL effects, loaders, navigation patterns, buttons, sliders, text animations, and page transitions for React and Next.js websites.",
+    url: homepage,
+    applicationCategory: "DeveloperApplication",
+    applicationSubCategory: "UI component library",
+    isAccessibleForFree: true,
+    operatingSystem: "Web-based (React and Next.js)",
+    browserRequirements: "Requires JavaScript and a modern web browser",
+    softwareVersion: "0.1.0",
+    featureList: [
+      "100+ premium interactive effects",
+      "Copy-paste React and Next.js components",
+      "Hyperiux CLI installation support",
+      "Scroll, WebGL, loader, navigation, button, text, slider, and transition effects",
+      "New effects added continuously",
+      "Commercial-friendly implementation structure",
+      "Documentation and usage examples",
+    ],
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Hyperiux Vault Monthly",
+        price: "$",
+        priceCurrency: "$",
+        url: `${homepage}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "Hyperiux Vault Quarterly",
+        price: "$",
+        priceCurrency: "$",
+        url: `${homepage}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "Hyperiux Vault Yearly",
+        price: "$",
+        priceCurrency: "$",
+        url: `${homepage}/pricing`,
+      },
+    ],
+    ...(hasAggregateRating && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue,
+        ratingCount,
+        bestRating: 5,
+        worstRating: 1,
+      },
+    }),
+    provider: { "@id": `${homepage}#organization` },
+    author: { "@id": `${homepage}#organization` },
+    publisher: { "@id": `${homepage}#organization` },
+    inLanguage: "en-US",
+  };
+
+  return <JsonLdScript id="software-application-jsonld" data={jsonLd} />;
+}
+
 export function ImageObjectJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -82,13 +152,13 @@ export function LocalBusiness() {
     "image": `https://vault.hyperiux.com/hyperiux.png`,
     "@id": "",
     "url": `${homepage}`,
-    "telephone": "",
+    "telephone": "+91 8178 026 136",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "",
-      "addressLocality": "",
-      "postalCode": "",
-      "addressCountry": "",
+      "streetAddress": "#312, Tower A, Grandslam Ithum",
+      "addressLocality": "Sector-62",
+      "postalCode": "201301",
+      "addressCountry": "IN",
       "addressRegion": "India"
     },
     "sameAs": [
@@ -97,6 +167,7 @@ export function LocalBusiness() {
       "https://www.linkedin.com/in/",
       "https://x.com/"
     ],
+    priceRange: "$-$",
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",

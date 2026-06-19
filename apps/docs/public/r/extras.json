@@ -233,8 +233,8 @@
       "addedAt": 1780566951468.5398
     },
     {
-      "name": "rotating-carousel",
-      "title": "Rotating Carousel",
+      "name": "Circular Slider",
+      "title": "Circular Slider",
       "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
       "category": "scroll",
       "categories": [
@@ -248,8 +248,8 @@
       "exportName": "RotatingCarousel",
       "exportKind": "named",
       "previewUrl": "/circular-slider",
-      "coverImage": "rotating-carousel",
-      "videoUrl": "rotating-carousel.mp4",
+      "coverImage": "circular-slider",
+      "videoUrl": "circular-slider.mp4",
       "addedAt": 1780566951468.884
     },
     {

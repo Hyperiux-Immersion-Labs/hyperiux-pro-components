@@ -4,7 +4,7 @@ import React from "react";
 
 export default function layout({ children }) {
   return (
-    <ChessGridTransition>
+    <ChessGridTransition >
       <DemoHeader />
       {children}
     </ChessGridTransition>

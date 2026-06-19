@@ -1,5 +1,5 @@
 {
-  "name": "rotating-carousel",
+  "name": "circular-slider",
   "type": "registry:component",
   "title": "Rotating Carousel",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
@@ -16,13 +16,13 @@
   "exportName": "RotatingCarousel",
   "exportKind": "named",
   "previewUrl": "/circular-slider",
-  "coverImage": "rotating-carousel",
-  "videoUrl": "rotating-carousel.mp4",
+  "coverImage": "circular-slider",
+  "videoUrl": "circular-slider.mp4",
   "files": [
     {
-      "path": "rotating-carousel.jsx",
+      "path": "circular-slider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/rotating-carousel.jsx"
+      "target": "components/hyperiux/circular-slider.jsx"
     }
   ]
 }
