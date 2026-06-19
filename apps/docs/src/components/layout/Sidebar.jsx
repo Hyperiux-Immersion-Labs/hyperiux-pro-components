@@ -338,7 +338,7 @@ export function Sidebar({
                 animate={{ height: "auto", opacity: 1, y: 0 }}
                 exit={{ height: 0, opacity: 0, y: -6 }}
                 transition={{ duration: 0.24, ease: "easeOut" }}
-                className="ml-[19px] mb-4 max-h-[45vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3"
+                className="ml-[19px] mb-4 max-h-[45vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
               >
                 {effectCategories.map((category) => {
                   const count =

@@ -36,7 +36,7 @@ export function CodeBlock({
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
             
             <div
-                className={`max-h-[30vw] overflow-y-auto w-full ${
+                className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
                         ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[12vh]"
                         : "max-sm:h-[8vh] max-sm:pt-[3vh] max-md:h-[5.5vh]"

@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLenis } from "lenis/react";
 import Link from "next/link";
 import Image from "next/image";
@@ -127,7 +133,13 @@ function isTopNavItemActive(pathname, item) {
   return isPlainLinkActive(path, item.href);
 }
 
-function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
+function MobileDropdownItem({
+  label,
+  href,
+  icon,
+  dropdownType,
+  onNavigate,
+}) {
   const pathname = usePathname();
 
   const isActive =
@@ -140,7 +152,7 @@ function MobileDropdownItem({ label, href, icon, dropdownType, onClose }) {
   return (
     <Link
       href={href}
-      onClick={onClose}
+      onClick={onNavigate}
       className={`flex items-center gap-3 rounded-xl px-3 py-3 transition-colors duration-200 ${
         isActive
           ? "bg-primary/10 text-primary"
@@ -173,7 +185,7 @@ function MobileDropdown({
   isOpen,
   isActive,
   onToggle,
-  onClose,
+  onNavigate,
 }) {
   const contentRef = useRef(null);
   const wrapperRef = useRef(null);
@@ -231,7 +243,7 @@ function MobileDropdown({
               key={`${dropdownType}-${item.label}`}
               {...item}
               dropdownType={dropdownType}
-              onClose={onClose}
+              onNavigate={onNavigate}
             />
           ))}
         </div>
@@ -244,6 +256,7 @@ export default function NavbarMobile() {
   const navbarRef = useRef(null);
   const menuRef = useRef(null);
   const linksRef = useRef(null);
+  const previousBodyOverflow = useRef("");
 
   const hidden = useRef(false);
   const introPlayed = useRef(false);
@@ -254,16 +267,52 @@ export default function NavbarMobile() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
 
-  const closeMenu = () => {
+  const lenis = useLenis(({ scroll, velocity }) => {
+    if (isMenuOpen) return;
+
+    if (scroll < 80) {
+      toggleNavbar(false);
+      return;
+    }
+
+    if (velocity > 0.1) {
+      toggleNavbar(true);
+    } else if (velocity < -0.15) {
+      toggleNavbar(false);
+    }
+  });
+
+  const forceStartLenis = useCallback(() => {
+    if (typeof document !== "undefined") {
+      document.body.style.removeProperty("overflow");
+    }
+
+    lenis?.start?.();
+
+    requestAnimationFrame(() => {
+      lenis?.start?.();
+    });
+
+    window.setTimeout(() => {
+      lenis?.start?.();
+    }, 80);
+  }, [lenis]);
+
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
     setOpenDropdown(null);
-  };
+  }, []);
+
+  const handleNavigate = useCallback(() => {
+    forceStartLenis();
+    closeMenu();
+  }, [forceStartLenis, closeMenu]);
 
   const toggleDropdown = (id) => {
     setOpenDropdown((current) => (current === id ? null : id));
   };
 
-  const playNavbarIntro = () => {
+  function playNavbarIntro() {
     const navbar = navbarRef.current;
 
     if (!navbar) return;
@@ -292,9 +341,9 @@ export default function NavbarMobile() {
         }
       );
     });
-  };
+  }
 
-  const toggleNavbar = (hide) => {
+  function toggleNavbar(hide) {
     if (!navbarRef.current) return;
     if (!introPlayed.current) return;
     if (hidden.current === hide) return;
@@ -308,22 +357,7 @@ export default function NavbarMobile() {
       duration: 0.4,
       ease: "power2.out",
     });
-  };
-
-  useLenis(({ scroll, velocity }) => {
-    if (isMenuOpen) return;
-
-    if (scroll < 80) {
-      toggleNavbar(false);
-      return;
-    }
-
-    if (velocity > 0.1) {
-      toggleNavbar(true);
-    } else if (velocity < -0.15) {
-      toggleNavbar(false);
-    }
-  });
+  }
 
   useIsomorphicLayoutEffect(() => {
     const navbar = navbarRef.current;
@@ -363,10 +397,6 @@ export default function NavbarMobile() {
     poll = window.setInterval(tryPlayIntro, 80);
 
     fallbackTimeout = window.setTimeout(() => {
-      /*
-        This is the important fallback for pages that do not have a loader at all.
-        If there is no loader running, the navbar becomes visible normally.
-      */
       tryPlayIntro();
     }, 500);
 
@@ -387,19 +417,33 @@ export default function NavbarMobile() {
 
   useEffect(() => {
     if (isMenuOpen) {
+      previousBodyOverflow.current = document.body.style.overflow || "";
       document.body.style.overflow = "hidden";
       toggleNavbar(false);
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousBodyOverflow.current || "";
+
+      if (!previousBodyOverflow.current) {
+        document.body.style.removeProperty("overflow");
+      }
+
+      lenis?.start?.();
     }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousBodyOverflow.current || "";
+
+      if (!previousBodyOverflow.current) {
+        document.body.style.removeProperty("overflow");
+      }
+
+      lenis?.start?.();
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, lenis]);
 
   useEffect(() => {
     const handlePopState = () => {
+      forceStartLenis();
       setIsMenuOpen(false);
       setOpenDropdown(null);
     };
@@ -409,11 +453,12 @@ export default function NavbarMobile() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, []);
+  }, [forceStartLenis]);
 
   useEffect(() => {
+    forceStartLenis();
     closeMenu();
-  }, [pathname]);
+  }, [pathname, forceStartLenis, closeMenu]);
 
   useIsomorphicLayoutEffect(() => {
     if (!menuRef.current || !linksRef.current) return;
@@ -494,7 +539,7 @@ export default function NavbarMobile() {
         }}
         className="fixed left-0 top-0 z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
       >
-        <Link href="/" onClick={closeMenu}>
+        <Link href="/" onClick={handleNavigate}>
           <HyperiuxLogo className="h-auto max-sm:w-[40vw] text-primary max-md:w-[25vw]" />
         </Link>
 
@@ -524,6 +569,7 @@ export default function NavbarMobile() {
           <div ref={linksRef} className="flex flex-1 flex-col">
             {vaultLinks.map(({ label, href, dropdown }) => {
               const isExternal = href?.startsWith("http");
+
               const isActive = isTopNavItemActive(pathname, {
                 label,
                 href,
@@ -540,7 +586,7 @@ export default function NavbarMobile() {
                     isOpen={openDropdown === dropdown}
                     isActive={isActive}
                     onToggle={() => toggleDropdown(dropdown)}
-                    onClose={closeMenu}
+                    onNavigate={handleNavigate}
                   />
                 );
               }
@@ -551,7 +597,7 @@ export default function NavbarMobile() {
                   href={href}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
-                  onClick={closeMenu}
+                  onClick={handleNavigate}
                   className={`border-b border-white/5 py-5 max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-primary"
@@ -565,7 +611,7 @@ export default function NavbarMobile() {
           </div>
 
           <div className="mt-8 border-t border-white/10 pt-8">
-            <div className="flex w-full justify-center" onClick={closeMenu}>
+            <div className="flex w-full justify-center" onClick={handleNavigate}>
               <Button text="Install CLI" href="/docs/installation" />
             </div>
           </div>

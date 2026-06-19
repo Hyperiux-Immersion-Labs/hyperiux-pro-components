@@ -1,17 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAnimate, useInView } from "motion/react";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
-import gsap from "gsap";
-import DrawSVGPlugin from "gsap/DrawSVGPlugin";
-
-gsap.registerPlugin(DrawSVGPlugin);
 
 function formatLabel(value = "") {
   return value
@@ -42,10 +37,10 @@ export function EffectCard({
   });
 
   useEffect(() => {
-    if (isInView) {
-      if (!scope.current) return;
-      animate(scope.current, { opacity: 1 }, { duration: 0.55 });
-    }
+    if (!isInView) return;
+    if (!scope.current) return;
+
+    animate(scope.current, { opacity: 1 }, { duration: 0.55 });
   }, [animate, isInView, scope]);
 
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
@@ -54,8 +49,7 @@ export function EffectCard({
     resolveMediaUrl(effect.coverImage || effect.imageSrc, {
       defaultDirectory: "vault-listing-images",
       defaultExtension: "png",
-    }) ||
-    "/assets/img/image01.webp";
+    }) || "/assets/img/image01.webp";
 
   useEffect(() => {
     if (!isHovered && videoRef.current) {
@@ -67,16 +61,16 @@ export function EffectCard({
 
   const shouldLoadVideo = videoPreviewUrl && !videoError && isHovered;
   const showVideo = shouldLoadVideo && videoReady;
+
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
-  const router = useRouter();
 
-  const handleCardClick = (event) => {
-    if (event.defaultPrevented) return;
-    router.push(effectHref);
-  };
-  const categories = (effect.categories?.length ? effect.categories : [effect.category]).filter(Boolean);
+  const categories = (
+    effect.categories?.length ? effect.categories : [effect.category]
+  ).filter(Boolean);
+
   const primaryCategoryLabel = formatLabel(categories[0] || "components");
+
   const dependencyPills = (effect.dependencies || [])
     .slice(0, 2)
     .map(formatLabel)
@@ -89,109 +83,121 @@ export function EffectCard({
         opacity: isInView ? 1 : 0,
         transition: "opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1)",
         willChange: "opacity",
-        position: "relative",
       }}
-      className="group w-full overflow-hidden rounded-md duration-500 ease-in-out cursor-pointer"
+      className="group relative w-full cursor-pointer overflow-hidden rounded-md duration-500 ease-in-out"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handleCardClick}
     >
-      <Link href={effectHref} className="block">
-        <div className="relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
-          <div className="pointer-events-none absolute inset-x-3 top-3 max-md:top-7 z-20 flex items-start justify-between gap-3 max-md:inset-x-5 max-sm:inset-x-3 max-sm:top-3 max-sm:gap-2">
-            <div className="flex min-w-0 flex-wrap items-center gap-2 max-sm:gap-1.5">
-              {dependencyPills.map((pill) => (
-                <span
-                  key={pill}
-                  className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!"
-                >
-                  {pill}
-                </span>
-              ))}
-            </div>
+      <Link
+        href={effectHref}
+        aria-label={`Open ${effect.title || effect.name}`}
+        className="absolute inset-0 z-10 cursor-pointer"
+      />
 
-            {effect.tier === "pro" && (
-              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!">
-                Pro
+      <div className="pointer-events-none relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
+        <div className="absolute inset-x-3 top-3 z-20 flex items-start justify-between gap-3 max-md:inset-x-5 max-md:top-7 max-sm:inset-x-3 max-sm:top-3 max-sm:gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 max-sm:gap-1.5">
+            {dependencyPills.map((pill) => (
+              <span
+                key={pill}
+                className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!"
+              >
+                {pill}
               </span>
-            )}
+            ))}
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-center px-7 max-sm:px-4">
-            <div className="relative aspect-video w-full overflow-hidden rounded-sm">
-              <Image
-                src={coverImage}
-                alt={effect.title || effect.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority={priority}
-                className={`object-cover transition-all duration-500 group-hover:scale-[1.02] ${
-                  showVideo ? "opacity-0" : "opacity-100"
+          {effect.tier === "pro" && (
+            <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!">
+              Pro
+            </span>
+          )}
+        </div>
+
+        <div className="absolute inset-0 flex items-center justify-center px-7 max-sm:px-4">
+          <div className="relative aspect-video w-full overflow-hidden rounded-sm">
+            <Image
+              src={coverImage}
+              alt={effect.title || effect.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority={priority}
+              className={`object-cover transition-all duration-500 group-hover:scale-[1.02] ${
+                showVideo ? "opacity-0" : "opacity-100"
+              }`}
+            />
+
+            {shouldLoadVideo && (
+              <video
+                ref={videoRef}
+                src={videoPreviewUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                onLoadedData={() => setVideoReady(true)}
+                onError={() => setVideoError(true)}
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+                  showVideo ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {shouldLoadVideo && (
-                <video
-                  ref={videoRef}
-                  src={videoPreviewUrl}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  onLoadedData={() => setVideoReady(true)}
-                  onError={() => setVideoError(true)}
-                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-                    showVideo ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-              )}
-            </div>
+            )}
           </div>
         </div>
-      </Link>
+      </div>
 
-      <div className="flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-sm:gap-3 max-sm:px-2 max-sm:pt-7 max-md:pt-8">
-        <Link href={effectHref} className="block min-w-0 gap-1">
+      <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
+        <div className="min-w-0 gap-1">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white transition-colors group-hover:text-white max-sm:text-base">
             {effect.title}
           </h3>
+
           <p className="mt-0.5 text18 text-[#AEAEAE] max-sm:text-xs">
             {primaryCategoryLabel}
           </p>
-        </Link>
+        </div>
 
-        <div className="flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-sm:gap-1.5 max-md:opacity-100">
+        <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:opacity-100 max-sm:gap-1.5">
           <button
+            type="button"
+            data-no-card-link
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
               toggleWishlist?.(effect);
             }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-sm:h-10 max-sm:w-10 max-md:h-12 max-md:w-12"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
             <Heart
-              className={`h-4 w-4 max-sm:h-5 max-sm:w-5 max-md:h-6 max-md:w-6  ${
+              className={`h-4 w-4 max-md:h-6 max-md:w-6 max-sm:h-5 max-sm:w-5 ${
                 isWishlisted ? "fill-white text-white" : "text-white"
               }`}
             />
           </button>
 
           <button
+            type="button"
+            data-no-card-link
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
-              window.open(previewHref, "_blank");
+              window.open(previewHref, "_blank", "noopener,noreferrer");
             }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-sm:h-10 max-sm:w-10 max-md:h-12 max-md:w-12"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
             aria-label="Preview"
           >
-            <Eye className="h-4 w-4 max-sm:h-5 max-sm:w-5 max-md:h-6 max-md:w-6 " />
+            <Eye className="h-4 w-4 max-md:h-6 max-md:w-6 max-sm:h-5 max-sm:w-5" />
           </button>
 
           <Link
             href={effectHref}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-sm:h-10 max-sm:w-10 max-md:h-12 max-md:w-12"
+            data-no-card-link
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
             aria-label={`Open ${effect.title || effect.name}`}
           >
             <ArrowUpRight className="h-5 w-5 max-sm:h-4 max-sm:w-4" />

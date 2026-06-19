@@ -93,7 +93,7 @@ export function VaultContent({
         gsap.to(fadeItems, {
           autoAlpha: 1,
           y: 0,
-            delay: 0.3,
+          delay: 0.3,
           duration: 0.75,
           ease: "power3.out",
           stagger: {
@@ -346,39 +346,39 @@ export function VaultContent({
                 key={`category-intro-${categoryFilter}`}
                 className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-sm:px-7 max-sm:pt-32 max-sm:pb-16"
               >
-               
-              <nav
-                aria-label="Breadcrumb"
-                className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text20 text-muted max-sm:text-xs fadeup"
-              >
-                {breadcrumbItems.map((item, index) => {
-                  const isLast = index === breadcrumbItems.length - 1;
 
-                  return (
-                    <span key={item.href} className="flex items-center gap-2">
-                      {index > 0 && (
-                        <span className="text-white/25">/</span>
-                      )}
+                <nav
+                  aria-label="Breadcrumb"
+                  className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text20 text-muted max-sm:text-xs fadeup"
+                >
+                  {breadcrumbItems.map((item, index) => {
+                    const isLast = index === breadcrumbItems.length - 1;
 
-                      {isLast ? (
-                        <span className="capitalize text-primary">
-                          {item.label}
-                        </span>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          className="capitalize transition-colors hover:text-primary"
-                        >
-                          {item.label}
-                        </Link>
-                      )}
-                    </span>
-                  );
-                })}
-              </nav>
-            
+                    return (
+                      <span key={item.href} className="flex items-center gap-2">
+                        {index > 0 && (
+                          <span className="text-white/25">/</span>
+                        )}
 
-            <HeadAnim animateOnScroll={false}>
+                        {isLast ? (
+                          <span className="capitalize text-primary">
+                            {item.label}
+                          </span>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="capitalize transition-colors hover:text-primary"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </span>
+                    );
+                  })}
+                </nav>
+
+
+                <HeadAnim animateOnScroll={false}>
                   <h1
                     className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-sm:w-[90%] max-sm:text-4xl"
                     style={{ lineHeight: "1.1" }}
@@ -429,10 +429,10 @@ export function VaultContent({
                       cat === "free"
                         ? "Free"
                         : cat === "featured"
-                        ? "Featured"
-                        : cat === "webgl"
-                        ? "WebGL"
-                        : cat.charAt(0).toUpperCase() + cat.slice(1);
+                          ? "Featured"
+                          : cat === "webgl"
+                            ? "WebGL"
+                            : cat.charAt(0).toUpperCase() + cat.slice(1);
 
                     return (
                       <button
@@ -444,10 +444,9 @@ export function VaultContent({
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
                           transition-all duration-500 ease-in-out max-sm:text-lg
                           hover:text-[#111111] hover:bg-white text20
-                          ${
-                            isSelected
-                              ? "bg-white text-[#111111]"
-                              : "bg-[#272727] text-foreground"
+                          ${isSelected
+                            ? "bg-white text-[#111111]"
+                            : "bg-[#272727] text-foreground"
                           }
                         `}
                       >
@@ -459,13 +458,12 @@ export function VaultContent({
               </div>
             </div>
 
-            <div className="category-fadeup mx-auto relative px-10 pb-12 max-sm:px-6">
+            <div className="category-fadeup mx-auto relative px-10 pb-12 max-sm:px-[7vw]">
               <div
-                className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${
-                  searchQuery
+                className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
                     ? "mb-8 min-h-10 opacity-100"
                     : "mb-0 min-h-0 opacity-0 pointer-events-none"
-                }`}
+                  }`}
               >
                 {searchQuery && (
                   <span
@@ -523,53 +521,53 @@ export function VaultContent({
                   isSidebarOpen={isSidebarOpen}
                 />
               )}
+            <div className="relative  text-foreground w-full mx-auto max-md:w-full ">
+              {activeCategoryFaqItems.length > 0 && (
+                <div key={`category-faq-${categoryFilter}`}>
+                  <FAQSection faqItems={activeCategoryFaqItems} />
+                </div>
+              )}
+
+              {activeCategoryContent?.cta &&
+                (activeCategoryContent?.cta.heading ||
+                  activeCategoryContent?.cta.buttonText) && (
+                  <section
+                    key={`category-cta-${categoryFilter}`}
+                    className="category-fadeup w-full bg-[#272727] rounded-md text-center  mb-[7vw] mx-auto"
+                  >
+                    <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+                      {activeCategoryContent.cta.heading && (
+                        <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
+                          {activeCategoryContent.cta.heading}
+                        </h2>
+                      )}
+
+                      {activeCategoryContent.cta.description && (
+                        <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
+                          {activeCategoryContent.cta.description}
+                        </p>
+                      )}
+
+                      {activeCategoryContent.cta.buttonText && (
+                        <div className="mt-6 w-fit">
+                          <Button
+                            text={activeCategoryContent.cta.buttonText}
+                            href={activeCategoryContent.cta.buttonLink || "#"}
+                            variant="white"
+                            className="shrink-0 w-fit mx-auto"
+                            scaleClass="group-hover:scale-[100]"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </section>
+                )}
+            </div>
             </div>
           </div>
         )}
       </VaultLayout>
 
-      <div className="relative z-50 text-foreground  ">
-        {activeCategoryFaqItems.length > 0 && (
-          <div key={`category-faq-${categoryFilter}`}>
-            <FAQSection faqItems={activeCategoryFaqItems} />
-          </div>
-        )}
-
-        {activeCategoryContent?.cta &&
-          (activeCategoryContent?.cta.heading ||
-            activeCategoryContent?.cta.buttonText) && (
-            <section
-              key={`category-cta-${categoryFilter}`}
-              className="category-fadeup w-full bg-[#272727] rounded-md max-w-[78%] text-center my-[5vw] max-md:max-w-[90%] mx-auto"
-            >
-              <div className="mx-auto w-full max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
-                {activeCategoryContent.cta.heading && (
-                  <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
-                    {activeCategoryContent.cta.heading}
-                  </h2>
-                )}
-
-                {activeCategoryContent.cta.description && (
-                  <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
-                    {activeCategoryContent.cta.description}
-                  </p>
-                )}
-
-                {activeCategoryContent.cta.buttonText && (
-                  <div className="mt-6">
-                    <Button
-                      text={activeCategoryContent.cta.buttonText}
-                      href={activeCategoryContent.cta.buttonLink || "#"}
-                      variant="white"
-                      className="shrink-0 w-fit mx-auto"
-                      scaleClass="group-hover:scale-[100]"
-                    />
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-      </div>
     </div>
   );
 }
@@ -633,9 +631,8 @@ function EffectsGrid({
         {filteredEffects.map((effect, i) => (
           <div
             key={effect.name}
-            className={`effect-card-shell ${
-              !showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
-            }`}
+            className={`effect-card-shell ${!showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
+              }`}
           >
             <EffectCard
               effect={effect}

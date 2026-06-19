@@ -15,7 +15,7 @@ export default function FAQDemo({ faqItems }) {
     .map((item) => item.id);
 
   return (
-    <section className="h-full px-8 max-sm:px-4 py-24 max-sm:pb-10 text-white">
+    <section className="h-full w-full  py-24 max-sm:pb-10 text-white">
       <div className="mx-auto text-center text-white mb-12">
         <HeadAnim>
           <h2 className="text80 max-sm:text-[11vw] max-md:text-[8vw]">
@@ -23,7 +23,7 @@ export default function FAQDemo({ faqItems }) {
           </h2>
         </HeadAnim>
       </div>
-      <div className="mx-auto max-w-[75vw] max-md:max-w-[90vw] space-y-4 max-md:space-y-8 max-sm:space-y-6">
+      <div className="mx-auto w-full space-y-4 max-md:space-y-8 max-sm:space-y-6">
         <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
           {faqItems.map((item) => (
             <FAQWrapper
@@ -40,7 +40,7 @@ export default function FAQDemo({ faqItems }) {
                   {item.title}
                 </h3></FAQTitle>
 
-              <FAQContent className="pt-4 pl-10 max-md:pl-8 text-neutral-400 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]!">
+              <FAQContent className="pt-4 pl-10 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]!">
                 {item.content}
               </FAQContent>
             </FAQWrapper>
