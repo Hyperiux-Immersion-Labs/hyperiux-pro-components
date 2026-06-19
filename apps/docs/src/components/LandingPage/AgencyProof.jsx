@@ -193,7 +193,7 @@ export default function AgencyProof() {
     return (
         <section
             id="AgencyProof"
-            className="h-fit relative z-200  py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-md:hidden"
+            className="h-fit relative z-200 bg-white text-[#0e0e0e] py-[10vw] gap-[2vw] flex flex-col w-full items-center justify-center max-md:hidden"
         >
             <SplitLine as="p"
                 className="text22 text-light-grey">

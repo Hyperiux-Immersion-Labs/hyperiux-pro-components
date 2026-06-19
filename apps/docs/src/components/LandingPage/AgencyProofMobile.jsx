@@ -44,7 +44,7 @@ export default function AgencyProofMobile() {
     return (
         <section
             id="AgencyProof"
-            className="h-fit relative z-200 py-[10vw] max-md:py-[20vw] gap-[2vw] max-md:gap-[8vw] flex flex-col w-full items-center justify-center md:hidden"
+            className="h-fit relative z-200 bg-foreground text-[#0e0e0e] py-[10vw] max-md:py-[20vw] gap-[2vw] max-md:gap-[8vw] flex flex-col w-full items-center justify-center md:hidden"
         >
             <p className="text22 text-light-grey">Agency Proof</p>
 
