@@ -6,7 +6,7 @@ import ArrowsOpacity from "./ArrowsOpacity";
 import ArrowsLimit from "./ArrowsLimit";
 import ArrowsPlay from "./ArrowsPlay";
 import Lines from "./Lines";
-import Points from "./Points";
+
 
 const variations = [
   {
@@ -30,13 +30,6 @@ const variations = [
     frameClassName: "border-white/15 bg-black",
     component: ArrowsLimit,
   },
-  // {
-  //   id: "particle-morph",
-  //   label: "Particle",
-  //   theme: "light",
-  //   frameClassName: "border-black/15 bg-white",
-  //   component: Points,
-  // },
   {
     id: "vector-lines",
     label: "Lines",

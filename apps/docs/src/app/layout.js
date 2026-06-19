@@ -8,6 +8,7 @@ import {
   ImageObjectJsonLd,
   LocalBusiness,
   OrganizationJsonLd,
+  SoftwareApplicationJsonLd,
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
             <LocalBusiness />
             <ImageObjectJsonLd />
             <WebsiteJsonLd />
+            <SoftwareApplicationJsonLd />
             {children}
             <Analytics />
             <SpeedInsights />
