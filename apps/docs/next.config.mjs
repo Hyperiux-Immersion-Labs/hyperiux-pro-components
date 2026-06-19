@@ -19,6 +19,9 @@ const allowedIframeSources = [
   "'self'",
   "https://*.csb.app",
   "https://codesandbox.io",
+  "https://codepen.io",
+  "https://*.codepen.io",
+  "https://*.codepen.dev",
 ].join(" ");
 
 /** @type {import('next').NextConfig} */

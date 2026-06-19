@@ -27,11 +27,42 @@ function isLoaderActive() {
   );
 }
 
+const IFRAME_DESKTOP_WIDTH = 1200;
+
 function DemoFrame({ src, title, shouldMount }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const isExternal = src.startsWith("http");
+  const wrapperRef = useRef(null);
+  const iframeRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const w = el.clientWidth;
+      setScale(w < IFRAME_DESKTOP_WIDTH ? w / IFRAME_DESKTOP_WIDTH : 1);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const needsScale = scale < 1;
+
+  const handlePointerEnter = () => {
+    iframeRef.current?.focus({ preventScroll: true });
+  };
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-md bg-[#151515]">
+    <div
+      ref={wrapperRef}
+      className="relative h-full w-full overflow-hidden rounded-md bg-[#151515]"
+      onPointerEnter={handlePointerEnter}
+    >
       {!isLoaded && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#151515] text20 text-white/40">
           Loading Preview
@@ -40,19 +71,29 @@ function DemoFrame({ src, title, shouldMount }) {
 
       {shouldMount && (
         <iframe
+          ref={iframeRef}
           src={src}
           title={title}
+          tabIndex={0}
           loading="lazy"
           data-sentry-block
           onLoad={() => setIsLoaded(true)}
-          className="h-full w-full rounded-md border-0"
+          className="rounded-md border-0 outline-none"
           style={{
+            width: needsScale ? IFRAME_DESKTOP_WIDTH : "100%",
+            height: needsScale ? `${100 / scale}%` : "100%",
+            transform: needsScale ? `scale(${scale})` : undefined,
+            transformOrigin: "top left",
             opacity: isLoaded ? 1 : 0,
             transition: "opacity 0.45s ease",
           }}
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-scripts"
-          referrerPolicy="no-referrer"
+          {...(isExternal
+            ? {}
+            : {
+                sandbox:
+                  "allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-same-origin",
+              })}
         />
       )}
     </div>

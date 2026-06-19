@@ -61,6 +61,10 @@ export default function FreeVault() {
                 backgroundColor: '#0e0e0e',
                 color: '#ffffff',
             })
+            gsap.set('#Workflow', {
+                backgroundColor: '#0e0e0e',
+                color: '#ffffff',
+            })
             gsap.set('#AgencyProof', {
                 backgroundColor: '#fff',
                 color: '#0e0e0e',
@@ -166,17 +170,15 @@ export default function FreeVault() {
                     }
                 },
             })
-
-
-
-
         })
+
+        return () => ctx.revert()
     }, [])
 
     return (
         <section
             id="FreeVault"
-            className="h-fit relative z-10 bg-white text-background py-[10vw]! pt-[15vw] max-sm:pt-[20vw]! max-md:pb-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full px-[5vw] max-md:px-[8vw] flex items-center justify-center overflow-x-hidden max-sm:mt-[20vw] max-md:mt-[10vw]"
+            className="h-fit relative z-10 bg-white text-background py-[10vw]! pt-[15vw] max-sm:pt-[40vw]! max-md:pb-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full px-[5vw] max-md:px-[8vw] flex items-center justify-center overflow-x-hidden  max-md:pt-[10vw]"
         >
             <SplitLine as="p"
                 className="text22 text-light-grey">
