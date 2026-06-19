@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../WebsiteComps/Button";
 import CircularButton from "../WebsiteComps/CirclularButton";
-import { socialLinks, socialLinksList, vaultLinks } from "../../utils/Links";
+import { socialLinks, socialLinksList as AgencyLinks, vaultLinks } from "../../utils/Links";
 import LinkHover from "../WebsiteComps/LinksHover";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import ReflectiveRods from "@/Experience/ReflectiveRods";
@@ -70,9 +70,9 @@ export default function Footer({ animations=true }) {
                 </ul>
               </div>
               <div className="flex flex-col gap-[2.5vw] max-sm:items-center max-sm:gap-[8vw]">
-                <h3 className="text22 font-medium!">Socials</h3>
+                <h3 className="text22 font-medium!">Agency</h3>
                 <ul className="flex flex-col gap-[.5vw] max-sm:items-center max-sm:gap-[3vw]">
-                  {socialLinksList.map(({ label, href }) => (
+                  {AgencyLinks.map(({ label, href }) => (
                     <li key={label}>
                       <LinkHover
                         href={href}

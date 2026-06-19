@@ -55,128 +55,128 @@ export default function FreeVault() {
         return () => mm.revert();
     }, []);
 
-    // useEffect(() => {
-    //     const ctx = gsap.context(() => {
-    //         gsap.set('#FreeVault', {
-    //             backgroundColor: '#0e0e0e',
-    //             color: '#ffffff',
-    //         })
-    //         gsap.set('#AgencyProof', {
-    //             backgroundColor: '#fff',
-    //             color: '#0e0e0e',
-    //         })
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.set('#FreeVault', {
+                backgroundColor: '#0e0e0e',
+                color: '#ffffff',
+            })
+            gsap.set('#AgencyProof', {
+                backgroundColor: '#fff',
+                color: '#0e0e0e',
+            })
 
-    //         const colorSwitchTimeline = gsap.timeline({
-    //             scrollTrigger: {
-    //                 trigger: '#FreeVault',
-    //                 start: '10% 70%',
-    //                 end: '120% 70%',
-    //                 markers: false,
-    //                 onEnter: () => {
-    //                     gsap.to('#FreeVault', {
-    //                         backgroundColor: '#fff',
-    //                         color: '#0e0e0e',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.to('#LeftBlur', {
-    //                         background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.7), transparent)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.to('#RightBlur', {
-    //                         background: 'linear-gradient(to left, #fff, rgba(255,255,255,0.7), transparent)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
+            const colorSwitchTimeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#FreeVault',
+                    start: '10% 70%',
+                    end: '120% 70%',
+                    markers: false,
+                    onEnter: () => {
+                        gsap.to('#FreeVault', {
+                            backgroundColor: '#fff',
+                            color: '#0e0e0e',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.to('#LeftBlur', {
+                            background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.7), transparent)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.to('#RightBlur', {
+                            background: 'linear-gradient(to left, #fff, rgba(255,255,255,0.7), transparent)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
 
-    //                     gsap.to('#Workflow', {
-    //                         backgroundColor: '#fff',
-    //                         color: '#0e0e0e',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     }, "<")
-    //                     gsap.to('#marquee-svg', {
-    //                         filter: 'invert(1)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     }, "<")
-    //                 },
-    //                 onLeaveBack: () => {
-    //                     gsap.to('#FreeVault', {
-    //                         backgroundColor: '#0e0e0e',
-    //                         color: '#ffffff',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.to('#marquee-svg', {
-    //                         filter: 'invert(0)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     }, "<")
-    //                     gsap.to('#Workflow', {
-    //                         backgroundColor: '#0e0e0e',
-    //                         color: '#ffffff',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     }, "<")
-    //                     gsap.to('#LeftBlur', {
-    //                         background: 'linear-gradient(to right, #0e0e0e, rgba(14,14,14,0.7), transparent)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.to('#RightBlur', {
-    //                         background: 'linear-gradient(to left, #0e0e0e, rgba(14,14,14,0.7), transparent)',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
+                        gsap.to('#Workflow', {
+                            backgroundColor: '#fff',
+                            color: '#0e0e0e',
+                            duration: 0.4,
+                            ease: 'linear',
+                        }, "<")
+                        gsap.to('#marquee-svg', {
+                            filter: 'invert(1)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        }, "<")
+                    },
+                    onLeaveBack: () => {
+                        gsap.to('#FreeVault', {
+                            backgroundColor: '#0e0e0e',
+                            color: '#ffffff',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.to('#marquee-svg', {
+                            filter: 'invert(0)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        }, "<")
+                        gsap.to('#Workflow', {
+                            backgroundColor: '#0e0e0e',
+                            color: '#ffffff',
+                            duration: 0.4,
+                            ease: 'linear',
+                        }, "<")
+                        gsap.to('#LeftBlur', {
+                            background: 'linear-gradient(to right, #0e0e0e, rgba(14,14,14,0.7), transparent)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.to('#RightBlur', {
+                            background: 'linear-gradient(to left, #0e0e0e, rgba(14,14,14,0.7), transparent)',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
 
-    //                 },
-    //                 onLeave: () => {
+                    },
+                    onLeave: () => {
 
-    //                     gsap.to('#FreeVault', {
-    //                         backgroundColor: '#0e0e0e',
-    //                         color: '#ffffff',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.fromTo('#AgencyProof', {
-    //                         backgroundColor: '#fff',
-    //                         color: '#0e0e0e',
-    //                     }, {
-    //                         backgroundColor: '#0e0e0e',
-    //                         color: '#ffffff',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                 },
-    //                 onEnterBack: () => {
-    //                     gsap.to('#FreeVault', {
-    //                         backgroundColor: '#fff',
-    //                         color: '#0e0e0e',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                     gsap.to('#AgencyProof', {
-    //                         backgroundColor: '#fff',
-    //                         color: '#0e0e0e',
-    //                         duration: 0.4,
-    //                         ease: 'linear',
-    //                     })
-    //                 }
-    //             },
-    //         })
-
-
+                        gsap.to('#FreeVault', {
+                            backgroundColor: '#0e0e0e',
+                            color: '#ffffff',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.fromTo('#AgencyProof', {
+                            backgroundColor: '#fff',
+                            color: '#0e0e0e',
+                        }, {
+                            backgroundColor: '#0e0e0e',
+                            color: '#ffffff',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                    },
+                    onEnterBack: () => {
+                        gsap.to('#FreeVault', {
+                            backgroundColor: '#fff',
+                            color: '#0e0e0e',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                        gsap.to('#AgencyProof', {
+                            backgroundColor: '#fff',
+                            color: '#0e0e0e',
+                            duration: 0.4,
+                            ease: 'linear',
+                        })
+                    }
+                },
+            })
 
 
-    //     })
-    // }, [])
+
+
+        })
+    }, [])
 
     return (
         <section
             id="FreeVault"
-            className="h-fit relative z-10 bg-white text-background py-[10vw]! mt-[5vw] max-sm:pt-[20vw]! max-md:pb-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full px-[5vw] max-md:px-[8vw] flex items-center justify-center overflow-x-hidden max-sm:mt-[20vw] max-md:mt-[10vw]"
+            className="h-fit relative z-10 bg-white text-background py-[10vw]! pt-[15vw] max-sm:pt-[20vw]! max-md:pb-[30vw]! gap-[2vw] max-md:gap-[8vw] flex-col w-full px-[5vw] max-md:px-[8vw] flex items-center justify-center overflow-x-hidden max-sm:mt-[20vw] max-md:mt-[10vw]"
         >
             <SplitLine as="p"
                 className="text22 text-light-grey">
@@ -195,7 +195,7 @@ export default function FreeVault() {
                 <div className="w-fit max-md:mx-auto! max-md:mt-[6vw] fadeup">
                     <Button className='border border-primary' text="Explore All Effects" href="/effects" />
                 </div>
-                <div className="w-full max-md:flex-col-reverse max-md:gap-[8vw] max-md:h-auto flex h-[80vh] items-center gap-[2vw] justify-between">
+                <div className="w-full max-md:flex-col-reverse max-md:gap-[8vw] max-md:h-auto flex h-[45vw] items-center gap-[2vw] justify-between">
                     <div
                         ref={freeRef}
                         className="w-1/2 max-md:w-full py-[4vw] max-md:py-[8vw] text-background! px-[3vw] max-md:px-[6vw] h-full max-md:h-auto flex flex-col items-start justify-between rounded-md bg-[#F6F6F6] max-md:gap-[8vw]"

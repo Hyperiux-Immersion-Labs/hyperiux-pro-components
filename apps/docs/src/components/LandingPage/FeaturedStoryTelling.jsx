@@ -496,7 +496,7 @@ export default function FeaturedStoryTelling() {
             masterTL.to(
                 vaultMoveTextRef.current,
                 {
-                    x: () => cachedMoveX,
+                    x: () => cachedMoveX +10, 
                     duration: 0.8,
                     ease: "power2.inOut"
                 },

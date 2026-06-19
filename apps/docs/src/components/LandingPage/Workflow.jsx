@@ -22,7 +22,7 @@ export default function Workflow() {
                     scale: 0.5,
                 },
                 {
-                    scale: 1,
+                    scale: .9,
                     ease: 'none',
                     scrollTrigger: {
                         trigger: sectionRef.current,
@@ -62,14 +62,15 @@ export default function Workflow() {
 
 
                 <div ref={videoRef} className="w-full h-[90vh] max-md:h-[35vh] overflow-hidden bg-zinc-700 rounded-sm">
-                    {/* <video
-                        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
+                    <video
+                        src="/video/tutorial.mp4"
                         autoPlay
                         loop
                         muted
+                        preload='auto'
                         playsInline
                         className="w-full h-full object-cover"
-                    /> */}
+                    />
                 </div>
             </div>
             <TechMarquee />

@@ -496,6 +496,11 @@ export default function Navbar() {
         if (!navbarRef.current || hidden.current === hide) return
 
         hidden.current = hide
+
+        if (hide) {
+            setActiveItem(null)
+        }
+
         gsap.killTweensOf(navbarRef.current)
         gsap.to(navbarRef.current, {
             yPercent: hide ? -100 : 0,

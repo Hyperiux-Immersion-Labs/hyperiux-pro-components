@@ -43,11 +43,12 @@ export const navDocsItems = [
 ]
 
 export const socialLinksList = [
-    { label: 'Github', href: 'https://github.com/Hyperiux-Immersion-Labs/hyperiux-components' },
-    { label: 'Facebook', href: '#' },
-    { label: 'Linkedin', href: '#' },
-    { label: 'Instagram', href: '#' },
-    { label: 'Twitter / X', href: '#' },
+    { label: 'About', href: '#' },
+    { label: 'Work', href: '#' },
+    { label: 'Expertise', href: '#' },
+    { label: 'Career', href: '#' },
+    { label: 'Resources', href: '#' },
+    { label: 'Contact', href: '#' },
 ]
 
 export const socialLinks = [

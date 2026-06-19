@@ -9,9 +9,9 @@ const buttonTv = tv({
   base: "group flex overflow-hidden items-center gap-[1vw] max-md:gap-2 max-sm:gap-2 rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-3 max-sm:px-6 max-sm:py-3 relative text-[1.15vw] font-medium tracking-wide max-md:text-lg max-sm:text-sm transition-all duration-500",
   variants: {
     variant: {
-      orange: "bg-primary text-white",
-      black: "bg-black text-white",
-      white: "bg-white text-black"
+      orange: "bg-primary text-white border border-primary",
+      black: "bg-black text-white border border-background",
+      white: "bg-white text-black border border-foreground"
     }
   },
   defaultVariants: {

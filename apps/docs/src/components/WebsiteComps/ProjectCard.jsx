@@ -66,7 +66,7 @@ export default function ProjectCard({
         >
             <div onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                onMouseMove={handleMouseMove} className="w-full aspect-[16/10] rounded-md overflow-hidden relative group">
+                onMouseMove={handleMouseMove} className="w-full aspect-video rounded-md overflow-hidden relative group">
                 <Image
                     src={project.img}
                     className="object-cover"
