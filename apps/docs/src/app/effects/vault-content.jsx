@@ -107,7 +107,18 @@ export function VaultContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
-  const routeKey = `${pathname}?${searchParamString}`;
+
+const animationSearchParamString = useMemo(() => {
+  const params = new URLSearchParams(searchParamString);
+
+  params.delete("waitlist");
+
+  return params.toString();
+}, [searchParamString]);
+
+const routeKey = `${pathname}${
+  animationSearchParamString ? `?${animationSearchParamString}` : ""
+}`;
 
   const safeEffects = Array.isArray(incomingEffects) ? incomingEffects : [];
   const safeEffectCounts =
@@ -543,11 +554,11 @@ export function VaultContent({
               <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
-                   key={`${categoryFilter}-description-${index}`}
                     delay={0.3}
                     animationKey={`${routeKey}-${index}`}
                   >
                     <p
+                      key={`${categoryFilter}-description-${index}`}
                       className="mt-3"
                     >
                       {description}

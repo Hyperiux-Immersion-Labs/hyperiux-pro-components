@@ -13,6 +13,7 @@ import {
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
 import PixelRandom from "@/components/showcase/transitions/PixelRandom/PixelRandomTransition";
+import AccessRequestModal from "@/components/auth/AccessRequestModal";
 
 const layGrotesk = localFont({
   src: [
@@ -38,13 +39,14 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <body className="min-h-dvh bg-background text-foreground font-sans">
         {/* <PixelRandom color="#ff5f00"> */}
-          <ClerkProvider>
+          <ClerkProvider waitlistUrl="/request-access">
             <OrganizationJsonLd />
             <LocalBusiness />
             <ImageObjectJsonLd />
             <WebsiteJsonLd />
             <SoftwareApplicationJsonLd />
             {children}
+             <AccessRequestModal />
             <Analytics />
             <SpeedInsights />
           </ClerkProvider>

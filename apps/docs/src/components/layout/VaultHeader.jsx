@@ -11,6 +11,7 @@ import Button from "@/components/WebsiteComps/Button";
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { WaitlistTrigger } from "../auth/AccessRequestModal";
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -163,7 +164,9 @@ export function VaultHeader({
             {!isSignedIn ? (
               <>
                 <div className="block max-md:hidden">
+                  <WaitlistTrigger>
                   <Button
+                    preventDefault={true}
                     text="Request Access"
                     href="/request-access"
                     variant="orange"
@@ -171,6 +174,7 @@ export function VaultHeader({
                     innerClassName="group-hover:!translate-x-0"
                     pillClassName="px-4 py-2 text-xs leading-none"
                   />
+                  </WaitlistTrigger>
                 </div>
               </>
             ) : (

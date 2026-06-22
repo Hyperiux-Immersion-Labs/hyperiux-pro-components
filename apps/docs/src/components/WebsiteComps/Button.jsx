@@ -37,6 +37,7 @@ export default function Button({
   variant = "orange",
   className = "",
   target_blank = false,
+  preventDefault=false,
   scaleClass = 'group-hover:scale-[70]',
   hoverTextClassName,
   children,
@@ -50,6 +51,11 @@ export default function Button({
   return (
     <Link
       href={href}
+      onClick={(e)=>{
+        if(preventDefault){
+          e.preventDefault()
+        }
+      }}
       target={target_blank ? "_blank" : undefined}
       rel={target_blank ? "noopener noreferrer" : undefined}
       className={styles.base()}

@@ -11,7 +11,7 @@ export const metadata = createPageMetadata({
 export default function SignInPage() {
   return (
     <AuthShell>
-      <div className="hyperiux-clerk">
+      <div className="hyperiux-clerk w-[40vw]! mx-auto">
         <SignIn
           path="/sign-in"
           routing="path"

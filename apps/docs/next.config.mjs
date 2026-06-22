@@ -4,15 +4,17 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const shouldUploadSentrySourceMaps = Boolean(
-  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true",
+  process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true"
 );
+
 const hasSentryBuildConfig = Boolean(
   shouldUploadSentrySourceMaps &&
-  process.env.NEXT_PUBLIC_SENTRY_DSN &&
-  process.env.SENTRY_ORG &&
-  process.env.SENTRY_PROJECT &&
-  process.env.SENTRY_AUTH_TOKEN,
+    process.env.NEXT_PUBLIC_SENTRY_DSN &&
+    process.env.SENTRY_ORG &&
+    process.env.SENTRY_PROJECT &&
+    process.env.SENTRY_AUTH_TOKEN
 );
 
 const allowedIframeSources = [
@@ -26,9 +28,12 @@ const allowedIframeSources = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ["local.vault.hyperiux.com"],
+
   turbopack: {
     root: __dirname,
   },
+
   async headers() {
     return [
       {
@@ -42,9 +47,9 @@ const nextConfig = {
       },
     ];
   },
+
   async redirects() {
     return [
-      
       {
         source: "/effects/components/book-flip",
         destination: "/effects/webgl-effects/book-flip",
@@ -107,6 +112,7 @@ const nextConfig = {
       },
     ];
   },
+
   images: {
     remotePatterns: [
       {
@@ -122,10 +128,10 @@ const sentryConfig = hasSentryBuildConfig
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
 
-      // Only upload source maps in CI/production to avoid slowing local builds
       silent: true,
       widenClientFileUpload: true,
       hideSourceMaps: true,
+
       webpack: {
         treeshake: {
           removeDebugLogging: true,

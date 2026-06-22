@@ -182,7 +182,7 @@ h4 {
 
 .hyperiux-clerk .cl-cardBox {
   width: 100% !important;
-  border-radius: 2rem !important;
+  border-radius: 1vw !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   background: transparent !important;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45) !important;
@@ -195,8 +195,8 @@ h4 {
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
-  padding: 2rem !important;
-  padding-top: 3rem !important;
+  padding: 5vw !important;
+  padding-top: 5vw !important;
 }
 
 .hyperiux-clerk .cl-header {
@@ -456,7 +456,35 @@ h4 {
 .cl-backLink {
   color: #ff5f00 !important;
 }
-
+.cl-internal-d4j0pk{
+  display: none;
+  box-shadow: none;
+}
+.cl-internal-b06xbh{
+  border-radius: none !important;
+  box-shadow: none;
+}
+.cl-internal-1wwl4aq{
+  border-radius: none !important;
+  box-shadow: none;
+}
+.cl-formFieldLabel{
+  color: white;
+}
+.cl-internal-xv3xvj[data-variant="default"]{
+  box-shadow: none !important;
+  background-color: transparent;
+  color: white;
+  height: 3vw;
+  max-height: none;
+  border: 1px solid #ffffff25;
+}
+.cl-internal-xv3xvj:focus{
+   border: 1px solid #ff5f00;
+}
+.cl-internal-thjl5p[data-variant="solid"]::after{
+  background: linear-gradient(#ff5f00 100%, #ff5f00 100%) !important;
+}
 @media (max-width: 640px) {
   .hyperiux-clerk .cl-cardBox {
     border-radius: 1.5rem !important;

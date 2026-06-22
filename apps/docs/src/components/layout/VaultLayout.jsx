@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -37,12 +37,23 @@ function setStoredSidebarExpanded(value) {
 function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchParamString = searchParams.toString();
+
+  const routeChangeKey = useMemo(() => {
+    const params = new URLSearchParams(searchParamString);
+
+    params.delete("waitlist");
+
+    const query = params.toString();
+
+    return `${pathname}${query ? `?${query}` : ""}`;
+  }, [pathname, searchParamString]);
 
   useEffect(() => {
     if (!isSidebarReady) return;
 
     onRouteChange();
-  }, [pathname, searchParams, isSidebarReady, onRouteChange]);
+  }, [routeChangeKey, isSidebarReady, onRouteChange]);
 
   return null;
 }

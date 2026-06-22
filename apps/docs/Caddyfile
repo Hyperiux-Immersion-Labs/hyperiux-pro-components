@@ -1,0 +1,4 @@
+local.vault.hyperiux.com {
+  reverse_proxy localhost:3000
+  tls ./local.vault.hyperiux.com.pem ./local.vault.hyperiux.com-key.pem
+}
