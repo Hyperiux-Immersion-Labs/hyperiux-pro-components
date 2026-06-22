@@ -192,12 +192,12 @@
     "demoRoute": "https://vault.hyperiux.com/pro/modal"
   },
   {
-    "title": "Portfolio Concept",
-    "name": "portfolio-concept",
+    "title": "Ribbon Drift",
+    "name": "ribbon-drift",
     "tier": "pro",
     "category": "components",
-    "detailRoute": "https://vault.hyperiux.com/effects/components/portfolio-concept",
-    "demoRoute": "https://vault.hyperiux.com/pro/portfolio-concept"
+    "detailRoute": "https://vault.hyperiux.com/effects/components/ribbon-drift",
+    "demoRoute": "https://vault.hyperiux.com/pro/ribbon-drift"
   },
   {
     "title": "Tabs",
@@ -737,11 +737,11 @@
   },
   {
     "title": "Pie Rotation Transition",
-    "name": "pie-rotation-transition",
+    "name": "radial-slice-transition",
     "tier": "free",
     "category": "transitions",
-    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/pie-rotation-transition",
-    "demoRoute": "https://vault.hyperiux.com/pro/pie-rotation-transition"
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/radial-slice-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/radial-slice-transition"
   },
   {
     "title": "Pixel Transition",
@@ -753,10 +753,10 @@
   },
   {
     "title": "Svg Draw Page Transition",
-    "name": "svg-draw-page-transition",
+    "name": "svg-brush-transition",
     "tier": "pro",
     "category": "transitions",
-    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/svg-draw-page-transition",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/svg-brush-transition",
     "demoRoute": "https://vault.hyperiux.com/pro/brush-strokes"
   },
   {

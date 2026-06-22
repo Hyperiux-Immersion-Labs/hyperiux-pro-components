@@ -1,10 +1,10 @@
 {
-  "name": "@hyperiux/svg-draw-page-transition",
+  "name": "@hyperiux/svg-brush-transition",
   "version": "0.0.1",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
-  "main": "svg-draw-page-transition.jsx",
+  "main": "svg-brush-transition.jsx",
   "files": [
-    "svg-draw-page-transition.jsx",
+    "svg-brush-transition.jsx",
     "registry.json"
   ],
   "keywords": [

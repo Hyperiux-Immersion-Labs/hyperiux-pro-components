@@ -857,7 +857,7 @@
       "addedAt": 1781160379988.189
     },
     {
-      "name": "pie-rotation-transition",
+      "name": "radial-slice-transition",
       "title": "Pie Rotation Transition",
       "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
       "category": "transitions",
@@ -871,9 +871,9 @@
       ],
       "exportName": "PieRotationTransition",
       "exportKind": "named",
-      "previewUrl": "/page-transitions/pie-rotation-transition",
-      "coverImage": "pie-rotation-transition",
-      "videoUrl": "pie-rotation-transition.mp4",
+      "previewUrl": "/page-transitions/radial-slice-transition",
+      "coverImage": "radial-slice-transition",
+      "videoUrl": "radial-slice-transition.mp4",
       "addedAt": 1780573510920.3005
     },
     {
@@ -897,7 +897,7 @@
       "addedAt": 1780566951473.0852
     },
     {
-      "name": "svg-draw-page-transition",
+      "name": "svg-brush-transition",
       "title": "Svg Draw Page Transition",
       "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
       "category": "transitions",
@@ -912,8 +912,8 @@
       "exportName": "SvgDrawPageTransition",
       "exportKind": "named",
       "previewUrl": "/page-transitions/brush-strokes",
-      "coverImage": "svg-draw-page-transition",
-      "videoUrl": "svg-draw-page-transition.mp4",
+      "coverImage": "svg-brush-transition",
+      "videoUrl": "svg-brush-transition.mp4",
       "addedAt": 1781160379988.7317
     },
     {
@@ -2155,8 +2155,8 @@
       "addedAt": 1780573510916.742
     },
     {
-      "name": "portfolio-concept",
-      "title": "Portfolio Concept",
+      "name": "ribbon-drift",
+      "title": "Ribbon Drift",
       "description": "Motion-led portfolio landing concept with GSAP ScrollTrigger + SplitText and image strips.",
       "category": "components",
       "categories": [
@@ -2170,9 +2170,9 @@
       ],
       "exportName": "PortfolioConcept",
       "exportKind": "named",
-      "previewUrl": "/portfolio-concept",
-      "coverImage": "portfolio-concept",
-      "videoUrl": "portfolio-concept.mp4",
+      "previewUrl": "/ribbon-drift",
+      "coverImage": "ribbon-drift",
+      "videoUrl": "ribbon-drift.mp4",
       "addedAt": 1781160379986.0159
     }
   ]

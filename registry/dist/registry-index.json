@@ -245,9 +245,9 @@
     "tarball": "registry/dist/hyperiux-interactive-list-preview-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/portfolio-concept",
+    "name": "@hyperiux/ribbon-drift",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-portfolio-concept-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-ribbon-drift-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/circular-split-roll",
@@ -465,9 +465,9 @@
     "tarball": "registry/dist/hyperiux-page-flip-transition-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/pie-rotation-transition",
+    "name": "@hyperiux/radial-slice-transition",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-pie-rotation-transition-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-radial-slice-transition-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/pixel-transition",
@@ -475,9 +475,9 @@
     "tarball": "registry/dist/hyperiux-pixel-transition-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/svg-draw-page-transition",
+    "name": "@hyperiux/svg-brush-transition",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-svg-draw-page-transition-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-svg-brush-transition-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/webgl-portfolio-slider",

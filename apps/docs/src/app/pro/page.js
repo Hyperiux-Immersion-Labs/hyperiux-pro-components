@@ -4,13 +4,13 @@ import { createPageMetadata } from "@/lib/seo-metadata";
 export const metadata = createPageMetadata({
   title: "Pro | Hyperiux UI",
   description: "Browse all pro component demos",
-  path: "/pro",
+  path: "/demo",
 });
 
 const PRO_ROUTES = [
   "/3d-portfolio-slider",
   "/book-flip",
-  "/brush-strokes",
+  "/svg-brush-transition",
   "/flip",
   "/frame-slider",
   "/full-screen-crosshair",
@@ -25,11 +25,11 @@ const PRO_ROUTES = [
   "/parallax-footer",
   "/parallax-image-animation",
   "/perspective-text-reveal",
-  "/pie-rotation-transition",
+  "/radial-slice-transition",
   "/pixel-bloom",
   "/pixel-random",
   "/pixels",
-  "/portfolio-concept",
+  "/ribbon-drift",
   "/ring-carousel",
   "/scramble-text",
   "/scroll-shuffled-cards",
@@ -82,7 +82,7 @@ export default function ProPage() {
             >
               <Link
                 target="_blank"
-                href={`/pro${route}`}
+                href={`/demo${route}`}
                 className="flex flex-col gap-1  transition-opacity hover:opacity-70"
               >
                 <span className="text-lg font-medium">{formatLabel(route)}</span>

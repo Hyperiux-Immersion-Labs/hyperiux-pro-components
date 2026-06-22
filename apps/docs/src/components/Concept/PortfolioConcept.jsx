@@ -155,7 +155,7 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 
 			const introTl = gsap.timeline({
 				scrollTrigger: {
-					trigger: "#portfolio-concept",
+					trigger: "#ribbon-drift",
 					start: "top top",
 					end: "10% top",
 					scrub: true,
@@ -186,7 +186,7 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
-					trigger: "#portfolio-concept",
+					trigger: "#ribbon-drift",
 					start: "3% top",
 					end: "bottom bottom",
 					scrub: true,
@@ -231,7 +231,7 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 
 			const sectionBreakTl = gsap.timeline({
 				scrollTrigger: {
-					trigger: "#portfolio-concept",
+					trigger: "#ribbon-drift",
 					start: "65% top",
 					end: "bottom bottom",
 					scrub: true,
@@ -283,7 +283,7 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 	return (
 		<div
 			className="w-screen h-[1000vh] bg-white text-[#1a1a1a]"
-			id="portfolio-concept"
+			id="ribbon-drift"
 		>
 			<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
 				<div className="w-full flex justify-between">
@@ -291,7 +291,7 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 						ref={headingRef}
 						className="text-[4vw] font-medium w-fit leading-none"
 					>
-						Gradient Portfolio Concept
+						Gradient Ribbon Drift
 					</h2>
 
 					<p ref={paragraphRef} className="text-[1.5vw] w-[40%] font-medium">

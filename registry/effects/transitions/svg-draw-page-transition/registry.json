@@ -1,5 +1,5 @@
 {
-  "name": "svg-draw-page-transition",
+  "name": "svg-brush-transition",
   "type": "registry:component",
   "title": "Svg Draw Page Transition",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
@@ -10,7 +10,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/brush-strokes",
-  "coverImage": "svg-draw-page-transition",
-  "videoUrl": "svg-draw-page-transition.mp4",
+  "coverImage": "svg-brush-transition",
+  "videoUrl": "svg-brush-transition.mp4",
   "tier": "pro"
 }

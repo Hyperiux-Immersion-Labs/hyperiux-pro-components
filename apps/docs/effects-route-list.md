@@ -28,7 +28,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 22 | Hover Stack | `hover-stack` | free | components | `/effects/components/hover-stack` | `/demo/hover-stack` | — | — | `/hover-stack` |
 | 23 | Interactive List Preview | `interactive-list-preview` | free | components | `/effects/components/interactive-list-preview` | `/demo/interactive-list-preview` | — | — | `/interactive-list-preview` |
 | 24 | Modal | `modal` | pro | components | `/effects/components/modal` | — | `/pro/modal` | — | `/modal` |
-| 25 | Portfolio Concept | `portfolio-concept` | pro | components | `/effects/components/portfolio-concept` | — | `/pro/portfolio-concept` | — | `/portfolio-concept` |
+| 25 | Ribbon Drift | `ribbon-drift` | pro | components | `/effects/components/ribbon-drift` | — | `/pro/ribbon-drift` | — | `/ribbon-drift` |
 | 26 | Tabs | `tabs` | pro | components | `/effects/components/tabs` | — | `/pro/tabs` | — | `/tabs` |
 | 27 | Testimonial Swiper | `testimonial-swiper` | pro | components | `/effects/components/testimonial-swiper` | — | `/pro/testimonial` | — | `/testimonial` |
 | 28 | Butterfly Trail Cursor | `butterfly-trail-cursor` | pro | cursor | `/effects/cursor-effects/butterfly-trail-cursor` | `/demo/butterfly-trail-cursor` | — | — | `/cursors/butterflies` |
@@ -96,9 +96,9 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 90 | Block Transition | `block-transition` | free | transitions | `/effects/page-transitions/block-transition` | — | `/pro/block-transition` | — | `/page-transitions/block` |
 | 91 | Chess Grid Transition | `chess-grid-transition` | free | transitions | `/effects/page-transitions/chess-grid-transition` | `/demo/chess-grid-transition` | — | — | `/page-transitions/chess-grid-transition` |
 | 92 | Page Flip Transition | `page-flip-transition` | pro | transitions | `/effects/page-transitions/page-flip-transition` | — | `/pro/flip` | — | `/page-transitions/flip` |
-| 93 | Pie Rotation Transition | `pie-rotation-transition` | free | transitions | `/effects/page-transitions/pie-rotation-transition` | — | `/pro/pie-rotation-transition` | — | `/page-transitions/pie-rotation-transition` |
+| 93 | Pie Rotation Transition | `radial-slice-transition` | free | transitions | `/effects/page-transitions/radial-slice-transition` | — | `/pro/radial-slice-transition` | — | `/page-transitions/radial-slice-transition` |
 | 94 | Pixel Transition | `pixel-transition` | pro | transitions | `/effects/page-transitions/pixel-transition` | — | `/pro/pixels` | — | `/page-transitions/pixels` |
-| 95 | Svg Draw Page Transition | `svg-draw-page-transition` | pro | transitions | `/effects/page-transitions/svg-draw-page-transition` | — | `/pro/brush-strokes` | — | `/page-transitions/brush-strokes` |
+| 95 | Svg Draw Page Transition | `svg-brush-transition` | pro | transitions | `/effects/page-transitions/svg-brush-transition` | — | `/pro/brush-strokes` | — | `/page-transitions/brush-strokes` |
 | 96 | 3D Portfolio Slider | `webgl-portfolio-slider` | pro | webgl | `/effects/webgl-effects/webgl-portfolio-slider` | — | `/pro/3d-portfolio-slider` | — | `/webgl-portfolio-slider` |
 | 97 | Book Flip | `book-flip` | pro | webgl | `/effects/webgl-effects/book-flip` | — | `/pro/book-flip` | — | `/book-flip` |
 | 98 | Colliding Models | `colliding-models` | pro | webgl | `/effects/webgl-effects/colliding-models` | `/demo/colliding-models` | — | — | `/colliding-models` |

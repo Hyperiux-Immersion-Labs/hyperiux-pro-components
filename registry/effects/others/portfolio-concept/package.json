@@ -1,5 +1,5 @@
 {
-  "name": "@hyperiux/portfolio-concept",
+  "name": "@hyperiux/ribbon-drift",
   "version": "0.0.1",
   "description": "Motion-led portfolio landing concept with GSAP ScrollTrigger + SplitText and image strips.",
   "main": "PortfolioConcept.jsx",
