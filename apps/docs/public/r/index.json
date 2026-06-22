@@ -858,7 +858,7 @@
     },
     {
       "name": "radial-slice-transition",
-      "title": "Pie Rotation Transition",
+      "title": "Radial Slice Transition",
       "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
       "category": "transitions",
       "categories": [
@@ -898,7 +898,7 @@
     },
     {
       "name": "svg-brush-transition",
-      "title": "Svg Draw Page Transition",
+      "title": "Svg Brush Transition",
       "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
       "category": "transitions",
       "categories": [

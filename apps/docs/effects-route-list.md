@@ -96,9 +96,9 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 90 | Block Transition | `block-transition` | free | transitions | `/effects/page-transitions/block-transition` | — | `/pro/block-transition` | — | `/page-transitions/block` |
 | 91 | Chess Grid Transition | `chess-grid-transition` | free | transitions | `/effects/page-transitions/chess-grid-transition` | `/demo/chess-grid-transition` | — | — | `/page-transitions/chess-grid-transition` |
 | 92 | Page Flip Transition | `page-flip-transition` | pro | transitions | `/effects/page-transitions/page-flip-transition` | — | `/pro/flip` | — | `/page-transitions/flip` |
-| 93 | Pie Rotation Transition | `radial-slice-transition` | free | transitions | `/effects/page-transitions/radial-slice-transition` | — | `/pro/radial-slice-transition` | — | `/page-transitions/radial-slice-transition` |
+| 93 | Radial Slice Transition | `radial-slice-transition` | free | transitions | `/effects/page-transitions/radial-slice-transition` | — | `/pro/radial-slice-transition` | — | `/page-transitions/radial-slice-transition` |
 | 94 | Pixel Transition | `pixel-transition` | pro | transitions | `/effects/page-transitions/pixel-transition` | — | `/pro/pixels` | — | `/page-transitions/pixels` |
-| 95 | Svg Draw Page Transition | `svg-brush-transition` | pro | transitions | `/effects/page-transitions/svg-brush-transition` | — | `/pro/brush-strokes` | — | `/page-transitions/brush-strokes` |
+| 95 | Svg Brush Transition | `svg-brush-transition` | pro | transitions | `/effects/page-transitions/svg-brush-transition` | — | `/pro/brush-strokes` | — | `/page-transitions/brush-strokes` |
 | 96 | 3D Portfolio Slider | `webgl-portfolio-slider` | pro | webgl | `/effects/webgl-effects/webgl-portfolio-slider` | — | `/pro/3d-portfolio-slider` | — | `/webgl-portfolio-slider` |
 | 97 | Book Flip | `book-flip` | pro | webgl | `/effects/webgl-effects/book-flip` | — | `/pro/book-flip` | — | `/book-flip` |
 | 98 | Colliding Models | `colliding-models` | pro | webgl | `/effects/webgl-effects/colliding-models` | `/demo/colliding-models` | — | — | `/colliding-models` |

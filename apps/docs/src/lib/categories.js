@@ -661,7 +661,7 @@ export const effectCategories = [
     faqs: [
       {
         question: "Which page transition should I choose for a branded route change?",
-        answer: "Use Pixel Transition or Block Transition for graphic brands and confident launch pages. Use SVG Draw Page Transition when the brand has a lighter illustrated system. Use Page Flip only when the page metaphor fits the content. Use Chess Grid or Pie Rotation on simple route trees where orientation will stay clear.",
+        answer: "Use Pixel Transition or Block Transition for graphic brands and confident launch pages. Use Svg Brush Transition when the brand has a lighter illustrated system. Use Page Flip only when the page metaphor fits the content. Use Chess Grid or Pie Rotation on simple route trees where orientation will stay clear.",
       },
       {
         question: "Where do page transitions make the experience feel better?",

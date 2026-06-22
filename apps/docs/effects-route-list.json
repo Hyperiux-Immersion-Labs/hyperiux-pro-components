@@ -736,7 +736,7 @@
     "demoRoute": "https://vault.hyperiux.com/pro/flip"
   },
   {
-    "title": "Pie Rotation Transition",
+    "title": "Radial Slice Transition",
     "name": "radial-slice-transition",
     "tier": "free",
     "category": "transitions",
@@ -752,7 +752,7 @@
     "demoRoute": "https://vault.hyperiux.com/pro/pixels"
   },
   {
-    "title": "Svg Draw Page Transition",
+    "title": "Svg Brush Transition",
     "name": "svg-brush-transition",
     "tier": "pro",
     "category": "transitions",
