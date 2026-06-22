@@ -204,7 +204,7 @@ export default function FreeVault() {
                     >
                         <p className="text80 font-medium!">
                             Start with <br />
-                            20 Free Effects.
+                            30+ Free Effects.
                         </p>
                         <ul className="list-none flex flex-col gap-[.7vw] max-md:gap-[3vw]">
                             {freeEffects.map((effect) => (
