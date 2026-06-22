@@ -1308,7 +1308,7 @@
       "addedAt": 1780573510920.5444
     },
     {
-      "name": "interactive-hover-slider",
+      "name": "hover-slider",
       "title": "Hover Slider",
       "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
       "category": "webgl",
@@ -1322,9 +1322,9 @@
       ],
       "exportName": "HoverSlider",
       "exportKind": "default",
-      "previewUrl": "/interactive-hover-slider",
-      "coverImage": "interactive-hover-slider",
-      "videoUrl": "interactive-hover-slider.mp4",
+      "previewUrl": "/hover-slider",
+      "coverImage": "hover-slider",
+      "videoUrl": "hover-slider.mp4",
       "addedAt": 1780566951477.4316
     },
     {

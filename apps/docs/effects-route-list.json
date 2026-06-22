@@ -857,10 +857,10 @@
   },
   {
     "title": "Hover Slider",
-    "name": "interactive-hover-slider",
+    "name": "hover-slider",
     "tier": "pro",
     "category": "webgl",
-    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/interactive-hover-slider",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hover-slider",
     "demoRoute": "https://vault.hyperiux.com/pro/interactive-hover-slider"
   },
   {

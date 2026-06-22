@@ -1,5 +1,5 @@
 {
-  "name": "interactive-hover-slider",
+  "name": "hover-slider",
   "type": "registry:component",
   "title": "Hover Slider",
   "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
@@ -16,8 +16,8 @@
   "exportName": "HoverSlider",
   "exportKind": "default",
   "previewUrl": "/hover-slider",
-  "coverImage": "interactive-hover-slider",
-  "videoUrl": "interactive-hover-slider.mp4",
+  "coverImage": "hover-slider",
+  "videoUrl": "hover-slider.mp4",
   "files": [
     {
       "path": "hover-slider.jsx",
