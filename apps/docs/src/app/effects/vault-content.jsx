@@ -543,11 +543,11 @@ export function VaultContent({
               <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
+                   key={`${categoryFilter}-description-${index}`}
                     delay={0.3}
                     animationKey={`${routeKey}-${index}`}
                   >
                     <p
-                      key={`${categoryFilter}-description-${index}`}
                       className="mt-3"
                     >
                       {description}

@@ -606,7 +606,7 @@ export default function FeaturedStoryTelling() {
                                     alt={`spiral-card-images`}
                                     fill
                                     className="object-cover"
-                                    sizes="18vw"
+                                    sizes="(max-width: 1024px) 0vw, 18vw"
                                     priority={i < 3}
                                 />
                             </div>
