@@ -4,8 +4,8 @@ import React from "react";
 
 export default function page() {
   return (
-    <PixelRandom color="#ff5f00">
+    // <PixelRandom color="#ff5f00">
       <LandingPage />
-    </PixelRandom>
+    // </PixelRandom>
   );
 }
