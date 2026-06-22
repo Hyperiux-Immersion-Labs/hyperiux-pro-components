@@ -877,7 +877,7 @@
     },
     {
       "name": "radial-slice-transition",
-      "title": "Pie Rotation Transition",
+      "title": "Radial Slice Transition",
       "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
       "category": "transitions",
       "categories": [
@@ -917,7 +917,7 @@
     },
     {
       "name": "svg-brush-transition",
-      "title": "Svg Draw Page Transition",
+      "title": "Svg Brush Transition",
       "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
       "category": "transitions",
       "categories": [
@@ -1743,7 +1743,7 @@
       "addedAt": 1780573510914.3584
     },
     {
-      "name": "webgl-portfolio-slider",
+      "name": "3d-portfolio-slider",
       "title": "3D Portfolio Slider",
       "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
       "category": "webgl",
@@ -1759,9 +1759,9 @@
       ],
       "exportName": "WebGLPortfolioSlider",
       "exportKind": "named",
-      "previewUrl": "/webgl-portfolio-slider",
+      "previewUrl": "/3d-portfolio-slider",
       "coverImage": "3d-portfolio-slider",
-      "videoUrl": "webgl-portfolio-slider.mp4",
+      "videoUrl": "3d-portfolio-slider.mp4",
       "addedAt": 1780566951473.3435
     },
     {

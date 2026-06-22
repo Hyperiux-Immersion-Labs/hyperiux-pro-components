@@ -7,7 +7,7 @@ import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 
 gsap.registerPlugin(DrawSVGPlugin)
 
-export default function BrushStrokesTransition({
+export default function SVGBrushTransition({
   children,
   config = {
     enableBlur: false,

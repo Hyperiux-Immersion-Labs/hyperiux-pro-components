@@ -480,9 +480,9 @@
     "tarball": "registry/dist/hyperiux-svg-brush-transition-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/webgl-portfolio-slider",
+    "name": "@hyperiux/3d-portfolio-slider",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-webgl-portfolio-slider-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-3d-portfolio-slider-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/book-flip",

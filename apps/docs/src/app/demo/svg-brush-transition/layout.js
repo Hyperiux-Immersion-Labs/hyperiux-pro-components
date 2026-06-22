@@ -1,10 +1,10 @@
 import React from "react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import BrushStrokesTransition from "@/components/showcase/transitions/BrushStroke/BrushStrokesTransition";
+import SVGBrushTransition from "@/components/svg-brush-transition";
 
 export default function layout({ children }) {
   return (
-    <BrushStrokesTransition
+    <SVGBrushTransition
       config={{
         enableBlur: false,
         strokeColor: "#82A0FF",
@@ -14,6 +14,6 @@ export default function layout({ children }) {
     >
       <DemoHeader />
       {children}
-    </BrushStrokesTransition>
+    </SVGBrushTransition>
   );
 }

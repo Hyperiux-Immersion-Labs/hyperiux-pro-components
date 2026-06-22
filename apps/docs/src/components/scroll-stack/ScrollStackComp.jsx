@@ -15,6 +15,17 @@ const ScrollStackComp = ({cards = [] }) => {
  rowRefs.current = rowRefs.current.slice(0, cards.length);
  cardRefs.current = cardRefs.current.slice(0, cards.length);
 
+ if (globalThis.innerWidth <= 639) {
+ cardRefs.current.filter(Boolean).forEach((card) => {
+ gsap.set(card, {
+ autoAlpha: 1,
+ scale: 1,
+ });
+ });
+
+ return undefined;
+ }
+
  const ctx = gsap.context(() => {
  const currentCards = cardRefs.current.filter(Boolean);
  const currentRows = rowRefs.current.filter(Boolean);
@@ -77,9 +88,13 @@ const ScrollStackComp = ({cards = [] }) => {
  <section
  id="state"
  ref={sectionRef}
- className={`main bg-white py-[7%] max-sm:py-[15%]`}
+ className={`main bg-white py-[7%] max-md:py-[15%] max-sm:py-[15%]`}
  >
- <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw]">
+
+    <h1 className="text-center text-[4vw] max-md:text-[5vw] max-sm:text-[6.5vw] text-black">
+        Scroll Stack
+    </h1>
+ <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw] max-sm:gap-[6vw]">
  {cards.map((item, index) => (
  <div
  key={item.id}
@@ -87,13 +102,11 @@ const ScrollStackComp = ({cards = [] }) => {
  rowRefs.current[index] = el;
  }}
  className={`relative w-full min-h-[180vh] ${
- index === 0 ?"" :"-mt-[70vh]"
- } max-sm:min-h-[130vh] ${
- index === 0 ?"max-sm:mt-0" :"max-sm:-mt-[50vh]"
- }`}
+ index === 0 ?"" :"mt-[-70vh]"
+ } max-sm:mt-0 max-sm:min-h-0`}
  >
  <div
- className="sticky top-[15vh] max-sm:top-[10vh]"
+ className="sticky top-[15vh] max-sm:static max-sm:space-y-6!"
  style={{ zIndex: index + 1 }}
  >
  <Card
@@ -119,21 +132,21 @@ const Card = ({ title, description, bgColor, textColor, cardRef }) => {
  return (
  <div
  ref={cardRef}
- className="fadeUp mx-auto flex h-[32vw] max-sm:h-[65vh] w-[80%] max-sm:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-sm:py-[15vw] max-sm:px-[8vw] max-sm:min-h-[50vw] max-sm:flex-col max-sm:rounded-[9vw] ="
+ className="fadeUp mx-auto flex h-[32vw] max-md:h-[38vh] max-sm:h-[50vh] w-[80%] max-sm:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-md:py-[8vw] max-sm:py-[15vw] max-sm:px-[8vw] max-sm:min-h-[50vw] max-md:flex-col max-sm:rounded-[9vw] "
  style={{ backgroundColor: bgColor }}
  >
- <div className="w-[48%] tablet:w-full max-sm:w-full">
+ <div className="w-[48%] tablet:w-full max-sm:w-full max-md:w-[80%] max-md:mx-auto">
  <h2
- className="para-animation w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-sm:text-[10vw]"
+ className="para-animation max-md:text-center w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-sm:text-[10vw]"
  style={{ color: textColor }}
  >
  {title}
  </h2>
  </div>
 
- <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-sm:w-full max-sm:gap-[7vw]">
+ <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-sm:w-full max-md:w-[90%] max-md:mx-auto max-sm:gap-[7vw]">
  <p
- className="w-full text-justify text-[1.3vw] leading-normal tablet:text-[2.2vw] max-sm:w-full max-sm:text-center max-sm:text-[4.5vw]"
+ className="w-full text-justify text-[1.3vw] leading-normal max-md:leading-[1.2] tablet:text-[2.2vw] max-sm:w-full max-md:text-center max-sm:text-[4.5vw] max-md:text-[3vw]"
  style={{ color: textColor }}
  >
  {description}
