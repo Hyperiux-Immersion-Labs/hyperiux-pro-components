@@ -1,56 +1,8 @@
-"use client";
+import LandingPage from '@/components/LandingPage/LandingPage'
+import React from 'react'
 
-import AgencyProof from "@/components/LandingPage/AgencyProof";
-import AgencyProofMobile from "@/components/LandingPage/AgencyProofMobile";
-import Footer from "@/components/LandingPage/Footer";
-import FreeVault from "@/components/LandingPage/FreeVault";
-import Hero from "@/components/LandingPage/Hero";
-import FeaturedStoryTelling from "@/components/LandingPage/FeaturedStoryTelling";
-import StorytellingMobile from "@/components/LandingPage/StorytellingMobile";
-import VaultGridMobile from "@/components/LandingPage/VaultGridMobile";
-import Workflow from "@/components/LandingPage/Workflow";
-import GlowingPlates from "@/Experience/GlowingPlates";
-import VaultShell from "@/Layouts/VaultShell";
-import CTA from "@/components/LandingPage/CTA";
-import useIsMobile from "@/hooks/useIsMobile";
-import Loader from "@/components/WebsiteComps/Loader";
-import FeaturedEffects from "@/components/LandingPage/FeaturedEffects";
-
-export default function Page() {
-  const {isMobile } = useIsMobile();
-
+export default function page() {
   return (
-    <>
-    
-    <VaultShell>
-      <Loader />
-      <Hero />
-      <GlowingPlates />
-      { isMobile ? (
-        // Mobile-only render
-        <>
-          <StorytellingMobile />
-          <VaultGridMobile />
-          {/* <FeaturedEffects/> */}
-          <Workflow />
-          <FreeVault />
-          <AgencyProofMobile />
-          <CTA />
-          <Footer />
-        </>
-      ) : (
-        // Desktop-only render
-        <>
-          <FeaturedStoryTelling />
-          <FeaturedEffects/>
-          <Workflow />
-          <FreeVault />
-          <AgencyProof />
-          <CTA />
-          <Footer />
-        </>
-      )}
-    </VaultShell>
-    </>
-  );
+    <LandingPage />
+  )
 }
