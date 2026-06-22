@@ -119,13 +119,13 @@ export default function ParallaxSlider({
  style={{ height:"400vh", backgroundColor: bgColor }}
  >
  <div className="sticky top-0 h-screen overflow-hidden">
- <div className="absolute top-10 left-1/2 z-10 -translate-x-1/2 px-4 text-center">
+ <div className="absolute top-20 left-1/2 z-10 -translate-x-1/2 px-4 text-center">
  <p className="text-lg uppercase tracking-[0.4em] text-white/80">
  {heading}
  </p>
  </div>
 
- <div className="flex h-full items-center pt-16">
+ <div className="flex h-full items-center pt-28">
  <div
  ref={trackRef}
  className="flex items-center will-change-transform"
