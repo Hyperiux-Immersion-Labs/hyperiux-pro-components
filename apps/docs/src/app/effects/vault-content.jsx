@@ -31,7 +31,7 @@ if (typeof window !== "undefined") {
 }
 
 function RouteAnimationSync({ syncKey }) {
-   useFadeUp(null, [syncKey]);
+  useFadeUp(null, [syncKey]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -44,11 +44,64 @@ function RouteAnimationSync({ syncKey }) {
   return null;
 }
 
+function SkeletonBlock({ className = "" }) {
+  return (
+    <div
+      className={[
+        "relative overflow-hidden bg-[#272727]",
+        "before:absolute before:inset-0 before:-translate-x-full",
+        "before:animate-[shimmer_1.4s_infinite]",
+        "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+        className,
+      ].join(" ")}
+    />
+  );
+}
+
+
+
+function EffectsGridSkeleton({ count = 6 }) {
+  return (
+    <div className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16">
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          key={`effect-card-skeleton-${index}`}
+          className="effect-card-shell group relative"
+        >
+          <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-md:p-5 max-sm:p-5">
+            {index % 3 === 2 && (
+              <SkeletonBlock className="absolute right-4 top-4 h-10 w-14 rounded-full bg-[#3a3a3a]" />
+            )}
+
+            <div className="flex h-full w-full items-center justify-center">
+              <SkeletonBlock className="aspect-[1.78/1] w-[88%] rounded-sm bg-[#111111]" />
+            </div>
+          </div>
+
+          <div className="relative mt-5 flex items-start justify-between gap-4 px-3 max-sm:px-1">
+            <div className="min-w-0 flex-1">
+              <SkeletonBlock className="mb-2 h-5 w-[58%] rounded-sm bg-[#2f2f2f]" />
+              <SkeletonBlock className="h-4 w-[34%] rounded-sm bg-[#242424]" />
+            </div>
+
+            <div className="hidden items-center gap-3 xl:flex">
+              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#161616]" />
+              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#161616]" />
+              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#ff5f00]/50" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function VaultContent({
-  effects,
-  effectCounts,
+  effects: incomingEffects,
+  effectCounts: incomingEffectCounts,
   initialCategory = "all",
   userPlan = "free",
+  isLoading = false,
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -56,15 +109,56 @@ export function VaultContent({
   const searchParamString = searchParams.toString();
   const routeKey = `${pathname}?${searchParamString}`;
 
+  const safeEffects = Array.isArray(incomingEffects) ? incomingEffects : [];
+  const safeEffectCounts =
+    incomingEffectCounts &&
+      typeof incomingEffectCounts === "object" &&
+      !Array.isArray(incomingEffectCounts)
+      ? incomingEffectCounts
+      : {};
+
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
 
+
+  // testing purpose
+  const TEST_SKELETON_DELAY = 0; // change to 0 before production
+  const [hasPassedSkeletonDelay, setHasPassedSkeletonDelay] = useState(
+    TEST_SKELETON_DELAY === 0
+  );
+
+  useEffect(() => {
+    if (TEST_SKELETON_DELAY === 0) {
+      setHasPassedSkeletonDelay(true);
+      return;
+    }
+
+    setHasPassedSkeletonDelay(false);
+
+    const timeoutId = window.setTimeout(() => {
+      setHasPassedSkeletonDelay(true);
+    }, TEST_SKELETON_DELAY);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [routeKey]);
+
   const isProUser = userPlan === "pro";
+  const isEffectsLoading =
+    isLoading || !hasPassedSkeletonDelay || !Array.isArray(incomingEffects);
+
+  const isCountsLoading =
+    isLoading ||
+    !hasPassedSkeletonDelay ||
+    !incomingEffectCounts ||
+    typeof incomingEffectCounts !== "object";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
 
-  const featuredEffects = useMemo(() => getFeaturedEffects(effects), [effects]);
+  const featuredEffects = useMemo(
+    () => getFeaturedEffects(safeEffects),
+    [safeEffects]
+  );
 
   const featuredEffectNames = useMemo(
     () => new Set(featuredEffects.map((effect) => effect.name)),
@@ -118,9 +212,8 @@ export function VaultContent({
         return true;
       }
 
-      const currentUrl = `${pathname}${
-        searchParamString ? `?${searchParamString}` : ""
-      }`;
+      const currentUrl = `${pathname}${searchParamString ? `?${searchParamString}` : ""
+        }`;
 
       if (href === currentUrl) {
         return true;
@@ -193,21 +286,22 @@ export function VaultContent({
   const quickCategories = useMemo(() => {
     const knownCategories = effectCategories
       .filter(
-        (category) => category.id !== "featured" && effectCounts?.[category.id]
+        (category) =>
+          category.id !== "featured" && safeEffectCounts?.[category.id]
       )
       .map((category) => category.id);
 
-    const extraCategories = Object.keys(effectCounts || {}).filter(
+    const extraCategories = Object.keys(safeEffectCounts || {}).filter(
       (id) =>
         id &&
         id !== "all" &&
         id !== "featured" &&
         !knownCategories.includes(id) &&
-        effectCounts[id]
+        safeEffectCounts[id]
     );
 
     return ["featured", "free", ...knownCategories, ...extraCategories];
-  }, [effectCounts]);
+  }, [safeEffectCounts]);
 
   useEffect(() => {
     async function loadWishlist() {
@@ -260,7 +354,9 @@ export function VaultContent({
   };
 
   const filteredEffects = useMemo(() => {
-    return effects.filter((effect) => {
+    if (isEffectsLoading) return [];
+
+    return safeEffects.filter((effect) => {
       if (categoryFilter === "free") {
         if (effect.tier === "pro") return false;
       } else if (categoryFilter === "featured") {
@@ -290,29 +386,37 @@ export function VaultContent({
 
       return true;
     });
-  }, [effects, categoryFilter, searchQuery, featuredEffectNames]);
+  }, [
+    safeEffects,
+    categoryFilter,
+    searchQuery,
+    featuredEffectNames,
+    isEffectsLoading,
+  ]);
 
   const totalEffects = useMemo(() => {
+    if (isEffectsLoading) return 0;
+
     if (categoryFilter === "all") {
-      return effects.length;
+      return safeEffects.length;
     }
 
     if (categoryFilter === "free") {
-      return effects.filter((effect) => effect.tier !== "pro").length;
+      return safeEffects.filter((effect) => effect.tier !== "pro").length;
     }
 
     if (categoryFilter === "featured") {
       return featuredEffects.length;
     }
 
-    return effects.filter((effect) => {
+    return safeEffects.filter((effect) => {
       const cats = effect.categories?.length
         ? effect.categories
         : [effect.category];
 
       return cats.includes(categoryFilter);
     }).length;
-  }, [effects, categoryFilter, featuredEffects]);
+  }, [safeEffects, categoryFilter, featuredEffects, isEffectsLoading]);
 
   const activeCategory = getEffectCategory(categoryFilter);
 
@@ -362,8 +466,8 @@ export function VaultContent({
 
   return (
     <VaultLayout
-      effectCounts={effectCounts}
-      effects={effects}
+      effectCounts={safeEffectCounts}
+      effects={safeEffects}
       activeCategory={categoryFilter}
       onOverviewNavigate={showAllEffects}
       onCategoryNavigate={handleCategoryLinkClick}
@@ -384,7 +488,7 @@ export function VaultContent({
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             totalEffects={totalEffects}
-            effects={effects}
+            effects={safeEffects}
           />
 
           <div>
@@ -427,7 +531,7 @@ export function VaultContent({
                 })}
               </nav>
 
-              <HeadAnim key={`head-${routeKey}`} animateOnScroll={false} delay={0.3}>
+              <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
                 <h1
                   className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-sm:w-[90%] max-sm:text-4xl"
                   style={{ lineHeight: "1.1" }}
@@ -436,11 +540,11 @@ export function VaultContent({
                 </h1>
               </HeadAnim>
 
-              <div className="category-fadeup fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
+              <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
                     delay={0.3}
-                    key={`${routeKey}-${categoryFilter}-copy-${index}`}
+                    animationKey={`${routeKey}-${index}`}
                   >
                     <p
                       key={`${categoryFilter}-description-${index}`}
@@ -464,66 +568,66 @@ export function VaultContent({
                 }}
               />
 
-              <div
-                className={[
-                  "category-fadeup fadeup flex items-center gap-2.5",
-                  "flex-wrap",
-                  "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
-                  "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
-                  "[&::-webkit-scrollbar]:h-1",
-                  "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
-                  "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
-                  "max-md:pb-3",
-                ].join(" ")}
-              >
-                {quickCategories.map((cat) => {
-                  const isSelected = categoryFilter === cat;
+             
+                <div
+                  className={[
+                    "category-fadeup fadeup flex items-center gap-2.5",
+                    "flex-wrap",
+                    "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
+                    "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
+                    "[&::-webkit-scrollbar]:h-1",
+                    "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
+                    "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
+                    "max-md:pb-3",
+                  ].join(" ")}
+                >
+                  {quickCategories.map((cat) => {
+                    const isSelected = categoryFilter === cat;
 
-                  const label =
-                    cat === "free"
-                      ? "Free"
-                      : cat === "featured"
-                        ? "Featured"
-                        : cat === "webgl"
-                          ? "WebGL"
-                          : cat.charAt(0).toUpperCase() + cat.slice(1);
+                    const label =
+                      cat === "free"
+                        ? "Free"
+                        : cat === "featured"
+                          ? "Featured"
+                          : cat === "webgl"
+                            ? "WebGL"
+                            : cat.charAt(0).toUpperCase() + cat.slice(1);
 
-                  return (
-                    <Link
-                      key={cat}
-                      href={getCategoryUrl(cat)}
-                      scroll={false}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        handleCategoryLinkClick(cat);
-                      }}
-                      className={`
-                        px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
-                        backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-                        transition-all duration-500 ease-in-out max-sm:text-lg
-                        hover:text-[#111111] hover:bg-white text20
-                        ${
-                          isSelected
+                    return (
+                      <Link
+                        key={cat}
+                        href={getCategoryUrl(cat)}
+                        scroll={false}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleCategoryLinkClick(cat);
+                        }}
+                        className={`
+                          px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
+                          backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
+                          transition-all duration-500 ease-in-out max-sm:text-lg
+                          hover:text-[#111111] hover:bg-white text20
+                          ${isSelected
                             ? "bg-white text-[#111111]"
                             : "bg-[#272727] text-foreground"
-                        }
-                      `}
-                    >
-                      <span className="leading-none">{label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
+                          }
+                        `}
+                      >
+                        <span className="leading-none">{label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              
             </div>
           </div>
 
           <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-sm:px-[7vw]">
             <div
-              className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${
-                searchQuery
+              className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
                   ? "mb-8 min-h-10 opacity-100"
                   : "mb-0 min-h-0 opacity-0 pointer-events-none"
-              }`}
+                }`}
             >
               {searchQuery && (
                 <span
@@ -555,7 +659,9 @@ export function VaultContent({
               )}
             </div>
 
-            {filteredEffects.length === 0 ? (
+            {isEffectsLoading ? (
+              <EffectsGridSkeleton count={9} />
+            ) : filteredEffects.length === 0 ? (
               <div className="py-20 text-center max-sm:px-4 max-sm:py-14">
                 <div className="mb-6 text-6xl max-sm:mb-4 max-sm:text-4xl">
                   🔍
@@ -583,48 +689,50 @@ export function VaultContent({
               />
             )}
 
-            <div className="relative text-foreground w-full mx-auto max-md:w-full">
-              {activeCategoryFaqItems.length > 0 && (
-                <div key={`category-faq-${categoryFilter}`}>
-                  <FAQSection faqItems={activeCategoryFaqItems} />
-                </div>
-              )}
-
-              {activeCategoryContent?.cta &&
-                (activeCategoryContent?.cta.heading ||
-                  activeCategoryContent?.cta.buttonText) && (
-                  <section
-                    key={`category-cta-${categoryFilter}`}
-                    className="category-fadeup fadeup w-full bg-[#272727] rounded-md text-center mb-[7vw] mx-auto"
-                  >
-                    <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
-                      {activeCategoryContent.cta.heading && (
-                        <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
-                          {activeCategoryContent.cta.heading}
-                        </h2>
-                      )}
-
-                      {activeCategoryContent.cta.description && (
-                        <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
-                          {activeCategoryContent.cta.description}
-                        </p>
-                      )}
-
-                      {activeCategoryContent.cta.buttonText && (
-                        <div className="mt-6 w-fit">
-                          <Button
-                            text={activeCategoryContent.cta.buttonText}
-                            href={activeCategoryContent.cta.buttonLink || "#"}
-                            variant="white"
-                            className="shrink-0 w-fit mx-auto"
-                            scaleClass="group-hover:scale-[100]"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </section>
+            {!isEffectsLoading && (
+              <div className="relative text-foreground w-full mx-auto max-md:w-full">
+                {activeCategoryFaqItems.length > 0 && (
+                  <div key={`category-faq-${categoryFilter}`}>
+                    <FAQSection faqItems={activeCategoryFaqItems} />
+                  </div>
                 )}
-            </div>
+
+                {activeCategoryContent?.cta &&
+                  (activeCategoryContent?.cta.heading ||
+                    activeCategoryContent?.cta.buttonText) && (
+                    <section
+                      key={`category-cta-${categoryFilter}`}
+                      className="category-fadeup fadeup w-full bg-[#272727] rounded-md text-center mb-[7vw] mx-auto"
+                    >
+                      <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+                        {activeCategoryContent.cta.heading && (
+                          <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
+                            {activeCategoryContent.cta.heading}
+                          </h2>
+                        )}
+
+                        {activeCategoryContent.cta.description && (
+                          <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
+                            {activeCategoryContent.cta.description}
+                          </p>
+                        )}
+
+                        {activeCategoryContent.cta.buttonText && (
+                          <div className="mt-6 w-fit">
+                            <Button
+                              text={activeCategoryContent.cta.buttonText}
+                              href={activeCategoryContent.cta.buttonLink || "#"}
+                              variant="white"
+                              className="shrink-0 w-fit mx-auto"
+                              scaleClass="group-hover:scale-[100]"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+              </div>
+            )}
           </div>
         </RouteFade>
       )}
@@ -699,9 +807,8 @@ function EffectsGrid({
         {filteredEffects.map((effect, i) => (
           <div
             key={effect.name}
-            className={`effect-card-shell ${
-              !showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
-            }`}
+            className={`effect-card-shell ${!showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
+              }`}
           >
             <EffectCard
               effect={effect}

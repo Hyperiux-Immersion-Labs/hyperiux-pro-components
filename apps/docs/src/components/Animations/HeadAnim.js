@@ -32,25 +32,31 @@ export default function HeadAnim({
   children,
   animateOnScroll = true,
   delay = 0,
+  animationKey = "",
 }) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
   const tweenRef = useRef(null);
   const triggerRef = useRef(null);
+  const runIdRef = useRef(0);
 
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
 
     if (!container) return;
 
-    const shouldSkip = shouldSkipSidebarDocsAnimation();
-
-    splitRefs.current = [];
+    const runId = ++runIdRef.current;
 
     tweenRef.current?.kill();
     triggerRef.current?.kill();
 
-    if (shouldSkip) {
+    splitRefs.current.forEach((split) => {
+      split?.revert();
+    });
+
+    splitRefs.current = [];
+
+    if (shouldSkipSidebarDocsAnimation()) {
       gsap.set(container, {
         autoAlpha: 1,
         clearProps: "visibility,opacity,transform",
@@ -75,7 +81,9 @@ export default function HeadAnim({
         } catch (_) {}
       }
 
-      if (isKilled || !containerRef.current) return;
+      if (isKilled || runId !== runIdRef.current || !containerRef.current) {
+        return;
+      }
 
       const allChars = [];
 
@@ -169,7 +177,7 @@ export default function HeadAnim({
         });
       }
     };
-  }, [animateOnScroll, delay, children]);
+  }, [animateOnScroll, delay, animationKey]);
 
   const child =
     React.Children.count(children) === 1
