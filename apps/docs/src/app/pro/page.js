@@ -62,11 +62,11 @@ export default async function ProPage() {
               className="rounded-2xl border border-black/10 px-4 py-3 transition-colors hover:bg-black/3 text-center"
             >
               <Link
+                target="_blank"
                 href={`/pro${route}`}
                 className="flex flex-col gap-1  transition-opacity hover:opacity-70"
               >
                 <span className="text-lg font-medium">{formatLabel(route)}</span>
-                {/* <span className="text-sm text-black/60">{`/pro${route}`}</span> */}
               </Link>
             </li>
           ))}
