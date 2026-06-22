@@ -55,35 +55,41 @@ export default function Footer({ animations=true }) {
               <div className="flex flex-col gap-[2.5vw] max-sm:items-center max-sm:gap-[8vw]">
                 <h3 className="text22 font-medium!">Hyperiux Vault</h3>
                 <ul className="flex flex-col gap-[.5vw] max-sm:items-center max-sm:gap-[3vw]">
-                  {vaultLinks.map(({ label, href }) => (
-                    <li key={label}>
-                      <LinkHover
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text18"
-                      >
-                        {label}
-                      </LinkHover>
-                    </li>
-                  ))}
+                  {vaultLinks.map(({ label, href }) => {
+                    const isExternal = href?.startsWith("http");
+                    return (
+                      <li key={label}>
+                        <LinkHover
+                          href={href}
+                          target={isExternal ? "_blank" : "_self"}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                          className="text18"
+                        >
+                          {label}
+                        </LinkHover>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
               <div className="flex flex-col gap-[2.5vw] max-sm:items-center max-sm:gap-[8vw]">
                 <h3 className="text22 font-medium!">Agency</h3>
                 <ul className="flex flex-col gap-[.5vw] max-sm:items-center max-sm:gap-[3vw]">
-                  {AgencyLinks.map(({ label, href }) => (
-                    <li key={label}>
-                      <LinkHover
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text18 "
-                      >
-                        {label}
-                      </LinkHover>
-                    </li>
-                  ))}
+                  {AgencyLinks.map(({ label, href }) => {
+                    const isExternal = href?.startsWith("http");
+                    return (
+                      <li key={label}>
+                        <LinkHover
+                          href={href}
+                          target={isExternal ? "_blank" : "_self"}
+                          rel={isExternal ? "noopener noreferrer" : undefined}
+                          className="text18 "
+                        >
+                          {label}
+                        </LinkHover>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
