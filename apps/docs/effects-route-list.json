@@ -761,10 +761,10 @@
   },
   {
     "title": "3D Portfolio Slider",
-    "name": "webgl-portfolio-slider",
+    "name": "3d-portfolio-slider",
     "tier": "pro",
     "category": "webgl",
-    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/webgl-portfolio-slider",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/3d-portfolio-slider",
     "demoRoute": "https://vault.hyperiux.com/pro/3d-portfolio-slider"
   },
   {

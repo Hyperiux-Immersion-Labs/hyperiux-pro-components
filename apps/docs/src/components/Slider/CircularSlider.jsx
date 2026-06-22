@@ -17,7 +17,23 @@ export default function WebGLInfiniteSlider({ items }) {
  let scene, camera, renderer;
  let planes = [];
  let rafId;
-let currentRadius = window.innerWidth < 640 ? 22 : 35;
+ const getViewportConfig = () => {
+ const width = window.innerWidth;
+ const isMobile = width < 768;
+ const isTablet = width <= 1025;
+
+ return {
+ isMobile,
+ isTablet,
+ initialRadius: isMobile ? 22 : isTablet ? 28 : 35,
+ planeWidthFactor: isMobile ? 0.85 : isTablet ? 0.62 : 0.5,
+ baseRadius: isMobile ? 20 : isTablet ? 26 : 35,
+ maxRadius: isMobile ? 30 : isTablet ? 42 : 55,
+ zoomFactor: isMobile ? 0.7 : isTablet ? 1.05 : 1.5,
+ };
+ };
+
+ let currentRadius = getViewportConfig().initialRadius;
 
  const container = containerRef.current;
 
@@ -31,6 +47,7 @@ let currentRadius = window.innerWidth < 640 ? 22 : 35;
 
  const width = window.innerWidth;
  const height = window.innerHeight;
+ const viewportConfig = getViewportConfig();
 
  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
  camera.position.z = 5;
@@ -53,11 +70,7 @@ let currentRadius = window.innerWidth < 640 ? 22 : 35;
 
  // MOBILE → show one image full screen
 // MOBILE → show ~90% of one image
-const isMobile = window.innerWidth < 640;
-
-const planeWidth = isMobile
-  ? frustumWidth * 0.85
-  : frustumWidth / 2;
+const planeWidth = frustumWidth * viewportConfig.planeWidthFactor;
 
 const planeHeight = frustumHeight;
 
@@ -176,13 +189,9 @@ const spacing = planeWidth;
 
  const scrollOffset = offset * speedFactor;
 
-// smaller expansion on mobile
-const baseRadius = window.innerWidth < 640 ? 20 : 35;
-const maxRadius = window.innerWidth < 640 ? 30 : 55;
-
 const targetRadius = Math.min(
-  baseRadius + Math.abs(delta) * 0.12,
-  maxRadius
+  viewportConfig.baseRadius + Math.abs(delta) * 0.12,
+  viewportConfig.maxRadius
 );
  currentRadius += (targetRadius - currentRadius) * 0.1;
 
@@ -245,10 +254,7 @@ const targetRadius = Math.min(
 // Cosine arc: 1 at center → 0 at edge
 const arc = Math.cos(norm * Math.PI * 0.5);
 
-// lower zoom intensity on mobile
-const zoomFactor = window.innerWidth < 640 ? 0.7 : 1.5;
-
-const targetZoom = 1 + (1 - arc) * zoomFactor;
+const targetZoom = 1 + (1 - arc) * viewportConfig.zoomFactor;
 
 plane.material.uniforms.uZoom.value = targetZoom;
  });
@@ -277,7 +283,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  <div
  ref={textContainerRef}
  data-active-text={items[0].description}
- className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50"
+ className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-md:h-9 max-md:w-70 max-md:text-xl max-sm:h-12 max-sm:w-[84vw] max-sm:text-base"
  >
  <div ref={activeTextRef} className="absolute w-full h-full flex items-center justify-center">
  {items[0].description}
@@ -291,10 +297,10 @@ plane.material.uniforms.uZoom.value = targetZoom;
  return (
  <div
  key={i}
- className="absolute w-7 h-9 -ml-3.5 -mt-4.5"
+ className="absolute h-9 w-7 -ml-3.5 -mt-4.5 max-md:h-12 max-md:w-9 max-md:-ml-4.5 max-md:-mt-6 max-sm:h-9 max-sm:w-7 max-sm:-ml-3.5 max-sm:-mt-4.5"
  style={{
- transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
- }}
+transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
+}}
  >
  <Image  src={item.url}  className="w-full h-full object-cover"  alt={item.description}  fill
  />

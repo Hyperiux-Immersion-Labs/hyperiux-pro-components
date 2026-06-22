@@ -1,4 +1,4 @@
-import { BookFlip } from "@/components/BookFlip";
+import { BookFlip } from "@/components/book-flip";
 
 // Image array for the book pages
 const BOOK_IMAGES = [

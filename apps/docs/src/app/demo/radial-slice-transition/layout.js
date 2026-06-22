@@ -1,12 +1,12 @@
 import React from'react'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import { PiechartTransition } from '@/components/pie-slice-transition'
+import { RadialSliceTransition } from '@/components/radial-slice-transition'
 
 export default function layout({ children }) {
  return (
- <PiechartTransition>
+ <RadialSliceTransition>
     <DemoHeader />
  {children}
- </PiechartTransition>
+ </RadialSliceTransition>
  )
 }

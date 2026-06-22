@@ -99,7 +99,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 93 | Radial Slice Transition | `radial-slice-transition` | free | transitions | `/effects/page-transitions/radial-slice-transition` | — | `/pro/radial-slice-transition` | — | `/page-transitions/radial-slice-transition` |
 | 94 | Pixel Transition | `pixel-transition` | pro | transitions | `/effects/page-transitions/pixel-transition` | — | `/pro/pixels` | — | `/page-transitions/pixels` |
 | 95 | Svg Brush Transition | `svg-brush-transition` | pro | transitions | `/effects/page-transitions/svg-brush-transition` | — | `/pro/brush-strokes` | — | `/page-transitions/brush-strokes` |
-| 96 | 3D Portfolio Slider | `webgl-portfolio-slider` | pro | webgl | `/effects/webgl-effects/webgl-portfolio-slider` | — | `/pro/3d-portfolio-slider` | — | `/webgl-portfolio-slider` |
+| 96 | 3D Portfolio Slider | `3d-portfolio-slider` | pro | webgl | `/effects/webgl-effects/3d-portfolio-slider` | — | `/pro/3d-portfolio-slider` | — | `/3d-portfolio-slider` |
 | 97 | Book Flip | `book-flip` | pro | webgl | `/effects/webgl-effects/book-flip` | — | `/pro/book-flip` | — | `/book-flip` |
 | 98 | Colliding Models | `colliding-models` | pro | webgl | `/effects/webgl-effects/colliding-models` | `/demo/colliding-models` | — | — | `/colliding-models` |
 | 99 | Curved Plane | `curved-plane` | pro | webgl | `/effects/webgl-effects/curved-plane` | `/demo/curved-plane` | — | — | `/curved-plane` |
