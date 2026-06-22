@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -8,7 +8,6 @@ import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { Overview, Documentation, Category } from "../WebsiteComps/Icons";
-import { markSidebarDocsNavigation } from "@/lib/sidebar-navigation";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -23,10 +22,20 @@ function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
 }
 
-function NavIconLink({ label, icon: Icon, isExpanded, isActive, onClick }) {
+function getPathSegments(pathname = "") {
+  return pathname.split("/").filter(Boolean);
+}
+
+function getLastPathSegment(pathname = "") {
+  const segments = getPathSegments(pathname);
+  return segments[segments.length - 1] || "";
+}
+
+function NavIconLink({ label, href, icon: Icon, isExpanded, isActive, onClick }) {
   return (
-    <button
-      type="button"
+    <Link
+      href={href}
+      scroll={false}
       title={label}
       onClick={onClick}
       className={`relative flex h-10 w-[18vw] items-center gap-3 rounded-full px-4 py-1 text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
@@ -44,7 +53,7 @@ function NavIconLink({ label, icon: Icon, isExpanded, isActive, onClick }) {
       >
         {label}
       </span>
-    </button>
+    </Link>
   );
 }
 
@@ -97,10 +106,10 @@ export function Sidebar({
   onToggle,
   activeCategory,
   topLinks = DEFAULT_DOCS_TOP_LINKS,
+  disableInitialTransition = false,
   onOverviewNavigate,
   onCategoryNavigate,
   onDocumentationNavigate,
-  disableInitialTransition = false,
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -108,12 +117,31 @@ export function Sidebar({
 
   const resolvedTopLinks = topLinks?.length ? topLinks : DEFAULT_DOCS_TOP_LINKS;
 
-  const pathSegments = pathname.split("/").filter(Boolean);
-  const lastPathSegment = pathSegments[pathSegments.length - 1] || "";
+  const lastPathSegment = getLastPathSegment(pathname);
+
+  const categoryRouteSlugs = useMemo(
+    () =>
+      effectCategories.map((category) =>
+        getEffectCategoryHref(category.id).split("/").filter(Boolean).pop()
+      ),
+    []
+  );
+
+  const isCategoryRoute =
+    Boolean(lastPathSegment) && categoryRouteSlugs.includes(lastPathSegment);
+
+  const initialOpenSection = pathname.startsWith("/docs")
+    ? "docs"
+    : isCategoryRoute
+      ? "categories"
+      : "";
 
   const [activeHash, setActiveHash] = useState("");
   const [fetchedEffects, setFetchedEffects] = useState([]);
-  const [openSection, setOpenSection] = useState("");
+  const [openSection, setOpenSection] = useState(initialOpenSection);
+
+  const previousRouteSectionRef = useRef(initialOpenSection);
+  const categoryNavigationInProgressRef = useRef(false);
 
   const isDocsActive =
     pathname.startsWith("/docs") ||
@@ -126,6 +154,24 @@ export function Sidebar({
   const currentCategory = isDocsActive
     ? ""
     : activeCategory || searchParams.get("category") || "";
+
+  const isOverviewActive =
+    pathname === "/effects" && (!currentCategory || currentCategory === "all");
+
+  const isCategoriesActive =
+    !isDocsActive &&
+    (isCategoryRoute ||
+      (pathname === "/effects" &&
+        Boolean(currentCategory) &&
+        currentCategory !== "all"));
+
+  const isDocumentationActive = isDocsActive;
+
+  const routeOpenSection = isDocumentationActive
+    ? "docs"
+    : isCategoriesActive
+      ? "categories"
+      : "";
 
   useEffect(() => {
     const onHash = () => setActiveHash(window.location.hash || "");
@@ -145,6 +191,7 @@ export function Sidebar({
       .then((response) => (response.ok ? response.json() : null))
       .then((registry) => {
         if (!isMounted || !registry?.items) return;
+
         setFetchedEffects(registry.items);
       })
       .catch(() => {});
@@ -166,90 +213,112 @@ export function Sidebar({
     }
   }, [router, resolvedTopLinks]);
 
+  /*
+    Important:
+    Only auto-sync when the route section changes:
+    overview -> categories
+    categories -> docs
+    docs -> categories
+
+    Do NOT sync on every category slug change:
+    /effects/text-animations -> /effects/webgl-effects
+
+    That prevents the dropdown from closing and reopening during category navigation.
+  */
+  useEffect(() => {
+    const previousRouteSection = previousRouteSectionRef.current;
+
+    if (previousRouteSection !== routeOpenSection) {
+      setOpenSection(routeOpenSection);
+      previousRouteSectionRef.current = routeOpenSection;
+    }
+  }, [routeOpenSection]);
+
+  /*
+    If the user clicks a category inside the already-open dropdown, keep it open
+    during the fade-out, route push, and route fade-in.
+  */
+  useEffect(() => {
+    if (!categoryNavigationInProgressRef.current) return;
+
+    if (isCategoriesActive) {
+      setOpenSection("categories");
+      categoryNavigationInProgressRef.current = false;
+    }
+  }, [pathname, isCategoriesActive]);
+
   const sidebarEffects = effects.length ? effects : fetchedEffects;
+
   const featuredCount = useMemo(
     () => getFeaturedEffects(sidebarEffects).length,
     [sidebarEffects]
   );
 
-  useMemo(
-    () =>
-      [...sidebarEffects].sort((a, b) =>
-        (a.title || a.name).localeCompare(b.title || b.name)
-      ),
-    [sidebarEffects]
-  );
+  const navigateOverview = (event) => {
+    event?.preventDefault();
 
-  const categoryRouteSlugs = effectCategories.map((category) =>
-    getEffectCategoryHref(category.id).split("/").filter(Boolean).pop()
-  );
-
-  const isCategoryRoute =
-    Boolean(lastPathSegment) && categoryRouteSlugs.includes(lastPathSegment);
-
-  const isOverviewActive =
-    pathname === "/effects" && (!currentCategory || currentCategory === "all");
-
-  const isCategoriesActive =
-    !isDocsActive &&
-    (isCategoryRoute ||
-      (pathname === "/effects" &&
-        Boolean(currentCategory) &&
-        currentCategory !== "all"));
-
-  const isDocumentationActive = isDocsActive;
-
-  const navigateOverview = () => {
+    categoryNavigationInProgressRef.current = false;
     setOpenSection("");
 
     const wasHandled = onOverviewNavigate?.();
 
-    if (wasHandled === true) {
-      return;
-    }
+    if (wasHandled === true) return;
 
     router.push("/effects", { scroll: false });
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
-  const navigateCategory = (categoryId) => {
+  const navigateCategory = (event, categoryId) => {
+    event?.preventDefault();
+
+    categoryNavigationInProgressRef.current = true;
     setOpenSection("categories");
 
     const wasHandled = onCategoryNavigate?.(categoryId);
 
-    if (wasHandled === true) {
-      return;
-    }
+    if (wasHandled === true) return;
 
     router.push(getEffectCategoryHref(categoryId), { scroll: false });
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   };
 
-  const navigateDocumentation = (href) => {
-    setOpenSection("docs");
-    markSidebarDocsNavigation();
+  const navigateDocumentation = (event, href) => {
+  event?.preventDefault();
 
-    const wasHandled = onDocumentationNavigate?.(href);
+  categoryNavigationInProgressRef.current = false;
+  setOpenSection("docs");
 
-    if (wasHandled === true) {
-      return;
-    }
+  if (typeof window !== "undefined") {
+    const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
+      cancelable: true,
+      detail: { href },
+    });
 
-    router.push(href, { scroll: false });
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  };
+    const wasHandledByDocsBody = !window.dispatchEvent(docsRouteEvent);
+
+    if (wasHandledByDocsBody) return;
+  }
+
+  const wasHandled = onDocumentationNavigate?.(href);
+
+  if (wasHandled === true) return;
+
+  router.push(href, { scroll: false });
+};
 
   const toggle = () => {
     const nextValue = !isExpanded;
 
     if (!nextValue) {
       setOpenSection("");
+    } else if (routeOpenSection) {
+      setOpenSection(routeOpenSection);
     }
 
     onToggle?.(nextValue);
   };
 
   const toggleSection = (section) => {
+    categoryNavigationInProgressRef.current = false;
+
     if (!isExpanded) {
       setOpenSection(section);
       onToggle?.(true);
@@ -284,12 +353,7 @@ export function Sidebar({
 
       <div className="flex h-full flex-col items-start overflow-hidden border-r border-b border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
-          <Link
-          href={"/"}
-            type="button"
-            className="flex min-w-0 items-center gap-3"
-            onClick={navigateOverview}
-          >
+          <Link href="/" className="flex min-w-0 items-center gap-3">
             <Image
               src="/hyperiux.svg"
               alt="Hyperiux"
@@ -315,6 +379,7 @@ export function Sidebar({
         <nav data-lenis-prevent className="space-y-4">
           <NavIconLink
             label="Overview"
+            href="/effects"
             icon={Overview}
             isExpanded={isExpanded}
             isActive={isOverviewActive}
@@ -344,13 +409,16 @@ export function Sidebar({
                   const count =
                     effectCounts[category.id] ??
                     (category.id === "featured" ? featuredCount : 0);
+
                   const isActive = currentCategory === category.id;
+                  const href = getEffectCategoryHref(category.id);
 
                   return (
-                    <button
+                    <Link
                       key={category.id}
-                      type="button"
-                      onClick={() => navigateCategory(category.id)}
+                      href={href}
+                      scroll={false}
+                      onClick={(event) => navigateCategory(event, category.id)}
                       className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
@@ -372,7 +440,7 @@ export function Sidebar({
                           {count}
                         </span>
                       )}
-                    </button>
+                    </Link>
                   );
                 })}
               </motion.div>
@@ -406,10 +474,13 @@ export function Sidebar({
                     (!hash || activeHash === `#${hash}`);
 
                   return (
-                    <button
+                    <Link
                       key={link.href}
-                      type="button"
-                      onClick={() => navigateDocumentation(link.href)}
+                      href={link.href}
+                      scroll={false}
+                      onClick={(event) =>
+                        navigateDocumentation(event, link.href)
+                      }
                       className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"
@@ -421,7 +492,7 @@ export function Sidebar({
                       )}
 
                       {link.label}
-                    </button>
+                    </Link>
                   );
                 })}
               </motion.div>

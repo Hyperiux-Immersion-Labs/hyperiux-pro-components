@@ -15,6 +15,7 @@ const licenseTiersCode = `Hyperiux Vault
     └── Paid effects, packs, templates, variants, and commercial systems`;
 
 export default function DocsLicense() {
+
   return (
     <DocsContent className="max-w-none mx-0">
       <Heading>License</Heading>

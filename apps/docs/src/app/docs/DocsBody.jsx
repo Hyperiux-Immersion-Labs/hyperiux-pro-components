@@ -1,25 +1,51 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
 import Link from "next/link";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { RouteFade } from "@/components/layout/RouteFade";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+function RouteAnimationSync({ syncKey, containerRef }) {
+  useFadeUp(containerRef, [syncKey]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh(true);
+      });
+    });
+  }, [syncKey]);
+
+  return null;
+}
 
 function TableOfContents({ containerRef, watchKey }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+
   const lenis = useLenis();
   const activeLockRef = useRef({ id: "", targetTop: 0, timeoutId: null });
   const scrollTweenRef = useRef(null);
 
   const onTocClick = (e, id) => {
     e.preventDefault();
+
     const el = document.getElementById(id);
+
     if (!el) return;
+
     const topOffset = window.innerHeight * 0.2;
-    const targetTop = el.getBoundingClientRect().top + window.scrollY - topOffset;
+    const targetTop =
+      el.getBoundingClientRect().top + window.scrollY - topOffset;
 
     if (activeLockRef.current.timeoutId) {
       window.clearTimeout(activeLockRef.current.timeoutId);
@@ -44,6 +70,7 @@ function TableOfContents({ containerRef, watchKey }) {
             immediate: true,
             force: true,
           });
+
           return;
         }
 
@@ -67,18 +94,19 @@ function TableOfContents({ containerRef, watchKey }) {
 
       activeLockRef.current.timeoutId = window.setTimeout(
         () => releaseWhenSettled(startedAt),
-        80,
+        80
       );
     };
 
     activeLockRef.current.timeoutId = window.setTimeout(
       () => releaseWhenSettled(),
-      120,
+      120
     );
   };
 
   useEffect(() => {
     const root = containerRef?.current;
+
     if (!root) return;
 
     const updateVisibility = () => {
@@ -86,11 +114,12 @@ function TableOfContents({ containerRef, watchKey }) {
 
       setIsVisible(
         rect.top <= window.innerHeight * 0.45 &&
-        rect.bottom >= window.innerHeight * 0.25
+          rect.bottom >= window.innerHeight * 0.25
       );
     };
 
     updateVisibility();
+
     window.addEventListener("scroll", updateVisibility, { passive: true });
     window.addEventListener("resize", updateVisibility);
 
@@ -102,42 +131,44 @@ function TableOfContents({ containerRef, watchKey }) {
 
   useEffect(() => {
     const root = containerRef?.current;
+
     if (!root) return;
 
-    const headings = Array.from(
-      root.querySelectorAll("h2[id]")
-    ).map((el, index) => {
-      if (!el.id) {
-        el.id =
-          el.textContent
-            ?.toLowerCase()
-            .replaceAll(" ", "-")
-            .replace(/[^\w-]/g, "") ||
-          `section-${index}`;
-      }
+    const headings = Array.from(root.querySelectorAll("h2[id]")).map(
+      (el, index) => {
+        if (!el.id) {
+          el.id =
+            el.textContent
+              ?.toLowerCase()
+              .replaceAll(" ", "-")
+              .replace(/[^\w-]/g, "") || `section-${index}`;
+        }
 
-      return {
-        id: el.id,
-        text: el.textContent || "",
-        level: el.tagName.toLowerCase(),
-      };
-    });
+        return {
+          id: el.id,
+          text: el.textContent || "",
+          level: el.tagName.toLowerCase(),
+        };
+      }
+    );
+
     setItems(headings);
   }, [containerRef, watchKey]);
 
   useEffect(() => {
     const root = containerRef?.current;
+
     if (!root) return;
 
     const headings = Array.from(root.querySelectorAll("h2"));
+
     headings.forEach((el, index) => {
       if (!el.id) {
         el.id =
           el.textContent
             ?.toLowerCase()
             .replaceAll(" ", "-")
-            .replace(/[^\w-]/g, "") ||
-          `section-${index}`;
+            .replace(/[^\w-]/g, "") || `section-${index}`;
       }
     });
 
@@ -149,14 +180,22 @@ function TableOfContents({ containerRef, watchKey }) {
 
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort((a, b) => (a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1))[0];
+          .sort((a, b) =>
+            a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1
+          )[0];
+
         const id = visible?.target?.id;
+
         if (id) setActiveId(id);
       },
-      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 1] }
+      {
+        rootMargin: "-20% 0px -70% 0px",
+        threshold: [0, 1],
+      }
     );
 
     headings.forEach((h) => observer.observe(h));
+
     return () => observer.disconnect();
   }, [containerRef, items.length]);
 
@@ -178,29 +217,26 @@ function TableOfContents({ containerRef, watchKey }) {
         aria-hidden="true"
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
-      
-      <div className="pointer-events-none absolute h-fit max-h-[60vh] overflow-y-auto  overflow-hidden right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 toc">
-      <div className="w-full h-fit">
-        <ul className="space-y-1">
-          {items.map((it) => (
-            <li key={it.id}>
-              <a
-                href={`#${it.id}`}
-                className={[
-                  "block rounded-sm px-3 py-2 text20 font-medium leading-[1.2] text-white transition-colors duration-300 ease-out",
-                  activeId === it.id
-                    ? "bg-black"
-                    : "hover:bg-black/55",
-                ].join(" ")}
-                onClick={(e) => onTocClick(e, it.id)}
-              >
-                {it.text}
-              </a>
-            </li>
-          ))}
-        </ul>
 
-      </div>
+      <div className="pointer-events-none absolute h-fit max-h-[60vh] overflow-y-auto overflow-hidden right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 toc">
+        <div className="w-full h-fit">
+          <ul className="space-y-1">
+            {items.map((it) => (
+              <li key={it.id}>
+                <a
+                  href={`#${it.id}`}
+                  className={[
+                    "block rounded-sm px-3 py-2 text20 font-medium leading-[1.2] text-white transition-colors duration-300 ease-out",
+                    activeId === it.id ? "bg-black" : "hover:bg-black/55",
+                  ].join(" ")}
+                  onClick={(e) => onTocClick(e, it.id)}
+                >
+                  {it.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <ul className="flex max-h-[70vh] w-12 flex-col items-end gap-5 overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -228,16 +264,18 @@ function TableOfContents({ containerRef, watchKey }) {
   );
 }
 
-function BreadcrumbNav() {
+function BreadcrumbNav({ onDocsNavigate }) {
   const pathname = usePathname();
 
-  // Build breadcrumb items from pathname
   const segments = pathname.split("/").filter(Boolean);
+
   const breadcrumbItems = [
     { label: "Home", href: "/" },
     ...segments.map((segment, index) => {
       const href = "/" + segments.slice(0, index + 1).join("/");
-      const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+      const label =
+        segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+
       return { label, href };
     }),
   ];
@@ -249,14 +287,23 @@ function BreadcrumbNav() {
     >
       {breadcrumbItems.map((item, index, items) => {
         const isLast = index === items.length - 1;
+
         return (
           <span key={item.href} className="flex items-center gap-2">
             {index > 0 && <span className="text-white/25">/</span>}
+
             {isLast ? (
               <span className="capitalize text-primary">{item.label}</span>
             ) : (
               <Link
                 href={item.href}
+                scroll={false}
+                onClick={(event) => {
+                  if (item.href.startsWith("/docs")) {
+                    event.preventDefault();
+                    onDocsNavigate(item.href);
+                  }
+                }}
                 className="capitalize transition-colors hover:text-primary"
               >
                 {item.label}
@@ -271,27 +318,115 @@ function BreadcrumbNav() {
 
 export default function DocsBody({ children }) {
   const contentRef = useRef(null);
+  const routeContentRef = useRef(null);
+  const routeTweenRef = useRef(null);
+
   const pathname = usePathname();
+  const router = useRouter();
+
+  const navigateWithDocsFade = useCallback(
+    (href) => {
+      if (!href || href === pathname) return true;
+
+      const routeContent = routeContentRef.current;
+
+      routeTweenRef.current?.kill();
+
+      if (!routeContent) {
+        router.push(href, { scroll: false });
+        return true;
+      }
+
+      routeTweenRef.current = gsap.to(routeContent, {
+        autoAlpha: 0,
+        y: 0,
+        duration: 0.32,
+        ease: "power2.inOut",
+        onComplete: () => {
+          router.push(href, { scroll: false });
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              ScrollTrigger.refresh(true);
+            });
+          });
+        },
+      });
+
+      return true;
+    },
+    [pathname, router]
+  );
+
+  useEffect(() => {
+    const handleDocsRouteRequest = (event) => {
+      const href = event.detail?.href;
+
+      if (!href || !href.startsWith("/docs")) return;
+
+      event.preventDefault();
+      navigateWithDocsFade(href);
+    };
+
+    window.addEventListener("hyperiux:docs-route-request", handleDocsRouteRequest);
+
+    return () => {
+      window.removeEventListener(
+        "hyperiux:docs-route-request",
+        handleDocsRouteRequest
+      );
+    };
+  }, [navigateWithDocsFade]);
+
+  useEffect(() => {
+    routeTweenRef.current?.kill();
+
+    if (routeContentRef.current) {
+      gsap.set(routeContentRef.current, {
+        autoAlpha: 1,
+        y: 0,
+      });
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh(true);
+      });
+    });
+
+    return () => {
+      routeTweenRef.current?.kill();
+    };
+  }, [pathname]);
 
   return (
-    <>
-      <div className="mx-auto w-full pt-25 ">
-        <BreadcrumbNav />
-        
-        <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
-          <div
-            ref={contentRef}
-            className=" max-md:px-0 [&_h1]:text-[4vw] [&_h1]:font-semibold [&_h1]:leading-[1.05] [&_h1]:text-white [&_h2]:text-[clamp(1.45rem,2vw,2rem)] [&_h2]:font-normal [&_h2]:leading-[1.12] [&_h2]:tracking-[-0.04em] [&_h2]:text-white [&_h3]:text-[clamp(1.05rem,1.45vw,1.35rem)] [&_h3]:font-normal [&_h3]:leading-[1.15] [&_h3]:tracking-[-0.03em] [&_h3]:text-white [&_p]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_p]:leading-[1.72] [&_p]:text-white [&_li]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_li]:leading-[1.65] [&_li]:text-white [&_strong]:text-white [&_.docs-heading2-line]:bg-white/20 [&_li::marker]:text-white max-sm:[&_h1]:text-[4vw]"
-          >
-            {children}
-          </div>
-          <aside className="hidden xl:block pr-6">
-            <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
-              <TableOfContents containerRef={contentRef} watchKey={pathname} />
+    <div className="mx-auto w-full pt-25">
+      <RouteFade
+        key={pathname}
+        motionKey={pathname}
+        className="relative min-h-screen"
+      >
+        <div ref={routeContentRef}>
+          <RouteAnimationSync syncKey={pathname} containerRef={contentRef} />
+
+          <BreadcrumbNav onDocsNavigate={navigateWithDocsFade} />
+
+          <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_320px]">
+            <div
+              ref={contentRef}
+              className="max-md:px-0 [&_h1]:text-[4vw] [&_h1]:font-semibold [&_h1]:leading-[1.05] [&_h1]:text-white [&_h2]:text-[clamp(1.45rem,2vw,2rem)] [&_h2]:font-normal [&_h2]:leading-[1.12] [&_h2]:tracking-[-0.04em] [&_h2]:text-white [&_h3]:text-[clamp(1.05rem,1.45vw,1.35rem)] [&_h3]:font-normal [&_h3]:leading-[1.15] [&_h3]:tracking-[-0.03em] [&_h3]:text-white [&_p]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_p]:leading-[1.72] [&_p]:text-white [&_li]:text-[clamp(0.95rem,1.05vw,1.05rem)] [&_li]:leading-[1.65] [&_li]:text-white [&_strong]:text-white [&_.docs-heading2-line]:bg-white/20 [&_li::marker]:text-white max-sm:[&_h1]:text-[4vw]"
+            >
+              {children}
             </div>
-          </aside>
+
+            <aside className="hidden xl:block pr-6">
+              <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                <TableOfContents containerRef={contentRef} watchKey={pathname} />
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
-    </>
+      </RouteFade>
+    </div>
   );
 }

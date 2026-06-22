@@ -1,68 +1,132 @@
 "use client";
+
 import gsap from "gsap";
-import { useEffect } from "react";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { useLayoutEffect } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
-gsap.registerPlugin(ScrollTrigger);
-
-function getFadeTargets(containerRef) {
-  if (containerRef && containerRef.current) {
-    return containerRef.current.querySelectorAll(".fadeup");
-  }
-
-  return document.querySelectorAll(".fadeup");
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-export function useFadeUp(containerRef) {
-  useEffect(() => {
-    if (shouldSkipSidebarDocsAnimation()) return;
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : () => {};
+
+function refreshScrollTrigger() {
+  if (typeof window === "undefined") return;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ScrollTrigger?.refresh?.(true);
+    });
+  });
+}
+
+function getFadeTargets(containerRef) {
+  if (typeof document === "undefined") return [];
+
+  const root = containerRef?.current || document;
+
+  return gsap.utils.toArray(".fadeup", root);
+}
+
+function getLineTargets(containerRef) {
+  if (typeof document === "undefined") return [];
+
+  const root = containerRef?.current || document;
+
+  return gsap.utils.toArray('.lineDraw, [class*="contentDivider"]', root);
+}
+
+export function useFadeUp(containerRef, deps = []) {
+  useIsomorphicLayoutEffect(() => {
+    const content = getFadeTargets(containerRef);
+
+    if (!content.length) return;
+
+    if (shouldSkipSidebarDocsAnimation()) {
+      gsap.set(content, {
+        autoAlpha: 1,
+        y: 0,
+        clearProps: "visibility,opacity,transform",
+      });
+
+      refreshScrollTrigger();
+
+      return;
+    }
+
+    gsap.set(content, {
+      autoAlpha: 0,
+      y: 50,
+    });
 
     const ctx = gsap.context(() => {
-      const content = getFadeTargets(containerRef);
       content.forEach((element) => {
-        gsap.set(element, { opacity: 0, y: 50 });
         gsap.to(element, {
           scrollTrigger: {
             trigger: element,
             start: "top 90%",
+            once: true,
           },
-          opacity: 1,
+          autoAlpha: 1,
           y: 0,
           ease: "power3.out",
-          duration: 2,
+          duration: 1.2,
+          onComplete: () => {
+            gsap.set(element, {
+              clearProps: "visibility,opacity,transform",
+            });
+
+            refreshScrollTrigger();
+          },
         });
       });
-    });
+    }, containerRef?.current || document);
+
+    refreshScrollTrigger();
+
     return () => ctx.revert();
-  }, [containerRef]);
+  }, [containerRef, ...deps]);
 }
 
-export function useLineAnim(containerRef) {
-  useEffect(() => {
-    if (shouldSkipSidebarDocsAnimation()) return;
+export function useLineAnim(containerRef, deps = []) {
+  useIsomorphicLayoutEffect(() => {
+    const lineDraws = getLineTargets(containerRef);
+
+    if (!lineDraws.length) return;
+
+    if (shouldSkipSidebarDocsAnimation()) {
+      gsap.set(lineDraws, {
+        scaleX: 1,
+        clearProps: "transform",
+      });
+
+      refreshScrollTrigger();
+
+      return;
+    }
 
     const ctx = gsap.context(() => {
-      const root = containerRef && containerRef.current ? containerRef.current : document;
-      const lineDraws = root.querySelectorAll(
-        '.lineDraw, [class*="contentDivider"]'
-      );
       lineDraws.forEach((lineDraw) => {
         gsap.from(lineDraw, {
           scrollTrigger: {
             trigger: lineDraw,
             start: "top 80%",
+            once: true,
           },
           scaleX: 0,
           transformOrigin: "left",
           duration: 1,
           stagger: 0.07,
           ease: "power3.out",
+          onComplete: refreshScrollTrigger,
         });
       });
-    });
-    const st = gsap.ScrollTrigger || ScrollTrigger;
-    st?.refresh?.();
+    }, containerRef?.current || document);
+
+    refreshScrollTrigger();
+
     return () => ctx.revert();
-  }, [containerRef]);
+  }, [containerRef, ...deps]);
 }

@@ -8,6 +8,7 @@ import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
 import Heading3 from "@/components/DocsContent/Heading3New";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 const useClientCode = `"use client";`;
 
@@ -94,6 +95,7 @@ const tailwindContentPathCode = `content: [
 ]`;
 
 export default function DocsDependencies() {
+
   return (
     <DocsContent className="max-w-none mx-0">
       <Heading>Dependencies</Heading>

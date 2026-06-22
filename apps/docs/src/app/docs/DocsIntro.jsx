@@ -24,6 +24,7 @@ export default function Page() {
 }`;
 
 export default function DocsIntro() {
+
   return (
     <DocsContent className="max-w-none mx-0">
       <Heading>Introduction</Heading>

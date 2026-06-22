@@ -24,7 +24,7 @@ export default function DocsList({
   ...props
 }) {
   return (
-    <ul className={cx("list-disc pl-6 space-y-1.5", className)} {...props}>
+    <ul className={cx("list-disc pl-6 space-y-1.5 fadeup", className)} {...props}>
       {items
         ? items.map((item, idx) => (
             <DocsListItem

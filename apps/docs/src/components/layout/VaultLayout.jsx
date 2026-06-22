@@ -21,7 +21,7 @@ function getStoredSidebarExpanded() {
   if (typeof window === "undefined") return false;
 
   const v = window.localStorage.getItem(SIDEBAR_EXPANDED_STORAGE_KEY);
-  // default to expanded (true) when no value is stored
+
   return v === null ? true : v === "true";
 }
 
@@ -84,9 +84,6 @@ export function VaultLayout({
   const lenis = useLenis();
   const refreshTimeoutsRef = useRef([]);
 
-  const isEffectsRoute =
-    pathname === "/effects" || pathname.startsWith("/effects/");
-
   const isDocsRoute = pathname === "/docs" || pathname.startsWith("/docs/");
 
   const clearRefreshTimeouts = useCallback(() => {
@@ -99,8 +96,28 @@ export function VaultLayout({
     refreshTimeoutsRef.current = [];
   }, []);
 
+  const forceStartLenis = useCallback(() => {
+    if (typeof document !== "undefined") {
+      document.body.style.removeProperty("overflow");
+    }
+
+    lenis?.start?.();
+
+    if (typeof window !== "undefined") {
+      requestAnimationFrame(() => {
+        lenis?.start?.();
+      });
+
+      window.setTimeout(() => {
+        lenis?.start?.();
+      }, 80);
+    }
+  }, [lenis]);
+
   const scrollToTop = useCallback(() => {
     if (typeof window === "undefined") return;
+
+    forceStartLenis();
 
     if (lenis) {
       lenis.scrollTo(0, {
@@ -115,7 +132,7 @@ export function VaultLayout({
       left: 0,
       behavior: "auto",
     });
-  }, [lenis]);
+  }, [forceStartLenis, lenis]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -172,16 +189,18 @@ export function VaultLayout({
   );
 
   const handleRouteChange = useCallback(() => {
+    forceStartLenis();
     scrollToTop();
     refreshScrollTrigger();
 
     if (typeof window === "undefined") return;
 
     requestAnimationFrame(() => {
+      forceStartLenis();
       scrollToTop();
       refreshScrollTrigger();
     });
-  }, [refreshScrollTrigger, scrollToTop]);
+  }, [forceStartLenis, refreshScrollTrigger, scrollToTop]);
 
   useEffect(() => {
     let frameTwo;
@@ -231,9 +250,9 @@ export function VaultLayout({
 
     const syncLenis = () => {
       if (isSidebarOpen && mediaQuery.matches) {
-        lenis?.stop();
+        lenis?.stop?.();
       } else {
-        lenis?.start();
+        lenis?.start?.();
       }
 
       refreshScrollTrigger();
@@ -244,7 +263,7 @@ export function VaultLayout({
 
     return () => {
       mediaQuery.removeEventListener("change", syncLenis);
-      lenis?.start();
+      lenis?.start?.();
     };
   }, [isSidebarOpen, isSidebarReady, lenis, refreshScrollTrigger]);
 
@@ -262,28 +281,32 @@ export function VaultLayout({
   };
 
   const handleOverviewNavigate = () => {
-    if (isEffectsRoute && onOverviewNavigate) {
-      onOverviewNavigate();
+    const wasHandled = onOverviewNavigate?.();
+
+    if (wasHandled === true) {
       refreshScrollTrigger();
       return true;
     }
 
     router.push("/effects", { scroll: false });
     refreshScrollTrigger();
+
     return true;
   };
 
   const handleCategoryNavigate = (categoryId) => {
-    const categoryHref = getEffectCategoryHref(categoryId);
+    const wasHandled = onCategoryNavigate?.(categoryId);
 
-    if (isEffectsRoute && onCategoryNavigate) {
-      onCategoryNavigate(categoryId);
+    if (wasHandled === true) {
       refreshScrollTrigger();
       return true;
     }
 
+    const categoryHref = getEffectCategoryHref(categoryId);
+
     router.push(categoryHref, { scroll: false });
     refreshScrollTrigger();
+
     return true;
   };
 
@@ -299,6 +322,7 @@ export function VaultLayout({
 
     router.push(href, { scroll: false });
     refreshScrollTrigger();
+
     return true;
   };
 

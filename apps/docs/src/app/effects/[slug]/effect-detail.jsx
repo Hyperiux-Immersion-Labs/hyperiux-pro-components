@@ -32,6 +32,7 @@ import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
+import { RouteFade } from "@/components/layout/RouteFade";
 
 export function EffectDetailContent({
   slug,
@@ -237,7 +238,7 @@ const handleRelatedCardClick = useCallback(
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader effectName={effect.title} showSearch={true} />
         </Suspense>
-
+        <RouteFade motionKey={pathname}>
         <main className="mx-auto w-full relative px-10 max-md:px-0 pt-25 pb-12 max-sm:pt-36">
           <section className="space-y-7">
             <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw] justify-between gap-5">
@@ -523,6 +524,9 @@ const handleRelatedCardClick = useCallback(
             )}
           </section>
         </main>
+
+        </RouteFade>
+
       </div>
     </VaultLayout>
   );

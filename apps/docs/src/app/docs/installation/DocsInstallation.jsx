@@ -80,6 +80,7 @@ const tailwindConfigCode = `export default {
 };`;
 
 export default function DocsInstallation() {
+
   return (
     <DocsContent className="max-w-none mx-0">
       <Heading>Installation Guide</Heading>

@@ -1,49 +1,87 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger);
+}
 
-export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : () => {};
+
+function mergeRefs(...refs) {
+  return (node) => {
+    refs.forEach((ref) => {
+      if (!ref) return;
+
+      if (typeof ref === "function") {
+        ref(node);
+        return;
+      }
+
+      ref.current = node;
+    });
+  };
+}
+
+export default function Copy({
+  children,
+  animateOnScroll = true,
+  delay = 0,
+}) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
-  const lines = useRef([]);
-  const triggers = useRef([]);
+  const tweenRef = useRef(null);
+  const triggerRef = useRef(null);
 
-  useEffect(() => {
-    if (shouldSkipSidebarDocsAnimation()) return;
+  useIsomorphicLayoutEffect(() => {
+    const container = containerRef.current;
 
-    const el = containerRef.current;
-    if (!el) return;
+    if (!container) return;
 
-    const prefersReduced =
-      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shouldSkip = shouldSkipSidebarDocsAnimation();
 
     splitRefs.current = [];
-    lines.current = [];
-    triggers.current = [];
 
-    const elements = el.hasAttribute("data-copy-wrapper")
-      ? Array.from(el.children)
-      : [el];
+    tweenRef.current?.kill();
+    triggerRef.current?.kill();
 
-    const waitForFonts = async () => {
-      if (document.fonts && document.fonts.ready) {
+    if (shouldSkip) {
+      gsap.set(container, {
+        autoAlpha: 1,
+        clearProps: "visibility,opacity,transform",
+      });
+      return;
+    }
+
+    let isKilled = false;
+
+    gsap.set(container, {
+      autoAlpha: 0,
+    });
+
+    const prefersReduced =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const elements = container.hasAttribute("data-copy-wrapper")
+      ? Array.from(container.children)
+      : [container];
+
+    const run = async () => {
+      if (document.fonts?.ready) {
         try {
           await document.fonts.ready;
         } catch (_) {}
       }
-    };
 
-    let unmounted = false;
+      if (isKilled || !containerRef.current) return;
 
-    (async () => {
-      await waitForFonts();
-      if (unmounted) return;
+      const allLines = [];
 
       elements.forEach((element) => {
         const split = SplitText.create(element, {
@@ -52,23 +90,41 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
           linesClass: "line++",
           lineThreshold: 0.1,
         });
+
         splitRefs.current.push(split);
 
         const textIndent = getComputedStyle(element).textIndent;
+
         if (textIndent && textIndent !== "0px" && split.lines.length > 0) {
           split.lines[0].style.paddingLeft = textIndent;
           element.style.textIndent = "0";
         }
 
-        lines.current.push(...split.lines);
+        allLines.push(...split.lines);
       });
 
-      if (prefersReduced) {
-        gsap.set(lines.current, { y: "0%" });
+      if (!allLines.length || prefersReduced) {
+        gsap.set(container, {
+          autoAlpha: 1,
+          clearProps: "visibility,opacity",
+        });
+
+        gsap.set(allLines, {
+          y: "0%",
+          clearProps: "transform",
+        });
+
         return;
       }
 
-      gsap.set(lines.current, { y: "100%" });
+      gsap.set(allLines, {
+        y: "100%",
+        willChange: "transform",
+      });
+
+      gsap.set(container, {
+        autoAlpha: 1,
+      });
 
       const animationProps = {
         y: "0%",
@@ -76,40 +132,74 @@ export default function Copy({ children, animateOnScroll = true, delay = 0 }) {
         stagger: 0.15,
         ease: "power4.out",
         delay,
-        onComplete: () => gsap.set(lines.current, { clearProps: "transform" }),
+        onComplete: () => {
+          gsap.set(allLines, {
+            clearProps: "transform,willChange",
+          });
+
+          ScrollTrigger.refresh(true);
+        },
       };
 
       if (animateOnScroll) {
-        const tween = gsap.to(lines.current, {
+        tweenRef.current = gsap.to(allLines, {
           ...animationProps,
           scrollTrigger: {
-            trigger: el,
+            trigger: container,
             start: "top bottom",
             once: true,
           },
         });
-        if (tween && tween.scrollTrigger) triggers.current.push(tween.scrollTrigger);
+
+        triggerRef.current = tweenRef.current.scrollTrigger;
       } else {
-        gsap.to(lines.current, animationProps);
+        tweenRef.current = gsap.to(allLines, animationProps);
       }
-    })();
+    };
+
+    run();
 
     return () => {
-      unmounted = true;
-      splitRefs.current.forEach((split) => split && split.revert());
-      splitRefs.current = [];
-      lines.current = [];
-      triggers.current.forEach((t) => t && t.kill());
-      triggers.current = [];
-    };
-  }, [animateOnScroll, delay]);
+      isKilled = true;
 
-  if (React.Children.count(children) === 1 && React.isValidElement(children)) {
-    return React.cloneElement(children, { ref: containerRef });
+      tweenRef.current?.kill();
+      triggerRef.current?.kill();
+
+      splitRefs.current.forEach((split) => {
+        split?.revert();
+      });
+
+      splitRefs.current = [];
+
+      if (container) {
+        gsap.set(container, {
+          clearProps: "visibility,opacity,transform",
+        });
+      }
+    };
+  }, [animateOnScroll, delay, children]);
+
+  const child =
+    React.Children.count(children) === 1
+      ? React.Children.toArray(children)[0]
+      : null;
+
+  if (child && React.isValidElement(child)) {
+    return React.cloneElement(child, {
+      ref: mergeRefs(child.ref, containerRef),
+      style: {
+        ...child.props.style,
+        visibility: "hidden",
+      },
+    });
   }
 
   return (
-    <div ref={containerRef} data-copy-wrapper="true">
+    <div
+      ref={containerRef}
+      data-copy-wrapper="true"
+      style={{ visibility: "hidden" }}
+    >
       {children}
     </div>
   );

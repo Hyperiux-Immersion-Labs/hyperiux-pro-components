@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <body className="min-h-dvh bg-background text-foreground font-sans">
-        <PixelRandom color="#ff5f00">
+        {/* <PixelRandom color="#ff5f00"> */}
           <ClerkProvider>
             <OrganizationJsonLd />
             <LocalBusiness />
@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
             <Analytics />
             <SpeedInsights />
           </ClerkProvider>
-        </PixelRandom>
+        {/* </PixelRandom> */}
       </body>
     </html>
   );

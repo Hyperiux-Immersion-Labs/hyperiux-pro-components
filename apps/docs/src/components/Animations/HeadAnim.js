@@ -1,52 +1,93 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText, ScrollTrigger);
+}
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : () => {};
+
+function mergeRefs(...refs) {
+  return (node) => {
+    refs.forEach((ref) => {
+      if (!ref) return;
+
+      if (typeof ref === "function") {
+        ref(node);
+        return;
+      }
+
+      ref.current = node;
+    });
+  };
+}
 
 export default function HeadAnim({
   children,
   animateOnScroll = true,
-  delay = 0
+  delay = 0,
 }) {
   const containerRef = useRef(null);
-  const elementRefs = useRef([]);
   const splitRefs = useRef([]);
-  const chars = useRef([]);
+  const tweenRef = useRef(null);
+  const triggerRef = useRef(null);
 
-  useEffect(() => {
-    if (shouldSkipSidebarDocsAnimation()) return;
+  useIsomorphicLayoutEffect(() => {
+    const container = containerRef.current;
 
-    if (!containerRef.current) return;
+    if (!container) return;
+
+    const shouldSkip = shouldSkipSidebarDocsAnimation();
 
     splitRefs.current = [];
-    chars.current = [];
-    elementRefs.current = [];
 
-    // Find elements to split (single node or wrapper's children)
-    let elements = [];
-    if (containerRef.current.hasAttribute("data-copy-wrapper")) {
-      elements = Array.from(containerRef.current.children);
-    } else {
-      elements = [containerRef.current];
+    tweenRef.current?.kill();
+    triggerRef.current?.kill();
+
+    if (shouldSkip) {
+      gsap.set(container, {
+        autoAlpha: 1,
+        clearProps: "visibility,opacity,transform",
+      });
+      return;
     }
 
-    document.fonts.ready.then(() => {
-      elements.forEach((element) => {
-        elementRefs.current.push(element);
+    let isKilled = false;
 
-        // Split into words + characters so letters never wrap away from their word
+    gsap.set(container, {
+      autoAlpha: 0,
+    });
+
+    const elements = container.hasAttribute("data-copy-wrapper")
+      ? Array.from(container.children)
+      : [container];
+
+    const run = async () => {
+      if (document.fonts?.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_) {}
+      }
+
+      if (isKilled || !containerRef.current) return;
+
+      const allChars = [];
+
+      elements.forEach((element) => {
         const split = SplitText.create(element, {
           type: "lines,words,chars",
-          mask:"chars",
+          mask: "chars",
           wordsClass: "word++",
           charsClass: "char++",
-          reduceWhiteSpace: false
+          reduceWhiteSpace: false,
         });
+
         splitRefs.current.push(split);
 
         gsap.set(split.words, {
@@ -54,54 +95,103 @@ export default function HeadAnim({
           whiteSpace: "nowrap",
         });
 
-        // Collect characters
-        chars.current.push(...split.chars);
+        allChars.push(...split.chars);
       });
 
-      // Set initial state: chars slide up into view
-      gsap.set(chars.current, { yPercent: 100, willChange: "transform",rotate:8 });
+      if (!allChars.length) {
+        gsap.set(container, {
+          autoAlpha: 1,
+          clearProps: "visibility,opacity",
+        });
+        return;
+      }
+
+      gsap.set(allChars, {
+        yPercent: 100,
+        rotate: 8,
+        willChange: "transform",
+      });
+
+      gsap.set(container, {
+        autoAlpha: 1,
+      });
 
       const animationProps = {
         yPercent: 0,
-        rotate:0,
+        rotate: 0,
         duration: 0.5,
-        stagger: 0.02,   // smaller stagger works better for chars
+        stagger: 0.02,
         ease: "power3.out",
-        delay
+        delay,
+        onComplete: () => {
+          gsap.set(allChars, {
+            clearProps: "willChange",
+          });
+
+          ScrollTrigger.refresh(true);
+        },
       };
 
       if (animateOnScroll) {
-        gsap.to(chars.current, {
+        tweenRef.current = gsap.to(allChars, {
           ...animationProps,
           scrollTrigger: {
-            trigger: containerRef.current,
+            trigger: container,
             start: "top 70%",
-            end:"bottom 50%",
-            // scrub:true,
-            // markers:true
-            // once: true
-          }
+            end: "bottom 50%",
+            once: true,
+          },
         });
+
+        triggerRef.current = tweenRef.current.scrollTrigger;
       } else {
-        gsap.to(chars.current, animationProps);
+        tweenRef.current = gsap.to(allChars, animationProps);
       }
-    });
+    };
+
+    run();
 
     return () => {
-      splitRefs.current.forEach((split) => {
-        if (split) split.revert();
-      });
-    };
-  }, [animateOnScroll, delay]);
+      isKilled = true;
 
- const child = React.Children.count(children) === 1 ? React.Children.toArray(children)[0] : null;
+      tweenRef.current?.kill();
+      triggerRef.current?.kill();
+
+      splitRefs.current.forEach((split) => {
+        split?.revert();
+      });
+
+      splitRefs.current = [];
+
+      if (container) {
+        gsap.set(container, {
+          clearProps: "visibility,opacity,transform",
+        });
+      }
+    };
+  }, [animateOnScroll, delay, children]);
+
+  const child =
+    React.Children.count(children) === 1
+      ? React.Children.toArray(children)[0]
+      : null;
 
   if (child && React.isValidElement(child)) {
-    return React.cloneElement(child, { ref: containerRef });
+    return React.cloneElement(child, {
+      ref: mergeRefs(child.ref, containerRef),
+      style: {
+        ...child.props.style,
+        visibility: "hidden",
+      },
+    });
   }
-  
+
   return (
-    <div ref={containerRef} data-copy-wrapper="true">
+    <div
+      ref={containerRef}
+      data-copy-wrapper="true"
+      style={{ visibility: "hidden" }}
+    >
       {children}
     </div>
   );
