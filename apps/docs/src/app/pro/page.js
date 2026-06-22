@@ -11,7 +11,7 @@ const PRO_ROUTES = [
   "/3d-portfolio-slider",
   "/book-flip",
   "/svg-brush-transition",
-  "/flip",
+  "/page-flip-transition",
   "/frame-slider",
   "/full-screen-crosshair",
   "/glitchy-text",
