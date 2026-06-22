@@ -201,7 +201,10 @@ export function EffectDetailContent({
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
-  const TEST_MAIN_SKELETON_DELAY = 2000; // set to 0 before production
+
+  //testing purpose
+  
+  const TEST_MAIN_SKELETON_DELAY = 0; // set to 0 before production
 
   const [hasPassedMainSkeletonDelay, setHasPassedMainSkeletonDelay] = useState(
     TEST_MAIN_SKELETON_DELAY === 0
