@@ -1,2 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /tag/
+Disallow: /_next/static/
+
+# Sitemaps
+Sitemap: https://vault.hyperiux.com/sitemap.xml

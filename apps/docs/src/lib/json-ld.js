@@ -93,23 +93,23 @@ export function SoftwareApplicationJsonLd() {
       {
         "@type": "Offer",
         name: "Hyperiux Vault Monthly",
-        price: "$",
+        price: "$20",
         priceCurrency: "$",
-        url: `${homepage}/pricing`,
+        url: `${homepage}`,
       },
       {
         "@type": "Offer",
         name: "Hyperiux Vault Quarterly",
-        price: "$",
+        price: "$50",
         priceCurrency: "$",
-        url: `${homepage}/pricing`,
+        url: `${homepage}`,
       },
       {
         "@type": "Offer",
         name: "Hyperiux Vault Yearly",
-        price: "$",
+        price: "$200",
         priceCurrency: "$",
-        url: `${homepage}/pricing`,
+        url: `${homepage}`,
       },
     ],
     ...(hasAggregateRating && {
@@ -167,7 +167,7 @@ export function LocalBusiness() {
       "https://www.linkedin.com/in/",
       "https://x.com/"
     ],
-    priceRange: "$-$",
+    priceRange: "$20-$50",
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
@@ -209,8 +209,8 @@ export function WebpageJsonLd({ metadata = {} }) {
     url: fullUrl,
     name,
     description,
-    datePublished: date_published,
-    dateModified: date_modified,
+    datePublished: date_published || "06/22/2026",
+    dateModified: date_modified || "06/22/2026",
     publisher: {
       "@type": "Organization",
       name: "Hyperiux",

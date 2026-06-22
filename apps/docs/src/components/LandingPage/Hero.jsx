@@ -305,7 +305,7 @@ export default function Hero() {
             </span> */}
 
             <span ref={headingRef} className="inline-block opacity-0">
-              <span className="opacity-0 max-md:hidden">sariii</span>Creative
+              <span className="opacity-0 max-md:hidden w-45 h-full inline-block"></span>Creative
               interaction effects for websites that need to be remembered.
             </span>
           </h1>

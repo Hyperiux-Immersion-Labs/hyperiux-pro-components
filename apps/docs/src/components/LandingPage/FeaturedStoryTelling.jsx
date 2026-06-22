@@ -603,7 +603,7 @@ export default function FeaturedStoryTelling() {
                             >
                                 <Image
                                     src={src}
-                                    alt={`card-${i}`}
+                                    alt={`spiral-card-images`}
                                     fill
                                     className="object-cover"
                                     sizes="18vw"

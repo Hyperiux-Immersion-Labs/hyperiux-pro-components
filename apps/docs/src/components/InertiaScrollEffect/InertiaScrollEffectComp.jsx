@@ -235,7 +235,7 @@ const InertiaScrollEffectComp = ({ images = {} }) => {
 
  {/* Overlay */}
  <div ref={overlayImageRef} style={{ display:'none', position:'absolute' }}>
- <Image src={overlayImg} alt='' fill className='object-cover scale-110' />
+ <Image src={overlayImg} alt='overlay-image' fill className='object-cover scale-110' />
  </div>
 
  {/* Full-screen grid */}
@@ -260,7 +260,7 @@ const InertiaScrollEffectComp = ({ images = {} }) => {
  ref={heroGridImgRef}
  style={{ width:'60px', height:'60px', position:'relative', borderRadius:'2px', overflow:'hidden', opacity: 0 }}
  >
- <Image src={heroImg} alt='' fill className='object-cover' />
+ <Image src={heroImg} alt='hero-image' fill className='object-cover' />
  </div>
  ) : (
  <div
