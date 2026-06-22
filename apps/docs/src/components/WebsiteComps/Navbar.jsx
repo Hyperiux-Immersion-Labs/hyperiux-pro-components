@@ -28,9 +28,12 @@ const MENU_ANIM = {
 }
 
 const DROPDOWN_TEXT_ANIM = {
-    duration: 0.42,
-    stagger: 0.018,
+    duration: 0.4,
+    leaveDuration: 0.4,
+    stagger: 0.012,
+    leaveStagger: 0.012,
     ease: 'power3.out',
+    leaveEase: 'power3.out',
     idleColor: 'rgba(255, 255, 255, 0.75)',
     hoverColor: '#ffffff',
 }
@@ -46,53 +49,126 @@ function getPaneHeight(element) {
 function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
     const defaultLabelRef = useRef(null)
     const hoverLabelRef = useRef(null)
-    const splitRef = useRef({ default: null, hover: null })
 
-    const resetText = useCallback(() => {
+    const splitRef = useRef({
+        default: null,
+        hover: null,
+    })
+
+    const getChars = useCallback(() => {
         const { default: defaultSplit, hover: hoverSplit } = splitRef.current
-        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) return
 
-        gsap.killTweensOf([...defaultSplit.chars, ...hoverSplit.chars])
-        gsap.set(defaultSplit.chars, {
-            yPercent: 0,
-            color: DROPDOWN_TEXT_ANIM.idleColor,
-        })
-        gsap.set(hoverSplit.chars, {
-            yPercent: 100,
-            color: DROPDOWN_TEXT_ANIM.idleColor,
-        })
+        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) {
+            return null
+        }
+
+        return {
+            defaultChars: defaultSplit.chars,
+            hoverChars: hoverSplit.chars,
+            allChars: [...defaultSplit.chars, ...hoverSplit.chars],
+        }
     }, [])
 
-    const playEnter = useCallback(() => {
-        const { default: defaultSplit, hover: hoverSplit } = splitRef.current
-        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) return
+    const setIdleText = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
 
-        gsap.killTweensOf([...defaultSplit.chars, ...hoverSplit.chars])
-        gsap.to(defaultSplit.chars, {
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.set(defaultChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+            force3D: true,
+        })
+
+        gsap.set(hoverChars, {
+            yPercent: 100,
+            autoAlpha: 1,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            force3D: true,
+        })
+    }, [getChars])
+
+    const playEnter = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
+
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.to(defaultChars, {
             yPercent: -100,
             color: DROPDOWN_TEXT_ANIM.hoverColor,
             duration: DROPDOWN_TEXT_ANIM.duration,
-            stagger: DROPDOWN_TEXT_ANIM.stagger,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.stagger,
+                from: 'start',
+            },
             ease: DROPDOWN_TEXT_ANIM.ease,
-            overwrite: 'auto',
+            overwrite: true,
         })
+
         gsap.fromTo(
-            hoverSplit.chars,
-            { yPercent: 100 },
+            hoverChars,
+            {
+                yPercent: 100,
+                color: DROPDOWN_TEXT_ANIM.hoverColor,
+            },
             {
                 yPercent: 0,
                 color: DROPDOWN_TEXT_ANIM.hoverColor,
                 duration: DROPDOWN_TEXT_ANIM.duration,
-                stagger: DROPDOWN_TEXT_ANIM.stagger,
+                stagger: {
+                    each: DROPDOWN_TEXT_ANIM.stagger,
+                    from: 'start',
+                },
                 ease: DROPDOWN_TEXT_ANIM.ease,
-                overwrite: 'auto',
+                overwrite: true,
             },
         )
-    }, [])
+    }, [getChars])
+
+    const playLeave = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
+
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.to(defaultChars, {
+            yPercent: 0,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+            duration: DROPDOWN_TEXT_ANIM.leaveDuration,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.leaveStagger,
+                from: 'end',
+            },
+            ease: DROPDOWN_TEXT_ANIM.leaveEase,
+            overwrite: true,
+        })
+
+        gsap.to(hoverChars, {
+            yPercent: 100,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            duration: DROPDOWN_TEXT_ANIM.leaveDuration,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.leaveStagger,
+                from: 'end',
+            },
+            ease: DROPDOWN_TEXT_ANIM.leaveEase,
+            overwrite: true,
+        })
+    }, [getChars])
 
     useIsomorphicLayoutEffect(() => {
         const defaultEl = defaultLabelRef.current
         const hoverEl = hoverLabelRef.current
+
         if (!defaultEl || !hoverEl) return
 
         let defaultSplit = null
@@ -100,44 +176,72 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
         let cancelled = false
 
         const initSplit = async () => {
-            await document.fonts.ready
-            if (cancelled || !defaultLabelRef.current || !hoverLabelRef.current) return
+            if (document.fonts?.ready) {
+                try {
+                    await document.fonts.ready
+                } catch (_) {}
+            }
+
+            if (
+                cancelled ||
+                !defaultLabelRef.current ||
+                !hoverLabelRef.current
+            ) {
+                return
+            }
 
             defaultSplit = SplitText.create(defaultLabelRef.current, {
                 type: 'chars',
                 mask: 'chars',
+                charsClass: 'nav-dropdown-char',
             })
+
             hoverSplit = SplitText.create(hoverLabelRef.current, {
                 type: 'chars',
                 mask: 'chars',
+                charsClass: 'nav-dropdown-shadow-char',
             })
-            splitRef.current = { default: defaultSplit, hover: hoverSplit }
 
-            gsap.set(defaultSplit.chars, {
-                yPercent: 0,
-                color: DROPDOWN_TEXT_ANIM.idleColor,
+            splitRef.current = {
+                default: defaultSplit,
+                hover: hoverSplit,
+            }
+
+            gsap.set([...defaultSplit.chars, ...hoverSplit.chars], {
+                display: 'inline-block',
+                willChange: 'transform',
+                force3D: true,
             })
-            gsap.set(hoverSplit.chars, {
-                yPercent: 100,
-                color: DROPDOWN_TEXT_ANIM.idleColor,
-            })
+
+            setIdleText()
         }
 
         initSplit()
 
         return () => {
             cancelled = true
+
+            gsap.killTweensOf([
+                ...(defaultSplit?.chars || []),
+                ...(hoverSplit?.chars || []),
+            ])
+
             defaultSplit?.revert()
             hoverSplit?.revert()
-            splitRef.current = { default: null, hover: null }
+
+            splitRef.current = {
+                default: null,
+                hover: null,
+            }
         }
-    }, [label])
+    }, [label, setIdleText])
 
     useEffect(() => {
         if (!hoverGroupRef) return
 
         const group = hoverGroupRef.current
-        group.resetters.set(label, resetText)
+
+        group.resetters.set(label, playLeave)
 
         return () => {
             group.resetters.delete(label)
@@ -146,7 +250,7 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 group.activeKey = null
             }
         }
-    }, [hoverGroupRef, label, resetText])
+    }, [hoverGroupRef, label, playLeave])
 
     const handleTextEnter = useCallback(() => {
         if (hoverGroupRef) {
@@ -165,25 +269,22 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
     const handleTextLeave = useCallback(
         (event) => {
             const related = event.relatedTarget
-            const movingToSibling =
-                related instanceof Element && related.closest('[data-nav-dropdown-link]')
 
-            resetText()
+            const movingToSibling =
+                related instanceof Element &&
+                related.closest('[data-nav-dropdown-link]')
+
+            playLeave()
 
             if (!hoverGroupRef) return
-
-            if (movingToSibling) {
-                if (hoverGroupRef.current.activeKey === label) {
-                    hoverGroupRef.current.activeKey = null
-                }
-                return
-            }
 
             if (hoverGroupRef.current.activeKey === label) {
                 hoverGroupRef.current.activeKey = null
             }
+
+            if (movingToSibling) return
         },
-        [hoverGroupRef, label, resetText],
+        [hoverGroupRef, label, playLeave],
     )
 
     return (
@@ -195,21 +296,38 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
             onMouseLeave={handleTextLeave}
         >
             <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
-                <Image src={icon} alt="icon" width={35} height={35} aria-hidden className="size-full object-contain" />
+                <Image
+                    src={icon}
+                    alt=""
+                    width={35}
+                    height={35}
+                    aria-hidden="true"
+                    className="size-full object-contain"
+                />
             </span>
-            <span className="relative block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap">
-                <span ref={defaultLabelRef} className="block" aria-hidden="true">
+
+            <span className="relative block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap leading-[1.15]">
+                <span
+                    ref={defaultLabelRef}
+                    className="block"
+                    aria-hidden="true"
+                >
                     {label}
                 </span>
-                <span ref={hoverLabelRef} className="absolute inset-0 block" aria-hidden="true">
+
+                <span
+                    ref={hoverLabelRef}
+                    className="pointer-events-none absolute inset-0 block"
+                    aria-hidden="true"
+                >
                     {label}
                 </span>
+
                 <span className="sr-only">{label}</span>
             </span>
         </Link>
     )
 }
-
 function CategoriesPanel({ hoverGroupRef }) {
     return (
         <div className="grid grid-cols-2 gap-x-[1.6vw] gap-y-[0.15vw]">
