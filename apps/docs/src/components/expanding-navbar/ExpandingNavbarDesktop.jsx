@@ -406,7 +406,7 @@ export function ExpandingNavbarDesktop() {
                         className={`w-full h-0.5 absolute top-[-.5vw] left-1/2 -translate-x-1/2  bg-[#1A1A1A] transition-all duration-300 opacity-0`}
                         style={{ display: "block" }}
                     />
-                    <Link href="https://www.hyperiux.com/" target="_blank" className="flex items-center gap-2">
+                    <Link href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
                     <div className="w-[8vw] h-auto relative">
                         <Image
                             src="/hyperiux-wordmark.svg"

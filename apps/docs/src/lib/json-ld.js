@@ -62,8 +62,8 @@ export function WebsiteJsonLd() {
 }
 
 export function SoftwareApplicationJsonLd() {
-  const ratingValue = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_VALUE);
-  const ratingCount = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_COUNT);
+  const ratingValue = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_VALUE)||3;
+  const ratingCount = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_COUNT)||4;
   const hasAggregateRating = ratingValue > 0 && ratingCount > 0;
 
   const jsonLd = {

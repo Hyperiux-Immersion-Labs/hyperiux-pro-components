@@ -1,7 +1,7 @@
 import { getToken } from "./config.js";
 
 const API_BASE_URL =
-  process.env.HYPERIUX_API_URL || "https://www.hyperiux.com";
+  process.env.HYPERIUX_API_URL || "https://vault.hyperiux.com";
 
 export async function fetchEffect(effectName) {
   const token = getToken();
