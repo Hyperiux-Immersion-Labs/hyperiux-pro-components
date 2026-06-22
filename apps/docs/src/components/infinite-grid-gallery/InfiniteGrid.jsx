@@ -57,10 +57,21 @@ export default class InfiniteGrid {
  this.winW = window.innerWidth;
  this.winH = window.innerHeight;
 
- const cols = this.layout.cols;
- const rows = this.layout.rows;
- const gap = this.layout.gap;
- const margin = this.layout.margin;
+ const isMobile = this.winW <= 768;
+ const isTablet = !isMobile && this.winW <= 1025;
+
+ const cols = isMobile ? 2 : isTablet ? 3 : this.layout.cols;
+ const rows = isMobile ? 5 : isTablet ? 4 : this.layout.rows;
+ const gap = isMobile
+ ? Math.max(this.winW * 0.045, 12)
+ : isTablet
+ ? Math.max(this.winW * 0.03, 20)
+ : this.layout.gap;
+ const margin = isMobile
+ ? Math.max(this.winW * 0.04, 12)
+ : isTablet
+ ? Math.max(this.winW * 0.025, 20)
+ : this.layout.margin;
 
  // Keep tiles fitting the viewport so we never visually"eat" the gaps.
  const tileW =

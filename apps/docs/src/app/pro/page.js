@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import Link from "next/link";
 import { createPageMetadata } from "@/lib/seo-metadata";
 
@@ -9,25 +7,48 @@ export const metadata = createPageMetadata({
   path: "/pro",
 });
 
-async function getProRoutes(dir = path.join(process.cwd(), "src/app/pro"), prefix = "") {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const routes = [];
-
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-
-    if (entry.isDirectory()) {
-      routes.push(...(await getProRoutes(fullPath, `${prefix}/${entry.name}`)));
-      continue;
-    }
-
-    if (entry.isFile() && entry.name === "page.js" && prefix) {
-      routes.push(prefix);
-    }
-  }
-
-  return routes;
-}
+const PRO_ROUTES = [
+  "/3d-portfolio-slider",
+  "/book-flip",
+  "/brush-strokes",
+  "/flip",
+  "/frame-slider",
+  "/full-screen-crosshair",
+  "/glitchy-text",
+  "/infinite-grid-gallery",
+  "/interactive-hover-slider",
+  "/magnetic-image-trail",
+  "/mask-text-reveal",
+  "/modal",
+  "/noiseripple",
+  "/overflow-text-reveal",
+  "/parallax-footer",
+  "/parallax-image-animation",
+  "/perspective-text-reveal",
+  "/pie-rotation-transition",
+  "/pixel-bloom",
+  "/pixel-random",
+  "/pixels",
+  "/portfolio-concept",
+  "/ring-carousel",
+  "/scramble-text",
+  "/scroll-shuffled-cards",
+  "/slide-text-reveal",
+  "/smooth-scroll-animation",
+  "/spotlight-text",
+  "/square-translate",
+  "/stacking-cards",
+  "/strip-slider",
+  "/svg-path",
+  "/svg-pixel-reveal",
+  "/tabs",
+  "/testimonial",
+  "/text-cloning",
+  "/text-hover",
+  "/text-stream",
+  "/video-player",
+  "/webgl-slider",
+];
 
 function formatLabel(route) {
   return route
@@ -42,17 +63,15 @@ function formatLabel(route) {
     .join(" / ");
 }
 
-export default async function ProPage() {
-  const routes = (await getProRoutes())
-    .filter((route) => !route.endsWith("/page2"))
-    .sort((a, b) => a.localeCompare(b));
+export default function ProPage() {
+  const routes = [...PRO_ROUTES].sort((a, b) => a.localeCompare(b));
 
   return (
     <main className="min-h-screen bg-white px-4 py-16 text-black">
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-3 text-4xl font-semibold">Pro components</h1>
         <p className="mb-8 text-sm text-black/70">
-          {routes.length} routes found in <code>/pro</code>
+          {routes.length} static routes
         </p>
 
         <ul className="space-y-5">

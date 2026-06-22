@@ -4,6 +4,47 @@ import Image from"next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from"react";
 import InfiniteGrid from"./InfiniteGrid";
 
+function getOverlayMetrics(vw, vh) {
+ const isMobile = vw <= 768;
+ const isTablet = !isMobile && vw <= 1025;
+
+ if (isMobile) {
+ const thumbsH = 132;
+
+ return {
+ thumbsH,
+ targetW: Math.round(vw * 0.92),
+ targetH: Math.round(Math.min(vh * 0.34, vh - thumbsH - 48)),
+ };
+ }
+
+ if (isTablet) {
+ const thumbsH = 148;
+
+ return {
+ thumbsH,
+ targetW: Math.round(vw * 0.8),
+ targetH: Math.round(Math.min(vh * 0.42, vh - thumbsH - 56)),
+ };
+ }
+
+ const stageH = vh - 156;
+
+ return {
+ thumbsH: 156,
+ targetW: Math.round(vw * 0.7),
+ targetH: Math.round(Math.min(stageH * 0.72, Math.max(240, stageH - 36))),
+ };
+}
+
+function getCenteredOverlayTop(vw, vh, targetH, thumbsH) {
+ if (vw <= 1025) {
+ return Math.round((vh - targetH) / 2);
+ }
+
+ return Math.round((vh - thumbsH - targetH) / 2);
+}
+
 export function InfiniteGridGallery() {
  const imagesRef = useRef(null);
  const gridRef = useRef(null);
@@ -33,8 +74,6 @@ export function InfiniteGridGallery() {
  const slideDurationMs = 600;
  const openCloseDurationMs = 750;
  const isAnimating = isOpening || isClosing || Boolean(slide);
-
- const overlayLayout = useMemo(() => ({ thumbsH: 156 }), []);
 
  const unsplashPool = useMemo(
  () => [
@@ -211,14 +250,10 @@ export function InfiniteGridGallery() {
  onItemClick: ({ index, rect }) => {
  const vw = window.innerWidth;
  const vh = window.innerHeight;
- const thumbsH = overlayLayout.thumbsH;
-
- const maxH = Math.max(240, vh - thumbsH - 36);
- const targetW = Math.round(vw * 0.7);
- const targetH = Math.round(Math.min(vh * 0.7, maxH * 0.98));
+ const { thumbsH, targetW, targetH } = getOverlayMetrics(vw, vh);
 
  const targetLeft = Math.round((vw - targetW) / 2);
- const targetTop = Math.round((maxH - targetH) / 2);
+ const targetTop = getCenteredOverlayTop(vw, vh, targetH, thumbsH);
 
  setIsClosing(false);
  setIsOpening(true);
@@ -245,7 +280,7 @@ export function InfiniteGridGallery() {
  gridRef.current?.destroy?.();
  gridRef.current = null;
  };
- }, [data, sources, overlayLayout.thumbsH]);
+ }, [data, sources]);
 
  const active = expanded ? sources[expanded.index] : null;
  const display = displayIndex === null ? null : sources[displayIndex];
@@ -505,7 +540,7 @@ export function InfiniteGridGallery() {
 
  <button
  type="button"
- className="fixed left-[max(16px,calc(var(--toX)-72px))] top-[calc(var(--toY)+(var(--toH)*1px)/2)] z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-sm:left-3"
+ className="fixed left-[max(16px,calc(var(--toX)-72px))] top-[calc(var(--toY)+(var(--toH)*1px)/2)] z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:left-4 max-md:h-11 max-md:w-11 max-md:text-2xl max-sm:left-3 max-sm:h-10 max-sm:w-10 max-sm:text-xl"
  onMouseDown={(e) => e.stopPropagation()}
  onClick={() =>
  navigateTo((expanded.index - 1 + sources.length) % sources.length)
@@ -518,7 +553,7 @@ export function InfiniteGridGallery() {
 
  <button
  type="button"
- className="fixed right-[max(16px,calc(100vw-(var(--toX)+var(--toW)*1px)-72px))] top-[calc(var(--toY)+(var(--toH)*1px)/2)] z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-sm:right-3"
+ className="fixed right-[max(16px,calc(100vw-(var(--toX)+var(--toW)*1px)-72px))] top-[calc(var(--toY)+(var(--toH)*1px)/2)] z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:right-4 max-md:h-11 max-md:w-11 max-md:text-2xl max-sm:right-3 max-sm:h-10 max-sm:w-10 max-sm:text-xl"
  onMouseDown={(e) => e.stopPropagation()}
  onClick={() => navigateTo((expanded.index + 1) % sources.length)}
  aria-label="Next"
@@ -528,17 +563,17 @@ export function InfiniteGridGallery() {
  </button>
 
  <div
- className="fixed inset-x-0 bottom-0 grid h-(--thumbsH) grid-cols-1 items-center gap-3 bg-white px-3.5 pb-3.5 max-sm:px-2.5 max-sm:pb-2.5"
+ className="fixed inset-x-0 bottom-0 grid h-(--thumbsH) grid-cols-1 items-center gap-3 bg-white px-3.5 pb-3.5 max-md:gap-2.5 max-md:px-3 max-md:pb-3 max-sm:px-2.5 max-sm:pb-2.5 max-sm:gap-2"
  aria-label="All images"
  onMouseDown={(e) => e.stopPropagation()}
  >
  <div className="flex items-center justify-center pt-2.5" aria-hidden="true">
- <h2 className="mt-[-5%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black/92 select-none">
+ <h2 className="mt-[-5%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black/92 select-none max-md:max-w-[92vw] max-md:text-2xl max-sm:max-w-[94vw] max-sm:text-lg">
  {display.caption}
  </h2>
  </div>
  <div
- className={`relative w-full overflow-hidden border-t border-black/12 pt-3 select-none ${
+ className={`relative w-full overflow-hidden border-t border-black/12 pt-3 select-none max-md:pt-2.5 max-sm:pt-2 ${
  isThumbDragging ? "cursor-grabbing" :"cursor-grab"
  }`}
  onPointerDown={onThumbPointerDown}
@@ -550,10 +585,9 @@ export function InfiniteGridGallery() {
  >
  <div
  ref={expandThumbsRef}
- className={`flex overflow-x-auto overflow-y-hidden px-1 scrollbar-none [-ms-overflow-style:none] overscroll-x-contain [touch-action:pan-x] ${
+ className={`flex gap-2.5 overflow-x-auto overflow-y-hidden px-1 scrollbar-none [-ms-overflow-style:none] overscroll-x-contain [touch-action:pan-x] max-md:gap-[1vw] max-md:px-0.5 max-sm:gap-[2vw] max-sm:px-0 ${
  isThumbDragging ? "cursor-grabbing scroll-auto" :"cursor-grab scroll-smooth"
  }`}
- style={{ gap: "10px" }}
  role="list"
  aria-label="All images"
  >
@@ -566,7 +600,7 @@ export function InfiniteGridGallery() {
  type="button"
  role="listitem"
  data-thumb-index={idx}
- className={`relative box-border h-17.5 w-22.5 shrink-0 overflow-hidden border-2 bg-black/4 p-0 transition-[border-color,transform] duration-200 ease-[ease] hover:-translate-y-px hover:border-black/35 max-sm:h-12 max-sm:w-18 ${
+ className={`relative box-border h-17.5 w-22.5 shrink-0 overflow-hidden border-2 bg-black/4 p-0 transition-[border-color,transform] duration-200 ease-[ease] hover:-translate-y-px hover:border-black/35 max-md:h-15 max-md:w-20 max-sm:h-12 max-sm:w-18 ${
  isActive ? "border-black" :"border-transparent"
  }`}
  ref={(el) => {
@@ -581,7 +615,7 @@ export function InfiniteGridGallery() {
  src={item.src}
  alt={item.caption}
  fill
- sizes="90px"
+ sizes="12vw"
  />
  </button>
  );
