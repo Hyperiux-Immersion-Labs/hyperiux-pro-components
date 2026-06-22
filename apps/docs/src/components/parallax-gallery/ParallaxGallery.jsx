@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, useCallback } from"react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useCallback } from"react";
 import Image from"next/image";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
@@ -30,8 +30,10 @@ const MOBILE_THUMB_W = 100;
 const MOBILE_THUMB_H = 136;
 const MOBILE_THUMB_GAP = 8;
 const MOBILE_THUMB_ITEM = MOBILE_THUMB_W + MOBILE_THUMB_GAP;
+const FRAME_VERTICAL_OFFSET_DESKTOP = 44;
+const FRAME_VERTICAL_OFFSET_MOBILE = 28;
 
-export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
+export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" }) {
 
  const slides = images.map((src, i) => ({
  id: `slide-${i}`,
@@ -42,7 +44,8 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  const total = slides.length;
 
  const [activeIndex, setActiveIndex] = useState(0);
- const [isMobile, setIsMobile] = useState(false);
+ const [isMobile, setIsMobile] = useState(null);
+ const [isLayoutReady, setIsLayoutReady] = useState(false);
 
  const sectionRef = useRef(null);
  const galleryRef = useRef(null);
@@ -52,14 +55,19 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
 
  const lenis = useLenis();
 
+ const isMobileViewport = isMobile ?? false;
+
  // Responsive values
- const frameW = isMobile ? MOBILE_FRAME_W : FRAME_W;
- const frameH = isMobile ? MOBILE_FRAME_H : FRAME_H;
- const slideW = isMobile ? MOBILE_SLIDE_W : SLIDE_W;
- const thumbW = isMobile ? MOBILE_THUMB_W : THUMB_W;
- const thumbH = isMobile ? MOBILE_THUMB_H : THUMB_H;
- const thumbGap = isMobile ? MOBILE_THUMB_GAP : THUMB_GAP;
- const thumbItem = isMobile ? MOBILE_THUMB_ITEM : THUMB_ITEM;
+ const frameW = isMobileViewport ? MOBILE_FRAME_W : FRAME_W;
+ const frameH = isMobileViewport ? MOBILE_FRAME_H : FRAME_H;
+ const slideW = isMobileViewport ? MOBILE_SLIDE_W : SLIDE_W;
+ const thumbW = isMobileViewport ? MOBILE_THUMB_W : THUMB_W;
+ const thumbH = isMobileViewport ? MOBILE_THUMB_H : THUMB_H;
+ const thumbGap = isMobileViewport ? MOBILE_THUMB_GAP : THUMB_GAP;
+ const thumbItem = isMobileViewport ? MOBILE_THUMB_ITEM : THUMB_ITEM;
+ const frameVerticalOffset = isMobileViewport
+ ? FRAME_VERTICAL_OFFSET_MOBILE
+ : FRAME_VERTICAL_OFFSET_DESKTOP;
 
  const applyPosition = useCallback((pos) => {
  if (!galleryRef.current) return;
@@ -97,6 +105,8 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  }, [total, slideW, thumbItem]);
 
  useEffect(() => {
+ if (isMobile === null) return;
+
  if (total <= 1) {
  applyPosition(0);
  return;
@@ -138,11 +148,12 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  st.kill();
  lenis?.start();
  };
- }, [applyPosition, total, lenis]);
+ }, [applyPosition, total, lenis, isMobile]);
 
- // Detect mobile screen size
- useEffect(() => {
+ // Measure the viewport before first paint so mobile refreshes do not flash desktop sizing.
+ useLayoutEffect(() => {
  const checkMobile = () => {
+ setIsLayoutReady(false);
  setIsMobile(window.innerWidth < 640);
  };
 
@@ -150,6 +161,19 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  window.addEventListener("resize", checkMobile);
  return () => window.removeEventListener("resize", checkMobile);
  }, []);
+
+ useEffect(() => {
+ if (isMobile === null) return;
+
+ applyPosition(0);
+
+ const rafId = window.requestAnimationFrame(() => {
+ setIsLayoutReady(true);
+ ScrollTrigger.refresh();
+ });
+
+ return () => window.cancelAnimationFrame(rafId);
+ }, [applyPosition, isMobile]);
 
  return (
  <section
@@ -159,16 +183,34 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  >
  <div
  className="sticky top-0 w-full h-screen overflow-hidden select-none"
- style={{ background: bgColor }}
+ style={{
+ background: bgColor,
+ opacity: isLayoutReady ? 1 : 0,
+ transition:"opacity 0.2s ease",
+ }}
  >
+ {/* Section title */}
+ <div
+ className="absolute left-1/2 -translate-x-1/2 text-[1.5vw] max-md:text-[3vw] max-sm:text-[5vw]"
+ style={{
+ top: isMobileViewport ? 90 : 90,
+ zIndex: 30,
+ letterSpacing:"0.34em",
+ textTransform:"uppercase",
+ whiteSpace:"nowrap",
+ }}
+ >
+ Parallax Gallery
+ </div>
+
  {/* Slide counter */}
  <div
  className="absolute"
  style={{
- top: isMobile ? 20 : 36,
- right: isMobile ? 16 : 40,
- fontFamily:"'DM Sans', sans-serif",
- fontSize: isMobile ? 9 : 11,
+ top: isMobileViewport ? 150 : 90,
+ right: isMobileViewport ? 16 : 40,
+
+ fontSize: isMobileViewport ? 10 : 11,
  letterSpacing:"0.22em",
  textTransform:"uppercase",
  }}
@@ -205,7 +247,7 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  <div
  className="absolute top-1/2 left-1/2"
  style={{
- transform:"translate(-50%, -50%)",
+ transform:`translate(-50%, calc(-50% + ${frameVerticalOffset}px))`,
  zIndex: 20,
  }}
  >

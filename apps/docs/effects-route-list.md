@@ -63,7 +63,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 57 | Infinite Perspective Slider | `infinite-perspective-slider` | free | scroll | `/effects/scroll-effects/infinite-perspective-slider` | `/demo/infinite-perspective-slider` | — | — | `/infinite-perspective-slider` |
 | 58 | Marquee on SVG Path | `svg-path-marquee` | pro | scroll | `/effects/scroll-effects/svg-path-marquee` | — | `/pro/svg-path` | — | `/svg-path` |
 | 59 | Parallax Footer | `parallax-footer` | pro | scroll | `/effects/scroll-effects/parallax-footer` | — | `/pro/parallax-footer` | — | `/parallax-footer` |
-| 60 | Parallax Gallery | `parallax-gallery` | pro | scroll | `/effects/scroll-effects/parallax-gallery` | — | `/pro/frame-slider` | — | `/frame-slider` |
+| 60 | Parallax Gallery | `parallax-gallery` | pro | scroll | `/effects/scroll-effects/parallax-gallery` | — | `/pro/parallax-gallery` | — | `/parallax-gallery` |
 | 61 | Parallax Image | `parallax-image` | pro | scroll | `/effects/scroll-effects/parallax-image` | — | `/pro/parallax-image-animation` | — | `/parallax-image-animation` |
 | 62 | Parallax Slider | `parallax-slider` | free | scroll | `/effects/scroll-effects/parallax-slider` | — | `/pro/parallax-slider` | — | `/parallax-slider` |
 | 63 | Rotating Carousel | `rotating-carousel` | pro | scroll | `/effects/scroll-effects/rotating-carousel` | `/demo/circular-slider` | — | — | `/circular-slider` |

@@ -1271,7 +1271,7 @@
         "usedDeprecatedRules": []
     },
     {
-        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/frame-slider/page.js",
+        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/parallax-gallery/page.js",
         "messages": [],
         "suppressedMessages": [],
         "errorCount": 0,
@@ -7176,7 +7176,7 @@
         "usedDeprecatedRules": []
     },
     {
-        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/components/frame-slider/FrameSlider.jsx",
+        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/components/parallax-gallery/FrameSlider.jsx",
         "messages": [
             {
                 "ruleId": "react-hooks/purity",

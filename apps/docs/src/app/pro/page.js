@@ -12,7 +12,7 @@ const PRO_ROUTES = [
   "/book-flip",
   "/svg-brush-transition",
   "/page-flip-transition",
-  "/frame-slider",
+  "/parallax-gallery",
   "/full-screen-crosshair",
   "/glitchy-text",
   "/infinite-grid-gallery",

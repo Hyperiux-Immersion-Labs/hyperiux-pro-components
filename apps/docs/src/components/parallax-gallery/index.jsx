@@ -1,21 +1,21 @@
 import React from "react";
-import ScrollFrameSlider from "./FrameSlider";
+import ScrollParallaxGallery from "./ParallaxGallery";
 
 
-const FrameSlider = () => {
+const ParallaxGallery = () => {
   return (
     <>
  
 
     <div className="min-h-screen">
-      <ScrollFrameSlider images={images} bgColor="#111111" />
+      <ScrollParallaxGallery images={images} bgColor="#111111" />
     </div>
       
     </>
   );
 };
 
-export default FrameSlider;
+export default ParallaxGallery;
 
 const images = [
   "/assets/nature/nature01.png",
