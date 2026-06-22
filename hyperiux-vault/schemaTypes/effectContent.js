@@ -408,6 +408,50 @@ export const effectContent = defineType({
       rows: 3,
     }),
     defineField({
+      name: 'tier',
+      title: 'Access Tier',
+      type: 'string',
+      initialValue: 'pro',
+      options: {
+        list: [
+          {title: 'Free', value: 'free'},
+          {title: 'Pro', value: 'pro'},
+        ],
+        layout: 'radio',
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [defineArrayMember({type: 'string'})],
+    }),
+    defineField({
+      name: 'addedAt',
+      title: 'Added At',
+      type: 'datetime',
+      description: 'Controls sort order on the listing (newest first)',
+    }),
+    defineField({
+      name: 'coverImage',
+      title: 'Cover Image Override',
+      type: 'string',
+      description: 'Leave empty — derived from effect slug automatically',
+    }),
+    defineField({
+      name: 'videoUrl',
+      title: 'Video URL Override',
+      type: 'string',
+      description: 'Leave empty — derived as {effectSlug}.mp4 automatically',
+    }),
+    defineField({
+      name: 'previewUrl',
+      title: 'Preview URL',
+      type: 'string',
+      description: 'Path to the live demo page, e.g. /blur-text-reveal',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'effectBody',
