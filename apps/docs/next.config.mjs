@@ -96,13 +96,13 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: "/effects/components/interactive-hover-slider",
-        destination: "/effects/webgl-effects/interactive-hover-slider",
+        source: "/effects/components/hover-slider",
+        destination: "/effects/webgl-effects/hover-slider",
         permanent: false,
       },
       {
-        source: "/effects/components/interactive-hover-slider/preview",
-        destination: "/effects/webgl-effects/interactive-hover-slider/preview",
+        source: "/effects/components/hover-slider/preview",
+        destination: "/effects/webgl-effects/hover-slider/preview",
         permanent: false,
       },
     ];

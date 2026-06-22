@@ -555,9 +555,9 @@
     "tarball": "registry/dist/hyperiux-interactive-blur-reveal-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/interactive-hover-slider",
+    "name": "@hyperiux/hover-slider",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-interactive-hover-slider-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-hover-slider-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/milkyway",

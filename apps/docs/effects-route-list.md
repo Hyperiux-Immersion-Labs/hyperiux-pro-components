@@ -111,7 +111,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 105 | Grid Lift | `grid-lift` | pro | webgl | `/effects/webgl-effects/grid-lift` | `/demo/grid-lift` | — | — | `/webgl/grid-lift` |
 | 106 | Grid Tunnel | `grid-tunnel` | pro | webgl | `/effects/webgl-effects/grid-tunnel` | `/demo/grid-tunnel` | — | — | `/grid-tunnel` |
 | 107 | Hero Banner Animated | `hero-banner-animated` | pro | webgl | `/effects/webgl-effects/hero-banner-animated` | `/demo/hero-banner-animated` | — | — | `/hero-banner-animated` |
-| 108 | Hover Slider | `interactive-hover-slider` | pro | webgl | `/effects/webgl-effects/interactive-hover-slider` | — | `/pro/interactive-hover-slider` | — | `/interactive-hover-slider` |
+| 108 | Hover Slider | `hover-slider` | pro | webgl | `/effects/webgl-effects/hover-slider` | — | `/pro/hover-slider` | — | `/hover-slider` |
 | 109 | Hyperiux Glitter Concept | `hyperiux-glitter-concept` | pro | webgl | `/effects/webgl-effects/hyperiux-glitter` | `/demo/hyperiux-glitter` | — | — | `/hyperiux-glitter` |
 | 110 | Infinite Grid Gallery | `infinite-grid-gallery` | pro | webgl | `/effects/webgl-effects/infinite-grid-gallery` | — | `/pro/infinite-grid-gallery` | — | `/infinite-grid-gallery` |
 | 111 | Interactive Blur Reveal | `interactive-blur-reveal` | free | webgl | `/effects/webgl-effects/interactive-blur-reveal` | `/demo/interactive-blur-reveal` | — | — | `/webgl/interactive-blur-reveal` |

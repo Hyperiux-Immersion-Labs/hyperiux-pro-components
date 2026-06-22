@@ -1,5 +1,5 @@
 {
-  "name": "@hyperiux/interactive-hover-slider",
+  "name": "@hyperiux/hover-slider",
   "version": "0.0.1",
   "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
   "main": "hover-slider.jsx",

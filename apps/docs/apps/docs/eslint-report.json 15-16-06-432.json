@@ -1536,7 +1536,7 @@
         "usedDeprecatedRules": []
     },
     {
-        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/interactive-hover-slider/page.js",
+        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/hover-slider/page.js",
         "messages": [],
         "suppressedMessages": [],
         "errorCount": 0,
@@ -2854,7 +2854,7 @@
         "usedDeprecatedRules": []
     },
     {
-        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/webgl/interactive-hover-slider/page.js",
+        "filePath": "/Users/vidushisaxena/Documents/GitHub/hyperiux-components/apps/docs/src/app/webgl/hover-slider/page.js",
         "messages": [],
         "suppressedMessages": [],
         "errorCount": 0,
