@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Stacking Cards",
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap",
     "next"
@@ -15,9 +10,6 @@
   "registryDependencies": [],
   "exportName": "StackingCards",
   "exportKind": "named",
-  "previewUrl": "/stacking-cards",
-  "coverImage": "stacking-cards",
-  "videoUrl": "stacking-cards.mp4",
   "files": [
     {
       "path": "stacking-cards.jsx",

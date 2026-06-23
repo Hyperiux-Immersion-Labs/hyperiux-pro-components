@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Testimonial Swiper",
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap",
     "lucide-react",
@@ -16,9 +11,6 @@
   "registryDependencies": [],
   "exportName": "TestimonialSwiper",
   "exportKind": "named",
-  "previewUrl": "/testimonial",
-  "coverImage": "testimonial-swiper",
-  "videoUrl": "testimonial-swiper.mp4",
   "files": [
     {
       "path": "testimonial-swiper.jsx",

@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Expanding Navbar",
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
-  "category": "navigation",
-  "categories": [
-    "navigation"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap",
     "next"
@@ -15,20 +10,11 @@
   "registryDependencies": [],
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
-  "previewUrl": "/expanding-navbar",
-  "coverImage": "expanding-navbar",
-  "videoUrl": "expanding-navbar.mp4",
   "files": [
     {
       "path": "expanding-navbar.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/expanding-navbar.jsx"
-    },
-    {
-      "path": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
-      "type": "registry:asset",
-      "target": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
-      "source": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
     },
     {
       "path": "hyperiux-wordmark.svg",

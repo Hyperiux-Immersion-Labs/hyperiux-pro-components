@@ -30,6 +30,14 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Resolve category ID from Sanity categorySlug first, fall back to registry fields
+function resolveEffectCategoryId(effect) {
+  if (effect.categorySlug) {
+    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
+  }
+  return effect.categories?.[0] || effect.category;
+}
+
 function RouteAnimationSync({ syncKey }) {
   useFadeUp(null, [syncKey]);
 
@@ -373,24 +381,17 @@ const routeKey = `${pathname}${
       } else if (categoryFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
       } else if (categoryFilter !== "all") {
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
-
-        if (!cats.includes(categoryFilter)) return false;
+        if (resolveEffectCategoryId(effect) !== categoryFilter) return false;
       }
 
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
+        const catId = resolveEffectCategoryId(effect);
 
         return (
           effect.name.toLowerCase().includes(query) ||
           effect.title.toLowerCase().includes(query) ||
-          cats.some((c) => c?.toLowerCase().includes(query)) ||
+          catId?.toLowerCase().includes(query) ||
           effect.description?.toLowerCase().includes(query)
         );
       }
@@ -420,13 +421,9 @@ const routeKey = `${pathname}${
       return featuredEffects.length;
     }
 
-    return safeEffects.filter((effect) => {
-      const cats = effect.categories?.length
-        ? effect.categories
-        : [effect.category];
-
-      return cats.includes(categoryFilter);
-    }).length;
+    return safeEffects.filter(
+      (effect) => resolveEffectCategoryId(effect) === categoryFilter
+    ).length;
   }, [safeEffects, categoryFilter, featuredEffects, isEffectsLoading]);
 
   const activeCategory = getEffectCategory(categoryFilter);
@@ -554,13 +551,11 @@ const routeKey = `${pathname}${
               <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
+                    key={`${categoryFilter}-description-${index}`}
                     delay={0.3}
                     animationKey={`${routeKey}-${index}`}
                   >
-                    <p
-                      key={`${categoryFilter}-description-${index}`}
-                      className="mt-3"
-                    >
+                    <p className="mt-3">
                       {description}
                     </p>
                   </Copy>

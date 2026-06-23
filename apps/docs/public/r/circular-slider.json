@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Rotating Carousel",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap",
     "lucide-react"
@@ -15,9 +10,6 @@
   "registryDependencies": [],
   "exportName": "RotatingCarousel",
   "exportKind": "named",
-  "previewUrl": "/circular-slider",
-  "coverImage": "circular-slider",
-  "videoUrl": "circular-slider.mp4",
   "files": [
     {
       "path": "circular-slider.jsx",

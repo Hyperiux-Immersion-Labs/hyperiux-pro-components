@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Directional Menu",
   "description": "Mega menu with directional content transitions using GSAP",
-  "category": "navigation",
-  "categories": [
-    "navigation"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
@@ -16,9 +11,6 @@
   ],
   "exportName": "DirectionalMenu",
   "exportKind": "named",
-  "previewUrl": "/navigation/directional-menu",
-  "coverImage": "directional-menu",
-  "videoUrl": "directional-menu.mp4",
   "files": [
     {
       "path": "directional-menu.jsx",

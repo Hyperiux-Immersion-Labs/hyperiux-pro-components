@@ -138,7 +138,7 @@ export default async function EffectPage({ params }) {
   // Determine access: check Clerk session and subscription plan
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);
-  const isLocked = !canAccessEffect(effect.tier ?? "pro", userPlan);
+  const isLocked = !canAccessEffect(content?.tier ?? effect.tier ?? "pro", userPlan);
 
   const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();

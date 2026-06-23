@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Horizontal Feature Reveal",
   "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "HorizonScroll",
   "exportKind": "named",
-  "previewUrl": "/horizontal-feature-reveal",
-  "coverImage": "horizontal-feature-reveal",
-  "videoUrl": "horizontal-feature-reveal.mp4",
   "files": [
     {
       "path": "horizon-scroll.jsx",

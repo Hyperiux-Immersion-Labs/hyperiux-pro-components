@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Inertia Image",
   "description": "Image grid with physics-based inertia and wobble effect on mouse hover using GSAP InertiaPlugin.",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "InertiaImg",
   "exportKind": "named",
-  "previewUrl": "/inertia-img",
-  "coverImage": "inertia-img",
-  "videoUrl": "inertia-img.mp4",
   "files": [
     {
       "path": "inertia-img.jsx",

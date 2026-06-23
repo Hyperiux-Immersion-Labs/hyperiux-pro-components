@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Ribbon Drift",
   "description": "Motion-led portfolio landing concept with GSAP ScrollTrigger + SplitText and image strips.",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap",
     "next",
@@ -16,14 +11,11 @@
   "registryDependencies": [],
   "exportName": "PortfolioConcept",
   "exportKind": "named",
-  "previewUrl": "/ribbon-drift",
-  "coverImage": "ribbon-drift",
-  "videoUrl": "ribbon-drift.mp4",
   "files": [
     {
-      "path": "ribbon-drift.jsx",
+      "path": "portfolio-concept.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ribbon-drift.jsx"
+      "target": "components/hyperiux/portfolio-concept.jsx"
     },
     {
       "path": "PortfolioConcept.jsx",

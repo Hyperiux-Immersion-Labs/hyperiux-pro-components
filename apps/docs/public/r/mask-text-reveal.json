@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Mask Text Reveal",
   "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "MaskTextReveal",
   "exportKind": "named",
-  "previewUrl": "/mask-text-reveal",
-  "coverImage": "mask-text-reveal",
-  "videoUrl": "mask-text-reveal.mp4",
   "files": [
     {
       "path": "mask-text-reveal.jsx",

@@ -4,7 +4,7 @@ import { VaultContent } from "./vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
 import {
-  applySanityCategorySlugs,
+  mergeRegistryWithSanity,
   getAllSanityEffectEntries,
 } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
@@ -25,7 +25,7 @@ export default async function EffectsPage() {
   const categories = getEffectsByCategory();
   const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = applySanityCategorySlugs(registry.items, sanityEntries);
+  const effects = mergeRegistryWithSanity(registry.items, sanityEntries);
   const sortedEffects = [...effects].sort(
     (a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0),
   );

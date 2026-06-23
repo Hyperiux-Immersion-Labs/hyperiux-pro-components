@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "CardDrift",
   "exportKind": "named",
-  "previewUrl": "/card-drift",
-  "coverImage": "card-drift",
-  "videoUrl": "card-drift.mp4",
   "files": [
     {
       "path": "card-drift.jsx",

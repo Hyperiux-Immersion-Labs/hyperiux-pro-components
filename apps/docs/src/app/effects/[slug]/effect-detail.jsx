@@ -197,7 +197,6 @@ export function EffectDetailContent({
     startY: 0,
     scrollLeft: 0,
   });
-
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
@@ -234,9 +233,9 @@ export function EffectDetailContent({
     ? relatedEffects
     : [];
 
-  const videoPreviewUrl = safeEffect
-    ? resolveEffectVideoUrl(safeEffect)
-    : "";
+  const videoPreviewUrl = resolveEffectVideoUrl({
+    videoUrl: content?.videoUrl || safeEffect.videoUrl || `${slug}.mp4`,
+  });
 
   const updateRelatedScrollState = useCallback(() => {
     const slider = relatedSliderRef.current;
@@ -396,7 +395,7 @@ export function EffectDetailContent({
   const dependencies = safeEffect.dependencies || [];
 
   const coverImage =
-    resolveMediaUrl(safeEffect.coverImage || safeEffect.imageSrc, {
+    resolveMediaUrl(content?.coverImage || safeEffect.coverImage || slug, {
       defaultDirectory: "vault-listing-images",
       defaultExtension: "png",
     }) || "/assets/img/image01.webp";
@@ -406,11 +405,11 @@ export function EffectDetailContent({
       effectCounts={effectCounts || {}}
       totalEffects={totalEffects || 0}
       bgImageSrc=""
-      activeCategory={safeEffect.categories?.[0] || safeEffect.category}
+      activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
     >
       <div className="min-h-screen text-foreground">
         <Suspense fallback={<div className="h-12" />}>
-          <VaultHeader effectName={safeEffect.title} showSearch={true} />
+          <VaultHeader effectName={pageTitle || safeEffect.title} showSearch={true} />
         </Suspense>
 
         {isMainDataLoading ? (
@@ -479,7 +478,7 @@ export function EffectDetailContent({
                   )}
 
                   <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
-                    {(dependencies.length > 0 || safeEffect.tier === "pro") && (
+                    {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
                       <div className="flex flex-wrap items-center gap-2">
                         {dependencies.map((dep) => (
                           <span
@@ -597,33 +596,31 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                  <div className="max-md:hidden">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                <div className="max-md:hidden">
+                  {showRelatedSliderControls && (
+                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("previous")}
+                        disabled={!canScrollPrev}
+                        aria-label="Show previous related effects"
+                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("next")}
+                        disabled={!canScrollNext}
+                        aria-label="Show next related effects"
+                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
@@ -658,33 +655,31 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                  <div className="hidden max-md:block">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                <div className="hidden max-md:block">
+                  {showRelatedSliderControls && (
+                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("previous")}
+                        disabled={!canScrollPrev}
+                        aria-label="Show previous related effects"
+                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("next")}
+                        disabled={!canScrollNext}
+                        aria-label="Show next related effects"
+                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >

@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Grid Lift",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
-  "category": "webgl",
-  "categories": [
-    "webgl"
-  ],
-  "tier": "pro",
   "dependencies": [
     "leva"
   ],
   "registryDependencies": [],
   "exportName": "GridLift",
   "exportKind": "named",
-  "previewUrl": "/webgl/grid-lift",
-  "coverImage": "grid-lift",
-  "videoUrl": "grid-lift.mp4",
   "files": [
     {
       "path": "grid-lift.jsx",
