@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 import "highlight.js/styles/night-owl.css";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -46,7 +47,9 @@ export default function RootLayout({ children }) {
             <WebsiteJsonLd />
             <SoftwareApplicationJsonLd />
             {children}
-             <AccessRequestModal />
+            <Suspense>
+              <AccessRequestModal />
+            </Suspense>
             <Analytics />
             <SpeedInsights />
           </ClerkProvider>
