@@ -267,13 +267,11 @@ function AccessRequestModalInner() {
                 id="waitlist-modal-title"
                 className="font-display text-[2.5vw] font-normal leading-none text-white max-md:text-[7vw] max-sm:text-[9vw]"
               >
-                Unlock the Vault
+                Get inside the Vault
               </h1>
 
               <p className="mx-auto mt-2 w-full text-center text-[1vw] text-white/50 max-md:text-[2.5vw] max-sm:mt-4 max-sm:text-[4vw]">
-                Create your free account and start exploring the Vault.
-                <br className="max-sm:hidden" />
-                Your login details will be delivered to your inbox.
+                Join the waitlist for early access to creative interaction effects, Pro packs, and founder pricing before the doors get heavier.
               </p>
             </div>
 
@@ -299,7 +297,7 @@ function AccessRequestModalInner() {
                     onChange={(event) => setName(event.target.value)}
                     required
                     autoComplete="name"
-                    placeholder="Your name"
+                    placeholder="What should we call you?"
                     className="h-[3vw] min-h-12 w-full rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white outline-none shadow-none transition-colors placeholder:text-white/35 focus:border-primary/70 focus:ring-0 focus:shadow-none max-md:h-12 max-sm:px-5"
                   />
                 </div>
@@ -309,7 +307,7 @@ function AccessRequestModalInner() {
                     htmlFor="waitlist-role"
                     className="mb-2 block text-[clamp(14px,0.9vw,18px)] font-medium text-white/90"
                   >
-                    I am
+                    What are you here to ship?
                   </label>
 
                   <select
@@ -321,7 +319,7 @@ function AccessRequestModalInner() {
                     className="h-[3vw] min-h-12 w-full appearance-none rounded-full border border-transparent bg-white/10 px-7 text-[clamp(15px,0.95vw,19px)] text-white outline-none shadow-none transition-colors focus:border-primary/70 focus:ring-0 focus:shadow-none max-md:h-12 max-sm:px-5"
                   >
                     <option value="" className="bg-[#111] text-white">
-                      Select one
+                      Choose your lane
                     </option>
 
                     {ROLE_OPTIONS.map((item) => (

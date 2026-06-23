@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
@@ -24,15 +24,13 @@ const CATEGORY_ICON_BY_HREF = Object.fromEntries(
 );
 
 const CATEGORY_ICON_BY_LABEL = Object.fromEntries(
-  FLAT_CATEGORY_ITEMS.map((item) => [
-    normalizeIconKey(item.label),
-    item.icon,
-  ])
+  FLAT_CATEGORY_ITEMS.map((item) => [normalizeIconKey(item.label), item.icon])
 );
 
 const CATEGORY_ICON_BY_SLUG = Object.fromEntries(
   FLAT_CATEGORY_ITEMS.map((item) => {
     const slug = item.href.split("/").filter(Boolean).at(-1);
+
     return [normalizeIconKey(slug), item.icon];
   })
 );
@@ -144,6 +142,10 @@ function normalizeIconKey(value = "") {
     .replace(/[^a-z0-9-]/g, "");
 }
 
+function normalizeSearchValue(value = "") {
+  return value.toString().trim().toLowerCase();
+}
+
 function getEffectPrimaryCategory(effect) {
   const categories = effect.categories?.length
     ? effect.categories
@@ -170,6 +172,12 @@ function getEffectCategoryLabel(effect) {
     : [effect.category];
 
   return categories.filter(Boolean).join(", ");
+}
+
+function getSafeEffectHref(effect) {
+  if (effect.href) return effect.href;
+
+  return getEffectHref(effect);
 }
 
 function SearchResultIcon({ src, alt = "" }) {
@@ -214,7 +222,7 @@ export function SearchBar({
       <input
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className="w-full pl-12 pr-4 py-3.5 bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all"
       />
@@ -231,10 +239,62 @@ export function SearchBar({
 export function GlobalSearch({ effects = [], externalOpen = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [globalEffects, setGlobalEffects] = useState([]);
+  const [hasLoadedGlobalEffects, setHasLoadedGlobalEffects] = useState(false);
+  const [isLoadingGlobalEffects, setIsLoadingGlobalEffects] = useState(false);
 
   const inputRef = useRef(null);
   const router = useRouter();
   const lenis = useLenis();
+
+  const searchableEffects = useMemo(() => {
+    return globalEffects.length > 0 ? globalEffects : effects;
+  }, [effects, globalEffects]);
+
+  useEffect(() => {
+    if (!isOpen || hasLoadedGlobalEffects || isLoadingGlobalEffects) return;
+
+    let cancelled = false;
+
+    const loadGlobalEffects = async () => {
+      setIsLoadingGlobalEffects(true);
+
+      try {
+        const response = await fetch("/api/effects/search-index", {
+          method: "GET",
+          cache: "force-cache",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Search index failed with ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setGlobalEffects(Array.isArray(data?.effects) ? data.effects : []);
+          setHasLoadedGlobalEffects(true);
+        }
+      } catch (error) {
+        console.warn("Failed to load global search index:", error);
+
+        if (!cancelled) {
+          setGlobalEffects([]);
+          setHasLoadedGlobalEffects(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingGlobalEffects(false);
+        }
+      }
+    };
+
+    loadGlobalEffects();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasLoadedGlobalEffects, isLoadingGlobalEffects, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -253,13 +313,15 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
   }, [externalOpen]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
+    const handleKeyDown = (event) => {
+      const key = event.key.toLowerCase();
+
+      if ((event.metaKey || event.ctrlKey) && key === "k") {
+        event.preventDefault();
         setIsOpen(true);
       }
 
-      if (e.key === "Escape") {
+      if (event.key === "Escape") {
         setIsOpen(false);
       }
     };
@@ -273,27 +335,36 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
     }
   }, [isOpen]);
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedQuery = normalizeSearchValue(query);
 
-  const filteredEffects = effects.filter((effect) => {
+  const filteredEffects = searchableEffects.filter((effect) => {
     if (!normalizedQuery) return true;
 
-    const cats = effect.categories?.length
+    const categories = effect.categories?.length
       ? effect.categories
       : [effect.category];
 
-    return (
-      effect.name?.toLowerCase().includes(normalizedQuery) ||
-      effect.title?.toLowerCase().includes(normalizedQuery) ||
-      effect.description?.toLowerCase().includes(normalizedQuery) ||
-      cats.some((category) =>
-        category?.toLowerCase().includes(normalizedQuery)
-      )
-    );
+    const searchableText = [
+      effect.name,
+      effect.title,
+      effect.description,
+      effect.slug,
+      effect.effectSlug,
+      effect.categorySlug,
+      effect.category,
+      ...(categories || []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(normalizedQuery);
   });
 
   const filteredDocs = DOC_SEARCH_ITEMS.filter((item) => {
@@ -305,15 +376,6 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
       item.keywords.some((keyword) => keyword.includes(normalizedQuery))
     );
   });
-
-  const results = [
-    ...filteredDocs.map((item) => ({ ...item, type: "docs" })),
-    ...filteredEffects.map((effect) => ({
-      ...effect,
-      type: "effect",
-      href: getEffectHref(effect),
-    })),
-  ];
 
   const forceStartLenis = () => {
     if (typeof document !== "undefined") {
@@ -343,7 +405,7 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
   };
 
   const handleEffectSelect = (effect) => {
-    router.push(getEffectHref(effect));
+    router.push(getSafeEffectHref(effect));
     closeSearch();
   };
 
@@ -376,8 +438,8 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search effects..."
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search anything in Vault..."
             className="flex-1 bg-transparent text-white placeholder:text-neutral-500 text-base sm:text-lg focus:outline-none"
           />
 
@@ -396,7 +458,11 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
         </div>
 
         <div className="flex-1 overflow-y-auto" data-lenis-prevent="true">
-          {results.length === 0 ? (
+          {isLoadingGlobalEffects && searchableEffects.length === 0 ? (
+            <div className="flex h-full items-center justify-center text-sm text-neutral-500">
+              Loading Vault search index...
+            </div>
+          ) : filteredDocs.length === 0 && filteredEffects.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-neutral-500 px-4">
               <svg
                 className="w-12 h-12 mb-4 text-neutral-700"
@@ -463,7 +529,7 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
 
                 return (
                   <button
-                    key={effect.name}
+                    key={effect.name || getSafeEffectHref(effect)}
                     onClick={() => handleEffectSelect(effect)}
                     className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
                   >

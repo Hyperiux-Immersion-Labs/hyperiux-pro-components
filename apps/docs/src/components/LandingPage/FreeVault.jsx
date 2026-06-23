@@ -244,7 +244,7 @@ export default function FreeVault() {
 
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
                             <WaitlistTrigger>
-                                <Button preventDefault={true} text="Join Waitlist" href="/request-access" variant="black" />
+                                <Button preventDefault={true} text="Join Waitlist" href="#" variant="black" />
 
                             </WaitlistTrigger>
                             <p className="text20">

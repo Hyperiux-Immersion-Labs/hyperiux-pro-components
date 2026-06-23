@@ -808,49 +808,60 @@ export default function Navbar() {
     )
 
     useEffect(() => {
-        if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') return
 
-        let rafId = null
-        let timeoutId = null
+    let rafId = null
+    let timeoutId = null
 
-        const syncNavbarWithLoader = () => {
-            const hasLoader = Boolean(
-                document.querySelector(NAVBAR_LOADER_SELECTOR)
-            )
+    const hasLoaderCompletedOnce = () => {
+        return window.sessionStorage.getItem(NAVBAR_LOADER_DONE_KEY) === 'true'
+    }
 
-            if (hasLoader) {
-                hideNavbarForLoader()
-                return
-            }
+    const markLoaderCompleted = () => {
+        window.sessionStorage.setItem(NAVBAR_LOADER_DONE_KEY, 'true')
+    }
 
-            showNavbar(false)
+    const syncNavbarWithLoader = () => {
+        const hasLoader = Boolean(
+            document.querySelector(NAVBAR_LOADER_SELECTOR)
+        )
+
+        const loaderAlreadyCompleted = hasLoaderCompletedOnce()
+
+        if (hasLoader && !loaderAlreadyCompleted) {
+            hideNavbarForLoader()
+            return
         }
 
-        rafId = window.requestAnimationFrame(syncNavbarWithLoader)
+        showNavbar(false)
+    }
 
-        timeoutId = window.setTimeout(syncNavbarWithLoader, 80)
+    rafId = window.requestAnimationFrame(syncNavbarWithLoader)
 
-        const handleLoaderComplete = () => {
-            showNavbar(true)
+    timeoutId = window.setTimeout(syncNavbarWithLoader, 80)
+
+    const handleLoaderComplete = () => {
+        markLoaderCompleted()
+        showNavbar(true)
+    }
+
+    window.addEventListener(NAVBAR_SHOW_EVENT, handleLoaderComplete)
+
+    return () => {
+        if (rafId) {
+            window.cancelAnimationFrame(rafId)
         }
 
-        window.addEventListener(NAVBAR_SHOW_EVENT, handleLoaderComplete)
-
-        return () => {
-            if (rafId) {
-                window.cancelAnimationFrame(rafId)
-            }
-
-            if (timeoutId) {
-                window.clearTimeout(timeoutId)
-            }
-
-            window.removeEventListener(
-                NAVBAR_SHOW_EVENT,
-                handleLoaderComplete
-            )
+        if (timeoutId) {
+            window.clearTimeout(timeoutId)
         }
-    }, [pathname, hideNavbarForLoader, showNavbar])
+
+        window.removeEventListener(
+            NAVBAR_SHOW_EVENT,
+            handleLoaderComplete
+        )
+    }
+}, [pathname, hideNavbarForLoader, showNavbar])
 
     useLenis(({ scroll, velocity }) => {
         if (scroll < 100) {

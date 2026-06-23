@@ -168,7 +168,7 @@ export function VaultHeader({
                   <Button
                     preventDefault={true}
                     text="Request Access"
-                    href="/request-access"
+                    href="#"
                     variant="orange"
                     showArrow={false}
                     innerClassName="group-hover:!translate-x-0"
