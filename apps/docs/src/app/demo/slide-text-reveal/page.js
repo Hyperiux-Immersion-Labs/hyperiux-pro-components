@@ -9,7 +9,7 @@ const page = () => {
       {/* Hero */}
       <section className="relative min-h-screen overflow-hidden bg-[#080808]">
         <Image
-          src="/assets/gradient/image1.png"
+          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
           alt="asset-image"
           fill
           priority
@@ -45,7 +45,7 @@ const page = () => {
       {/* Showcase */}
       <section className="relative min-h-screen overflow-hidden bg-[#f7f2ff]">
         <Image
-          src="/assets/gradient/image2.png"
+          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
           alt="asset-image"
           fill
           className="object-cover opacity-40"
@@ -73,10 +73,10 @@ const page = () => {
 
             <div className="mt-20 grid grid-cols-2 gap-6 md:grid-cols-4">
               {[
-                '/assets/gradient/image2.png',
-                '/assets/gradient/image3.png',
-                '/assets/gradient/image4.png',
-                '/assets/gradient/image5.png',
+                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg',
+                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg',
+                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg',
+                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg',
               ].map((src, i) => (
                 <div
                   key={i}
@@ -100,7 +100,7 @@ const page = () => {
       {/* Final */}
       <section className="relative min-h-screen overflow-hidden bg-black">
         <Image
-          src="/assets/gradient/image5.png"
+          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
           alt="asset-image"
           fill
           className="object-cover opacity-45"

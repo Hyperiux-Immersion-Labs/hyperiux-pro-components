@@ -92,7 +92,7 @@ export default function Page() {
             "
           >
             <Image
-              src="/assets/cover-showreel.png"
+              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png"
               alt="Video thumbnail"
               fill
               sizes="(max-width: 640px) 94vw, (max-width: 768px) 88vw, 50vw"
@@ -134,7 +134,7 @@ export default function Page() {
               e.preventDefault();
               setIsContentOpen(true);
             }}
-            btnText="Open a Modal"
+            btnText="Open Modal"
             bgColor="#ff6b00"
             textColor="#000000"
             fillColor="#000000"
@@ -162,7 +162,7 @@ export default function Page() {
       >
         <VideoPlayer
           videoSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
-          poster="/assets/cover-showreel.png"
+          poster="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png"
           onRequestClose={() => setIsOpen(false)}
           showCloseButton
           autoPlay

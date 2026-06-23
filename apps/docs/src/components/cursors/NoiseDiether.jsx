@@ -139,7 +139,7 @@ const resolveTextureSource = (source) => {
 };
 
 export const NoiseDietherShader = ({
- imageSrc ='/assets/img/image02.webp',
+ imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
  noiseColor ='#ffffff',
  className,
  style,
@@ -358,7 +358,7 @@ export const NoiseDietherShader = ({
 export default function NoiseDiether({
  overlayColor ='bg-[#1825AA]/30',
  wrapperClassName ='h-screen w-screen',
- imageSrc ='/assets/gradient/image12.png',
+ imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
  shaderConfig = {
  pixelSize: .5,
  patternDensity: 1,

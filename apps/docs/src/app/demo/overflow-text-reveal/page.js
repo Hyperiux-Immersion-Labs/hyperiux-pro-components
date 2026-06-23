@@ -8,7 +8,7 @@ const page = () => {
  <ReactLenis root>
  <section className="relative min-h-screen flex flex-col justify-end max-sm:justify-center overflow-hidden bg-[#0a0a0a]">
  <Image
-    src='/assets/nature/nature15.png'
+    src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg'
  alt="Nature"
  fill
  className="object-cover opacity-60"
@@ -38,7 +38,7 @@ const page = () => {
  <section className="relative min-h-screen flex items-center bg-[#f5f0e8] overflow-hidden">
  <div className="absolute right-0 top-0 h-full w-1/2 overflow-hidden">
  <Image
- src="/assets/nature/nature02.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg"
  alt="Nature"
  fill
  className="object-cover"
@@ -81,7 +81,7 @@ const page = () => {
  <section className="relative min-h-screen flex items-center bg-[#0d1b2a] overflow-hidden">
  <div className="absolute left-0 top-0 h-full w-1/2 overflow-hidden">
  <Image
- src="/assets/nature/nature03.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg"
  alt="Nature"
  fill
  className="object-cover opacity-40"
@@ -128,7 +128,7 @@ const page = () => {
  style={{ clipPath:"polygon(15% 0, 100% 0, 100% 100%, 0% 100%)" }}
  >
  <Image
- src="/assets/nature/nature04.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"
  alt="Nature"
  fill
  className="object-cover opacity-50"
@@ -213,7 +213,7 @@ const page = () => {
 
  <section className="relative min-h-[85vh] flex items-end max-sm:items-center bg-[#0a0a0a] overflow-hidden">
  <Image
- src="/assets/nature/nature01.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"
  alt="Nature"
  fill
  className="object-cover opacity-20"

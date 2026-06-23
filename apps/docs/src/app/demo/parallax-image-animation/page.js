@@ -18,7 +18,7 @@ const page = () => {
  Only Parallax
  </p>
  <ParallaxAnim
- src="/assets/parallax-img/p-img-1.jpg"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
  wrapperClassName="w-[27vw] h-[37vw] max-sm:w-full max-sm:h-[120vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />
@@ -28,7 +28,7 @@ const page = () => {
  Scale Down with Parallax
  </p>
  <ParallaxAnim
- src="/assets/parallax-img/p-img-2.jpg"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg"
  wrapperClassName="w-[32vw] h-[32vw] max-sm:w-full max-sm:h-[90vw]"
  scaleFrom={1.6}
  scaleTo={1.2}
@@ -39,13 +39,13 @@ const page = () => {
  </div>
  <div className="w-[70%] flex justify-between max-sm:w-[90%] max-sm:flex-col max-sm:gap-[10vw]">
  <ParallaxAnim
- src="/assets/parallax-img/p-img-3.jpg"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"
  wrapperClassName="w-[27vw] h-[37vw] rounded-[0.5vw] max-sm:w-full max-sm:h-[120vw] max-sm:rounded-[2vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />
  <div className="mt-[17vw] max-sm:mt-0">
  <ParallaxAnim
- src="/assets/parallax-img/p-img-4.jpg"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
  wrapperClassName="w-[38vw] h-[30vw] rounded-[1vw] max-sm:w-full max-sm:rounded-[3vw] max-sm:h-[100vw]"
  imageClassName="scale-[1.4] -translate-y-[30%]"
  />

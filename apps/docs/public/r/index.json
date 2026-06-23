@@ -86,21 +86,6 @@
       "exportKind": "named"
     },
     {
-      "name": "inertia-scroll-effect",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "InertiaScrollEffect",
-      "exportKind": "named"
-    },
-    {
       "name": "infinite-perspective-slider",
       "type": "registry:component",
       "category": "scroll",
@@ -676,7 +661,7 @@
       "exportKind": "named"
     },
     {
-      "name": "svg-brush-transition",
+      "name": "svg-draw-page-transition",
       "type": "registry:component",
       "category": "transitions",
       "categories": [
@@ -1298,7 +1283,7 @@
         "lenis"
       ],
       "registryDependencies": [],
-      "exportName": "WebGLPortfolioSlider",
+      "exportName": "3dPortfolioSlider",
       "exportKind": "named"
     },
     {
@@ -1351,21 +1336,6 @@
       ],
       "registryDependencies": [],
       "exportName": "CurvedPlane",
-      "exportKind": "named"
-    },
-    {
-      "name": "curved-plane-v2",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "CurvedPlaneV2",
       "exportKind": "named"
     },
     {
@@ -1454,20 +1424,6 @@
       "registryDependencies": [],
       "exportName": "GridTunnel",
       "exportKind": "named"
-    },
-    {
-      "name": "hero-animated-banner",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "HeroAnimatedBanner",
-      "exportKind": "default"
     },
     {
       "name": "hero-banner-animated",

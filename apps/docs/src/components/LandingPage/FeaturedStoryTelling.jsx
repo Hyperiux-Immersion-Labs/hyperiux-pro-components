@@ -84,7 +84,7 @@ const BOXES = [
         styles: "w-[25%]",
         img: '/video/2.mp4',
         number: "02",
-        label: "Cusor Effects"
+        label: "Cursor Effects"
     },
     {
         id: "block-top-layer-3",

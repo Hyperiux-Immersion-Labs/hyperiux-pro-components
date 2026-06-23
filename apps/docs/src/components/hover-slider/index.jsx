@@ -64,7 +64,7 @@ const items = [
     title: "Quantum Scroll",
     focus: "Scroll Animation – WebGL – UI",
     year: "2025",
-    img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+    img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
   },
   {
     id: "HX_205",

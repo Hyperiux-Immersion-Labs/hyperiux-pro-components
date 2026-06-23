@@ -5,8 +5,6 @@ import ScrollFrameSlider from "./FrameSlider";
 const FrameSlider = () => {
   return (
     <>
- 
-
     <div className="min-h-screen">
       <ScrollFrameSlider images={images} bgColor="#111111" />
     </div>
@@ -18,10 +16,10 @@ const FrameSlider = () => {
 export default FrameSlider;
 
 const images = [
-  "/assets/nature/nature01.png",
-  "/assets/nature/nature02.png",
-  "/assets/nature/nature03.png",
-  "/assets/nature/nature04.png",
-  "/assets/nature/nature05.png",
-  "/assets/nature/nature06.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
 ];

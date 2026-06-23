@@ -19,7 +19,7 @@ export default function Page() {
 
  <section className="flex min-h-[50vh] max-sm:min-h-[70vh] items-center justify-center px-6 py-20">
  <PixelImage
- src="/assets/img/image06.png"
+ src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
  alt="Nature scene"
  priority
  initialPixelSize={22}
