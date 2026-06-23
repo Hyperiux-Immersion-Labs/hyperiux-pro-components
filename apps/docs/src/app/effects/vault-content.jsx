@@ -25,6 +25,7 @@ import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -120,6 +121,7 @@ const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
 
   params.delete("waitlist");
+   params.delete("custom-animation-form");
 
   return params.toString();
 }, [searchParamString]);
@@ -210,20 +212,23 @@ const routeKey = `${pathname}${
     });
   }, []);
 
-  const getCategoryUrl = useCallback(
-    (nextCategory) => {
-      const resolvedCategory = nextCategory || "all";
+ const getCategoryUrl = useCallback(
+  (nextCategory) => {
+    const resolvedCategory = nextCategory || "all";
 
-      const params = new URLSearchParams(searchParamString);
-      params.delete("category");
+    const params = new URLSearchParams(searchParamString);
 
-      const nextQuery = params.toString();
-      const categoryHref = getEffectCategoryHref(resolvedCategory);
+    params.delete("category");
+    params.delete("waitlist");
+    params.delete("custom-animation-form");
 
-      return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
-    },
-    [searchParamString]
-  );
+    const nextQuery = params.toString();
+    const categoryHref = getEffectCategoryHref(resolvedCategory);
+
+    return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
+  },
+  [searchParamString]
+);
 
   const navigateWithRouteFade = useCallback(
     (href) => {
@@ -487,6 +492,7 @@ const routeKey = `${pathname}${
           ref={categoryPageRef}
           className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
         >
+          
           <RouteAnimationSync
             key={`route-animation-sync-${routeKey}`}
             syncKey={routeKey}
@@ -724,8 +730,10 @@ const routeKey = `${pathname}${
                         )}
 
                         {activeCategoryContent.cta.buttonText && (
+                          <CustomAnimationFormTrigger>
                           <div className="mt-6 w-fit">
                             <Button
+                             preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
@@ -733,6 +741,7 @@ const routeKey = `${pathname}${
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>
+                          </CustomAnimationFormTrigger>
                         )}
                       </div>
                     </section>

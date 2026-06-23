@@ -9,7 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 
-import { GithubIcon, HyperiuxLogo } from '@/utils/Icons'
+import { HyperiuxLogo } from '@/utils/Icons'
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 import Button from './Button'
 
@@ -37,6 +37,11 @@ const DROPDOWN_TEXT_ANIM = {
     idleColor: 'rgba(255, 255, 255, 0.75)',
     hoverColor: '#ffffff',
 }
+
+const NAVBAR_LOADER_SELECTOR =
+    '[data-page-loader], [data-loader], #page-loader, #loader, .page-loader, .loader'
+
+const NAVBAR_SHOW_EVENT = 'hyperiux:loader-complete'
 
 const useIsomorphicLayoutEffect =
     typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -128,7 +133,7 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 },
                 ease: DROPDOWN_TEXT_ANIM.ease,
                 overwrite: true,
-            },
+            }
         )
     }, [getChars])
 
@@ -284,7 +289,7 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
 
             if (movingToSibling) return
         },
-        [hoverGroupRef, label, playLeave],
+        [hoverGroupRef, label, playLeave]
     )
 
     return (
@@ -328,13 +333,18 @@ function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
         </Link>
     )
 }
+
 function CategoriesPanel({ hoverGroupRef }) {
     return (
         <div className="grid grid-cols-2 gap-x-[1.6vw] gap-y-[0.15vw]">
             {navCategoryColumns.map((column, columnIndex) => (
                 <div key={columnIndex} className="flex flex-col">
                     {column.map((item) => (
-                        <NavDropdownItem key={item.label} hoverGroupRef={hoverGroupRef} {...item} />
+                        <NavDropdownItem
+                            key={item.label}
+                            hoverGroupRef={hoverGroupRef}
+                            {...item}
+                        />
                     ))}
                 </div>
             ))}
@@ -346,7 +356,11 @@ function DocsPanel({ hoverGroupRef }) {
     return (
         <div className="flex flex-col gap-[0.15vw]">
             {navDocsItems.map((item) => (
-                <NavDropdownItem key={item.label} hoverGroupRef={hoverGroupRef} {...item} />
+                <NavDropdownItem
+                    key={item.label}
+                    hoverGroupRef={hoverGroupRef}
+                    {...item}
+                />
             ))}
         </div>
     )
@@ -381,7 +395,13 @@ function NavDropdown({ panel }) {
     const killTweens = () => {
         tlRef.current?.kill()
         tlRef.current = null
-        gsap.killTweensOf([shellRef.current, viewportRef.current, currentPaneRef.current, nextPaneRef.current])
+
+        gsap.killTweensOf([
+            shellRef.current,
+            viewportRef.current,
+            currentPaneRef.current,
+            nextPaneRef.current,
+        ])
     }
 
     const reset = () => {
@@ -397,6 +417,7 @@ function NavDropdown({ panel }) {
             current: null,
             pending: null,
         }
+
         setCurrentPanel(null)
         setNextPanel(null)
     }
@@ -415,6 +436,7 @@ function NavDropdown({ panel }) {
         }
 
         killTweens()
+
         gsap.to(shellRef.current, {
             opacity: 0,
             duration: MENU_ANIM.fadeDuration,
@@ -430,6 +452,7 @@ function NavDropdown({ panel }) {
         killTweens()
 
         const wasOpen = animRef.current.isOpen
+
         animRef.current.isOpen = true
         animRef.current.current = target
         animRef.current.pending = null
@@ -437,7 +460,9 @@ function NavDropdown({ panel }) {
         animRef.current.queued = null
         animRef.current.direction = 1
 
-        if (!wasOpen) animRef.current.hasOpenedOnce = false
+        if (!wasOpen) {
+            animRef.current.hasOpenedOnce = false
+        }
 
         setCurrentPanel(target)
         setNextPanel(null)
@@ -470,6 +495,7 @@ function NavDropdown({ panel }) {
 
         anim.direction = dir
         anim.pending = target
+
         setNextPanel(target)
     }
 
@@ -478,7 +504,14 @@ function NavDropdown({ panel }) {
     }, [panel])
 
     useIsomorphicLayoutEffect(() => {
-        if (!animRef.current.isOpen || !currentPanel || !viewportRef.current || !currentPaneRef.current) return
+        if (
+            !animRef.current.isOpen ||
+            !currentPanel ||
+            !viewportRef.current ||
+            !currentPaneRef.current
+        ) {
+            return
+        }
 
         killTweens()
 
@@ -486,12 +519,19 @@ function NavDropdown({ panel }) {
         const anim = animRef.current
 
         if (shellRef.current) {
-            gsap.set(shellRef.current, { width: PANELS[currentPanel].width })
+            gsap.set(shellRef.current, {
+                width: PANELS[currentPanel].width,
+            })
         }
 
         if (!anim.hasOpenedOnce) {
-            gsap.set(viewportRef.current, { height: contentHeight })
-            gsap.set(shellRef.current, { opacity: 0 })
+            gsap.set(viewportRef.current, {
+                height: contentHeight,
+            })
+
+            gsap.set(shellRef.current, {
+                opacity: 0,
+            })
 
             gsap.to(shellRef.current, {
                 opacity: 1,
@@ -501,27 +541,58 @@ function NavDropdown({ panel }) {
                     animRef.current.hasOpenedOnce = true
                 },
             })
+
             return
         }
 
-        gsap.set(viewportRef.current, { height: contentHeight })
+        gsap.set(viewportRef.current, {
+            height: contentHeight,
+        })
     }, [currentPanel])
 
     useIsomorphicLayoutEffect(() => {
-        if (!currentPanel || !currentPaneRef.current || !viewportRef.current || nextPanel !== null) return
-        gsap.set(viewportRef.current, { height: getPaneHeight(currentPaneRef.current) })
+        if (
+            !currentPanel ||
+            !currentPaneRef.current ||
+            !viewportRef.current ||
+            nextPanel !== null
+        ) {
+            return
+        }
+
+        gsap.set(viewportRef.current, {
+            height: getPaneHeight(currentPaneRef.current),
+        })
     }, [currentPanel, nextPanel])
 
     useIsomorphicLayoutEffect(() => {
-        if (nextPanel === null || !currentPaneRef.current || !nextPaneRef.current || !viewportRef.current) return
+        if (
+            nextPanel === null ||
+            !currentPaneRef.current ||
+            !nextPaneRef.current ||
+            !viewportRef.current
+        ) {
+            return
+        }
 
         const currentEl = currentPaneRef.current
         const nextEl = nextPaneRef.current
         const targetPanel = nextPanel
         const dir = animRef.current.direction
-        const { distance, duration, ease, fade, heightDuration, heightEase, widthDuration, widthEase } = MENU_ANIM
+
+        const {
+            distance,
+            duration,
+            ease,
+            fade,
+            heightDuration,
+            heightEase,
+            widthDuration,
+            widthEase,
+        } = MENU_ANIM
 
         animRef.current.isAnimating = true
+
         killTweens()
 
         gsap.set(currentEl, {
@@ -542,7 +613,9 @@ function NavDropdown({ panel }) {
             pointerEvents: 'auto',
         })
 
-        gsap.set(viewportRef.current, { height: getPaneHeight(currentEl) })
+        gsap.set(viewportRef.current, {
+            height: getPaneHeight(currentEl),
+        })
 
         tlRef.current = gsap.timeline({
             onComplete: () => {
@@ -550,24 +623,65 @@ function NavDropdown({ panel }) {
                 animRef.current.current = targetPanel
                 animRef.current.pending = null
                 animRef.current.isAnimating = false
+
                 setCurrentPanel(targetPanel)
                 setNextPanel(null)
 
                 const queued = animRef.current.queued
                 animRef.current.queued = null
 
-                if (queued && queued !== targetPanel) requestSwitch(queued)
+                if (queued && queued !== targetPanel) {
+                    requestSwitch(queued)
+                }
             },
         })
 
         tlRef.current
-            .to(viewportRef.current, { height: getPaneHeight(nextEl), duration: heightDuration, ease: heightEase }, 0)
-            .to(shellRef.current, { width: PANELS[targetPanel].width, duration: widthDuration, ease: widthEase }, 0)
-            .to(currentEl, { x: dir > 0 ? -distance : distance, opacity: fade ? 0 : 1, duration, ease }, 0)
-            .to(nextEl, { x: 0, opacity: 1, duration, ease }, 0)
+            .to(
+                viewportRef.current,
+                {
+                    height: getPaneHeight(nextEl),
+                    duration: heightDuration,
+                    ease: heightEase,
+                },
+                0
+            )
+            .to(
+                shellRef.current,
+                {
+                    width: PANELS[targetPanel].width,
+                    duration: widthDuration,
+                    ease: widthEase,
+                },
+                0
+            )
+            .to(
+                currentEl,
+                {
+                    x: dir > 0 ? -distance : distance,
+                    opacity: fade ? 0 : 1,
+                    duration,
+                    ease,
+                },
+                0
+            )
+            .to(
+                nextEl,
+                {
+                    x: 0,
+                    opacity: 1,
+                    duration,
+                    ease,
+                },
+                0
+            )
     }, [nextPanel])
 
-    useEffect(() => () => killTweens(), [])
+    useEffect(() => {
+        return () => {
+            killTweens()
+        }
+    }, [])
 
     if (!currentPanel) return null
 
@@ -579,17 +693,29 @@ function NavDropdown({ panel }) {
             <div
                 ref={shellRef}
                 className="overflow-hidden rounded-[1.1vw] border border-white/8 bg-grey p-[1vw] shadow-[0_1.2vw_3.5vw_rgba(0,0,0,0.55)]"
-                style={{ width: currentPanel ? PANELS[currentPanel].width : PANELS.categories.width }}
+                style={{
+                    width: currentPanel
+                        ? PANELS[currentPanel].width
+                        : PANELS.categories.width,
+                }}
             >
                 <div ref={viewportRef} className="relative">
                     {Panel && (
-                        <div key={`current-${currentPanel}`} ref={currentPaneRef} className="relative w-full">
+                        <div
+                            key={`current-${currentPanel}`}
+                            ref={currentPaneRef}
+                            className="relative w-full"
+                        >
                             <Panel hoverGroupRef={hoverGroupRef} />
                         </div>
                     )}
 
                     {NextPanel && (
-                        <div key={`next-${nextPanel}`} ref={nextPaneRef} className="absolute left-0 top-0 w-full">
+                        <div
+                            key={`next-${nextPanel}`}
+                            ref={nextPaneRef}
+                            className="absolute top-0 left-0 w-full"
+                        >
                             <NextPanel hoverGroupRef={hoverGroupRef} />
                         </div>
                     )}
@@ -603,6 +729,7 @@ export default function Navbar() {
     const navbarRef = useRef(null)
     const hidden = useRef(false)
     const [activeItem, setActiveItem] = useState(null)
+
     const pathname = usePathname()
 
     const activeIndex = vaultLinks.findIndex((link) => {
@@ -610,83 +737,219 @@ export default function Navbar() {
         return pathname.startsWith(link.href)
     })
 
-    const toggleNavbar = (hide) => {
-        if (!navbarRef.current || hidden.current === hide) return
+    const showNavbar = useCallback((animate = false) => {
+        const navbar = navbarRef.current
 
-        hidden.current = hide
+        if (!navbar) return
 
-        if (hide) {
-            setActiveItem(null)
+        hidden.current = false
+
+        gsap.killTweensOf(navbar)
+
+        if (animate) {
+            gsap.to(navbar, {
+                opacity: 1,
+                y: 0,
+                yPercent: 0,
+                duration: 0.45,
+                ease: 'power2.out',
+                overwrite: true,
+            })
+
+            return
         }
 
-        gsap.killTweensOf(navbarRef.current)
-        gsap.to(navbarRef.current, {
-            yPercent: hide ? -100 : 0,
-            duration: 0.45,
-            ease: 'power2.out',
+        gsap.set(navbar, {
+            opacity: 1,
+            y: 0,
+            yPercent: 0,
+            clearProps: 'transform',
         })
-    }
+    }, [])
+
+    const hideNavbarForLoader = useCallback(() => {
+        const navbar = navbarRef.current
+
+        if (!navbar) return
+
+        hidden.current = true
+
+        gsap.killTweensOf(navbar)
+
+        gsap.set(navbar, {
+            opacity: 0,
+            y: -18,
+            yPercent: 0,
+        })
+    }, [])
+
+    const toggleNavbar = useCallback(
+        (hide) => {
+            const navbar = navbarRef.current
+
+            if (!navbar || hidden.current === hide) return
+
+            hidden.current = hide
+
+            if (hide) {
+                setActiveItem(null)
+            }
+
+            gsap.killTweensOf(navbar)
+
+            gsap.to(navbar, {
+                yPercent: hide ? -100 : 0,
+                duration: 0.45,
+                ease: 'power2.out',
+                overwrite: true,
+            })
+        },
+        []
+    )
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+
+        let rafId = null
+        let timeoutId = null
+
+        const syncNavbarWithLoader = () => {
+            const hasLoader = Boolean(
+                document.querySelector(NAVBAR_LOADER_SELECTOR)
+            )
+
+            if (hasLoader) {
+                hideNavbarForLoader()
+                return
+            }
+
+            showNavbar(false)
+        }
+
+        rafId = window.requestAnimationFrame(syncNavbarWithLoader)
+
+        timeoutId = window.setTimeout(syncNavbarWithLoader, 80)
+
+        const handleLoaderComplete = () => {
+            showNavbar(true)
+        }
+
+        window.addEventListener(NAVBAR_SHOW_EVENT, handleLoaderComplete)
+
+        return () => {
+            if (rafId) {
+                window.cancelAnimationFrame(rafId)
+            }
+
+            if (timeoutId) {
+                window.clearTimeout(timeoutId)
+            }
+
+            window.removeEventListener(
+                NAVBAR_SHOW_EVENT,
+                handleLoaderComplete
+            )
+        }
+    }, [pathname, hideNavbarForLoader, showNavbar])
 
     useLenis(({ scroll, velocity }) => {
-        if (scroll < 100) return toggleNavbar(false)
-        if (velocity > 0.1) toggleNavbar(true)
-        else if (velocity < -0.2) toggleNavbar(false)
+        if (scroll < 100) {
+            toggleNavbar(false)
+            return
+        }
+
+        if (velocity > 0.1) {
+            toggleNavbar(true)
+        } else if (velocity < -0.2) {
+            toggleNavbar(false)
+        }
     })
 
     const handleNavEnter = useCallback((index, dropdown) => {
-        setActiveItem({ index, dropdown: dropdown ?? null })
+        setActiveItem({
+            index,
+            dropdown: dropdown ?? null,
+        })
     }, [])
 
     const handleNavLeave = useCallback(() => {
         setActiveItem(null)
     }, [])
 
-    const isHighlighted = (index, dropdown) => {
-        if (activeItem?.dropdown && dropdown) return activeItem.dropdown === dropdown
-        if (activeItem) return activeItem.index === index
-        return activeIndex === index
-    }
+    const isHighlighted = useCallback(
+        (index, dropdown) => {
+            if (activeItem?.dropdown && dropdown) {
+                return activeItem.dropdown === dropdown
+            }
+
+            if (activeItem) {
+                return activeItem.index === index
+            }
+
+            return activeIndex === index
+        },
+        [activeIndex, activeItem]
+    )
 
     return (
         <nav
-            id='navigation'
+            id="navigation"
             ref={navbarRef}
             style={{
                 opacity: 0,
-                transform: "translateY(-18px)",
+                transform: 'translateY(-18px)',
             }}
-            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden "
+            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden"
         >
             <Link href="/">
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
             </Link>
 
             <div className="relative" onMouseLeave={handleNavLeave}>
-                <div className="relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] text20 font-medium">
+                <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
                         const isExternal = href.startsWith('http')
 
                         return (
                             <Link
-                                className={`relative z-10 text-[1.15vw] font-medium tracking-wide rounded-full p-[0.4vw] px-[1.2vw] transition-colors duration-300 ${highlighted ? 'text-foreground' : 'text-white/70'
-                                    }`}
                                 key={label}
                                 href={href}
                                 target={isExternal ? '_blank' : undefined}
-                                rel={isExternal ? 'noopener noreferrer' : undefined}
-                                onMouseEnter={() => handleNavEnter(index, dropdown)}
+                                rel={
+                                    isExternal
+                                        ? 'noopener noreferrer'
+                                        : undefined
+                                }
+                                onMouseEnter={() =>
+                                    handleNavEnter(index, dropdown)
+                                }
+                                className={`relative z-10 rounded-full p-[0.4vw] px-[1.2vw] text-[1.15vw] font-medium tracking-wide transition-colors duration-300 ${
+                                    highlighted
+                                        ? 'text-foreground'
+                                        : 'text-white/70'
+                                }`}
                             >
                                 {label}
+
                                 <AnimatePresence>
                                     {highlighted && (
                                         <motion.span
                                             layoutId="nav-pill"
                                             className="absolute inset-0 -z-10 rounded-full bg-primary"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ stiffness: 0, damping: 20 }}
+                                            initial={{
+                                                opacity: 0,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                            }}
+                                            exit={{
+                                                opacity: 0,
+                                            }}
+                                            transition={{
+                                                stiffness: 0,
+                                                damping: 20,
+                                            }}
                                         />
                                     )}
                                 </AnimatePresence>

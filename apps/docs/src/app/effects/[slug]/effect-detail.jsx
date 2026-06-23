@@ -33,6 +33,7 @@ import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { RouteFade } from "@/components/layout/RouteFade";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 function SkeletonBlock({ className = "" }) {
   return (
@@ -747,8 +748,11 @@ function EffectCtaSection({ cta, sectionRef }) {
         )}
 
         <div className="w-fit max-sm:mt-[4vw] mt-6">
+          <CustomAnimationFormTrigger>
           {cta.buttonText && (
+
             <Button
+             preventDefault={false}
               text={cta.buttonText}
               href={buttonLink}
               scaleClass="group-hover:scale-[100]!"
@@ -757,6 +761,7 @@ function EffectCtaSection({ cta, sectionRef }) {
               className="shrink-0 w-fit"
             />
           )}
+          </CustomAnimationFormTrigger>
         </div>
       </div>
     </section>
@@ -1259,7 +1264,7 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
     scrollTweenRef.current = gsap.to(scrollState, {
       y: targetTop,
       duration: 1.15,
-      ease: "power3.out",
+      ease: "power4.out",
       onUpdate: () => {
         if (lenis) {
           lenis.scrollTo(scrollState.y, {

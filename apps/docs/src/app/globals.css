@@ -1,9 +1,10 @@
+@layer theme, base, clerk, components, utilities;
+
 @import "tailwindcss";
 @import "./CustomCss.css";
 
 :root {
-  /* Coinbase-inspired color palette */
-  --background: #0E0E0E;
+  --background: #0e0e0e;
   --foreground: #ffffff;
   --primary: #ff5f00;
   --primary-hover: #ff9253;
@@ -31,7 +32,6 @@
   --color-light-grey: var(--light-grey);
   --font-laygrotesk: var(--font-laygrotesk);
 
-  /* Border radius scale from Coinbase design */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
@@ -50,15 +50,30 @@ body {
   color: var(--foreground);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
+  width: 100vw;
+  overflow-x: hidden;
   font-family: var(--font-laygrotesk), system-ui, sans-serif;
   line-height: 1.5;
   font-size: 16px;
-  width: 100vw;
-  overflow-x: hidden ; 
+  color-scheme: dark;
 }
 
-/* Typography hierarchy inspired by Coinbase */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
 h1,
 h2,
 h3,
@@ -89,7 +104,6 @@ h4 {
   line-height: 1;
 }
 
-/* Button base style - Coinbase pill */
 .btn-pill {
   border-radius: 56px;
   padding: 12px 32px;
@@ -99,6 +113,7 @@ h4 {
   letter-spacing: 0.16px;
   transition:
     background-color 0.2s ease,
+    border-color 0.2s ease,
     color 0.2s ease;
 }
 
@@ -126,15 +141,11 @@ h4 {
   color: #ffffff;
 }
 
-/* Custom scrollbar for webkit browsers */
-.sidebar-link-content::-webkit-scrollbar{
-  width: 4px;
-}
-.toc::-webkit-scrollbar{
-  width: 4px;
-}
+/* Scrollbars */
 
-.codeblock::-webkit-scrollbar{
+.sidebar-link-content::-webkit-scrollbar,
+.toc::-webkit-scrollbar,
+.codeblock::-webkit-scrollbar {
   width: 4px;
 }
 
@@ -156,25 +167,20 @@ h4 {
   background: linear-gradient(180deg, #ff5600 0%, #ff8800 100%);
 }
 
-/* Selection color */
 ::selection {
   background: #ff5f00;
   color: #ffffff;
 }
+
 .codeblock-root ::selection {
   background: rgba(99, 102, 241, 0.35);
 }
 
-@media (max-width: 542px) {
-  body {
-    font-size: 4vw;
-  }
-}
+/* -------------------------------------------------------------------------- */
+/* Clerk Auth Shared Styling */
+/* -------------------------------------------------------------------------- */
 
-/* Clerk sign-in must visually match AccessRequestForm */
-.hyperiux-clerk {
-  width: 100%;
-}
+
 
 .hyperiux-clerk .cl-rootBox {
   width: 100%;
@@ -182,7 +188,8 @@ h4 {
 
 .hyperiux-clerk .cl-cardBox {
   width: 100% !important;
-  border-radius: 1vw !important;
+  padding: 4.5vw 6vw;
+  border-radius: clamp(20px, 1vw, 28px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   background: transparent !important;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45) !important;
@@ -193,10 +200,9 @@ h4 {
 .hyperiux-clerk .cl-card {
   width: 100% !important;
   background: transparent !important;
+  padding: 0 !important;
   box-shadow: none !important;
   border: none !important;
-  padding: 5vw !important;
-  padding-top: 5vw !important;
 }
 
 .hyperiux-clerk .cl-header {
@@ -206,7 +212,7 @@ h4 {
 
 .hyperiux-clerk .cl-headerTitle {
   color: #ffffff !important;
-  font-size: 2.25rem !important;
+  font-size: clamp(2rem, 3vw, 3.75rem) !important;
   font-weight: 400 !important;
   letter-spacing: -0.05em !important;
   line-height: 1 !important;
@@ -215,19 +221,12 @@ h4 {
 .hyperiux-clerk .cl-headerSubtitle {
   margin-top: 0.75rem !important;
   color: rgba(255, 255, 255, 0.5) !important;
-  font-size: 0.875rem !important;
+  font-size: clamp(0.875rem, 0.9vw, 1rem) !important;
   line-height: 1.5rem !important;
 }
 
 .hyperiux-clerk .cl-main {
   gap: 0 !important;
-}
-
-.hyperiux-clerk .cl-socialButtonsRoot,
-.hyperiux-clerk .cl-dividerRow,
-.hyperiux-clerk .cl-footerItem,
-.hyperiux-clerk .cl-lastAuthenticationStrategyBadge {
-  display: none !important;
 }
 
 .hyperiux-clerk .cl-form {
@@ -236,8 +235,8 @@ h4 {
   gap: 1rem !important;
 }
 
-.hyperiux-clerk .cl-formFieldRow,
-.hyperiux-clerk .cl-formField {
+.hyperiux-clerk .cl-formField,
+.hyperiux-clerk .cl-formFieldRow {
   margin: 0 !important;
 }
 
@@ -247,52 +246,51 @@ h4 {
 
 .hyperiux-clerk .cl-formFieldLabel {
   display: block !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-  font-size: 0.875rem !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: clamp(14px, 0.9vw, 18px) !important;
   font-weight: 400 !important;
   line-height: 1.25rem !important;
 }
 
-
-
 .hyperiux-clerk .cl-input,
 .hyperiux-clerk .cl-formFieldInput {
   width: 100% !important;
-  height: auto !important;
-  border-radius: 100px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  /* background: rgba(255, 255, 255, 0.04) !important; */
-  padding: 0.75rem 1rem !important;
+  min-height: 44px !important;
+  height: clamp(44px, 3vw, 56px) !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  padding: 0.75rem 1.25rem !important;
   color: #ffffff !important;
-  font-size: 0.875rem !important;
+  font-size: clamp(15px, 0.95vw, 19px) !important;
   line-height: 1.25rem !important;
   outline: none !important;
   box-shadow: none !important;
-  transition: border-color 0.2s ease !important;
-  max-height: 3.5vw !important;
-  height: 3.5vw !important;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .hyperiux-clerk .cl-input:focus,
 .hyperiux-clerk .cl-formFieldInput:focus {
-  border-color: #ff5f00 !important;
+  border-color: rgba(255, 95, 0, 0.8) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   box-shadow: none !important;
 }
 
 .hyperiux-clerk .cl-input::placeholder,
 .hyperiux-clerk .cl-formFieldInput::placeholder {
-  color: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.hyperiux-clerk .cl-formFieldInputGroup {
+  border-radius: 999px !important;
+  box-shadow: none !important;
 }
 
 .hyperiux-clerk .cl-formFieldInputGroup:focus-within {
-  border-color: #ff5f00 !important;
-}
-
-.hyperiux-clerk .cl-formFieldInputGroup .cl-input,
-.hyperiux-clerk .cl-formFieldInputGroup .cl-formFieldInput {
-  /* border: none !important; */
-  background: transparent !important;
-  padding-right: 3rem !important;
+  border-color: rgba(255, 95, 0, 0.8) !important;
+  box-shadow: none !important;
 }
 
 .hyperiux-clerk .cl-formFieldInputShowPasswordButton {
@@ -304,36 +302,58 @@ h4 {
   color: #ffffff !important;
 }
 
-.cl-internal-1l3ge8z[data-variant="solid"]::after {
-  background: #ff5f00 !important;
-}
 .hyperiux-clerk .cl-formButtonPrimary {
   width: 100% !important;
-  border-radius: 9999px !important;
+  min-height: 44px !important;
+  height: clamp(46px, 3vw, 58px) !important;
+  border-radius: 999px !important;
+  border: none !important;
   background: #ff5f00 !important;
   padding: 0.75rem 1.5rem !important;
   color: #ffffff !important;
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
+  font-size: clamp(16px, 1.05vw, 22px) !important;
+  font-weight: 500 !important;
   line-height: 1.25rem !important;
   box-shadow: none !important;
-  transition: background-color 0.3s ease !important;
+  transition:
+    background-color 0.25s ease,
+    opacity 0.25s ease;
 }
 
-.hyperiux-clerk .cl-formButtonPrimary:hover {
-  background: #ff5f00 !important;
+.hyperiux-clerk .cl-formButtonPrimary:hover,
+.hyperiux-clerk .cl-formButtonPrimary:focus {
+  background: #ff9253 !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-clerk .cl-formButtonPrimary:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
 }
 
 .hyperiux-clerk .cl-buttonArrowIcon {
   display: none !important;
 }
 
+/* Hide optional Clerk blocks you do not want on the auth card */
+
+.hyperiux-clerk .cl-socialButtonsRoot,
+.hyperiux-clerk .cl-socialButtonsBlockButton,
+.hyperiux-clerk .cl-dividerRow,
+.hyperiux-clerk .cl-footerItem,
+.hyperiux-clerk .cl-lastAuthenticationStrategyBadge {
+  display: none !important;
+}
+
+/* Footer / alternate actions */
+
 .hyperiux-clerk .cl-footer {
-  padding: 2vw !important;
+  padding: clamp(16px, 2vw, 32px) !important;
   background: transparent !important;
 }
 
 .hyperiux-clerk .cl-footerAction {
+  margin-top: 1rem !important;
   text-align: center !important;
 }
 
@@ -342,15 +362,21 @@ h4 {
   font-size: 0.875rem !important;
 }
 
-.hyperiux-clerk .cl-footerActionLink {
+.hyperiux-clerk .cl-footerActionLink,
+.hyperiux-clerk .cl-footerActionLink:hover,
+.hyperiux-clerk .cl-footerAction__alternativeMethods,
+.hyperiux-clerk .cl-backLink {
   color: var(--primary) !important;
   font-size: 0.875rem !important;
   font-weight: 500 !important;
 }
 
-.hyperiux-clerk .cl-footerActionLink:hover {
+.hyperiux-clerk .cl-footerActionLink:hover,
+.hyperiux-clerk .cl-backLink:hover {
   color: var(--primary-hover) !important;
 }
+
+/* Error, warning, success states */
 
 .hyperiux-clerk .cl-formFieldErrorText,
 .hyperiux-clerk .cl-alertText {
@@ -366,125 +392,250 @@ h4 {
   padding: 0.75rem 1rem !important;
 }
 
-/* Autofill exact dark treatment */
+.hyperiux-clerk .cl-alertIcon {
+  color: #fecaca !important;
+}
+
+.hyperiux-clerk .cl-formFieldSuccessText,
+.hyperiux-clerk .cl-formFieldWarningText,
+.hyperiux-clerk .cl-formFieldInfoText,
+.hyperiux-clerk .cl-formFieldInfoText__password {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.hyperiux-clerk .cl-footer{
+  display: none;
+}
+
+/* OTP / code fields */
+
+.hyperiux-clerk .cl-otpCodeFieldInput {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-clerk .cl-otpCodeFieldInput:focus {
+  border-color: rgba(255, 95, 0, 0.8) !important;
+  box-shadow: none !important;
+}
+
+/* Checkbox / secondary auth rows */
+
+.hyperiux-clerk .cl-formFieldRow__signOutOfOtherSessions {
+  display: none !important;
+}
+
+/* Autofill */
+
 .hyperiux-clerk input:-webkit-autofill,
+.hyperiux-clerk input:-webkit-autofill:hover,
 .hyperiux-clerk input:-webkit-autofill:active {
   -webkit-text-fill-color: #ffffff !important;
   caret-color: #ffffff !important;
-  box-shadow: 0 0 0px 1000px rgba(255, 107, 0, 0.08) inset !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 0 1000px rgba(255, 107, 0, 0.08) inset !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   background: transparent !important;
   transition: background-color 9999s ease-in-out 500s !important;
 }
+
 .hyperiux-clerk input:-webkit-autofill:focus {
-  border-color: #ff5f00 !important;
+  border-color: rgba(255, 95, 0, 0.8) !important;
   background: transparent !important;
 }
 
 .hyperiux-clerk input {
   color-scheme: dark;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Clerk Waitlist Modal Styling */
+/* Use this if you wrap Waitlist in .hyperiux-waitlist or add it via rootBox */
+/* -------------------------------------------------------------------------- */
+
+.hyperiux-waitlist {
+  width: 100%;
+}
+
+.hyperiux-waitlist .cl-rootBox {
+  width: 100%;
+}
+
+.hyperiux-waitlist .cl-card,
+.hyperiux-waitlist .cl-cardBox {
+  width: 100% !important;
   background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.cl-internal-1fenm81 {
+.hyperiux-waitlist .cl-header,
+.hyperiux-waitlist .cl-headerTitle,
+.hyperiux-waitlist .cl-headerSubtitle,
+.hyperiux-waitlist .cl-footer,
+.hyperiux-waitlist .cl-footerAction,
+.hyperiux-waitlist .cl-footerActionText,
+.hyperiux-waitlist .cl-footerActionLink,
+.hyperiux-waitlist .cl-socialButtonsRoot,
+.hyperiux-waitlist .cl-socialButtonsBlockButton,
+.hyperiux-waitlist .cl-dividerRow {
   display: none !important;
 }
-.cl-internal-9vgtee {
-  display: none !important;
+.cl-internal-ji79b9{
+  gap: 0 !important;
 }
-.cl-internal-n9kjv {
-  color: #ffffff !important;
-}
-.cl-internal-1q19z9n {
-  color: #ff5f00 !important;
-}
-.cl-internal-9vgtee {
-  color: #ffffff !important;
-  margin-bottom: 2rem !important;
-}
-.cl-footerAction {
-  margin-top: 1rem !important;
-}
-.cl-internal-brtq98[data-variant="solid"][data-color="primary"] {
-  background: #ff5f00 !important;
-  height: 2.5vw !important;
-  border-radius: 9999px !important;
-  border: none !important;
-  box-shadow: none !important;
-  margin-bottom: 1rem !important;
-}
-.cl-internal-1yioxat[data-variant="outline"] {
-  box-shadow: none !important;
-  height: 2.5vw !important;
-  border-radius: 9999px !important;
-
-  background: white !important;
-}
-.cl-internal-brtq98[data-variant="solid"]::after {
-  background: #ff5f00 !important;
-}
-.cl-internal-10u89jk {
-  color: #ff5f00 !important;
-}
-.cl-internal-wq8kjp {
-  display: none !important;
-}
-.cl-internal-bails5 {
-  margin-top: 2rem !important;
-}
-.cl-formFieldInfoText__password {
-  color: white !important;
-}
-.cl-internal-1h6fgzy {
-  color: white !important;
-}
-.cl-formFieldRow__signOutOfOtherSessions {
-  display: none !important;
-}
-.cl-footerAction__alternativeMethods {
-  color: #ff5f00 !important;
-}
-.cl-internal-5ur8x {
-  color: white !important;
-}
-.cl-formFieldSuccessText {
-  color: white !important;
-}
-.cl-formFieldWarningText {
-  color: white !important;
-}
-.cl-backLink {
-  color: #ff5f00 !important;
-}
-.cl-internal-d4j0pk{
-  display: none;
-  box-shadow: none;
-}
-.cl-internal-b06xbh{
-  border-radius: none !important;
-  box-shadow: none;
-}
-.cl-internal-1wwl4aq{
-  border-radius: none !important;
-  box-shadow: none;
-}
-.cl-formFieldLabel{
-  color: white;
-}
-.cl-internal-xv3xvj[data-variant="default"]{
-  box-shadow: none !important;
-  background-color: transparent;
-  color: white;
-  height: 3vw;
+.cl-formFieldInput{
+  height: 3.5vw !important;
   max-height: none;
-  border: 1px solid #ffffff25;
 }
-.cl-internal-xv3xvj:focus{
-   border: 1px solid #ff5f00;
+
+.hyperiux-waitlist .cl-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
 }
-.cl-internal-thjl5p[data-variant="solid"]::after{
-  background: linear-gradient(#ff5f00 100%, #ff5f00 100%) !important;
+
+.hyperiux-waitlist .cl-formFieldLabel {
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: clamp(14px, 0.9vw, 18px) !important;
+  font-weight: 500 !important;
 }
+
+.hyperiux-waitlist .cl-input,
+.hyperiux-waitlist .cl-formFieldInput {
+  width: 100% !important;
+  min-height: 48px !important;
+  height: clamp(48px, 3vw, 58px) !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  padding: 0 1.75rem !important;
+  color: #ffffff !important;
+  font-size: clamp(15px, 0.95vw, 19px) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-waitlist .cl-input:focus,
+.hyperiux-waitlist .cl-formFieldInput:focus {
+  border-color: rgba(255, 95, 0, 0.7) !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-waitlist .cl-input::placeholder,
+.hyperiux-waitlist .cl-formFieldInput::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.hyperiux-waitlist .cl-formButtonPrimary {
+  display: flex !important;
+  min-height: 48px !important;
+  height: clamp(48px, 3.3vw, 62px) !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  border: none !important;
+  background: var(--primary) !important;
+  padding: 0 1.5rem !important;
+  color: #ffffff !important;
+  font-size: clamp(16px, 1.05vw, 22px) !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  transition:
+    background-color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.hyperiux-waitlist .cl-formButtonPrimary:hover,
+.hyperiux-waitlist .cl-formButtonPrimary:focus {
+  background: var(--primary-hover) !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-waitlist .cl-formButtonPrimary:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
+}
+
+.hyperiux-waitlist .cl-formFieldErrorText,
+.hyperiux-waitlist .cl-alertText {
+  margin-top: 0.5rem !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  padding: 0.75rem 1rem !important;
+  color: #fecaca !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5rem !important;
+}
+
+.hyperiux-waitlist .cl-alert {
+  border-radius: 1rem !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  padding: 0.75rem 1rem !important;
+}
+
+/* Remove Clerk Waitlist card shell border and radius */
+.cl-waitlist-root .cl-cardBox {
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-waitlist .cl-cardBox {
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.hyperiux-waitlist .cl-card {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1025px) {
+  .hyperiux-clerk .cl-card {
+    padding: 2rem !important;
+  }
+
+  .hyperiux-clerk .cl-cardBox {
+    border-radius: 1.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .display-hero {
+    font-size: 56px;
+  }
+
+  .display-secondary {
+    font-size: 44px;
+  }
+
+  .display-third {
+    font-size: 36px;
+  }
+}
+
 @media (max-width: 640px) {
   .hyperiux-clerk .cl-cardBox {
     border-radius: 1.5rem !important;
@@ -493,8 +644,21 @@ h4 {
   .hyperiux-clerk .cl-card {
     padding: 1.5rem !important;
   }
+
+  .hyperiux-waitlist .cl-formButtonPrimary {
+    margin-top: 2rem !important;
+  }
 }
 
+@media (max-width: 542px) {
+  body {
+    font-size: 4vw;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animations */
+/* -------------------------------------------------------------------------- */
 
 @keyframes shimmer {
   100% {

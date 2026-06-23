@@ -12,7 +12,7 @@ import React, { forwardRef } from"react";
  * - All standard <input> props (name, value, onChange, onBlur, autoComplete, …)
  */
 const Input = forwardRef(function Input(
- { id, label, type ="text", error, className ="", ...rest },
+ { id, label,placeholder, type ="text", error, className ="", ...rest },
  ref
 ) {
  return (
@@ -49,7 +49,7 @@ const Input = forwardRef(function Input(
  ref={ref}
  id={id}
  type={type}
- placeholder=""
+ placeholder={placeholder}
  className={`
  w-full border rounded-full bg-white
  h-14 pl-5 pr-4 text-sm text-gray-800

@@ -11,7 +11,7 @@ import Button from "@/components/WebsiteComps/Button";
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
-import { WaitlistTrigger } from "../auth/AccessRequestModal";
+import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },

@@ -43,6 +43,7 @@ function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
     const params = new URLSearchParams(searchParamString);
 
     params.delete("waitlist");
+    params.delete("custom-animation-form");
 
     const query = params.toString();
 

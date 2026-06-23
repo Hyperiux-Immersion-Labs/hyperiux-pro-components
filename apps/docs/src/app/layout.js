@@ -14,7 +14,8 @@ import {
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
 import PixelRandom from "@/components/showcase/transitions/PixelRandom/PixelRandomTransition";
-import AccessRequestModal from "@/components/auth/AccessRequestModal";
+import AccessRequestModal from "@/components/WebsiteComps/modals/AccessRequestModal";
+import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 const layGrotesk = localFont({
   src: [
@@ -40,19 +41,37 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <body className="min-h-dvh bg-background text-foreground font-sans">
         {/* <PixelRandom color="#ff5f00"> */}
-          <ClerkProvider waitlistUrl="/request-access">
-            <OrganizationJsonLd />
-            <LocalBusiness />
-            <ImageObjectJsonLd />
-            <WebsiteJsonLd />
-            <SoftwareApplicationJsonLd />
-            {children}
-            <Suspense>
-              <AccessRequestModal />
-            </Suspense>
-            <Analytics />
-            <SpeedInsights />
-          </ClerkProvider>
+        <ClerkProvider
+          waitlistUrl="#"
+          appearance={{
+            cssLayerName: "clerk",
+            theme: "simple",
+            variables: {
+              colorPrimary: "#ff5f00",
+              colorBackground: "transparent",
+              colorInputBackground: "rgba(255,255,255,0.08)",
+              colorInputText: "#ffffff",
+              colorText: "#ffffff",
+              colorTextSecondary: "rgba(255,255,255,0.55)",
+              colorDanger: "#fecaca",
+              borderRadius: "9999px",
+              fontFamily: "inherit",
+            },
+          }}
+        >
+          <OrganizationJsonLd />
+          <LocalBusiness />
+          <ImageObjectJsonLd />
+          <WebsiteJsonLd />
+          <SoftwareApplicationJsonLd />
+          {children}
+          <Suspense>
+            <AccessRequestModal />
+            <CustomAnimationFormModal />
+          </Suspense>
+          <Analytics />
+          <SpeedInsights />
+        </ClerkProvider>
         {/* </PixelRandom> */}
       </body>
     </html>

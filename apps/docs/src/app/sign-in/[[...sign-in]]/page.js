@@ -1,6 +1,8 @@
 import { SignIn } from "@clerk/nextjs";
 import AuthShell from "@/components/auth/AuthShell";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import Navbar from "@/components/WebsiteComps/Navbar";
+import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 
 export const metadata = createPageMetadata({
   title: "Sign In | Hyperiux Vault",
@@ -10,8 +12,12 @@ export const metadata = createPageMetadata({
 
 export default function SignInPage() {
   return (
+    <>
+    <Navbar/>
+    <NavbarMobile/>
+    
     <AuthShell>
-      <div className="hyperiux-clerk w-[40vw]! mx-auto">
+     <div className="hyperiux-clerk mx-auto w-[40vw] max-md:w-[90vw] max-sm:w-full">
         <SignIn
           path="/sign-in"
           routing="path"
@@ -21,5 +27,6 @@ export default function SignInPage() {
         />
       </div>
     </AuthShell>
+    </>
   );
 }

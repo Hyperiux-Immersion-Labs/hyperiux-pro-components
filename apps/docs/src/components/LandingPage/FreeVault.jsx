@@ -6,6 +6,7 @@ import SplitLine from "../WebsiteComps/SplitLine";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -242,7 +243,10 @@ export default function FreeVault() {
                         </ul>
 
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
-                            <Button text="Join Waitlist" href="/request-access" variant="black" />
+                            <WaitlistTrigger>
+                                <Button preventDefault={true} text="Join Waitlist" href="/request-access" variant="black" />
+
+                            </WaitlistTrigger>
                             <p className="text20">
                                 No Spam. Unsubscribe Anytime.
                             </p>

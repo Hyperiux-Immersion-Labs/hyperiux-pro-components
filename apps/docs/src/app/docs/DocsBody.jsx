@@ -419,13 +419,11 @@ export default function DocsBody({ children }) {
               {children}
             </div>
 
-            <aside className="hidden xl:block pr-6">
-              <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
-                <TableOfContents containerRef={contentRef} watchKey={pathname} />
-              </div>
-            </aside>
           </div>
         </div>
+            <aside className="h-fit fixed right-4 top-1/2 -translate-y-1/2">
+                <TableOfContents containerRef={contentRef} watchKey={pathname} />
+            </aside>
       </RouteFade>
     </div>
   );
