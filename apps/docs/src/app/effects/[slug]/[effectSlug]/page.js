@@ -11,6 +11,7 @@ import { getEffectHref } from "@/lib/categories";
 
 import {
   applySanityCategorySlugs,
+  mergeRegistryWithSanity,
   getAllSanityEffectEntries,
   getSanityEffectContent,
 } from "@/lib/sanity";
@@ -144,6 +145,11 @@ export default async function EffectPage({ params }) {
   const sanityEntries = await getAllSanityEffectEntries();
   const registryItems = applySanityCategorySlugs(registry.items, sanityEntries);
 
+  const globalSearchEffects = mergeRegistryWithSanity(
+  registry.items,
+  sanityEntries
+).sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
+
   const categoriesMap = getEffectsByCategory();
 
   const effectCounts = {};
@@ -220,15 +226,16 @@ export default async function EffectPage({ params }) {
       <BreadcrumbsJSONLD pathname={pageMetadata.url} />
       {faqItems.length > 0 && <FAQJSONLD faqs={faqItems} />}
       <EffectDetailContent
-        slug={effectSlug}
-        categorySlug={slug}
-        effect={effect}
-        content={content}
-        relatedEffects={relatedEffects}
-        effectCounts={effectCounts}
-        totalEffects={getAllEffectSlugs().length}
-        isLocked={isLocked}
-        userPlan={userPlan}
+          slug={effectSlug}
+  categorySlug={slug}
+  effect={effect}
+  content={content}
+  relatedEffects={relatedEffects}
+  effectCounts={effectCounts}
+  totalEffects={getAllEffectSlugs().length}
+  isLocked={isLocked}
+  userPlan={userPlan}
+  searchEffects={globalSearchEffects}
       />
     </>
   );

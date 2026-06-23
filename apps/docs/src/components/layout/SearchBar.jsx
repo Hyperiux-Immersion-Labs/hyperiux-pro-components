@@ -30,7 +30,6 @@ const CATEGORY_ICON_BY_LABEL = Object.fromEntries(
 const CATEGORY_ICON_BY_SLUG = Object.fromEntries(
   FLAT_CATEGORY_ITEMS.map((item) => {
     const slug = item.href.split("/").filter(Boolean).at(-1);
-
     return [normalizeIconKey(slug), item.icon];
   })
 );
@@ -176,13 +175,12 @@ function getEffectCategoryLabel(effect) {
 
 function getSafeEffectHref(effect) {
   if (effect.href) return effect.href;
-
   return getEffectHref(effect);
 }
 
 function SearchResultIcon({ src, alt = "" }) {
   return (
-    <div className="w-10 h-10 bg-neutral-900 border border-neutral-800/60 text-neutral-800 rounded-md flex items-center justify-center group-hover:border-neutral-600 transition-colors">
+    <div className="flex h-10 w-10 items-center justify-center rounded-md border border-neutral-800/60 bg-neutral-900 text-neutral-800 transition-colors group-hover:border-neutral-600">
       <Image
         src={src || FALLBACK_CATEGORY_ICON}
         alt={alt}
@@ -205,7 +203,7 @@ export function SearchBar({
     <div className={`relative ${className}`}>
       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
         <svg
-          className="w-5 h-5"
+          className="h-5 w-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -224,7 +222,7 @@ export function SearchBar({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full pl-12 pr-4 py-3.5 bg-neutral-100 border border-neutral-200 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-transparent transition-all"
+        className="w-full rounded-lg border border-neutral-200 bg-neutral-100 py-3.5 pl-12 pr-4 text-neutral-900 transition-all placeholder:text-neutral-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-neutral-900"
       />
 
       {totalCount > 0 && (
@@ -236,27 +234,37 @@ export function SearchBar({
   );
 }
 
-export function GlobalSearch({ effects = [], externalOpen = false }) {
+export function GlobalSearch({ effects = [], externalOpen = 0 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [globalEffects, setGlobalEffects] = useState([]);
-  const [hasLoadedGlobalEffects, setHasLoadedGlobalEffects] = useState(false);
+  const [hasTriedGlobalFetch, setHasTriedGlobalFetch] = useState(false);
   const [isLoadingGlobalEffects, setIsLoadingGlobalEffects] = useState(false);
 
   const inputRef = useRef(null);
+  const externalOpenRef = useRef(externalOpen);
+
   const router = useRouter();
   const lenis = useLenis();
 
+  const normalizedPassedEffects = useMemo(() => {
+    return Array.isArray(effects) ? effects.filter(Boolean) : [];
+  }, [effects]);
+
   const searchableEffects = useMemo(() => {
-    return globalEffects.length > 0 ? globalEffects : effects;
-  }, [effects, globalEffects]);
+    if (normalizedPassedEffects.length > 0) return normalizedPassedEffects;
+    if (globalEffects.length > 0) return globalEffects;
+    return [];
+  }, [globalEffects, normalizedPassedEffects]);
 
   useEffect(() => {
-    if (!isOpen || hasLoadedGlobalEffects || isLoadingGlobalEffects) return;
+    if (!isOpen) return;
+    if (normalizedPassedEffects.length > 0) return;
+    if (hasTriedGlobalFetch || isLoadingGlobalEffects) return;
 
     let cancelled = false;
 
-    const loadGlobalEffects = async () => {
+    async function loadGlobalEffects() {
       setIsLoadingGlobalEffects(true);
 
       try {
@@ -273,28 +281,32 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
 
         if (!cancelled) {
           setGlobalEffects(Array.isArray(data?.effects) ? data.effects : []);
-          setHasLoadedGlobalEffects(true);
         }
       } catch (error) {
         console.warn("Failed to load global search index:", error);
 
         if (!cancelled) {
           setGlobalEffects([]);
-          setHasLoadedGlobalEffects(true);
         }
       } finally {
         if (!cancelled) {
+          setHasTriedGlobalFetch(true);
           setIsLoadingGlobalEffects(false);
         }
       }
-    };
+    }
 
     loadGlobalEffects();
 
     return () => {
       cancelled = true;
     };
-  }, [hasLoadedGlobalEffects, isLoadingGlobalEffects, isOpen]);
+  }, [
+    hasTriedGlobalFetch,
+    isLoadingGlobalEffects,
+    isOpen,
+    normalizedPassedEffects.length,
+  ]);
 
   useEffect(() => {
     if (isOpen) {
@@ -305,6 +317,10 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
   }, [isOpen, lenis]);
 
   useEffect(() => {
+    if (externalOpenRef.current === externalOpen) return;
+
+    externalOpenRef.current = externalOpen;
+
     if (externalOpen) {
       requestAnimationFrame(() => {
         setIsOpen(true);
@@ -334,48 +350,52 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
   }, []);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      requestAnimationFrame(() => {
-        inputRef.current?.focus();
-      });
-    }
+    if (!isOpen) return;
+
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
   }, [isOpen]);
 
   const normalizedQuery = normalizeSearchValue(query);
 
-  const filteredEffects = searchableEffects.filter((effect) => {
-    if (!normalizedQuery) return true;
+  const filteredEffects = useMemo(() => {
+    return searchableEffects.filter((effect) => {
+      if (!normalizedQuery) return true;
 
-    const categories = effect.categories?.length
-      ? effect.categories
-      : [effect.category];
+      const categories = effect.categories?.length
+        ? effect.categories
+        : [effect.category];
 
-    const searchableText = [
-      effect.name,
-      effect.title,
-      effect.description,
-      effect.slug,
-      effect.effectSlug,
-      effect.categorySlug,
-      effect.category,
-      ...(categories || []),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+      const searchableText = [
+        effect.name,
+        effect.title,
+        effect.description,
+        effect.slug,
+        effect.effectSlug,
+        effect.categorySlug,
+        effect.category,
+        ...(categories || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-    return searchableText.includes(normalizedQuery);
-  });
+      return searchableText.includes(normalizedQuery);
+    });
+  }, [normalizedQuery, searchableEffects]);
 
-  const filteredDocs = DOC_SEARCH_ITEMS.filter((item) => {
-    if (!normalizedQuery) return true;
+  const filteredDocs = useMemo(() => {
+    return DOC_SEARCH_ITEMS.filter((item) => {
+      if (!normalizedQuery) return true;
 
-    return (
-      item.title.toLowerCase().includes(normalizedQuery) ||
-      item.description.toLowerCase().includes(normalizedQuery) ||
-      item.keywords.some((keyword) => keyword.includes(normalizedQuery))
-    );
-  });
+      return (
+        item.title.toLowerCase().includes(normalizedQuery) ||
+        item.description.toLowerCase().includes(normalizedQuery) ||
+        item.keywords.some((keyword) => keyword.includes(normalizedQuery))
+      );
+    });
+  }, [normalizedQuery]);
 
   const forceStartLenis = () => {
     if (typeof document !== "undefined") {
@@ -418,10 +438,10 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
         onClick={closeSearch}
       />
 
-      <div className="relative w-full max-w-xl mx-4 bg-neutral-950/90 backdrop-blur-xl rounded-lg overflow-hidden border border-neutral-800/60 flex flex-col h-113 max-md:h-140 max-sm:h-113 ring-1 ring-white/5">
-        <div className="flex items-center gap-3 px-4 py-4 border-b border-neutral-800/50 bg-black/20">
+      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden rounded-lg border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-md:h-140 max-sm:h-113">
+        <div className="flex items-center gap-3 border-b border-neutral-800/50 bg-black/20 px-4 py-4">
           <svg
-            className="w-5 h-5 text-neutral-500"
+            className="h-5 w-5 text-neutral-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -440,10 +460,10 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search anything in Vault..."
-            className="flex-1 bg-transparent text-white placeholder:text-neutral-500 text-base sm:text-lg focus:outline-none"
+            className="flex-1 bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none sm:text-lg"
           />
 
-          <kbd className="hidden sm:inline-flex px-2 h-8 justify-center items-center bg-neutral-900 border border-neutral-800 rounded text-xs text-neutral-400 font-medium">
+          <kbd className="hidden h-8 items-center justify-center rounded border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
             ESC
           </kbd>
 
@@ -458,14 +478,10 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
         </div>
 
         <div className="flex-1 overflow-y-auto" data-lenis-prevent="true">
-          {isLoadingGlobalEffects && searchableEffects.length === 0 ? (
-            <div className="flex h-full items-center justify-center text-sm text-neutral-500">
-              Loading Vault search index...
-            </div>
-          ) : filteredDocs.length === 0 && filteredEffects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-neutral-500 px-4">
+          {filteredDocs.length === 0 && filteredEffects.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center px-4 text-center text-neutral-500">
               <svg
-                className="w-12 h-12 mb-4 text-neutral-700"
+                className="mb-4 h-12 w-12 text-neutral-700"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -483,32 +499,38 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
                 <span className="text-neutral-300">{query}</span>&quot;
               </p>
 
-              <p className="text-sm mt-1 text-neutral-600">
-                Try searching with a different term.
-              </p>
+              {isLoadingGlobalEffects ? (
+                <p className="mt-1 text-sm text-neutral-600">
+                  Loading global effects quietly...
+                </p>
+              ) : (
+                <p className="mt-1 text-sm text-neutral-600">
+                  Try searching with a different term.
+                </p>
+              )}
             </div>
           ) : (
-            <div className="p-2 space-y-1">
+            <div className="space-y-1 p-2">
               {filteredDocs.map((item) => (
                 <button
                   key={item.href}
                   onClick={() => handleSelect({ ...item, type: "docs" })}
-                  className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
+                  className="group flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-all duration-200 hover:bg-neutral-800/50"
                 >
                   <SearchResultIcon src={item.icon} alt={item.title} />
 
                   <div className="flex-1">
-                    <div className="font-medium text-neutral-200 group-hover:text-white transition-colors">
+                    <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
                       {item.title}
                     </div>
 
-                    <div className="text-xs text-neutral-500 mt-0.5 group-hover:text-neutral-400 transition-colors">
+                    <div className="mt-0.5 text-xs text-neutral-500 transition-colors group-hover:text-neutral-400">
                       Docs · {item.description}
                     </div>
                   </div>
 
                   <svg
-                    className="w-5 h-5 text-neutral-600 opacity-0 group-hover:opacity-100 group-hover:text-neutral-400 transition-all transform -translate-x-2 group-hover:translate-x-0"
+                    className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -531,7 +553,7 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
                   <button
                     key={effect.name || getSafeEffectHref(effect)}
                     onClick={() => handleEffectSelect(effect)}
-                    className="w-full flex items-center cursor-pointer gap-4 px-3 py-3 rounded-md hover:bg-neutral-800/50 text-left transition-all duration-200 group"
+                    className="group flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-all duration-200 hover:bg-neutral-800/50"
                   >
                     <SearchResultIcon
                       src={categoryIcon}
@@ -539,17 +561,17 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
                     />
 
                     <div className="flex-1">
-                      <div className="font-medium text-neutral-200 group-hover:text-white transition-colors">
+                      <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
                         {effect.title}
                       </div>
 
-                      <div className="text-xs text-neutral-500 capitalize mt-0.5 group-hover:text-neutral-400 transition-colors">
+                      <div className="mt-0.5 text-xs capitalize text-neutral-500 transition-colors group-hover:text-neutral-400">
                         {categoryLabel}
                       </div>
                     </div>
 
                     <svg
-                      className="w-5 h-5 text-neutral-600 opacity-0 group-hover:opacity-100 group-hover:text-neutral-400 transition-all transform -translate-x-2 group-hover:translate-x-0"
+                      className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -564,6 +586,12 @@ export function GlobalSearch({ effects = [], externalOpen = false }) {
                   </button>
                 );
               })}
+
+              {isLoadingGlobalEffects && searchableEffects.length === 0 && (
+                <div className="px-3 py-3 text-center text-xs text-neutral-600">
+                  Loading global effects...
+                </div>
+              )}
             </div>
           )}
         </div>

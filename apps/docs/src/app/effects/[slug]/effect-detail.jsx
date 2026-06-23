@@ -176,6 +176,7 @@ export function EffectDetailContent({
   totalEffects,
   isLocked = false,
   userPlan = "free",
+  searchEffects = [],
 }) {
   useFadeUp();
   useLineAnim();
@@ -403,14 +404,17 @@ export function EffectDetailContent({
 
   return (
     <VaultLayout
-      effectCounts={effectCounts || {}}
-      totalEffects={totalEffects || 0}
-      bgImageSrc=""
-      activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
+       effectCounts={effectCounts || {}}
+  totalEffects={totalEffects || 0}
+  bgImageSrc=""
+  activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
+  searchEffects={searchEffects}
     >
       <div className="min-h-screen text-foreground">
         <Suspense fallback={<div className="h-12" />}>
-          <VaultHeader effectName={pageTitle || safeEffect.title} showSearch={true} />
+          <VaultHeader effectName={pageTitle || safeEffect.title}
+  showSearch={true}
+  effects={searchEffects} />
         </Suspense>
 
         {isMainDataLoading ? (

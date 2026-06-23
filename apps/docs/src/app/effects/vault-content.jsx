@@ -499,6 +499,7 @@ const routeKey = `${pathname}${
           />
 
           <VaultHeader
+           showSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             totalEffects={totalEffects}
