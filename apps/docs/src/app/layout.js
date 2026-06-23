@@ -20,12 +20,12 @@ import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAni
 const layGrotesk = localFont({
   src: [
     {
-      path: "../fonts/laygrotesk-trial-regular.otf",
+      path: "../fonts/laygrotesk-trial-regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../fonts/laygrotesk-trial-medium.otf",
+      path: "../fonts/laygrotesk-trial-medium.woff2",
       weight: "500",
       style: "medium",
     },
