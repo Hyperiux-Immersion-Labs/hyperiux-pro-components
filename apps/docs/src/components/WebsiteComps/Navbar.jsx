@@ -40,6 +40,7 @@ const DROPDOWN_TEXT_ANIM = {
 }
 
 const LOADER_COMPLETE_EVENT = 'loaderComplete'
+const HYPERIUX_LOADER_COMPLETE_EVENT = 'hyperiux:loader-complete'
 
 function isLoaderRunning() {
     if (typeof window === 'undefined') return false
@@ -57,6 +58,18 @@ function hasLoaderCompleted() {
         window.sessionStorage.getItem(LOADER_STORAGE_KEY) === 'true' ||
         window.__HYPERIUX_LOADER_COMPLETE__ === true
     )
+}
+
+function markLoaderCompleted() {
+    if (typeof window === 'undefined') return
+
+    try {
+        window.sessionStorage.setItem(LOADER_STORAGE_KEY, 'true')
+    } catch (_) {}
+
+    window.__HYPERIUX_LOADER_COMPLETE__ = true
+    window.__HYPERIUX_LOADER_RUNNING__ = false
+    document.body.classList.remove('loader-active')
 }
 
 const useIsomorphicLayoutEffect =
@@ -771,6 +784,11 @@ export default function Navbar() {
                 duration: 0.45,
                 ease: 'power2.out',
                 overwrite: true,
+                onComplete: () => {
+                    gsap.set(navbar, {
+                        clearProps: 'transform',
+                    })
+                },
             })
 
             return
@@ -800,60 +818,72 @@ export default function Navbar() {
         })
     }, [])
 
-    const toggleNavbar = useCallback(
-        (hide) => {
-            const navbar = navbarRef.current
+    const toggleNavbar = useCallback((hide) => {
+        const navbar = navbarRef.current
 
-            if (!navbar || hidden.current === hide) return
+        if (!navbar || hidden.current === hide) return
 
-            hidden.current = hide
+        hidden.current = hide
 
-            if (hide) {
-                setActiveItem(null)
-            }
+        if (hide) {
+            setActiveItem(null)
+        }
 
-            gsap.killTweensOf(navbar)
+        gsap.killTweensOf(navbar)
 
-            gsap.to(navbar, {
-                yPercent: hide ? -100 : 0,
-                duration: 0.45,
-                ease: 'power2.out',
-                overwrite: true,
-            })
-        },
-        []
-    )
+        gsap.to(navbar, {
+            yPercent: hide ? -100 : 0,
+            autoAlpha: 1,
+            duration: 0.45,
+            ease: 'power2.out',
+            overwrite: true,
+        })
+    }, [])
 
     useEffect(() => {
         if (typeof window === 'undefined') return
 
         let pollId = null
+        let revealFrame = null
+        let fallbackTimer = null
 
-        const revealNavbar = () => {
+        const revealNavbar = (animate = true) => {
             if (hasRevealedRef.current) return
             if (!navbarRef.current) return
-            if (isLoaderRunning() || !hasLoaderCompleted()) return
 
             hasRevealedRef.current = true
-            showNavbar(true)
+            hidden.current = false
+
+            showNavbar(animate)
         }
 
         const syncNavbarWithLoader = () => {
             if (!navbarRef.current) return
 
-            if (isLoaderRunning()) {
+            const loaderRunning = isLoaderRunning()
+            const loaderCompleted = hasLoaderCompleted()
+
+            if (loaderRunning && !loaderCompleted) {
                 hasRevealedRef.current = false
                 hideNavbarForLoader()
                 return
             }
 
-            if (hasLoaderCompleted()) {
-                revealNavbar()
+            if (loaderCompleted || !loaderRunning) {
+                revealNavbar(true)
             }
         }
 
         const handleLoaderComplete = () => {
-            revealNavbar()
+            markLoaderCompleted()
+
+            if (revealFrame) {
+                window.cancelAnimationFrame(revealFrame)
+            }
+
+            revealFrame = window.requestAnimationFrame(() => {
+                revealNavbar(true)
+            })
         }
 
         syncNavbarWithLoader()
@@ -867,21 +897,46 @@ export default function Navbar() {
             }
         }, 80)
 
+        fallbackTimer = window.setTimeout(() => {
+            if (!hasRevealedRef.current && !isLoaderRunning()) {
+                revealNavbar(true)
+            }
+        }, 900)
+
         window.addEventListener(LOADER_COMPLETE_EVENT, handleLoaderComplete)
+        window.addEventListener(
+            HYPERIUX_LOADER_COMPLETE_EVENT,
+            handleLoaderComplete
+        )
 
         return () => {
             if (pollId) {
                 window.clearInterval(pollId)
             }
 
+            if (revealFrame) {
+                window.cancelAnimationFrame(revealFrame)
+            }
+
+            if (fallbackTimer) {
+                window.clearTimeout(fallbackTimer)
+            }
+
             window.removeEventListener(
                 LOADER_COMPLETE_EVENT,
+                handleLoaderComplete
+            )
+
+            window.removeEventListener(
+                HYPERIUX_LOADER_COMPLETE_EVENT,
                 handleLoaderComplete
             )
         }
     }, [pathname, hideNavbarForLoader, showNavbar])
 
     useLenis(({ scroll, velocity }) => {
+        if (!hasRevealedRef.current) return
+
         if (scroll < 100) {
             toggleNavbar(false)
             return

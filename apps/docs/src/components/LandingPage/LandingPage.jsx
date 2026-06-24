@@ -13,6 +13,7 @@ import CTA from "@/components/LandingPage/CTA";
 import useIsMobile from "@/hooks/useIsMobile";
 import Loader from "@/components/WebsiteComps/Loader";
 import FeaturedEffects from "@/components/LandingPage/FeaturedEffects";
+import Pricing from "./Pricing";
 
 // Dynamically imported components
 const StorytellingMobile = dynamic(() => import("@/components/LandingPage/StorytellingMobile"), { ssr: false });
@@ -34,7 +35,6 @@ export default function LandingPage() {
           <>
             <StorytellingMobile />
             <VaultGridMobile />
-            {/* <FeaturedEffects/> */}
             <Workflow />
             <FreeVault />
             <AgencyProofMobile />
@@ -48,6 +48,7 @@ export default function LandingPage() {
             <FeaturedEffects />
             <Workflow />
             <FreeVault />
+            {/* <Pricing/> */}
             <AgencyProof />
             <CTA />
             <Footer />
