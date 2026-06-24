@@ -3,10 +3,11 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useLenis } from "lenis/react";
 import Input from "@/components/Form/Input";
 import PhoneInput from "@/components/Form/PhoneInput";
 import Textarea from "@/components/Form/Textarea";
-import Button from "@/components/Form/Button";
+import WebsiteButton from "@/components/WebsiteComps/Button";
 
 const MODAL_QUERY_KEY = "custom-animation-form";
 const MODAL_QUERY_VALUE = "open";
@@ -160,6 +161,8 @@ function CustomAnimationFormModalInner() {
   const { isOpen, closeCustomAnimationForm } =
     useCustomAnimationFormModalInner();
 
+  const lenis = useLenis();
+
   const [values, setValues] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
@@ -172,8 +175,16 @@ function CustomAnimationFormModalInner() {
     if (!isOpen) return;
 
     const originalOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
 
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    lenis?.stop?.();
+
+    const restartStop = window.setInterval(() => {
+      lenis?.stop?.();
+    }, 80);
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -184,10 +195,22 @@ function CustomAnimationFormModalInner() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      window.clearInterval(restartStop);
       document.body.style.overflow = originalOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+
+      lenis?.start?.();
+
+      requestAnimationFrame(() => {
+        lenis?.start?.();
+      });
+
+      window.setTimeout(() => {
+        lenis?.start?.();
+      }, 80);
     };
-  }, [isOpen, closeCustomAnimationForm]);
+  }, [isOpen, lenis, closeCustomAnimationForm]);
 
   useEffect(() => {
     if (isOpen) return;
@@ -285,14 +308,20 @@ function CustomAnimationFormModalInner() {
             aria-label="Close custom animation form modal"
             onClick={closeCustomAnimationForm}
             className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-md"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
             transition={MODAL_TRANSITION}
           />
 
           <motion.div
-            className="relative z-10 w-[43vw] h-[75vh] overflow-hidden overflow-y-auto rounded-[0.9vw] border border-white/5 bg-white/[0.02] px-[4.5vw] py-[4.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-lg max-md:w-[95%] max-md:rounded-[2vw] max-md:py-[20vw] max-sm:rounded-[3.5vw]"
+            className="relative z-10 w-[80vw] overflow-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/[0.04] p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl max-md:h-[75vh] max-md:w-[95%] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
             initial={{
               opacity: 0,
             }}
@@ -308,131 +337,151 @@ function CustomAnimationFormModalInner() {
               type="button"
               aria-label="Close"
               onClick={closeCustomAnimationForm}
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-xl leading-none text-white/70 transition-colors hover:bg-[#ff5f00] hover:text-white group"
+              className="group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white"
             >
-              <div className="w-4 h-4 flex items-center justify-center group-hover:rotate-90 duration-500 ease-in-out relative">
-              <span className=" h-[1px] w-4 rotate-45 bg-white" />
-              <span className="absolute h-[1px] w-4 -rotate-45 bg-white" />
-
+              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                <span className="h-[1px] w-4 rotate-45 bg-white" />
+                <span className="absolute h-[1px] w-4 -rotate-45 bg-white" />
               </div>
             </button>
 
-            <div className="mb-10 text-center max-sm:mb-8">
-              <h1
+            <div className="relative z-10">
+              <h3
                 id="custom-animation-form-title"
-                className="font-display text-[2.5vw] font-normal leading-none text-white max-md:text-[7vw] max-sm:text-[9vw]"
+                className="text-[3vw] leading-none max-md:text-[8vw]"
               >
-                Request a Custom Animation
-              </h1>
+                {isSuccess
+                  ? "Request sent."
+                  : "Request a Custom Animation"}
+              </h3>
 
-              <p className="mx-auto mt-2 w-full text-center text-[1vw] text-white/50 max-md:text-[2.5vw] max-sm:mt-4 max-sm:text-[4vw]">
-                Tell us what interaction, loader, transition, cursor, or WebGL
-                detail you want.
-                <br className="max-sm:hidden" />
-                We will review it and get back to you.
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-sm">
+                {isSuccess
+                  ? "We received your request. Closing this window now."
+                  : "Tell us what interaction, loader, transition, cursor, or WebGL detail you want. We will review it and get back to you."}
               </p>
-            </div>
 
-            {isSuccess ? (
-              <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-center text-sm leading-6 text-emerald-200">
-                Request sent. We will get back to you shortly.
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
-                <div>
-                  <FieldLabel htmlFor="custom-animation-name">Name*</FieldLabel>
-                  <Input
-                    id="custom-animation-name"
-                    name="name"
-                    label={false}
-                    className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
-                    value={values.name}
-                    onChange={updateField("name")}
-                    autoComplete="name"
-                    error={errors.name}
-                    placeholder="Your name"
-                  />
+              {isSuccess ? (
+                <div className="mt-[4vw] rounded-[1vw] border border-emerald-400/20 bg-emerald-400/10 p-[2vw] max-md:mt-8 max-md:rounded-3xl max-md:p-6">
+                  <p className="text-[1.4vw] font-medium text-emerald-100 max-md:text-xl">
+                    Your custom animation request has been sent.
+                  </p>
+
+                  <p className="mt-2 text-[1vw] text-white/70 max-md:text-sm">
+                    We will get back to you shortly. The tiny interaction goblin
+                    has been notified.
+                  </p>
                 </div>
-
-                <div>
-                  <FieldLabel htmlFor="custom-animation-email">Email*</FieldLabel>
-                  <Input
-                    id="custom-animation-email"
-                    name="email"
-                    type="email"
-                    label={false}
-                    className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
-                    value={values.email}
-                    onChange={updateField("email")}
-                    autoComplete="email"
-                    error={errors.email}
-                    placeholder="you@company.com"
-                  />
-                </div>
-
-                <div>
-                  <FieldLabel htmlFor="custom-animation-number">
-                    Phone Number*
-                  </FieldLabel>
-                  <PhoneInput
-                    id="custom-animation-number"
-                    name="number"
-                    label={false}
-                    placeholder="98765 43210"
-                    value={values.number}
-                    onChange={updateField("number")}
-                    defaultCountry="IN"
-                    countries={CUSTOM_ANIMATION_COUNTRIES}
-                    showCountryName
-                    error={errors.number}
-                    className="border-white/20 bg-white/10 text-white focus-within:border-[#ff5f00]!"
-                    countryButtonClassName="text-white/80 hover:text-white"
-                    flagClassName="text-base"
-                    dialCodeClassName="text-white"
-                    chevronClassName="text-white/60"
-                    dividerClassName="bg-white/15"
-                    inputClassName="text-white placeholder:text-white/35"
-                    dropdownClassName="min-w-64 border-white/10! bg-[#111111]! rounded-md text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-                    optionClassName="text-white/70 hover:bg-white/10 hover:text-white"
-                    activeOptionClassName="text-[#ff5f00]"
-                    optionDialClassName="text-white/40"
-                    errorClassName="text-red-300"
-                  />
-                </div>
-
-                <div>
-                  <FieldLabel htmlFor="custom-animation-message">
-                    Message*
-                  </FieldLabel>
-                  <Textarea
-                    id="custom-animation-message"
-                    name="message"
-                    label={false}
-                    className="rounded-xl! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
-                    rows={3}
-                    value={values.message}
-                    onChange={updateField("message")}
-                    error={errors.message}
-                    placeholder="Tell us what you want to build..."
-                  />
-                </div>
-
-                {serverError && (
-                  <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200">
-                    {serverError}
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  isLoading={isSubmitting}
-                  loadingText="Sending..."
-                  className="mt-4 w-full min-w-0 hover:scale-100"
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-[3vw] grid grid-cols-2 gap-x-[3vw] gap-y-[2vw] max-md:mt-8 max-md:grid-cols-1 max-md:gap-5"
                 >
-                  Send Request
-                </Button>
-              </form>
-            )}
+                  <div className="space-y-[1vw] max-md:space-y-5">
+                    <div>
+                      <FieldLabel htmlFor="custom-animation-name">
+                        Name*
+                      </FieldLabel>
+                      <Input
+                        id="custom-animation-name"
+                        name="name"
+                        label={false}
+                        className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        value={values.name}
+                        onChange={updateField("name")}
+                        autoComplete="name"
+                        error={errors.name}
+                        placeholder="Your name"
+                      />
+                    </div>
+
+                    <div>
+                      <FieldLabel htmlFor="custom-animation-email">
+                        Email*
+                      </FieldLabel>
+                      <Input
+                        id="custom-animation-email"
+                        name="email"
+                        type="email"
+                        label={false}
+                        className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        value={values.email}
+                        onChange={updateField("email")}
+                        autoComplete="email"
+                        error={errors.email}
+                        placeholder="you@company.com"
+                      />
+                    </div>
+
+                    <div>
+                      <FieldLabel htmlFor="custom-animation-number">
+                        Phone Number*
+                      </FieldLabel>
+                      <PhoneInput
+                        id="custom-animation-number"
+                        name="number"
+                        label={false}
+                        placeholder="98765 43210"
+                        value={values.number}
+                        onChange={updateField("number")}
+                        defaultCountry="IN"
+                        countries={CUSTOM_ANIMATION_COUNTRIES}
+                        showCountryName
+                        error={errors.number}
+                        className="border-white/20 bg-white/10 text-white focus-within:border-[#ff5f00]!"
+                        countryButtonClassName="text-white/80 hover:text-white"
+                        flagClassName="text-base"
+                        dialCodeClassName="text-white"
+                        chevronClassName="text-white/60"
+                        dividerClassName="bg-white/15"
+                        inputClassName="text-white placeholder:text-white/35"
+                        dropdownClassName="min-w-64 border-white/10! bg-[#111111]! rounded-md text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                        optionClassName="text-white/70 hover:bg-white/10 hover:text-white"
+                        activeOptionClassName="text-[#ff5f00]"
+                        optionDialClassName="text-white/40"
+                        errorClassName="text-red-300"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="h-full">
+                    <FieldLabel htmlFor="custom-animation-message">
+                      Message*
+                    </FieldLabel>
+                    <Textarea
+                      id="custom-animation-message"
+                      name="message"
+                      label={false}
+                      className="h-[17.3vw]! rounded-xl! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-md:h-36!"
+                      rows={3}
+                      value={values.message}
+                      onChange={updateField("message")}
+                      error={errors.message}
+                      placeholder="Tell us what you want to build..."
+                    />
+                  </div>
+
+                  {serverError && (
+                    <div className="col-span-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200 max-md:col-span-1">
+                      {serverError}
+                    </div>
+                  )}
+
+                  <div className="col-span-2 mt-4 flex items-center gap-4 max-md:col-span-1 max-md:flex-col max-md:items-start">
+                    <WebsiteButton
+                      text={isSubmitting ? "Sending..." : "Send Request"}
+                      href="#"
+                      preventDefault
+                      disabled={isSubmitting}
+                      onClick={handleSubmit}
+                      variant="orange"
+                      scaleClass="group-hover:scale-[50]"
+                      className="min-w-0"
+                    />
+                  </div>
+                </form>
+              )}
+            </div>
           </motion.div>
         </motion.div>
       )}

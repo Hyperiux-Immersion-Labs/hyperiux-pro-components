@@ -47,10 +47,13 @@ export default function LandingPage() {
             <FeaturedStoryTelling />
             <FeaturedEffects />
             <Workflow />
-            <FreeVault />
-            {/* <Pricing/> */}
+            {/* <FreeVault /> */}
+            <Pricing/>
             <AgencyProof />
+            <div className="mt-[-50vh] max-md:mt-0">
             <CTA />
+
+            </div>
             <Footer />
           </>
         )}

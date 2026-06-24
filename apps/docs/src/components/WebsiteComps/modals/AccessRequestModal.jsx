@@ -253,7 +253,7 @@ function AccessRequestModalInner() {
               type="button"
               aria-label="Close"
               onClick={closeWaitlist}
-              className="absolute right-5  top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-xl leading-none text-white/70 transition-colors hover:bg-[#ff5f00] hover:text-white group"
+              className="absolute right-5  top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:bg-[#ff5f00] hover:border-[#ff5f00] hover:text-white group"
             >
               <div className="w-4 h-4 flex items-center justify-center group-hover:rotate-90 duration-500 ease-in-out relative">
               <span className=" h-[1px] w-4 rotate-45 bg-white" />
