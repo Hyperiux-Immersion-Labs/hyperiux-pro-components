@@ -12,6 +12,7 @@ import { SplitText } from 'gsap/SplitText'
 import { HyperiuxLogo } from '@/utils/Icons'
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 import Button from './Button'
+import { LOADER_STORAGE_KEY } from './Loader'
 
 gsap.registerPlugin(SplitText)
 
@@ -38,10 +39,25 @@ const DROPDOWN_TEXT_ANIM = {
     hoverColor: '#ffffff',
 }
 
-const NAVBAR_LOADER_SELECTOR =
-    '[data-page-loader], [data-loader], #page-loader, #loader, .page-loader, .loader'
+const LOADER_COMPLETE_EVENT = 'loaderComplete'
 
-const NAVBAR_SHOW_EVENT = 'hyperiux:loader-complete'
+function isLoaderRunning() {
+    if (typeof window === 'undefined') return false
+
+    return (
+        document.body.classList.contains('loader-active') ||
+        window.__HYPERIUX_LOADER_RUNNING__ === true
+    )
+}
+
+function hasLoaderCompleted() {
+    if (typeof window === 'undefined') return false
+
+    return (
+        window.sessionStorage.getItem(LOADER_STORAGE_KEY) === 'true' ||
+        window.__HYPERIUX_LOADER_COMPLETE__ === true
+    )
+}
 
 const useIsomorphicLayoutEffect =
     typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -728,6 +744,7 @@ function NavDropdown({ panel }) {
 export default function Navbar() {
     const navbarRef = useRef(null)
     const hidden = useRef(false)
+    const hasRevealedRef = useRef(false)
     const [activeItem, setActiveItem] = useState(null)
 
     const pathname = usePathname()
@@ -748,7 +765,7 @@ export default function Navbar() {
 
         if (animate) {
             gsap.to(navbar, {
-                opacity: 1,
+                autoAlpha: 1,
                 y: 0,
                 yPercent: 0,
                 duration: 0.45,
@@ -760,7 +777,7 @@ export default function Navbar() {
         }
 
         gsap.set(navbar, {
-            opacity: 1,
+            autoAlpha: 1,
             y: 0,
             yPercent: 0,
             clearProps: 'transform',
@@ -777,7 +794,7 @@ export default function Navbar() {
         gsap.killTweensOf(navbar)
 
         gsap.set(navbar, {
-            opacity: 0,
+            autoAlpha: 0,
             y: -18,
             yPercent: 0,
         })
@@ -808,60 +825,61 @@ export default function Navbar() {
     )
 
     useEffect(() => {
-    if (typeof window === 'undefined') return
+        if (typeof window === 'undefined') return
 
-    let rafId = null
-    let timeoutId = null
+        let pollId = null
 
-    const hasLoaderCompletedOnce = () => {
-        return window.sessionStorage.getItem(NAVBAR_LOADER_DONE_KEY) === 'true'
-    }
+        const revealNavbar = () => {
+            if (hasRevealedRef.current) return
+            if (!navbarRef.current) return
+            if (isLoaderRunning() || !hasLoaderCompleted()) return
 
-    const markLoaderCompleted = () => {
-        window.sessionStorage.setItem(NAVBAR_LOADER_DONE_KEY, 'true')
-    }
-
-    const syncNavbarWithLoader = () => {
-        const hasLoader = Boolean(
-            document.querySelector(NAVBAR_LOADER_SELECTOR)
-        )
-
-        const loaderAlreadyCompleted = hasLoaderCompletedOnce()
-
-        if (hasLoader && !loaderAlreadyCompleted) {
-            hideNavbarForLoader()
-            return
+            hasRevealedRef.current = true
+            showNavbar(true)
         }
 
-        showNavbar(false)
-    }
+        const syncNavbarWithLoader = () => {
+            if (!navbarRef.current) return
 
-    rafId = window.requestAnimationFrame(syncNavbarWithLoader)
+            if (isLoaderRunning()) {
+                hasRevealedRef.current = false
+                hideNavbarForLoader()
+                return
+            }
 
-    timeoutId = window.setTimeout(syncNavbarWithLoader, 80)
-
-    const handleLoaderComplete = () => {
-        markLoaderCompleted()
-        showNavbar(true)
-    }
-
-    window.addEventListener(NAVBAR_SHOW_EVENT, handleLoaderComplete)
-
-    return () => {
-        if (rafId) {
-            window.cancelAnimationFrame(rafId)
+            if (hasLoaderCompleted()) {
+                revealNavbar()
+            }
         }
 
-        if (timeoutId) {
-            window.clearTimeout(timeoutId)
+        const handleLoaderComplete = () => {
+            revealNavbar()
         }
 
-        window.removeEventListener(
-            NAVBAR_SHOW_EVENT,
-            handleLoaderComplete
-        )
-    }
-}, [pathname, hideNavbarForLoader, showNavbar])
+        syncNavbarWithLoader()
+
+        pollId = window.setInterval(() => {
+            syncNavbarWithLoader()
+
+            if (hasRevealedRef.current && pollId) {
+                window.clearInterval(pollId)
+                pollId = null
+            }
+        }, 80)
+
+        window.addEventListener(LOADER_COMPLETE_EVENT, handleLoaderComplete)
+
+        return () => {
+            if (pollId) {
+                window.clearInterval(pollId)
+            }
+
+            window.removeEventListener(
+                LOADER_COMPLETE_EVENT,
+                handleLoaderComplete
+            )
+        }
+    }, [pathname, hideNavbarForLoader, showNavbar])
 
     useLenis(({ scroll, velocity }) => {
         if (scroll < 100) {
@@ -921,6 +939,51 @@ export default function Navbar() {
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
                         const isExternal = href.startsWith('http')
+                        const itemClassName = `relative z-10 rounded-full p-[0.4vw] px-[1.2vw] text-[1.15vw] font-medium tracking-wide transition-colors duration-300 ${
+                            highlighted
+                                ? 'text-foreground'
+                                : 'text-white/70'
+                        }`
+
+                        const pill = (
+                            <AnimatePresence>
+                                {highlighted && (
+                                    <motion.span
+                                        layoutId="nav-pill"
+                                        className="absolute inset-0 -z-10 rounded-full bg-primary"
+                                        initial={{
+                                            opacity: 0,
+                                        }}
+                                        animate={{
+                                            opacity: 1,
+                                        }}
+                                        exit={{
+                                            opacity: 0,
+                                        }}
+                                        transition={{
+                                            stiffness: 0,
+                                            damping: 20,
+                                        }}
+                                    />
+                                )}
+                            </AnimatePresence>
+                        )
+
+                        if (dropdown) {
+                            return (
+                                <button
+                                    key={label}
+                                    type="button"
+                                    onMouseEnter={() =>
+                                        handleNavEnter(index, dropdown)
+                                    }
+                                    className={itemClassName}
+                                >
+                                    {label}
+                                    {pill}
+                                </button>
+                            )
+                        }
 
                         return (
                             <Link
@@ -935,35 +998,10 @@ export default function Navbar() {
                                 onMouseEnter={() =>
                                     handleNavEnter(index, dropdown)
                                 }
-                                className={`relative z-10 rounded-full p-[0.4vw] px-[1.2vw] text-[1.15vw] font-medium tracking-wide transition-colors duration-300 ${
-                                    highlighted
-                                        ? 'text-foreground'
-                                        : 'text-white/70'
-                                }`}
+                                className={itemClassName}
                             >
                                 {label}
-
-                                <AnimatePresence>
-                                    {highlighted && (
-                                        <motion.span
-                                            layoutId="nav-pill"
-                                            className="absolute inset-0 -z-10 rounded-full bg-primary"
-                                            initial={{
-                                                opacity: 0,
-                                            }}
-                                            animate={{
-                                                opacity: 1,
-                                            }}
-                                            exit={{
-                                                opacity: 0,
-                                            }}
-                                            transition={{
-                                                stiffness: 0,
-                                                damping: 20,
-                                            }}
-                                        />
-                                    )}
-                                </AnimatePresence>
+                                {pill}
                             </Link>
                         )
                     })}
