@@ -50,7 +50,29 @@ export const freeEffectsContent = {
     description: "Browse free Hyperiux Vault effects and UI components you can install, remix, and use in real projects.",
   },
   description: [
-    "Explore free effects from the Hyperiux Vault, ready to install, remix, and use in real projects.",
+    "Browse the free Hyperiux Vault effects you can preview, install, and test without stepping into Pro territory. Use them to add motion, polish, and interaction to real React and Next.js interfaces before deciding which moments need heavier custom craft.",
+  ],
+  faqs: [
+    {
+      question: "Where should I start if I only know the page needs to feel better?",
+      answer: "Start with the page job. If the page needs a stronger story, look at scroll effects. If it needs atmosphere, explore backgrounds or WebGL effects. If it needs better conversion support, review buttons, FAQs, forms, testimonials, and navigation patterns.",
+    },
+    {
+      question: "When is browsing the full Vault better than choosing a category first?",
+      answer: "Use the full catalog when you are still exploring the interaction direction. It helps when the goal is clear, such as “make the hero sharper” or “make the CTA feel better,” but the exact component type is not decided yet.",
+    },
+    {
+      question: "How do I choose between a subtle effect and a more expressive one?",
+      answer: "Choose the effect that improves the section without stealing its job. A quiet background may be better for SaaS copy. A WebGL scene may be right for a launch hero. A cursor effect may suit a portfolio, but not a pricing page. The strongest choice is the one that makes the page clearer, sharper, or more memorable.",
+    },
+    {
+      question: "How should the catalog handle heavier previews?",
+      answer: "Keep the page light. Avoid running many WebGL, canvas, video, or continuous animation previews at once. Use static thumbnails, lazy loading, offscreen pause, and click-to-preview behavior where the effect is too heavy for always-on browsing.",
+    },
+    {
+      question:"What changes when reduced motion is enabled?",
+      answer:"Animated previews should pause or become static. Autoplay, looping motion, cursor trails, WebGL movement, and continuous background effects should not run automatically. The catalog should remain fully browsable without motion."
+    }
   ],
 };
 
