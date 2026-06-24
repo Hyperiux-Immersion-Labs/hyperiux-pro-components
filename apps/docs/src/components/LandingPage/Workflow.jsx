@@ -58,7 +58,7 @@ export default function Workflow() {
 
             <div className="w-full self-padd max-md:flex-col-reverse flex max-md:gap-[6vw] max-md:mt-[10vw] gap-[2.5vw] items-end mt-[4vw] flex-col">
                 <div className="w-fit max-md:mx-auto! max-md:mt-[6vw] fadeup">
-                    <Button text="Read Installation Docs" href="/docs" />
+                    <Button text="Read Installation Docs" href="/docs/installation" />
                 </div>
 
 

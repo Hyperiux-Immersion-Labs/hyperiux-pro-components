@@ -207,7 +207,7 @@ export default function AgencyProof() {
             <SplitLine
                 delay={0.3}
                 as="p"
-                className="text34 text-center mt-[4vw] w-[80vw]"
+                className="text34 text-center mt-[4vw] w-[82vw]"
             >
                 The Vault is a public slice of Hyperiux’s interaction design and
                 creative frontend thinking - the same discipline used for premium

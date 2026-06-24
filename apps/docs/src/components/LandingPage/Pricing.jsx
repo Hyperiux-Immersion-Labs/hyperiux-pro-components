@@ -607,7 +607,7 @@ function PricingToggle({ billingCycle, setBillingCycle }) {
             </button>
 
             <span className="rounded-full bg-[#ff5f00] px-[0.9vw] py-[0.45vw] text-[0.75vw] font-medium text-white max-md:px-3 max-md:py-1.5 max-md:text-xs">
-                $179/YR
+                20% OFF
             </span>
         </div>
     );
