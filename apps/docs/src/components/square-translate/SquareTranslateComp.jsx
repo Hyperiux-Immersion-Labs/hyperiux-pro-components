@@ -18,7 +18,7 @@ const defaultItems = [
     "Senior developers on every project",
 ]
 
-export function SquareTranslate({
+export default function SquareTranslateComp({
     items = defaultItems,
     textClassName = 'text-[1vw]',
     textColor = 'text-black',

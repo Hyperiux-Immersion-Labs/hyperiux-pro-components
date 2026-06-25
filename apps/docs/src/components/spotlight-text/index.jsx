@@ -1,8 +1,7 @@
 "use client";
-
 import { useEffect, useRef, useState } from"react";
 
-export function SpotlightText({
+export default function SpotlightText({
  text ="",
  className ="",
  size ="text-3xl md:text-5xl",

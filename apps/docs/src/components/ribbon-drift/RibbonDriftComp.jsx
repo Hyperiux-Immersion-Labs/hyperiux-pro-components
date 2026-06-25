@@ -6,10 +6,7 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
 import Image from "next/image";
 import Link from "next/link";
-
 gsap.registerPlugin(ScrollTrigger, SplitText);
-
-
 
 function buildCards(count, startIndex = 0, imagesArr = IMAGE_POOL, namesArr = PROJECT_NAMES) {
 	return Array.from({ length: count }, (_, i) => {
@@ -23,7 +20,7 @@ const sectionBreakText = `Design is a feeling before it’s a layout. This conce
 motion-first composition, gradient-led art direction, and small details
 that make a brand experience unforgettable.`;
 
-const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES }) => {
+const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES }) => {
 	const headingRef = useRef(null);
 	const paragraphRef = useRef(null);
 	const sectionBreakFillRef = useRef(null);
@@ -421,4 +418,4 @@ const PortfolioConcept = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES })
 	);
 };
 
-export { PortfolioConcept };
+export { RibbonDriftComp };

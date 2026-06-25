@@ -8,7 +8,7 @@ import ScrollTrigger from'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
-const ScrambleText = ({  text,  speed = 0.6,  charType ='lowercase',  textSize ='text-base',
+const ScrambleTextComp = ({  text,  speed = 0.6,  charType ='lowercase',  textSize ='text-base',
  textColor ='text-white',
  align ='left',
  start ='top 40%',
@@ -177,4 +177,4 @@ const ScrambleText = ({  text,  speed = 0.6,  charType ='lowercase',  textSize =
  );
 };
 
-export { ScrambleText };
+export default ScrambleTextComp ;

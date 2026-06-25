@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const getRandomInRange = (min, max) => Math.random() * (max - min) + min;
 
-const ScrollShuffledCards = ({
+const ScrollShuffledCardsComp = ({
   cards = [],
   heading = "Scroll Shuffled Cards",
   sectionHeight = 400,
@@ -178,4 +178,4 @@ const ScrollShuffledCards = ({
   );
 };
 
-export { ScrollShuffledCards };
+export default ScrollShuffledCardsComp;

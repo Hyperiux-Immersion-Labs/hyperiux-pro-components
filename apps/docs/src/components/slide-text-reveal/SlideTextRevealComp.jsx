@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function RightSlideAnim({
+export default function SlideTextRevealComp({
   children,
   animateOnScroll = true,
   delay = 0,

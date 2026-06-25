@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight } from"lucide-react";
 
 gsap.registerPlugin(Draggable);
 
-const RingGallery = ({
+const RingCarouselComp = ({
  items = [],
  itemWidth = 700,
  itemHeight = 300,
@@ -425,4 +425,4 @@ const RingGallery = ({
  );
 };
 
-export { RingGallery as RingCarousel };
+export default RingCarouselComp ;
