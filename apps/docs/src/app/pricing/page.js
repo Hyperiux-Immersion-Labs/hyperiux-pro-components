@@ -10,8 +10,10 @@ export default function PricingPage() {
     <>
       <VaultShell>
         <Hero />
-        <GlowingPlates />
+        <GlowingPlates waitForLoader={false} />
         <Pricing enableColorSwitch={false} />
+                            {/* <FAQSection faqItems={activeCategoryFaqItems} /> */}
+        
         <CTA />
         <Footer />
       </VaultShell>

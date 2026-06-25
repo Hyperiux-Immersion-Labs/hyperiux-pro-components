@@ -14,20 +14,19 @@ const Hero = () => {
                         as="h1"
                         className="text140 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full"
                     >
-
-
-                        <span className="inline-block ">
-                            <span className=" max-md:hidden w-45 h-full inline-block"></span>Creative
-                            interaction effects for websites that need to be remembered.
+                        <span className="inline-block">
+                            <span className="max-md:hidden w-45 h-full inline-block"></span>
+                            Build with the free Vault. Upgrade when the interface starts getting ambitious.
                         </span>
                     </RandomBlur>
                 </div>
-                <SplitLine>
-                    <p className="text22 max-md:text-center ">
-                        Creative interaction systems built with React, GSAP, Motion, Three.js,
-                        and WebGL.
-                    </p>
-
+                <SplitLine
+                    as="p"
+                    start="top 120%"
+                    className="text22 max-md:text-center"
+                >
+                    Start with 30+ free effects, move into premium interaction packs, or request
+                    custom motion systems built for your product.
                 </SplitLine>
             </div>
         </section>

@@ -18,18 +18,7 @@ export default function page() {
             btnText={"Click here"}
             href={"/demo/svg-brush-transition"}
           />
-          <ArrowFillButton
-            className="cursor-pointer border border-[#ff5f00] text-[#ff5f00]"
-            btnText={"Browse effects"}
-            hoverFillTextColor={"#ffffff"}
-            arrowColor={"#ffffff"}
-            hoverArrowColor={"#ffffff"}
-            fillBgColor={"#ff5f00"}
-            hoverFillBgColor={"#ff5f00"}
-            textColor={"#ff5f00"}
-            bgColor={"bg-white "}
-            href={"/effects"}
-          />
+          
         </div>
       </div>
     </section>
