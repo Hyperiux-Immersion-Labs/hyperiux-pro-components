@@ -654,7 +654,10 @@ export function EffectDetailContent({
                           }
                           className="min-w-[31vw] cursor-pointer max-sm:px-[7vw] max-md:px-[6vw] snap-start max-lg:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
                         >
-                          <EffectCard effect={relatedEffect} />
+                          <EffectCard
+                            effect={relatedEffect}
+                            sizes="(max-width: 639px) 100vw, (max-width: 767px) 55vw, (max-width: 1023px) 44vw, 31vw"
+                          />
                         </div>
                       ))}
                     </div>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAnimate, useInView } from "motion/react";
+import { useInView } from "motion/react";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
+
 
 function formatLabel(value = "") {
   return value
@@ -16,32 +17,29 @@ function formatLabel(value = "") {
     .join(" ");
 }
 
+// Default sizes reflects the main vault grid: 3 cols with ~288px sidebar, 80px container padding,
+// 48px grid gap, and 56px horizontal inset on the image container.
+const VAULT_GRID_SIZES =
+  "(max-width: 639px) calc(86vw - 32px), (max-width: 767px) calc(50vw - 7rem), calc(33vw - 10rem)";
+
 export function EffectCard({
   effect,
   priority = false,
   isWishlisted = false,
   toggleWishlist,
   isProUser = false,
+  sizes = VAULT_GRID_SIZES,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+  const [videoMounted, setVideoMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
+  const cardRef = useRef(null);
   const videoRef = useRef(null);
-  const [scope, animate] = useAnimate();
+  const unmountTimerRef = useRef(null);
 
-  const isInView = useInView(scope, {
-    once: true,
-    margin: "0px",
-    amount: 0.1,
-  });
-
-  useEffect(() => {
-    if (!isInView) return;
-    if (!scope.current) return;
-
-    animate(scope.current, { opacity: 1 }, { duration: 0.55 });
-  }, [animate, isInView, scope]);
+  const isInView = useInView(cardRef, { once: true, margin: "0px", amount: 0.1 });
 
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
@@ -51,16 +49,27 @@ export function EffectCard({
       defaultExtension: "png",
     }) || "/assets/img/image01.webp";
 
-  useEffect(() => {
-    if (!isHovered && videoRef.current) {
+  const handleMouseEnter = () => {
+    clearTimeout(unmountTimerRef.current);
+    setIsHovered(true);
+    if (videoPreviewUrl && !videoError) setVideoMounted(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
-      setVideoReady(false);
     }
-  }, [isHovered]);
+    // Keep video in DOM for the fade-out duration before unmounting
+    unmountTimerRef.current = setTimeout(() => {
+      setVideoMounted(false);
+      setVideoReady(false);
+    }, 500);
+  };
 
-  const shouldLoadVideo = videoPreviewUrl && !videoError && isHovered;
-  const showVideo = shouldLoadVideo && videoReady;
+  // showVideo drives opacity; videoMounted drives whether the element is in the DOM
+  const showVideo = videoReady && isHovered;
 
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
@@ -78,23 +87,26 @@ export function EffectCard({
 
   return (
     <div
-      ref={scope}
+      ref={cardRef}
       style={{
         opacity: isInView ? 1 : 0,
         transition: "opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1)",
-        willChange: "opacity",
+        willChange: isInView ? "auto" : "opacity",
       }}
-      className="group relative w-full cursor-pointer overflow-hidden rounded-md duration-500 ease-in-out"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="group relative w-full cursor-pointer rounded-md"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Link
         href={effectHref}
         aria-label={`Open ${effect.title || effect.name}`}
-        className="absolute inset-0 z-10 cursor-pointer"
+        className="absolute inset-0 z-10"
       />
 
+      {/* Preview — square card with 16:9 media centered via absolute + translate */}
       <div className="pointer-events-none relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
+
+        {/* Pills & tier badge */}
         <div className="absolute inset-x-3 top-3 z-20 flex items-start justify-between gap-3 max-md:inset-x-5 max-md:top-7 max-sm:inset-x-3 max-sm:top-3 max-sm:gap-2">
           <div className="flex min-w-0 flex-wrap items-center gap-2 max-sm:gap-1.5">
             {dependencyPills.map((pill) => (
@@ -106,7 +118,6 @@ export function EffectCard({
               </span>
             ))}
           </div>
-
           {effect.tier === "pro" && (
             <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!">
               Pro
@@ -114,46 +125,44 @@ export function EffectCard({
           )}
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center px-7 max-sm:px-4">
-          <div className="relative aspect-video w-full overflow-hidden rounded-sm">
-            <Image
-              src={coverImage}
-              alt={effect.title || effect.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority={priority}
-              className={`object-cover transition-all duration-500 group-hover:scale-[1.02] ${
-                showVideo ? "opacity-0" : "opacity-100"
+        {/* Media: inset horizontally, centered vertically, 16:9 aspect ratio */}
+        <div className="absolute inset-x-7 top-1/2 aspect-video -translate-y-1/2 overflow-hidden rounded-sm max-sm:inset-x-4">
+          <Image
+            src={coverImage}
+            alt={effect.title || effect.name}
+            fill
+            sizes={sizes}
+            priority={priority}
+            className={`object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.02] ${
+              showVideo ? "opacity-0" : "opacity-100"
+            }`}
+          />
+          {videoMounted && (
+            <video
+              ref={videoRef}
+              src={videoPreviewUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              onLoadedData={() => setVideoReady(true)}
+              onError={() => setVideoError(true)}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+                showVideo ? "opacity-100" : "opacity-0"
               }`}
             />
-
-            {shouldLoadVideo && (
-              <video
-                ref={videoRef}
-                src={videoPreviewUrl}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                onLoadedData={() => setVideoReady(true)}
-                onError={() => setVideoError(true)}
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-                  showVideo ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            )}
-          </div>
+          )}
         </div>
       </div>
 
+      {/* Footer */}
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
-        <div className="min-w-0 gap-1">
-          <h3 className="truncate font-sans text22 font-medium leading-none text-white transition-colors group-hover:text-white max-sm:text-base">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <h3 className="truncate font-sans text22 font-medium leading-none text-white max-sm:text-base">
             {effect.title}
           </h3>
-
-          <p className="mt-0.5 text18 text-[#AEAEAE] max-sm:text-xs">
+          <p className="text18 text-[#AEAEAE] max-sm:text-xs">
             {primaryCategoryLabel}
           </p>
         </div>
@@ -162,9 +171,9 @@ export function EffectCard({
           <button
             type="button"
             data-no-card-link
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               toggleWishlist?.(effect);
             }}
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
@@ -172,7 +181,7 @@ export function EffectCard({
           >
             <Heart
               className={`h-4 w-4 max-md:h-6 max-md:w-6 max-sm:h-5 max-sm:w-5 ${
-                isWishlisted ? "fill-white text-white" : "text-white"
+                isWishlisted ? "fill-white" : ""
               }`}
             />
           </button>
@@ -180,9 +189,9 @@ export function EffectCard({
           <button
             type="button"
             data-no-card-link
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               window.open(previewHref, "_blank", "noopener,noreferrer");
             }}
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
@@ -194,9 +203,7 @@ export function EffectCard({
           <Link
             href={effectHref}
             data-no-card-link
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
+            onClick={(e) => e.stopPropagation()}
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
             aria-label={`Open ${effect.title || effect.name}`}
           >
