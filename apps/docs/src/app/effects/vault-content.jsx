@@ -18,12 +18,14 @@ import {
   getEffectCategoryHref,
 } from "@/lib/categories";
 
-import HeadAnim from "@/components/Animations/HeadAnim";
+import dynamic from "next/dynamic";
 import FAQSection from "@/components/LandingPage/FAQ";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
-import Copy from "@/components/Animations/Copy";
+
+const HeadAnim = dynamic(() => import("@/components/Animations/HeadAnim"), { ssr: false });
+const Copy = dynamic(() => import("@/components/Animations/Copy"), { ssr: false });
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 if (typeof window !== "undefined") {
@@ -129,29 +131,31 @@ const routeKey = `${pathname}${
   animationSearchParamString ? `?${animationSearchParamString}` : ""
 }`;
 
-  const safeEffects = Array.isArray(incomingEffects) ? incomingEffects : [];
-  const safeEffectCounts =
-    incomingEffectCounts &&
+  const safeEffects = useMemo(
+    () => (Array.isArray(incomingEffects) ? incomingEffects : []),
+    [incomingEffects]
+  );
+  const safeEffectCounts = useMemo(
+    () =>
+      incomingEffectCounts &&
       typeof incomingEffectCounts === "object" &&
       !Array.isArray(incomingEffectCounts)
-      ? incomingEffectCounts
-      : {};
+        ? incomingEffectCounts
+        : {},
+    [incomingEffectCounts]
+  );
 
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
 
-
-  // testing purpose
-  const TEST_SKELETON_DELAY = 0; // change to 0 before production
+  // testing purpose — set to 0 in production, any positive ms to show skeleton
+  const TEST_SKELETON_DELAY = 0;
   const [hasPassedSkeletonDelay, setHasPassedSkeletonDelay] = useState(
     TEST_SKELETON_DELAY === 0
   );
 
   useEffect(() => {
-    if (TEST_SKELETON_DELAY === 0) {
-      setHasPassedSkeletonDelay(true);
-      return;
-    }
+    if (TEST_SKELETON_DELAY === 0) return;
 
     setHasPassedSkeletonDelay(false);
 

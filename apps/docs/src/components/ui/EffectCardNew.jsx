@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useInView } from "motion/react";
+import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
@@ -35,6 +36,7 @@ export function EffectCard({
   const [videoMounted, setVideoMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
+  const router = useRouter();
   const cardRef = useRef(null);
   const videoRef = useRef(null);
   const unmountTimerRef = useRef(null);
@@ -53,6 +55,7 @@ export function EffectCard({
     clearTimeout(unmountTimerRef.current);
     setIsHovered(true);
     if (videoPreviewUrl && !videoError) setVideoMounted(true);
+    router.prefetch(effectHref);
   };
 
   const handleMouseLeave = () => {
@@ -99,6 +102,7 @@ export function EffectCard({
     >
       <Link
         href={effectHref}
+        prefetch={false}
         aria-label={`Open ${effect.title || effect.name}`}
         className="absolute inset-0 z-10"
       />
@@ -202,6 +206,7 @@ export function EffectCard({
 
           <Link
             href={effectHref}
+            prefetch={false}
             data-no-card-link
             onClick={(e) => e.stopPropagation()}
             className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
