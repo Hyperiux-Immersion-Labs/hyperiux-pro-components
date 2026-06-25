@@ -17,7 +17,7 @@ function refreshScrollTrigger() {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      ScrollTrigger?.refresh?.(true);
+      ScrollTrigger?.refresh?.();
     });
   });
 }

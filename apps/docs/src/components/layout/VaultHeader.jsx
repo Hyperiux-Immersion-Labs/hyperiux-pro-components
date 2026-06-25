@@ -146,7 +146,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
               <button
                 type="button"
                 onClick={openSearch}
-                className="group flex h-12 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-md:hidden max-md:gap-3"
+                className="group flex h-12 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-md:hidden max-md:gap-3"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
                   <button
                     type="button"
                     onClick={openSearchFromMobile}
-                    className="group flex h-12 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:text-white max-sm:h-14"
+                    className="group flex h-12 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-sm:h-14"
                   >
                     <div className="flex items-center gap-2">
                       <svg

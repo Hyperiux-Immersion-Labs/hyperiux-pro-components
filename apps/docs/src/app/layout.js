@@ -13,7 +13,6 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import PixelRandom from "@/components/pixel-random";
 import AccessRequestModal from "@/components/WebsiteComps/modals/AccessRequestModal";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 

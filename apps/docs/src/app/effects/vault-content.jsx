@@ -9,7 +9,6 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import CharStaggerButton from "@/components/char-stagger-button";
 import {
   effectsOverviewContent,
   effectCategories,
@@ -45,7 +44,7 @@ function RouteAnimationSync({ syncKey }) {
   useEffect(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
       });
     });
   }, [syncKey]);
@@ -207,7 +206,7 @@ const routeKey = `${pathname}${
   const refreshAfterCategoryChange = useCallback(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
       });
     });
   }, []);
@@ -264,7 +263,7 @@ const routeKey = `${pathname}${
 
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              ScrollTrigger.refresh(true);
+              ScrollTrigger.refresh();
             });
           });
         },
@@ -618,7 +617,7 @@ const routeKey = `${pathname}${
                         className={`
                           px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-                          transition-all duration-500 ease-in-out max-sm:text-lg
+                          transition-colors duration-300 max-sm:text-lg
                           hover:text-[#111111] hover:bg-white text20
                           ${isSelected
                             ? "bg-white text-[#111111]"
