@@ -18,14 +18,12 @@ import {
   getEffectCategoryHref,
 } from "@/lib/categories";
 
-import dynamic from "next/dynamic";
+import HeadAnim from "@/components/Animations/HeadAnim";
 import FAQSection from "@/components/LandingPage/FAQ";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
-
-const HeadAnim = dynamic(() => import("@/components/Animations/HeadAnim"), { ssr: false });
-const Copy = dynamic(() => import("@/components/Animations/Copy"), { ssr: false });
+import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 if (typeof window !== "undefined") {
