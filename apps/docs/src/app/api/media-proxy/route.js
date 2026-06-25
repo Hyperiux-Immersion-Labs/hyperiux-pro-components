@@ -18,8 +18,14 @@ export async function GET(request) {
     return Response.json({ error: "Invalid media URL." }, { status: 400 });
   }
 
-  if (sourceUrl.protocol !== "https:" || !ALLOWED_HOSTS.has(sourceUrl.hostname)) {
-    return Response.json({ error: "Media host is not allowed." }, { status: 400 });
+  if (
+    sourceUrl.protocol !== "https:" ||
+    !ALLOWED_HOSTS.has(sourceUrl.hostname)
+  ) {
+    return Response.json(
+      { error: "Media host is not allowed." },
+      { status: 400 }
+    );
   }
 
   const response = await fetch(sourceUrl, {
@@ -33,13 +39,17 @@ export async function GET(request) {
     );
   }
 
-  const contentType = response.headers.get("content-type") || "application/octet-stream";
+  const contentType =
+    response.headers.get("content-type") || "application/octet-stream";
+
   const body = await response.arrayBuffer();
 
   return new Response(body, {
     headers: {
       "content-type": contentType,
       "cache-control": "public, max-age=86400, s-maxage=86400",
+      "access-control-allow-origin": "*",
+      "cross-origin-resource-policy": "cross-origin",
     },
   });
 }
