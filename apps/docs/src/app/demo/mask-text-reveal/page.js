@@ -1,7 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import MaskAnim from "@/components/TextAnimations/MaskAnim/MaskAnim";
+import MaskTextReveal from "@/components/mask-text-reveal";
 import { ReactLenis } from "lenis/react";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+
 
 const notes = [
   "Masked line splitting",
@@ -49,72 +52,69 @@ const beats = [
 const Page = () => {
   return (
     <ReactLenis root>
+      <DemoHeader />
+      <ScrollBottom textColor='text-black' className="bottom-[3%] gap-[0.5vw] z-20"  />
       <main className="overflow-hidden bg-[#f8f2df] text-[#111111]">
-        <section className="relative min-h-screen px-8 py-8 max-sm:px-4 max-sm:py-4">
+        <section className="relative min-h-screen px-8 py-8 max-sm:px-4 max-sm:py-4 pt-24 max-sm:pt-24">
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,17,17,0.06)_1px,transparent_1px),linear-gradient(180deg,rgba(17,17,17,0.06)_1px,transparent_1px)] bg-size-[72px_72px] max-sm:bg-size-[38px_38px]" />
 
-          <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl flex-col justify-between rounded-4xl border border-black/15 bg-[#f8f2df]/80 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur max-sm:min-h-[calc(100vh-2rem)] max-sm:rounded-[1.25rem] max-sm:p-4">
-            <div className="flex items-center justify-between gap-4 text-xs font-black uppercase tracking-[0.28em] max-sm:tracking-[0.18em]">
-              <span>Mask Text Reveal</span>
-              <span className="rounded-full bg-[#111111] px-4 py-2 text-[#f8f2df] max-sm:px-3">
-                Scroll Lab
-              </span>
-            </div>
+          <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] max-md:min-h-fit w-full max-w-7xl flex-col justify-between rounded-4xl border border-black/15 bg-[#f8f2df]/80 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur max-sm:min-h-fit max-sm:rounded-[1.25rem] max-sm:p-4">
+           
 
-            <div className="grid items-end gap-10 py-12 lg:grid-cols-[1.08fr_0.92fr] max-sm:gap-8 max-sm:py-10">
-              <MaskAnim scrub={true} className="w-full lg:col-span-2">
-                <h1 className="w-full text-[clamp(4.5rem,12vw,12.5rem)] font-black uppercase leading-[0.78] text-[#111111] max-sm:text-[4.45rem] max-sm:leading-[0.82]">
-                  Pull the words from the noise.
-                </h1>
-              </MaskAnim>
+           <div className="grid items-end gap-8 py-10 lg:grid-cols-[1.08fr_0.92fr] max-md:gap-7 max-md:py-9 max-sm:gap-6 max-sm:py-8">
+  <MaskTextReveal scrub={false} className="w-full lg:col-span-2">
+    <h1 className="w-full max-w-6xl text-[clamp(3.5rem,8vw,8.5rem)] font-black uppercase leading-[0.82] text-[#111111] max-md:text-[clamp(3.2rem,9vw,6.5rem)] max-md:leading-[0.84] max-sm:text-[3.25rem] max-sm:leading-[0.86]">
+      Pull the words from the noise.
+    </h1>
+  </MaskTextReveal>
 
-              <div>
-                <div className="mt-8 flex flex-wrap gap-3 max-sm:mt-6">
-                  {notes.map((note, index) => (
-                    <span
-                      key={note}
-                      className="border border-black bg-[#f8f2df] px-4 py-2 text-sm font-black uppercase shadow-[5px_5px_0_#111111] max-sm:px-3 max-sm:text-[0.68rem]"
-                      style={{
-                        transform: `rotate(${[-2, 1.5, -1, 2][index]}deg)`,
-                        backgroundColor: ["#f8f2df", "#d7ff48", "#ff6b4a", "#7dd3fc"][index],
-                      }}
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
+  <div className="self-start">
+    <div className="mt-10 flex flex-wrap gap-7 max-md:mt-5 max-sm:mt-4 max-sm:gap-2.5">
+      {notes.map((note, index) => (
+        <span
+          key={note}
+          className="border border-black bg-[#f8f2df] px-4 py-2 text-sm font-black uppercase shadow-[5px_5px_0_#111111] max-md:px-3.5 max-md:py-1.5 max-md:text-[0.75rem] max-sm:px-3 max-sm:py-1.5 max-sm:text-[0.62rem]"
+          style={{
+            transform: `rotate(${[-2, 1.5, -1, 2][index]}deg)`,
+            backgroundColor: ["#f8f2df", "#d7ff48", "#ff6b4a", "#7dd3fc"][index],
+          }}
+        >
+          {note}
+        </span>
+      ))}
+    </div>
+  </div>
 
-              <div className="relative min-h-140 max-sm:min-h-107.5">
-                {frames.map(({ src, label, className }, index) => (
-                  <figure
-                    key={src}
-                    className={`absolute overflow-hidden border-2 border-black bg-white shadow-[12px_12px_0_#111111] ${className} ${
-                      index === 0
-                        ? "left-2 top-4 h-72 w-64 max-sm:left-0 max-sm:top-2 max-sm:h-52 max-sm:w-[48%]"
-                        : index === 1
-                          ? "right-0 top-24 h-80 w-72 max-sm:right-0 max-sm:top-24 max-sm:h-56 max-sm:w-[52%]"
-                          : "bottom-4 left-20 h-64 w-80 max-sm:bottom-6 max-sm:left-7 max-sm:h-44 max-sm:w-[72%]"
-                    }`}
-                  >
-                    <Image
-                      src={src}
-                      alt="asset-image"
-                      fill
-                      sizes="(max-width: 640px) 72vw, 320px"
-                      className="object-cover"
-                    />
-                    <figcaption className="absolute bottom-3 left-3 bg-[#111111] px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-white max-sm:text-[0.58rem]">
-                      {label}
-                    </figcaption>
-                  </figure>
-                ))}
+  <div className="relative min-h-136 max-md:min-h-120 max-sm:min-h-100">
+    {frames.map(({ src, label, className }, index) => (
+      <figure
+        key={src}
+        className={`absolute overflow-hidden border-2 border-black bg-white shadow-[12px_12px_0_#111111] ${className} ${
+          index === 0
+            ? "left-2 top-4 h-64 w-56 max-md:left-0 max-md:top-3 max-md:h-56 max-md:w-48 max-sm:left-0 max-sm:top-2 max-sm:h-48 max-sm:w-[48%]"
+            : index === 1
+              ? "right-0 top-20 h-72 w-64 max-md:top-20 max-md:h-64 max-md:w-56 max-sm:right-0 max-sm:top-20 max-sm:h-52 max-sm:w-[52%]"
+              : "bottom-4 left-16 h-56 w-72 max-md:bottom-4 max-md:left-12 max-md:h-52 max-md:w-64 max-sm:bottom-5 max-sm:left-6 max-sm:h-40 max-sm:w-[72%]"
+        }`}
+      >
+        <Image
+          src={src}
+          alt="asset-image"
+          fill
+          sizes="(max-width: 640px) 72vw, (max-width: 1024px) 56vw, 320px"
+          className="object-cover"
+        />
+        <figcaption className="absolute bottom-3 left-3 bg-[#111111] px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-white max-md:px-2.5 max-md:py-1.5 max-md:text-[0.62rem] max-sm:bottom-2 max-sm:left-2 max-sm:px-2 max-sm:py-1 max-sm:text-[0.52rem]">
+          {label}
+        </figcaption>
+      </figure>
+    ))}
 
-                <div className="absolute bottom-16 right-8 grid h-28 w-28 place-items-center rounded-full border-2 border-black bg-[#d7ff48] text-center text-xs font-black uppercase leading-tight shadow-[8px_8px_0_#111111] max-sm:bottom-0 max-sm:right-2 max-sm:h-24 max-sm:w-24 max-sm:text-[0.62rem]">
-                  line by line reveal
-                </div>
-              </div>
-            </div>
+    <div className="absolute bottom-14 right-6 grid h-24 w-24 place-items-center rounded-full border-2 border-black bg-[#d7ff48] px-2 text-center text-[0.65rem] font-black uppercase leading-tight shadow-[8px_8px_0_#111111] max-md:bottom-8 max-md:right-4 max-md:h-22 max-md:w-22 max-md:text-[0.58rem] max-sm:bottom-0 max-sm:right-2 max-sm:h-20 max-sm:w-20 max-sm:text-[0.52rem]">
+      line by line reveal
+    </div>
+  </div>
+</div>
           </div>
         </section>
 
@@ -124,11 +124,11 @@ const Page = () => {
               <p className="mb-5 inline-block border border-black bg-[#ff6b4a] px-4 py-2 text-xs font-black uppercase tracking-[0.26em] shadow-[5px_5px_0_#111111]">
                 Creative use case
               </p>
-              <MaskAnim scrub={true}>
+              <MaskTextReveal scrub={true}>
                 <h2 className="text-6xl font-black uppercase leading-[0.88] max-sm:text-[3.25rem]">
                   Design the scroll like a mixtape.
                 </h2>
-              </MaskAnim>
+              </MaskTextReveal>
             </div>
 
             <div className="space-y-8">
@@ -142,11 +142,11 @@ const Page = () => {
                   <p className="mb-8 text-xs font-black uppercase tracking-[0.3em] max-sm:mb-5 max-sm:tracking-[0.18em]">
                     {kicker}
                   </p>
-                  <MaskAnim scrub={true}>
+                  <MaskTextReveal scrub={true}>
                     <h3 className="text-5xl font-black uppercase leading-[0.95] max-sm:text-[2.35rem]">
                       {title}
                     </h3>
-                  </MaskAnim>
+                  </MaskTextReveal>
                   <p className={`mt-6 max-w-2xl text-lg leading-8 max-sm:text-base max-sm:leading-7 ${index === 2 ? "text-white/75" : "text-black/70"}`}>
                     {body}
                   </p>
@@ -157,7 +157,7 @@ const Page = () => {
         </section>
 
         <section className="relative min-h-screen bg-[#111111] px-8 py-24 text-white max-sm:px-4 max-sm:py-16">
-          <div className="mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.85fr] max-sm:min-h-auto">
+          <div className="mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl items-center gap-10 max-md:gap-2 max-sm:gap-10 lg:grid-cols-[1fr_0.85fr] max-sm:min-h-auto">
             <div>
               <div className="mb-8 flex flex-wrap gap-3">
                 {["poster copy", "hero headlines", "launch pages", "story sections"].map((item) => (
@@ -170,11 +170,11 @@ const Page = () => {
                 ))}
               </div>
 
-              <MaskAnim scrub={true}>
-                <p className="text-[clamp(3.5rem,8vw,9rem)] font-black uppercase leading-[0.86] text-white max-sm:text-[3.35rem]">
+              <MaskTextReveal scrub={true}>
+                <p className="text-[clamp(3.5rem,8vw,9rem)] max-md:text-[8vw] font-black uppercase leading-[0.86] text-white max-sm:text-[3.35rem]">
                   Hide the sentence until the screen asks for it.
                 </p>
-              </MaskAnim>
+              </MaskTextReveal>
             </div>
 
             <div className="relative overflow-hidden border-2 border-white/80 bg-[#f8f2df] p-4 text-[#111111] shadow-[14px_14px_0_#d7ff48] max-sm:p-3">

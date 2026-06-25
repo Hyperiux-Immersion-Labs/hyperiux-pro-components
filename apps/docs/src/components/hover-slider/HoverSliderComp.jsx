@@ -593,7 +593,7 @@ export default function HoverSliderComp({ items = [] }) {
     <section
       ref={mountRef}
       onPointerLeave={onLeave}
-      className="relative isolate min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-sm:px-0 max-sm:pb-20 md:overflow-hidden md:px-10"
+      className="relative isolate pt-24 min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-sm:px-0 max-sm:pb-20 md:overflow-hidden md:px-10"
       style={{ cursor: "crosshair" }}
     >
       <div className="relative z-20 w-full overflow-x-auto pb-8 max-sm:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">

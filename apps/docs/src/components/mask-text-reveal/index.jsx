@@ -6,7 +6,7 @@ import ScrollTrigger from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function MaskAnim({
+export default function MaskTextReveal({
  children,
  animateOnScroll = true,
  delay = 0,
@@ -82,6 +82,8 @@ export default function MaskAnim({
 
  if (!linesRef.current.length) return;
 
+ gsap.set(el, { opacity: 1 });
+
  if (prefersReduced) {
  gsap.set(linesRef.current, { maskPosition:"0% 100%" });
  elements.forEach(forceAriaVisible);
@@ -134,7 +136,11 @@ export default function MaskAnim({
  }, [animateOnScroll, delay, scrub]);
 
  return (
- <div ref={containerRef} data-copy-wrapper="true" className={className}>
+ <div
+ ref={containerRef}
+ data-copy-wrapper="true"
+ className={`opacity-0 ${className}`.trim()}
+>
  {children}
  </div>
  );

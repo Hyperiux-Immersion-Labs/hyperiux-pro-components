@@ -535,10 +535,10 @@ export function InfiniteGridGallery() {
 
               <button
                 type="button"
-                className="fixed z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:h-11 max-md:w-11 max-md:text-2xl max-sm:h-10 max-sm:w-10 max-sm:text-xl"
+                className="fixed left-(--nav-left) top-(--nav-top) z-4 grid h-13.5 w-13.5  -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:left-[calc(50%-70px)] max-md:top-auto max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:translate-y-0 max-md:text-2xl max-sm:left-[calc(50%-70px)] max-sm:bottom-[calc(var(--thumbsH)+55px)] max-sm:h-15 max-sm:w-15 max-sm:text-xl"
                 style={{
-                  left: Math.max(16, expanded.target.left - 72),
-                  top: expanded.target.top + expanded.target.height / 2,
+                  "--nav-left": `${Math.max(16, expanded.target.left - 72)}px`,
+                  "--nav-top": `${expanded.target.top + expanded.target.height / 2}px`,
                 }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() =>
@@ -552,13 +552,13 @@ export function InfiniteGridGallery() {
 
               <button
                 type="button"
-                className="fixed z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:h-11 max-md:w-11 max-md:text-2xl max-sm:h-10 max-sm:w-10 max-sm:text-xl"
+                className="fixed right-(--nav-right) top-(--nav-top) z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:right-[calc(50%-70px)] max-md:top-auto max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:translate-y-0 max-md:text-2xl max-sm:right-[calc(50%-70px)] max-sm:bottom-[calc(var(--thumbsH)+55px)] max-sm:h-15 max-sm:w-15 max-sm:text-xl"
                 style={{
-                  right: Math.max(
+                  "--nav-right": `${Math.max(
                     16,
                     window.innerWidth - (expanded.target.left + expanded.target.width) - 72
-                  ),
-                  top: expanded.target.top + expanded.target.height / 2,
+                  )}px`,
+                  "--nav-top": `${expanded.target.top + expanded.target.height / 2}px`,
                 }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() => navigateTo((expanded.index + 1) % sources.length)}
