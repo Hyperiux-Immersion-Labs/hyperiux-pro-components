@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ScrollablePopupContent from "@/components/modal/ScrollablePopupContent";
-import { Modal } from "./Modal";
+import { ModalContent } from "./Modal";
 
 const popupSections = [
   {
@@ -47,7 +47,7 @@ const popupSections = [
   },
 ];
 
-export default function ModalContent() {
+export default function Modal() {
   const [isContentOpen, setIsContentOpen] = useState(false);
 
   return (
@@ -68,7 +68,7 @@ export default function ModalContent() {
         Open Modal
       </button>
 
-      <Modal
+      <ModalContent
         className="h-full backdrop-blur-none "
         isOpen={isContentOpen}
         onClose={() => setIsContentOpen(false)}
@@ -78,7 +78,7 @@ export default function ModalContent() {
           subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development."
           sections={popupSections}
         />
-      </Modal>
+      </ModalContent>
     </>
   );
 }

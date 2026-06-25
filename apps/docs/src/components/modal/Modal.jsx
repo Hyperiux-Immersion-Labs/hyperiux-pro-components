@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
 
-const Modal = ({
+const ModalContent = ({
   isOpen = false,
   onClose,
   children,
@@ -110,4 +110,4 @@ const Modal = ({
   );
 };
 
-export { Modal };
+export { ModalContent };

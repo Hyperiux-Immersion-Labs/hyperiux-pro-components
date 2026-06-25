@@ -1,6 +1,6 @@
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ModalContent from "@/components/modal";
+import Modal from "@/components/modal";
 
 export default function Page() {
   return (
@@ -44,7 +44,7 @@ export default function Page() {
               className="
                 max-w-[34vw] text-center text-[#555555]
                 text-[1.3vw] leading-[1.2]
-                max-md:max-w-[70vw] max-md:text-[2.2vw]
+                max-md:max-w-[70vw] max-md:text-[2.5vw]
                 max-sm:max-w-[84vw] max-sm:text-[4vw]
               "
             >
@@ -52,7 +52,7 @@ export default function Page() {
             </p>
           </div>
 
-          <ModalContent />
+          <Modal />
         </div>
       </section>
     </>
