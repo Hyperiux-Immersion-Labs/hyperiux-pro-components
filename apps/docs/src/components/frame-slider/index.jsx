@@ -1,14 +1,12 @@
 import React from "react";
 import ScrollFrameSlider from "./FrameSlider";
 
-
 const FrameSlider = () => {
   return (
     <>
     <div className="min-h-screen">
       <ScrollFrameSlider images={images} bgColor="#111111" />
     </div>
-      
     </>
   );
 };

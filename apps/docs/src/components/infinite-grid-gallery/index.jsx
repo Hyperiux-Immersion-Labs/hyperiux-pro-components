@@ -470,7 +470,7 @@ export function InfiniteGridGallery() {
             onMouseDown={() => closeExpanded()}
           >
             <div
-              className="fixed inset-0 flex flex-col items-center justify-start"
+              className="fixed inset-0 mt-[-3%] flex flex-col items-center justify-start"
               style={{
 
                 "--thumbsH": `${expanded.thumbsH}px`,
@@ -574,7 +574,7 @@ export function InfiniteGridGallery() {
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-center pt-2.5" aria-hidden="true">
-                  <h2 className="mt-[-5%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black/92 select-none max-md:max-w-[92vw] max-md:text-2xl max-sm:max-w-[94vw] max-sm:text-lg">
+                  <h2 className="mt-[0%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black select-none max-md:max-w-[92vw] max-md:text-2xl max-sm:max-w-[94vw] max-sm:text-lg">
                     {display.caption}
                   </h2>
                 </div>

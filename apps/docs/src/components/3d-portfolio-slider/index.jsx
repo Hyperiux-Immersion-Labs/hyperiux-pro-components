@@ -2,6 +2,18 @@ import React from'react'
 import PortfolioSlider from './PortfolioSlider';
 
 const PortfolioSlider3D = () => {
+
+
+ return (
+ <div>
+ <PortfolioSlider items={items} />
+ </div>
+ )
+}
+
+export default PortfolioSlider3D
+
+
 const items = [
   {
     url: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
@@ -88,12 +100,3 @@ const items = [
     description: "PORTFOLIO 21",
   },
 ];
-
- return (
- <div>
- <PortfolioSlider items={items} />
- </div>
- )
-}
-
-export default PortfolioSlider3D

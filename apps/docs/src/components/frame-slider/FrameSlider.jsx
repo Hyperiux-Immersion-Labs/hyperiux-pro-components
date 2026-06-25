@@ -165,7 +165,7 @@ export default function ScrollFrameSlider({ images = [], bgColor ="#000000" }) {
  <div
  className="absolute"
  style={{
- top: isMobile ? 20 : 36,
+ bottom: isMobile ? 20 : 36,
  right: isMobile ? 16 : 40,
  fontFamily:"'DM Sans', sans-serif",
  fontSize: isMobile ? 9 : 11,

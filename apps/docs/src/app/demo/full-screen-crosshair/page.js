@@ -1,4 +1,5 @@
 import FullScreenCrosshair from "@/components/full-screen-crosshair";
+import FullScreenCrosshair from "@/components/full-screen-crosshair";
 
 export default function Page() {
   return (
@@ -12,9 +13,9 @@ export default function Page() {
         centerContent="•"
       />
 
-      <h1 className="w-full h-full flex items-center justify-center text-[5.5vw] font-medium">
-       Move the cursor around to see the effect
-      </h1>
-    </main>
-  );
+ <h1 className="w-full h-full flex items-center justify-center text-center text-[3.5vw] font-medium">
+ Move your cursor to see the crosshair come alive ✛
+ </h1>
+ </main>
+ );
 }
