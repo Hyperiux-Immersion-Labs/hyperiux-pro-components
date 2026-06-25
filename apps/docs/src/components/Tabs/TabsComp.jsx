@@ -3,7 +3,7 @@
 import React, { useLayoutEffect, useRef, useState } from"react";
 import gsap from"gsap";
 
-const Tabs = ({
+const TabsComp = ({
  tabs = [],
  defaultActiveIndex = 0,
  className ="",
@@ -177,4 +177,4 @@ const Tabs = ({
  );
 };
 
-export { Tabs };
+export default TabsComp

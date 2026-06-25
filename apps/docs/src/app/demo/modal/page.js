@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Modal } from "@/components/Modal/Modal";
 import ScrollablePopupContent from "@/components/ScrollablePopupContent/ScrollablePopupContent";
-import VideoPlayer from "@/components/VideoPlayer/VideoPlayer";
+import VideoPlayer from "@/components/video-player/VideoPlayerComp";
 import { useState } from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import DotFillBtn from "@/components/dot-fill-button";

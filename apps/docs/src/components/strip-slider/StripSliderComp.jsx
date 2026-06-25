@@ -22,7 +22,6 @@ const randRange = (min, max) => max === undefined ? Math.random() * min : min + 
 const randSigned = (mag) => (Math.random() - 0.5) * 2 * mag;
 const lerp = (a, b, t) => a + (b - a) * t;
 const arrayShuffle = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
-const arrayRand = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // --- Ribbon ---
 const ribbonVert = /* glsl */`
@@ -317,48 +316,6 @@ const overlayMainFrag = /* glsl */`
  }
 `;
 
-// Nav and text
-const overlayNavVert = /* glsl */`
- uniform int uPortrait;
-  varying vec2 vUV;
- varying vec4 vXYWH;
- varying float vHover;
- #ifdef USE_INSTANCING
- attribute vec4 aXYWH;
- attribute int aHover;
- #endif
- void main() {
- #ifdef USE_INSTANCING
- vUV = vec2(
- aXYWH[0] + uv.x * aXYWH[2],
- 1.0 - aXYWH[1] - (1.0 - uv.y) * aXYWH[3]
- );
- vXYWH = aXYWH;
- vHover = float(aHover);
- // Horribly hacky way to move logo in portrait
- vec3 posMod = position;
- if (uPortrait > 0 && aXYWH[2] < 0.5) posMod += vec3(1.4, -4.8, 0.0);
- gl_Position = projectionMatrix * viewMatrix * modelMatrix * instanceMatrix * vec4(posMod, 1.0);
- #else
- vUV = uv;
- gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
- #endif
- }
-`;
-
-const overlayNavFrag = /* glsl */`
- uniform sampler2D uTex;
- varying vec2 vUV;
- varying vec4 vXYWH;
- varying float vHover;
- void main() {
- vec2 uv = gl_FrontFacing ? vUV : vec2(vXYWH[2] - vUV.x, vUV.y);
- vec4 tex = (vHover > 0.0)  ? vec4(vec3(1.0 - texture2D(uTex, uv).a), 1.0)
- : vec4(vec3(1.0), texture2D(uTex, uv).a);
- gl_FragColor = vec4(tex);
- }
-`;
-
 // --- Haze ---
 const hazeVert = /* glsl */`
  uniform float uTime;
@@ -387,7 +344,7 @@ const hazeFrag = /* glsl */`
  }
 `;
 
-export function StripSlider({ items }) {
+export default function StripSliderComp({ items }) {
     const canvasRef = useRef(null);
 
     useEffect(() => {

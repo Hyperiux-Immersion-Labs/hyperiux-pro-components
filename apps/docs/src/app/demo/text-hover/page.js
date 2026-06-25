@@ -1,70 +1,42 @@
-import React from'react'
-import TextHover from'@/components/TextHover/TextHover'
-
-const data = [
-  {
-    label: "UI Components",
-    description:
-      "Beautifully crafted components built for modern Next.js and React applications.",
-  },
-  {
-    label: "Text Animations",
-    description:
-      "Creative headline effects, reveal animations, and smooth typography interactions.",
-  },
-  {
-    label: "Background Effects",
-    description:
-      "Futuristic grids, gradients, particles, and immersive animated backgrounds.",
-  },
-  {
-    label: "Scroll Animations",
-    description:
-      "Smooth scroll-triggered interactions and cinematic motion experiences.",
-  },
-  {
-    label: "Buttons & Hover FX",
-    description:
-      "Premium buttons, magnetic interactions, and modern hover micro-interactions.",
-  },
-  {
-    label: "Page Transitions",
-    description:
-      "Fluid route transitions and immersive navigation animations for modern apps.",
-  },
-  {
-    label: "3D Experiences",
-    description:
-      "Interactive WebGL, Three.js, and motion-driven visual experiences.",
-  },
-  {
-    label: "Creative Layouts",
-    description:
-      "Modern sections, bento grids, hero layouts, and showcase-ready designs.",
-  },
-  {
-    label: "Developer Experience",
-    description:
-      "Reusable, customizable, and production-ready UI built for fast development.",
-  },
-];
+import HeadAnim from '@/components/Animations/HeadAnim'
+import TextHover from '@/components/text-hover'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SplitLine from '@/components/WebsiteComps/SplitLine'
+import React from 'react'
 
 const page = () => {
- return (
- <>
+  return (
+   <>
+   <DemoHeader logoColor='#ffffff' textColor='#ffffff'/>
+   <div className='w-full h-full flex flex-col items-center gap-[2vw] px-[5vw] pt-[10%] max-md:pt-[15%] max-sm:pt-[30%]'>
+    <HeadAnim>
+    <h1 className='text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]'>
+       Text Hover
+    </h1>
 
- <div className='h-screen w-full bg-white'>
- <TextHover
- data={data}
- bgColor="#0a0a0a"
- textColor="#ffffff"
- />
- 
- </div>
- </>
- )
+    </HeadAnim>
+    <div className='w-[50%] text-center max-md:hidden'>
+    <SplitLine>
+    <p className=' '>
+      "Text Hover" is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
+    </p>
+    </SplitLine>
+
+    </div>
+    <div className='w-[90%] text-center hidden max-md:block'>
+
+    <SplitLine>
+    <p className=''>
+      "Text Hover" is a component, where you can click on the particular label and a frame and content regarding that label just appears smoothly.
+    </p>
+    </SplitLine>
+    </div>
+
+   </div>
+   <TextHover/>
+   
+   </>
+  )
 }
 
 export default page
-
-

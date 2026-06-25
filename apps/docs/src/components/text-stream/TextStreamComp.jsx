@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 
-export default function TextMarquee({ items = [] }) {
+export default function TextStreamComp({ items = [] }) {
   const trackRef = useRef(null);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
