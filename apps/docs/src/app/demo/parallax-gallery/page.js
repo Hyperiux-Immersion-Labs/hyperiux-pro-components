@@ -8,7 +8,7 @@ const page = () => {
     <>
     <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
     <ParallaxGallery />
-    <ScrollBottom textColor='#fffffff' className='bottom-[0.1%] gap-[0.2vw]' />
+    <ScrollBottom textColor='#fffffff' className='bottom-[0.1%] max-md:bottom-[5%] gap-[0.2vw]' />
     </>
   )
 }

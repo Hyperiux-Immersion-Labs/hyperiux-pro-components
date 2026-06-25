@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrambleText } from "@/components/TextAnims/ScrambleText";
-import ParallaxAnim from "@/components/ParallaxAnim/ParallaxAnim";
+import ParallaxAnim from "@/components/parallax-image-animation";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import Image from "next/image";
 

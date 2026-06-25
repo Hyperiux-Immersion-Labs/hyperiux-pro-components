@@ -16,7 +16,7 @@ const DIRECTION_INITIAL = {
   right: { yPercent: 0, xPercent: 100, rotate: 8 },
 };
 
-export default function OverFlowStagAnim({
+export default function OverflowTextReveal({
   children,
   animateOnScroll = true,
   delay = 0,
@@ -50,6 +50,12 @@ export default function OverFlowStagAnim({
             mask: "chars",
             charsClass: "char++",
             reduceWhiteSpace: false,
+          });
+
+          split.masks?.forEach((mask) => {
+            mask.style.paddingInline = "0.04em";
+            mask.style.marginInline = "-0.04em";
+            mask.style.boxSizing = "content-box";
           });
 
           splitRefs.current.push(split);

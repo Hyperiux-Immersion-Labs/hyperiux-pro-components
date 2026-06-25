@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from"react";
+import React, { useLayoutEffect, useRef } from"react";
 import gsap from"gsap";
 import { SplitText } from"gsap/SplitText";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export default function PerspectiveAnim({
+export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
  delay = 0,
@@ -18,7 +18,7 @@ export default function PerspectiveAnim({
  const splitRefs = useRef([]);
  const linesRef = useRef([]);
 
- useEffect(() => {
+ useLayoutEffect(() => {
  if (!containerRef.current) return;
 
  splitRefs.current = [];
@@ -53,6 +53,8 @@ export default function PerspectiveAnim({
  transformOrigin:"50% 100%",
  willChange:"transform, opacity",
  });
+
+ gsap.set(containerRef.current, { opacity: 1 });
 
  const animationProps = {
  yPercent: 0,
@@ -92,7 +94,7 @@ export default function PerspectiveAnim({
  <div
  ref={containerRef}
  data-copy-wrapper="true"
- className={className}
+ className={`opacity-0 ${className}`.trim()}
  style={{ perspective:"800px" }}
  >
  {children}

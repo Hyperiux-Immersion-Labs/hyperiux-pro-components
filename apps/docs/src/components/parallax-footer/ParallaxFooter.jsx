@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from"react";
 
-const ParallaxFooter = ({
+const FooterParallax = ({
  children,
  id ="footer",
  outerClassName ="",
@@ -60,4 +60,4 @@ const ParallaxFooter = ({
  );
 };
 
-export { ParallaxFooter };
+export { FooterParallax };

@@ -1,5 +1,5 @@
 import React from 'react'
-import RightSlideAnim from '@/components/TextAnimations/RightSlideAnim/RightSlideAnim'
+import RightSlideAnim from '@/components/RightSlideAnim/RightSlideAnim'
 import { ReactLenis } from 'lenis/react'
 import Image from 'next/image'
 

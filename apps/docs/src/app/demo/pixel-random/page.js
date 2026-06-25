@@ -1,20 +1,24 @@
-import Link from 'next/link'
-import React from 'react'
+import { ArrowFillButton } from "@/components/arrow-fill-button";
+import React from "react";
 
 export default function page() {
   return (
-    <section className="flex h-screen w-full items-center justify-center bg-zinc-200">
-      <div>
-        <p className="mb-10 text-center text-[6vw] font-medium leading-[.9] tracking-tight text-zinc-900">
-          PAGE 1
+    <section className="flex h-screen items-center justify-center bg-white px-6 text-center max-sm:px-[7vw]">
+      <div className="mx-auto max-w-5xl text-black">
+        <h1 className="text-[7vw] max-sm:text-[9vw]">Pixel Random Transition</h1>
+
+        <p className="mt-8 text-[1.4vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+          Click on the button to see the transition
         </p>
-        <Link
-          href="/page-transitions/pixel-random/page2"
-          className="mx-auto block w-fit rounded-full bg-white px-6 py-3 text-sm uppercase text-black duration-300 hover:bg-primary hover:text-white"
-        >
-          Go to Page 2
-        </Link>
+
+        <div className="mt-12">
+          <ArrowFillButton
+            className="cursor-pointer border border-[#ff5f00] text-[#ffffff]"
+            btnText={"Click here"}
+            href={"/demo/pixel-random/page2"}
+          />
+        </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { registerFxTarget, unregisterFxTarget } from "@/lib/2dCanvasTracker";
+import { registerFxTarget, unregisterFxTarget } from "./2dcanvasTracker";
 
 const GRID_SIZE = 35;
 const EFFECT_RADIUS = 40;
@@ -381,7 +381,7 @@ export function PixelBloom({
   return (
     <div
       ref={containerRef}
-      className={`fx-target relative cursor-none overflow-hidden rounded-2xl ${className}`}
+      className={`fx-target relative overflow-hidden rounded-2xl max-md:rounded-sm max-sm:rounded-lg ${className}`}
     >
       {type === "video" ? (
         <video

@@ -14,12 +14,12 @@ export default function page() {
 
         <div className="mt-12 flex justify-center gap-4 max-md:items-center max-sm:flex-col">
           <ArrowFillButton
-            className="cursor-pointer border border-[#ff5f00] text-[#ffffff]"
+            className="cursor-pointer border max-sm:w-58 border-[#ff5f00] text-[#ffffff]"
             btnText={"Click here"}
             href={"/demo/radial-slice-transition"}
           />
           <ArrowFillButton
-            className="cursor-pointer border border-[#ff5f00] text-[#ff5f00]"
+            className="cursor-pointer border max-sm:w-58 border-[#ff5f00] text-[#ff5f00]"
             btnText={"Browse effects"}
             hoverFillTextColor={"#ffffff"}
             arrowColor={"#ffffff"}

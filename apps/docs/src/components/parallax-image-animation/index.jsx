@@ -7,7 +7,7 @@ import ScrollTrigger from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ParallaxAnim = ({
+const ParallaxImageAnimation = ({
  src,
  alt ="parallax-img",
  wrapperClassName ="",
@@ -64,4 +64,4 @@ const ParallaxAnim = ({
  );
 };
 
-export default ParallaxAnim;
+export default ParallaxImageAnimation;

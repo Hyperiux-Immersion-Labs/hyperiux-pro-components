@@ -2,7 +2,8 @@
 import Image from'next/image';
 import { useEffect, useRef } from'react';
 import * as THREE from'three';
-import { registerFxTarget, unregisterFxTarget } from'@/lib/2dCanvasTracker';
+
+import { registerFxTarget, unregisterFxTarget } from './2dCanvasTracker';
 
 const VERTEX_SRC = `
 varying vec2 vUv;
@@ -138,6 +139,20 @@ const resolveTextureSource = (source) => {
  return source;
 };
 
+const getTextureRequestUrl = (source) => {
+ const resolvedSource = resolveTextureSource(source);
+
+ if (typeof resolvedSource !== 'string') return resolvedSource;
+
+ // Route allowed remote assets through our own origin so WebGL texture reads
+ // don't fail when the upstream storage bucket omits CORS headers.
+ if (/^https?:\/\//i.test(resolvedSource)) {
+ return `/api/media-proxy?url=${encodeURIComponent(resolvedSource)}`;
+ }
+
+ return resolvedSource;
+};
+
 export const NoiseDietherShader = ({
  imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
  noiseColor ='#ffffff',
@@ -176,7 +191,7 @@ export const NoiseDietherShader = ({
  // headers that allow anonymous WebGL texture reads.
  const textureLoader = new THREE.TextureLoader();
  textureLoader.setCrossOrigin('anonymous');
- const resolvedImageSrc = resolveTextureSource(imageSrc);
+ const resolvedImageSrc = getTextureRequestUrl(imageSrc);
  const imageTexture = textureLoader.load(
  resolvedImageSrc,
  undefined,
@@ -355,7 +370,7 @@ export const NoiseDietherShader = ({
  );
 };
 
-export default function NoiseDiether({
+export default function NoiseRippleCursor({
  overlayColor ='bg-[#1825AA]/30',
  wrapperClassName ='h-screen w-screen',
  imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
@@ -390,7 +405,7 @@ export default function NoiseDiether({
  />
  <div className={`h-full w-full ${overlayColor} absolute inset-0`} />
  <NoiseDietherShader
- // imageSrc={imageSrc}
+ imageSrc={imageSrc}
  noiseColor="#1825AA"
  style={{ width:'100%', height:'100%', position:'relative', zIndex: 1 }}
  pixelSize={pixelSize}

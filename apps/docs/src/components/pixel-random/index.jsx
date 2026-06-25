@@ -52,7 +52,7 @@ const getRows = () => {
   return 20;
 };
 
-export default function PixelRandom({
+export default function PixelRandomTransition({
   children,
   color = COLOR,
   durationLeave = DURATION_LEAVE,

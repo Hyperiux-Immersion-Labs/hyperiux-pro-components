@@ -28,7 +28,7 @@ const PRO_ROUTES = [
   "/radial-slice-transition",
   "/pixel-bloom",
   "/pixel-random",
-  "/pixels",
+  "/pixel-transition",
   "/ribbon-drift",
   "/ring-carousel",
   "/scramble-text",
