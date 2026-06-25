@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Scroll Shuffled Cards",
   "description": "Pinned scroll section that drifts a shuffled stack of editorial cards across the viewport",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ScrollShuffledCards",
   "exportKind": "named",
-  "previewUrl": "/scroll-shuffled-cards",
-  "coverImage": "scroll-shuffled-cards",
-  "videoUrl": "scroll-shuffled-cards.mp4",
   "files": [
     {
       "path": "scroll-shuffled-cards.jsx",

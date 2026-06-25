@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Parallax Image",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ParallaxImage",
   "exportKind": "named",
-  "previewUrl": "/parallax-image-animation",
-  "coverImage": "parallax-image",
-  "videoUrl": "parallax-image.mp4",
   "files": [
     {
       "path": "parallax-image.jsx",

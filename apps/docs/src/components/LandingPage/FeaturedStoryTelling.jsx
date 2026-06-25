@@ -84,7 +84,7 @@ const BOXES = [
         styles: "w-[25%]",
         img: '/video/2.mp4',
         number: "02",
-        label: "Cusor Effects"
+        label: "Cursor Effects"
     },
     {
         id: "block-top-layer-3",
@@ -606,7 +606,7 @@ export default function FeaturedStoryTelling() {
                                     alt={`spiral-card-images`}
                                     fill
                                     className="object-cover"
-                                    sizes="18vw"
+                                    sizes="(max-width: 1024px) 0vw, 18vw"
                                     priority={i < 3}
                                 />
                             </div>

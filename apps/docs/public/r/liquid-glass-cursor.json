@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Liquid Glass Cursor",
   "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "LiquidGlassCursor",
   "exportKind": "named",
-  "previewUrl": "/liquid-glass-cursor",
-  "coverImage": "liquid-glass-cursor",
-  "videoUrl": "liquid-glass-cursor.mp4",
   "files": [
     {
       "path": "liquid-glass-cursor.jsx",

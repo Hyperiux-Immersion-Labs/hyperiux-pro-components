@@ -12,17 +12,17 @@ const notes = [
 
 const frames = [
   {
-    src: "/assets/gradient/image12.png",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
     label: "Chromatic sweep",
     className: "rotate-[-5deg] max-sm:rotate-[-2deg]",
   },
   {
-    src: "/assets/img/distortion.jpg",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
     label: "Liquid texture",
     className: "rotate-[4deg] translate-y-12 max-sm:translate-y-0 max-sm:rotate-[2deg]",
   },
   {
-    src: "/assets/gradient/image4.png",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
     label: "Soft prism",
     className: "rotate-[-2deg] -translate-y-4 max-sm:translate-y-0",
   },
@@ -179,7 +179,7 @@ const Page = () => {
 
             <div className="relative overflow-hidden border-2 border-white/80 bg-[#f8f2df] p-4 text-[#111111] shadow-[14px_14px_0_#d7ff48] max-sm:p-3">
               <Image
-                src="/assets/img/image08.jpg"
+                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg"
                 alt="asset-image"
                 width={3840}
                 height={2160}

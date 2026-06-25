@@ -32,7 +32,7 @@ const Page = () => {
         <section className="relative min-h-screen px-8 py-8 max-sm:px-4 max-sm:py-4">
           <div className="absolute inset-0">
             <Image
-              src="/assets/gradient/image7.png"
+              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"
               alt="asset-image"
               fill
               priority
@@ -67,7 +67,7 @@ const Page = () => {
                 <div className="absolute left-16 right-6 top-40 h-36 skew-y-[-5deg] border border-[#b9e6ff]/50 bg-[#b9e6ff]/20 backdrop-blur max-sm:left-8 max-sm:right-2 max-sm:top-28 max-sm:h-24" />
                 <div className="absolute bottom-16 left-24 right-0 h-48 skew-y-[-5deg] overflow-hidden border border-white/35 bg-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.45)] max-sm:bottom-12 max-sm:left-10 max-sm:h-36">
                   <Image
-                    src="/assets/parallax-img/p-img-2.jpg"
+                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg"
                     alt="asset-image"
                     fill
                     sizes="(max-width: 640px) 86vw, 560px"
@@ -143,7 +143,7 @@ const Page = () => {
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="relative min-h-170 overflow-hidden max-sm:min-h-105">
               <Image
-                src="/assets/gradient/image13.png"
+                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
                 alt="asset-image"
                 fill
                 sizes="(max-width: 640px) 100vw, 58vw"

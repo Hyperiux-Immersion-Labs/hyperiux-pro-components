@@ -47,6 +47,14 @@ function dispatchLoaderComplete(skipped = false) {
       },
     })
   );
+
+  window.dispatchEvent(
+    new CustomEvent("hyperiux:loader-complete", {
+      detail: {
+        skipped,
+      },
+    })
+  );
 }
 
 function generatePixelOrder(cols, rows, seed = 42) {
@@ -114,7 +122,120 @@ export default function Loader() {
   const splitRefs = useRef([]);
   const timelineRef = useRef(null);
 
+  const scrollLockRef = useRef({
+    locked: false,
+    scrollY: 0,
+    bodyOverflow: "",
+    htmlOverflow: "",
+    bodyPosition: "",
+    bodyTop: "",
+    bodyWidth: "",
+    bodyTouchAction: "",
+    htmlOverscrollBehavior: "",
+    stopInterval: null,
+    stopRaf: null,
+  });
+
   const lenis = useLenis();
+
+  const stopLenisHard = useCallback(() => {
+    lenis?.stop?.();
+
+    if (typeof window !== "undefined") {
+      window.__HYPERIUX_LENIS_LOCKED__ = true;
+    }
+  }, [lenis]);
+
+  const lockScrollHard = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    stopLenisHard();
+
+    const lock = scrollLockRef.current;
+
+    if (!lock.locked) {
+      lock.locked = true;
+      lock.scrollY = window.scrollY || window.pageYOffset || 0;
+
+      lock.bodyOverflow = document.body.style.overflow;
+      lock.htmlOverflow = document.documentElement.style.overflow;
+      lock.bodyPosition = document.body.style.position;
+      lock.bodyTop = document.body.style.top;
+      lock.bodyWidth = document.body.style.width;
+      lock.bodyTouchAction = document.body.style.touchAction;
+      lock.htmlOverscrollBehavior =
+        document.documentElement.style.overscrollBehavior;
+
+      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.overscrollBehavior = "none";
+
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${lock.scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.touchAction = "none";
+    }
+
+    if (!lock.stopInterval) {
+      lock.stopInterval = window.setInterval(() => {
+        lenis?.stop?.();
+      }, 50);
+    }
+
+    const stopEveryFrame = () => {
+      if (!scrollLockRef.current.locked) return;
+
+      lenis?.stop?.();
+      scrollLockRef.current.stopRaf = window.requestAnimationFrame(stopEveryFrame);
+    };
+
+    if (!lock.stopRaf) {
+      lock.stopRaf = window.requestAnimationFrame(stopEveryFrame);
+    }
+  }, [lenis, stopLenisHard]);
+
+  const unlockScrollHard = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const lock = scrollLockRef.current;
+
+    if (lock.stopInterval) {
+      window.clearInterval(lock.stopInterval);
+      lock.stopInterval = null;
+    }
+
+    if (lock.stopRaf) {
+      window.cancelAnimationFrame(lock.stopRaf);
+      lock.stopRaf = null;
+    }
+
+    if (lock.locked) {
+      document.documentElement.style.overflow = lock.htmlOverflow;
+      document.documentElement.style.overscrollBehavior =
+        lock.htmlOverscrollBehavior;
+
+      document.body.style.overflow = lock.bodyOverflow;
+      document.body.style.position = lock.bodyPosition;
+      document.body.style.top = lock.bodyTop;
+      document.body.style.width = lock.bodyWidth;
+      document.body.style.touchAction = lock.bodyTouchAction;
+
+      window.scrollTo(0, lock.scrollY || 0);
+    }
+
+    lock.locked = false;
+    window.__HYPERIUX_LENIS_LOCKED__ = false;
+
+    lenis?.start?.();
+
+    requestAnimationFrame(() => {
+      lenis?.start?.();
+    });
+
+    window.setTimeout(() => {
+      lenis?.start?.();
+    }, 80);
+  }, [lenis]);
 
   const drawWhitePixels = useCallback((canvas, progress) => {
     if (!canvas) return;
@@ -215,7 +336,8 @@ export default function Loader() {
     if (hasLoaderRun()) {
       document.body.classList.remove("loader-active");
       setLoaderRuntimeState({ running: false, complete: true });
-      lenis?.start();
+
+      unlockScrollHard();
 
       setIsVisible(false);
       setShouldRun(false);
@@ -227,24 +349,48 @@ export default function Loader() {
       return;
     }
 
+    lockScrollHard();
+
     document.body.classList.add("loader-active");
     setLoaderRuntimeState({ running: true, complete: false });
 
-    lenis?.stop();
-
     setShouldRun(true);
     setIsVisible(true);
-  }, [lenis]);
+
+    return () => {
+      if (!hasLoaderRun()) {
+        lockScrollHard();
+      }
+    };
+  }, [lockScrollHard, unlockScrollHard]);
 
   useEffect(() => {
     if (!shouldRun || !isVisible) return;
 
-    lenis?.stop();
+    lockScrollHard();
+
     document.body.classList.add("loader-active");
     setLoaderRuntimeState({ running: true, complete: false });
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+
+    const preventScrollEvent = (event) => {
+      if (!scrollLockRef.current.locked) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    window.addEventListener("wheel", preventScrollEvent, {
+      passive: false,
+      capture: true,
+    });
+
+    window.addEventListener("touchmove", preventScrollEvent, {
+      passive: false,
+      capture: true,
+    });
 
     const ctx = gsap.context(() => {
       const textOneSplit = SplitText.create(textOneRef.current, {
@@ -276,9 +422,11 @@ export default function Loader() {
       const tl = gsap.timeline({
         onComplete: () => {
           markLoaderAsRun();
-          gsap.set(behindLogoRef.current,{
-            opacity:0,
-          })
+
+          gsap.set(behindLogoRef.current, {
+            opacity: 0,
+          });
+
           document.body.classList.remove("loader-active");
           setLoaderRuntimeState({ running: false, complete: true });
 
@@ -287,7 +435,7 @@ export default function Loader() {
           setIsVisible(false);
           setShouldRun(false);
 
-          lenis?.start();
+          unlockScrollHard();
         },
       });
 
@@ -452,14 +600,16 @@ export default function Loader() {
 
     return () => {
       timelineRef.current?.kill();
-      document.body.classList.remove("loader-active");
-
-      if (!hasLoaderRun()) {
-        setLoaderRuntimeState({ running: false, complete: false });
-      }
 
       window.removeEventListener("resize", resizeCanvas);
-      lenis?.start();
+
+      window.removeEventListener("wheel", preventScrollEvent, {
+        capture: true,
+      });
+
+      window.removeEventListener("touchmove", preventScrollEvent, {
+        capture: true,
+      });
 
       splitRefs.current.forEach((split) => {
         split?.revert();
@@ -468,17 +618,32 @@ export default function Loader() {
       splitRefs.current = [];
 
       ctx.revert();
+
+      if (hasLoaderRun()) {
+        document.body.classList.remove("loader-active");
+        setLoaderRuntimeState({ running: false, complete: true });
+        unlockScrollHard();
+      } else {
+        lockScrollHard();
+      }
     };
-  }, [shouldRun, isVisible, drawWhitePixels, resizeCanvas, lenis]);
+  }, [
+    shouldRun,
+    isVisible,
+    drawWhitePixels,
+    resizeCanvas,
+    lockScrollHard,
+    unlockScrollHard,
+  ]);
 
   if (!isVisible) return null;
 
   return (
     <div
-  id="site-loader"
-  ref={rootRef}
-  className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center overflow-hidden"
->
+      id="site-loader"
+      ref={rootRef}
+      className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center overflow-hidden"
+    >
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 z-0 h-screen w-screen"

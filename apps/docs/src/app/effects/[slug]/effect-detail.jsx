@@ -33,6 +33,7 @@ import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { RouteFade } from "@/components/layout/RouteFade";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 function SkeletonBlock({ className = "" }) {
   return (
@@ -175,6 +176,7 @@ export function EffectDetailContent({
   totalEffects,
   isLocked = false,
   userPlan = "free",
+  searchEffects = [],
 }) {
   useFadeUp();
   useLineAnim();
@@ -197,7 +199,6 @@ export function EffectDetailContent({
     startY: 0,
     scrollLeft: 0,
   });
-
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
@@ -234,9 +235,9 @@ export function EffectDetailContent({
     ? relatedEffects
     : [];
 
-  const videoPreviewUrl = safeEffect
-    ? resolveEffectVideoUrl(safeEffect)
-    : "";
+  const videoPreviewUrl = resolveEffectVideoUrl({
+    videoUrl: content?.videoUrl || safeEffect.videoUrl || `${slug}.mp4`,
+  });
 
   const updateRelatedScrollState = useCallback(() => {
     const slider = relatedSliderRef.current;
@@ -396,21 +397,24 @@ export function EffectDetailContent({
   const dependencies = safeEffect.dependencies || [];
 
   const coverImage =
-    resolveMediaUrl(safeEffect.coverImage || safeEffect.imageSrc, {
+    resolveMediaUrl(content?.coverImage || safeEffect.coverImage || slug, {
       defaultDirectory: "vault-listing-images",
       defaultExtension: "png",
     }) || "/assets/img/image01.webp";
 
   return (
     <VaultLayout
-      effectCounts={effectCounts || {}}
-      totalEffects={totalEffects || 0}
-      bgImageSrc=""
-      activeCategory={safeEffect.categories?.[0] || safeEffect.category}
+       effectCounts={effectCounts || {}}
+  totalEffects={totalEffects || 0}
+  bgImageSrc=""
+  activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
+  searchEffects={searchEffects}
     >
       <div className="min-h-screen text-foreground">
         <Suspense fallback={<div className="h-12" />}>
-          <VaultHeader effectName={safeEffect.title} showSearch={true} />
+          <VaultHeader effectName={pageTitle || safeEffect.title}
+  showSearch={true}
+  effects={searchEffects} />
         </Suspense>
 
         {isMainDataLoading ? (
@@ -479,7 +483,7 @@ export function EffectDetailContent({
                   )}
 
                   <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
-                    {(dependencies.length > 0 || safeEffect.tier === "pro") && (
+                    {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
                       <div className="flex flex-wrap items-center gap-2">
                         {dependencies.map((dep) => (
                           <span
@@ -553,7 +557,7 @@ export function EffectDetailContent({
               </div>
 
               <div className="relative max-sm:px-[7vw] max-md:px-[6vw] pt-[1.5vw]">
-                <div className="fixed right-8 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                   <TableOfContents
                     containerRef={contentRef}
                     stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
@@ -597,33 +601,31 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                  <div className="max-md:hidden">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                <div className="max-md:hidden">
+                  {showRelatedSliderControls && (
+                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("previous")}
+                        disabled={!canScrollPrev}
+                        aria-label="Show previous related effects"
+                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("next")}
+                        disabled={!canScrollNext}
+                        aria-label="Show next related effects"
+                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
@@ -658,33 +660,31 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                  <div className="hidden max-md:block">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                <div className="hidden max-md:block">
+                  {showRelatedSliderControls && (
+                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("previous")}
+                        disabled={!canScrollPrev}
+                        aria-label="Show previous related effects"
+                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${
-                            !canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00]"
+                      <CircularButton
+                        type="button"
+                        onClick={() => scrollRelatedEffects("next")}
+                        disabled={!canScrollNext}
+                        aria-label="Show next related effects"
+                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                          : "hover:border-[#ff5f00]"
                           }`}
                           bgColor="#ff5f00"
                         >
@@ -752,8 +752,11 @@ function EffectCtaSection({ cta, sectionRef }) {
         )}
 
         <div className="w-fit max-sm:mt-[4vw] mt-6">
+          <CustomAnimationFormTrigger>
           {cta.buttonText && (
+
             <Button
+             preventDefault={false}
               text={cta.buttonText}
               href={buttonLink}
               scaleClass="group-hover:scale-[100]!"
@@ -762,6 +765,7 @@ function EffectCtaSection({ cta, sectionRef }) {
               className="shrink-0 w-fit"
             />
           )}
+          </CustomAnimationFormTrigger>
         </div>
       </div>
     </section>
@@ -1222,7 +1226,6 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const lenis = useLenis();
 
   const activeLockRef = useRef({
     id: "",
@@ -1232,82 +1235,72 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
   const scrollTweenRef = useRef(null);
 
-  const onTocClick = (e, id) => {
-    e.preventDefault();
-
-    const el = document.getElementById(id);
-
-    if (!el) return;
-
-    const topOffset = window.innerHeight * 0.2;
-
-    const targetTop = el.getBoundingClientRect().top + window.scrollY - topOffset;
-
+  const clearActiveLock = useCallback(() => {
     if (activeLockRef.current.timeoutId) {
       window.clearTimeout(activeLockRef.current.timeoutId);
     }
 
     activeLockRef.current = {
-      id,
-      targetTop,
+      id: "",
+      targetTop: 0,
       timeoutId: null,
     };
+  }, []);
 
-    setActiveId(id);
+  const onTocClick = useCallback(
+    (event, id) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    scrollTweenRef.current?.kill();
+      const el = document.getElementById(id);
 
-    const scrollState = {
-      y: window.scrollY,
-    };
+      if (!el || typeof window === "undefined") return;
 
-    scrollTweenRef.current = gsap.to(scrollState, {
-      y: targetTop,
-      duration: 1.15,
-      ease: "power3.out",
-      onUpdate: () => {
-        if (lenis) {
-          lenis.scrollTo(scrollState.y, {
-            immediate: true,
-            force: true,
+      const topOffset = window.innerHeight * 0.2;
+      const targetTop =
+        el.getBoundingClientRect().top + window.scrollY - topOffset;
+
+      clearActiveLock();
+
+      activeLockRef.current = {
+        id,
+        targetTop,
+        timeoutId: null,
+      };
+
+      setActiveId(id);
+
+      scrollTweenRef.current?.kill();
+
+      const scrollState = {
+        y: window.scrollY,
+      };
+
+      scrollTweenRef.current = gsap.to(scrollState, {
+        y: targetTop,
+        duration: 1.15,
+        ease: "power4.out",
+        overwrite: true,
+        onUpdate: () => {
+          window.scrollTo({
+            top: scrollState.y,
+            left: 0,
+            behavior: "auto",
           });
-          return;
-        }
+        },
+        onComplete: () => {
+          scrollTweenRef.current = null;
 
-        window.scrollTo(0, scrollState.y);
-      },
-      onComplete: () => {
-        scrollTweenRef.current = null;
-      },
-    });
+          window.history.replaceState(null, "", `#${id}`);
 
-    window.history.pushState(null, "", `#${id}`);
-
-    const releaseWhenSettled = (startedAt = performance.now()) => {
-      const isSettled = Math.abs(window.scrollY - targetTop) < 2;
-      const timedOut = performance.now() - startedAt > 1800;
-
-      if (isSettled || timedOut) {
-        activeLockRef.current = {
-          id: "",
-          targetTop: 0,
-          timeoutId: null,
-        };
-
-        return;
-      }
-
-      activeLockRef.current.timeoutId = window.setTimeout(
-        () => releaseWhenSettled(startedAt),
-        80
-      );
-    };
-
-    activeLockRef.current.timeoutId = window.setTimeout(
-      () => releaseWhenSettled(),
-      120
-    );
-  };
+          activeLockRef.current.timeoutId = window.setTimeout(() => {
+            clearActiveLock();
+          }, 120);
+        },
+      });
+    },
+    [clearActiveLock]
+  );
 
   useEffect(() => {
     const root = containerRef?.current;
@@ -1393,7 +1386,7 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
         if (activeLockRef.current.id) return;
 
         const visible = entries
-          .filter((e) => e.isIntersecting)
+          .filter((entry) => entry.isIntersecting)
           .sort((a, b) =>
             a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1
           )[0];
@@ -1410,7 +1403,7 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
       }
     );
 
-    headings.forEach((h) => observer.observe(h));
+    headings.forEach((heading) => observer.observe(heading));
 
     return () => observer.disconnect();
   }, [containerRef, items.length]);
@@ -1436,17 +1429,17 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
       <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
         <ul className="space-y-1 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc">
-          {items.map((it) => (
-            <li key={it.id}>
+          {items.map((item) => (
+            <li key={item.id}>
               <a
-                href={`#${it.id}`}
+                href={`#${item.id}`}
                 className={[
                   "block rounded-sm px-3 py-2 text20 font-medium leading-none text-white transition-colors duration-300 ease-out",
-                  activeId === it.id ? "bg-black" : "hover:bg-black/55",
+                  activeId === item.id ? "bg-black" : "hover:bg-black/55",
                 ].join(" ")}
-                onClick={(e) => onTocClick(e, it.id)}
+                onClick={(event) => onTocClick(event, item.id)}
               >
-                {it.text}
+                {item.text}
               </a>
             </li>
           ))}
@@ -1454,18 +1447,18 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
       </div>
 
       <ul className="flex w-12 flex-col items-end gap-5">
-        {items.map((it) => (
-          <li key={it.id}>
+        {items.map((item) => (
+          <li key={item.id}>
             <a
-              href={`#${it.id}`}
-              aria-label={it.text}
+              href={`#${item.id}`}
+              aria-label={item.text}
               className="block cursor-pointer py-1"
-              onClick={(e) => onTocClick(e, it.id)}
+              onClick={(event) => onTocClick(event, item.id)}
             >
               <span
                 className={[
                   "block h-0.5 rounded-full transition-all duration-300 ease-out",
-                  activeId === it.id
+                  activeId === item.id
                     ? "w-8 bg-primary"
                     : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
                 ].join(" ")}

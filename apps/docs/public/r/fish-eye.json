@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Fish Eye",
   "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "@react-three/fiber",
     "@react-three/drei",
@@ -16,9 +11,6 @@
   "registryDependencies": [],
   "exportName": "FishEyeImage",
   "exportKind": "named",
-  "previewUrl": "/cursors/fish-eye",
-  "coverImage": "fish-eye",
-  "videoUrl": "fish-eye.mp4",
   "files": [
     {
       "path": "fish-eye.jsx",

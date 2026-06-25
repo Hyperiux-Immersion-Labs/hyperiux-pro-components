@@ -34,7 +34,7 @@ const PRO_ROUTES = [
   "/scramble-text",
   "/scroll-shuffled-cards",
   "/slide-text-reveal",
-  "/smooth-scroll-animation",
+  // "/smooth-scroll-animation",
   "/spotlight-text",
   "/square-translate",
   "/stacking-cards",

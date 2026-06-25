@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Parallax Gallery",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ParallaxGallery",
   "exportKind": "named",
-  "previewUrl": "/parallax-gallery",
-  "coverImage": "parallax-gallery",
-  "videoUrl": "parallax-gallery.mp4",
   "files": [
     {
       "path": "parallax-gallery.jsx",

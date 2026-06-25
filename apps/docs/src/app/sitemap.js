@@ -48,6 +48,12 @@ export default async function sitemap() {
     priority: 0.6,
   }));
 
+  const demoRoutes = sanityEntries.map((entry) => ({
+    path: `/demo/${entry.effectSlug}`,
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
   const technologyRoutes = TECHNOLOGIES.map((technology) => ({
     path: `/tech/${technology.slug}`,
     changeFrequency: "monthly",
@@ -58,6 +64,7 @@ export default async function sitemap() {
     ...staticRoutes,
     ...categoryRoutes,
     ...effectRoutes,
+    ...demoRoutes,
     ...technologyRoutes,
   ];
 

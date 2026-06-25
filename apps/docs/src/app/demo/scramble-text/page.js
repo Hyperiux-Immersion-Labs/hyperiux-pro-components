@@ -38,7 +38,7 @@ const Page = () => {
 
              
               <Image
-                src="/assets/img/distortion.jpg"
+                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
                 alt="Abstract distortion texture"
                 width={800}
                 height={800}
@@ -59,7 +59,7 @@ const Page = () => {
 
            
             <Image
-              src="/assets/gradient/image11.png"
+              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
               alt="Gradient texture"
               width={2070}
               height={1380}

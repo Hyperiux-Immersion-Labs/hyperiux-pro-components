@@ -1,239 +1,408 @@
-"use client"
+"use client";
 
-import Image from'next/image'
-import React, { useRef, useEffect, useState } from'react'
-import { registerFxTarget, unregisterFxTarget } from'@/lib/2dCanvasTracker'
+import React, { useRef, useEffect, useState } from "react";
+import { registerFxTarget, unregisterFxTarget } from "@/lib/2dCanvasTracker";
 
-const GRID_SIZE = 35
-const EFFECT_RADIUS = 40
-const MAX_TRAIL_LENGTH = 8
-const CELL_LIFETIME = 100
+const GRID_SIZE = 35;
+const EFFECT_RADIUS = 40;
+const MAX_TRAIL_LENGTH = 8;
+const CELL_LIFETIME = 100;
+const GRID_IMAGE_BASE_URL =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/FeddleAsciCursor";
+const CANVAS_SAFE_MEDIA_HOSTS = new Set([
+  "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev",
+]);
 
-export function PixelBloom({  src,  type ='video',  className ='h-[30vw] w-auto aspect-video',
- gridSize = GRID_SIZE,
- effectRadius = EFFECT_RADIUS,
- maxTrailLength = MAX_TRAIL_LENGTH,
- cellLifetime = CELL_LIFETIME
+const getCanvasSafeMediaUrl = (source) => {
+  if (!source) return source;
+
+  try {
+    const url = new URL(source);
+    if (url.protocol === "https:" && CANVAS_SAFE_MEDIA_HOSTS.has(url.hostname)) {
+      return `/api/media-proxy?url=${encodeURIComponent(url.toString())}`;
+    }
+    return source;
+  } catch {
+    return source;
+  }
+};
+
+export function PixelBloom({
+  src,
+  type = "video",
+  className = "h-[30vw] w-auto aspect-video",
+  gridSize = GRID_SIZE,
+  effectRadius = EFFECT_RADIUS,
+  maxTrailLength = MAX_TRAIL_LENGTH,
+  cellLifetime = CELL_LIFETIME,
 }) {
- const containerRef = useRef(null)
- const canvasRef = useRef(null)
- const mediaRef = useRef(null)
- const [gridImages, setGridImages] = useState([])
- const animationRef = useRef(null)
- const cellImageMapRef = useRef(new Map())
- const trailRef = useRef([])
- const sequenceRef = useRef(0) // added for sequential indexing
+  const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const mediaRef = useRef(null);
 
- useEffect(() => {
- const images = []
- let loadedCount = 0
- for (let i = 0; i <= 9; i++) {
- const img = new Image()
- img.src = `/assets/cursors/FeddleAsciCursor/grid-${i}.1.png`
- img.onload = () => { if (++loadedCount === 9) setGridImages(images) }
- images.push(img)
- }
- }, [])
+  const [gridImages, setGridImages] = useState([]);
 
- useEffect(() => {
- const container = containerRef.current
- if (!container) return
+  const animationRef = useRef(null);
+  const cellImageMapRef = useRef(new Map());
+  const trailRef = useRef([]);
+  const sequenceRef = useRef(0);
 
- const handlers = {
- onMove: ({ localX, localY }) => {
- const now = Date.now()
- const rand = () => (Math.random() - 0.5)
-  trailRef.current.unshift({ x: localX + rand() * 30, y: localY + rand() * 30, timestamp: now })
- for (let i = 0; i < 2; i++) {
- trailRef.current.unshift({ x: localX + rand() * 60, y: localY + rand() * 60, timestamp: now })
- }
- if (trailRef.current.length > maxTrailLength) {
- trailRef.current.length = maxTrailLength
- }
- },
- onLeave: () => {}
- }
+  useEffect(() => {
+    let cancelled = false;
 
- registerFxTarget(container, handlers)
+    const images = [];
+    let loadedCount = 0;
+    const totalImages = 10;
 
- return () => {
- unregisterFxTarget(container)
- }
- }, [maxTrailLength])
+    for (let i = 0; i < totalImages; i++) {
+      const img = new window.Image();
+      img.src = getCanvasSafeMediaUrl(`${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`);
 
- useEffect(() => {
- const canvas = canvasRef.current
- const media = mediaRef.current
- const container = containerRef.current
- if (!canvas || !media || !container || gridImages.length === 0) return
+      img.onload = () => {
+        loadedCount += 1;
 
- const ctx = canvas.getContext('2d')
- const dpr = window.devicePixelRatio || 1
+        if (!cancelled && loadedCount === totalImages) {
+          setGridImages(images);
+        }
+      };
 
- const resizeCanvas = () => {
- const rect = container.getBoundingClientRect()
- canvas.width = rect.width * dpr
- canvas.height = rect.height * dpr
- ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
- canvas.style.width = rect.width +'px'
- canvas.style.height = rect.height +'px'
- }
- resizeCanvas()
- window.addEventListener('resize', resizeCanvas)
+      img.onerror = () => {
+        loadedCount += 1;
 
- const drawMediaCover = (media, ctx, canvasWidth, canvasHeight) => {
- const mediaWidth = type ==='video' ? media.videoWidth : media.naturalWidth
- const mediaHeight = type ==='video' ? media.videoHeight : media.naturalHeight
-  if (!mediaWidth || !mediaHeight) {
- ctx.drawImage(media, 0, 0, canvasWidth, canvasHeight)
- return
- }
+        if (!cancelled && loadedCount === totalImages) {
+          setGridImages(images.filter((image) => image.complete));
+        }
+      };
 
- const mediaAspect = mediaWidth / mediaHeight
- const canvasAspect = canvasWidth / canvasHeight
+      images.push(img);
+    }
 
- let srcX, srcY, srcW, srcH
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
- if (mediaAspect > canvasAspect) {
- srcH = mediaHeight
- srcW = mediaHeight * canvasAspect
- srcX = (mediaWidth - srcW) / 2
- srcY = 0
- } else {
- srcW = mediaWidth
- srcH = mediaWidth / canvasAspect
- srcX = 0
- srcY = (mediaHeight - srcH) / 2
- }
+  useEffect(() => {
+    const container = containerRef.current;
 
- ctx.drawImage(media, srcX, srcY, srcW, srcH, 0, 0, canvasWidth, canvasHeight)
- }
+    if (!container) return;
 
- const render = () => {
- const rect = container.getBoundingClientRect()
- const { width, height } = rect
- const now = Date.now()
+    const handlers = {
+      onMove: ({ localX, localY }) => {
+        const now = Date.now();
+        const rand = () => Math.random() - 0.5;
 
- ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
- ctx.imageSmoothingEnabled = true
- ctx.imageSmoothingQuality ='high'
- drawMediaCover(media, ctx, width, height)
+        trailRef.current.unshift({
+          x: localX + rand() * 30,
+          y: localY + rand() * 30,
+          timestamp: now,
+        });
 
- trailRef.current = trailRef.current.filter(p => now - p.timestamp < cellLifetime)
+        for (let i = 0; i < 2; i++) {
+          trailRef.current.unshift({
+            x: localX + rand() * 60,
+            y: localY + rand() * 60,
+            timestamp: now,
+          });
+        }
 
- const affectedCells = new Map()
- for (const { x: mx, y: my, timestamp } of trailRef.current) {
- if (mx < 0 || mx > width || my < 0 || my > height) continue
- const radius = effectRadius * (0.5 + Math.random() * 0.8)
- const startCol = Math.max(0, Math.floor((mx - radius) / gridSize))
- const endCol = Math.min(Math.ceil(width / gridSize), Math.ceil((mx + radius) / gridSize))
- const startRow = Math.max(0, Math.floor((my - radius) / gridSize))
- const endRow = Math.min(Math.ceil(height / gridSize), Math.ceil((my + radius) / gridSize))
+        if (trailRef.current.length > maxTrailLength) {
+          trailRef.current.length = maxTrailLength;
+        }
+      },
+      onLeave: () => {},
+    };
 
- for (let row = startRow; row < endRow; row++) {
- for (let col = startCol; col < endCol; col++) {
- if (Math.random() > 0.7) continue
- const cx = col * gridSize + gridSize / 2
- const cy = row * gridSize + gridSize / 2
- if (Math.hypot(cx - mx, cy - my) < radius) {
- const key = `${col},${row}`
- if (!affectedCells.has(key) || timestamp > affectedCells.get(key)) {
- affectedCells.set(key, timestamp)
- }
- }
- }
- }
- }
+    registerFxTarget(container, handlers);
 
- for (const [key, timestamp] of affectedCells) {
- const cell = cellImageMapRef.current.get(key)
- if (cell) {
- cell.timestamp = timestamp
- } else {
- // sequential instead of random
- const index = sequenceRef.current % gridImages.length
- sequenceRef.current++
+    return () => {
+      unregisterFxTarget(container);
+    };
+  }, [maxTrailLength]);
 
- cellImageMapRef.current.set(key, {  gridIndex: index,  timestamp,  randomDelay: Math.random() * 500  })
- }
- }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const media = mediaRef.current;
+    const container = containerRef.current;
 
- for (const [key, cell] of cellImageMapRef.current) {
- if (now - cell.timestamp > cellLifetime + (cell.randomDelay || 0) && Math.random() > 0.3) {
- cellImageMapRef.current.delete(key)
- }
- }
+    if (!canvas || !media || !container || gridImages.length === 0) return;
 
- for (const [key, { gridIndex }] of cellImageMapRef.current) {
- const [col, row] = key.split(',').map(Number)
- const img = gridImages[gridIndex]
- if (!img?.complete) continue
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
 
- const { naturalWidth: iw, naturalHeight: ih } = img
- const imgAspect = iw / ih
- let srcX, srcY, srcW, srcH
- if (imgAspect > 1) {
- srcH = ih; srcW = ih; srcX = (iw - srcW) / 2; srcY = 0
- } else {
- srcW = iw; srcH = iw; srcX = 0; srcY = (ih - srcH) / 2
- }
- ctx.drawImage(img, srcX, srcY, srcW, srcH, col * gridSize, row * gridSize, gridSize, gridSize)
- }
+    if (!ctx) return;
 
- animationRef.current = requestAnimationFrame(render)
- }
+    const resizeCanvas = () => {
+      const rect = container.getBoundingClientRect();
 
- const startRender = () => {
- if (animationRef.current) cancelAnimationFrame(animationRef.current)
- render()
- }
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
 
- if (type ==='video') {
- media.addEventListener('loadeddata', startRender)
- media.addEventListener('play', startRender)
- if (media.readyState >= 2) startRender()
- } else {
- if (media.complete) {
- startRender()
- } else {
- media.addEventListener('load', startRender)
- }
- }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
- return () => {
- window.removeEventListener('resize', resizeCanvas)
- if (type ==='video') {
- media.removeEventListener('loadeddata', startRender)
- media.removeEventListener('play', startRender)
- } else {
- media.removeEventListener('load', startRender)
- }
- if (animationRef.current) cancelAnimationFrame(animationRef.current)
- }
- }, [cellLifetime, effectRadius, gridImages, gridSize, type])
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+    };
 
- const defaultVideoSrc ="/assets/videos/draggable-video.mp4"
+    const drawMediaCover = (mediaElement, context, canvasWidth, canvasHeight) => {
+      const mediaWidth =
+        type === "video"
+          ? mediaElement.videoWidth
+          : mediaElement.naturalWidth;
 
- return (
- <div  ref={containerRef}
- className={`fx-target rounded-2xl overflow-hidden relative cursor-none ${className}`}
- >
- {type ==='video' ? (
- <video  ref={mediaRef}
- src={src || defaultVideoSrc}
- autoPlay loop muted playsInline
- className='w-full h-full object-cover absolute inset-0 opacity-0'  />
- ) : (
- <Image
- ref={mediaRef}
- src={src}
- alt="asset-image"
- fill
- sizes="100vw"
- className='w-full h-full object-cover absolute inset-0 opacity-0'
- />
- )}
- <canvas ref={canvasRef} className='w-full h-full absolute inset-0' />
- </div>
- )
+      const mediaHeight =
+        type === "video"
+          ? mediaElement.videoHeight
+          : mediaElement.naturalHeight;
+
+      if (!mediaWidth || !mediaHeight) {
+        try {
+          context.drawImage(mediaElement, 0, 0, canvasWidth, canvasHeight);
+        } catch {
+          return;
+        }
+
+        return;
+      }
+
+      const mediaAspect = mediaWidth / mediaHeight;
+      const canvasAspect = canvasWidth / canvasHeight;
+
+      let srcX;
+      let srcY;
+      let srcW;
+      let srcH;
+
+      if (mediaAspect > canvasAspect) {
+        srcH = mediaHeight;
+        srcW = mediaHeight * canvasAspect;
+        srcX = (mediaWidth - srcW) / 2;
+        srcY = 0;
+      } else {
+        srcW = mediaWidth;
+        srcH = mediaWidth / canvasAspect;
+        srcX = 0;
+        srcY = (mediaHeight - srcH) / 2;
+      }
+
+      try {
+        context.drawImage(
+          mediaElement,
+          srcX,
+          srcY,
+          srcW,
+          srcH,
+          0,
+          0,
+          canvasWidth,
+          canvasHeight
+        );
+      } catch {
+        return;
+      }
+    };
+
+    const render = () => {
+      const rect = container.getBoundingClientRect();
+      const { width, height } = rect;
+      const now = Date.now();
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      drawMediaCover(media, ctx, width, height);
+
+      trailRef.current = trailRef.current.filter(
+        (point) => now - point.timestamp < cellLifetime
+      );
+
+      const affectedCells = new Map();
+
+      for (const { x: mx, y: my, timestamp } of trailRef.current) {
+        if (mx < 0 || mx > width || my < 0 || my > height) continue;
+
+        const radius = effectRadius * (0.5 + Math.random() * 0.8);
+
+        const startCol = Math.max(0, Math.floor((mx - radius) / gridSize));
+        const endCol = Math.min(
+          Math.ceil(width / gridSize),
+          Math.ceil((mx + radius) / gridSize)
+        );
+
+        const startRow = Math.max(0, Math.floor((my - radius) / gridSize));
+        const endRow = Math.min(
+          Math.ceil(height / gridSize),
+          Math.ceil((my + radius) / gridSize)
+        );
+
+        for (let row = startRow; row < endRow; row++) {
+          for (let col = startCol; col < endCol; col++) {
+            if (Math.random() > 0.7) continue;
+
+            const cx = col * gridSize + gridSize / 2;
+            const cy = row * gridSize + gridSize / 2;
+
+            if (Math.hypot(cx - mx, cy - my) < radius) {
+              const key = `${col},${row}`;
+
+              if (!affectedCells.has(key) || timestamp > affectedCells.get(key)) {
+                affectedCells.set(key, timestamp);
+              }
+            }
+          }
+        }
+      }
+
+      for (const [key, timestamp] of affectedCells) {
+        const cell = cellImageMapRef.current.get(key);
+
+        if (cell) {
+          cell.timestamp = timestamp;
+        } else {
+          const index = sequenceRef.current % gridImages.length;
+          sequenceRef.current += 1;
+
+          cellImageMapRef.current.set(key, {
+            gridIndex: index,
+            timestamp,
+            randomDelay: Math.random() * 500,
+          });
+        }
+      }
+
+      for (const [key, cell] of cellImageMapRef.current) {
+        if (
+          now - cell.timestamp > cellLifetime + (cell.randomDelay || 0) &&
+          Math.random() > 0.3
+        ) {
+          cellImageMapRef.current.delete(key);
+        }
+      }
+
+      for (const [key, { gridIndex }] of cellImageMapRef.current) {
+        const [col, row] = key.split(",").map(Number);
+        const img = gridImages[gridIndex];
+
+        if (!img?.complete) continue;
+
+        const iw = img.naturalWidth;
+        const ih = img.naturalHeight;
+
+        if (!iw || !ih) continue;
+
+        const imgAspect = iw / ih;
+
+        let srcX;
+        let srcY;
+        let srcW;
+        let srcH;
+
+        if (imgAspect > 1) {
+          srcH = ih;
+          srcW = ih;
+          srcX = (iw - srcW) / 2;
+          srcY = 0;
+        } else {
+          srcW = iw;
+          srcH = iw;
+          srcX = 0;
+          srcY = (ih - srcH) / 2;
+        }
+
+        ctx.drawImage(
+          img,
+          srcX,
+          srcY,
+          srcW,
+          srcH,
+          col * gridSize,
+          row * gridSize,
+          gridSize,
+          gridSize
+        );
+      }
+
+      animationRef.current = requestAnimationFrame(render);
+    };
+
+    const startRender = () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+
+      resizeCanvas();
+      render();
+    };
+
+    resizeCanvas();
+
+    window.addEventListener("resize", resizeCanvas);
+
+    if (type === "video") {
+      media.addEventListener("loadeddata", startRender);
+      media.addEventListener("play", startRender);
+
+      if (media.readyState >= 2) {
+        startRender();
+      }
+    } else {
+      media.addEventListener("load", startRender);
+
+      if (media.complete) {
+        startRender();
+      }
+    }
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+
+      if (type === "video") {
+        media.removeEventListener("loadeddata", startRender);
+        media.removeEventListener("play", startRender);
+      } else {
+        media.removeEventListener("load", startRender);
+      }
+
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+
+      animationRef.current = null;
+      cellImageMapRef.current.clear();
+      trailRef.current = [];
+    };
+  }, [cellLifetime, effectRadius, gridImages, gridSize, src, type]);
+
+  const defaultVideoSrc = "/assets/videos/draggable-video.mp4";
+
+  return (
+    <div
+      ref={containerRef}
+      className={`fx-target relative cursor-none overflow-hidden rounded-2xl ${className}`}
+    >
+      {type === "video" ? (
+        <video
+          ref={mediaRef}
+          src={src || defaultVideoSrc}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover opacity-0"
+        />
+      ) : (
+        <img
+          ref={mediaRef}
+          src={getCanvasSafeMediaUrl(src)}
+          alt="asset-image"
+          className="absolute inset-0 h-full w-full object-cover opacity-0"
+        />
+      )}
+
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+    </div>
+  );
 }

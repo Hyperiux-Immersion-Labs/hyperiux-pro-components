@@ -1,33 +1,41 @@
+"use client";
+
 import React from "react";
+import dynamic from "next/dynamic";
 import Button from "../WebsiteComps/Button";
 import CircularButton from "../WebsiteComps/CirclularButton";
 import { socialLinks, socialLinksList as AgencyLinks, vaultLinks } from "../../utils/Links";
 import LinkHover from "../WebsiteComps/LinksHover";
 import RandomBlur from "../WebsiteComps/RandomBlur";
-import ReflectiveRods from "@/Experience/ReflectiveRods";
 
-export default function Footer({ animations=true }) {
+// Move dynamic import with ssr: false to client (this file now has "use client" directive)
+const ReflectiveRods = dynamic(() => import('@/Experience/ReflectiveRods'), { ssr: false });
+
+export default function Footer({ animations = true }) {
   return (
     <footer className="h-fit overflow-hidden max-md:mt-20   z-200 relative w-full">
       <ReflectiveRods />
       <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative">
           {
-            animations ? <RandomBlur
-              as="h2"
-              className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
-            >
-              Build the interaction layer your website is missing.
-            </RandomBlur> : <h2
-
-              className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
-            >
-              Build the interaction layer your website is missing.
-            </h2>
+            animations ? (
+              <RandomBlur
+                as="h2"
+                className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
+              >
+                Build the interaction layer your website is missing.
+              </RandomBlur>
+            ) : (
+              <h2
+                className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
+              >
+                Build the interaction layer your website is missing.
+              </h2>
+            )
           }
 
           <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
-            <Button text="Install CLI" href="/docs/installation"  />
+            <Button text="Install CLI" href="/docs/installation" />
             <Button text="Work with Hyperiux" className="border border-white" variant="white" />
           </div>
           <div className="w-full h-fit flex items-end pb-[2vw] max-md:pb-[15vw] justify-between relative max-sm:flex-col max-sm:items-center   max-sm:gap-[16vw] max-sm:pb-[8vw]">
@@ -36,12 +44,9 @@ export default function Footer({ animations=true }) {
                 <LinkHover className="text22 block" href="mailto:hello@hyperiux.com">
                   hello@hyperiux.com
                 </LinkHover>
-           
-           
                 <LinkHover className="text22 block" href="tel:+918178026136">
                   +918178026136
                 </LinkHover>
-           
               </div>
               <div className="flex mt-4 gap-3 max-sm:mt-0 max-sm:gap-[4vw]">
                 {socialLinks.map(({ href, Icon, label }) => (

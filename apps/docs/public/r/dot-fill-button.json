@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Dot Fill Button",
   "description": "Button with expanding dot that fills the background on hover with character stagger",
-  "category": "buttons",
-  "categories": [
-    "buttons"
-  ],
-  "tier": "pro",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "DotFillButton",
   "exportKind": "named",
-  "previewUrl": "/buttons/dot-fill-button",
-  "coverImage": "dot-fill-button",
-  "videoUrl": "dot-fill-button.mp4",
   "files": [
     {
       "path": "dot-fill-button.jsx",

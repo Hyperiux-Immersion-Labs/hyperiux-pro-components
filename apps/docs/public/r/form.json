@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "pro",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "Form",
   "exportKind": "named",
-  "previewUrl": "/form",
-  "coverImage": "form",
-  "videoUrl": "form.mp4",
   "files": [
     {
       "path": "form.jsx",

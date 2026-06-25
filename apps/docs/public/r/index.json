@@ -1,204 +1,166 @@
 {
   "items": [
     {
-      "name": "circular-split-roll",
-      "title": "Circular Split Roll",
-      "description": "Split circular slider with orbiting titles on one side and image cards on the other",
+      "name": "circular-slider",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "RotatingCarousel",
+      "exportKind": "named"
+    },
+    {
+      "name": "circular-split-roll",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "CircularScrollShowcase",
-      "exportKind": "default",
-      "previewUrl": "/circular-split-roll",
-      "coverImage": "circular-split-roll",
-      "videoUrl": "circular-split-roll.mp4",
-      "addedAt": 1781241939444.9812
+      "exportKind": "default"
     },
     {
       "name": "draggable-marquee",
-      "title": "Draggable Marquee",
-      "description": "Infinite horizontal marquee with drag interaction and momentum physics",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "DraggableMarquee",
-      "exportKind": "named",
-      "previewUrl": "/draggable-marquee",
-      "coverImage": "draggable-marquee",
-      "videoUrl": "draggable-marquee.mp4",
-      "addedAt": 1780566951466.8755
+      "exportKind": "named"
     },
     {
       "name": "grid-scale",
-      "title": "Grid Scale",
-      "description": "Scroll-driven animation where a centered clip-path panel expands to fullscreen while corner boxes fly in, grid lines dissolve, and floating keyword pills converge to the center.",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "GridScale",
-      "exportKind": "named",
-      "previewUrl": "/grid-scale",
-      "coverImage": "grid-scale",
-      "videoUrl": "grid-scale.mp4",
-      "addedAt": 1780566951467.0806
+      "exportKind": "named"
     },
     {
       "name": "helix-slider",
-      "title": "Helix Slider",
-      "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "HelixSlider",
-      "exportKind": "named",
-      "previewUrl": "/cylindrical-scroll",
-      "coverImage": "helix-slider",
-      "videoUrl": "helix-slider.mp4",
-      "addedAt": 1780566951467.2666
+      "exportKind": "named"
     },
     {
       "name": "horizontal-feature-reveal",
-      "title": "Horizontal Feature Reveal",
-      "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "HorizonScroll",
-      "exportKind": "named",
-      "previewUrl": "/horizontal-feature-reveal",
-      "coverImage": "horizontal-feature-reveal",
-      "videoUrl": "horizontal-feature-reveal.mp4",
-      "addedAt": 1780573510917.2134
+      "exportKind": "named"
     },
-    
     {
       "name": "infinite-perspective-slider",
-      "title": "Infinite Perspective Slider",
-      "description": "Looping perspective gallery with wheel and drag input plus split-text hover reveals",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "InfinitePerspectiveSlider",
-      "exportKind": "named",
-      "previewUrl": "/infinite-perspective-slider",
-      "coverImage": "infinite-perspective-slider",
-      "videoUrl": "infinite-perspective-slider.mp4",
-      "addedAt": 1781329408526.4534
+      "exportKind": "named"
     },
     {
       "name": "parallax-footer",
-      "title": "Parallax Footer",
-      "description": "Fixed footer that reveals with a parallax scrolling effect",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "ParallaxFooter",
-      "exportKind": "named",
-      "previewUrl": "/parallax-footer",
-      "coverImage": "parallax-footer",
-      "videoUrl": "parallax-footer.mp4",
-      "addedAt": 1780566951467.615
+      "exportKind": "named"
     },
     {
       "name": "parallax-gallery",
-      "title": "Parallax Gallery",
-      "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ParallaxGallery",
-      "exportKind": "named",
-      "previewUrl": "/parallax-gallery",
-      "coverImage": "parallax-gallery",
-      "videoUrl": "parallax-gallery.mp4",
-      "addedAt": 1780566951467.945
+      "exportKind": "named"
     },
     {
       "name": "parallax-image",
-      "title": "Parallax Image",
-      "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ParallaxImage",
-      "exportKind": "named",
-      "previewUrl": "/parallax-image-animation",
-      "coverImage": "parallax-image",
-      "videoUrl": "parallax-image.mp4",
-      "addedAt": 1780566951468.0852
+      "exportKind": "named"
     },
     {
       "name": "parallax-slider",
-      "title": "Parallax Slider",
-      "description": "Pinned horizontal gallery with clip-path reveals and image parallax",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "ParallaxSlider",
-      "exportKind": "named",
-      "previewUrl": "/parallax-slider",
-      "coverImage": "parallax-slider",
-      "videoUrl": "parallax-slider.mp4",
-      "addedAt": 1780573510917.6729
+      "exportKind": "named"
     },
     {
       "name": "progressive-bloom-valley",
-      "title": "Progressive Bloom Valley",
-      "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
@@ -206,1575 +168,1147 @@
         "three",
         "postprocessing"
       ],
+      "registryDependencies": [],
       "exportName": "ProgressiveBloomValley",
-      "exportKind": "named",
-      "previewUrl": "/webgl/progressive-bloom-valley",
-      "coverImage": "progressive-bloom-valley",
-      "videoUrl": "progressive-bloom-valley.mp4",
-      "addedAt": 1780566951468.5398
-    },
-    {
-      "name": "Circular Slider",
-      "title": "Circular Slider",
-      "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "tier": "pro",
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "exportName": "RotatingCarousel",
-      "exportKind": "named",
-      "previewUrl": "/circular-slider",
-      "coverImage": "circular-slider",
-      "videoUrl": "circular-slider.mp4",
-      "addedAt": 1780566951468.884
+      "exportKind": "named"
     },
     {
       "name": "rotation-slider",
-      "title": "Rotation Slider",
-      "description": "Scroll-pinned horizontal slider with 3D card rotation, vertical drift, and SplitText caption reveals.",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "RotationSlider",
-      "exportKind": "named",
-      "previewUrl": "/rotation-slider",
-      "coverImage": "rotation-slider",
-      "videoUrl": "rotation-slider.mp4",
-      "addedAt": 1780573510917.81
+      "exportKind": "named"
     },
     {
       "name": "scroll-distortion",
-      "title": "Scroll Distortion",
-      "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "lenis",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "ScrollDistortion",
-      "exportKind": "named",
-      "previewUrl": "/scroll-distortion",
-      "coverImage": "scroll-distortion",
-      "videoUrl": "scroll-distortion.mp4",
-      "addedAt": 1781160379987.0276
+      "exportKind": "named"
     },
     {
       "name": "scroll-shuffled-cards",
-      "title": "Scroll Shuffled Cards",
-      "description": "Pinned scroll section that drifts a shuffled stack of editorial cards across the viewport",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ScrollShuffledCards",
-      "exportKind": "named",
-      "previewUrl": "/scroll-shuffled-cards",
-      "coverImage": "scroll-shuffled-cards",
-      "videoUrl": "scroll-shuffled-cards.mp4",
-      "addedAt": 1780566951469.0745
+      "exportKind": "named"
     },
     {
       "name": "scroll-stack",
-      "title": "Scroll Stack",
-      "description": "Successive content cards that hand off focus and fade as the next section enters",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ScrollStack",
-      "exportKind": "named",
-      "previewUrl": "/stacked-card",
-      "coverImage": "scroll-stack",
-      "videoUrl": "scroll-stack.mp4",
-      "addedAt": 1781334107518.818
+      "exportKind": "named"
     },
     {
       "name": "split-canvas",
-      "title": "Split Canvas",
-      "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "SplitCanvas",
-      "exportKind": "named",
-      "previewUrl": "/split-canvas",
-      "coverImage": "split-canvas",
-      "videoUrl": "split-canvas.mp4",
-      "addedAt": 1780566951469.422
+      "exportKind": "named"
     },
     {
       "name": "square-translate",
-      "title": "Square Translate",
-      "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "SquareTranslate",
-      "exportKind": "named",
-      "previewUrl": "/square-translate",
-      "coverImage": "square-translate",
-      "videoUrl": "square-translate.mp4",
-      "addedAt": 1781160379987.2715
+      "exportKind": "named"
     },
     {
       "name": "stacking-cards",
-      "title": "Stacking Cards",
-      "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "StackingCards",
-      "exportKind": "named",
-      "previewUrl": "/stacking-cards",
-      "coverImage": "stacking-cards",
-      "videoUrl": "stacking-cards.mp4",
-      "addedAt": 1780566951469.7812
+      "exportKind": "named"
     },
     {
       "name": "sticky-content-wrapper",
-      "title": "Sticky Content Wrapper",
-      "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "StickyContentWrapper",
-      "exportKind": "named",
-      "previewUrl": "/sticky-content-wrapper",
-      "coverImage": "sticky-content-wrapper",
-      "videoUrl": "sticky-content-wrapper.mp4",
-      "addedAt": 1780573510918.4263
+      "exportKind": "named"
     },
     {
       "name": "svg-path-marquee",
-      "title": "Marquee on SVG Path",
-      "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "motion"
       ],
+      "registryDependencies": [],
       "exportName": "MarqueeAlongSvgPath",
-      "exportKind": "named",
-      "previewUrl": "/svg-path",
-      "coverImage": "svg-path-marquee",
-      "videoUrl": "svg-path-marquee.mp4",
-      "addedAt": 1780566951469.9692
+      "exportKind": "named"
     },
     {
       "name": "svg-pixel-reveal",
-      "title": "SVG Pixel Reveal",
-      "description": "Scroll-driven image that transitions from pixelated to crisp using an SVG filter and GSAP ScrollTrigger",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "SvgPixelReveal",
-      "exportKind": "named",
-      "previewUrl": "/svg-pixel-reveal",
-      "coverImage": "svg-pixel-reveal",
-      "videoUrl": "svg-pixel-reveal.mp4",
-      "addedAt": 1780566951470.1602
+      "exportKind": "named"
     },
     {
       "name": "text-convergence",
-      "title": "Text Convergence",
-      "description": "Horizontal scroll-driven text marquee where characters fly in from random positions and converge into place as you scroll",
+      "type": "registry:component",
       "category": "scroll",
       "categories": [
         "scroll"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "TextConvergence",
-      "exportKind": "named",
-      "previewUrl": "/text-convergence",
-      "coverImage": "text-convergence",
-      "videoUrl": "text-convergence.mp4",
-      "addedAt": 1780573510918.6472
+      "exportKind": "named"
     },
     {
       "name": "butterfly-trail-cursor",
-      "title": "Butterfly Trail Cursor",
-      "description": "3D butterfly swarm that spawns around the pointer and fades through space",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/drei",
         "@react-three/fiber",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "ButterflyTrailCursor",
-      "exportKind": "named",
-      "previewUrl": "/cursors/butterflies",
-      "coverImage": "butterfly-trail-cursor",
-      "videoUrl": "butterfly-trail-cursor.mp4",
-      "addedAt": 1781160379983.9875
+      "exportKind": "named"
     },
     {
       "name": "character-trail",
-      "title": "Character Trail",
-      "description": "Cursor wrapper that leaves a snake-like grid trail of character tiles as the mouse moves. Tiles snap to a 50px grid, cycle through a configurable alphabet and color palette, pop in with a spring animation, then stagger-fade out after the cursor idles.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "CharacterTrail",
-      "exportKind": "named",
-      "previewUrl": "/character-trail",
-      "coverImage": "character-trail",
-      "videoUrl": "character-trail.mp4",
-      "addedAt": 1780566951462.9539
+      "exportKind": "named"
     },
     {
       "name": "coffee-bean-cursor",
-      "title": "Coffee Bean Cursor",
-      "description": "Mouse-reactive 3D coffee bean flow with velocity-based lighting and fluid drift",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/drei",
         "@react-three/fiber",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "CoffeeBeanCursor",
-      "exportKind": "named",
-      "previewUrl": "/cursors/coffee",
-      "coverImage": "coffee-bean-cursor",
-      "videoUrl": "coffee-bean-cursor.mp4",
-      "addedAt": 1781160379984.145
+      "exportKind": "named"
     },
     {
       "name": "colorful-cursor-aura",
-      "title": "Colorful Cursor Aura",
-      "description": "Layered radial color aura that follows the cursor across oversized headline text",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ColorfulCursorAura",
-      "exportKind": "named",
-      "previewUrl": "/colorful-cursor-aura",
-      "coverImage": "colorful-cursor-aura",
-      "videoUrl": "colorful-cursor-aura.mp4",
-      "addedAt": 1780566951463.2773
+      "exportKind": "named"
     },
     {
       "name": "cursor-move",
-      "title": "Cursor Move",
-      "description": "Fullscreen cursor-follow crosshair + cursor dot with variable font axis mapping and coordinate readout.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "CursorMove",
-      "exportKind": "named",
-      "previewUrl": "/cursor-move",
-      "coverImage": "cursor-move",
-      "videoUrl": "cursor-move.mp4",
-      "addedAt": 1781160379984.3027
+      "exportKind": "named"
     },
     {
       "name": "fish-eye",
-      "title": "Fish Eye",
-      "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "FishEyeImage",
-      "exportKind": "named",
-      "previewUrl": "/cursors/fish-eye",
-      "coverImage": "fish-eye",
-      "videoUrl": "fish-eye.mp4",
-      "addedAt": 1780566951463.577
+      "exportKind": "named"
     },
     {
       "name": "full-screen-crosshair",
-      "title": "Full Screen Crosshair",
-      "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "FullScreenCrosshair",
-      "exportKind": "named",
-      "previewUrl": "/full-screen-crosshair",
-      "coverImage": "full-screen-crosshair",
-      "videoUrl": "full-screen-crosshair.mp4",
-      "addedAt": 1781160379984.4456
+      "exportKind": "named"
     },
     {
       "name": "inertia-img",
-      "title": "Inertia Image",
-      "description": "Image grid with physics-based inertia and wobble effect on mouse hover using GSAP InertiaPlugin.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "InertiaImg",
-      "exportKind": "named",
-      "previewUrl": "/inertia-img",
-      "coverImage": "inertia-img",
-      "videoUrl": "inertia-img.mp4",
-      "addedAt": 1780566951463.9316
+      "exportKind": "named"
     },
     {
       "name": "interactive-arrows",
-      "title": "Interactive Arrows",
-      "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout. Scroll-driven background color transitions via GSAP ScrollTrigger.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "InteractiveArrows",
-      "exportKind": "named",
-      "previewUrl": "/interactive-arrows",
-      "coverImage": "interactive-arrows",
-      "videoUrl": "interactive-arrows.mp4",
-      "addedAt": 1780566951464.5227
+      "exportKind": "named"
     },
     {
       "name": "liquid-glass-cursor",
-      "title": "Liquid Glass Cursor",
-      "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
-      "exportKind": "named",
-      "previewUrl": "/liquid-glass-cursor",
-      "coverImage": "liquid-glass-cursor",
-      "videoUrl": "liquid-glass-cursor.mp4",
-      "addedAt": 1780566951464.782
+      "exportKind": "named"
     },
     {
       "name": "magnetic-image-trail",
-      "title": "Magnetic Image Trail",
-      "description": "Canvas 2D effect that orbits a cluster of images around the cursor in a diagonal loop. Images scale up in the direction of movement and push forward/upward based on mouse velocity, creating a magnetic pull feel.",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "MagneticImageTrail",
-      "exportKind": "named",
-      "previewUrl": "/magnetic-image-trail",
-      "coverImage": "magnetic-image-trail",
-      "videoUrl": "magnetic-image-trail.mp4",
-      "addedAt": 1780566951464.9307
+      "exportKind": "named"
     },
     {
       "name": "noise-ripple-cursor",
-      "title": "Noise Ripple Cursor",
-      "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "NoiseRippleCursor",
-      "exportKind": "named",
-      "previewUrl": "/cursors/noiseripple",
-      "coverImage": "noise-ripple-cursor",
-      "videoUrl": "noise-ripple-cursor",
-      "addedAt": 1781160379984.6072
+      "exportKind": "named"
     },
     {
       "name": "phantom-image-trail",
-      "title": "Phantom Image Trail",
-      "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "PhantomImageTrail",
-      "exportKind": "named",
-      "previewUrl": "/phantom-image-trail",
-      "coverImage": "phantom-image-trail",
-      "videoUrl": "phantom-image-trail.mp4",
-      "addedAt": 1781160379985.0295
+      "exportKind": "named"
     },
     {
       "name": "pixelated-image-effect",
-      "title": "Pixelated Image Effect",
-      "description": "SVG filter-based image pixelation that reacts to cursor position — pixel size grows and shrinks as you move across the image",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "PixelatedImageEffect",
-      "exportKind": "named",
-      "previewUrl": "/pixelated-image-effect",
-      "coverImage": "pixelated-image-effect",
-      "videoUrl": "pixelated-image-effect.mp4",
-      "addedAt": 1780573510913.9006
+      "exportKind": "named"
     },
     {
       "name": "pixel-bloom",
-      "title": "Pixel Bloom",
-      "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "PixelBloom",
-      "exportKind": "named",
-      "previewUrl": "/cursors/pixel-bloom",
-      "coverImage": "pixel-bloom",
-      "videoUrl": "pixel-bloom",
-      "addedAt": 1781160379983.8206
+      "exportKind": "named"
     },
     {
       "name": "rope-cursor",
-      "title": "Rope Cursor",
-      "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
+      "type": "registry:component",
       "category": "cursor",
       "categories": [
         "cursor"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "RopeCursor",
-      "exportKind": "named",
-      "previewUrl": "/cursors/rope",
-      "coverImage": "rope-cursor",
-      "videoUrl": "rope-cursor.mp4",
-      "addedAt": 1781160379985.403
+      "exportKind": "named"
     },
     {
       "name": "dither-canvas",
-      "title": "Dither Canvas",
-      "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
+      "type": "registry:component",
       "category": "backgrounds",
       "categories": [
         "backgrounds"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "DitherCanvas",
-      "exportKind": "named",
-      "previewUrl": "/dither-canvas",
-      "coverImage": "dither-canvas",
-      "videoUrl": "dither-canvas.mp4",
-      "addedAt": 1780566951459.8853
+      "exportKind": "named"
     },
     {
       "name": "dotted-grid",
-      "title": "Dotted Grid",
-      "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes (star, square, circle ring, plus, triangle). Mouse cursor creates a dark shrinking head effect and leaves a glowing blue trail that lingers and fades.",
+      "type": "registry:component",
       "category": "backgrounds",
       "categories": [
         "backgrounds"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "DottedGrid",
-      "exportKind": "named",
-      "previewUrl": "/dotted-grid",
-      "coverImage": "dotted-grid",
-      "videoUrl": "dotted-grid.mp4",
-      "addedAt": 1780573510910.0576
+      "exportKind": "named"
     },
     {
       "name": "spider-particles",
-      "title": "Spider Particles",
-      "description": "Canvas particle network background with connecting lines and mouse-driven repulsion — pure canvas, zero dependencies",
+      "type": "registry:component",
       "category": "backgrounds",
       "categories": [
         "backgrounds"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "SpiderParticles",
-      "exportKind": "named",
-      "previewUrl": "/spider-particles",
-      "coverImage": "spider-particles",
-      "videoUrl": "spider-particles.mp4",
-      "addedAt": 1780573510910.2031
+      "exportKind": "named"
     },
     {
       "name": "block-transition",
-      "title": "Block Transition",
-      "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "BlockTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/block",
-      "coverImage": "block-transition",
-      "videoUrl": "block-transition.mp4",
-      "addedAt": 1780573510919.7734
+      "exportKind": "named"
     },
     {
       "name": "chess-grid-transition",
-      "title": "Chess Grid Transition",
-      "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "ChessGridTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/chess-grid-transition",
-      "coverImage": "chess-grid-transition",
-      "videoUrl": "chess-grid-transition.mp4",
-      "addedAt": 1781160379987.9265
+      "exportKind": "named"
     },
     {
       "name": "page-flip-transition",
-      "title": "Page Flip Transition",
-      "description": "Angular full-screen route wipe with a folding panel and staggered indicator bars",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "PageFlipTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/flip",
-      "coverImage": "page-flip-transition",
-      "videoUrl": "page-flip-transition.mp4",
-      "addedAt": 1781160379988.189
+      "exportKind": "named"
     },
     {
       "name": "radial-slice-transition",
-      "title": "Radial Slice Transition",
-      "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "PieRotationTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/radial-slice-transition",
-      "coverImage": "radial-slice-transition",
-      "videoUrl": "radial-slice-transition.mp4",
-      "addedAt": 1780573510920.3005
+      "exportKind": "named"
     },
     {
       "name": "pixel-transition",
-      "title": "Pixel Transition",
-      "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "PixelTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/pixels",
-      "coverImage": "pixel-transition",
-      "videoUrl": "pixel-transition.mp4",
-      "addedAt": 1780566951473.0852
+      "exportKind": "named"
     },
     {
-      "name": "svg-brush-transition",
-      "title": "Svg Brush Transition",
-      "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
+      "name": "svg-draw-page-transition",
+      "type": "registry:component",
       "category": "transitions",
       "categories": [
         "transitions"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next-transition-router"
       ],
+      "registryDependencies": [],
       "exportName": "SvgDrawPageTransition",
-      "exportKind": "named",
-      "previewUrl": "/page-transitions/brush-strokes",
-      "coverImage": "svg-brush-transition",
-      "videoUrl": "svg-brush-transition.mp4",
-      "addedAt": 1781160379988.7317
+      "exportKind": "named"
     },
     {
       "name": "blur-text",
-      "title": "Blur Text",
-      "description": "Text that reveals with a blur-to-focus animation on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "framer-motion"
       ],
+      "registryDependencies": [],
       "exportName": "BlurText",
-      "exportKind": "named",
-      "previewUrl": "/blur-text-reveal",
-      "coverImage": "blur-text",
-      "videoUrl": "blur-text.mp4",
-      "addedAt": 1780566951470.4153
+      "exportKind": "named"
     },
     {
       "name": "circle-text-reveal",
-      "title": "Circle Text Reveal",
-      "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "framer-motion"
       ],
+      "registryDependencies": [],
       "exportName": "CircleTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/circle-reveal",
-      "coverImage": "text-reveal",
-      "videoUrl": "circle-text-reveal.mp4",
-      "addedAt": 1780566951470.5496
+      "exportKind": "named"
     },
     {
       "name": "counter",
-      "title": "Counter",
-      "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "Counter",
-      "exportKind": "named",
-      "previewUrl": "/counter",
-      "coverImage": "counter",
-      "videoUrl": "/counter.mp4",
-      "addedAt": 1781160379987.6763
+      "exportKind": "named"
     },
     {
       "name": "glitchy-text",
-      "title": "Glitchy Text",
-      "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "GlitchyText",
-      "exportKind": "named",
-      "previewUrl": "/glitchy-text",
-      "coverImage": "glitchy-text",
-      "videoUrl": "glitchy-text.mp4",
-      "addedAt": 1780566951471.0427
+      "exportKind": "named"
     },
     {
       "name": "mask-text-reveal",
-      "title": "Mask Text Reveal",
-      "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "MaskTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/mask-text-reveal",
-      "coverImage": "mask-text-reveal",
-      "videoUrl": "mask-text-reveal.mp4",
-      "addedAt": 1780566951471.2097
+      "exportKind": "named"
     },
     {
       "name": "overflow-stagger-text",
-      "title": "Overflow Stagger Text",
-      "description": "Characters stagger up from overflow with slight rotation for a dynamic reveal effect",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "OverflowStaggerText",
-      "exportKind": "named",
-      "previewUrl": "/overflow-stagger-text",
-      "coverImage": "overflow-stagger-text",
-      "videoUrl": "overflow-stagger-text.mp4",
-      "addedAt": 1780573510918.9358
+      "exportKind": "named"
     },
     {
       "name": "overflow-text-reveal",
-      "title": "Overflow Text Reveal",
-      "description": "Text lines slide up from hidden overflow with smooth stagger animation on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "OverflowTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/overflow-text-reveal",
-      "coverImage": "overflow-text-reveal",
-      "videoUrl": "overflow-text-reveal.mp4",
-      "addedAt": 1780566951471.373
+      "exportKind": "named"
     },
     {
       "name": "perspective-text-reveal",
-      "title": "Perspective Text Reveal",
-      "description": "3D perspective rotation text reveal with lines flipping into view on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "PerspectiveTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/perspective-text-reveal",
-      "coverImage": "perspective-text-reveal",
-      "videoUrl": "perspective-text-reveal.mp4",
-      "addedAt": 1780566951471.541
+      "exportKind": "named"
     },
     {
       "name": "rectangular-text-reveal",
-      "title": "Rectangular Text Reveal",
-      "description": "Text reveal animation with colored rectangles sliding across each line",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "RectangularTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/rectangular-text-reveal",
-      "coverImage": "rectangular-text-reveal",
-      "videoUrl": "rectangular-text-reveal.mp4",
-      "addedAt": 1780573510919.2292
+      "exportKind": "named"
     },
     {
       "name": "scramble-text",
-      "title": "Scramble Text",
-      "description": "Hacker-style text scramble effect that reveals text character by character on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ScrambleText",
-      "exportKind": "named",
-      "previewUrl": "/scramble-text",
-      "coverImage": "scramble-text",
-      "videoUrl": "scramble-text.mp4",
-      "addedAt": 1780566951471.636
+      "exportKind": "named"
     },
     {
       "name": "slide-text-reveal",
-      "title": "Slide Text Reveal",
-      "description": "Characters slide in from the right with staggered fade animation on scroll",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "SlideTextReveal",
-      "exportKind": "named",
-      "previewUrl": "/slide-text-reveal",
-      "coverImage": "slide-text-reveal",
-      "videoUrl": "slide-text-reveal.mp4",
-      "addedAt": 1780566951471.805
+      "exportKind": "named"
     },
     {
       "name": "spotlight-text",
-      "title": "Spotlight Text",
-      "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "SpotlightText",
-      "exportKind": "named",
-      "previewUrl": "/spotlight-text",
-      "coverImage": "spotlight-text",
-      "videoUrl": "spotlight-text.mp4",
-      "addedAt": 1780566951471.9648
+      "exportKind": "named"
     },
     {
       "name": "text-cloning",
-      "title": "Text Cloning",
-      "description": "Canvas 2D effect that renders 9 depth-layered clones of any text string, offset by mouse parallax to create a 3D depth illusion. Includes a live text input and a subtle star-field background.",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "TextCloning",
-      "exportKind": "named",
-      "previewUrl": "/text-cloning",
-      "coverImage": "text-cloning",
-      "videoUrl": "text-cloning.mp4",
-      "addedAt": 1780566951472.14
+      "exportKind": "named"
     },
     {
       "name": "text-fill-animation",
-      "title": "Text Fill Animation",
-      "description": "Scroll-synced text color fill animation with customizable color sweep effect",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "TextFillAnimation",
-      "exportKind": "named",
-      "previewUrl": "/text-fill-animation",
-      "coverImage": "text-fill-animation",
-      "videoUrl": "text-fill-animation.mp4",
-      "addedAt": 1780573510919.354
+      "exportKind": "named"
     },
     {
       "name": "text-hover-expand",
-      "title": "Text Hover Expand",
-      "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "TextHoverExpand",
-      "exportKind": "named",
-      "previewUrl": "/text-hover",
-      "coverImage": "text-hover-expand",
-      "videoUrl": "text-hover-expand.mp4",
-      "addedAt": 1780566951472.3035
+      "exportKind": "named"
     },
     {
       "name": "text-stream",
-      "title": "Text Stream",
-      "description": "Infinite vertical text marquee that accelerates and reverses direction based on scroll velocity, with a hard-edge mask and static prefix label",
+      "type": "registry:component",
       "category": "text",
       "categories": [
         "text"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "TextStream",
-      "exportKind": "named",
-      "previewUrl": "/text-stream",
-      "coverImage": "text-stream",
-      "videoUrl": "text-stream.mp4",
-      "addedAt": 1780566951472.493
+      "exportKind": "named"
     },
     {
       "name": "animated-toggle",
-      "title": "Animated Toggle",
-      "description": "Pure CSS animated icon components: ChevronBird (chevron/arrow), Cross (plus to X), and Plus (open/close). No animation libraries required.",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "ChevronBird",
-      "exportKind": "named",
-      "previewUrl": "/buttons/animated-toggle",
-      "coverImage": "animated-toggle",
-      "videoUrl": "animated-toggle.mp4",
-      "addedAt": 1780566951460.0452
+      "exportKind": "named"
     },
     {
       "name": "arrow-fill-button",
-      "title": "Arrow Fill Button",
-      "description": "Button with expanding circle fill and animated arrow icon on hover",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "ArrowFillButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/arrow-fill-button",
-      "coverImage": "arrow-fill-button",
-      "videoUrl": "arrow-fill-button",
-      "addedAt": 1780573510910.6165
+      "exportKind": "named"
     },
     {
       "name": "char-stagger-button",
-      "title": "Character Stagger Button",
-      "description": "Link button with staggered character animation on hover",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "pro",
       "dependencies": [
         "lucide-react"
       ],
+      "registryDependencies": [],
       "exportName": "CharStaggerButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/char-stagger-button",
-      "coverImage": "char-stagger-button",
-      "videoUrl": "char-stagger-button.mp4",
-      "addedAt": 1780566951460.2227
+      "exportKind": "named"
     },
     {
       "name": "char-stagger-primary-button",
-      "title": "Character Stagger Primary Button",
-      "description": "Primary button with staggered character animation on hover",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "CharStaggerPrimaryButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/char-stagger-primary-button",
-      "coverImage": "char-stagger-primary-button",
-      "videoUrl": "char-stagger-primary-button.mp4",
-      "addedAt": 1780566951460.3955
+      "exportKind": "named"
     },
     {
       "name": "dot-fill-button",
-      "title": "Dot Fill Button",
-      "description": "Button with expanding dot that fills the background on hover with character stagger",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "DotFillButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/dot-fill-button",
-      "coverImage": "dot-fill-button",
-      "videoUrl": "dot-fill-button.mp4",
-      "addedAt": 1780566951460.5383
+      "exportKind": "named"
     },
     {
       "name": "link-button",
-      "title": "Link Button",
-      "description": "Minimal link button with animated underline and rotating arrow icon",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "LinkButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/link-button",
-      "coverImage": "link-button",
-      "videoUrl": "link-button.mp4",
-      "addedAt": 1780573510910.8428
+      "exportKind": "named"
     },
     {
       "name": "scramble-link-button",
-      "title": "Scramble Link Button",
-      "description": "Link button with text scramble effect on hover, optional underline and arrow",
+      "type": "registry:component",
       "category": "buttons",
       "categories": [
         "buttons"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "ScrambleLinkButton",
-      "exportKind": "named",
-      "previewUrl": "/buttons/scramble-link-button",
-      "coverImage": "scramble-link-button",
-      "videoUrl": "scramble-link-button.mp4",
-      "addedAt": 1780573510911.024
+      "exportKind": "named"
     },
     {
       "name": "clippath-slider",
-      "title": "Clip Path Slider",
-      "description": "Fullscreen image slider where transitions sweep via two canvas-drawn radial clip-path arcs. Includes a dual-layer background crossfade, GSAP SplitText line reveals, and a smooth custom cursor that flips direction arrows left/right.",
+      "type": "registry:component",
       "category": "carousels",
       "categories": [
         "carousels"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ClippathSlider",
-      "exportKind": "named",
-      "previewUrl": "/clippath-slider",
-      "coverImage": "clippath-slider",
-      "videoUrl": "clippath-slider.mp4",
-      "addedAt": 1780566951460.7256
+      "exportKind": "named"
     },
     {
       "name": "infinite-carousel",
-      "title": "Infinite Carousel",
-      "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
+      "type": "registry:component",
       "category": "carousels",
       "categories": [
         "carousels"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "InfiniteCarousel",
-      "exportKind": "named",
-      "previewUrl": "/infinite-carousel",
-      "coverImage": "infinite-carousel",
-      "videoUrl": "infinite-carousel.mp4",
-      "addedAt": 1781160379981.896
+      "exportKind": "named"
     },
     {
       "name": "ring-carousel",
-      "title": "Ring Carousel",
-      "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
+      "type": "registry:component",
       "category": "carousels",
       "categories": [
         "carousels"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "exportName": "RingCarousel",
-      "exportKind": "named",
-      "previewUrl": "/ring-carousel",
-      "coverImage": "ring-carousel",
-      "videoUrl": "ring-carousel.mp4",
-      "addedAt": 1781160379982.665
+      "exportKind": "named"
     },
     {
       "name": "webgl-slider",
-      "title": "WebGL Slider",
-      "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
+      "type": "registry:component",
       "category": "carousels",
       "categories": [
         "carousels"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "gsap",
         "lenis"
       ],
+      "registryDependencies": [],
       "exportName": "WebglSlider",
-      "exportKind": "named",
-      "previewUrl": "/webgl-slider",
-      "coverImage": "webgl-slider",
-      "videoUrl": "webgl-slider.mp4",
-      "addedAt": 1781160379982.9526
+      "exportKind": "named"
     },
     {
       "name": "zoom-slider",
-      "title": "Zoom Slider",
-      "description": "Infinitely looping horizontal image carousel where the active card expands using a quadratic easing curve as it enters from the right. Supports scroll, drag, and touch. Hover reveals GSAP SplitText line animations above each card.",
+      "type": "registry:component",
       "category": "carousels",
       "categories": [
         "carousels"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ZoomSlider",
-      "exportKind": "named",
-      "previewUrl": "/webgl/zoom-slider",
-      "coverImage": "zoom-slider",
-      "videoUrl": "zoom-slider.mp4",
-      "addedAt": 1780573510911.3281
+      "exportKind": "named"
     },
     {
       "name": "animated-faq",
-      "title": "Animated FAQ",
-      "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "FAQGroup",
-      "exportKind": "named",
-      "previewUrl": "/animated-faq",
-      "coverImage": "animated-faq",
-      "videoUrl": "animated-faq.mp4",
-      "addedAt": 1780983720514.6926
+      "exportKind": "named"
     },
     {
       "name": "custom-video-player",
-      "title": "Custom Video Player",
-      "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "lucide-react"
       ],
+      "registryDependencies": [],
       "exportName": "CustomVideoPlayer",
-      "exportKind": "named",
-      "previewUrl": "/video-player",
-      "coverImage": "video-player",
-      "videoUrl": "custom-video-player.mp4",
-      "addedAt": 1780566951461.5632
+      "exportKind": "named"
     },
     {
       "name": "depth-card-stack",
-      "title": "Depth Card Stack",
-      "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "DepthCardStack",
-      "exportKind": "named",
-      "previewUrl": "/depth-card-stack",
-      "coverImage": "depth-card-stack",
-      "videoUrl": "depth-card-stack.mp4",
-      "addedAt": 1780566951461.756
+      "exportKind": "named"
     },
     {
       "name": "form",
-      "title": "Form",
-      "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "Form",
-      "exportKind": "named",
-      "previewUrl": "/form",
-      "coverImage": "form",
-      "videoUrl": "form.mp4",
-      "addedAt": 1780566951461.9346
+      "exportKind": "named"
     },
     {
       "name": "hover-stack",
-      "title": "Hover Stack",
-      "description": "Overlapping card stack that fans out around the hovered card",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "HoverStack",
-      "exportKind": "named",
-      "previewUrl": "/hover-stack",
-      "coverImage": "hover-stack",
-      "videoUrl": "hover-stack.mp4",
-      "addedAt": 1780573510913.265
+      "exportKind": "named"
     },
     {
       "name": "modal",
-      "title": "Modal",
-      "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "lucide-react"
       ],
+      "registryDependencies": [],
       "exportName": "Modal",
-      "exportKind": "named",
-      "previewUrl": "/modal",
-      "coverImage": "modal",
-      "videoUrl": "modal.mp4",
-      "addedAt": 1780566951462.069
+      "exportKind": "named"
     },
     {
       "name": "tabs",
-      "title": "Tabs",
-      "description": "Animated tabs with a moving active indicator and panel transitions",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "Tabs",
-      "exportKind": "named",
-      "previewUrl": "/tabs",
-      "coverImage": "tabs",
-      "videoUrl": "tabs.mp4",
-      "addedAt": 1780566951462.1536
+      "exportKind": "named"
     },
     {
       "name": "testimonial-swiper",
-      "title": "Testimonial Swiper",
-      "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "lucide-react",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "TestimonialSwiper",
-      "exportKind": "named",
-      "previewUrl": "/testimonial",
-      "coverImage": "testimonial-swiper",
-      "videoUrl": "testimonial-swiper.mp4",
-      "addedAt": 1780566951462.3438
+      "exportKind": "named"
     },
     {
       "name": "directional-menu",
-      "title": "Directional Menu",
-      "description": "Mega menu with directional content transitions using GSAP",
+      "type": "registry:component",
       "category": "navigation",
       "categories": [
         "navigation"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [
+        "chevron-bird"
+      ],
       "exportName": "DirectionalMenu",
-      "exportKind": "named",
-      "previewUrl": "/navigation/directional-menu",
-      "coverImage": "directional-menu",
-      "videoUrl": "directional-menu.mp4",
-      "addedAt": 1780573510915.4983
+      "exportKind": "named"
     },
     {
       "name": "elevate-navbar",
-      "title": "Elevate Navbar",
-      "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+      "type": "registry:component",
       "category": "navigation",
       "categories": [
         "navigation"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "ElevateNavbar",
-      "exportKind": "named",
-      "previewUrl": "/navigation/elevate-navbar",
-      "coverImage": "elevate-navbar",
-      "videoUrl": "elevate-navbar.mp4",
-      "addedAt": 1781260039920.3787
+      "exportKind": "named"
     },
     {
       "name": "expanding-navbar",
-      "title": "Expanding Navbar",
-      "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
+      "type": "registry:component",
       "category": "navigation",
       "categories": [
         "navigation"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "ExpandingNavbar",
-      "exportKind": "default",
-      "previewUrl": "/expanding-navbar",
-      "coverImage": "expanding-navbar",
-      "videoUrl": "expanding-navbar.mp4",
-      "addedAt": 1780566951466.028
+      "exportKind": "default"
     },
     {
       "name": "immersive-full-screen-navigation",
-      "title": "Immersive Full screen Navigation",
-      "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
+      "type": "registry:component",
       "category": "navigation",
       "categories": [
         "navigation"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "lucide-react"
       ],
+      "registryDependencies": [],
       "exportName": "ImmersiveFullScreenNavigation",
-      "exportKind": "named",
-      "previewUrl": "/navigation/immersive-full-screen-nav",
-      "coverImage": "immersive-fullscreen-nav",
-      "videoUrl": "immersive-fullscreen-nav.mp4",
-      "addedAt": 1780983720515.2595
+      "exportKind": "named"
     },
     {
       "name": "lines-loader",
-      "title": "Lines Loader",
-      "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
+      "type": "registry:component",
       "category": "loaders",
       "categories": [
         "loaders"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "CenterLinesLoader",
-      "exportKind": "named",
-      "previewUrl": "/loaders/lines-loading",
-      "coverImage": "lines-loader",
-      "videoUrl": "lines-loader.mp4",
-      "addedAt": 1780566951465.8037
+      "exportKind": "named"
     },
     {
       "name": "numeric-tunnel",
-      "title": "Numeric Tunnel",
-      "description": "WebGL loader with a 3D numeric tunnel that crossfades into a chromatic aberration warp effect",
+      "type": "registry:component",
       "category": "loaders",
       "categories": [
         "loaders"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap",
         "@react-three/fiber",
         "@react-three/drei",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "NumericTunnel",
-      "exportKind": "named",
-      "previewUrl": "/loaders/numeric-tunnel",
-      "coverImage": "numeric-tunnel",
-      "videoUrl": "numeric-tunnel.mp4",
-      "addedAt": 1780573510914.2
+      "exportKind": "named"
     },
     {
       "name": "stack-loader",
-      "title": "Stack Loader",
-      "description": "Stack-to-spread image intro loader with GSAP SplitText word animations and staggered image choreography",
+      "type": "registry:component",
       "category": "loaders",
       "categories": [
         "loaders"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "Cappen",
-      "exportKind": "named",
-      "previewUrl": "/loaders/stack-loader",
-      "coverImage": "stack-loader",
-      "videoUrl": "stack-loader.mp4",
-      "addedAt": 1780573510914.3584
+      "exportKind": "named"
     },
     {
       "name": "3d-portfolio-slider",
-      "title": "3D Portfolio Slider",
-      "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl",
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "gsap",
         "lenis"
       ],
-      "exportName": "WebGLPortfolioSlider",
-      "exportKind": "named",
-      "previewUrl": "/3d-portfolio-slider",
-      "coverImage": "3d-portfolio-slider",
-      "videoUrl": "3d-portfolio-slider.mp4",
-      "addedAt": 1780566951473.3435
+      "registryDependencies": [],
+      "exportName": "3dPortfolioSlider",
+      "exportKind": "named"
     },
     {
       "name": "book-flip",
-      "title": "Book Flip",
-      "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber",
         "@react-three/drei"
       ],
+      "registryDependencies": [],
       "exportName": "BookFlip",
-      "exportKind": "named",
-      "previewUrl": "/book-flip",
-      "coverImage": "book-flip",
-      "videoUrl": "book-flip.mp4",
-      "addedAt": 1781160379989.046
+      "exportKind": "named"
     },
     {
       "name": "colliding-models",
-      "title": "Colliding Models",
-      "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber",
@@ -1785,160 +1319,119 @@
         "maath",
         "next"
       ],
+      "registryDependencies": [],
       "exportName": "CollidingModels",
-      "exportKind": "named",
-      "previewUrl": "/colliding-models",
-      "coverImage": "colliding-models",
-      "videoUrl": "colliding-models.mp4",
-      "addedAt": 1781160379989.2935
+      "exportKind": "named"
     },
     {
       "name": "curved-plane",
-      "title": "Curved Plane",
-      "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "CurvedPlane",
-      "exportKind": "named",
-      "previewUrl": "/curved-plane",
-      "coverImage": "curved-plane",
-      "videoUrl": "curved-plane.mp4",
-      "addedAt": 1780566951474.5798
+      "exportKind": "named"
     },
-   
     {
       "name": "donut-particles",
-      "title": "Donut Particles",
-      "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber"
       ],
+      "registryDependencies": [],
       "exportName": "DonutParticles",
-      "exportKind": "named",
-      "previewUrl": "/donut-particles",
-      "coverImage": "donut-particles",
-      "videoUrl": "donut-particles.mp4",
-      "addedAt": 1781160379989.5547
+      "exportKind": "named"
     },
     {
       "name": "draggable-canvas",
-      "title": "Draggable Canvas",
-      "description": "Six independently draggable Canvas 2D windows that each reveal a different cropped region of a shared video, creating a parallax masking illusion. GSAP Draggable with InertiaPlugin gives each window smooth throw physics. Includes a minimal coordinate-display cursor.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "DraggableCanvas",
-      "exportKind": "named",
-      "previewUrl": "/webgl/draggable-canvas",
-      "coverImage": "draggable-canvas",
-      "videoUrl": "draggable-canvas.mp4",
-      "addedAt": 1780566951475.2925
+      "exportKind": "named"
     },
     {
       "name": "file-encryption",
-      "title": "File Encryption",
-      "description": "Auto-scrolling draggable card marquee with a WebGL laser beam that splits each card between its plain and ASCII/encrypted face, plus Canvas 2D particle scatter.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "FileEncryption",
-      "exportKind": "named",
-      "previewUrl": "/file-encryption",
-      "coverImage": "file-encryption",
-      "videoUrl": "file-encryption.mp4",
-      "addedAt": 1780566951475.4749
+      "exportKind": "named"
     },
     {
       "name": "fractal-glass",
-      "title": "Fractal Glass",
-      "description": "WebGL glass-strip refraction effect with fractal distortion, edge blending, and pointer-reactive parallax.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "free",
       "dependencies": [
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "FractalGlass",
-      "exportKind": "named",
-      "previewUrl": "/webgl/fractal-glass",
-      "coverImage": "fractal-glass",
-      "videoUrl": "fractal-glass.mp4",
-      "addedAt": 1780566951475.665
+      "exportKind": "named"
     },
     {
       "name": "grid-lift",
-      "title": "Grid Lift",
-      "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "leva"
       ],
+      "registryDependencies": [],
       "exportName": "GridLift",
-      "exportKind": "named",
-      "previewUrl": "/webgl/grid-lift",
-      "coverImage": "grid-lift",
-      "videoUrl": "grid-lift.mp4",
-      "addedAt": 1780566951475.8386
+      "exportKind": "named"
     },
     {
       "name": "grid-tunnel",
-      "title": "Grid Tunnel",
-      "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "GridTunnel",
-      "exportKind": "named",
-      "previewUrl": "/grid-tunnel",
-      "coverImage": "grid-tunnel",
-      "videoUrl": "grid-tunnel.mp4",
-      "addedAt": 1780566951476.0369
+      "exportKind": "named"
     },
     {
       "name": "hero-banner-animated",
-      "title": "Hero Banner Animated",
-      "description": "Immersive WebGL hero with a 3D room, interactive TV screen with pixelated video transition, mouse-tracked lighting, edge blur, and film grain post-processing.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
@@ -1947,22 +1440,17 @@
         "gsap",
         "three"
       ],
+      "registryDependencies": [],
       "exportName": "HeroBanner",
-      "exportKind": "named",
-      "previewUrl": "/hero-banner-animated",
-      "coverImage": "hero-banner-animated",
-      "videoUrl": "hero-banner-animated.mp4",
-      "addedAt": 1780566951476.3608
+      "exportKind": "named"
     },
     {
       "name": "hyperiux-glitter-concept",
-      "title": "Hyperiux Glitter Concept",
-      "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber",
@@ -1970,76 +1458,56 @@
         "@react-three/postprocessing",
         "postprocessing"
       ],
+      "registryDependencies": [],
       "exportName": "HyperiuxGlitterConcept",
-      "exportKind": "named",
-      "previewUrl": "/hyperiux-glitter",
-      "coverImage": "hyperiux-glitter",
-      "videoUrl": "/hyperiux-glitter.mp4",
-      "addedAt": 1781160379989.7522
+      "exportKind": "named"
     },
     {
       "name": "infinite-grid-gallery",
-      "title": "Infinite Grid Gallery",
-      "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "InfiniteGridGallery",
-      "exportKind": "named",
-      "previewUrl": "/infinite-grid-gallery",
-      "coverImage": "infinite-grid-gallery",
-      "videoUrl": "infinite-grid-gallery.mp4",
-      "addedAt": 1781160379989.966
+      "exportKind": "named"
     },
     {
       "name": "interactive-blur-reveal",
-      "title": "Interactive Blur Reveal",
-      "description": "WebGL2 fullscreen shader that keeps the image frosted/blurred by default and reveals a sharp, clear version wherever the cursor trails. Uses a fluid mouse-trail mask with multi-octave noise distortion, animated film grain, and a subtle vignette.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "InteractiveBlurReveal",
-      "exportKind": "named",
-      "previewUrl": "/webgl/interactive-blur-reveal",
-      "coverImage": "interactive-blur-reveal",
-      "videoUrl": "interactive-blur-reveal.mp4",
-      "addedAt": 1780573510920.5444
+      "exportKind": "named"
     },
     {
       "name": "hover-slider",
-      "title": "Hover Slider",
-      "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "HoverSlider",
-      "exportKind": "default",
-      "previewUrl": "/hover-slider",
-      "coverImage": "hover-slider",
-      "videoUrl": "hover-slider.mp4",
-      "addedAt": 1780566951477.4316
+      "exportKind": "default"
     },
     {
       "name": "milkyway",
-      "title": "Milky Way",
-      "description": "GPU-accelerated GPGPU particle galaxy with spiral arms, curl-noise nebula smoke, twinkling sparkle stars, background starfield, and post-processing vignette + edge blur.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "free",
       "dependencies": [
         "@react-three/fiber",
         "@react-three/drei",
@@ -2049,131 +1517,98 @@
         "lucide-react",
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "MilkyWay",
-      "exportKind": "named",
-      "previewUrl": "/milkyway",
-      "coverImage": "milkyway",
-      "videoUrl": "milkyway.mp4",
-      "addedAt": 1780566951477.761
+      "exportKind": "named"
     },
     {
       "name": "mouse-pixelation",
-      "title": "Mouse Pixelation",
-      "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "@react-three/fiber",
         "@react-three/postprocessing",
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "MousePixelation",
-      "exportKind": "named",
-      "previewUrl": "/mouse-pixelation",
-      "coverImage": "mouse-pixelation",
-      "videoUrl": "mouse-pixelation.mp4",
-      "addedAt": 1780983720515.9382
+      "exportKind": "named"
     },
     {
       "name": "strip-slider",
-      "title": "Strip Slider",
-      "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
+      "type": "registry:component",
       "category": "webgl",
       "categories": [
         "webgl",
         "scroll"
       ],
-      "tier": "pro",
       "dependencies": [
         "three",
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "StripSlider",
-      "exportKind": "named",
-      "previewUrl": "/strip-slider",
-      "coverImage": "strip-slider",
-      "videoUrl": "strip-slider.mp4",
-      "addedAt": 1780566951477.8455
+      "exportKind": "named"
     },
     {
       "name": "card-drift",
-      "title": "Card Drift",
-      "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "CardDrift",
-      "exportKind": "named",
-      "previewUrl": "/card-drift",
-      "coverImage": "card-drift",
-      "videoUrl": "card-drift.mp4",
-      "addedAt": 1780566951466.266
+      "exportKind": "named"
     },
     {
       "name": "gooey-counter",
-      "title": "Gooey Counter",
-      "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "free",
       "dependencies": [],
+      "registryDependencies": [],
       "exportName": "GooeyCounter",
-      "exportKind": "named",
-      "previewUrl": "/gooey-counter",
-      "coverImage": "gooey-counter",
-      "videoUrl": "gooey-counter.mp4",
-      "addedAt": 1780573510916.472
+      "exportKind": "named"
     },
     {
       "name": "interactive-list-preview",
-      "title": "Interactive List Preview",
-      "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "free",
       "dependencies": [
         "gsap"
       ],
+      "registryDependencies": [],
       "exportName": "InteractiveListPreview",
-      "exportKind": "named",
-      "previewUrl": "/interactive-list-preview",
-      "coverImage": "interactive-list-preview",
-      "videoUrl": "interactive-list-preview.mp4",
-      "addedAt": 1780573510916.742
+      "exportKind": "named"
     },
     {
       "name": "ribbon-drift",
-      "title": "Ribbon Drift",
-      "description": "Motion-led portfolio landing concept with GSAP ScrollTrigger + SplitText and image strips.",
+      "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
-      "tier": "pro",
       "dependencies": [
         "gsap",
         "next",
         "lenis"
       ],
+      "registryDependencies": [],
       "exportName": "PortfolioConcept",
-      "exportKind": "named",
-      "previewUrl": "/ribbon-drift",
-      "coverImage": "ribbon-drift",
-      "videoUrl": "ribbon-drift.mp4",
-      "addedAt": 1781160379986.0159
+      "exportKind": "named"
     }
   ]
 }

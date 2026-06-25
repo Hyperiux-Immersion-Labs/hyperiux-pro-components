@@ -6,7 +6,7 @@
  * `items` shape:
  * {
  * id: string, // unique key
- * url: string, // image path e.g.'/assets/nature/nature01.png'
+ * url: string, // image path 
  * atlasIndex?: number, // kept for particle compat (defaults to item index)
  * imageCount?: number, // number of sub-images in the strip
  * dispScale?: number, // displacement strength (default 1)

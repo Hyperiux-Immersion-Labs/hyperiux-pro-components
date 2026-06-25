@@ -23,15 +23,32 @@ const effectSlugAliasMap = new Map(
   )
 );
 
+function normalizeSlug(slug) {
+  if (!slug) return slug;
+
+  let normalizedSlug = slug.toString().trim().toLowerCase();
+
+  try {
+    normalizedSlug = decodeURIComponent(normalizedSlug);
+  } catch {
+    return normalizedSlug;
+  }
+
+  return normalizedSlug
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function getEffectRouteSlug(slug) {
-  const normalizedSlug = slug?.toString().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
   const group = effectSlugAliasMap.get(normalizedSlug);
 
   return group?.slug || normalizedSlug || slug;
 }
 
 export function getEffectSlugAliases(slug) {
-  const normalizedSlug = slug?.toString().toLowerCase();
+  const normalizedSlug = normalizeSlug(slug);
   const group = effectSlugAliasMap.get(normalizedSlug);
 
   return [

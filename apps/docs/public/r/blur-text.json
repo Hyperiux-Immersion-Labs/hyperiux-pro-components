@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "pro",
   "dependencies": [
     "framer-motion"
   ],
   "registryDependencies": [],
   "exportName": "BlurText",
   "exportKind": "named",
-  "previewUrl": "/blur-text-reveal",
-  "coverImage": "blur-text",
-  "videoUrl": "blur-text.mp4",
   "files": [
     {
       "path": "blur-text.jsx",

@@ -1,0 +1,21 @@
+{
+  "name": "3d-portfolio-slider",
+  "type": "registry:component",
+  "title": "3D Portfolio Slider",
+  "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+  "dependencies": [
+    "three",
+    "gsap",
+    "lenis"
+  ],
+  "registryDependencies": [],
+  "exportName": "WebGLPortfolioSlider",
+  "exportKind": "named",
+  "files": [
+    {
+      "path": "webgl-portfolio-slider.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/webgl-portfolio-slider.jsx"
+    }
+  ]
+}

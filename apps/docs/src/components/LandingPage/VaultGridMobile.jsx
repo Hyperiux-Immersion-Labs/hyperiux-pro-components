@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ArrowUpRightIcon } from "@/utils/Icons";
 import VaultBox from "../WebsiteComps/VaultBoxes";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 
@@ -16,7 +15,7 @@ const MOBILE_BOXES = [
         id: "mobile-block-top-layer-2",
         img: '/video/2.mp4',
         number: "02",
-        label: "Cusor Effects"
+        label: "Cursor Effects"
     },
     {
         id: "mobile-block-top-layer-3",

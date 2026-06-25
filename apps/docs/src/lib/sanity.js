@@ -36,25 +36,38 @@ function normalizeEffectEntries(entries = []) {
   })
 }
 
-export function applySanityCategorySlugs(effects = [], entries = []) {
-  const entryByEffectSlug = new Map(
+export function mergeRegistryWithSanity(effects = [], entries = []) {
+  const sanityBySlug = new Map(
     normalizeEffectEntries(entries)
-      .filter((entry) => entry?.effectSlug && entry?.categorySlug)
-      .map((entry) => [entry.effectSlug, entry.categorySlug])
+      .filter((entry) => entry?.effectSlug)
+      .map((entry) => [entry.effectSlug, entry])
   )
 
   return effects.map((effect) => {
     const effectSlug = getEffectRouteSlug(effect.effectSlug || effect.slug || effect.name)
-    const categorySlug = entryByEffectSlug.get(effectSlug)
+    const sanity = sanityBySlug.get(effectSlug)
 
-    if (!categorySlug) return effect
+    if (!sanity) return effect
 
     return {
       ...effect,
-      categorySlug,
+      // Sanity wins for all display fields
+      title: sanity.title || effect.title,
+      description: sanity.summary || effect.description,
+      categorySlug: sanity.categorySlug,
+      tier: sanity.tier || effect.tier || 'pro',
+      tags: sanity.tags?.length ? sanity.tags : (effect.tags || []),
+      addedAt: sanity.addedAt ? new Date(sanity.addedAt).getTime() : effect.addedAt,
+      // Derive coverImage/videoUrl from effectSlug if not explicitly set in Sanity
+      coverImage: sanity.coverImage || effectSlug,
+      videoUrl: sanity.videoUrl || `${effectSlug}.mp4`,
+      previewUrl: sanity.previewUrl || effect.previewUrl,
     }
   })
 }
+
+// Keep old name as alias so any other callers don't break during transition
+export const applySanityCategorySlugs = mergeRegistryWithSanity
 
 function getCategorySlugAliases(categorySlug) {
   return getEffectCategorySlugAliases(categorySlug)
@@ -99,7 +112,15 @@ export async function getAllSanityEffectEntries() {
     const entries = await client.fetch(
       `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug)][]{
         categorySlug,
-        effectSlug
+        effectSlug,
+        title,
+        summary,
+        tier,
+        tags,
+        addedAt,
+        coverImage,
+        videoUrl,
+        previewUrl
       }`
     )
 

@@ -1,0 +1,19 @@
+{
+  "name": "hero-animated-banner",
+  "type": "registry:component",
+  "title": "Hero Animated Banner",
+  "description": "Placeholder registry entry for a WebGL hero animated banner.",
+  "dependencies": [
+    "three"
+  ],
+  "registryDependencies": [],
+  "exportName": "HeroAnimatedBanner",
+  "exportKind": "default",
+  "files": [
+    {
+      "path": "hero-animated-banner.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/hero-animated-banner.jsx"
+    }
+  ]
+}

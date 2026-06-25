@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Sticky Content Wrapper",
   "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "StickyContentWrapper",
   "exportKind": "named",
-  "previewUrl": "/sticky-content-wrapper",
-  "coverImage": "sticky-content-wrapper",
-  "videoUrl": "sticky-content-wrapper.mp4",
   "files": [
     {
       "path": "sticky-content-wrapper.jsx",

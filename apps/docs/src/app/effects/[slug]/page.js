@@ -9,7 +9,7 @@ import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
-import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
+import { mergeRegistryWithSanity, getAllSanityEffectEntries } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
@@ -68,7 +68,7 @@ export default async function EffectsCategoryPage({ params }) {
 
   const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = applySanityCategorySlugs(registry.items, sanityEntries);
+  const effects = mergeRegistryWithSanity(registry.items, sanityEntries);
   const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
 
   effectCounts.featured = getFeaturedEffects(sortedEffects).length;

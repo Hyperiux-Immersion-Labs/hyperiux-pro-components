@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Numeric Tunnel",
   "description": "WebGL loader with a 3D numeric tunnel that crossfades into a chromatic aberration warp effect",
-  "category": "loaders",
-  "categories": [
-    "loaders"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap",
     "@react-three/fiber",
@@ -17,9 +12,6 @@
   "registryDependencies": [],
   "exportName": "NumericTunnel",
   "exportKind": "named",
-  "previewUrl": "/loaders/numeric-tunnel",
-  "coverImage": "numeric-tunnel",
-  "videoUrl": "numeric-tunnel.mp4",
   "files": [
     {
       "path": "numeric-tunnel.jsx",

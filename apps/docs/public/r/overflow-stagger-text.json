@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Overflow Stagger Text",
   "description": "Characters stagger up from overflow with slight rotation for a dynamic reveal effect",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "OverflowStaggerText",
   "exportKind": "named",
-  "previewUrl": "/overflow-stagger-text",
-  "coverImage": "overflow-stagger-text",
-  "videoUrl": "overflow-stagger-text.mp4",
   "files": [
     {
       "path": "overflow-stagger-text.jsx",

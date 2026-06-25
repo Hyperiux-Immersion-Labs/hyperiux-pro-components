@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Arrow Fill Button",
   "description": "Button with expanding circle fill and animated arrow icon on hover",
-  "category": "buttons",
-  "categories": [
-    "buttons"
-  ],
-  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "ArrowFillButton",
   "exportKind": "named",
-  "previewUrl": "/buttons/arrow-fill-button",
-  "coverImage": "arrow-fill-button",
-  "videoUrl": "arrow-fill-button",
   "files": [
     {
       "path": "arrow-fill-button.jsx",

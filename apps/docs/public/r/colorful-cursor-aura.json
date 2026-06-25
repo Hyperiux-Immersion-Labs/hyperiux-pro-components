@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Colorful Cursor Aura",
   "description": "Layered radial color aura that follows the cursor across oversized headline text",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ColorfulCursorAura",
   "exportKind": "named",
-  "previewUrl": "/colorful-cursor-aura",
-  "coverImage": "colorful-cursor-aura",
-  "videoUrl": "colorful-cursor-aura.mp4",
   "files": [
     {
       "path": "colorful-cursor-aura.jsx",

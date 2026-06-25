@@ -17,6 +17,7 @@
     "@14islands/r3f-scroll-rig": "^8.15.0",
     "@clerk/nextjs": "^7.4.2",
     "@imagekit/next": "^2.1.5",
+    "@react-email/components": "^1.0.12",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
     "@react-three/postprocessing": "^3.0.4",

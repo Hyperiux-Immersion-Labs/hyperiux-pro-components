@@ -25,9 +25,18 @@ import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+// Resolve category ID from Sanity categorySlug first, fall back to registry fields
+function resolveEffectCategoryId(effect) {
+  if (effect.categorySlug) {
+    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
+  }
+  return effect.categories?.[0] || effect.category;
 }
 
 function RouteAnimationSync({ syncKey }) {
@@ -107,7 +116,19 @@ export function VaultContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
-  const routeKey = `${pathname}?${searchParamString}`;
+
+const animationSearchParamString = useMemo(() => {
+  const params = new URLSearchParams(searchParamString);
+
+  params.delete("waitlist");
+   params.delete("custom-animation-form");
+
+  return params.toString();
+}, [searchParamString]);
+
+const routeKey = `${pathname}${
+  animationSearchParamString ? `?${animationSearchParamString}` : ""
+}`;
 
   const safeEffects = Array.isArray(incomingEffects) ? incomingEffects : [];
   const safeEffectCounts =
@@ -191,20 +212,23 @@ export function VaultContent({
     });
   }, []);
 
-  const getCategoryUrl = useCallback(
-    (nextCategory) => {
-      const resolvedCategory = nextCategory || "all";
+ const getCategoryUrl = useCallback(
+  (nextCategory) => {
+    const resolvedCategory = nextCategory || "all";
 
-      const params = new URLSearchParams(searchParamString);
-      params.delete("category");
+    const params = new URLSearchParams(searchParamString);
 
-      const nextQuery = params.toString();
-      const categoryHref = getEffectCategoryHref(resolvedCategory);
+    params.delete("category");
+    params.delete("waitlist");
+    params.delete("custom-animation-form");
 
-      return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
-    },
-    [searchParamString]
-  );
+    const nextQuery = params.toString();
+    const categoryHref = getEffectCategoryHref(resolvedCategory);
+
+    return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
+  },
+  [searchParamString]
+);
 
   const navigateWithRouteFade = useCallback(
     (href) => {
@@ -362,24 +386,17 @@ export function VaultContent({
       } else if (categoryFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
       } else if (categoryFilter !== "all") {
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
-
-        if (!cats.includes(categoryFilter)) return false;
+        if (resolveEffectCategoryId(effect) !== categoryFilter) return false;
       }
 
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
+        const catId = resolveEffectCategoryId(effect);
 
         return (
           effect.name.toLowerCase().includes(query) ||
           effect.title.toLowerCase().includes(query) ||
-          cats.some((c) => c?.toLowerCase().includes(query)) ||
+          catId?.toLowerCase().includes(query) ||
           effect.description?.toLowerCase().includes(query)
         );
       }
@@ -409,13 +426,9 @@ export function VaultContent({
       return featuredEffects.length;
     }
 
-    return safeEffects.filter((effect) => {
-      const cats = effect.categories?.length
-        ? effect.categories
-        : [effect.category];
-
-      return cats.includes(categoryFilter);
-    }).length;
+    return safeEffects.filter(
+      (effect) => resolveEffectCategoryId(effect) === categoryFilter
+    ).length;
   }, [safeEffects, categoryFilter, featuredEffects, isEffectsLoading]);
 
   const activeCategory = getEffectCategory(categoryFilter);
@@ -479,12 +492,14 @@ export function VaultContent({
           ref={categoryPageRef}
           className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
         >
+          
           <RouteAnimationSync
             key={`route-animation-sync-${routeKey}`}
             syncKey={routeKey}
           />
 
           <VaultHeader
+           showSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             totalEffects={totalEffects}
@@ -543,13 +558,11 @@ export function VaultContent({
               <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
+                    key={`${categoryFilter}-description-${index}`}
                     delay={0.3}
                     animationKey={`${routeKey}-${index}`}
                   >
-                    <p
-                      key={`${categoryFilter}-description-${index}`}
-                      className="mt-3"
-                    >
+                    <p className="mt-3">
                       {description}
                     </p>
                   </Copy>
@@ -718,8 +731,10 @@ export function VaultContent({
                         )}
 
                         {activeCategoryContent.cta.buttonText && (
+                          <CustomAnimationFormTrigger>
                           <div className="mt-6 w-fit">
                             <Button
+                             preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
@@ -727,6 +742,7 @@ export function VaultContent({
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>
+                          </CustomAnimationFormTrigger>
                         )}
                       </div>
                     </section>

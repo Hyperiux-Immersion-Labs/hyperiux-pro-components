@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Text Hover Expand",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "TextHoverExpand",
   "exportKind": "named",
-  "previewUrl": "/text-hover",
-  "coverImage": "text-hover-expand",
-  "videoUrl": "text-hover-expand.mp4",
   "files": [
     {
       "path": "text-hover-expand.jsx",

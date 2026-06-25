@@ -193,7 +193,7 @@ export default function StorytellingMobile() {
             >
                 <Image
                     src={src}
-                    alt="circle-img"
+                    alt="spiral-images"
                     fill
                     style={{
                         objectFit: "cover",

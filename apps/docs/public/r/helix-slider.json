@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Helix Slider",
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "HelixSlider",
   "exportKind": "named",
-  "previewUrl": "/helix-slider",
-  "coverImage": "helix-slider",
-  "videoUrl": "helix-slider.mp4",
   "files": [
     {
       "path": "helix-slider.jsx",
