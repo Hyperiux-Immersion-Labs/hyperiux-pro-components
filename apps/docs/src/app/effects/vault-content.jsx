@@ -756,6 +756,90 @@ const routeKey = `${pathname}${
   );
 }
 
+const BATCH_SIZE = 12;
+
+// Inner component — keyed by filteredEffectsKey so state resets automatically on filter change
+function EffectsGridInner({
+  filteredEffects,
+  wishlist,
+  toggleWishlist,
+  isProUser,
+  animationKey,
+}) {
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+
+  const gridRef = useRef(null);
+  const sentinelRef = useRef(null);
+
+  // Load next batch when the sentinel enters the viewport
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((prev) =>
+            Math.min(prev + BATCH_SIZE, filteredEffects.length)
+          );
+        }
+      },
+      { rootMargin: "400px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [filteredEffects.length]);
+
+  const visibleEffects = filteredEffects.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEffects.length;
+
+  // Animate only newly-mounted cards (those without .card-entered yet)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const cards = Array.from(
+      grid.querySelectorAll(".effect-card-shell:not(.card-entered)")
+    );
+    if (!cards.length) return;
+
+    cards.forEach((card, i) => {
+      card.style.setProperty("--card-delay", `${(i % BATCH_SIZE) * 0.06}s`);
+    });
+
+    const raf = requestAnimationFrame(() => {
+      cards.forEach((card) => card.classList.add("card-entered"));
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [visibleEffects.length, animationKey]);
+
+  return (
+    <>
+      <div
+        ref={gridRef}
+        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
+      >
+        {visibleEffects.map((effect, i) => (
+          <div key={effect.name} className="effect-card-shell">
+            <EffectCard
+              effect={effect}
+              priority={i < 4}
+              isWishlisted={wishlist.includes(effect.name)}
+              toggleWishlist={toggleWishlist}
+              isProUser={isProUser}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Sentinel — 400px ahead of viewport triggers the next batch before user reaches bottom */}
+      {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+    </>
+  );
+}
+
 function EffectsGrid({
   filteredEffects,
   wishlist,
@@ -768,93 +852,14 @@ function EffectsGrid({
     .map((effect) => effect.name)
     .join("|");
 
-  const [mobileCardsState, setMobileCardsState] = useState({
-    key: "",
-    showAll: false,
-  });
-
-  const gridRef = useRef(null);
-
-  const showAllMobileCards =
-    mobileCardsState.key === filteredEffectsKey && mobileCardsState.showAll;
-
-  useEffect(() => {
-    const grid = gridRef.current;
-
-    if (!grid) return;
-
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray(".effect-card-shell", grid);
-
-      gsap.killTweensOf(cards);
-
-      gsap.fromTo(
-        cards,
-        {
-          autoAlpha: 0,
-          y: 34,
-        },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.65,
-          ease: "power3.out",
-          stagger: {
-            each: 0.06,
-            from: "start",
-          },
-          clearProps: "transform,opacity,visibility",
-          onComplete: () => {
-            ScrollTrigger.refresh(true);
-          },
-        }
-      );
-    }, grid);
-
-    return () => ctx.revert();
-  }, [filteredEffectsKey, animationKey]);
-
   return (
-    <>
-      <div
-        ref={gridRef}
-        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
-      >
-        {filteredEffects.map((effect, i) => (
-          <div
-            key={effect.name}
-            className={`effect-card-shell ${!showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
-              }`}
-          >
-            <EffectCard
-              effect={effect}
-              priority={i < 4}
-              isWishlisted={wishlist.includes(effect.name)}
-              toggleWishlist={toggleWishlist}
-              isProUser={isProUser}
-            />
-          </div>
-        ))}
-      </div>
-
-      {filteredEffects.length > 10 && !showAllMobileCards && (
-        <div className="mt-10 hidden justify-center max-sm:flex">
-          <CharStaggerButton
-            href="#"
-            text="View more"
-            showLine
-            onClick={(e) => {
-              e.preventDefault();
-
-              setMobileCardsState({
-                key: filteredEffectsKey,
-                showAll: true,
-              });
-            }}
-            className="font-sans text-lg text-foreground max-sm:text-base"
-          />
-        </div>
-      )}
-    </>
+    <EffectsGridInner
+      key={filteredEffectsKey}
+      filteredEffects={filteredEffects}
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+      isProUser={isProUser}
+      animationKey={animationKey}
+    />
   );
 }

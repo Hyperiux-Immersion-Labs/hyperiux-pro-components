@@ -1,14 +1,12 @@
 import React from "react";
 import ScrollParallaxGallery from "./ParallaxGallery";
 
-
 const ParallaxGallery = () => {
   return (
     <>
     <div className="min-h-screen">
       <ScrollParallaxGallery images={images} bgColor="#111111" />
     </div>
-      
     </>
   );
 };

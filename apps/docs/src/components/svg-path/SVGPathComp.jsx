@@ -84,7 +84,7 @@ function MarqueePathItem({
   )
 }
 
-const MarqueeAlongSvgPath = ({
+const SVGPathComp = ({
   children,
   className,
 
@@ -414,4 +414,4 @@ const MarqueeAlongSvgPath = ({
   );
 }
 
-export default MarqueeAlongSvgPath
+export default SVGPathComp

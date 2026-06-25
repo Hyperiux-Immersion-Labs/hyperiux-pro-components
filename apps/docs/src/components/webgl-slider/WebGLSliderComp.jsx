@@ -171,10 +171,15 @@ function WebGLSliderComp({ images = [] }) {
 
     camera.position.z = 7;
 
-    const isMobile = window.innerWidth < 768;
-    const CARD_W = isMobile ? 2.0 : 3.2;
-    const CARD_H = isMobile ? 1.8 : 3.0;
-    const GAP = isMobile ? 4.0 : 4.5;
+    const width = window.innerWidth;
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1025;
+    const isCompact = width < 1025;
+
+    const CARD_W = isMobile ? 1.55 : isTablet ? 2.25 : 3.2;
+    const CARD_H = isMobile ? 1.45 : isTablet ? 2.1 : 3.0;
+    const GAP = isMobile ? 4.7 : isTablet ? 5.1 : 4.5;
+
     const total = images.length;
 
     const vFov = (camera.fov * Math.PI) / 180;
@@ -269,8 +274,19 @@ function WebGLSliderComp({ images = [] }) {
     const foldRangeConst = halfViewConst + CARD_H;
     const loopHalf = loopLength / 2;
     const invFoldRange = 1 / foldRangeConst;
-    const CARD_W_OFFSET = isMobile ? CARD_W * 0.4 : CARD_W * 0.7;
-    const CARD_H_75 = CARD_H * 0.75;
+
+    const CARD_W_OFFSET = isMobile
+      ? CARD_W * 0.32
+      : isTablet
+        ? CARD_W * 0.46
+        : CARD_W * 0.7;
+
+    const CARD_H_75 = isMobile
+      ? CARD_H * 0.48
+      : isTablet
+        ? CARD_H * 0.58
+        : CARD_H * 0.75;
+
     const HALF_PI = Math.PI * 0.5;
 
     const mouseWorldPos = new THREE.Vector3();
@@ -291,9 +307,20 @@ function WebGLSliderComp({ images = [] }) {
         .add(mouseWorldDir.multiplyScalar(mouseDist));
 
       const viewW = viewH * camera.aspect;
-      const arcRadiusX = isMobile ? viewW * 1.7 : viewW * 1.2;
-      const arcRadiusY = isMobile ? viewH * 1.0 : viewW * 1.2;
-      const invArcRadius = 1 / (isMobile ? arcRadiusY : viewW * 1.2);
+
+      const arcRadiusX = isMobile
+        ? viewW * 2.45
+        : isTablet
+          ? viewW * 2.05
+          : viewW * 1.2;
+
+      const arcRadiusY = isMobile
+        ? viewH * 1.75
+        : isTablet
+          ? viewH * 1.55
+          : viewW * 1.2;
+
+      const invArcRadius = 1 / (isMobile ? arcRadiusY : arcRadiusY);
 
       const worldOffset = scrollRef.current / pxPerWorldUnit;
       const wrappedOffset = mod(worldOffset, loopLength);
@@ -356,7 +383,7 @@ function WebGLSliderComp({ images = [] }) {
           continue;
         }
 
-        const fold = isMobile ? 0.0 : clamp(y * invFoldRange, -1, 1);
+        const fold = isCompact ? 0.0 : clamp(y * invFoldRange, -1, 1);
         mesh.material.uniforms.uFold.value = fold;
 
         if (textEl) {
@@ -450,7 +477,7 @@ function WebGLSliderComp({ images = [] }) {
             className="absolute top-0 left-0 hidden will-change-transform"
           >
             <div className="flex origin-center -translate-x-1/2 -translate-y-1/2 flex-col">
-              <h1 className="whitespace-pre-wrap text-[7vw] font-bold leading-[0.85] tracking-tighter max-sm:text-[12vw]">
+              <h1 className="whitespace-pre-wrap text-[6.5vw] font-bold leading-[0.85] tracking-tighter max-lg:text-[7.6vw] max-sm:text-[9.4vw]">
                 {img.text}
               </h1>
             </div>
