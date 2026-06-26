@@ -1,4 +1,4 @@
-import LandingPageNew from '@/components/LandpageNew/LandingPageNew'
+import LandingPageNew from '@/components/LandpageV2/LandingPageNew'
 import React from 'react'
 
 const page = () => {

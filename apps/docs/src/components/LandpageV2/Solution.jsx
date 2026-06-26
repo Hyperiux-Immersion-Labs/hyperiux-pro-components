@@ -27,7 +27,7 @@ const Solution = () => {
                 />
 
             </div>
-            <div className='w-full h-[40vw]'>
+            <div className='w-full h-[40vw]' id="code-block">
                 <Image src={"/assets/homepage/code-blocks.png"} alt='code block' className='w-full h-full object-contain' width={1920} height={1080}/>
             </div>
 
