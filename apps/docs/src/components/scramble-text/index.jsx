@@ -14,8 +14,8 @@ const ScrambleText = () => {
     <>
       <LenisSmoothScroll />
       <main className="overflow-hidden bg-[#f6f2ea] text-[#121212]">
-        <section className="min-h-screen px-8 py-8 max-sm:px-4 max-sm:py-4">
-          <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-sm:min-h-[calc(100vh-2rem)] max-sm:p-4">
+        <section className=" px-8 py-8 pt-22 max-md:pt-25 max-sm:pt-20 max-sm:px-4 max-sm:py-4">
+          <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 max-md:gap-6 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-md:min-h-fit max-sm:p-4">
             <div>
               <p className="mb-6 text-xs font-bold uppercase tracking-[0.24em] text-black/45 max-sm:tracking-[0.16em]">
                 Scramble Text
@@ -27,7 +27,7 @@ const ScrambleText = () => {
                 align="left"
                 className="font-black uppercase leading-[0.88] max-md:leading-[1.2] max-sm:leading-[0.92]"
               />
-              <p className="mt-8 max-w-xl text-lg leading-8 text-black/60 max-sm:text-base max-sm:leading-[1.4] max-md:leadng-[1.2]">
+              <p className="mt-8 max-w-xl text-lg leading-[1.2] text-black/60 max-sm:text-base max-sm:leading-[1.4] max-md:leadng-[1.2]">
                 A minimal scroll reveal for headlines that should feel like they are decoding themselves in real time.
               </p>
             </div>

@@ -1,13 +1,11 @@
 import React from"react";
 import { ReactLenis } from"lenis/react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { RibbonDriftComp } from "./RibbonDriftComp";
 
 
 const RibbonDrift = () => {
  return (
  <ReactLenis root>
- <DemoHeader/>
  <section className="w-screen h-fit">
  <RibbonDriftComp images={IMAGE_POOL} projectNames={PROJECT_NAMES} />
  </section>
