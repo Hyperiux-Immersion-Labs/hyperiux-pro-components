@@ -1,13 +1,12 @@
 
-import { ReactLenis } from'lenis/react'
+
 import StackingCardComp from './StackingCardComp';
 
 export default function StackingCards() {
  return (
  <>
- <ReactLenis root>
+
  <StackingCardComp data={data} />
-  </ReactLenis>
   
  </>
  );
