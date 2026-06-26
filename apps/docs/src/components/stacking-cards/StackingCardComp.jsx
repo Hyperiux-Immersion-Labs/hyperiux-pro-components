@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from"react";
+import { useLayoutEffect, useRef } from"react";
 import gsap from"gsap";
 import ScrollTrigger from"gsap/ScrollTrigger";
 import { useLenis } from"lenis/react";
 import Image from"next/image";
-
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,7 +16,7 @@ export default function StackingCardComp({ data = [] }) {
  ScrollTrigger.update();
  }, [], 1);
 
- useEffect(() => {
+ useLayoutEffect(() => {
  cardsRef.current = cardsRef.current.slice(0, data.length);
 
  const ctx = gsap.context(() => {
@@ -141,7 +140,7 @@ export default function StackingCardComp({ data = [] }) {
  ref={(el) => {
  if (el) cardsRef.current[i] = el;
  }}
- className="absolute inset-0 overflow-hidden"
+ className="absolute inset-0 overflow-hidden opacity-0"
  >
  <SliderCard {...item} />
  </div>
@@ -162,11 +161,11 @@ const SliderCard = ({
  return (
  <div
  className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center ${backgroundColor}
- max-sm:min-h-[100svh] max-sm:flex-col max-sm:justify-start max-sm:py-8`}
+ max-sm:min-h-[100svh] max-md:flex-col max-md:justify-start max-sm:py-8`}
  >
  <div
- className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw]
- max-sm:w-full max-sm:px-5 max-sm:py-6"
+ className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-md:py-28
+ max-md:w-full max-md:w-[80%]  max-sm:px-5 max-sm:py-6"
  >
  <div>
  <h2
@@ -177,8 +176,8 @@ const SliderCard = ({
  </h2>
  </div>
 
- <div className="mb-6 hidden h-[42svh] w-full max-sm:block">
- <div className="h-full w-full overflow-hidden rounded-[6vw]">
+ <div className="mb-6 hidden h-[42svh] w-full max-md:block">
+ <div className="h-full max-sm:w-full overflow-hidden max-md:w-[80%] max-md:mx-auto max-sm:rounded-[6vw] max-md:rounded-[3vw]">
  <Image
  width={1000}
  height={1000}
@@ -190,7 +189,7 @@ const SliderCard = ({
  </div>
 
  <div
- className="flex justify-between gap-[12vw]
+ className="flex justify-between max-md:px-8 max-sm:px-0 gap-[12vw]
  max-sm:flex-col max-sm:gap-5"
  >
  <div
@@ -206,13 +205,13 @@ const SliderCard = ({
  >
  <h3
  className="font-display text-[2.5vw] text-black leading-[1.2]
- max-sm:text-[7vw]"
+ max-sm:text-[7vw] max-md:text-[4.5vw]"
  >
  {title}
  </h3>
  <p
  className="text-[1.4vw] leading-[1.2] text-gray-700
- max-sm:text-[4.2vw] max-sm:leading-[1.45]"
+ max-sm:text-[4.2vw] max-md:text-[3.5vw] max-sm:leading-[1.45]"
  >
  {description}
  </p>
@@ -222,7 +221,7 @@ const SliderCard = ({
 
  <div
  className="my-auto h-[75%] w-[40%] p-[4vw]
- max-sm:hidden"
+ max-md:hidden"
  >
  <div className="h-full w-full overflow-hidden rounded-[2vw]">
  <Image

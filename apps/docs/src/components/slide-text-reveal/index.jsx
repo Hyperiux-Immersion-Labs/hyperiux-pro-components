@@ -1,142 +1,103 @@
-import React from 'react'
-import { ReactLenis } from 'lenis/react'
-import Image from 'next/image'
-import SlideTextRevealComp from './SlideTextRevealComp'
+"use client";
 
-const SlideTextReveal = () => {
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(SplitText, ScrollTrigger);
+
+export default function SlideTextReveal({
+  children,
+  animateOnScroll = true,
+  delay = 0,
+  className = "",
+  scrub = true,
+  start = "top 80%",
+  end = "bottom 60%",
+}) {
+  const containerRef = useRef(null);
+  const splitRefs = useRef([]);
+  const charsRef = useRef([]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    splitRefs.current = [];
+    charsRef.current = [];
+
+    const elements = containerRef.current.hasAttribute("data-copy-wrapper")
+      ? Array.from(containerRef.current.children)
+      : [containerRef.current];
+
+    let ctx;
+
+    const init = async () => {
+      await document.fonts.ready;
+
+      ctx = gsap.context(() => {
+        elements.forEach((element) => {
+          const split = SplitText.create(element, {
+            type: "lines,chars",
+            charsClass: "char++",
+            reduceWhiteSpace: false,
+          });
+
+          splitRefs.current.push(split);
+          charsRef.current.push(...split.chars);
+        });
+
+        gsap.set(containerRef.current, {
+          opacity: 1,
+        });
+
+        gsap.set(charsRef.current, {
+          x: 20,
+          opacity: 0,
+          willChange: "transform",
+        });
+
+        const animationProps = {
+          x: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.03,
+          ease: "power3.out",
+          delay,
+        };
+
+        if (animateOnScroll) {
+          gsap.to(charsRef.current, {
+            ...animationProps,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start,
+              end,
+              scrub,
+              // markers: true,
+            },
+          });
+        } else {
+          gsap.to(charsRef.current, animationProps);
+        }
+      }, containerRef);
+    };
+
+    init();
+
+    return () => {
+      if (ctx) ctx.revert();
+      splitRefs.current.forEach((split) => split?.revert());
+    };
+  }, [animateOnScroll, delay, scrub, start, end]);
+
   return (
-    <>
-    <ReactLenis root>
-      {/* Hero */}
-      <section className="relative min-h-screen overflow-hidden bg-[#080808]">
-        <Image
-          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
-          alt="asset-image"
-          fill
-          priority
-          className="object-cover opacity-45"
-        />
-
-        <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/55 to-black" />
-        <div className="absolute -top-40 left-1/2 h-175 w-175 -translate-x-1/2 rounded-full bg-[#ff5f99]/20 blur-3xl" />
-
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-8 text-center">
-          <div className="mb-8 rounded-full border border-white/10 bg-white/5 px-5 py-2 backdrop-blur-xl">
-            <span className="text-sm tracking-[0.25em] text-white/70 uppercase">
-              Scroll to reveal
-            </span>
-          </div>
-
-          <SlideTextRevealComp scrub={true} className="text-center" start='top 40%' end='bottom 40%'>
-            <h1 className="text-6xl md:text-8xl font-black leading-[0.92] tracking-tight text-white">
-              Slide From Right
-             
-            </h1>
-          </SlideTextRevealComp>
-
-          <SlideTextRevealComp scrub={true} start='top 50%' end='bottom 50%'>
-            <p className="mt-8 max-w-2xl text-lg md:text-2xl text-white/65">
-              A cinematic text reveal where every character enters with
-              intention.
-            </p>
-          </SlideTextRevealComp>
-        </div>
-      </section>
-
-      {/* Showcase */}
-      <section className="relative min-h-screen overflow-hidden bg-[#f7f2ff]">
-        <Image
-          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
-          alt="asset-image"
-          fill
-          className="object-cover opacity-40"
-        />
-
-        <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px]" />
-
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-8">
-          <div className="max-w-6xl">
-            <div className="mb-12 flex items-center gap-4">
-              <div className="h-px flex-1 bg-black/10" />
-              <span className="text-sm uppercase tracking-[0.35em] text-black/40">
-                Directional Motion
-              </span>
-              <div className="h-px flex-1 bg-black/10" />
-            </div>
-
-            <SlideTextRevealComp scrub={true} className="max-w-5xl">
-              <p className="text-center text-4xl md:text-6xl font-semibold leading-[1.15] text-[#121212]">
-                Characters gracefully slide in from the right
-                <span className="text-[#c2185b]"> with elegant stagger</span>,
-                creating a premium reveal that feels alive while scrolling.
-              </p>
-            </SlideTextRevealComp>
-
-            <div className="mt-20 grid grid-cols-2 gap-6 md:grid-cols-4">
-              {[
-                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg',
-                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg',
-                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg',
-                'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg',
-              ].map((src, i) => (
-                <div
-                  key={i}
-                  className="group relative overflow-hidden rounded-[30px] border border-black/10 bg-white/50 backdrop-blur-xl"
-                >
-                  <div className="relative h-60">
-                    <Image
-                      src={src}
-                      alt="asset-image"
-                      fill
-                      className="object-cover transition duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final */}
-      <section className="relative min-h-screen overflow-hidden bg-black">
-        <Image
-          src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
-          alt="asset-image"
-          fill
-          className="object-cover opacity-45"
-        />
-
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
-
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-8">
-          <div className="relative max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-white/5 px-8 py-24 backdrop-blur-2xl">
-            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent" />
-
-            <SlideTextRevealComp
-              scrub={true}
-              className="relative text-center"
-            >
-              <h2 className="text-5xl md:text-8xl font-black leading-[0.95] text-white">
-                Perfect for
-                <br />
-                guiding attention
-                <br />
-                through motion
-              </h2>
-            </SlideTextRevealComp>
-
-            <SlideTextRevealComp scrub={true} start='top 80%' end='bottom 75%'>
-              <p className="relative mx-auto mt-10 max-w-2xl text-center text-lg text-white/60">
-                Designed to feel smooth, modern and intentionally cinematic.
-              </p>
-            </SlideTextRevealComp>
-          </div>
-        </div>
-      </section>
-    </ReactLenis>
-    </>
-  )
+    <div
+      ref={containerRef}
+      data-copy-wrapper="true"
+      className={`opacity-0 ${className}`}
+    >
+      {children}
+    </div>
+  );
 }
-
-export default SlideTextReveal

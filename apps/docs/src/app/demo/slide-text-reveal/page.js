@@ -1,13 +1,15 @@
-import SlideTextReveal from '@/components/slide-text-reveal'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import React from 'react'
+import SlideTextWrapper from './SlideTextWrapper'
+import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 
 const page = () => {
   return (
-    <>
-    <DemoHeader logoColor='#FFFFFF'/>
-    <SlideTextReveal/>
-    </>
+   <>
+   <DemoHeader textColor='#ffffff' logoColor='#ffffff' />
+    <SlideTextWrapper />
+    <ScrollBottom />
+   </>
   )
 }
 
