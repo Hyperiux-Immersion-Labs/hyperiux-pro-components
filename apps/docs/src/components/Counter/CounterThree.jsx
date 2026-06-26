@@ -85,7 +85,7 @@ const CounterThree = ({
 
  return (
  <div
- className={`flex items-end gap-[2vw] max-md:gap-0 ${textSize}`}
+ className={`flex items-end gap-[0.05em] max-md:gap-0 ${textSize}`}
  style={{
  fontWeight,
  color: textColor,

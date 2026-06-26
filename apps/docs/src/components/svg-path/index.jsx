@@ -81,7 +81,7 @@ export default function SVGPath() {
 
       <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden bg-black">
         <div className="fixed inset-0 h-dvh w-dvw overflow-hidden bg-black">
-          <div className="pointer-events-auto fixed left-1/2 bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-md:gap-[1.2vw] max-md:p-[0.7vw] max-sm:w-fit max-md:h-fit max-sm:justify-center max-sm:gap-[2vw] max-sm:p-[1.4vw]">
+          <div className="pointer-events-auto fixed left-1/2 bottom-[5%] max-md:bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-md:gap-[1.2vw] max-md:p-[0.7vw] max-sm:w-fit max-md:h-fit max-sm:justify-center max-sm:gap-[2vw] max-sm:p-[1.4vw]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
 

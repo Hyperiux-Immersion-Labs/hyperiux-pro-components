@@ -42,7 +42,7 @@ const PRO_ROUTES = [
   "/svg-path",
   "/svg-pixel-reveal",
   "/tabs",
-  "/testimonial",
+  "/testimonial-swiper",
   "/text-cloning",
   "/text-hover",
   "/text-stream",

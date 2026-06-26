@@ -94,6 +94,7 @@ function WebGLSliderComp({ images = [] }) {
   const scrollRef = useRef(0);
   const lastScroll = useRef(0);
   const scrollTimeout = useRef(null);
+  const lenisResumeTimeout = useRef(null);
   const isSnapping = useRef(false);
 
   useLenis((lenis) => {
@@ -127,9 +128,24 @@ function WebGLSliderComp({ images = [] }) {
                 scrollRef.current = obj.y;
               },
               onComplete: () => {
-                isSnapping.current = false;
+                window.scrollTo(0, targetScroll);
                 lastScroll.current = targetScroll;
-                lenis.start();
+                scrollRef.current = targetScroll;
+                lenis.scrollTo(targetScroll, { immediate: true, force: true });
+
+                if (lenisResumeTimeout.current) {
+                  clearTimeout(lenisResumeTimeout.current);
+                }
+
+                lenisResumeTimeout.current = setTimeout(() => {
+                  lastScroll.current = targetScroll;
+                  scrollRef.current = targetScroll;
+                  lenis.start();
+                  requestAnimationFrame(() => {
+                    isSnapping.current = false;
+                  });
+                  lenisResumeTimeout.current = null;
+                }, 1000);
               },
             });
           }
@@ -428,6 +444,10 @@ function WebGLSliderComp({ images = [] }) {
     return () => {
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
+      }
+
+      if (lenisResumeTimeout.current) {
+        clearTimeout(lenisResumeTimeout.current);
       }
 
       cancelAnimationFrame(rafId);

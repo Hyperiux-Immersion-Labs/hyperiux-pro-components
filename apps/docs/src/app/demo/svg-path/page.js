@@ -9,9 +9,9 @@ const page = () => {
     <>
       <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
 
-      <div className="pointer-events-none absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] px-[5vw] pt-[7%] max-md:pt-[15%] max-sm:pt-[30%]">
+      <div className="pointer-events-none absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] max-md:gap-[4vw] px-[5vw] pt-[6%] max-md:pt-[15%] max-sm:pt-[30%]">
         <HeadAnim>
-          <h1 className="text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">
+          <h1 className="text-[3.5vw] max-md:text-[7vw] max-sm:text-[9vw]">
             SVG Path
           </h1>
         </HeadAnim>
@@ -19,7 +19,7 @@ const page = () => {
         <SplitLine
           as="p"
           start="top 95%"
-          className="absolute bottom-[15%] w-[40%] text-center max-md:bottom-[20%] max-md:w-[70%]"
+          className="absolute bottom-[15%] max-md:text-base w-[40%] text-center max-md:bottom-[20%] max-md:w-[70%]"
         >
           Scroll to see the effect or navigate through tabs to switch up the
           paths.

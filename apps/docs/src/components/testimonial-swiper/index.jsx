@@ -16,7 +16,7 @@ export default TestimonialSwiper;
 const data = [
   {
     quote:
-      "Design that feels completely effortless — yet performs like it’s been engineered with precision. Every interaction flows naturally, every detail feels intentional, and the entire experience just makes sense without the user ever needing to think about it.",
+      "Design that feels completely effortless, yet performs like it’s been engineered with precision. Every interaction flows naturally, every detail feels intentional, and the entire experience just makes sense without the user ever needing to think about it.",
     name: "Aarav Mehta",
     title: "Product Lead, InnovateX",
     image:
@@ -24,7 +24,7 @@ const data = [
   },
   {
     quote:
-      "Hyperiux didn’t just improve our UI — it transformed the way users interact with our product. It pushed us to rethink our entire approach to design, making every screen more intuitive, more fluid, and far more engaging than we thought possible.",
+      "Hyperiux didn’t just improve our UI , it transformed the way users interact with our product. It pushed us to rethink our entire approach to design, making every screen more intuitive, more fluid, and far more engaging than we thought possible.",
     name: "Sofia Patel",
     title: "Frontend Developer",
     image:
@@ -32,7 +32,7 @@ const data = [
   },
   {
     quote:
-      "Everything feels intentional. Every hover, every transition, every detail — it’s crafted, not just built.",
+      "Everything feels intentional. Every hover, every transition, every detail , it’s crafted, not just built.",
     name: "Rohan Kapoor",
     title: "UX Designer, PixelCraft",
     image:
@@ -40,7 +40,7 @@ const data = [
   },
   {
     quote:
-      "We didn’t just ship faster — we shipped something we’re genuinely proud of. The design quality improved, the development flow became smoother, and for the first time, everything felt aligned between vision and execution.",
+      "We didn’t just ship faster , we shipped something we’re genuinely proud of. The design quality improved, the development flow became smoother, and for the first time, everything felt aligned between vision and execution.",
     name: "Ananya Sharma",
     title: "Founder, Buildspace Studio",
     image:

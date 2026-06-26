@@ -8,7 +8,7 @@ const page = () => {
   return (
    <>
    <DemoHeader logoColor='#ffffff' textColor='#ffffff'/>
-   <div className='w-full h-full flex flex-col items-center gap-[2vw] px-[5vw] pt-[10%] max-md:pt-[15%] max-sm:pt-[30%]'>
+   <div className='w-full h-full flex flex-col bg-[#0a0a0a] items-center gap-[2vw] px-[5vw] pt-[10%] max-md:pt-[15%] max-sm:pt-[30%]'>
     <HeadAnim>
     <h1 className='text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]'>
        Text Hover

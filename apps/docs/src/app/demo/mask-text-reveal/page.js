@@ -6,6 +6,7 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 
+
 const notes = [
   "Masked line splitting",
   "Scrubbed scroll timing",
@@ -147,9 +148,13 @@ const Page = () => {
                       {title}
                     </h3>
                   </MaskTextReveal>
-                  <p className={`mt-6 max-w-2xl text-lg leading-8 max-sm:text-base max-sm:leading-7 ${index === 2 ? "text-white/75" : "text-black/70"}`}>
+                  
+                 
+
+                  <p className={`mt-6 max-w-2xl text-lg leading-[1.4] max-sm:text-base max-sm:leading-[1.2] ${index === 2 ? "text-white/75" : "text-black/70"}`}>
                     {body}
                   </p>
+            
                 </article>
               ))}
             </div>

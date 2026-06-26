@@ -1,6 +1,5 @@
 import { BookFlipp } from "./BookFlip";
 
-// Image array for the book pages
 
 
 export default function BookFlip() {

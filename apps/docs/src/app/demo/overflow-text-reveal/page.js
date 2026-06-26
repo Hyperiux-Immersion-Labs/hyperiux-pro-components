@@ -4,6 +4,7 @@ import OverflowTextReveal from'@/components/overflow-text-reveal'
 import { ReactLenis } from'lenis/react'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import SplitLine from '@/components/WebsiteComps/SplitLine'
 
 const page = () => {
  return (
@@ -21,9 +22,12 @@ const page = () => {
  <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
 
  <div className="relative z-10 px-2 max-md:pt-[45vh] max-sm:pt-[4vh] max-w-6xl mx-auto w-full">
+  <SplitLine>
+
  <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-smd:text-sm">
  direction — bottom (default)
  </p>
+  </SplitLine>
  <OverflowTextReveal direction="bottom" scrub={false}>
  <h1 className="text-8xl font-black  text-white leading-[0.9] tracking-tighter uppercase max-sm:text-5xl">
  Characters<br />Rise From<br />Below
@@ -51,9 +55,12 @@ const page = () => {
  </div>
 
  <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
+  <SplitLine>
+
  <p className="text-xs tracking-[0.35rem] text-[#8c7b6b] uppercase py-2 max-sm:text-sm max-md:text-base">
  direction — top
  </p>
+  </SplitLine>
  <OverflowTextReveal direction="top" scrub={true}>
  <h2 className="max-w-2xl text-7xl font-black text-[#2c1810] leading-[0.92] tracking-tight uppercase  max-sm:text-5xl">
  Falling<br />Down From<br />The Sky
@@ -95,9 +102,13 @@ const page = () => {
  <div className="absolute inset-0 bg-linear-to-r from-transparent via-[#0d1b2a]/80 to-[#0d1b2a]" />
 
  <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full flex flex-col items-end text-right">
+
+  <SplitLine>
+
  <p className="text-xs tracking-[0.35rem] text-[#4fc3f7]/50 uppercase py-2 max-sm:text-sm max-md:text-base">
  direction — left
  </p>
+  </SplitLine>
  <OverflowTextReveal direction="left" scrub={true}>
  <h2 className="text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
  Entering<br />From The<br />Left Edge
@@ -141,9 +152,13 @@ const page = () => {
  <div className="absolute right-0 top-0 h-full w-[55%] bg-linear-to-r from-[#1a1a1a] to-transparent" />
 
  <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
+
+  <SplitLine>
+
  <p className="text-xs tracking-[0.35rem] text-[#d4af37]/60 uppercase py-2 max-sm:text-sm max-md:text-base">
  direction — right
  </p>
+  </SplitLine>
  <OverflowTextReveal direction="right" scrub={true}>
  <h2 className="max-w-xl text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
  Rushing In<br />From The<br />Right Side

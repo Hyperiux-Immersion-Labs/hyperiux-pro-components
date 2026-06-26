@@ -189,19 +189,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  transition:"opacity 0.2s ease",
  }}
  >
- {/* Section title */}
- <div
- className="absolute left-1/2 -translate-x-1/2 text-[1.5vw] max-md:text-[3vw] max-sm:text-[5vw]"
- style={{
- top: isMobileViewport ? 90 : 90,
- zIndex: 30,
- letterSpacing:"0.34em",
- textTransform:"uppercase",
- whiteSpace:"nowrap",
- }}
- >
- Parallax Gallery
- </div>
+
 
  {/* Slide counter */}
  <div

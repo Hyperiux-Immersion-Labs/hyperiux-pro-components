@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <>
     <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
-    <section className="flex min-h-screen w-screen items-center max-md:items-start bg-[#111111] p-[5vw] max-md:h-auto max-md:py-[8vw] max-md:pb-[8vw] max-sm:px-[5vw] max-sm:py-[12vw]">
+    <section className="flex min-h-screen w-screen items-center max-md:items-start bg-[#111111] p-[5vw] max-md:h-auto max-md:py-[8vw] max-md:pt-24 max-sm:pt-24 max-md:pb-[8vw] max-sm:px-[5vw] max-sm:py-[12vw]">
       <div className="flex w-full justify-between gap-[5vw] max-md:flex-col max-md:gap-[6vw] max-sm:gap-[8vw]">
         {/* LEFT VIDEO */}
         <div className="aspect-video h-[27vw] w-[43vw] max-md:h-auto max-md:w-full fadeup">

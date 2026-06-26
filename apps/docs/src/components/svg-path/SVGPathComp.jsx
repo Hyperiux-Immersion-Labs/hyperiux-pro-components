@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   motion,
   useAnimationFrame,
@@ -68,7 +68,7 @@ function MarqueePathItem({
         itemRef.current = el
         if (el) itemRefs.current.set(itemKey, el)
       }}
-      className={`absolute top-0 left-0 ${draggable && grabCursor ? 'cursor-grab' : ''}`}
+      className={`absolute top-5 left-0 ${draggable && grabCursor ? 'cursor-grab' : ''}`}
       style={{
         offsetPath: `path('${path}')`,
         offsetDistance: itemOffset,
@@ -145,6 +145,7 @@ const SVGPathComp = ({
   const container = useRef(null)
   const marqueeContainerRef = useRef(null)
   const baseOffset = useMotionValue(0)
+  const [isPositionReady, setIsPositionReady] = useState(false)
 
   const pathRef = useRef(null)
 
@@ -362,6 +363,35 @@ const SVGPathComp = ({
     }
   }
 
+  useEffect(() => {
+    setIsPositionReady(false)
+
+    if (items.length === 0) {
+      return
+    }
+
+    let frameId = 0
+    let timeoutId = 0
+
+    const markReady = () => {
+      if (itemRefs.current.size === items.length) {
+        frameId = window.requestAnimationFrame(() => {
+          setIsPositionReady(true)
+        })
+        return
+      }
+
+      timeoutId = window.setTimeout(markReady, 16)
+    }
+
+    markReady()
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      window.clearTimeout(timeoutId)
+    }
+  }, [items.length, path])
+
   return (
     <div
       ref={container}
@@ -370,9 +400,12 @@ const SVGPathComp = ({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       className={`relative ${className || ''}`}>
-      <div
+      <motion.div
         ref={marqueeContainerRef}
         className="relative"
+        initial={false}
+        animate={{ opacity: isPositionReady ? 1 : 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         style={{ contain: "layout style" }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -409,7 +442,7 @@ const SVGPathComp = ({
             isHoveredRef={isHoveredRef}
           />
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
