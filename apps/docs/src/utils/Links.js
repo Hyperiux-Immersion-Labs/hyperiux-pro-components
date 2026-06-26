@@ -9,7 +9,7 @@ export const vaultLinks = [
     { label: 'Effects', href: '/effects' },
     { label: 'Categories', href: '/effects/featured', dropdown: 'categories' },
     { label: 'Docs', href: '/docs', dropdown: 'docs' },
-    { label: 'Pricing', href: '#' },
+    { label: 'Pricing', href: '/pricing' },
     { label: 'Github', href: 'https://github.com/Hyperiux-Immersion-Labs/hyperiux-components' },
 ]
 

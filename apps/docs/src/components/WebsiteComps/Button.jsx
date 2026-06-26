@@ -74,7 +74,7 @@ export default function Button({
       aria-label={ariaLabel}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : undefined}
-      className={`${styles.base()} ${
+      className={`${className} ${styles.base()} ${
         disabled ? "pointer-events-none opacity-60" : ""
       }`}
     >
