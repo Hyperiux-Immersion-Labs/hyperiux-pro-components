@@ -37,6 +37,7 @@ const nextConfig = {
   experimental: {
     browsersListForSwc: true,
     optimizePackageImports: ["lucide-react", "motion", "framer-motion", "gsap"],
+    optimizeCss: true,
   },
 
   async headers() {

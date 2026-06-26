@@ -1,5 +1,6 @@
 "use client";
 
+import "highlight.js/styles/night-owl.css";
 import { useMemo, useState } from "react";
 import hljs from "highlight.js";
 import { Copy } from "lucide-react";
