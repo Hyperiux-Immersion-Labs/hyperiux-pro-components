@@ -576,8 +576,8 @@ export default function FeaturedStoryTelling() {
             className="relative w-full h-[1100vh] max-md:hidden z-50"
             
         >
-            <h2 className='text-[5.5vw] w-full text-center'>
-                Vault is That Layer - <span className='italic text-[#ff5f00]'>Installable</span>
+            <h2 className='text-[5.5vw] w-[70%] text-center mx-auto'>
+                Explore the Moments Your Website is  <span className='italic text-[#ff5f00]'>Missing.</span>
             </h2>
             <div
                 ref={stickyContainerRef}
