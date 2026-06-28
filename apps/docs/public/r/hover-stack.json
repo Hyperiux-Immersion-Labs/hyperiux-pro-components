@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Hover Stack",
   "description": "Overlapping card stack that fans out around the hovered card",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "free",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "HoverStack",
   "exportKind": "named",
-  "previewUrl": "/hover-stack",
-  "coverImage": "hover-stack",
-  "videoUrl": "hover-stack.mp4",
   "files": [
     {
       "path": "hover-stack.jsx",

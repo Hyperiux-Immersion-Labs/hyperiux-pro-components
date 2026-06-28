@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Zoom Slider",
   "description": "Infinitely looping horizontal image carousel where the active card expands using a quadratic easing curve as it enters from the right. Supports scroll, drag, and touch. Hover reveals GSAP SplitText line animations above each card.",
-  "category": "carousels",
-  "categories": [
-    "carousels"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ZoomSlider",
   "exportKind": "named",
-  "previewUrl": "/webgl/zoom-slider",
-  "coverImage": "zoom-slider",
-  "videoUrl": "zoom-slider.mp4",
   "files": [
     {
       "path": "zoom-slider.jsx",

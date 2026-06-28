@@ -17,6 +17,7 @@
     "@14islands/r3f-scroll-rig": "^8.15.0",
     "@clerk/nextjs": "^7.4.2",
     "@imagekit/next": "^2.1.5",
+    "@react-email/components": "^1.0.12",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
     "@react-three/postprocessing": "^3.0.4",
@@ -53,8 +54,15 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
+    "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "tailwindcss": "^4"
-  }
+  },
+  "browserslist": [
+    "chrome >= 93",
+    "firefox >= 92",
+    "safari >= 15.4",
+    "edge >= 93"
+  ]
 }

@@ -1,0 +1,922 @@
+[
+  {
+    "title": "Dither Canvas",
+    "name": "dither-canvas",
+    "tier": "pro",
+    "category": "backgrounds",
+    "detailRoute": "https://vault.hyperiux.com/effects/backgrounds/dither-canvas",
+    "demoRoute": "https://vault.hyperiux.com/demo/dither-canvas"
+  },
+  {
+    "title": "Dotted Grid",
+    "name": "dotted-grid",
+    "tier": "free",
+    "category": "backgrounds",
+    "detailRoute": "https://vault.hyperiux.com/effects/backgrounds/dotted-grid",
+    "demoRoute": "https://vault.hyperiux.com/demo/dotted-grid"
+  },
+  {
+    "title": "Spider Particles",
+    "name": "spider-particles",
+    "tier": "free",
+    "category": "backgrounds",
+    "detailRoute": "https://vault.hyperiux.com/effects/backgrounds/spider-particles",
+    "demoRoute": "https://vault.hyperiux.com/demo/spider-particles"
+  },
+  {
+    "title": "Animated Toggle",
+    "name": "animated-toggle",
+    "tier": "pro",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/animated-toggle",
+    "demoRoute": "https://vault.hyperiux.com/demo/animated-toggle"
+  },
+  {
+    "title": "Arrow Fill Button",
+    "name": "arrow-fill-button",
+    "tier": "free",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/arrow-fill-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/arrow-fill-button"
+  },
+  {
+    "title": "Character Stagger Button",
+    "name": "char-stagger-button",
+    "tier": "pro",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/char-stagger-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/char-stagger-button"
+  },
+  {
+    "title": "Character Stagger Primary Button",
+    "name": "char-stagger-primary-button",
+    "tier": "pro",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/char-stagger-primary-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/char-stagger-primary-button"
+  },
+  {
+    "title": "Dot Fill Button",
+    "name": "dot-fill-button",
+    "tier": "pro",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/dot-fill-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/dot-fill-button"
+  },
+  {
+    "title": "Link Button",
+    "name": "link-button",
+    "tier": "free",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/link-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/link-button"
+  },
+  {
+    "title": "Scramble Link Button",
+    "name": "scramble-link-button",
+    "tier": "free",
+    "category": "buttons",
+    "detailRoute": "https://vault.hyperiux.com/effects/buttons/scramble-link-button",
+    "demoRoute": "https://vault.hyperiux.com/demo/scramble-link-button"
+  },
+  {
+    "title": "Clip Path Slider",
+    "name": "clippath-slider",
+    "tier": "pro",
+    "category": "carousels",
+    "detailRoute": "https://vault.hyperiux.com/effects/carousels/clippath-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/clip-path-slider"
+  },
+  {
+    "title": "Infinite Carousel",
+    "name": "infinite-carousel",
+    "tier": "pro",
+    "category": "carousels",
+    "detailRoute": "https://vault.hyperiux.com/effects/carousels/infinite-carousel",
+    "demoRoute": "https://vault.hyperiux.com/demo/infinite-carousel"
+  },
+  {
+    "title": "Ring Carousel",
+    "name": "ring-carousel",
+    "tier": "pro",
+    "category": "carousels",
+    "detailRoute": "https://vault.hyperiux.com/effects/carousels/ring-carousel",
+    "demoRoute": "https://vault.hyperiux.com/pro/ring-carousel"
+  },
+  {
+    "title": "WebGL Slider",
+    "name": "webgl-slider",
+    "tier": "pro",
+    "category": "carousels",
+    "detailRoute": "https://vault.hyperiux.com/effects/carousels/webgl-slider",
+    "demoRoute": "https://vault.hyperiux.com/pro/webgl-slider"
+  },
+  {
+    "title": "Zoom Slider",
+    "name": "zoom-slider",
+    "tier": "free",
+    "category": "carousels",
+    "detailRoute": "https://vault.hyperiux.com/effects/carousels/zoom-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/zoom-slider"
+  },
+  {
+    "title": "Animated FAQ",
+    "name": "animated-faq",
+    "tier": "free",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/animated-faq",
+    "demoRoute": "https://vault.hyperiux.com/demo/animated-faq"
+  },
+  {
+    "title": "Card Drift",
+    "name": "card-drift",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/card-drift",
+    "demoRoute": "https://vault.hyperiux.com/demo/card-drift"
+  },
+  {
+    "title": "Custom Video Player",
+    "name": "custom-video-player",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/custom-video-player",
+    "demoRoute": "https://vault.hyperiux.com/pro/video-player"
+  },
+  {
+    "title": "Depth Card Stack",
+    "name": "depth-card-stack",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/depth-card-stack",
+    "demoRoute": "https://vault.hyperiux.com/demo/depth-card-stack"
+  },
+  {
+    "title": "Form",
+    "name": "form",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/form",
+    "demoRoute": "https://vault.hyperiux.com/form"
+  },
+  {
+    "title": "Gooey Counter",
+    "name": "gooey-counter",
+    "tier": "free",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/gooey-counter",
+    "demoRoute": "https://vault.hyperiux.com/demo/gooey-counter"
+  },
+  {
+    "title": "Hover Stack",
+    "name": "hover-stack",
+    "tier": "free",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/hover-stack",
+    "demoRoute": "https://vault.hyperiux.com/demo/hover-stack"
+  },
+  {
+    "title": "Interactive List Preview",
+    "name": "interactive-list-preview",
+    "tier": "free",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/interactive-list-preview",
+    "demoRoute": "https://vault.hyperiux.com/demo/interactive-list-preview"
+  },
+  {
+    "title": "Modal",
+    "name": "modal",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/modal",
+    "demoRoute": "https://vault.hyperiux.com/pro/modal"
+  },
+  {
+    "title": "Ribbon Drift",
+    "name": "ribbon-drift",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/ribbon-drift",
+    "demoRoute": "https://vault.hyperiux.com/pro/ribbon-drift"
+  },
+  {
+    "title": "Tabs",
+    "name": "tabs",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/tabs",
+    "demoRoute": "https://vault.hyperiux.com/pro/tabs"
+  },
+  {
+    "title": "Testimonial Swiper",
+    "name": "testimonial-swiper",
+    "tier": "pro",
+    "category": "components",
+    "detailRoute": "https://vault.hyperiux.com/effects/components/testimonial-swiper",
+    "demoRoute": "https://vault.hyperiux.com/pro/testimonial"
+  },
+  {
+    "title": "Butterfly Trail Cursor",
+    "name": "butterfly-trail-cursor",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/butterfly-trail-cursor",
+    "demoRoute": "https://vault.hyperiux.com/demo/butterfly-trail-cursor"
+  },
+  {
+    "title": "Character Trail",
+    "name": "character-trail",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/character-trail",
+    "demoRoute": "https://vault.hyperiux.com/demo/character-trail"
+  },
+  {
+    "title": "Coffee Bean Cursor",
+    "name": "coffee-bean-cursor",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/coffee-bean-cursor",
+    "demoRoute": "https://vault.hyperiux.com/demo/coffee-bean-cursor"
+  },
+  {
+    "title": "Colorful Cursor Aura",
+    "name": "colorful-cursor-aura",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/colorful-cursor-aura",
+    "demoRoute": "https://vault.hyperiux.com/demo/colorful-cursor-aura"
+  },
+  {
+    "title": "Cursor Move",
+    "name": "cursor-move",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/cursor-move",
+    "demoRoute": "https://vault.hyperiux.com/demo/cursor-move"
+  },
+  {
+    "title": "Fish Eye",
+    "name": "fish-eye",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/fish-eye",
+    "demoRoute": "https://vault.hyperiux.com/demo/fish-eye"
+  },
+  {
+    "title": "Full Screen Crosshair",
+    "name": "full-screen-crosshair",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/full-screen-crosshair",
+    "demoRoute": "https://vault.hyperiux.com/pro/full-screen-crosshair"
+  },
+  {
+    "title": "Inertia Image",
+    "name": "inertia-img",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/inertia-img",
+    "demoRoute": "https://vault.hyperiux.com/demo/inertia-img"
+  },
+  {
+    "title": "Interactive Arrows",
+    "name": "interactive-arrows",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/interactive-arrows",
+    "demoRoute": "https://vault.hyperiux.com/demo/interactive-arrows"
+  },
+  {
+    "title": "Liquid Glass Cursor",
+    "name": "liquid-glass-cursor",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/liquid-glass-cursor",
+    "demoRoute": "https://vault.hyperiux.com/demo/liquid-glass-cursor"
+  },
+  {
+    "title": "Magnetic Image Trail",
+    "name": "magnetic-image-trail",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/magnetic-image-trail",
+    "demoRoute": "https://vault.hyperiux.com/pro/magnetic-image-trail"
+  },
+  {
+    "title": "Noise Ripple Cursor",
+    "name": "noise-ripple-cursor",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/noise-ripple-cursor",
+    "demoRoute": "https://vault.hyperiux.com/pro/noiseripple"
+  },
+  {
+    "title": "Phantom Image Trail",
+    "name": "phantom-image-trail",
+    "tier": "free",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/phantom-image-trail",
+    "demoRoute": "https://vault.hyperiux.com/demo/phantom-image-trail"
+  },
+  {
+    "title": "Pixel Bloom",
+    "name": "pixel-bloom",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/pixel-bloom",
+    "demoRoute": "https://vault.hyperiux.com/pro/pixel-bloom"
+  },
+  {
+    "title": "Pixelated Image Effect",
+    "name": "pixelated-image-effect",
+    "tier": "free",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/pixelated-image-effect",
+    "demoRoute": "https://vault.hyperiux.com/demo/pixelated-image-effect"
+  },
+  {
+    "title": "Rope Cursor",
+    "name": "rope-cursor",
+    "tier": "pro",
+    "category": "cursor",
+    "detailRoute": "https://vault.hyperiux.com/effects/cursor-effects/rope-cursor",
+    "demoRoute": "https://vault.hyperiux.com/demo/rope"
+  },
+  {
+    "title": "Lines Loader",
+    "name": "lines-loader",
+    "tier": "pro",
+    "category": "loaders",
+    "detailRoute": "https://vault.hyperiux.com/effects/loaders/lines-loader",
+    "demoRoute": "https://vault.hyperiux.com/demo/lines-loading"
+  },
+  {
+    "title": "Numeric Tunnel",
+    "name": "numeric-tunnel",
+    "tier": "free",
+    "category": "loaders",
+    "detailRoute": "https://vault.hyperiux.com/effects/loaders/numeric-tunnel",
+    "demoRoute": "https://vault.hyperiux.com/demo/numeric-tunnel"
+  },
+  {
+    "title": "Stack Loader",
+    "name": "stack-loader",
+    "tier": "free",
+    "category": "loaders",
+    "detailRoute": "https://vault.hyperiux.com/effects/loaders/stack-loader",
+    "demoRoute": "https://vault.hyperiux.com/demo/stack-loader"
+  },
+  {
+    "title": "Directional Menu",
+    "name": "directional-menu",
+    "tier": "free",
+    "category": "navigation",
+    "detailRoute": "https://vault.hyperiux.com/effects/navigation/directional-menu",
+    "demoRoute": "https://vault.hyperiux.com/demo/directional-menu"
+  },
+  {
+    "title": "Elevate Navbar",
+    "name": "elevate-navbar",
+    "tier": "free",
+    "category": "navigation",
+    "detailRoute": "https://vault.hyperiux.com/effects/navigation/elevate-navbar",
+    "demoRoute": "https://vault.hyperiux.com/demo/elevate-navbar"
+  },
+  {
+    "title": "Expanding Navbar",
+    "name": "expanding-navbar",
+    "tier": "pro",
+    "category": "navigation",
+    "detailRoute": "https://vault.hyperiux.com/effects/navigation/expanding-navbar",
+    "demoRoute": "https://vault.hyperiux.com/demo/expanding-navbar"
+  },
+  {
+    "title": "Immersive Full screen Navigation",
+    "name": "immersive-full-screen-navigation",
+    "tier": "free",
+    "category": "navigation",
+    "detailRoute": "https://vault.hyperiux.com/effects/navigation/immersive-full-screen-navigation",
+    "demoRoute": "https://vault.hyperiux.com/demo/immersive-full-screen-nav"
+  },
+  {
+    "title": "Circular Split Roll",
+    "name": "circular-split-roll",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/circular-split-roll",
+    "demoRoute": "https://vault.hyperiux.com/demo/circular-split-roll"
+  },
+  {
+    "title": "Draggable Marquee",
+    "name": "draggable-marquee",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/draggable-marquee",
+    "demoRoute": "https://vault.hyperiux.com/demo/draggable-marquee"
+  },
+  {
+    "title": "Grid Scale",
+    "name": "grid-scale",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/grid-scale",
+    "demoRoute": "https://vault.hyperiux.com/demo/grid-scale"
+  },
+  {
+    "title": "Helix Slider",
+    "name": "helix-slider",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/helix-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/helix-slider"
+  },
+  {
+    "title": "Horizontal Feature Reveal",
+    "name": "horizontal-feature-reveal",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/horizontal-feature-reveal",
+    "demoRoute": "https://vault.hyperiux.com/demo/horizontal-feature-reveal"
+  },
+  {
+    "title": "Inertia Scroll Effect",
+    "name": "inertia-scroll-effect",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/inertia-scroll-effect",
+    "demoRoute": "https://vault.hyperiux.com/demo/inertia-scroll-effect"
+  },
+  {
+    "title": "Infinite Perspective Slider",
+    "name": "infinite-perspective-slider",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/infinite-perspective-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/infinite-perspective-slider"
+  },
+  {
+    "title": "Marquee on SVG Path",
+    "name": "svg-path-marquee",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/svg-path-marquee",
+    "demoRoute": "https://vault.hyperiux.com/pro/svg-path"
+  },
+  {
+    "title": "Parallax Footer",
+    "name": "parallax-footer",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/parallax-footer",
+    "demoRoute": "https://vault.hyperiux.com/pro/parallax-footer"
+  },
+  {
+    "title": "Parallax Gallery",
+    "name": "parallax-gallery",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/parallax-gallery",
+    "demoRoute": "https://vault.hyperiux.com/pro/parallax-gallery"
+  },
+  {
+    "title": "Parallax Image",
+    "name": "parallax-image",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/parallax-image",
+    "demoRoute": "https://vault.hyperiux.com/pro/parallax-image-animation"
+  },
+  {
+    "title": "Parallax Slider",
+    "name": "parallax-slider",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/parallax-slider",
+    "demoRoute": "https://vault.hyperiux.com/pro/parallax-slider"
+  },
+  {
+    "title": "Circular Slider",
+    "name": "circular-slider",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/circular-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/circular-slider"
+  },
+  {
+    "title": "Rotation Slider",
+    "name": "rotation-slider",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/rotation-slider",
+    "demoRoute": "https://vault.hyperiux.com/demo/rotation-slider"
+  },
+  {
+    "title": "Scroll Distortion",
+    "name": "scroll-distortion",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/scroll-distortion",
+    "demoRoute": "https://vault.hyperiux.com/demo/scroll-distortion"
+  },
+  {
+    "title": "Scroll Shuffled Cards",
+    "name": "scroll-shuffled-cards",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/scroll-shuffled-cards",
+    "demoRoute": "https://vault.hyperiux.com/pro/scroll-shuffled-cards"
+  },
+  {
+    "title": "Scroll Stack",
+    "name": "scroll-stack",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/scroll-stack",
+    "demoRoute": "https://vault.hyperiux.com/demo/scroll-stack"
+  },
+  {
+    "title": "Split Canvas",
+    "name": "split-canvas",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/split-canvas",
+    "demoRoute": "https://vault.hyperiux.com/demo/split-canvas"
+  },
+  {
+    "title": "Square Translate",
+    "name": "square-translate",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/square-translate",
+    "demoRoute": "https://vault.hyperiux.com/pro/square-translate"
+  },
+  {
+    "title": "Stacking Cards",
+    "name": "stacking-cards",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/stacking-cards",
+    "demoRoute": "https://vault.hyperiux.com/pro/stacking-cards"
+  },
+  {
+    "title": "Sticky Content Wrapper",
+    "name": "sticky-content-wrapper",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/sticky-content-wrapper",
+    "demoRoute": "https://vault.hyperiux.com/demo/sticky-content-wrapper"
+  },
+  {
+    "title": "SVG Pixel Reveal",
+    "name": "svg-pixel-reveal",
+    "tier": "pro",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/svg-pixel-reveal",
+    "demoRoute": "https://vault.hyperiux.com/pro/svg-pixel-reveal"
+  },
+  {
+    "title": "Text Convergence",
+    "name": "text-convergence",
+    "tier": "free",
+    "category": "scroll",
+    "detailRoute": "https://vault.hyperiux.com/effects/scroll-effects/text-convergence",
+    "demoRoute": "https://vault.hyperiux.com/demo/text-convergence"
+  },
+  {
+    "title": "Blur Text",
+    "name": "blur-text",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/blur-text",
+    "demoRoute": "https://vault.hyperiux.com/demo/blur-text"
+  },
+  {
+    "title": "Circle Text Reveal",
+    "name": "circle-text-reveal",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/circle-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/demo/circle-text-reveal"
+  },
+  {
+    "title": "Counter",
+    "name": "counter",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/counter",
+    "demoRoute": "https://vault.hyperiux.com/demo/counter"
+  },
+  {
+    "title": "Glitchy Text",
+    "name": "glitchy-text",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/glitchy-text",
+    "demoRoute": "https://vault.hyperiux.com/pro/glitchy-text"
+  },
+  {
+    "title": "Mask Text Reveal",
+    "name": "mask-text-reveal",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/mask-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/pro/mask-text-reveal"
+  },
+  {
+    "title": "Overflow Stagger Text",
+    "name": "overflow-stagger-text",
+    "tier": "free",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/overflow-stagger-text",
+    "demoRoute": "https://vault.hyperiux.com/demo/overflow-stagger-text"
+  },
+  {
+    "title": "Overflow Text Reveal",
+    "name": "overflow-text-reveal",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/overflow-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/pro/overflow-text-reveal"
+  },
+  {
+    "title": "Perspective Text Reveal",
+    "name": "perspective-text-reveal",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/perspective-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/pro/perspective-text-reveal"
+  },
+  {
+    "title": "Rectangular Text Reveal",
+    "name": "rectangular-text-reveal",
+    "tier": "free",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/rectangular-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/demo/rectangular-text-reveal"
+  },
+  {
+    "title": "Scramble Text",
+    "name": "scramble-text",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/scramble-text",
+    "demoRoute": "https://vault.hyperiux.com/pro/scramble-text"
+  },
+  {
+    "title": "Slide Text Reveal",
+    "name": "slide-text-reveal",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/slide-text-reveal",
+    "demoRoute": "https://vault.hyperiux.com/pro/slide-text-reveal"
+  },
+  {
+    "title": "Spotlight Text",
+    "name": "spotlight-text",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/spotlight-text",
+    "demoRoute": "https://vault.hyperiux.com/pro/spotlight-text"
+  },
+  {
+    "title": "Text Cloning",
+    "name": "text-cloning",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/text-cloning",
+    "demoRoute": "https://vault.hyperiux.com/pro/text-cloning"
+  },
+  {
+    "title": "Text Fill Animation",
+    "name": "text-fill-animation",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/text-fill-animation",
+    "demoRoute": "https://vault.hyperiux.com/pro/text-fill-animation"
+  },
+  {
+    "title": "Text Hover Expand",
+    "name": "text-hover-expand",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/text-hover-expand",
+    "demoRoute": "https://vault.hyperiux.com/pro/text-hover"
+  },
+  {
+    "title": "Text Stream",
+    "name": "text-stream",
+    "tier": "pro",
+    "category": "text",
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/text-stream",
+    "demoRoute": "https://vault.hyperiux.com/pro/text-stream"
+  },
+  {
+    "title": "Block Transition",
+    "name": "block-transition",
+    "tier": "pro",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/block-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/block-transition"
+  },
+  {
+    "title": "Chess Grid Transition",
+    "name": "chess-grid-transition",
+    "tier": "free",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/chess-grid-transition",
+    "demoRoute": "https://vault.hyperiux.com/demo/chess-grid-transition"
+  },
+  {
+    "title": "Page Flip Transition",
+    "name": "page-flip-transition",
+    "tier": "pro",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/page-flip-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/flip"
+  },
+  {
+    "title": "Radial Slice Transition",
+    "name": "radial-slice-transition",
+    "tier": "free",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/radial-slice-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/radial-slice-transition"
+  },
+  {
+    "title": "Pixel Transition",
+    "name": "pixel-transition",
+    "tier": "pro",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/pixel-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/pixels"
+  },
+  {
+    "title": "Svg Brush Transition",
+    "name": "svg-brush-transition",
+    "tier": "pro",
+    "category": "transitions",
+    "detailRoute": "https://vault.hyperiux.com/effects/page-transitions/svg-brush-transition",
+    "demoRoute": "https://vault.hyperiux.com/pro/brush-strokes"
+  },
+  {
+    "title": "3D Portfolio Slider",
+    "name": "3d-portfolio-slider",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/3d-portfolio-slider",
+    "demoRoute": "https://vault.hyperiux.com/pro/3d-portfolio-slider"
+  },
+  {
+    "title": "Book Flip",
+    "name": "book-flip",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/book-flip",
+    "demoRoute": "https://vault.hyperiux.com/pro/book-flip"
+  },
+  {
+    "title": "Colliding Models",
+    "name": "colliding-models",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/colliding-models",
+    "demoRoute": "https://vault.hyperiux.com/demo/colliding-models"
+  },
+  {
+    "title": "Curved Plane",
+    "name": "curved-plane",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/curved-plane",
+    "demoRoute": "https://vault.hyperiux.com/demo/curved-plane"
+  },
+  {
+    "title": "Curved Plane V2",
+    "name": "curved-plane-v2",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/curved-plane-v2",
+    "demoRoute": "https://vault.hyperiux.com/demo/curved-plane/v2"
+  },
+  {
+    "title": "Donut Particles",
+    "name": "donut-particles",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/donut-particles",
+    "demoRoute": "https://vault.hyperiux.com/demo/donut-particles"
+  },
+  {
+    "title": "Draggable Canvas",
+    "name": "draggable-canvas",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/draggable-canvas",
+    "demoRoute": "https://vault.hyperiux.com/demo/draggable-canvas"
+  },
+  {
+    "title": "File Encryption",
+    "name": "file-encryption",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/file-encryption",
+    "demoRoute": "https://vault.hyperiux.com/demo/file-encryption"
+  },
+  {
+    "title": "Fractal Glass",
+    "name": "fractal-glass",
+    "tier": "free",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/fractal-glass",
+    "demoRoute": "https://vault.hyperiux.com/demo/fractal-glass"
+  },
+  {
+    "title": "Grid Lift",
+    "name": "grid-lift",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/grid-lift",
+    "demoRoute": "https://vault.hyperiux.com/demo/grid-lift"
+  },
+  {
+    "title": "Grid Tunnel",
+    "name": "grid-tunnel",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/grid-tunnel",
+    "demoRoute": "https://vault.hyperiux.com/demo/grid-tunnel"
+  },
+  {
+    "title": "Hero Banner Animated",
+    "name": "hero-banner-animated",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hero-banner-animated",
+    "demoRoute": "https://vault.hyperiux.com/demo/hero-banner-animated"
+  },
+  {
+    "title": "Hover Slider",
+    "name": "hover-slider",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hover-slider",
+    "demoRoute": "https://vault.hyperiux.com/pro/hover-slider"
+  },
+  {
+    "title": "Hyperiux Glitter Concept",
+    "name": "hyperiux-glitter-concept",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/hyperiux-glitter",
+    "demoRoute": "https://vault.hyperiux.com/demo/hyperiux-glitter"
+  },
+  {
+    "title": "Infinite Grid Gallery",
+    "name": "infinite-grid-gallery",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/infinite-grid-gallery",
+    "demoRoute": "https://vault.hyperiux.com/pro/infinite-grid-gallery"
+  },
+  {
+    "title": "Interactive Blur Reveal",
+    "name": "interactive-blur-reveal",
+    "tier": "free",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/interactive-blur-reveal",
+    "demoRoute": "https://vault.hyperiux.com/demo/interactive-blur-reveal"
+  },
+  {
+    "title": "Milky Way",
+    "name": "milkyway",
+    "tier": "free",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/milkyway",
+    "demoRoute": "https://vault.hyperiux.com/demo/milkyway"
+  },
+  {
+    "title": "Mouse Pixelation",
+    "name": "mouse-pixelation",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/mouse-pixelation",
+    "demoRoute": "https://vault.hyperiux.com/demo/mouse-pixelation"
+  },
+  {
+    "title": "Progressive Bloom Valley",
+    "name": "progressive-bloom-valley",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/progressive-bloom-valley",
+    "demoRoute": "https://vault.hyperiux.com/demo/progressive-bloom-valley"
+  },
+  {
+    "title": "Strip Slider",
+    "name": "strip-slider",
+    "tier": "pro",
+    "category": "webgl",
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/strip-slider",
+    "demoRoute": "https://vault.hyperiux.com/pro/strip-slider"
+  }
+]

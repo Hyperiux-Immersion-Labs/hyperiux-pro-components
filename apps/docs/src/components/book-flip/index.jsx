@@ -1,25 +1,6 @@
-
-
-
 import { BookFlipp } from "./BookFlip";
 
-// Image array for the book pages
-const BOOK_IMAGES = [
-  "nature01",
-  "nature02",
-  "nature03",
-  "nature04",
-  "nature05",
-  "nature06",
-  "nature07",
-  "nature08",
-  "nature09",
-  "nature10",
-  "nature11",
-  "nature12",
-  "nature13",
-  "nature14",
-];
+
 
 export default function BookFlip() {
   return (
@@ -48,4 +29,19 @@ export default function BookFlip() {
   );
 }
 
-
+const BOOK_IMAGES = [
+  "nature01",
+  "nature02",
+  "nature03",
+  "nature04",
+  "nature05",
+  "nature06",
+  "nature07",
+  "nature08",
+  "nature09",
+  "nature10",
+  "nature11",
+  "nature12",
+  "nature13",
+  "nature14",
+];

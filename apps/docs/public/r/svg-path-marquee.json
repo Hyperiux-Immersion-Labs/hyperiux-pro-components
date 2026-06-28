@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Marquee on SVG Path",
   "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "motion"
   ],
   "registryDependencies": [],
   "exportName": "MarqueeAlongSvgPath",
   "exportKind": "named",
-  "previewUrl": "/svg-path",
-  "coverImage": "svg-path-marquee",
-  "videoUrl": "svg-path-marquee.mp4",
   "files": [
     {
       "path": "svg-path-marquee.jsx",

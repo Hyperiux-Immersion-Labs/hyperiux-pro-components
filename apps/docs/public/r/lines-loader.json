@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Lines Loader",
   "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
-  "category": "loaders",
-  "categories": [
-    "loaders"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "CenterLinesLoader",
   "exportKind": "named",
-  "previewUrl": "/loaders/lines-loading",
-  "coverImage": "lines-loader",
-  "videoUrl": "lines-loader.mp4",
   "files": [
     {
       "path": "center-lines-loader.jsx",

@@ -17,7 +17,7 @@ function refreshScrollTrigger() {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      ScrollTrigger?.refresh?.(true);
+      ScrollTrigger?.refresh?.();
     });
   });
 }
@@ -77,8 +77,6 @@ export function useFadeUp(containerRef, deps = []) {
             gsap.set(element, {
               clearProps: "visibility,opacity,transform",
             });
-
-            refreshScrollTrigger();
           },
         });
       });
@@ -120,7 +118,6 @@ export function useLineAnim(containerRef, deps = []) {
           duration: 1,
           stagger: 0.07,
           ease: "power3.out",
-          onComplete: refreshScrollTrigger,
         });
       });
     }, containerRef?.current || document);

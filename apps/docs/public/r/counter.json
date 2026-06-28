@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Counter",
   "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "Counter",
   "exportKind": "named",
-  "previewUrl": "/counter",
-  "coverImage": "counter",
-  "videoUrl": "/counter.mp4",
   "files": [
     {
       "path": "counter.jsx",

@@ -24,7 +24,7 @@ export default function SVGBrushTransition({
   // Returns whichever path is currently visible (desktop or mobile)
   const getActivePath = () => {
     if (typeof window === 'undefined') return null
-    return window.innerWidth < 768 ? svgPathMobileRef.current : svgPathDesktopRef.current
+    return window.innerWidth < 1025 ? svgPathMobileRef.current : svgPathDesktopRef.current
   }
 
   useEffect(() => {

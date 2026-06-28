@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Immersive Full screen Navigation",
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
-  "category": "navigation",
-  "categories": [
-    "navigation"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap",
     "lucide-react"
@@ -15,9 +10,6 @@
   "registryDependencies": [],
   "exportName": "ImmersiveFullScreenNavigation",
   "exportKind": "named",
-  "previewUrl": "/navigation/immersive-full-screen-nav",
-  "coverImage": "immersive-fullscreen-nav",
-  "videoUrl": "immersive-fullscreen-nav.mp4",
   "files": [
     {
       "path": "full-screen-navigation.jsx",

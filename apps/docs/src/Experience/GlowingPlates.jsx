@@ -16,7 +16,6 @@ import gsap from "gsap";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
-// ─── Utilities ────────────────────────────────────────────────────────────────
 const lerp = (a, b, t) => a + (b - a) * t;
 
 function hasLoaderRun() {
@@ -34,24 +33,23 @@ function isLoaderActive() {
   );
 }
 
-// ─── Config ───────────────────────────────────────────────────────────────────
-// Material configuration for the metallic plates.
-// You can control roughness, metalness, and plate color here, as well as other scene globals.
 const CONFIG = {
   count: 51,
   radius: 4.5,
   heightStep: 0.0,
   turns: 1.0,
+
   localTiltX: 0.21,
   localTiltY: -0.04,
   localTiltZ: 0.0,
+
   plateRadius: 1.5,
   plateThickness: 0.04,
 
-  // ── Material configuration ──
-  roughness: 0.6, // updated from leva values
-  metalness: 0.16, // updated from leva values
+  roughness: 0.6,
+  metalness: 0.16,
   plateColor: "#0e0e0e",
+
   glowLeftColor: "#662600",
   glowRightColor: "#cc4c00",
   mobileGlowLeftColor: "#cc6600",
@@ -60,19 +58,15 @@ const CONFIG = {
   hoverSigma: 2.0,
   hoverSpeed: 0.09,
   hoverScale: 1.25,
-  rotationSpeed: 0.05,
   hoverThreshold: 0.48,
 
+  rotationSpeed: 0.05,
   glowIntensity: 1.8,
 
   lightColor: "#ff4f00",
   lightIntensity: 10.0,
   lightPosition: [20, 20.5, -20],
-  lightShadowNear: 1,
-  lightShadowFar: 100,
-  lightShadowFrustum: 12,
-  shadowBias: 0.0,
-  shadowNormalBias: 0.04,
+
   environmentIntensity: 0.1,
   environmentPreset: "city",
 
@@ -93,13 +87,6 @@ const CONFIG = {
   updateFPS: 0,
 };
 
-// ─── Materials ────────────────────────────────────────────────────────────────
-/**
- * Returns a MeshStandardMaterial with configurable roughness, metalness, and color.
- * @param {number} roughness - 0.0 to 1.0 ("smudgy metal" to fully diffuse)
- * @param {number} metalness - 0.0 to 1.0 ("plastic" to "chrome")
- * @param {string} plateColor - color string, e.g. "#333" or "rgb(80,80,80)"
- */
 function makePlateMaterial(roughness, metalness, plateColor) {
   return new THREE.MeshStandardMaterial({
     color: plateColor,
@@ -108,21 +95,25 @@ function makePlateMaterial(roughness, metalness, plateColor) {
   });
 }
 
-function makePlateGeometry(r, h) {
-  return new THREE.CylinderGeometry(r, r, h, 64, 1, false);
+function makePlateGeometry(radius, height) {
+  return new THREE.CylinderGeometry(radius, radius, height, 64, 1, false);
 }
 
 function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
-  // Convert RGB (0-255 range or #hex) to GLSL vec3 float code
-  // Assume input as something parseable by THREE.Color
   const left = new THREE.Color(leftColorRGB);
   const right = new THREE.Color(rightColorRGB);
 
-  const leftStr = `${left.r.toFixed(5)}, ${left.g.toFixed(5)}, ${left.b.toFixed(5)}`;
-  const rightStr = `${right.r.toFixed(5)}, ${right.g.toFixed(5)}, ${right.b.toFixed(5)}`;
+  const leftStr = `${left.r.toFixed(5)}, ${left.g.toFixed(
+    5
+  )}, ${left.b.toFixed(5)}`;
+
+  const rightStr = `${right.r.toFixed(5)}, ${right.g.toFixed(
+    5
+  )}, ${right.b.toFixed(5)}`;
 
   const vertexShader = `
     attribute float instanceIntensity;
+
     varying float vIntensity;
     varying vec2 vUv;
     varying float vCapMask;
@@ -131,6 +122,7 @@ function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
       vUv = uv;
       vIntensity = instanceIntensity;
       vCapMask = smoothstep(0.15, 0.7, abs(normal.y));
+
       gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
     }
   `;
@@ -155,6 +147,7 @@ function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
       float discAlpha = 1.0 - smoothstep(1.0 - aa, 1.0 + aa, radial);
 
       float strength = vIntensity * vCapMask * discAlpha;
+
       gl_FragColor = vec4(col * strength, strength);
     }
   `;
@@ -173,14 +166,10 @@ function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ParametricPlates
-// ─────────────────────────────────────────────────────────────────────────────
 function ParametricPlates({ isMobile }) {
   const count = CONFIG.count;
   const radius = CONFIG.radius;
 
-  // --- Material params from CONFIG for MeshStandardMaterial ---
   const {
     heightStep,
     turns,
@@ -189,7 +178,6 @@ function ParametricPlates({ isMobile }) {
     localTiltZ,
     plateRadius,
     plateThickness,
-
     hoverSigma,
     hoverSpeed,
     hoverScale,
@@ -201,20 +189,24 @@ function ParametricPlates({ isMobile }) {
     roughness,
     metalness,
     glowLeftColor,
-    glowRightColor
+    glowRightColor,
   } = CONFIG;
 
-  const mainRef = useRef();
-  const glowRef = useRef();
+  const mainRef = useRef(null);
+  const glowRef = useRef(null);
+
   const hoveredRef = useRef(-1);
   const prevRotation = useRef(0);
   const accumulator = useRef(0);
+
   const dummy = useRef(new THREE.Object3D());
   const pos = useRef(new THREE.Vector3());
   const projPos = useRef(new THREE.Vector3());
   const groupMat = useRef(new THREE.Matrix4());
+
   const ndcPointer = useRef(new THREE.Vector2(-9999, -9999));
   const rectRef = useRef(null);
+
   const tempEuler = useRef(new THREE.Euler());
   const tempQuat = useRef(new THREE.Quaternion());
 
@@ -223,13 +215,13 @@ function ParametricPlates({ isMobile }) {
   if (arraysRef.current === null) {
     arraysRef.current = {
       glowArr: new Float32Array(count).fill(0),
-      scaleArr: new Float32Array(count).fill(1.0),
+      scaleArr: new Float32Array(count).fill(1),
       tiltXArr: new Float32Array(count).fill(localTiltX),
       tiltYArr: new Float32Array(count).fill(localTiltY),
       sinThetaArr: new Float32Array(count),
       cosThetaArr: new Float32Array(count),
       prevGlowArr: new Float32Array(count).fill(-999),
-      prevScaleArr: new Float32Array(count).fill(1.0),
+      prevScaleArr: new Float32Array(count).fill(1),
       intensityArr: new Float32Array(count).fill(0),
     };
   }
@@ -238,21 +230,19 @@ function ParametricPlates({ isMobile }) {
     const arr = new Float32Array(count);
     const thetaStep = (turns * Math.PI * 2) / count;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i += 1) {
       arr[i] = i * thetaStep;
     }
 
     return arr;
   }, [count, turns]);
 
-  const plateCol = plateColor;
   const leftGlowCol = isMobile ? CONFIG.mobileGlowLeftColor : glowLeftColor;
   const rightGlowCol = isMobile ? CONFIG.mobileGlowRightColor : glowRightColor;
 
-  // The standard material for the metallic plates is configured with roughness, metalness, and color.
   const mainMat = useMemo(
-    () => makePlateMaterial(roughness, metalness, plateCol),
-    [roughness, metalness, plateCol]
+    () => makePlateMaterial(roughness, metalness, plateColor),
+    [roughness, metalness, plateColor]
   );
 
   const geo = useMemo(
@@ -260,11 +250,10 @@ function ParametricPlates({ isMobile }) {
     [plateRadius, plateThickness]
   );
 
-  // recreate shaderMaterial on color change!
-  const glowMat = useMemo(() => makeGlowShaderMaterial(leftGlowCol, rightGlowCol), [
-    leftGlowCol,
-    rightGlowCol,
-  ]);
+  const glowMat = useMemo(
+    () => makeGlowShaderMaterial(leftGlowCol, rightGlowCol),
+    [leftGlowCol, rightGlowCol]
+  );
 
   useLayoutEffect(() => {
     if (!glowRef.current) return;
@@ -286,31 +275,34 @@ function ParametricPlates({ isMobile }) {
 
     rectRef.current = el.getBoundingClientRect();
 
-    const ro = new ResizeObserver(() => {
+    const resizeObserver = new ResizeObserver(() => {
       rectRef.current = el.getBoundingClientRect();
     });
 
-    ro.observe(el);
+    resizeObserver.observe(el);
 
     const handlePointer = (clientX, clientY) => {
-      const r = rectRef.current;
-      if (!r) return;
+      const rect = rectRef.current;
 
-      pointer.x = ((clientX - r.left) / r.width) * 2 - 1;
-      pointer.y = -((clientY - r.top) / r.height) * 2 + 1;
+      if (!rect) return;
+
+      pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
     };
 
-    const onMouseMove = (e) => {
-      handlePointer(e.clientX, e.clientY);
+    const onMouseMove = (event) => {
+      handlePointer(event.clientX, event.clientY);
     };
 
-    const onTouchMove = (e) => {
-      if (e.touches && e.touches[0]) {
-        handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+    const onTouchMove = (event) => {
+      if (event.touches && event.touches[0]) {
+        handlePointer(event.touches[0].clientX, event.touches[0].clientY);
       }
     };
 
-    const onLeave = () => pointer.set(-9999, -9999);
+    const onLeave = () => {
+      pointer.set(-9999, -9999);
+    };
 
     el.addEventListener("mousemove", onMouseMove);
     el.addEventListener("mouseleave", onLeave);
@@ -319,7 +311,8 @@ function ParametricPlates({ isMobile }) {
     el.addEventListener("touchend", onLeave, { passive: true });
 
     return () => {
-      ro.disconnect();
+      resizeObserver.disconnect();
+
       el.removeEventListener("mousemove", onMouseMove);
       el.removeEventListener("mouseleave", onLeave);
       el.removeEventListener("touchstart", onTouchMove);
@@ -354,6 +347,7 @@ function ParametricPlates({ isMobile }) {
 
     if (updateFPS > 0) {
       accumulator.current += delta;
+
       const interval = 1 / updateFPS;
 
       if (accumulator.current < interval) return;
@@ -376,7 +370,7 @@ function ParametricPlates({ isMobile }) {
       let minDist = Infinity;
       let nearestId = -1;
 
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < count; i += 1) {
         const theta = baseTheta[i] + rotation;
         const cosT = Math.cos(theta);
         const sinT = Math.sin(theta);
@@ -390,8 +384,7 @@ function ParametricPlates({ isMobile }) {
           .project(camera);
 
         const d2 =
-          (projected.x - pointer.x) ** 2 +
-          (projected.y - pointer.y) ** 2;
+          (projected.x - pointer.x) ** 2 + (projected.y - pointer.y) ** 2;
 
         if (d2 < minDist) {
           minDist = d2;
@@ -407,8 +400,9 @@ function ParametricPlates({ isMobile }) {
       hoveredRef.current = -1;
       hovId = -1;
 
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < count; i += 1) {
         const theta = baseTheta[i] + rotation;
+
         cosThetaArr[i] = Math.cos(theta);
         sinThetaArr[i] = Math.sin(theta);
       }
@@ -421,20 +415,23 @@ function ParametricPlates({ isMobile }) {
 
     let intensitiesDirty = false;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i += 1) {
       const cosT = cosThetaArr[i];
       const sinT = sinThetaArr[i];
 
       const dist = hovId === -1 ? Infinity : Math.abs(i - hovId);
+
       const influence =
         hovId === -1 ? 0 : Math.exp(-(dist ** 2) / (2 * hoverSigma ** 2));
 
       glowArr[i] = lerp(glowArr[i], influence, hoverSpeed);
+
       scaleArr[i] = lerp(
         scaleArr[i],
-        1.0 + (hoverScale - 1) * influence,
+        1 + (hoverScale - 1) * influence,
         hoverSpeed
       );
+
       tiltXArr[i] = lerp(tiltXArr[i], localTiltX * (1 - influence), hoverSpeed);
       tiltYArr[i] = lerp(tiltYArr[i], localTiltY * (1 - influence), hoverSpeed);
 
@@ -458,12 +455,13 @@ function ParametricPlates({ isMobile }) {
 
       if (heightStep > 0) {
         const len = Math.sqrt(tx * tx + ty * ty + tz * tz);
+
         nx /= len;
         ny /= len;
         nz /= len;
       }
 
-      const r = ny + 1.0;
+      const r = ny + 1;
 
       if (r < 0.0001) {
         dummyObj.quaternion.set(1, 0, 0, 0);
@@ -475,7 +473,7 @@ function ParametricPlates({ isMobile }) {
       tempQuat.current.setFromEuler(tempEuler.current);
       dummyObj.quaternion.multiply(tempQuat.current);
 
-      dummyObj.scale.set(scaleArr[i], 1.0, scaleArr[i]);
+      dummyObj.scale.set(scaleArr[i], 1, scaleArr[i]);
       dummyObj.updateMatrix();
 
       main.setMatrixAt(i, dummyObj.matrix);
@@ -510,7 +508,6 @@ function ParametricPlates({ isMobile }) {
         ref={mainRef}
         args={[geo, mainMat, count]}
         castShadow
-        rotation={[0, 0, 0]}
         receiveShadow
         frustumCulled={false}
       />
@@ -527,16 +524,18 @@ function ParametricPlates({ isMobile }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Scene Root
-// ─────────────────────────────────────────────────────────────────────────────
-export default function GlowingPlates() {
+export default function GlowingPlates({
+  waitForLoader = true,
+  className = "",
+  containerClassName = "",
+}) {
   const containerRef = useRef(null);
   const canvasWrapperRef = useRef(null);
 
   const canvasReadyRef = useRef(false);
-  const loaderReadyRef = useRef(false);
+  const loaderReadyRef = useRef(!waitForLoader);
   const fadePlayedRef = useRef(false);
+
   const fadeTweenRef = useRef(null);
   const pollRef = useRef(null);
   const delayRef = useRef(null);
@@ -602,12 +601,19 @@ export default function GlowingPlates() {
   }, []);
 
   useEffect(() => {
+    if (!waitForLoader) {
+      loaderReadyRef.current = true;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          playFadeIfReady();
+        });
+      });
+
+      return;
+    }
+
     const handleLoaderComplete = () => {
-      /*
-        The loaderComplete event fires before React visually removes
-        the loader component. Wait a little, but do not observe DOM or
-        update React state here.
-      */
       delayRef.current = window.setTimeout(() => {
         markLoaderReady();
       }, 180);
@@ -622,6 +628,10 @@ export default function GlowingPlates() {
         once: true,
       });
 
+      window.addEventListener("hyperiux:loader-complete", handleLoaderComplete, {
+        once: true,
+      });
+
       pollRef.current = window.setInterval(() => {
         if (hasLoaderRun() && !isLoaderActive()) {
           markLoaderReady();
@@ -631,6 +641,10 @@ export default function GlowingPlates() {
 
     return () => {
       window.removeEventListener("loaderComplete", handleLoaderComplete);
+      window.removeEventListener(
+        "hyperiux:loader-complete",
+        handleLoaderComplete
+      );
 
       if (pollRef.current) {
         window.clearInterval(pollRef.current);
@@ -642,7 +656,7 @@ export default function GlowingPlates() {
         delayRef.current = null;
       }
     };
-  }, []);
+  }, [waitForLoader]);
 
   useEffect(() => {
     return () => {
@@ -657,9 +671,15 @@ export default function GlowingPlates() {
   return (
     <div
       ref={containerRef}
-      className="absolute z-10 bg-background inset-0 h-[140vh] w-full"
+      className={[
+        "absolute inset-0 z-10 h-[140vh] w-full bg-background",
+        containerClassName,
+      ].join(" ")}
     >
-      <div ref={canvasWrapperRef} className="h-full w-full opacity-0">
+      <div
+        ref={canvasWrapperRef}
+        className={["h-full w-full opacity-0", className].join(" ")}
+      >
         <Canvas
           className="h-full w-full"
           frameloop="always"
@@ -688,7 +708,9 @@ export default function GlowingPlates() {
 
           <Environment
             preset={CONFIG.environmentPreset}
-            environmentIntensity={isMobile? .4 : CONFIG.environmentIntensity}
+            environmentIntensity={
+              isMobile ? 0.4 : CONFIG.environmentIntensity
+            }
           />
 
           <directionalLight
@@ -723,9 +745,6 @@ export default function GlowingPlates() {
           )}
         </Canvas>
       </div>
-
-      {/* LEVA removed: style and panel */}
-
     </div>
   );
 }

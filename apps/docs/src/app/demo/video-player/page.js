@@ -1,51 +1,57 @@
-"use client";
 
-import VideoPlayer from"@/components/VideoPlayer/VideoPlayer";
+import VideoPlayer from "@/components/video-player";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
 
 export default function Page() {
- const featurePoints = [
- "Strategically located within high-growth urban corridors",
- "Architecture designed for natural light and spatial openness",
- "Integrated lifestyle amenities for wellness and convenience",
- "Built with long-term durability and investment value in mind",
- ];
+  const featurePoints = [
+    "Custom play, pause, mute, close, and progress controls",
+    "Auto-hiding controls that reappear on hover, touch, or interaction",
+    "Smooth seek bar with draggable timeline support",
+    "Responsive control sizing across desktop, tablet, and mobile",
+  ];
 
- return (
- <section className="flex min-h-screen w-screen items-center max-md:items-start bg-black p-[5vw] max-md:h-auto max-md:py-[8vw] max-md:pb-[8vw] max-sm:px-[5vw] max-sm:py-[12vw]">
- <div className="flex w-full justify-between gap-[5vw] max-md:flex-col max-md:gap-[6vw] max-sm:gap-[8vw]">
- {/* LEFT VIDEO */}
- <div className="aspect-video h-[27vw] w-[43vw] max-md:h-auto max-md:w-full">
- <VideoPlayer
- videoSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
- poster="/assets/videoplayer/poster.png"
- autoPlay
- startMuted
- />
- </div>
+  return (
+    <>
+    <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
+    <section className="flex min-h-screen w-screen items-center max-md:items-start bg-[#111111] p-[5vw] max-md:h-auto max-md:py-[8vw] max-md:pt-24 max-sm:pt-24 max-md:pb-[8vw] max-sm:px-[5vw] max-sm:py-[12vw]">
+      <div className="flex w-full justify-between gap-[5vw] max-md:flex-col max-md:gap-[6vw] max-sm:gap-[8vw]">
+        {/* LEFT VIDEO */}
+        <div className="aspect-video h-[27vw] w-[43vw] max-md:h-auto max-md:w-full fadeup">
+          <VideoPlayer />
+        </div>
 
- {/* RIGHT CONTENT */}
- <div className="flex w-1/2 flex-col gap-[2vw] text-white max-md:w-full max-md:gap-[3vw]">
- <h2 className="text-[3vw] leading-[1.1] font-medium max-md:text-[6vw] max-sm:text-[8.5vw]">
- Experience Spaces That Redefine Urban Living
- </h2>
+        {/* RIGHT CONTENT */}
+        <div className="flex w-1/2 flex-col gap-[2vw] text-white max-md:w-full max-md:gap-[3vw]">
+          <SplitLine>
+            <h2 className="text-[3vw] leading-[1.1] font-medium max-md:text-[6vw] max-sm:text-[8.5vw]">
+              A Custom Video Player Built for Polished Interfaces
+            </h2>
+          </SplitLine>
+          <SplitLine>
+            <p className="w-[85%] text-[1.1vw] leading-[1.8] opacity-80 max-md:w-full max-md:text-[2.2vw] max-sm:text-[3.8vw] max-sm:leading-[1.7]">
+              This video player gives you a clean, cinematic playback experience
+              without relying on the browser’s default controls. It handles
+              play, pause, mute, progress tracking, seeking, poster support,
+              autoplay behavior, and optional close actions inside a fully
+              styled interface.
+            </p>
+          </SplitLine>
 
- <p className="w-[85%] text-[1.1vw] leading-[1.8] opacity-80 max-md:w-full max-md:text-[2.2vw] max-sm:text-[3.8vw] max-sm:leading-[1.7]">
- This project is not just about building homes, it is about crafting
- a lifestyle ecosystem where design, functionality, and long-term
- value seamlessly converge. Every element is engineered to elevate
- how modern urban living is experienced.
- </p>
-
- <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-md:gap-[1vw] max-md:text-[2vw] max-sm:gap-[2vw] max-sm:text-[3.5vw]">
- {featurePoints.map((point) => (
- <li key={point} className="flex gap-[0.35em]">
- <span aria-hidden="true">•</span>
- <span>{point}</span>
- </li>
- ))}
- </ul>
- </div>
- </div>
- </section>
- );
+          <SplitLine>
+            <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-md:gap-[1vw] max-md:text-[2vw] max-sm:gap-[2vw] max-sm:text-[3.5vw]">
+              {featurePoints.map((point) => (
+                <li key={point} className="flex gap-[0.35em]">
+                  <span aria-hidden="true">•</span>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </SplitLine>
+        </div>
+      </div>
+    </section>
+    
+    </>
+  );
 }

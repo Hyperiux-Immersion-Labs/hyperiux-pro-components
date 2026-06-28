@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Chess Grid Transition",
   "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
-  "category": "transitions",
-  "categories": [
-    "transitions"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap",
     "next-transition-router"
@@ -15,9 +10,6 @@
   "registryDependencies": [],
   "exportName": "ChessGridTransition",
   "exportKind": "named",
-  "previewUrl": "/page-transitions/chess-grid-transition",
-  "coverImage": "chess-grid-transition",
-  "videoUrl": "chess-grid-transition.mp4",
   "files": [
     {
       "path": "chess-grid-transition.jsx",

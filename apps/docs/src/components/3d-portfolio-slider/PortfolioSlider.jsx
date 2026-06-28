@@ -58,9 +58,7 @@ export default function PortfolioSlider({ items }) {
 
  container.appendChild(renderer.domElement);
 
- // ---------------------------
  // IMAGE SETUP
- // ---------------------------
  const loader = new THREE.TextureLoader();
 
  // FULLSCREEN CALC
@@ -132,9 +130,7 @@ const spacing = planeWidth;
  let snapTimeout = null;
  let snapObj = { offset: 0 };
 
- // ---------------------------
  // COMBINED RAF + RENDER LOOP
- // ---------------------------
  function raf(time) {
  lenis.raf(time);
 

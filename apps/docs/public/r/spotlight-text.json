@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Spotlight Text",
   "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "pro",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpotlightText",
   "exportKind": "named",
-  "previewUrl": "/spotlight-text",
-  "coverImage": "spotlight-text",
-  "videoUrl": "spotlight-text.mp4",
   "files": [
     {
       "path": "spotlight-text.jsx",

@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Butterfly Trail Cursor",
   "description": "3D butterfly swarm that spawns around the pointer and fades through space",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "@react-three/drei",
     "@react-three/fiber",
@@ -16,9 +11,6 @@
   "registryDependencies": [],
   "exportName": "ButterflyTrailCursor",
   "exportKind": "named",
-  "previewUrl": "/cursors/butterflies",
-  "coverImage": "butterfly-trail-cursor",
-  "videoUrl": "butterfly-trail-cursor.mp4",
   "files": [
     {
       "path": "butterfly-trail-cursor.jsx",

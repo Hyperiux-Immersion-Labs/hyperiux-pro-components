@@ -3,18 +3,10 @@
   "type": "registry:component",
   "title": "Parallax Footer",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "ParallaxFooter",
   "exportKind": "named",
-  "previewUrl": "/parallax-footer",
-  "coverImage": "parallax-footer",
-  "videoUrl": "parallax-footer.mp4",
   "files": [
     {
       "path": "parallax-footer.jsx",

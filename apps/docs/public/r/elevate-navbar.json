@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Elevate Navbar",
   "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
-  "category": "navigation",
-  "categories": [
-    "navigation"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ElevateNavbar",
   "exportKind": "named",
-  "previewUrl": "/navigation/elevate-navbar",
-  "coverImage": "elevate-navbar",
-  "videoUrl": "elevate-navbar.mp4",
   "files": [
     {
       "path": "elevate-navbar.jsx",

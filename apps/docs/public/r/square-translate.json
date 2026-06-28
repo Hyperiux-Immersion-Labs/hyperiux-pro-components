@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Square Translate",
   "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",
-  "category": "scroll",
-  "categories": [
-    "scroll"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "SquareTranslate",
   "exportKind": "named",
-  "previewUrl": "/square-translate",
-  "coverImage": "square-translate",
-  "videoUrl": "square-translate.mp4",
   "files": [
     {
       "path": "square-translate.jsx",

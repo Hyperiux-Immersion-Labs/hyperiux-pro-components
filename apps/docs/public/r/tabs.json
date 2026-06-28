@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",
-  "category": "components",
-  "categories": [
-    "components"
-  ],
-  "tier": "pro",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "Tabs",
   "exportKind": "named",
-  "previewUrl": "/tabs",
-  "coverImage": "tabs",
-  "videoUrl": "tabs.mp4",
   "files": [
     {
       "path": "tabs.jsx",

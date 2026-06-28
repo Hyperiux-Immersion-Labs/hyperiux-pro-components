@@ -142,7 +142,13 @@ export default function TechDetailShowcase({ slug, tech, filteredEffects }) {
         <p className="text-sm text-muted mb-8 max-w-xl">Browse through our live collection of {filteredEffects.length} creative components built with {tech.name} mechanics. Hover to see dynamic interactive animations in real-time.</p>
         {filteredEffects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEffects.map((effect) => (<EffectCard key={effect.name} effect={effect} />))}
+            {filteredEffects.map((effect) => (
+              <EffectCard
+                key={effect.name}
+                effect={effect}
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+              />
+            ))}
           </div>
         ) : (
           <div className="p-12 text-center border border-dashed border-border/20 rounded-3xl bg-zinc-950/20"><p className="text-muted text-sm">No specific effects catalogued in the registry index yet.</p></div>

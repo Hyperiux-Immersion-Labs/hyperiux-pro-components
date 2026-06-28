@@ -1,12 +1,12 @@
-import React from 'react'
-import PixelRandomHeader from '@/components/showcase/transitions/PixelRandom/PixelRandomHeader'
-import PixelRandomTransition from '@/components/showcase/transitions/PixelRandom/PixelRandomTransition'
+import React from "react";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import PixelRandomTransition from "@/components/pixel-random";
 
 export default function layout({ children }) {
   return (
     <PixelRandomTransition>
-      <PixelRandomHeader />
+      <DemoHeader />
       {children}
     </PixelRandomTransition>
-  )
+  );
 }

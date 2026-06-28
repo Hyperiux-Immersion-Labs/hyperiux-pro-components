@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Colliding Models",
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
-  "category": "webgl",
-  "categories": [
-    "webgl"
-  ],
-  "tier": "pro",
   "dependencies": [
     "three",
     "@react-three/fiber",
@@ -21,9 +16,6 @@
   "registryDependencies": [],
   "exportName": "CollidingModels",
   "exportKind": "named",
-  "previewUrl": "/colliding-models",
-  "coverImage": "colliding-models",
-  "videoUrl": "colliding-models.mp4",
   "files": [
     {
       "path": "colliding-models.jsx",

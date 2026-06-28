@@ -27,3 +27,4 @@ coverage
 .clerk/.tmp
 *.tsbuildinfo
 .turbo
+CLAUDE.md

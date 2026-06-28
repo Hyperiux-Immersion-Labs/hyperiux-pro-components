@@ -3,29 +3,15 @@
   "type": "registry:component",
   "title": "Pixel Bloom",
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "PixelBloom",
   "exportKind": "named",
-  "previewUrl": "/cursors/pixel-bloom",
-  "coverImage": "pixel-bloom",
-  "videoUrl": "pixel-bloom",
   "files": [
     {
       "path": "pixel-bloom.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/pixel-bloom.jsx"
-    },
-    {
-      "path": "assets/videos/draggable-video.mp4",
-      "type": "registry:asset",
-      "target": "public/assets/videos/draggable-video.mp4",
-      "source": "/assets/videos/draggable-video.mp4"
     }
   ]
 }

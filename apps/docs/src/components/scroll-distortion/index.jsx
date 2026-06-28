@@ -141,6 +141,18 @@ function loadCorsObjectUrl(source) {
     });
 }
 
+function createTextureFromImage(imageElement) {
+  const texture = new THREE.Texture(imageElement);
+
+  texture.needsUpdate = true;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
+  return texture;
+}
+
 export default function ScrollDistortion({
   sections = DEFAULT_SECTIONS,
   shaderConfig = {},
@@ -149,6 +161,8 @@ export default function ScrollDistortion({
   const containerRef = useRef(null);
   const imageRefs = useRef([]);
   const textRefs = useRef([]);
+  const textTimelineRef = useRef(null);
+
   const [objectUrls, setObjectUrls] = useState(null);
   const [decodedUrls, setDecodedUrls] = useState(() => new Set());
   const [isSceneReady, setIsSceneReady] = useState(false);
@@ -169,6 +183,14 @@ export default function ScrollDistortion({
   useEffect(() => {
     let isCancelled = false;
     let nextObjectUrls = [];
+
+    currentIndexRef.current = 0;
+    targetIndexRef.current = 0;
+    isTransitioningRef.current = false;
+    wheelDeltaRef.current = 0;
+    touchStartYRef.current = null;
+    textRefs.current = [];
+    imageRefs.current = [];
 
     Promise.all([
       ...sections.map((section) => loadCorsObjectUrl(section.src)),
@@ -318,35 +340,100 @@ export default function ScrollDistortion({
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    gsap.set(textRefs.current[0], {
-      yPercent: 0,
-      autoAlpha: 1,
-    });
+    const getTextChars = (index) => {
+      return (textRefs.current[index] || []).filter(Boolean);
+    };
 
-    textRefs.current.forEach((chars, index) => {
-      if (index === 0) return;
+    const getAllTextChars = () => {
+      return textRefs.current.flat().filter(Boolean);
+    };
 
-      gsap.set(chars, {
+    const resetTextState = () => {
+      const allChars = getAllTextChars();
+      const firstChars = getTextChars(0);
+
+      textTimelineRef.current?.kill();
+      textTimelineRef.current = null;
+
+      gsap.killTweensOf(allChars);
+
+      gsap.set(allChars, {
         yPercent: 100,
         autoAlpha: 0,
+        visibility: "hidden",
+        force3D: true,
       });
-    });
+
+      gsap.set(firstChars, {
+        yPercent: 0,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
+      });
+    };
+
+    resetTextState();
 
     const animateTextTransition = (fromIndex, toIndex, direction) => {
-      const fromChars = textRefs.current[fromIndex] || [];
-      const toChars = textRefs.current[toIndex] || [];
+      const fromChars = getTextChars(fromIndex);
+      const toChars = getTextChars(toIndex);
+      const allChars = getAllTextChars();
 
-      gsap.killTweensOf([...fromChars, ...toChars]);
+      if (!fromChars.length || !toChars.length) return null;
 
-      const outgoingY = direction > 0 ? -100 : 100;
-      const incomingY = direction > 0 ? 100 : -100;
+      const outgoingY = direction > 0 ? -105 : 105;
+      const incomingY = direction > 0 ? 105 : -105;
+
+      textTimelineRef.current?.kill();
+      gsap.killTweensOf(allChars);
+
+      const fromSet = new Set(fromChars);
+      const toSet = new Set(toChars);
+
+      const otherChars = allChars.filter((char) => {
+        return !fromSet.has(char) && !toSet.has(char);
+      });
+
+      gsap.set(otherChars, {
+        yPercent: 100,
+        autoAlpha: 0,
+        visibility: "hidden",
+        force3D: true,
+      });
+
+      gsap.set(fromChars, {
+        yPercent: 0,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
+      });
 
       gsap.set(toChars, {
         yPercent: incomingY,
-        autoAlpha: 0,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
       });
-     
-      const timeline = gsap.timeline();
+
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power3.inOut",
+        },
+        onComplete: () => {
+          gsap.set(fromChars, {
+            autoAlpha: 0,
+            visibility: "hidden",
+          });
+
+          gsap.set(toChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            visibility: "visible",
+          });
+
+          textTimelineRef.current = null;
+        },
+      });
 
       timeline.to(
         fromChars,
@@ -354,8 +441,10 @@ export default function ScrollDistortion({
           yPercent: outgoingY,
           autoAlpha: 0,
           duration: TEXT_DURATION,
-          stagger: TEXT_STAGGER,
-          ease: "power3.inOut",
+          stagger: {
+            each: TEXT_STAGGER,
+            from: "start",
+          },
         },
         0
       );
@@ -366,11 +455,15 @@ export default function ScrollDistortion({
           yPercent: 0,
           autoAlpha: 1,
           duration: TEXT_DURATION,
-          stagger: TEXT_STAGGER,
-          ease: "power3.inOut",
+          stagger: {
+            each: TEXT_STAGGER,
+            from: "start",
+          },
         },
-        0.08
+        0.06
       );
+
+      textTimelineRef.current = timeline;
 
       return timeline;
     };
@@ -418,6 +511,14 @@ export default function ScrollDistortion({
 
           currentIndexRef.current = nextIndex;
           isTransitioningRef.current = false;
+
+          const finalChars = getTextChars(nextIndex);
+
+          gsap.set(finalChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            visibility: "visible",
+          });
 
           if (targetIndexRef.current !== currentIndexRef.current) {
             transitionTo(targetIndexRef.current);
@@ -480,12 +581,13 @@ export default function ScrollDistortion({
       touchStartYRef.current = currentY;
     };
 
+    let animationFrameId = 0;
+
     const renderScene = () => {
       renderer.render(scene, camera);
       animationFrameId = window.requestAnimationFrame(renderScene);
     };
 
-    let animationFrameId = 0;
     renderScene();
     setIsSceneReady(true);
 
@@ -522,6 +624,10 @@ export default function ScrollDistortion({
       window.removeEventListener("resize", onResize);
 
       window.cancelAnimationFrame(animationFrameId);
+
+      textTimelineRef.current?.kill();
+      textTimelineRef.current = null;
+
       gsap.killTweensOf(material.uniforms.u_progress);
 
       textRefGroups.forEach((chars) => {
@@ -536,7 +642,7 @@ export default function ScrollDistortion({
       renderer.dispose();
       containerElement.replaceChildren();
     };
-  }, [areImagesDecoded, displacementSrc, sections, shaderConfig]);
+  }, [areImagesDecoded, sections, shaderConfig]);
 
   return (
     <section className="fixed inset-0 h-screen w-screen overflow-hidden bg-black">
@@ -547,6 +653,7 @@ export default function ScrollDistortion({
             <img
               ref={(element) => {
                 imageRefs.current[index] = element;
+
                 if (element?.complete && element.naturalWidth > 0) {
                   markImageDecoded(url);
                 }
@@ -565,6 +672,7 @@ export default function ScrollDistortion({
           <img
             ref={(element) => {
               imageRefs.current[sections.length] = element;
+
               if (element?.complete && element.naturalWidth > 0) {
                 markImageDecoded(objectUrls[sections.length]);
               }
@@ -596,42 +704,32 @@ export default function ScrollDistortion({
         {splitSections.map((section, sectionIndex) => (
           <h1
             key={`${section.text}-${sectionIndex}`}
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 overflow-hidden text-[10vw] leading-none text-white"
+            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 text-[10vw] leading-none text-white"
             aria-label={section.text}
           >
             {section.chars.map((char, charIndex) => (
               <span
                 key={`${section.text}-${charIndex}`}
-                ref={(element) => {
-                  if (!textRefs.current[sectionIndex]) {
-                    textRefs.current[sectionIndex] = [];
-                  }
-
-                  textRefs.current[sectionIndex][charIndex] = element;
-                }}
-                className={`inline-block will-change-transform ${
-                  sectionIndex === 0 ? "" : "translate-y-full opacity-0"
-                }`}
+                className="inline-block overflow-hidden leading-none"
+                aria-hidden="true"
               >
-                {char === " " ? "\u00A0" : char}
+                <span
+                  ref={(element) => {
+                    if (!textRefs.current[sectionIndex]) {
+                      textRefs.current[sectionIndex] = [];
+                    }
+
+                    textRefs.current[sectionIndex][charIndex] = element;
+                  }}
+                  className="inline-block will-change-transform"
+                >
+                  {char === " " ? "\u00A0" : char}
+                </span>
               </span>
             ))}
           </h1>
         ))}
       </div>
-       
     </section>
   );
-}
-
-function createTextureFromImage(imageElement) {
-  const texture = new THREE.Texture(imageElement);
-
-  texture.needsUpdate = true;
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-
-  return texture;
 }

@@ -9,7 +9,6 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import CharStaggerButton from "@/components/char-stagger-button";
 import {
   effectsOverviewContent,
   effectCategories,
@@ -25,9 +24,18 @@ import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+// Resolve category ID from Sanity categorySlug first, fall back to registry fields
+function resolveEffectCategoryId(effect) {
+  if (effect.categorySlug) {
+    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
+  }
+  return effect.categories?.[0] || effect.category;
 }
 
 function RouteAnimationSync({ syncKey }) {
@@ -36,7 +44,7 @@ function RouteAnimationSync({ syncKey }) {
   useEffect(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
       });
     });
   }, [syncKey]);
@@ -107,31 +115,45 @@ export function VaultContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
-  const routeKey = `${pathname}?${searchParamString}`;
 
-  const safeEffects = Array.isArray(incomingEffects) ? incomingEffects : [];
-  const safeEffectCounts =
-    incomingEffectCounts &&
+const animationSearchParamString = useMemo(() => {
+  const params = new URLSearchParams(searchParamString);
+
+  params.delete("waitlist");
+   params.delete("custom-animation-form");
+
+  return params.toString();
+}, [searchParamString]);
+
+const routeKey = `${pathname}${
+  animationSearchParamString ? `?${animationSearchParamString}` : ""
+}`;
+
+  const safeEffects = useMemo(
+    () => (Array.isArray(incomingEffects) ? incomingEffects : []),
+    [incomingEffects]
+  );
+  const safeEffectCounts = useMemo(
+    () =>
+      incomingEffectCounts &&
       typeof incomingEffectCounts === "object" &&
       !Array.isArray(incomingEffectCounts)
-      ? incomingEffectCounts
-      : {};
+        ? incomingEffectCounts
+        : {},
+    [incomingEffectCounts]
+  );
 
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
 
-
-  // testing purpose
-  const TEST_SKELETON_DELAY = 0; // change to 0 before production
+  // testing purpose — set to 0 in production, any positive ms to show skeleton
+  const TEST_SKELETON_DELAY = 0;
   const [hasPassedSkeletonDelay, setHasPassedSkeletonDelay] = useState(
     TEST_SKELETON_DELAY === 0
   );
 
   useEffect(() => {
-    if (TEST_SKELETON_DELAY === 0) {
-      setHasPassedSkeletonDelay(true);
-      return;
-    }
+    if (TEST_SKELETON_DELAY === 0) return;
 
     setHasPassedSkeletonDelay(false);
 
@@ -186,25 +208,28 @@ export function VaultContent({
   const refreshAfterCategoryChange = useCallback(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
       });
     });
   }, []);
 
-  const getCategoryUrl = useCallback(
-    (nextCategory) => {
-      const resolvedCategory = nextCategory || "all";
+ const getCategoryUrl = useCallback(
+  (nextCategory) => {
+    const resolvedCategory = nextCategory || "all";
 
-      const params = new URLSearchParams(searchParamString);
-      params.delete("category");
+    const params = new URLSearchParams(searchParamString);
 
-      const nextQuery = params.toString();
-      const categoryHref = getEffectCategoryHref(resolvedCategory);
+    params.delete("category");
+    params.delete("waitlist");
+    params.delete("custom-animation-form");
 
-      return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
-    },
-    [searchParamString]
-  );
+    const nextQuery = params.toString();
+    const categoryHref = getEffectCategoryHref(resolvedCategory);
+
+    return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
+  },
+  [searchParamString]
+);
 
   const navigateWithRouteFade = useCallback(
     (href) => {
@@ -240,7 +265,7 @@ export function VaultContent({
 
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-              ScrollTrigger.refresh(true);
+              ScrollTrigger.refresh();
             });
           });
         },
@@ -362,24 +387,17 @@ export function VaultContent({
       } else if (categoryFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
       } else if (categoryFilter !== "all") {
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
-
-        if (!cats.includes(categoryFilter)) return false;
+        if (resolveEffectCategoryId(effect) !== categoryFilter) return false;
       }
 
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-
-        const cats = effect.categories?.length
-          ? effect.categories
-          : [effect.category];
+        const catId = resolveEffectCategoryId(effect);
 
         return (
           effect.name.toLowerCase().includes(query) ||
           effect.title.toLowerCase().includes(query) ||
-          cats.some((c) => c?.toLowerCase().includes(query)) ||
+          catId?.toLowerCase().includes(query) ||
           effect.description?.toLowerCase().includes(query)
         );
       }
@@ -409,13 +427,9 @@ export function VaultContent({
       return featuredEffects.length;
     }
 
-    return safeEffects.filter((effect) => {
-      const cats = effect.categories?.length
-        ? effect.categories
-        : [effect.category];
-
-      return cats.includes(categoryFilter);
-    }).length;
+    return safeEffects.filter(
+      (effect) => resolveEffectCategoryId(effect) === categoryFilter
+    ).length;
   }, [safeEffects, categoryFilter, featuredEffects, isEffectsLoading]);
 
   const activeCategory = getEffectCategory(categoryFilter);
@@ -479,12 +493,14 @@ export function VaultContent({
           ref={categoryPageRef}
           className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
         >
+          
           <RouteAnimationSync
             key={`route-animation-sync-${routeKey}`}
             syncKey={routeKey}
           />
 
           <VaultHeader
+           showSearch
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             totalEffects={totalEffects}
@@ -543,13 +559,11 @@ export function VaultContent({
               <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
-                   key={`${categoryFilter}-description-${index}`}
+                    key={`${categoryFilter}-description-${index}`}
                     delay={0.3}
                     animationKey={`${routeKey}-${index}`}
                   >
-                    <p
-                      className="mt-3"
-                    >
+                    <p className="mt-3">
                       {description}
                     </p>
                   </Copy>
@@ -605,7 +619,7 @@ export function VaultContent({
                         className={`
                           px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-                          transition-all duration-500 ease-in-out max-sm:text-lg
+                          transition-colors duration-300 max-sm:text-lg
                           hover:text-[#111111] hover:bg-white text20
                           ${isSelected
                             ? "bg-white text-[#111111]"
@@ -718,8 +732,10 @@ export function VaultContent({
                         )}
 
                         {activeCategoryContent.cta.buttonText && (
+                          <CustomAnimationFormTrigger>
                           <div className="mt-6 w-fit">
                             <Button
+                             preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
@@ -727,6 +743,7 @@ export function VaultContent({
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>
+                          </CustomAnimationFormTrigger>
                         )}
                       </div>
                     </section>
@@ -737,6 +754,90 @@ export function VaultContent({
         </RouteFade>
       )}
     </VaultLayout>
+  );
+}
+
+const BATCH_SIZE = 12;
+
+// Inner component — keyed by filteredEffectsKey so state resets automatically on filter change
+function EffectsGridInner({
+  filteredEffects,
+  wishlist,
+  toggleWishlist,
+  isProUser,
+  animationKey,
+}) {
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+
+  const gridRef = useRef(null);
+  const sentinelRef = useRef(null);
+
+  // Load next batch when the sentinel enters the viewport
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((prev) =>
+            Math.min(prev + BATCH_SIZE, filteredEffects.length)
+          );
+        }
+      },
+      { rootMargin: "400px" }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [filteredEffects.length]);
+
+  const visibleEffects = filteredEffects.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEffects.length;
+
+  // Animate only newly-mounted cards (those without .card-entered yet)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const cards = Array.from(
+      grid.querySelectorAll(".effect-card-shell:not(.card-entered)")
+    );
+    if (!cards.length) return;
+
+    cards.forEach((card, i) => {
+      card.style.setProperty("--card-delay", `${(i % BATCH_SIZE) * 0.06}s`);
+    });
+
+    const raf = requestAnimationFrame(() => {
+      cards.forEach((card) => card.classList.add("card-entered"));
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [visibleEffects.length, animationKey]);
+
+  return (
+    <>
+      <div
+        ref={gridRef}
+        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
+      >
+        {visibleEffects.map((effect, i) => (
+          <div key={effect.name} className="effect-card-shell">
+            <EffectCard
+              effect={effect}
+              priority={i < 4}
+              isWishlisted={wishlist.includes(effect.name)}
+              toggleWishlist={toggleWishlist}
+              isProUser={isProUser}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Sentinel — 400px ahead of viewport triggers the next batch before user reaches bottom */}
+      {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+    </>
   );
 }
 
@@ -752,93 +853,14 @@ function EffectsGrid({
     .map((effect) => effect.name)
     .join("|");
 
-  const [mobileCardsState, setMobileCardsState] = useState({
-    key: "",
-    showAll: false,
-  });
-
-  const gridRef = useRef(null);
-
-  const showAllMobileCards =
-    mobileCardsState.key === filteredEffectsKey && mobileCardsState.showAll;
-
-  useEffect(() => {
-    const grid = gridRef.current;
-
-    if (!grid) return;
-
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray(".effect-card-shell", grid);
-
-      gsap.killTweensOf(cards);
-
-      gsap.fromTo(
-        cards,
-        {
-          autoAlpha: 0,
-          y: 34,
-        },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.65,
-          ease: "power3.out",
-          stagger: {
-            each: 0.06,
-            from: "start",
-          },
-          clearProps: "transform,opacity,visibility",
-          onComplete: () => {
-            ScrollTrigger.refresh(true);
-          },
-        }
-      );
-    }, grid);
-
-    return () => ctx.revert();
-  }, [filteredEffectsKey, animationKey]);
-
   return (
-    <>
-      <div
-        ref={gridRef}
-        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
-      >
-        {filteredEffects.map((effect, i) => (
-          <div
-            key={effect.name}
-            className={`effect-card-shell ${!showAllMobileCards && i >= 10 ? "max-sm:hidden" : ""
-              }`}
-          >
-            <EffectCard
-              effect={effect}
-              priority={i < 4}
-              isWishlisted={wishlist.includes(effect.name)}
-              toggleWishlist={toggleWishlist}
-              isProUser={isProUser}
-            />
-          </div>
-        ))}
-      </div>
-
-      {filteredEffects.length > 10 && !showAllMobileCards && (
-        <div className="mt-10 hidden justify-center max-sm:flex">
-          <CharStaggerButton
-            href="#"
-            text="View more"
-            showLine
-            onClick={(e) => {
-              e.preventDefault();
-
-              setMobileCardsState({
-                key: filteredEffectsKey,
-                showAll: true,
-              });
-            }}
-            className="font-sans text-lg text-foreground max-sm:text-base"
-          />
-        </div>
-      )}
-    </>
+    <EffectsGridInner
+      key={filteredEffectsKey}
+      filteredEffects={filteredEffects}
+      wishlist={wishlist}
+      toggleWishlist={toggleWishlist}
+      isProUser={isProUser}
+      animationKey={animationKey}
+    />
   );
 }

@@ -5,7 +5,7 @@ import Button from '../WebsiteComps/Button'
 
 export default function CTA() {
     return (
-        <div className='h-screen max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-md:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full mt-[-50vh] max-md:mt-0'>
+        <div className='h-screen max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-center justify-center max-md:gap-[8vw] flex-col bg-foreground text-background relative z-500 w-full  max-md:mt-0'>
             <RandomBlur as="h2" className='text110 pointer-events-auto max-md:px-0! px-[10vw] text-center'>
                 Unlock Next-Level Digital <br /> Experiences.
             </RandomBlur>

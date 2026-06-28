@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Noise Ripple Cursor",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
-  "category": "cursor",
-  "categories": [
-    "cursor"
-  ],
-  "tier": "pro",
   "dependencies": [
     "three"
   ],
   "registryDependencies": [],
   "exportName": "NoiseRippleCursor",
   "exportKind": "named",
-  "previewUrl": "/cursors/noiseripple",
-  "coverImage": "noise-ripple-cursor",
-  "videoUrl": "noise-ripple-cursor",
   "files": [
     {
       "path": "noise-ripple-cursor.jsx",

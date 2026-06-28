@@ -17,7 +17,7 @@ export function TextFillAnimation({
   textColor = '#111111',
   primaryColor = '#ff6b00',
   dimColor = '#dddddd',
-  backgroundColor = '#FBFBFB',
+  backgroundColor = '',
   className = '',
   id = 'section-break',
   textSize = '5vw',

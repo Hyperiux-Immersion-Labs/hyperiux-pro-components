@@ -3,11 +3,6 @@
   "type": "registry:component",
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
-  "category": "webgl",
-  "categories": [
-    "webgl"
-  ],
-  "tier": "pro",
   "dependencies": [
     "three",
     "@react-three/fiber",
@@ -18,9 +13,6 @@
   "registryDependencies": [],
   "exportName": "HyperiuxGlitterConcept",
   "exportKind": "named",
-  "previewUrl": "/hyperiux-glitter",
-  "coverImage": "hyperiux-glitter",
-  "videoUrl": "/hyperiux-glitter.mp4",
   "files": [
     {
       "path": "hyperiux-glitter-concept.jsx",

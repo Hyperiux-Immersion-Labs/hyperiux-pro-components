@@ -4,7 +4,7 @@ const ScrollBottom = ({textColor,
   className='bottom-[5%] gap-[1vw]'
 }) => {
   return (
-    <div className={`fixed left-1/2 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
+    <div className={`fixed left-1/2 z-10 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
           Scroll
           <svg
             width="20"

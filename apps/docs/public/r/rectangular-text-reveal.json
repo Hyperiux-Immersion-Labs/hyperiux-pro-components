@@ -3,20 +3,12 @@
   "type": "registry:component",
   "title": "Rectangular Text Reveal",
   "description": "Text reveal animation with colored rectangles sliding across each line",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
-  "tier": "free",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
   "exportName": "RectangularTextReveal",
   "exportKind": "named",
-  "previewUrl": "/rectangular-text-reveal",
-  "coverImage": "rectangular-text-reveal",
-  "videoUrl": "rectangular-text-reveal.mp4",
   "files": [
     {
       "path": "rectangular-text-reveal.jsx",

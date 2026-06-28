@@ -1,4 +1,4 @@
-import PixelRandom from "@/components/showcase/transitions/PixelRandom/PixelRandomTransition";
+import PixelRandom from "@/components/pixel-random";
 import Footer from "@/components/LandingPage/Footer";
 import React from "react";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";

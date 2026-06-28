@@ -1,6 +1,4 @@
-import { ArrowUpRightIcon } from "@/utils/Icons";
-
-export default function VaultBox({ id, styles, img, number, label, textColor='text-foreground' }) {
+export default function VaultBox({ id, styles, img, number, label, textColor = 'text-foreground' }) {
     return (
         <div
             id={id}
@@ -12,6 +10,7 @@ export default function VaultBox({ id, styles, img, number, label, textColor='te
                     autoPlay
                     playsInline
                     muted
+                    preload='auto'
                     src={img}
                     className={`object-cover  h-full w-full`}
                 />

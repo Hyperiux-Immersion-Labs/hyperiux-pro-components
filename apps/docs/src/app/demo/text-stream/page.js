@@ -1,38 +1,34 @@
-import React from'react'
-import TextMarquee from'@/components/Marquee/TextMarquee'
-import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
+import React from "react";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import TextStream from "@/components/text-stream";
+import HeadAnim from "@/components/Animations/HeadAnim";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 const page = () => {
- return (
- <>
- <LenisSmoothScroll />
- <TextMarquee items={items} />
- </>
- )
-}
+  return (
+    <>
+    <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
+      <LenisSmoothScroll />
+      <div className="fadeup">
+      <TextStream />
 
-export default page
+      </div>
+      <div className=" px-[5vw] pt-[7%] flex flex-col gap-[2vw] text-white absolute inset-0 w-[40%] max-md:pt-[20%]">
+        <HeadAnim> 
+        <h1 className="text-[4vw]  max-md:text-[7vw]">
+          Text Stream
+        </h1>
+        </HeadAnim>
+        <SplitLine>
+        <p className="max-md:hidden">
+          "Text Stream" is a bi-directional Marquee of content being clipped with spotlight , scroll and see how it responds with your smooth flow of the scroll.
+        </p>
+        </SplitLine>
 
-const items = [
-  "builds immersive interfaces",
-  "creates motion-driven experiences",
-  "powers futuristic web design",
-  "redefines modern UI",
-  "makes interactions feel alive",
-  "crafts cinematic transitions",
-  "turns motion into storytelling",
-  "pushes creative development forward",
-  "blends design with animation",
-  "elevates frontend experiences",
-  "creates seamless interactions",
-  "makes scroll feel dynamic",
-  "inspires experimental interfaces",
-  "transforms static layouts",
-  "ships visually stunning components",
-  "brings ideas into motion",
-  "builds expressive user journeys",
-  "drives interactive experiences",
-  "explores the future of UI",
-  "creates unforgettable web moments",
-  "makes the web feel futuristic",
-];
+      </div>
+    </>
+  );
+};
+
+export default page;

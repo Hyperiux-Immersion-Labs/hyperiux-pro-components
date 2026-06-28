@@ -11,19 +11,6 @@ const PUBLIC_PATH = path.join(__dirname, "../public");
 const PUBLIC_ASSET_REGEX =
   /(?<![\w])["'`]((?:\/(?:assets|models|valley|601|svgs|img)\/[^"'`)\s]+)|(?:\/(?:showreel|eye-loop|hyperiux-wordmark|hyperiux)\.(?:mp4|svg)))["'`]/g;
 
-function resolveCoverImage(effectName, explicitCoverImage) {
-  if (explicitCoverImage === null) return null;
-
-  const explicit =
-    typeof explicitCoverImage === "string" ? explicitCoverImage.trim() : "";
-
-  const coverImage = explicit || effectName;
-  if (/^(https?:)?\/\//.test(coverImage)) return coverImage;
-
-  const fileName = path.basename(coverImage.split(/[?#]/)[0]);
-  return (fileName || effectName).replace(/\.[^.]+$/, "");
-}
-
 // Controls the order categories appear in the listing.
 // Categories not listed here will appear at the end alphabetically.
 const CATEGORY_ORDER = [
@@ -255,36 +242,23 @@ async function buildRegistry() {
       const tier = registryJson.tier || "free";
       const isPro = tier === "pro" || tier === "paid";
 
-      // Build the full registry item
-      const defaultVideoUrl = `${registryJson.name}.mp4`;
-      const resolvedVideoUrl =
-        registryJson.videoUrl === null ? null : registryJson.videoUrl || defaultVideoUrl;
-      const resolvedCoverImage = resolveCoverImage(
-        registryJson.name,
-        registryJson.coverImage
-      );
-
       // For pro effects, strip file content from the public JSON.
       // The CLI fetches full source via the authenticated /api/cli/effects/[slug] route.
       const publicFiles = isPro
         ? [...fileContents, ...assetFiles].map(({ content: _content, ...rest }) => rest)
         : [...fileContents, ...assetFiles];
 
+      // title and description kept as fallbacks for the detail page when Sanity content is absent.
+      // All other display fields (tier, coverImage, videoUrl, previewUrl, addedAt) now live in Sanity.
       const registryItem = {
         name: registryJson.name,
         type: registryJson.type || "registry:component",
         title: registryJson.title,
         description: registryJson.description,
-        category: primaryCategory,
-        categories: categories_list,
-        tier,
         dependencies: registryJson.dependencies || [],
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
-        previewUrl: registryJson.previewUrl || null,
-        coverImage: resolvedCoverImage,
-        videoUrl: resolvedVideoUrl,
         files: publicFiles,
       };
 
@@ -293,22 +267,18 @@ async function buildRegistry() {
       fs.writeFileSync(outputFile, JSON.stringify(registryItem, null, 2));
       console.log(`  Created ${registryJson.name}.json`);
 
-      // Add to index — record mtime so the vault can sort by recently added
-      const addedAt = fs.statSync(registryJsonPath).mtimeMs;
+      // category/categories kept for getEffectsByCategory() which drives per-category counts.
+      // All other display fields (title, description, tier, coverImage, videoUrl, addedAt,
+      // previewUrl) are now sourced from Sanity and merged at runtime.
       index.items.push({
         name: registryJson.name,
-        title: registryJson.title,
-        description: registryJson.description,
+        type: registryJson.type || "registry:component",
         category: primaryCategory,
         categories: categories_list,
-        tier,
         dependencies: registryJson.dependencies || [],
+        registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
-        previewUrl: registryJson.previewUrl || null,
-        coverImage: resolvedCoverImage,
-        videoUrl: resolvedVideoUrl,
-        addedAt,
       });
     }
   }
