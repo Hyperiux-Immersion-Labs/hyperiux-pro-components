@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import Option1 from "./LinesLoading";
 import Option2 from "./CenterLinesLoading";
 
@@ -30,10 +30,15 @@ export default function LinesLoadingDemo({ onComplete, onVariantChange, ...props
 
 
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
-
   const onVariantChangeRef = useRef(onVariantChange);
-  onVariantChangeRef.current = onVariantChange;
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    onVariantChangeRef.current = onVariantChange;
+  }, [onVariantChange]);
 
   const handleVariantChange = useCallback((newVariant) => {
     setActiveVariant(newVariant);

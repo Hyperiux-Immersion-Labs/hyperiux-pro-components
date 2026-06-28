@@ -24,8 +24,10 @@ const HoverStackComp = ({
       setIsSmallScreen(window.innerWidth < BREAKPOINT);
     };
 
-    checkWidth();
-    setHasMounted(true);
+    queueMicrotask(() => {
+      checkWidth();
+      setHasMounted(true);
+    });
 
     window.addEventListener("resize", checkWidth);
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -29,7 +30,7 @@ function isLoaderActive() {
 
 const IFRAME_DESKTOP_WIDTH = 1200;
 
-function DemoFrame({ src, title, shouldMount }) {
+function DemoFrame({ src, title, shouldMount, category, description, href }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const isExternal = src.startsWith("http");
   const wrapperRef = useRef(null);
@@ -63,11 +64,37 @@ function DemoFrame({ src, title, shouldMount }) {
       className="relative h-full w-full overflow-hidden rounded-md bg-[#151515]"
       onPointerEnter={handlePointerEnter}
     >
-      {!isLoaded && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#151515] text20 text-white/40">
-          Loading Preview
+      {/* Crawlable and visually beautiful SSR / Fallback Representation */}
+      <div 
+        className={`absolute inset-0 z-10 flex flex-col justify-between p-8 bg-gradient-to-br from-[#181818] to-[#0c0c0c] transition-opacity duration-500 ${
+          isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+      >
+        <div className="space-y-3">
+          <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary/20 text-primary uppercase tracking-wider">
+            {category}
+          </span>
+          <h3 className="text-2xl font-semibold text-white tracking-tight">
+            {title}
+          </h3>
+          <p className="text-sm text-white/60 max-w-md leading-relaxed">
+            {description}
+          </p>
         </div>
-      )}
+        
+        <div className="flex items-center justify-between mt-4">
+          <Link 
+            href={href}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-primary transition-colors group/btn"
+          >
+            <span>View Details & Code</span>
+            <span className="transform transition-transform group-hover/btn:translate-x-1 font-sans">→</span>
+          </Link>
+          <span className="text-xs text-white/30 font-medium animate-pulse">
+            Loading interactive canvas...
+          </span>
+        </div>
+      </div>
 
       {shouldMount && (
         <iframe
@@ -260,6 +287,9 @@ export default function FeaturedEffects() {
               src="/embed/phantom-image-trail"
               title="Phantom Image Trail"
               shouldMount={shouldMountIframes}
+              category="Cursor Effects"
+              description="A fluid, high-performance image-revealing cursor effect built with GSAP and WebGL. Creates an immersive, tactile trail behind the pointer as it glides over elements."
+              href="/effects/cursor-effects/phantom-image-trail"
             />
           </div>
 
@@ -271,6 +301,9 @@ export default function FeaturedEffects() {
               src="/embed/hover-stack"
               title="Hover Stack"
               shouldMount={shouldMountIframes}
+              category="Creative Components"
+              description="A sleek, layered 3D stacking hover card interaction. Layers fan out on hover, revealing rich detail, secondary actions, and progressive depth."
+              href="/effects/components/hover-stack"
             />
           </div>
         </div>

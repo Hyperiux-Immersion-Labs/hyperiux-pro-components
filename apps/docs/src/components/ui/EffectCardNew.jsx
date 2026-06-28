@@ -21,7 +21,7 @@ function formatLabel(value = "") {
 // Default sizes reflects the main vault grid: 3 cols with ~288px sidebar, 80px container padding,
 // 48px grid gap, and 56px horizontal inset on the image container.
 const VAULT_GRID_SIZES =
-  "(max-width: 639px) calc(86vw - 32px), (max-width: 767px) calc(50vw - 7rem), calc(33vw - 10rem)";
+  "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px";
 
 export function EffectCard({
   effect,
@@ -100,12 +100,7 @@ export function EffectCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Link
-        href={effectHref}
-        prefetch={false}
-        aria-label={`Open ${effect.title || effect.name}`}
-        className="absolute inset-0 z-10"
-      />
+
 
       {/* Preview — square card with 16:9 media centered via absolute + translate */}
       <div className="pointer-events-none relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
@@ -164,7 +159,13 @@ export function EffectCard({
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
         <div className="flex min-w-0 flex-col gap-0.5">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white max-sm:text-base">
-            {effect.title}
+            <Link
+              href={effectHref}
+              prefetch={false}
+              className="pointer-events-auto hover:underline after:absolute after:inset-0 after:z-10"
+            >
+              {effect.title}
+            </Link>
           </h3>
           <p className="text18 text-[#AEAEAE] max-sm:text-xs">
             {primaryCategoryLabel}

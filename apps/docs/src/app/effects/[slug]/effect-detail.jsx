@@ -213,11 +213,15 @@ export function EffectDetailContent({
 
   useEffect(() => {
     if (TEST_MAIN_SKELETON_DELAY === 0) {
-      setHasPassedMainSkeletonDelay(true);
+      queueMicrotask(() => {
+        setHasPassedMainSkeletonDelay(true);
+      });
       return;
     }
 
-    setHasPassedMainSkeletonDelay(false);
+    queueMicrotask(() => {
+      setHasPassedMainSkeletonDelay(false);
+    });
 
     const timeoutId = window.setTimeout(() => {
       setHasPassedMainSkeletonDelay(true);
@@ -294,7 +298,9 @@ export function EffectDetailContent({
 
     if (!slider) return;
 
-    updateRelatedScrollState();
+    queueMicrotask(() => {
+      updateRelatedScrollState();
+    });
 
     slider.addEventListener("scroll", updateRelatedScrollState, {
       passive: true,

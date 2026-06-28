@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 
@@ -31,6 +31,11 @@ export default function LinkHover({
 }) {
   const linkRef = useRef(null);
   const layersRef = useRef({ chars: null, shadows: null, line: null });
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const text = String(children);
   const characters = useMemo(() => splitCharacters(text), [text]);
@@ -133,6 +138,19 @@ export default function LinkHover({
 
   const handleEnter = useCallback(() => runHoverAnimation(true), [runHoverAnimation]);
   const handleLeave = useCallback(() => runHoverAnimation(false), [runHoverAnimation]);
+
+  if (!isMounted) {
+    return (
+      <Link
+        href={href}
+        target={target}
+        className={`relative block w-fit overflow-hidden text-16 leading-[1.15] ${textShadowClass} ${className}`}
+        style={{ color: idleColor }}
+      >
+        {children}
+      </Link>
+    );
+  }
 
   return (
     <Link
