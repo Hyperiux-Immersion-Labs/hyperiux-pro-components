@@ -12,9 +12,8 @@ import {
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
 import { EffectComposer, N8AO, Bloom } from '@react-three/postprocessing'
 import { easing } from 'maath'
-import Link from 'next/link'
 
-const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00','#ff5f00']
+const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00', '#ff5f00']
 const MODEL_SCALE = 0.08
 const COLLIDER_SCALE = 0.5
 const POINTER_RADIUS = 0.55
@@ -109,7 +108,7 @@ function Scene() {
       </Physics>
 
       <EffectComposer disableNormalPass multisampling={8}>
-       <N8AO />
+        <N8AO />
         {/* <Bloom  /> */}
       </EffectComposer>
 
@@ -250,14 +249,14 @@ function Pointer({ vec = new THREE.Vector3() }) {
   useFrame(({ mouse, viewport }) => {
     const x = (mouse.x * viewport.width) / 2
     const y = (mouse.y * viewport.height) / 2
-    
+
     // Constrain pointer to canvas bounds
     const maxX = viewport.width / 2
     const maxY = viewport.height / 2
-    
+
     const constrainedX = Math.max(-maxX, Math.min(maxX, x))
     const constrainedY = Math.max(-maxY, Math.min(maxY, y))
-    
+
     ref.current?.setNextKinematicTranslation(
       vec.set(constrainedX, constrainedY, 0)
     )
@@ -278,7 +277,7 @@ function Pointer({ vec = new THREE.Vector3() }) {
 function Model({ children, color = 'white', roughness = 0 }) {
   const ref = useRef()
   const { nodes } = useGLTF('/models/hyperiux-logo.glb')
-  const { nodes : nodes2 , materials : materials2 } = useGLTF('/models/c-transformed.glb')
+  const { nodes: nodes2, materials: materials2 } = useGLTF('/models/c-transformed.glb')
   const geometry = nodes.FINAL?.geometry
   console.log(materials2)
 
@@ -316,18 +315,8 @@ function Model({ children, color = 'white', roughness = 0 }) {
 
 export default function CollidingModels() {
   return (
-    <div className="fixed inset-0 h-screen w-screen bg-white flex flex-col overflow-hidden">
- 
-     
 
-<div className=" max-md:block w-[50%] mx-auto pt-20 max-md:mt-10  max-md:w-[80%] max-sm:w-[90%]">
-          <p className="text-3xl max-sm:text-2xl text-black text-center">
-            We build 3D visual experiences
-and interactive web worlds that
-help bold brands stand apart
-          </p>
-        </div>
-      {/* Canvas Container */}
+    <>
       <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
         <div className="relative h-[90%] w-full overflow-hidden rounded-2xl bg-black">
           <Scene />
@@ -340,6 +329,7 @@ help bold brands stand apart
           </p>
         </div>
       </div>
-    </div>
+
+    </>
   )
 }

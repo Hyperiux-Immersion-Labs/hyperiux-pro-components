@@ -24,7 +24,7 @@ function horizontalLoop(items, config = {}) {
  const xPercents = [];
  let curIndex = 0;
 
- const pixelsPerSecond = (config.speed || 1) * 100;
+ const pixelsPerSecond = 100;
  const snap =
  config.snap === false ? (v) => v : gsap.utils.snap(config.snap || 1);
 
@@ -180,7 +180,6 @@ function horizontalLoop(items, config = {}) {
 export default function InfiniteCarouselComp({
  children,
  draggable = true,
- speed = 1,
  showNav = true,
  prevLabel ="← Prev",
  nextLabel ="Next →",
@@ -258,7 +257,6 @@ export default function InfiniteCarouselComp({
  if (!items.length || !wrapperRef.current) return;
 
  const loop = horizontalLoop(items, {
- speed,
  draggable,
  wrapperEl: wrapperRef.current,
  });
@@ -283,7 +281,7 @@ export default function InfiniteCarouselComp({
  loopRef.current = null;
  attemptsRef.current = 0;
  };
- }, [childArray.length, draggable, speed, isMobile]);
+ }, [childArray.length, draggable, isMobile]);
 
  useEffect(() => {
  if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;

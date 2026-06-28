@@ -1,5 +1,4 @@
 import { ArrowFillButton } from "@/components/arrow-fill-button";
-import Link from "next/link";
 import React from "react";
 
 export default function page() {
@@ -21,18 +20,7 @@ export default function page() {
             btnText={"Click here"}
             href={"/demo/chess-grid-transition"}
           />
-          <ArrowFillButton
-            className="border-[#ff5f00] border max-sm:w-56! text-[#ff5f00] cursor-pointer"
-            btnText={"Browse effects"}
-            hoverFillTextColor={"#ffffff"}
-            arrowColor={"#ffffff"}
-            hoverArrowColor={"#ffffff"}
-            fillBgColor={"#ff5f00"}
-            hoverFillBgColor={"#ff5f00"}
-            textColor={"#ff5f00"}
-            bgColor={"bg-white "}
-            href={"/effects"}
-          />
+         
         </div>
       </div>
     </section>

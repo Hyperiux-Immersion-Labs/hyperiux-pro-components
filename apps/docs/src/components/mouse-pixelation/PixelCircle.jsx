@@ -182,31 +182,7 @@ function PixelCirclesPlane() {
         ease: "expo.out",
       });
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: ".infinite-logo-container",
-            start: "top top",
-            end: "+150% top",
-            scrub: true,
-            pin: true,
-          },
-        })
-        .to(".infinite-logo", {
-          rotate: 90,
-          scale: 20,
-          duration: 2,
-          ease: "power3.in",
-        })
-        .to(
-          ".infinite-logo",
-          {
-            opacity: 0,
-            duration: 1.5,
-            ease: "power2.in",
-          },
-          "<0.5"
-        );
+     
     });
 
     return () => {

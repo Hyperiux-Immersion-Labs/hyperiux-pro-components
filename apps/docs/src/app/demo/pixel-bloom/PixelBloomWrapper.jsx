@@ -45,7 +45,7 @@ export default function PixelBloomWrapper() {
                 <span className="text-[1.6vw] max-sm:text-[3vw] max-md:hidden">Glide over the images to uncover the motion.</span>
             </h1>
             <p className="max-md:block hidden max-sm:pt-10 max-md:text-[3vw]  max-sm:text-[5vw] mix-blend-difference  text-white    w-full text-center leading-relaxed   z-1">
-                Click to see the effect 
+                Click on the images to see the effect 
                 <br />
                 <span className="uppercase">
 

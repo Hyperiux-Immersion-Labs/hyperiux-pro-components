@@ -38,13 +38,12 @@ export default function FlipTransition({
     <TransitionRouter
       auto
       leave={(next) => {
-        document.documentElement.style.overflow = 'hidden'
         const tl = gsap.timeline({ onComplete: next })
 
         // Fade + shift old content out
         tl.to(wrapperRef.current, {
           opacity: 0,
-          y: -40,
+          y: 0,
           duration: 0.5,
           ease: 'power2.in',
         }, 0)
@@ -96,7 +95,7 @@ export default function FlipTransition({
 
         // Fade new content in
         tl.fromTo(wrapperRef.current,
-          { opacity: 0, y: 40 },
+          { opacity: 0, y: 0 },
           { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', clearProps: "all" },
           0.45
         )

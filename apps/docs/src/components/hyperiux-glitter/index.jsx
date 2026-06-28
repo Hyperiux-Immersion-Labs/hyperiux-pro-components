@@ -90,11 +90,11 @@ useEffect(() => {
           />
         </EffectComposer>
       </Canvas>
-        <div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
+        <div className="absolute bottom-[3vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-8 py-4 rounded-full text-white text-[1.1vw] max-md:hidden shadow-lg">
        Sweep your cursor across the canvas - leave a glittering comet trail and watch the model respond.
         </div>
 
-        <div className="absolute bottom-[10vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white hidden max-md:block text-[2.5vw] max-sm:text-[3.5vw] text-center">
+        <div className="absolute bottom-[20vw] w-[90%] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-8 py-4 rounded-full text-white hidden max-md:block text-[2.5vw] max-sm:text-[3.5vw] text-center">
         Tap to interact. Best experienced on desktop.
         </div>
       </div>
