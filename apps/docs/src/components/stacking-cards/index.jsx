@@ -1,16 +1,4 @@
-
-
 import StackingCardComp from './StackingCardComp';
-
-export default function StackingCards() {
- return (
- <>
-
- <StackingCardComp data={data} />
-  
- </>
- );
-}
 
 const data = [
   {
@@ -53,7 +41,7 @@ const data = [
     id: "05",
     category: "Technology",
     title: "Robotics, Quantum Computing, Future Devices",
-     backgroundColor:"bg-[#DDD9FF]",
+    backgroundColor: "bg-[#DDD9FF]",
     description:
       "Uncover emerging innovations shaping how humans interact with machines and digital ecosystems.",
     image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
@@ -68,3 +56,7 @@ const data = [
     image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
   },
 ];
+
+export default function StackingCards() {
+  return <StackingCardComp data={data} />;
+}

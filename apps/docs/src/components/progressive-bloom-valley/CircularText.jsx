@@ -32,7 +32,7 @@ const CircularText = ({
  return () => tweenRef.current?.kill()
  }, [spinDuration, text])
 
- // ───────── Hover ─────────
+ 
  const handleEnter = () => {
  if (!tweenRef.current) return
 
@@ -73,7 +73,7 @@ const CircularText = ({
  return (
  <div>
  {/* Central Juice Icon */}
- {/* Central Juice Icon replaced with Lucide cup-soda */}
+
  <span
  style={{
  position:'absolute',
@@ -90,7 +90,7 @@ const CircularText = ({
  justifyContent:'center',
  }}
  >
- {/* Replace with your preferred Lucide icon below */}
+
  {/* Make sure to import { CupSoda } from'lucide-react' at the top of this file */}
  <Stars size={32} strokeWidth={1} />
  </span>

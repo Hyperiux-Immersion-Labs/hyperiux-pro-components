@@ -1,5 +1,4 @@
 import ParallaxImageAnimation from"@/components/parallax-image-animation";
-import React from"react";
 import { ReactLenis } from"lenis/react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import HeadAnim from "@/components/Animations/HeadAnim";

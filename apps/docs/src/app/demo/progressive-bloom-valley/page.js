@@ -1,13 +1,13 @@
 
-import ProgressiveBloomValleyComp from "@/components/progressive-bloom-valley";
+import ProgressiveBloomValley from "@/components/progressive-bloom-valley";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
-export default function ProgressiveBloomValley() {
+export default function page() {
  return (
  <>
  <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
-<ProgressiveBloomValleyComp/>
+<ProgressiveBloomValley/>
  <ScrollBottom/>
  </>
 

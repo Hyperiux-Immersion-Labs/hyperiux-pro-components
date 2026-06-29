@@ -1,12 +1,12 @@
-import React from 'react'
-import ParallaxFooter from '@/components/parallax-footer'
+import ParallaxFooter from "@/components/parallax-footer";
+import { ReactLenis } from "lenis/react";
 
 const page = () => {
   return (
-    <>
-        <ParallaxFooter />
-    </>
-  )
-}
+    <ReactLenis root>
+      <ParallaxFooter />
+    </ReactLenis>
+  );
+};
 
-export default page
+export default page;

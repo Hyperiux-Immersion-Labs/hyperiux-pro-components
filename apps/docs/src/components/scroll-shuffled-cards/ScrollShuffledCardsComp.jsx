@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Card from "../Card/Card";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -141,24 +141,24 @@ const ScrollShuffledCardsComp = ({
                 }}
               >
                 <div
-                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-md:px-[2vw] max-md:pb-[1.8vw] max-md:pt-[3vw] max-sm:px-[4vw] max-sm:pb-[3vw] max-sm:pt-[4.5vw] max-[540px]:px-[4.5vw] max-[540px]:pb-[3.5vw] max-[540px]:pt-[5vw] ${card.bgInner || ""} ${card.text || ""}`}
+                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-md:px-[2vw] max-md:pb-[1.8vw] max-md:pt-[3vw] max-sm:px-[4vw] max-sm:pb-[3vw] max-sm:pt-[4.5vw] ${card.bgInner || ""} ${card.text || ""}`}
                 >
                   <div className="flex flex-col gap-[1.2vw] max-md:gap-[5vw] max-sm:gap-[6vw]">
                     {card.eyebrow && (
-                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-md:text-[2.5vw] max-sm:text-[4vw]! max-[540px]:text-[2.8vw]">
+                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-md:text-[2.5vw] max-sm:text-[4vw]">
                         {card.eyebrow}
                       </span>
                     )}
 
                     {card.description && (
-                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-md:w-[92%] max-md:text-[2.5vw] max-sm:w-full max-sm:text-[4vw]! max-[540px]:text-[3.6vw]">
+                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-md:w-[92%] max-md:text-[2.5vw] max-sm:w-full max-sm:text-[4vw]">
                         {card.description}
                       </p>
                     )}
                   </div>
 
                   {card.title && (
-                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-md:text-[6vw] max-sm:text-[9vw] max-sm:leading-[0.86] max-[540px]:text-[10vw]">
+                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-md:text-[6vw] max-sm:text-[9vw] max-sm:leading-[0.86]">
                       {card.title}
                     </h2>
                   )}
@@ -169,7 +169,7 @@ const ScrollShuffledCardsComp = ({
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-md:text-[7.5vw] max-sm:px-[4vw] max-sm:text-[10vw] max-[540px]:text-[11vw]">
+          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-md:text-[7.5vw] max-sm:px-[4vw] max-sm:text-[10vw]">
             {heading}
           </h1>
         </div>

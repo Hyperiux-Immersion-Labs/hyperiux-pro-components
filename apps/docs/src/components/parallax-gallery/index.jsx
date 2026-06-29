@@ -1,4 +1,4 @@
-import React from "react";
+
 import ScrollParallaxGallery from "./ParallaxGallery";
 
 const ParallaxGallery = () => {

@@ -126,7 +126,7 @@ export default function StackingCardComp({ data = [] }) {
 
  return (
  <section
- className="relative z-0 h-[var(--stack-height)] w-full"
+ className="relative z-0 h-(--stack-height) w-full"
  style={{"--stack-height": `${data.length * 100}vh` }}
  >
  <div
@@ -161,11 +161,11 @@ const SliderCard = ({
  return (
  <div
  className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center ${backgroundColor}
- max-sm:min-h-[100svh] max-md:flex-col max-md:justify-start max-sm:py-8`}
+ max-sm:min-h-svh max-md:flex-col max-md:justify-start max-sm:py-8`}
  >
  <div
- className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-md:py-28
- max-md:w-full max-md:w-[80%]  max-sm:px-5 max-sm:py-6"
+ className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4.5vw] max-md:py-28
+ max-md:w-full max-md:px-7   max-sm:px-5 max-sm:py-6"
  >
  <div>
  <h2
@@ -200,7 +200,7 @@ const SliderCard = ({
  </div>
 
  <div
- className="flex flex-grow flex-col justify-center space-y-[2vw]
+ className="flex grow flex-col justify-center space-y-[2vw]
  max-sm:space-y-3"
  >
  <h3

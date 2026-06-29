@@ -1,4 +1,5 @@
 import HeadAnim from "@/components/Animations/HeadAnim";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import SVGPath from "@/components/svg-path";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
@@ -7,6 +8,7 @@ import React from "react";
 const page = () => {
   return (
     <>
+    <LenisSmoothScroll />
       <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
 
       <div className="pointer-events-none absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] max-md:gap-[4vw] px-[5vw] pt-[6%] max-md:pt-[15%] max-sm:pt-[30%]">

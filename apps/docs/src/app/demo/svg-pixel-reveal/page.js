@@ -11,7 +11,7 @@ export default function Page() {
       <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
       <main className="h-full bg-neutral-950 text-white">
         <section className="flex min-h-[40vh] max-sm:h-[30vh] items-center justify-center px-6">
-          <div className="w-fit text-center space-y-[1vw] text-center">
+          <div className="w-fit text-center space-y-[1vw]">
             <HeadAnim>
             <h1 className="mt-4 text-[4vw] max-sm:text-[9vw] max-md:text-[7vw]">
               Pixelated to crisp on scroll

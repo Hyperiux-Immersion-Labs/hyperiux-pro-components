@@ -1,4 +1,4 @@
-import React from 'react'
+
 import ParallaxGallery from '@/components/parallax-gallery'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
@@ -27,7 +27,7 @@ const page = () => {
 
     <ParallaxGallery />
     </div>
-    <ScrollBottom textColor='#fffffff' className='bottom-[0.1%] max-md:bottom-[5%] gap-[0.2vw]' />
+    <ScrollBottom textColor='#ffffff' className='bottom-[0.1%] max-md:bottom-[5%] gap-[0.2vw]' />
     </>
   )
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import gsap from"gsap";
-import Image from"next/image";
-import React, { useEffect, useRef } from"react";
+import gsap from "gsap";
+import Image from "next/image";
+import { useEffect, useRef } from"react";
 import ScrollTrigger from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -42,7 +42,6 @@ const ParallaxImageAnimation = ({
  start,
  end,
  scrub,
- // markers: true,
  },
  });
  }, wrapperRef);
