@@ -219,9 +219,7 @@ function resolveTextureSource(source) {
   try {
     const url = new URL(imageSource);
 
-    if (url.hostname === "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev") {
-      return `/api/media-proxy?url=${encodeURIComponent(imageSource)}`;
-    }
+    // external URL — return as-is (ensure your image host sends CORS headers)
   } catch {
     return imageSource;
   }

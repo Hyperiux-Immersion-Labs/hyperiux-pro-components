@@ -8,21 +8,7 @@ const lerp = (start, end, amount) => start + (end - start) * amount;
 const DEFAULT_SVG_MASK_URL =
  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/hyperiux-wordmark.svg";
 
-const CANVAS_SAFE_MEDIA_HOSTS = new Set([
- "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev",
-]);
-
-const getCanvasSafeImageUrl = (source) => {
- try {
- const url = new URL(source);
- if (url.protocol ==="https:" && CANVAS_SAFE_MEDIA_HOSTS.has(url.hostname)) {
- return `/api/media-proxy?url=${encodeURIComponent(url.toString())}`;
- }
- return source;
- } catch {
- return source;
- }
-};
+const getCanvasSafeImageUrl = (source) => source;
 
 const levaTheme = {
  colors: {

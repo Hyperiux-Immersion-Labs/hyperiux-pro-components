@@ -18,32 +18,9 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const R2_HOST = "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev";
-
 function getMediaProxyUrl(src = "") {
   if (!src) return src;
-
-  const cleanedSrc = src.startsWith("/https://") ? src.slice(1) : src;
-
-  if (
-    cleanedSrc.startsWith("/") ||
-    cleanedSrc.startsWith("blob:") ||
-    cleanedSrc.startsWith("data:")
-  ) {
-    return cleanedSrc;
-  }
-
-  try {
-    const url = new URL(cleanedSrc);
-
-    if (url.hostname === R2_HOST) {
-      return `/api/media-proxy?url=${encodeURIComponent(cleanedSrc)}`;
-    }
-
-    return cleanedSrc;
-  } catch {
-    return cleanedSrc;
-  }
+  return src.startsWith("/https://") ? src.slice(1) : src;
 }
 
 const randRange = (min, max) =>

@@ -76,17 +76,7 @@ const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
 const mod = (n, m) => ((n % m) + m) % m;
 
 function getMediaProxyUrl(src) {
-  if (!src) return src;
-
-  if (
-    src.startsWith("/") ||
-    src.startsWith("blob:") ||
-    src.startsWith("data:")
-  ) {
-    return src;
-  }
-
-  return `/api/media-proxy?url=${encodeURIComponent(src)}`;
+  return src;
 }
 
 function WebGLSliderComp({ images = [] }) {

@@ -90,17 +90,7 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
 function getTextureUrl(src) {
-  if (!src) return src;
-
-  if (
-    src.startsWith("/") ||
-    src.startsWith("blob:") ||
-    src.startsWith("data:")
-  ) {
-    return src;
-  }
-
-  return `/api/media-proxy?url=${encodeURIComponent(src)}`;
+  return src;
 }
 
 export default function HoverSliderComp({ items = [] }) {
