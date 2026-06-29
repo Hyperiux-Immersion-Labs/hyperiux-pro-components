@@ -1,11 +1,18 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
+
+function resetSplitPositions({ splitText, split2, split3, split4 }) {
+  gsap.set(split2.chars, { yPercent: 100 });
+  gsap.set(split4.chars, { yPercent: 100 });
+  gsap.set(splitText.chars, { yPercent: 0 });
+  gsap.set(split3.chars, { yPercent: 0 });
+}
 
 const GlitchyText = ({
   runOnScroll = false,
@@ -44,10 +51,7 @@ const GlitchyText = ({
       ...split4.chars,
     ]);
 
-    gsap.set(split2.chars, { yPercent: 100 });
-    gsap.set(split4.chars, { yPercent: 100 });
-    gsap.set(splitText.chars, { yPercent: 0 });
-    gsap.set(split3.chars, { yPercent: 0 });
+    resetSplitPositions({ splitText, split2, split3, split4 });
 
     const tl = gsap.timeline({
       delay,
@@ -110,22 +114,22 @@ const GlitchyText = ({
 
     if (!root) return;
 
-    const splitText = new SplitText(text1Ref.current, {
+    const splitText = SplitText.create(text1Ref.current, {
       type: "chars,lines",
       linesClass: "lines",
     });
 
-    const split2 = new SplitText(text2Ref.current, {
+    const split2 = SplitText.create(text2Ref.current, {
       type: "chars,lines",
       linesClass: "lines",
     });
 
-    const split3 = new SplitText(text3Ref.current, {
+    const split3 = SplitText.create(text3Ref.current, {
       type: "chars,lines",
       linesClass: "lines",
     });
 
-    const split4 = new SplitText(text4Ref.current, {
+    const split4 = SplitText.create(text4Ref.current, {
       type: "chars,lines",
       linesClass: "lines",
     });
@@ -137,10 +141,7 @@ const GlitchyText = ({
       split4,
     };
 
-    gsap.set(split2.chars, { yPercent: 100 });
-    gsap.set(split4.chars, { yPercent: 100 });
-    gsap.set(splitText.chars, { yPercent: 0 });
-    gsap.set(split3.chars, { yPercent: 0 });
+    resetSplitPositions({ splitText, split2, split3, split4 });
 
     if (runOnScroll) {
       const triggerElement = document.getElementById(triggerId) || root;

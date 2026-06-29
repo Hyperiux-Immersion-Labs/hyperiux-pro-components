@@ -1,4 +1,3 @@
-import React from 'react'
 import PerspectiveTextWrapper from './PerspectiveTextWrapper'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
