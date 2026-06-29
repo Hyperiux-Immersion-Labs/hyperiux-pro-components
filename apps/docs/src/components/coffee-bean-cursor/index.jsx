@@ -52,7 +52,7 @@ function seededUnit(index, salt) {
 }
 
 function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, isMouseActiveRef }) {
- const { nodes } = useGLTF('/assets/models/coffebean.glb')
+ const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/coffebean.glb')
  const meshRef = useRef()
  const beansRef = useRef([])
   // Precompute all bean data once
@@ -290,4 +290,4 @@ export default function CoffeeBeanCursor() {
  </div>
  )
 }
-useGLTF.preload('/assets/models/coffebean.glb')
+useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/coffebean.glb')
