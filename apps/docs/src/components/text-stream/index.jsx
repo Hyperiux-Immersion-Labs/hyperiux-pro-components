@@ -1,16 +1,6 @@
 import React from 'react'
 import TextStreamComp from './TextStreamComp';
 
-const TextStream = () => {
-  return (
-    <>
-      <TextStreamComp items={items} />
-    </>
-  )
-}
-
-export default TextStream
-
 const items = [
   "builds immersive interfaces",
   "creates motion-driven experiences",
@@ -34,3 +24,9 @@ const items = [
   "creates unforgettable web moments",
   "makes the web feel futuristic",
 ];
+
+const TextStream = () => {
+  return <TextStreamComp items={items} />;
+}
+
+export default TextStream

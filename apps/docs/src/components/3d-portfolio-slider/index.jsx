@@ -1,18 +1,4 @@
-import React from'react'
 import PortfolioSlider from './PortfolioSlider';
-
-const PortfolioSlider3D = () => {
-
-
- return (
- <div>
- <PortfolioSlider items={items} />
- </div>
- )
-}
-
-export default PortfolioSlider3D
-
 
 const items = [
   {
@@ -100,3 +86,7 @@ const items = [
     description: "PORTFOLIO 21",
   },
 ];
+
+export default function PortfolioSlider3D() {
+  return <PortfolioSlider items={items} />
+}

@@ -1,4 +1,4 @@
-import React from "react";
+
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import TextStream from "@/components/text-stream";
 import HeadAnim from "@/components/Animations/HeadAnim";
