@@ -24,6 +24,7 @@ const allowedIframeSources = [
   "https://codepen.io",
   "https://*.codepen.io",
   "https://*.codepen.dev",
+  "https://challenges.cloudflare.com",
 ].join(" ");
 
 /** @type {import('next').NextConfig} */
