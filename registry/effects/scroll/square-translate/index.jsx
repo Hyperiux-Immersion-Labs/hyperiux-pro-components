@@ -18,6 +18,7 @@ const items = [
 export default function SquareTranslate() {
     return (
         <>
+      <div className="w-full bg-white h-[300vh] pt-[100vh] px-[20vw]">
 
             <SquareTranslateComp
                 items={items}
@@ -29,6 +30,8 @@ export default function SquareTranslate() {
                 borderColor="border-black/10"
                 totalTranslateImpact={3}
             />
+      </div>
+
 
         </>
     );

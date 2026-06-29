@@ -1,5 +1,5 @@
 {
-  "name": "hyperiux-glitter-concept",
+  "name": "hyperiux-glitter",
   "type": "registry:component",
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
@@ -11,23 +11,23 @@
     "postprocessing"
   ],
   "registryDependencies": [],
-  "exportName": "HyperiuxGlitterConcept",
+  "exportName": "HyperiuxGlitter",
   "exportKind": "named",
   "files": [
     {
-      "path": "hyperiux-glitter-concept.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter-concept.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/index.jsx"
     },
     {
       "path": "MorphingParticleModelNew.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MorphingParticleModelNew.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MouseTrailParticles.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/MouseTrailParticles.jsx"
     },
     {
       "path": "assets/models/hyperiux-new-model.glb",

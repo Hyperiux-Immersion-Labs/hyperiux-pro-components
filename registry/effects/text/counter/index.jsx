@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useCallback, useState } from'react'
-import CounterOne from'@/components/Counter/CounterOne'
-import CounterTwo from'@/components/Counter/CounterTwo'
-import CounterThree from'@/components/Counter/CounterThree'
+import CounterOne from'./CounterOne'
+import CounterTwo from'./CounterTwo'
+import CounterThree from'./CounterThree'
 
 export default function Counter() {
  const [replayOneKey, setReplayOneKey] = useState(0)

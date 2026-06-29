@@ -31,6 +31,12 @@
     {
       "path": "MouseTrailParticles.jsx",
       "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
+    },
+    {
+      "path": "assets/models/hyperiux-new-model.glb",
+      "type": "registry:asset",
+      "target": "public/assets/models/hyperiux-new-model.glb",
+      "source": "/assets/models/hyperiux-new-model.glb"
     }
   ]
 }

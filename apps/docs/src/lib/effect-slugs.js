@@ -1,5 +1,9 @@
 const effectSlugAliasGroups = [
   {
+    slug: "hyperiux-glitter",
+    aliases: ["hyperiux-glitter-concept"],
+  },
+  {
     slug: "immersive-full-screen-nav",
     aliases: ["immersive-full-screen-navigation"],
   },

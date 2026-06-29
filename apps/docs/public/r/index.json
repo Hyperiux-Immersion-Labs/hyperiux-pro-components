@@ -1445,7 +1445,7 @@
       "exportKind": "named"
     },
     {
-      "name": "hyperiux-glitter-concept",
+      "name": "hyperiux-glitter",
       "type": "registry:component",
       "category": "webgl",
       "categories": [
@@ -1459,8 +1459,9 @@
         "postprocessing"
       ],
       "registryDependencies": [],
-      "exportName": "HyperiuxGlitterConcept",
-      "exportKind": "named"
+      "exportName": "HyperiuxGlitter",
+      "exportKind": "named",
+      "tier": "pro"
     },
     {
       "name": "infinite-grid-gallery",
