@@ -1,18 +1,14 @@
 "use client";
 
-
-import Card from "@/components/Card/Card";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import InfiniteCarouselComp from "./InfiniteCarouselComp";
 
 function CarouselCard({ title, subtitle, description, themeClass, points }) {
     return (
-        <div className="w-lg px-3 max-md:w-md max-md:min-w-md  max-md:max-w-[calc(100vw-5.5rem)] max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
-            <Card
-                title={title}
-                subtitle={subtitle}
-                content={description}
-                className={`min-h-120 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
+        <div className="w-lg px-3 max-md:w-md max-md:min-w-md max-md:max-w-[calc(100vw-5.5rem)] max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
+            <div
+                className={`flex flex-col gap-[1.2vw] border max-md:gap-[2vw] max-sm:w-full max-sm:gap-[4vw] p-[2vw] max-md:p-[3vw] max-sm:px-6 max-sm:py-10 min-h-120 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
+                style={{ borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
             >
                 <div className="flex h-full flex-col gap-5">
                     <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-sm:text-[0.68rem]">{subtitle}</span>
@@ -27,7 +23,7 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
                         ))}
                     </div>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }
