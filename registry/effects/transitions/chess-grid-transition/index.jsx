@@ -3,7 +3,6 @@
 import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
-import Image from 'next/image'
 
 export function ChessGridTransition({ children, enableContentShift = false }) {
   const wrapperRef = useRef(null)

@@ -5,7 +5,6 @@ import { CustomEase } from "gsap/CustomEase";
 
 gsap.registerPlugin(CustomEase);
 
-import Image from "next/image";
 import Link from "next/link";
 
 function HoverFillLink({ href, children, className = "", isActive, ...props }) {
@@ -478,7 +477,7 @@ export default function ExpandingNavbar() {
                         style={{ display: "block" }}
                     />
                     <div className="w-[8vw] h-auto relative">
-                        <Image
+                        <img
                             src="/hyperiux-wordmark.svg"
                             alt="logo"
                             width={100}

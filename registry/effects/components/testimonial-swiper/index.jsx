@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
@@ -222,11 +221,10 @@ export function TestimonialSwiper({ testimonials = [], bgColor = "#ffffff" }) {
       <div className="flex flex-1 items-start gap-32 px-18 py-5 max-md:flex-col max-md:gap-8 max-md:px-6 max-md:py-10 max-sm:gap-6 max-sm:px-5 max-sm:py-4">
         <div className="shrink-0 max-sm:hidden">
           <div ref={desktopImageRef} className="relative h-50 w-40">
-            <Image
+            <img
               src={displayItem.image}
               alt={displayItem.name}
-              fill
-              className="object-cover object-top grayscale"
+              className="object-cover object-top grayscale absolute inset-0"
             />
           </div>
         </div>
@@ -249,11 +247,10 @@ export function TestimonialSwiper({ testimonials = [], bgColor = "#ffffff" }) {
 
             <div className="mt-6 hidden items-center gap-4 max-sm:flex max-sm:gap-6">
               <div ref={mobileImageRef} className="relative h-26 w-22 shrink-0">
-                <Image
+                <img
                   src={displayItem.image}
                   alt={displayItem.name}
-                  fill
-                  className="object-cover object-top grayscale"
+                  className="object-cover object-top grayscale absolute inset-0"
                 />
               </div>
               <div className="flex flex-col gap-1">

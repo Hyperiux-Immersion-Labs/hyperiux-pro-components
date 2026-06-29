@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteGrid from "./InfiniteGrid";
 
@@ -522,13 +521,10 @@ export function InfiniteGridGallery() {
                     />
                   </>
                 ) : (
-                  <Image
-                    className="block h-full w-full object-cover"
+                  <img
+                    className="block h-full w-full object-cover absolute inset-0"
                     src={display.src}
                     alt={display.caption}
-                    fill
-                    sizes="70vw"
-                    priority
                   />
                 )}
               </div>
@@ -611,13 +607,11 @@ export function InfiniteGridGallery() {
                           }}
                           aria-label={`Open ${item.caption}`}
                         >
-                          <Image
-                            className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"
+                          <img
+                            className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ?  absolute inset-0"brightness-105" : "brightness-[0.8]"
                               }`}
                             src={item.src}
                             alt={item.caption}
-                            fill
-                            sizes="12vw"
                           />
                         </button>
                       );

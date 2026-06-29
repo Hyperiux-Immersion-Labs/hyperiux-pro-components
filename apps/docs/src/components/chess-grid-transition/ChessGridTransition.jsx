@@ -4,12 +4,7 @@ import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-
-export default function ChessGridTransition({
-  children,
-  enableContentShift = false,
-  bgColor = '#ff5f00',
-}) {
+export function ChessGridTransition({ children, enableContentShift = false }) {
   const wrapperRef = useRef(null)
   const gridRef = useRef(null)
   const bgRef = useRef(null)
@@ -91,7 +86,7 @@ export default function ChessGridTransition({
       gsap.set(cell, { xPercent: -(colIndex + 2) * 100 })
     })
 
-    requestAnimationFrame(() => setMounted(true))
+    setMounted(true)
   }, [rows])
 
   const totalCells = cols * rows
@@ -106,7 +101,7 @@ export default function ChessGridTransition({
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
           { opacity: 1, y: 0 },
-          { opacity: 0, duration: 0.8 },
+          { opacity: 0, duration: 0.8, y: -50 },
           0
         )
 
@@ -119,7 +114,7 @@ export default function ChessGridTransition({
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
-          { opacity: 0, },
+          { opacity: 0, y: 50 },
           { opacity: 1, duration: 0.8, delay: 1, y: 0, clearProps: 'all' },
           0
         )
@@ -141,9 +136,8 @@ export default function ChessGridTransition({
           return (
             <span
               key={i}
-              className='absolute shrink-0'
+              className='bg-[#ff5f00] absolute shrink-0'
               style={{
-                backgroundColor: bgColor,
                 width: `calc((100vw / ${cols}) * ${isMobile ? 1.6 : 1} + ${overlap}px)`,
                 height: `calc(100vh / ${rows} + ${overlap}px)`,
                 left: `calc(${colIndex} * (100vw / ${cols}) * ${isMobile ? 1.6 : 1} - ${overlap / 2}px)`,

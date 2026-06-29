@@ -4,7 +4,6 @@ import gsap from "gsap";
 import React, { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
-import Image from "next/image";
 import Link from "next/link";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -285,7 +284,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									key={`left-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<Image
+									<img
 										src={item.src}
 										alt={item.title}
 										width={400}
@@ -319,7 +318,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
 								>
-									<Image
+									<img
 										src={item.src}
 										alt={item.title}
 										width={500}
@@ -352,7 +351,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									key={`right-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<Image
+									<img
 										src={item.src}
 										alt={item.title}
 										width={400}
@@ -412,11 +411,10 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 								className="overflow-hidden rounded-sm max-sm:mx-auto  w-full max-sm:w-[80%]"
 							>
 								<div className="relative max-md:aspect-4/5 max-sm:aspect-auto max-sm:h-[35vh]  ">
-									<Image
+									<img
 										src={item.src}
 										alt={item.title}
-										fill
-										className="object-cover"
+										className="object-cover absolute inset-0"
 									/>
 								</div>
 								<div className="px-4 py-4 max-sm:px-2 max-sm:py-5">

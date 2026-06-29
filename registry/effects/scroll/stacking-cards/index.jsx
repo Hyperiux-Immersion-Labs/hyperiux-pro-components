@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -21,7 +20,7 @@ function SliderCard({ id, category, title, description, image, backgroundColor }
 
         <div className="mb-6 hidden h-[42svh] w-full max-sm:block">
           <div className="h-full w-full overflow-hidden rounded-[6vw]">
-            <Image
+            <img
               width={1000}
               height={1000}
               src={image}
@@ -49,7 +48,7 @@ function SliderCard({ id, category, title, description, image, backgroundColor }
 
       <div className="my-auto hidden h-[75%] w-[40%] p-[4vw] max-sm:block max-sm:hidden">
         <div className="h-full w-full overflow-hidden rounded-[2vw]">
-          <Image
+          <img
             width={1000}
             height={1000}
             src={image}

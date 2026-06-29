@@ -1,7 +1,6 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
@@ -51,7 +50,7 @@ export function ParallaxImage({
 
   return (
     <div ref={wrapperRef} className={`overflow-hidden ${wrapperClassName}`}>
-      <Image
+      <img
         ref={imageRef}
         width={width}
         height={height}

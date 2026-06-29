@@ -2,7 +2,6 @@
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import Image from "next/image";
 import { useEffect } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -229,7 +228,7 @@ export function HorizontalScroll({ propertiesData = defaultPropertiesData }) {
               className="w-[80vw] h-screen flex gap-[5vw] industry-card max-md:h-fit max-md:flex-col-reverse max-md:w-full"
             >
               <div className="w-[40vw] h-screen overflow-hidden max-sm:h-[110vw] max-md:w-full max-sm:rounded-[4vw] max-md:h-[80vw] max-md:rounded-[2vw]">
-                <Image
+                <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}
                   className={`w-full h-full scale-[1.4] translate-x-[-30%] opacity-0 industry-img industry-${property.imgClass} max-md:translate-x-0 max-md:scale-[1] max-md:object-cover max-md:opacity-100`}

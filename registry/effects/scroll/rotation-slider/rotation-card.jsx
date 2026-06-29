@@ -1,6 +1,5 @@
 "use client";
 import React, { forwardRef } from "react";
-import Image from "next/image";
 
 const RotationCard = forwardRef(({ src, index, total }, ref) => {
   return (
@@ -18,12 +17,10 @@ const RotationCard = forwardRef(({ src, index, total }, ref) => {
           transformStyle: "preserve-3d",
         }}
       >
-        <Image
+        <img
           src={src}
           alt="slider"
-          fill
-          className="object-cover"
-          priority
+          className="object-cover absolute inset-0"
         />
       </div>
     </div>

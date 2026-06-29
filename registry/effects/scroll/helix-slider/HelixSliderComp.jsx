@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import React, { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -184,22 +183,18 @@ export function HelixSliderComp({
                         >
                             <div className="relative h-full w-full transform-3d">
                                 <div className="absolute inset-0 h-full w-full overflow-hidden bg-[#f2eee2] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(0deg)_translateZ(1px)]">
-                                    <Image
+                                    <img
                                         src={item.image}
-                                        alt={item.title || `Card ${index + 1}`}
-                                        fill
-                                        sizes={`(max-width: 640px) 140px, (max-width: 768px) 180px, ${cardWidth}px`}
-                                        className="object-cover"
+                                        alt={item.title || `Card ${index + 1}`}px`}
+                                        className="object-cover absolute inset-0"
                                     />
                                 </div>
 
                                 <div className="absolute inset-0 flex h-full w-full items-center justify-center overflow-hidden bg-[#111111] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(180deg)_translateZ(1px)]">
-                                    <Image
+                                    <img
                                         src={item.image}
-                                        alt={`${item.title || `Card ${index + 1}`} back`}
-                                        fill
-                                        sizes={`(max-width: 640px) 140px, (max-width: 768px) 180px, ${cardWidth}px`}
-                                        className="object-cover"
+                                        alt={`${item.title || `Card ${index + 1}`} back`}px`}
+                                        className="object-cover absolute inset-0"
                                     />
                                 </div>
                             </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useCallback, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
@@ -559,13 +558,10 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
                   }}
                   className="relative h-[50vh] w-full overflow-hidden bg-white max-md:h-[45vh] max-sm:h-[40vh]"
                 >
-                  <Image
+                  <img
                     src={src}
                     alt={`slide-${index}`}
-                    fill
-                    sizes="(max-width: 640px) 240px, (max-width: 768px) 280px, 320px"
-                    unoptimized
-                    className="object-cover"
+                    className="object-cover absolute inset-0"
                     draggable={false}
                   />
                 </div>

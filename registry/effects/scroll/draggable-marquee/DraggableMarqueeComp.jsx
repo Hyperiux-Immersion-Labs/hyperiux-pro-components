@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useLayoutEffect, useMemo, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
 
@@ -304,7 +303,7 @@ const DraggableMarqueeComp = ({
                         {renderItem ? (
                             renderItem(item, index % items.length)
                         ) : (
-                            <Image
+                            <img
                                 src={item.src}
                                 alt={item.alt || "marquee-item"}
                                 width={item.width || 400}

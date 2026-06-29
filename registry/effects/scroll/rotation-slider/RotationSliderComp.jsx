@@ -3,7 +3,6 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { Mouse } from "lucide-react";
 
 const MOBILE_BREAKPOINT = 640;
@@ -224,12 +223,10 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                     transformStyle: "preserve-3d",
                 }}
             >
-                <Image
+                <img
                     src={src}
                     alt="slider"
-                    fill
-                    className="object-cover"
-                    priority
+                    className="object-cover absolute inset-0"
                 />
             </div>
 

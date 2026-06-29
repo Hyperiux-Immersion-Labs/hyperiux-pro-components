@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useRef, useEffect } from 'react'
-import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -205,7 +204,7 @@ export function InertiaScrollEffect({ images = {} }) {
         </h2>
         <div className='h-[35vw] w-[30vw] mx-auto relative overflow-hidden'>
           <div ref={imageRef1} className='absolute inset-0'>
-            <Image src={section1Img} alt='image' fill className='object-cover scale-110' />
+            <img style={{position:"absolute",inset:0,width:"100%",height:"100%"}} src={section1Img} alt='image' className='object-cover scale-110' />
           </div>
         </div>
       </div>
@@ -227,7 +226,7 @@ export function InertiaScrollEffect({ images = {} }) {
 
           {/* Overlay */}
           <div ref={overlayImageRef} style={{ display: 'none', position: 'absolute' }}>
-            <Image src={overlayImg} alt='overlay-image' fill className='object-cover scale-110' />
+            <img style={{position:"absolute",inset:0,width:"100%",height:"100%"}} src={overlayImg} alt='overlay-image' className='object-cover scale-110' />
           </div>
 
           {/* Full-screen grid */}
@@ -252,7 +251,7 @@ export function InertiaScrollEffect({ images = {} }) {
                     ref={heroGridImgRef}
                     style={{ width: '60px', height: '60px', position: 'relative', borderRadius: '2px', overflow: 'hidden', opacity: 0 }}
                   >
-                    <Image src={heroImg} alt='hero-image' fill className='object-cover' />
+                    <img style={{position:"absolute",inset:0,width:"100%",height:"100%"}} src={heroImg} alt='hero-image' className='object-cover' />
                   </div>
                 ) : (
                   <div
@@ -264,10 +263,9 @@ export function InertiaScrollEffect({ images = {} }) {
                     onMouseLeave={() => handleGridImageMouseLeave(i)}
                     style={{ width: '60px', height: '60px', position: 'relative', borderRadius: '2px', overflow: 'hidden', transformOrigin: 'center center', cursor: 'pointer', zIndex: 10 }}
                   >
-                    <Image
+                    <img style={{position:"absolute",inset:0,width:"100%",height:"100%"}}
                       src={getGridImg(i)}
                       alt='grid-image'
-                      fill
                       className='object-cover'
                       style={{ objectPosition: `${(i * 20) % 100}% ${(i * 13) % 100}%` }}
                     />
@@ -290,7 +288,7 @@ export function InertiaScrollEffect({ images = {} }) {
             style={{ zIndex: 20 }}
           >
             <div className='absolute inset-0 opacity-0 image-ref-2'>
-              <Image src={heroImg} alt='image' fill className='object-cover scale-150' />
+              <img style={{position:"absolute",inset:0,width:"100%",height:"100%"}} src={heroImg} alt='image' className='object-cover scale-150' />
             </div>
           </div>
 

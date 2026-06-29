@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState } from "react";
 
 export function PixelateSvgFilter({
@@ -180,12 +179,10 @@ export default function PixelatedImageEffect({
  onPointerUp={handlePointerUp}
  onPointerLeave={handlePointerUp}
  >
- <Image
+ <img
  src={src}
  alt={alt}
- fill
- priority={priority}
- className={`object-cover ${imageClassName}`.trim()}
+ className={`object-cover ${imageClassName absolute inset-0}`.trim()}
  />
  </div>
  </div>

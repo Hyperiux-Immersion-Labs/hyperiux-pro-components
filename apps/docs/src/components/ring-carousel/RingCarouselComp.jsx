@@ -1,6 +1,5 @@
 "use client";
 
-import Image from"next/image";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from"react";
 import gsap from"gsap";
 import { Draggable } from"gsap/Draggable";
@@ -347,21 +346,11 @@ const RingCarouselComp = ({
  >
  {renderItem ? (
  renderItem(item, i)
- ) : isImage ? (
- <Image
- src={imageSrc}
- alt={imageAlt}
- fill
- sizes="(max-width: 639px) 62vw, 700px"
- className="pointer-events-none block h-full w-full select-none object-cover"
- />
  ) : imageSrc ? (
- <Image
+ <img
  src={imageSrc}
  alt={imageAlt}
- fill
- sizes="(max-width: 639px) 62vw, 700px"
- className="pointer-events-none block h-full w-full select-none object-cover"
+ className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
  />
  ) : (
  item

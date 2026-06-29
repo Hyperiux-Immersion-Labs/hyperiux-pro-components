@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
-import Image from 'next/image';
 
 gsap.registerPlugin(SplitText);
 
@@ -324,20 +323,17 @@ export function ZoomSlider({ images = [] }) {
                 willChange: 'width, height',
               }}
             >
-              <Image
+              <img
                 src={item.src}
                 alt={item.title}
-                fill
                 draggable={false}
-                priority={index < 3}
-                className="pointer-events-none select-none object-cover opacity-0"
+                className="pointer-events-none select-none object-cover opacity-0 absolute inset-0"
                 style={{
                   transform: 'none',
                   objectPosition: 'center bottom',
                   transition: 'none',
                   willChange: 'auto',
                 }}
-                sizes="(max-width: 640px) 260px, (max-width: 1024px) 500px, 680px"
               />
             </div>
           </div>
