@@ -29,7 +29,7 @@ const NAV_CONTENT = {
     { type: "instagram", href: "#" },
     { type: "facebook", href: "#" },
     { type: "twitter", href: "#" },
-    { type: "linkedIn", href: "#" },
+    { type: "linkedin", href: "#" },
   ],
 };
 
