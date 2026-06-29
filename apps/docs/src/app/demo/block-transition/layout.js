@@ -1,6 +1,6 @@
 import React from'react'
-import { BlockTransition } from'@/components/block-transition/BlockTransition'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import BlockTransition from '@/components/block-transition'
 
 export default function layout({ children }) {
  return (
