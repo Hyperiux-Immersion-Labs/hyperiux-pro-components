@@ -9,7 +9,7 @@
   ],
   "registryDependencies": [],
   "exportName": "ChessGridTransition",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
       "path": "chess-grid-transition.jsx",

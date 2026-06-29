@@ -14,7 +14,7 @@ const SLIDER_BOTTOM_OFFSET = 0;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
-export function ZoomSlider({ images = [] }) {
+export default function ZoomSlider({ images = [] }) {
   // State & refs
   const stripRef = useRef(null);
   const cardRefs = useRef([]);

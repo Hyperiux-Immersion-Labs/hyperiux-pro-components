@@ -4,7 +4,7 @@ import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-export function ChessGridTransition({ children, enableContentShift = false }) {
+export default function ChessGridTransition({ children, enableContentShift = false }) {
   const wrapperRef = useRef(null)
   const gridRef = useRef(null)
   const bgRef = useRef(null)

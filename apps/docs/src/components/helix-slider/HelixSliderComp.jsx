@@ -165,7 +165,7 @@ export function HelixSliderComp({
                                 <div className="absolute inset-0 h-full w-full overflow-hidden bg-[#f2eee2] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(0deg)_translateZ(1px)]">
                                     <img
                                         src={item.image}
-                                        alt={item.title || `Card ${index + 1}`}px`}
+                                        alt={item.title || `Card ${index + 1}`}
                                         className="object-cover absolute inset-0"
                                     />
                                 </div>
@@ -173,7 +173,7 @@ export function HelixSliderComp({
                                 <div className="absolute inset-0 flex h-full w-full items-center justify-center overflow-hidden bg-[#111111] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(180deg)_translateZ(1px)]">
                                     <img
                                         src={item.image}
-                                        alt={`${item.title || `Card ${index + 1}`} back`}px`}
+                                        alt={`${item.title || `Card ${index + 1}`} back`}
                                         className="object-cover absolute inset-0"
                                     />
                                 </div>

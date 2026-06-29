@@ -45,7 +45,7 @@ function getCenteredOverlayTop(vw, vh, targetH) {
   return Math.round((vh - targetH) / 2);
 }
 
-export function InfiniteGridGallery() {
+export default function InfiniteGridGallery() {
   const imagesRef = useRef(null);
   const gridRef = useRef(null);
 
@@ -608,8 +608,7 @@ export function InfiniteGridGallery() {
                           aria-label={`Open ${item.caption}`}
                         >
                           <img
-                            className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ?  absolute inset-0"brightness-105" : "brightness-[0.8]"
-                              }`}
+                            className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
                             src={item.src}
                             alt={item.caption}
                           />

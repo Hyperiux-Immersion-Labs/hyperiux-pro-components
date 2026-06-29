@@ -1,26 +1,26 @@
 "use client";
 
-import React, { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const defaultItems = [
-    { id: 1, title: "Card 01", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg" , backText: "Back 01" },
-    { id: 2, title: "Card 02", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", backText: "Back 02" },
-    { id: 3, title: "Card 03",image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", backText: "Back 03" },
-    { id: 4, title: "Card 04", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", backText: "Back 04" },
-    { id: 5, title: "Card 05", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", backText: "Back 05" },
-    { id: 6, title: "Card 06", image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", backText: "Back 06" },
+const DEFAULT_ITEMS = [
+  { id: 1, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", title: "Card 1" },
+  { id: 2, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", title: "Card 2" },
+  { id: 3, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", title: "Card 3" },
+  { id: 4, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", title: "Card 4" },
+  { id: 5, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", title: "Card 5" },
+  { id: 6, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", title: "Card 6" },
 ];
 
 function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
+  return Math.min(Math.max(value, min), max);
 }
 
 export function HelixSliderComp({
-    items = defaultItems,
+    items = DEFAULT_ITEMS,
     cardWidth = 220,
     cardHeight = 300,
     verticalSpacing = 110,
@@ -31,9 +31,7 @@ export function HelixSliderComp({
     perspective = 1800,
     scaleMin = 0.74,
     yRotateStrength = 1,
-    zRotateStrength = 1,
     maxYRotation = 75,
-    maxZRotation = 18,
     className = "",
 }) {
     const sectionRef = useRef(null);
@@ -89,7 +87,6 @@ export function HelixSliderComp({
                     );
 
                     const dx_dPhase = Math.cos(phase) * currentSnakeAmplitude;
-                    const dz_dPhase = -Math.sin(phase) * currentDepthAmplitude;
 
                     const rotationY = clamp(
                         (-dx_dPhase / Math.max(currentSnakeAmplitude, 1)) *
@@ -97,20 +94,6 @@ export function HelixSliderComp({
                             yRotateStrength,
                         -maxYRotation,
                         maxYRotation
-                    );
-
-                    const rotationZ = clamp(
-                        (dx_dPhase / Math.max(currentSnakeAmplitude, 1)) *
-                            maxZRotation *
-                            zRotateStrength,
-                        -maxZRotation,
-                        maxZRotation
-                    );
-
-                    const rotationX = clamp(
-                        (dz_dPhase / Math.max(currentDepthAmplitude, 1)) * 8,
-                        -8,
-                        8
                     );
 
                     gsap.set(card, {
@@ -149,7 +132,6 @@ export function HelixSliderComp({
         return () => ctx.revert();
     }, [
         items,
-        repeatedItems,
         verticalSpacing,
         snakeAmplitude,
         snakeTightness,
@@ -158,9 +140,7 @@ export function HelixSliderComp({
         perspective,
         scaleMin,
         yRotateStrength,
-        zRotateStrength,
         maxYRotation,
-        maxZRotation,
     ]);
 
     return (
@@ -185,7 +165,7 @@ export function HelixSliderComp({
                                 <div className="absolute inset-0 h-full w-full overflow-hidden bg-[#f2eee2] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(0deg)_translateZ(1px)]">
                                     <img
                                         src={item.image}
-                                        alt={item.title || `Card ${index + 1}`}px`}
+                                        alt={item.title || `Card ${index + 1}`}
                                         className="object-cover absolute inset-0"
                                     />
                                 </div>
@@ -193,7 +173,7 @@ export function HelixSliderComp({
                                 <div className="absolute inset-0 flex h-full w-full items-center justify-center overflow-hidden bg-[#111111] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(180deg)_translateZ(1px)]">
                                     <img
                                         src={item.image}
-                                        alt={`${item.title || `Card ${index + 1}`} back`}px`}
+                                        alt={`${item.title || `Card ${index + 1}`} back`}
                                         className="object-cover absolute inset-0"
                                     />
                                 </div>

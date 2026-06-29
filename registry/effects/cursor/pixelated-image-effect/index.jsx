@@ -121,7 +121,7 @@ export function PixelateSvgFilter({
 export default function PixelatedImageEffect({
  src ="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
  alt ="Pixelated nature scene",
- priority = true,
+
  imageClassName ="",
 }) {
  const imageRef = useRef(null);
@@ -182,7 +182,7 @@ export default function PixelatedImageEffect({
  <img
  src={src}
  alt={alt}
- className={`object-cover ${imageClassName absolute inset-0}`.trim()}
+ className={`object-cover absolute inset-0 ${imageClassName}`.trim()}
  />
  </div>
  </div>

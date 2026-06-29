@@ -41,7 +41,7 @@
       ],
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "grid-scale",
@@ -613,7 +613,7 @@
       ],
       "registryDependencies": [],
       "exportName": "ChessGridTransition",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "page-flip-transition",

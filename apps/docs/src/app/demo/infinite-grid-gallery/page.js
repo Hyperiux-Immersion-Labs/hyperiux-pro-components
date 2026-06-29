@@ -1,4 +1,4 @@
-import { InfiniteGridGallery } from "@/components/infinite-grid-gallery";
+import InfiniteGridGallery from "@/components/infinite-grid-gallery";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import React from "react";

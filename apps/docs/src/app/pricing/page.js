@@ -47,7 +47,7 @@ export default function PricingPage() {
         <Pricing enableColorSwitch={false} />
 
         {/* Priority Pro Categories Grid Section */}
-        <section className="mx-auto max-w-6xl px-10 py-24 text-center max-md:px-6 max-sm:px-7">
+        {/* <section className="mx-auto max-w-6xl px-10 py-24 text-center max-md:px-6 max-sm:px-7">
           <h2 className="text-3xl font-semibold text-white tracking-tight sm:text-4xl">
             Explore Pro Categories
           </h2>
@@ -80,7 +80,7 @@ export default function PricingPage() {
               </Link>
             ))}
           </div>
-        </section>
+        </section> */}
         
         <CTA />
         <Footer />
