@@ -177,7 +177,7 @@ export default function CardDriftComp({
  >
 
  <h1
- className={`absolute inset-0 flex items-center justify-center text-7xl md:text-9xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
+ className={`absolute inset-0 flex items-center justify-center text-9xl max-md:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
  >
  Draggable <br /> Testimonial
  </h1>

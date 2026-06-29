@@ -1,10 +1,9 @@
 import ExpandingNavbar from '@/components/expanding-navbar'
-import React from 'react'
 
-const page = () => {
+const Page = () => {
   return (
     <ExpandingNavbar />
   )
 }
 
-export default page
+export default Page

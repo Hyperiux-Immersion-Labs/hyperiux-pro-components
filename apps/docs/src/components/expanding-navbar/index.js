@@ -1,4 +1,4 @@
-import React from "react";
+
 import { ExpandingNavbarDesktop } from "./ExpandingNavbarDesktop";
 import { ExpandingNavbarMobile } from "./ExpandingNavbarMobile";
 

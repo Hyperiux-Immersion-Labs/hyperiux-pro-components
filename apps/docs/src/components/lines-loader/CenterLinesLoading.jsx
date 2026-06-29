@@ -2,15 +2,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
+import { lerp, prefersReducedMotion } from "./utils";
 
 gsap.registerPlugin(CustomEase);
 CustomEase.create("centerLinesEase", "0.75,-0.01,0.16,1");
 
 const DEFAULT_LINE_COUNT = 33;
 const LINE_H = 1;
-const EDGE_PAD = 12; // minimum vertical padding
-const DIAMOND_MAX = 0.92; // scaleX at center line
-const DIAMOND_MIN = 0.06; // scaleX at top/bottom lines
+const EDGE_PAD = 12;
+const DIAMOND_MAX = 0.92;
+const DIAMOND_MIN = 0.06;
 
 const STAGGER_MS = 34;
 const APPEAR_MS = 260;
@@ -18,15 +19,6 @@ const MORPH_MS = 720;
 const PAIR_FADE_MS = 260;
 const TRANSLATE_UP_MS = 820;
 const HOLD_END_MS = 260;
-
-function lerp(a, b, t) {
-    return a + (b - a) * t;
-}
-
-function prefersReducedMotion() {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-}
 
 export default function CenterLinesLoading(
     {
@@ -250,7 +242,7 @@ export default function CenterLinesLoading(
             />
             <div className="absolute inset-0 z-50 flex items-center justify-center">
                 <div className="px-6 text-center">
-                    <h1 className="select-none font-mono text-[38px] font-semibold leading-[1.05] tracking-[-0.03em] text-black md:text-[52px]">
+                    <h1 className="select-none font-mono text-[3.5vw] max-md:text-[5vw] max-sm:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
                         {words.map((word, wordIdx) => (
                             <span key={`${word}-${wordIdx}`}>
                                 <span className="inline-block whitespace-nowrap">
@@ -293,7 +285,7 @@ export default function CenterLinesLoading(
             {done && (
                 <button
                     onClick={run}
-                    className="absolute bottom-7 max-md:bottom-10 text-sm max-sm:text-sm max-md:text-base left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[11px] tracking-widest text-black/70 backdrop-blur"
+                    className="absolute bottom-7 max-md:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-md:text-base max-sm:text-sm tracking-widest text-black/70 backdrop-blur"
                 >
                     Replay
                 </button>

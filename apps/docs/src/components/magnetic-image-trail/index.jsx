@@ -1,7 +1,7 @@
 'use client'
 
 import ImageTrail from './MagneticTrail'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">

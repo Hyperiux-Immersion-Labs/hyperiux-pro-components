@@ -20,7 +20,7 @@ const VERSIONS = [
   },
 ];
 
-export default function LinesLoadingDemo({ onComplete, onVariantChange, ...props }) {
+export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
   const [activeVariant, setActiveVariant] = useState("option1");
   const [isCompleted, setIsCompleted] = useState(false);
 
@@ -88,7 +88,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
     : "border-white/20 bg-black/8";
 
   return (
-    <nav className={`fixed bottom-30 max-md:bottom-35 max-sm:bottom-40 left-1/2 z-[9999] flex -translate-x-1/2 gap-1 rounded-full border px-1.5 py-1.5 backdrop-blur-md max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5 transition-all duration-300 ${navBgClass}`}>
+    <nav className={`fixed bottom-30 max-md:bottom-35 max-sm:bottom-40 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border px-1.5 py-1.5 backdrop-blur-md max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5 transition-all duration-300 ${navBgClass}`}>
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
         const btnClass = isCompleted

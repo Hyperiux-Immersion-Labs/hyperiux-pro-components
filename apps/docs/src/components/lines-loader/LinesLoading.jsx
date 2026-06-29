@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
+import { lerp, prefersReducedMotion } from "./utils";
 
 gsap.registerPlugin(CustomEase);
 CustomEase.create("linesLoadingEase", "0.75,-0.01,0.16,1");
@@ -10,28 +11,16 @@ const LINE_COUNT = 17;
 const NAV_H = 55;
 const ROW_H = 24;
 
-// Tuned to match the reference recordings (fast staggered growth + settle, then a quick wipe).
 const MORPH_STAGGER = 34;
 const MORPH_DUR = 720;
 const APPEAR_DUR = 260;
-const CONTENT_FADE_AT = 0.32; // seconds
+const CONTENT_FADE_AT = 0.32;
 const CONTENT_FADE_DUR = 520;
-const TEXT_REVEAL_AT = 0.44; // seconds
+const TEXT_REVEAL_AT = 0.44;
 const HOLD_AFTER_MORPH = 120;
 const WIPE_DUR = 820;
 const HOLD_END = 820;
-const WIPE_OVERLAP = 0.1; // seconds (overlap lines end -> wipe start)
-
-function lerp(a, b, t) {
-  return a + (b - a) * t;
-}
-
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false
-  );
-}
+const WIPE_OVERLAP = 0.1;
 
 function DemoContent({
   theme = "dark",
@@ -151,7 +140,7 @@ function DemoContent({
         <>
           <div
             className={[
-              "grid items-center px-5.5 text-[12px] uppercase select-none max-sm:!text-[14px]",
+              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-sm:text-[3.5vw]",
               GRID_CLASS,
               isDark ? "text-white/55" : "text-black/55",
             ].join(" ")}
@@ -195,7 +184,7 @@ function DemoContent({
                   rowRefs.current[idx] = el;
                 }}
                 className={[
-                  "grid items-center gap-4.5 px-5.5 text-[13px] leading-[1.2] max-sm:text-[15px]",
+                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-sm:text-[4vw]",
                   GRID_CLASS,
                   "will-change-[filter,transform,opacity]",
                   idx < 9
@@ -210,7 +199,7 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[11px] max-sm:!text-[15px]",
+                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[1.5vw] max-sm:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >

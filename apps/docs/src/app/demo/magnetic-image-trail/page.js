@@ -1,4 +1,4 @@
-import React from 'react'
+
 import MagneticImageTrail from '@/components/magnetic-image-trail'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'

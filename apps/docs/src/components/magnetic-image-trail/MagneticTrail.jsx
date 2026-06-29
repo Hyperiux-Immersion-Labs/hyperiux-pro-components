@@ -51,6 +51,7 @@ const THICKNESS = 0.62;
 const MOUSE_SPEED_BOOST = 0.003;
 const FORWARD_PUSH_AMOUNT = 40;
 const UPWARD_PUSH_AMOUNT = 30;
+const LERP_AMOUNT = 0.18;
 const SCALE_OUT_MIN = 0.68;
 const SCALE_OUT_MAX = 1.48;
 
@@ -107,7 +108,6 @@ export default function ImageTrail() {
  const smooth = useRef({ x: 0, y: 0 });
  const dirRef = useRef({ x: 1, y: 0 });
  const lastMoveAt = useRef(0);
- const inside = useRef(false);
  const phase = useRef(0);
  const lastTime = useRef(0);
 
@@ -153,10 +153,6 @@ export default function ImageTrail() {
  const dt = Math.min(32, now - (lastTime.current || now));
  lastTime.current = now;
 
- // --- lerp pointer on every frame ---
- // The lerped pointer smoothly follows the actual pointer.
- // A lerp amount of 0.18 gives a nice responsive but eased motion.
- const LERP_AMOUNT = 0.18;
  lerpedPointer.current.x = lerp(lerpedPointer.current.x, pointer.current.x, LERP_AMOUNT);
  lerpedPointer.current.y = lerp(lerpedPointer.current.y, pointer.current.y, LERP_AMOUNT);
 
@@ -320,7 +316,6 @@ export default function ImageTrail() {
  x: e.clientX - rect.left,
  y: e.clientY - rect.top,
  };
- inside.current = true;
  }, []);
 
  return (
@@ -328,48 +323,16 @@ export default function ImageTrail() {
  ref={wrapRef}
  onPointerMove={updatePointer}
  onPointerEnter={updatePointer}
- style={{
- position:"relative",
- width:"100%",
- height:"100vh",
- background:"#EDEBE6",
- overflow:"hidden",
- }}
+ className="relative w-full h-screen bg-[#EDEBE6] overflow-hidden"
  >
- <div
- className="w-[70%] mx-auto"
- style={{
- position:"absolute",
- inset: 0,
- display:"flex",
- alignItems:"center",
- justifyContent:"center",
- pointerEvents:"none",
- userSelect:"none",
- zIndex: 1,
- color:"#111",
- fontSize:"3vw",
-
- letterSpacing:"-0.03em",
- lineHeight: 1.05,
- textAlign:"center",
- padding:"0 20px",
- }}
- >
+ <div className="absolute inset-0 w-[70%] mx-auto flex items-center justify-center pointer-events-none select-none z-1 text-[#111] text-[3vw] tracking-[-0.03em] leading-[1.05] text-center px-5">
  Interfaces people remember.
  <br />
-Components developers love.
+ Components developers love.
  </div>
  <canvas
  ref={canvasRef}
- style={{
- position:"absolute",
- inset: 0,
- width:"100%",
- height:"100%",
- pointerEvents:"none",
- zIndex: 2,
- }}
+ className="absolute inset-0 w-full h-full pointer-events-none z-2"
  />
  </section>
  );
