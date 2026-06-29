@@ -57,8 +57,10 @@ export default function ElevateNavbar() {
       setIsMobile(window.innerWidth < 1025);
     };
 
-    checkWidth();
-    setHasMounted(true);
+    queueMicrotask(() => {
+      checkWidth();
+      setHasMounted(true);
+    });
 
     window.addEventListener("resize", checkWidth);
 

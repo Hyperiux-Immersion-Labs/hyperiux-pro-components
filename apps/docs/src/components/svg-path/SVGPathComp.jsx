@@ -364,7 +364,9 @@ const SVGPathComp = ({
   }
 
   useEffect(() => {
-    setIsPositionReady(false)
+    queueMicrotask(() => {
+      setIsPositionReady(false);
+    });
 
     if (items.length === 0) {
       return

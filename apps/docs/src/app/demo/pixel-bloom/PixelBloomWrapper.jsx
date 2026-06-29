@@ -45,7 +45,7 @@ export default function PixelBloomWrapper() {
                 <span className="text-[1.6vw] max-sm:text-[3vw] max-md:hidden">Glide over the images to uncover the motion.</span>
             </h1>
             <p className="max-md:block hidden max-sm:pt-10 max-md:text-[3vw]  max-sm:text-[5vw] mix-blend-difference  text-white    w-full text-center leading-relaxed   z-1">
-                Click to see the effect 
+                Click on the images to see the effect 
                 <br />
                 <span className="uppercase">
 
@@ -57,7 +57,7 @@ export default function PixelBloomWrapper() {
             <div className="relative w-full flex flex-col  gap-[10vh]  items-center">
                 {/* On mobile, center each image horizontally with mx-auto and remove ml/mr */}
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] rounded-[2vw] max-sm:rounded-lg overflow-clip mr-[25vw] max-md:mx-auto transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='video' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4' />
+                    <PixelBloom className='w-full h-full' type='video' src='/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw] max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden">
                     <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg' />

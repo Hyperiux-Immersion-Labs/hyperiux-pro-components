@@ -558,7 +558,7 @@ export default function DocsCli() {
         <DocsListItem>broken import aliases</DocsListItem>
         <DocsListItem>missing Tailwind content paths</DocsListItem>
         <DocsListItem>missing CSS entry files</DocsListItem>
-        <DocsListItem>missing "use client" boundaries</DocsListItem>
+        <DocsListItem>missing &quot;use client&quot; boundaries</DocsListItem>
         <DocsListItem>browser-only code used in server components</DocsListItem>
         <DocsListItem>duplicate effect files</DocsListItem>
         <DocsListItem>unsupported project structure</DocsListItem>

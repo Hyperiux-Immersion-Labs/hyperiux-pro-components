@@ -81,16 +81,21 @@ export default function DashboardPage() {
     };
   }, []);
 
+  const [now, setNow] = useState(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
+
   const daysRemaining = useMemo(() => {
-    if (!data?.planValidUntil) return null;
+    if (!data?.planValidUntil || now === null) return null;
 
     const end = new Date(data.planValidUntil).getTime();
-    const now = Date.now();
 
     if (Number.isNaN(end)) return null;
 
     return Math.max(0, Math.ceil((end - now) / (1000 * 60 * 60 * 24)));
-  }, [data?.planValidUntil]);
+  }, [data?.planValidUntil, now]);
 
   if (!data) {
     return (

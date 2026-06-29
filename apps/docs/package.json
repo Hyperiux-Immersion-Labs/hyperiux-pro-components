@@ -2,9 +2,6 @@
   "name": "@hyperiux/docs",
   "version": "0.1.0",
   "private": true,
-  "bin": {
-    "hyperiux": "./bin/hyperiux.js"
-  },
   "type": "module",
   "scripts": {
     "dev": "next dev --webpack",

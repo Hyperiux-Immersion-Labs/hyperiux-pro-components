@@ -128,7 +128,9 @@ function AccessRequestModalInner() {
 
   useEffect(() => {
     if (!isOpen) {
-      setLocalError("");
+      queueMicrotask(() => {
+        setLocalError("");
+      });
     }
   }, [isOpen]);
 

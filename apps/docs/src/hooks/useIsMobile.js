@@ -17,11 +17,13 @@ export default function useIsMobile(breakpoint = COMPACT_LAYOUT_BREAKPOINT) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    queueMicrotask(() => {
+      setIsMounted(true);
+      setIsMobile(window.innerWidth < breakpoint);
+    });
     const checkMobile = () => {
       setIsMobile(window.innerWidth < breakpoint);
     };
-    checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, [breakpoint]);

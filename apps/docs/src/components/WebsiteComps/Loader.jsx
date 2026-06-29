@@ -339,8 +339,10 @@ export default function Loader() {
 
       unlockScrollHard();
 
-      setIsVisible(false);
-      setShouldRun(false);
+      queueMicrotask(() => {
+        setIsVisible(false);
+        setShouldRun(false);
+      });
 
       requestAnimationFrame(() => {
         dispatchLoaderComplete(true);
@@ -354,8 +356,10 @@ export default function Loader() {
     document.body.classList.add("loader-active");
     setLoaderRuntimeState({ running: true, complete: false });
 
-    setShouldRun(true);
-    setIsVisible(true);
+    queueMicrotask(() => {
+      setShouldRun(true);
+      setIsVisible(true);
+    });
 
     return () => {
       if (!hasLoaderRun()) {

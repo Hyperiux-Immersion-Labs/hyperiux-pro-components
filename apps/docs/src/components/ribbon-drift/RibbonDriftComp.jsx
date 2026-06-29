@@ -20,7 +20,7 @@ const sectionBreakText = `Design is a feeling before it’s a layout. This conce
 motion-first composition, gradient-led art direction, and small details
 that make a brand experience unforgettable.`;
 
-const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES }) => {
+const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) => {
 	const headingRef = useRef(null);
 	const paragraphRef = useRef(null);
 	const sectionBreakFillRef = useRef(null);

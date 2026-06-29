@@ -34,10 +34,21 @@ const layGrotesk = localFont({
 
 export const metadata = createRootMetadata();
 
+const CLEAR_STALE_CLERK_COOKIES = `(function(){
+  var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
+  var hasSession=document.cookie.indexOf('__session=')!==-1;
+  var uat=(document.cookie.match(/__client_uat=([^;]+)/)||[])[1];
+  if(hasUat&&uat!=='0'&&!hasSession){
+    var exp=new Date(0).toUTCString();
+    document.cookie='__client_uat=0;path=/;expires='+exp+';secure;samesite=strict';
+  }
+})();`;
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <body className="min-h-dvh bg-background text-foreground font-sans">
+        <script dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }} />
         {/* <PixelRandom color="#ff5f00"> */}
         <ClerkProvider
           waitlistUrl="#"

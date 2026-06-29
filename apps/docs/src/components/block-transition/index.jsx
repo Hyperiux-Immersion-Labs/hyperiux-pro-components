@@ -20,7 +20,7 @@ const SHIFT_DURATION_OUT = 0.7;
 const SHIFT_DURATION_IN = 0.8;
 
 
-export function BlockTransition({
+export default function BlockTransition({
   children,
   enableContentShift = false,
   rows = ROWS,

@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from"react";
+import { useMemo, useEffect } from"react";
 import { Effect } from"postprocessing";
 import { Uniform, Vector2 } from"three";
 

@@ -85,7 +85,7 @@ export default function DraggableCanvas() {
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
         <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[75vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:bottom-6 max-sm:right-4 max-sm:text-sm z-99999">
-          Drag the floating canvases - each window steals a different slice of the same moving dream.
+          Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
       {/* Hidden video element - single source for all masks */}
       <video

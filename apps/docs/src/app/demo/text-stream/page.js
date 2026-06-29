@@ -22,7 +22,7 @@ const page = () => {
         </HeadAnim>
         <SplitLine>
         <p className="max-md:hidden">
-          "Text Stream" is a bi-directional Marquee of content being clipped with spotlight , scroll and see how it responds with your smooth flow of the scroll.
+          &quot;Text Stream&quot; is a bi-directional Marquee of content being clipped with spotlight , scroll and see how it responds with your smooth flow of the scroll.
         </p>
         </SplitLine>
 

@@ -3,16 +3,15 @@
 import React, { useRef, useEffect, useCallback, useState } from'react'
 import { Canvas, useThree, useFrame } from'@react-three/fiber'
 import { Environment, Center } from'@react-three/drei'
-import RoomModel from'@/components/HeroBannerAnimated/RoomModel'
+import RoomModel from'@/components/hero-banner-animated/RoomModel'
 import { degToRad } from'three/src/math/MathUtils'
 import gsap from'gsap'
-import CustomGrainNoise from'@/components/HeroBannerAnimated/CustomGrainNoise'
+import CustomGrainNoise from'@/components/hero-banner-animated/CustomGrainNoise'
 import { EffectComposer } from'@react-three/postprocessing'
-import VideoUI from'@/components/HeroBannerAnimated/VideoUI'
-import EdgeBlurEffect from'@/components/progressive-bloom-valley/EdgeBlurEffect'
+import VideoUI from'@/components/hero-banner-animated/VideoUI'
 import { Play } from'lucide-react'
 import { AnimatePresence, motion } from'framer-motion'
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
+import EdgeBlurEffect from './EdgeBlurEffect'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -181,7 +180,6 @@ export default function HeroBannerAnimated() {
 
   return (
     <>
-      <LenisSmoothScroll />
 
       <section className="w-full h-screen bg-black relative">
         <AnimatePresence>
@@ -272,7 +270,6 @@ export default function HeroBannerAnimated() {
 
           <EffectComposer>
             <EdgeBlurEffect blurType="classic" blurStrength={1.5} blurStart={0.4} />
-            {/* <EdgeBlurEffect blurType="frosted" blurStrength={.1} blurStart={0.4} /> */}
             <CustomGrainNoise amount={0.01} scale={1.5} opacity={0.9} />
           </EffectComposer>
         </Canvas>

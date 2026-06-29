@@ -1,4 +1,4 @@
-import HeroBannerAnimated from '@/components/HeroBannerAnimated'
+import HeroBannerAnimated from '@/components/hero-banner-animated'
 import React from 'react'
 
 const page = () => {

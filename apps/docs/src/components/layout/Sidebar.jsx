@@ -176,7 +176,9 @@ export function Sidebar({
   useEffect(() => {
     const onHash = () => setActiveHash(window.location.hash || "");
 
-    onHash();
+    queueMicrotask(() => {
+      onHash();
+    });
     window.addEventListener("hashchange", onHash);
 
     return () => window.removeEventListener("hashchange", onHash);
@@ -229,7 +231,9 @@ export function Sidebar({
     const previousRouteSection = previousRouteSectionRef.current;
 
     if (previousRouteSection !== routeOpenSection) {
-      setOpenSection(routeOpenSection);
+      queueMicrotask(() => {
+        setOpenSection(routeOpenSection);
+      });
       previousRouteSectionRef.current = routeOpenSection;
     }
   }, [routeOpenSection]);
@@ -242,7 +246,9 @@ export function Sidebar({
     if (!categoryNavigationInProgressRef.current) return;
 
     if (isCategoriesActive) {
-      setOpenSection("categories");
+      queueMicrotask(() => {
+        setOpenSection("categories");
+      });
       categoryNavigationInProgressRef.current = false;
     }
   }, [pathname, isCategoriesActive]);
