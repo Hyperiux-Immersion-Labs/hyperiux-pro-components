@@ -21,5 +21,6 @@
       "target": "public/assets/img/image02.webp",
       "source": "/assets/img/image02.webp"
     }
-  ]
+  ],
+  "tier": "pro"
 }

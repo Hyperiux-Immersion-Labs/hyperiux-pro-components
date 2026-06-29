@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/glitchy-text",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/glitchy-text",
+  "target": "src/components/effects/glitchy-text",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/glitchy-text/index.jsx"
+    }
+  ]
 }

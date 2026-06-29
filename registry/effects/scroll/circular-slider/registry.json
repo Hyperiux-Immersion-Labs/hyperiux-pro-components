@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/circular-slider",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/circular-slider",
+  "target": "src/components/effects/circular-slider",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/circular-slider/index.jsx"
+    }
+  ]
 }

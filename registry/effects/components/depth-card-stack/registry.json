@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/depth-card-stack",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/depth-card-stack",
+  "target": "src/components/effects/depth-card-stack",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/depth-card-stack/index.jsx"
+    }
+  ]
 }

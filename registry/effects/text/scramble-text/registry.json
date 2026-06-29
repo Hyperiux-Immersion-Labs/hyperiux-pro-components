@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/scramble-text",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/scramble-text",
+  "target": "src/components/effects/scramble-text",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/scramble-text/index.jsx"
+    }
+  ]
 }

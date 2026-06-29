@@ -41,5 +41,6 @@
       "target": "public/assets/img/distortion.jpg",
       "source": "/assets/img/distortion.jpg"
     }
-  ]
+  ],
+  "tier": "pro"
 }

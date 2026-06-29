@@ -13,5 +13,46 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/webgl/progressive-bloom-valley",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/progressive-bloom-valley",
+  "target": "src/components/effects/progressive-bloom-valley",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+    },
+    {
+      "path": "camera-rig.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/camera-rig.jsx"
+    },
+    {
+      "path": "edge-blur-effect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/edge-blur-effect.jsx"
+    },
+    {
+      "path": "experience.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/experience.jsx"
+    },
+    {
+      "path": "film-grain-effect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/film-grain-effect.jsx"
+    },
+    {
+      "path": "flowers.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/flowers.jsx"
+    },
+    {
+      "path": "shaders.js",
+      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+    },
+    {
+      "path": "use-input.js",
+      "target": "src/components/effects/progressive-bloom-valley/use-input.js"
+    },
+    {
+      "path": "use-valley-data.js",
+      "target": "src/components/effects/progressive-bloom-valley/use-valley-data.js"
+    }
+  ]
 }

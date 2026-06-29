@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/form",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/form",
+  "target": "src/components/effects/form",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/form/index.jsx"
+    }
+  ]
 }

@@ -20,5 +20,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/liquid-tex.js"
     }
-  ]
+  ],
+  "tier": "pro"
 }

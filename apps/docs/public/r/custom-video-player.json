@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/custom-video-player.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

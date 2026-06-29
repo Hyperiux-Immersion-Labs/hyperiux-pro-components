@@ -58,5 +58,6 @@
       "target": "public/img/mobile.png",
       "source": "/img/mobile.png"
     }
-  ]
+  ],
+  "tier": "free"
 }

@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/split-canvas",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/split-canvas",
+  "target": "src/components/effects/split-canvas",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/split-canvas/index.jsx"
+    }
+  ]
 }

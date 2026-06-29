@@ -39,5 +39,6 @@
       "target": "public/models/c-transformed.glb",
       "source": "/models/c-transformed.glb"
     }
-  ]
+  ],
+  "tier": "pro"
 }

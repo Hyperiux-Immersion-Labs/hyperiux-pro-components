@@ -11,5 +11,14 @@
     "chevron-bird"
   ],
   "previewUrl": "/navigation/directional-menu",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/directional-menu",
+  "target": "src/components/effects/directional-menu",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/directional-menu/index.jsx"
+    }
+  ]
 }

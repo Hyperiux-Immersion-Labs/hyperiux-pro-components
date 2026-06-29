@@ -17,5 +17,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/webgl-slider.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

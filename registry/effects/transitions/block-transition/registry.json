@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/block",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/block-transition",
+  "target": "src/components/effects/block-transition",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/block-transition/index.jsx"
+    }
+  ]
 }

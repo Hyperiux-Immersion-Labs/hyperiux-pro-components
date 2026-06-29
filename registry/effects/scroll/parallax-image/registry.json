@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/parallax-image-animation",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/parallax-image",
+  "target": "src/components/effects/parallax-image",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/parallax-image/index.jsx"
+    }
+  ]
 }

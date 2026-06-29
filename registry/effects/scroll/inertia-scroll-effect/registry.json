@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/inertia-scroll-effect",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/inertia-scroll-effect",
+  "target": "src/components/effects/inertia-scroll-effect",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/inertia-scroll-effect/index.jsx"
+    }
+  ]
 }

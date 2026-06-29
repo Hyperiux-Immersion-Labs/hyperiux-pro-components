@@ -79,5 +79,6 @@
       "target": "public/assets/img/image10.jpg",
       "source": "/assets/img/image10.jpg"
     }
-  ]
+  ],
+  "tier": "pro"
 }

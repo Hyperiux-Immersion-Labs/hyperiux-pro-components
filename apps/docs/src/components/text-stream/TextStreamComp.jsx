@@ -1,7 +1,10 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { useIsMobile } from "./hooks";
+
+const BASE_SPEED = 0.6;
 
 export default function TextStreamComp({ items = [] }) {
   const trackRef = useRef(null);
@@ -9,26 +12,17 @@ export default function TextStreamComp({ items = [] }) {
   const containerRef = useRef(null);
 
   const [copyCount, setCopyCount] = useState(2);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   const metricsRef = useRef({
     currentY: 0,
     distance: 0,
-    currentVelocity: 0.6,
-    targetVelocity: 0.6,
+    currentVelocity: BASE_SPEED,
+    targetVelocity: BASE_SPEED,
     lastScrollDirection: 1,
   });
 
   const scrollTimeoutRef = useRef(null);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 640);
-
-    check();
-    window.addEventListener("resize", check);
-
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -40,7 +34,6 @@ export default function TextStreamComp({ items = [] }) {
     }
 
     const ctx = gsap.context(() => {
-      const baseSpeed = 0.6;
       const maxBoost = 12;
       let lastScrollY = window.scrollY;
 
@@ -102,7 +95,7 @@ export default function TextStreamComp({ items = [] }) {
 
         const boost = Math.min(
           maxBoost,
-          baseSpeed + Math.pow(Math.abs(delta), 1.2) * 0.08
+          BASE_SPEED + Math.pow(Math.abs(delta), 1.2) * 0.08
         );
 
         metricsRef.current.lastScrollDirection = direction;
@@ -112,7 +105,7 @@ export default function TextStreamComp({ items = [] }) {
 
         scrollTimeoutRef.current = window.setTimeout(() => {
           metricsRef.current.targetVelocity =
-            metricsRef.current.lastScrollDirection * baseSpeed;
+            metricsRef.current.lastScrollDirection * BASE_SPEED;
         }, 120);
       };
 

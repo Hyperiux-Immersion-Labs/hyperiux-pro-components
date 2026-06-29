@@ -19,5 +19,6 @@
       "target": "public/assets/videos/enigma-video.mp4",
       "source": "/assets/videos/enigma-video.mp4"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -17,5 +17,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/testimonial-swiper.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

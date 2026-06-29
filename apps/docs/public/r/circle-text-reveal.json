@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/circle-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

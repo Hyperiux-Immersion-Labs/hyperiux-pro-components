@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/text-hover",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/text-hover-expand",
+  "target": "src/components/effects/text-hover-expand",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/text-hover-expand/index.jsx"
+    }
+  ]
 }

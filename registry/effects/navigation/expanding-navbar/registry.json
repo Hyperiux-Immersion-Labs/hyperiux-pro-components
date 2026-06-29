@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/expanding-navbar",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/expanding-navbar",
+  "target": "src/components/effects/expanding-navbar",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/expanding-navbar/index.jsx"
+    }
+  ]
 }

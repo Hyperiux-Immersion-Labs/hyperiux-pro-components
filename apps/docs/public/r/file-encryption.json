@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/file-encryption.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

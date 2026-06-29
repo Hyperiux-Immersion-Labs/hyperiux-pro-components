@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/binary-effect",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/dither-canvas",
+  "target": "src/components/effects/dither-canvas",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/dither-canvas/index.jsx"
+    }
+  ]
 }

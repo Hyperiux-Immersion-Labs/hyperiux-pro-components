@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/slide-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/slide-text-reveal",
+  "target": "src/components/effects/slide-text-reveal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/slide-text-reveal/index.jsx"
+    }
+  ]
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/modal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/modal",
+  "target": "src/components/effects/modal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/modal/index.jsx"
+    }
+  ]
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/colorful-cursor-aura",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/colorful-cursor-aura",
+  "target": "src/components/effects/colorful-cursor-aura",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/colorful-cursor-aura/index.jsx"
+    }
+  ]
 }

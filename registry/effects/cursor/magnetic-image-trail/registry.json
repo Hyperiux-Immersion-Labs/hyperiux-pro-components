@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/magnetic-image-trail",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/magnetic-image-trail",
+  "target": "src/components/effects/magnetic-image-trail",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/magnetic-image-trail/index.jsx"
+    }
+  ]
 }

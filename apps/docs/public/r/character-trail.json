@@ -13,5 +13,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/character-trail.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

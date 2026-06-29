@@ -15,5 +15,22 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/milkyway",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/milkyway",
+  "target": "src/components/effects/milkyway",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/milkyway/index.jsx"
+    },
+    {
+      "path": "circular-text.jsx",
+      "target": "src/components/effects/milkyway/circular-text.jsx"
+    },
+    {
+      "path": "edge-blur-effect.jsx",
+      "target": "src/components/effects/milkyway/edge-blur-effect.jsx"
+    }
+  ]
 }

@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/text-cloning",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/text-cloning",
+  "target": "src/components/effects/text-cloning",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/text-cloning/index.jsx"
+    }
+  ]
 }

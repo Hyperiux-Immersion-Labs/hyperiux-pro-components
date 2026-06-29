@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/buttons/char-stagger-button",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/char-stagger-button",
+  "target": "src/components/effects/char-stagger-button",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/char-stagger-button/index.jsx"
+    }
+  ]
 }

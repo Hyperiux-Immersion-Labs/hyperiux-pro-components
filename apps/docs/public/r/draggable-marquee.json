@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/draggable-marquee.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

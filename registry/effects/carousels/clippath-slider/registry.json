@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/clippath-slider",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/clippath-slider",
+  "target": "src/components/effects/clippath-slider",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/clippath-slider/index.jsx"
+    }
+  ]
 }

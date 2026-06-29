@@ -33,5 +33,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/mouse-pixelation/pixel-shift.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -9,5 +9,18 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/scroll-shuffled-cards",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/scroll-shuffled-cards",
+  "target": "src/components/effects/scroll-shuffled-cards",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
+    },
+    {
+      "path": "card.jsx",
+      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
+    }
+  ]
 }

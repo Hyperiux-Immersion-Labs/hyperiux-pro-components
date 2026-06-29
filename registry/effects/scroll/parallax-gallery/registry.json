@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/parallax-gallery",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/parallax-gallery",
+  "target": "src/components/effects/parallax-gallery",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/parallax-gallery/index.jsx"
+    }
+  ]
 }

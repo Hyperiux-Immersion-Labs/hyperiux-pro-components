@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/character-trail",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/character-trail",
+  "target": "src/components/effects/character-trail",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/character-trail/index.jsx"
+    }
+  ]
 }

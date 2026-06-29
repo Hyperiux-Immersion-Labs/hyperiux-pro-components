@@ -11,5 +11,14 @@
   "packageName": "@hyperiux/elevate-navbar",
   "sourcePath": "apps/docs/src/components/elevate-navbar",
   "previewUrl": "/navigation/elevate-navbar",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/elevate-navbar",
+  "target": "src/components/effects/elevate-navbar",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/elevate-navbar/index.jsx"
+    }
+  ]
 }

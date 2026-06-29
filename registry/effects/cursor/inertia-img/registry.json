@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/inertia-img",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/inertia-img",
+  "target": "src/components/effects/inertia-img",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/inertia-img/index.jsx"
+    }
+  ]
 }

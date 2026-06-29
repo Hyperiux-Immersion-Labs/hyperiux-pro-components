@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/buttons/char-stagger-primary-button",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/char-stagger-primary-button",
+  "target": "src/components/effects/char-stagger-primary-button",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/char-stagger-primary-button/index.jsx"
+    }
+  ]
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/tabs",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/tabs",
+  "target": "src/components/effects/tabs",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/tabs/index.jsx"
+    }
+  ]
 }

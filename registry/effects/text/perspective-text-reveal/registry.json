@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/perspective-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/perspective-text-reveal",
+  "target": "src/components/effects/perspective-text-reveal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/perspective-text-reveal/index.jsx"
+    }
+  ]
 }

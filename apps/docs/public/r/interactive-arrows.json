@@ -45,5 +45,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/points.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

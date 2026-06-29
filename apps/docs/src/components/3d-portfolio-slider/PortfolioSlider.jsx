@@ -6,6 +6,22 @@ import * as THREE from"three";
 import Lenis from"lenis";
 import gsap from"gsap";
 
+function getViewportConfig() {
+  const width = window.innerWidth;
+  const isMobile = width < 768;
+  const isTablet = width <= 1025;
+
+  return {
+    isMobile,
+    isTablet,
+    initialRadius: isMobile ? 22 : isTablet ? 28 : 35,
+    planeWidthFactor: isMobile ? 0.85 : isTablet ? 0.82 : 0.5,
+    baseRadius: isMobile ? 20 : isTablet ? 26 : 35,
+    maxRadius: isMobile ? 30 : isTablet ? 42 : 55,
+    zoomFactor: isMobile ? 0.7 : isTablet ? 1.05 : 1.5,
+  };
+}
+
 export default function PortfolioSlider({ items }) {
  const containerRef = useRef(null);
  const circleRef = useRef(null);
@@ -17,21 +33,6 @@ export default function PortfolioSlider({ items }) {
  let scene, camera, renderer;
  let planes = [];
  let rafId;
- const getViewportConfig = () => {
- const width = window.innerWidth;
- const isMobile = width < 768;
- const isTablet = width <= 1025;
-
- return {
- isMobile,
- isTablet,
- initialRadius: isMobile ? 22 : isTablet ? 28 : 35,
- planeWidthFactor: isMobile ? 0.85 : isTablet ? 0.82 : 0.5,
- baseRadius: isMobile ? 20 : isTablet ? 26 : 35,
- maxRadius: isMobile ? 30 : isTablet ? 42 : 55,
- zoomFactor: isMobile ? 0.7 : isTablet ? 1.05 : 1.5,
- };
- };
 
  let currentRadius = getViewportConfig().initialRadius;
 
@@ -66,17 +67,10 @@ export default function PortfolioSlider({ items }) {
  2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
  const frustumWidth = frustumHeight * camera.aspect;
 
- // MOBILE → show one image full screen
-// MOBILE → show ~90% of one image
 const planeWidth = frustumWidth * viewportConfig.planeWidthFactor;
-
 const planeHeight = frustumHeight;
-
-// small gap only on mobile
 const spacing = planeWidth;
-
- // Speed factor: converts scroll pixels → Three.js world units
- const speedFactor = 0.01;
+const speedFactor = 0.01;
 
  items.forEach((item, i) => {
  const texture = loader.load(item.url);
@@ -123,7 +117,6 @@ const spacing = planeWidth;
 
  const totalWidth = spacing * items.length;
 
- // Unbounded offset via delta tracking (handles Lenis infinite wrap)
  let offset = 0;
  let prevScroll = null;
  let isSnapping = false;
@@ -134,7 +127,7 @@ const spacing = planeWidth;
  function raf(time) {
  lenis.raf(time);
 
- // Delta tracking on wrapped scroll value
+ // Delta
  const currentScroll = lenis.scroll;
  const limit = lenis.limit;
 
@@ -231,23 +224,20 @@ const targetRadius = Math.min(
  }
 
  planes.forEach((plane, i) => {
- // Base position minus scroll offset
+ // Position
  let x = i * spacing - scrollOffset;
 
- // Wrap into [-totalWidth/2, totalWidth/2] for seamless infinite loop
+ // Wrap
  x = ((x % totalWidth) + totalWidth) % totalWidth;
  if (x > totalWidth / 2) x -= totalWidth;
 
  plane.position.x = x;
 
- // SMOOTH TEXTURE ZOOM — cosine easing for circular-path feel
- // Use wrapped position for zoom calculation to avoid glitches at high speeds
+ // Zoom
  const dist = Math.abs(x);
  const maxDist = frustumWidth;
  const norm = Math.min(dist / maxDist, 1);
 
-
-// Cosine arc: 1 at center → 0 at edge
 const arc = Math.cos(norm * Math.PI * 0.5);
 
 const targetZoom = 1 + (1 - arc) * viewportConfig.zoomFactor;

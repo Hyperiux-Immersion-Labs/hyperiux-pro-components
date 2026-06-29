@@ -13,5 +13,14 @@
   "previewUrl": "/scroll-distortion",
   "coverImage": "scroll-distortion",
   "videoUrl": "scroll-distortion.mp4",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/scroll-distortion",
+  "target": "src/components/effects/scroll-distortion",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/scroll-distortion/index.jsx"
+    }
+  ]
 }

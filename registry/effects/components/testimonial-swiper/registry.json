@@ -11,5 +11,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/testimonial",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/testimonial-swiper",
+  "target": "src/components/effects/testimonial-swiper",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/testimonial-swiper/index.jsx"
+    }
+  ]
 }

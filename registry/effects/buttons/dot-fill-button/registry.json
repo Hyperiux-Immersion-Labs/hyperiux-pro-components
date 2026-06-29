@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/buttons/dot-fill-button",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/dot-fill-button",
+  "target": "src/components/effects/dot-fill-button",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/dot-fill-button/index.jsx"
+    }
+  ]
 }
