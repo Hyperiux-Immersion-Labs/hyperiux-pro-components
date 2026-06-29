@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/inertia-img/index.jsx"
+    },
+    {
+      "path": "InertiaImgComp.jsx",
+      "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
     }
   ]
 }

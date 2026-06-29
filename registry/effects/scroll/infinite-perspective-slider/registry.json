@@ -18,6 +18,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/infinite-perspective-slider/index.jsx"
+    },
+    {
+      "path": "InfinitePerspectiveSliderComp.jsx",
+      "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.jsx"
     }
   ]
 }

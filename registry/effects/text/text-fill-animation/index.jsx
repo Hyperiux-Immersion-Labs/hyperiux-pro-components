@@ -17,7 +17,7 @@ export function TextFillAnimation({
   textColor = '#111111',
   primaryColor = '#ff6b00',
   dimColor = '#dddddd',
-  backgroundColor = '#FBFBFB',
+  backgroundColor = '',
   className = '',
   id = 'section-break',
   textSize = '5vw',
@@ -161,17 +161,7 @@ export function TextFillAnimation({
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff6b00]/5 blur-3xl" />
 
-        <div className="absolute left-[5vw] top-[5vh]">
-          <p className="text-xs uppercase tracking-[0.35em] text-black/35 max-md:text-sm max-sm:text-xs">
-            Design Philosophy
-          </p>
-        </div>
-
-        <div className="absolute right-[5vw] top-[5vh] text-right">
-          <p className="text-xs uppercase tracking-[0.35em] text-black/35 max-md:text-sm max-sm:text-xs">
-            Scroll ↓
-          </p>
-        </div>
+       
 
         <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
           <p className="text-sm leading-relaxed text-black/35 max-md:text-lg max-sm:text-sm">

@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/svg-pixel-reveal/index.jsx"
+    },
+    {
+      "path": "PixelatedScgFilter.jsx",
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
     }
   ]
 }

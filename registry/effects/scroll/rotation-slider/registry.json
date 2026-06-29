@@ -20,8 +20,8 @@
       "target": "src/components/effects/rotation-slider/index.jsx"
     },
     {
-      "path": "rotation-card.jsx",
-      "target": "src/components/effects/rotation-slider/rotation-card.jsx"
+      "path": "RotationSliderComp.jsx",
+      "target": "src/components/effects/rotation-slider/RotationSliderComp.jsx"
     }
   ]
 }

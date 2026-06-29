@@ -4,7 +4,12 @@
   "title": "Mouse Pixelation",
   "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
   "category": "webgl",
-  "dependencies": ["three", "@react-three/fiber", "@react-three/postprocessing", "gsap"],
+  "dependencies": [
+    "three",
+    "@react-three/fiber",
+    "@react-three/postprocessing",
+    "gsap"
+  ],
   "registryDependencies": [],
   "previewUrl": "/mouse-pixelation",
   "tier": "pro",
@@ -12,9 +17,21 @@
   "importPath": "@/components/effects/mouse-pixelation",
   "target": "src/components/effects/mouse-pixelation",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/mouse-pixelation/index.jsx" },
-    { "path": "enhanced-pixel-cube.jsx", "target": "src/components/effects/mouse-pixelation/enhanced-pixel-cube.jsx" },
-    { "path": "pixel-circle.jsx", "target": "src/components/effects/mouse-pixelation/pixel-circle.jsx" },
-    { "path": "pixel-shift.jsx", "target": "src/components/effects/mouse-pixelation/pixel-shift.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/mouse-pixelation/index.jsx"
+    },
+    {
+      "path": "EnhancedPixelCube.jsx",
+      "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.jsx"
+    },
+    {
+      "path": "PixelCircle.jsx",
+      "target": "src/components/effects/mouse-pixelation/PixelCircle.jsx"
+    },
+    {
+      "path": "PixelShift.jsx",
+      "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
+    }
   ]
 }

@@ -1,113 +1,60 @@
-"use client";
+import React from 'react'
+import ScrollStackComp from './ScrollStackComp';
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-export function ScrollStack({ bgColor = "bg-white", cards = [] }) {
-  const sectionRef = useRef(null);
-  const rowRefs = useRef([]);
-  const cardRefs = useRef([]);
-
-  useEffect(() => {
-    rowRefs.current = rowRefs.current.slice(0, cards.length);
-    cardRefs.current = cardRefs.current.slice(0, cards.length);
-
-    const context = gsap.context(() => {
-      const currentCards = cardRefs.current.filter(Boolean);
-      const currentRows = rowRefs.current.filter(Boolean);
-
-      currentCards.forEach((card, index) => {
-        gsap.set(card, {
-          autoAlpha: 1,
-          scale: index === 0 ? 1 : 1.1,
-          transformOrigin: "center center",
-        });
-      });
-
-      currentCards.slice(0, -1).forEach((card, index) => {
-        const nextRow = currentRows[index + 1];
-        const nextCard = currentCards[index + 1];
-        if (!nextRow || !nextCard) return;
-
-        const handoff = gsap.timeline({
-          scrollTrigger: {
-            trigger: nextRow,
-            start: "top bottom+=20%",
-            end: "top top-=28%",
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        });
-
-        handoff.to(nextCard, { scale: 1, ease: "none" }, 0);
-
-        gsap.to(card, {
-          autoAlpha: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: nextRow,
-            start: "top top+=14%",
-            end: "top top+=2%",
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        });
-      });
-
-      ScrollTrigger.refresh();
-    }, sectionRef);
-
-    return () => context.revert();
-  }, [cards]);
-
+const ScrollStack = () => {
   return (
-    <section
-      ref={sectionRef}
-      className={`py-[7%] max-sm:py-[15%] ${bgColor}`}
-    >
-      <div className="flex w-full flex-col items-center px-[5%] py-[10vw]">
-        {cards.map((item, index) => (
-          <div
-            key={item.id}
-            ref={(element) => {
-              rowRefs.current[index] = element;
-            }}
-            className={`relative w-full min-h-[180vh] max-sm:min-h-[130vh] ${
-              index === 0 ? "" : "-mt-[70vh] max-sm:-mt-[50vh]"
-            }`}
-          >
-            <div className="sticky top-[15vh] max-sm:top-[10vh]" style={{ zIndex: index + 1 }}>
-              <div
-                ref={(element) => {
-                  cardRefs.current[index] = element;
-                }}
-                className="mx-auto flex h-[32vw] w-[80%] items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] max-sm:h-auto max-sm:min-h-[50vw] max-sm:w-full max-sm:flex-col max-sm:rounded-[9vw] max-sm:px-[8vw] max-sm:py-[15vw]"
-                style={{ backgroundColor: item.bgColor }}
-              >
-                <div className="w-[50%] max-sm:w-full">
-                  <h2
-                    className="w-full text-[5.5vw] font-medium leading-[1.1] max-sm:text-[10vw]"
-                    style={{ color: item.textColor }}
-                  >
-                    {item.title}
-                  </h2>
-                </div>
-                <div className="flex w-[50%] flex-col justify-center gap-[2vw] max-sm:w-full max-sm:gap-[7vw]">
-                  <p
-                    className="w-full text-justify text-[1.3vw] leading-[1.5] max-sm:text-center max-sm:text-[4.5vw]"
-                    style={{ color: item.textColor }}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+   <>
+    <ScrollStackComp cards={defaultContent} />
+   </>
+  )
 }
+
+export default ScrollStack
+
+export const defaultContent = [
+ {
+ id: 1,
+ title:"Design-Driven Foundations",
+ description:
+"Crafted with a strong focus on modern design principles, this component reflects clarity, structure, and visual balance. It demonstrates how thoughtful layouts and scalable patterns come together to create interfaces that feel both intuitive and impactful.",
+ bgColor:"#87B6BC",
+ textColor:"#456D72",
+ className:""
+ },
+ {
+ id: 2,
+ title:"Scalable Component Systems",
+ description:
+"Built for flexibility, this module showcases reusable patterns that adapt across different layouts. From structured spacing to responsive behavior, every element is designed to maintain consistency while scaling effortlessly across projects.",
+ bgColor:"#BED4CB",
+ textColor:"#5F7B71",
+ className:"flex-row-reverse"
+ },
+ {
+ id: 3,
+ title:"Precision & Consistency",
+ description:
+"Attention to detail is at the core of this build. Typography, spacing, and alignment are carefully tuned to create a cohesive experience. This ensures every component not only looks refined but also integrates seamlessly within a larger design system.",
+ bgColor:"#F6F09F",
+ textColor:"#8E8530",
+ className:""
+ },
+ {
+ id: 4,
+ title:"Performance Focused Layouts",
+ description:
+"Optimized for real-world usage, this section highlights efficient rendering and smooth responsiveness. It balances visual richness with performance, ensuring fast load times and a seamless user experience across devices.",
+ bgColor:"#B35656",
+ textColor:"#6E2626",
+ className:"flex-row-reverse"
+ },
+ {
+ id: 5,
+ title:"Future-Ready UI Patterns",
+ description:
+"Designed with scalability in mind, this component aligns with evolving UI trends. It embraces modularity, clean architecture, and adaptability—making it easy to extend, customize, and reuse across different applications.",
+ bgColor:"#FFD786",
+ textColor:"#9D7422",
+ className:""
+ }
+];

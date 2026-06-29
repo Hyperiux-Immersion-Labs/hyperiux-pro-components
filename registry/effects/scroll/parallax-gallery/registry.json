@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/parallax-gallery/index.jsx"
+    },
+    {
+      "path": "ParallaxGallery.jsx",
+      "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
     }
   ]
 }

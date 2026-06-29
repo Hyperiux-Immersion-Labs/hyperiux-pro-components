@@ -56,7 +56,7 @@ const CounterThree = ({
  duration = 1.5,
  fontWeight = 600,
  textColor ='#FF5100',
- textSize ='text-[5vw]',
+ textSize ='text-[5vw] max-md:text-[7vw] max-sm:text-[12vw]',
  trigger,
  suffix ='',
 }) => {
@@ -85,7 +85,7 @@ const CounterThree = ({
 
  return (
  <div
- className={`flex items-end ${textSize}`}
+ className={`flex items-end gap-[0.05em] max-md:gap-0 ${textSize}`}
  style={{
  fontWeight,
  color: textColor,

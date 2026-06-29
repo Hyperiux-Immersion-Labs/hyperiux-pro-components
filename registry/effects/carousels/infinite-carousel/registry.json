@@ -4,7 +4,9 @@
   "title": "Infinite Carousel",
   "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
   "category": "carousels",
-  "dependencies": ["gsap"],
+  "dependencies": [
+    "gsap"
+  ],
   "registryDependencies": [],
   "previewUrl": "/infinite-carousel",
   "coverImage": "infinite-carousel",
@@ -13,6 +15,13 @@
   "importPath": "@/components/effects/infinite-carousel",
   "target": "src/components/effects/infinite-carousel",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/infinite-carousel/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/infinite-carousel/index.jsx"
+    },
+    {
+      "path": "InfiniteCarouselComp.jsx",
+      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
+    }
   ]
 }

@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/draggable-marquee/index.jsx"
+    },
+    {
+      "path": "DraggableMarqueeComp.jsx",
+      "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
     }
   ]
 }

@@ -58,14 +58,14 @@ DigitScroller.displayName ='DigitScroller';
 
 const CounterTwo = ({
  value ='0',
- textSize ='text-[8vw] max-sm:text-[16vw] tablet:text-[10vw]',
+ textSize ='text-[8vw] max-md:text-[7vw] max-sm:text-[12vw]',
  color ='#111111',
  fontWeight ='normal', }) => {
  const containerRef = useRef(null);
  const cleanValue = value.replace('+','');
 
  return (
- <div ref={containerRef} className="flex items-end gap-2 w-fit">
+ <div ref={containerRef} className="flex items-end gap-[2vw] w-fit max-md:gap-0">
  <div
  className={`flex items-end font-display leading-none ${textSize} ${FONT_WEIGHTS[fontWeight] ||'font-normal'}`}
  style={{ color }}

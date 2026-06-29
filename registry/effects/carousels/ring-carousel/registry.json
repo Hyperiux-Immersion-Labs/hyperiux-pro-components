@@ -4,7 +4,10 @@
   "title": "Ring Carousel",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
   "category": "carousels",
-  "dependencies": ["gsap", "lucide-react"],
+  "dependencies": [
+    "gsap",
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "previewUrl": "/ring-carousel",
   "coverImage": "ring-carousel",
@@ -13,6 +16,13 @@
   "importPath": "@/components/effects/ring-carousel",
   "target": "src/components/effects/ring-carousel",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/ring-carousel/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/ring-carousel/index.jsx"
+    },
+    {
+      "path": "RingCarouselComp.jsx",
+      "target": "src/components/effects/ring-carousel/RingCarouselComp.jsx"
+    }
   ]
 }

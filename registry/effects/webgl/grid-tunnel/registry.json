@@ -4,7 +4,11 @@
   "title": "Grid Tunnel",
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
   "category": "webgl",
-  "dependencies": ["@react-three/fiber", "@react-three/drei", "three"],
+  "dependencies": [
+    "@react-three/fiber",
+    "@react-three/drei",
+    "three"
+  ],
   "registryDependencies": [],
   "previewUrl": "/grid-tunnel",
   "tier": "pro",
@@ -12,6 +16,13 @@
   "importPath": "@/components/effects/grid-tunnel",
   "target": "src/components/effects/grid-tunnel",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/grid-tunnel/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/grid-tunnel/index.jsx"
+    },
+    {
+      "path": "GridTunnelComp.jsx",
+      "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
+    }
   ]
 }

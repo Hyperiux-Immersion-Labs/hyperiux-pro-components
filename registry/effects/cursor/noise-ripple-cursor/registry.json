@@ -14,6 +14,7 @@
   "importPath": "@/components/effects/noise-ripple-cursor",
   "target": "src/components/effects/noise-ripple-cursor",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/noise-ripple-cursor/index.jsx" }
+    { "path": "index.jsx", "target": "src/components/effects/noise-ripple-cursor/index.jsx" },
+    { "path": "2dCanvasTracker.js", "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js" }
   ]
 }

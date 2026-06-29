@@ -19,8 +19,8 @@
       "target": "src/components/effects/full-screen-crosshair/index.jsx"
     },
     {
-      "path": "use-mouse.js",
-      "target": "src/components/effects/full-screen-crosshair/use-mouse.js"
+      "path": "useMouse.js",
+      "target": "src/components/effects/full-screen-crosshair/useMouse.js"
     }
   ]
 }

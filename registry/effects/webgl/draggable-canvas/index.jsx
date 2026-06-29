@@ -3,51 +3,77 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
-import { MaskedContainer } from "./masked-container";
-import { DragCursor } from "./drag-cursor";
+import MaskedContainer from "@/components/draggable-canvas/MaskedContainer";
+import DragCursor from "@/components/draggable-canvas/DragCursor";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
-export function DraggableCanvas({ videoSrc }) {
+export default function DraggableCanvas() {
   const videoRef = useRef(null);
+  const [videoElement, setVideoElement] = useState(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
   const [containerPositions, setContainerPositions] = useState({
-    large:  { x: 0, y: 0 },
+    large: { x: 0, y: 0 },
     medium: { x: 0, y: 0 },
-    small:  { x: 0, y: 0 },
+    small: { x: 0, y: 0 },
     extra1: { x: 0, y: 0 },
     extra2: { x: 0, y: 0 },
-    extra3: { x: 0, y: 0 },
+    extra3: { x: 0, y: 0 }
   });
 
+  const setVideoRef = useCallback((node) => {
+    videoRef.current = node;
+    setVideoElement(node);
+  }, []);
+
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoElement;
+
     if (!video) return;
 
-    const updateCanvasSize = () =>
-      setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+    // Set canvas size
+    const updateCanvasSize = () => {
+      setCanvasSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
 
     updateCanvasSize();
     window.addEventListener("resize", updateCanvasSize);
 
-    const handleCanPlay = () => setIsVideoReady(true);
-    const handleError = () => setIsVideoReady(false);
+    // Video event handlers
+    const handleVideoCanPlay = () => {
+      setIsVideoReady(true);
+    };
 
-    video.addEventListener("canplay", handleCanPlay);
-    video.addEventListener("error", handleError);
+    const handleVideoError = () => {
+      console.error("Video failed to load");
+      setIsVideoReady(false);
+    };
+
+    // Add video event listeners
+    video.addEventListener("canplay", handleVideoCanPlay);
+    video.addEventListener("error", handleVideoError);
+
+    // Force video to load
     video.load();
 
     return () => {
       window.removeEventListener("resize", updateCanvasSize);
-      video.removeEventListener("canplay", handleCanPlay);
-      video.removeEventListener("error", handleError);
+      video.removeEventListener("canplay", handleVideoCanPlay);
+      video.removeEventListener("error", handleVideoError);
     };
-  }, []);
+  }, [videoElement]);
 
+  
   const handlePositionUpdate = useCallback((size, position) => {
-    setContainerPositions((prev) => ({ ...prev, [size]: position }));
+    setContainerPositions(prev => ({
+      ...prev,
+      [size]: position
+    }));
   }, []);
 
   const handleHoverChange = useCallback((isHovering) => {
@@ -55,13 +81,16 @@ export function DraggableCanvas({ videoSrc }) {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
-      <DragCursor isHoveringDraggable={isHoveringDraggable} />
-      <div className="absolute w-full h-full inset-0 z-10" />
-
+    <div className="relative w-full h-screen overflow-hidden  bg-black">
+        <DragCursor isHoveringDraggable={isHoveringDraggable}/>
+        <div className="absolute w-full h-full inset-0  z-10"></div>
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[75vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:bottom-6 max-sm:right-4 max-sm:text-sm z-99999">
+          Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
+        </p>
+      {/* Hidden video element - single source for all masks */}
       <video
-        ref={videoRef}
-        src={videoSrc}
+        ref={setVideoRef}
+        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/draggable-video.mp4"
         className="opacity-0 absolute top-0 left-0 w-full h-full object-cover"
         autoPlay
         muted
@@ -70,68 +99,75 @@ export function DraggableCanvas({ videoSrc }) {
         preload="auto"
         crossOrigin="anonymous"
       />
+    
 
       {isVideoReady && (
         <MaskedContainer
           size="large"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[60vw] h-[35vw] absolute top-[10vh] left-[10vw]"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
       )}
+
       {isVideoReady && (
         <MaskedContainer
           size="medium"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[17vw] h-[9vw] absolute top-[5%] left-[5vw]"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
       )}
+
+    
+
       {isVideoReady && (
         <MaskedContainer
           size="extra1"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[35vw] h-[19vw] absolute top-[5vh] right-[5vw]"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
       )}
+
       {isVideoReady && (
         <MaskedContainer
           size="extra2"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[38vw] h-[22vw] absolute top-[50vh] left-[5vw]"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
       )}
+
       {isVideoReady && (
         <MaskedContainer
           size="extra3"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[25vw] h-[14vw] absolute bottom-[20%] right-[10vw]"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
       )}
-      {isVideoReady && (
+        {isVideoReady && (
         <MaskedContainer
           size="small"
           initialPosition={{ x: 0, y: 0 }}
           className="w-[22vw] h-[12vw] absolute bottom-[15vh] left-1/2 -translate-x-1/2"
-          video={videoRef.current}
+          video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}

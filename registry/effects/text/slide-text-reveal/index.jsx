@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export function SlideTextReveal({
+export default function SlideTextReveal({
   children,
   animateOnScroll = true,
   delay = 0,
   className = "",
-  scrub = true,
+  start = "top 80%",
+  end = "bottom 60%",
 }) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
@@ -37,12 +38,16 @@ export function SlideTextReveal({
         elements.forEach((element) => {
           const split = SplitText.create(element, {
             type: "lines,chars",
-            charsClass: "char",
+            charsClass: "char++",
             reduceWhiteSpace: false,
           });
 
           splitRefs.current.push(split);
           charsRef.current.push(...split.chars);
+        });
+
+        gsap.set(containerRef.current, {
+          opacity: 1,
         });
 
         gsap.set(charsRef.current, {
@@ -65,9 +70,10 @@ export function SlideTextReveal({
             ...animationProps,
             scrollTrigger: {
               trigger: containerRef.current,
-              start: "top 80%",
-              end: "bottom 60%",
-              scrub,
+              start,
+              end,
+              scrub: true,
+              // markers: true,
             },
           });
         } else {
@@ -82,12 +88,15 @@ export function SlideTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, scrub]);
+  }, [animateOnScroll, delay, start, end]);
 
   return (
-    <div ref={containerRef} data-copy-wrapper="true" className={className}>
+    <div
+      ref={containerRef}
+      data-copy-wrapper="true"
+      className={`opacity-0 ${className}`}
+    >
       {children}
     </div>
   );
 }
-

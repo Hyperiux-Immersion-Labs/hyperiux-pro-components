@@ -5,6 +5,25 @@ import { LevaPanel, useControls } from"leva";
 
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
+const DEFAULT_SVG_MASK_URL =
+ "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/hyperiux-wordmark.svg";
+
+const CANVAS_SAFE_MEDIA_HOSTS = new Set([
+ "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev",
+]);
+
+const getCanvasSafeImageUrl = (source) => {
+ try {
+ const url = new URL(source);
+ if (url.protocol ==="https:" && CANVAS_SAFE_MEDIA_HOSTS.has(url.hostname)) {
+ return `/api/media-proxy?url=${encodeURIComponent(url.toString())}`;
+ }
+ return source;
+ } catch {
+ return source;
+ }
+};
+
 const levaTheme = {
  colors: {
  elevation1:"#0d0d0d",
@@ -58,17 +77,20 @@ const levaTheme = {
  active:"1px",
  folder:"0px",
  },
+
 };
 
-export function GridLift() {
+export default function GridLift() {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
+
+ const [isDesktop, setIsDesktop] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef([]);
  const svgImageRef = useRef(null);
 
- const [svgName, setSvgName] = useState("hyperiux-wordmark.svg");
+ const [svgName, setSvgName] = useState(DEFAULT_SVG_MASK_URL);
  const [svgVersion, setSvgVersion] = useState(0);
  const [maskSourceState, setMaskSourceState] = useState("SVG");
  const [maskText, setMaskText] = useState("DESIGN");
@@ -191,17 +213,31 @@ export function GridLift() {
  event.target.value ="";
  };
 
- // Default SVG mask (Hyperiux wordmark)
- useEffect(() => {
- const image = new Image();
- image.onload = () => {
- svgImageRef.current = image;
- setSvgVersion((v) => v + 1);
- };
- image.src ="/hyperiux-wordmark.svg";
- }, []);
 
- useEffect(() => {
+useEffect(() => {
+  const updateDesktop = () => {
+    const gw = typeof window !== "undefined" && typeof window.globalWidth === "number"
+      ? window.globalWidth
+      : (typeof window !== "undefined" ? window.innerWidth : 0);
+    setIsDesktop(!(gw < 1025));
+  };
+  updateDesktop();
+  window.addEventListener("resize", updateDesktop);
+  return () => window.removeEventListener("resize", updateDesktop);
+}, []);
+
+// Default SVG mask (Hyperiux wordmark)
+useEffect(() => {
+  const image = new Image();
+  image.onload = () => {
+    svgImageRef.current = image;
+    setSvgVersion((v) => v + 1);
+  };
+  image.src = getCanvasSafeImageUrl(DEFAULT_SVG_MASK_URL);
+}, []);
+
+useEffect(() => {
+ if (!isDesktop) return;
  const canvas = canvasRef.current;
  const ctx = canvas.getContext("2d", { alpha: false });
  const maskCanvas = document.createElement("canvas");
@@ -381,37 +417,47 @@ export function GridLift() {
  };
 
  const onPointerMove = (e) => {
- mouseRef.current.x = e.clientX;
- mouseRef.current.y = e.clientY;
- mouseRef.current.active = true;
+  if (!isDesktop) return;
+  mouseRef.current.x = e.clientX;
+  mouseRef.current.y = e.clientY;
+  mouseRef.current.active = true;
  };
  const onPointerLeave = () => { mouseRef.current.active = false; };
 
  resize(); render();
  window.addEventListener("resize", resize);
- window.addEventListener("pointermove", onPointerMove);
- window.addEventListener("pointerleave", onPointerLeave);
+ // Only attach pointer listeners on desktop-capable devices
+ if (isDesktop) {
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerleave", onPointerLeave);
+ } else {
+  // ensure no active hover state on non-desktop
+  mouseRef.current.active = false;
+ }
 
  return () => {
  cancelAnimationFrame(animationFrame);
- window.removeEventListener("resize", resize);
- window.removeEventListener("pointermove", onPointerMove);
- window.removeEventListener("pointerleave", onPointerLeave);
+  window.removeEventListener("resize", resize);
+  if (isDesktop) {
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerleave", onPointerLeave);
+  }
  };
  }, [
  maskSource, safeText, fontSize, fontWeight, maskScale,
  gridSpacing, strokeSize, hoverRadius, hoverFalloff, interactionRange,
  liftHeight, liftRotation, liftSmoothness, baseOpacity, hoverOpacity,
  backgroundColor, gridColor, hoverColor, svgVersion,
+ isDesktop,
  ]);
 
  return (
  <>
- <div className="fixed inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
- <div className="fixed left-4 top-4 z-50 pointer-events-auto max-sm:bottom-3 max-sm:left-3 max-sm:right-3 max-sm:top-auto">
+ <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
+ <div className="fixed max-md:hidden left-4 top-25 z-50 pointer-events-auto max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:top-auto">
  <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-sm:w-full max-sm:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
- <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
+  <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
  <div className="inline-flex gap-[6px] rounded-[10px] border border-[#2a2a2a] bg-[#141414] p-1">
  <button
  type="button"
@@ -426,7 +472,7 @@ export function GridLift() {
  </button>
  <button
  type="button"
- className={`h-6.5 cursor-pointer rounded-md border px-2.5 text-[12px] font-semibold ${
+  className={`h-6.5 cursor-pointer rounded-md border px-2.5 text-[12px] font-semibold ${
  maskSourceState ==="SVG"
  ? "border-[#ff5f00] bg-[#ff5f00] text-black"
  : "border-transparent bg-transparent text-[#bdbdbd] hover:bg-[#1f1f1f] hover:text-white"
@@ -468,6 +514,24 @@ export function GridLift() {
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />
+
+  {!isDesktop && (
+    <div className="absolute -translate-x-1/2  left-1/2 bottom-20 z-50 flex items-center justify-center pointer-events-none">
+      <div className="px-4 py-2 rounded text-center bg-black/70 text-white text-lg max-sm:text-sm font-medium">
+        Interactive effect available on desktop only.
+      </div>
+    </div>
+  )}
+ 
+ 
+ 
+ {/* Creative clue hint */}
+ <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-md:bottom-4 max-md:hidden">
+ <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
+ Drift your cursor through the grid to lift
+ </div>
+ </div>
+
  <input
  ref={fileInputRef}
  type="file"
@@ -475,7 +539,7 @@ export function GridLift() {
  onChange={handleSVGUpload}
  style={{ display:"none" }}
  />
- <div className="grid-lift-right-controls fixed right-4 top-4 z-60 pointer-events-auto">
+ <div className="grid-lift-right-controls max-sm:hidden fixed right-4 top-4 z-60 pointer-events-auto">
  <LevaPanel
  theme={levaTheme}
  collapsed={false}

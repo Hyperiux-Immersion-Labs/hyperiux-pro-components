@@ -148,8 +148,21 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  const frontPath = `${pathPattern}/${front}.png`;
  const backPath = `${pathPattern}/${back}.png`;
 
- const [picture, picture2] = useTexture([frontPath, backPath]);
- picture.colorSpace = picture2.colorSpace = SRGBColorSpace;
+ const [frontTexture, backTexture] = useTexture([frontPath, backPath]);
+
+ const picture = useMemo(() => {
+ const texture = frontTexture.clone();
+ texture.colorSpace = SRGBColorSpace;
+ texture.needsUpdate = true;
+ return texture;
+ }, [frontTexture]);
+
+ const picture2 = useMemo(() => {
+ const texture = backTexture.clone();
+ texture.colorSpace = SRGBColorSpace;
+ texture.needsUpdate = true;
+ return texture;
+ }, [backTexture]);
 
  const group = useRef();
  const turnedAt = useRef(0);
@@ -348,6 +361,7 @@ export const Book = ({  images = [],
  ...props }) => {
  const { page } = usePage();
  const [delayedPage, setDelayedPage] = useState(page);
+ const [bookScale, setBookScale] = useState(1);
 
  // Generate pages from image array
  const pages = useMemo(() => generatePages(images), [images]);
@@ -358,6 +372,29 @@ export const Book = ({  images = [],
  preloadTextures(pages, pathPattern);
  }
  }, [pages, pathPattern]);
+
+ useEffect(() => {
+ const updateBookScale = () => {
+ if (window.innerWidth <= 640) {
+ setBookScale(1.2);
+ return;
+ }
+
+ if (window.innerWidth <= 1025) {
+ setBookScale(0.84);
+ return;
+ }
+
+ setBookScale(1);
+ };
+
+ updateBookScale();
+ window.addEventListener("resize", updateBookScale);
+
+ return () => {
+ window.removeEventListener("resize", updateBookScale);
+ };
+ }, []);
 
  /**
  * PAGE ANIMATION SEQUENCING
@@ -394,7 +431,7 @@ export const Book = ({  images = [],
  }, [page]);
 
  return (
- <group {...props} rotation-y={-Math.PI / 2} rotation-x={-0.7} >
+ <group {...props} rotation-y={-Math.PI / 2} rotation-x={-0.7} scale={bookScale}>
  {pages.map((pageData, index) => (
  <Page
  key={index}

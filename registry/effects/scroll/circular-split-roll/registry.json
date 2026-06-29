@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/circular-split-roll/index.jsx"
+    },
+    {
+      "path": "CircularSplitRollComp.jsx",
+      "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.jsx"
     }
   ]
 }
