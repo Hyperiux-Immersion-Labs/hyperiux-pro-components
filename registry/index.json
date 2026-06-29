@@ -1100,14 +1100,14 @@
     "target": "src/components/effects/hover-slider"
   },
   {
-    "name": "hyperiux-glitter-concept",
+    "name": "hyperiux-glitter",
     "title": "Hyperiux Glitter Concept",
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/webgl/hyperiux-glitter-concept/registry.json",
-    "importPath": "@/components/effects/hyperiux-glitter-concept",
-    "target": "src/components/effects/hyperiux-glitter-concept"
+    "registryPath": "registry/effects/webgl/hyperiux-glitter/registry.json",
+    "importPath": "@/components/effects/hyperiux-glitter",
+    "target": "src/components/effects/hyperiux-glitter"
   },
   {
     "name": "infinite-grid-gallery",
