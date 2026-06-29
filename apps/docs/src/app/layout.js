@@ -51,12 +51,13 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }} />
         {/* <PixelRandom color="#ff5f00"> */}
         <ClerkProvider
-          waitlistUrl="#"
+          waitlistUrl="/?waitlist=open"
           appearance={{
             cssLayerName: "clerk",
             theme: "simple",
             variables: {
               colorPrimary: "#ff5f00",
+              colorPrimaryForeground: "#ffffff",
               colorBackground: "transparent",
               colorInputBackground: "rgba(255,255,255,0.08)",
               colorInputText: "#ffffff",

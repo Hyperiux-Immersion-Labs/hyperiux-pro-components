@@ -19,6 +19,7 @@ import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -637,7 +638,7 @@ function PricingToggle({ billingCycle, setBillingCycle }) {
   );
 }
 
-function PricingCard({ plan, billingCycle, onSelect }) {
+function PricingCard({ plan, billingCycle }) {
   const displayedPrice = getPlanPrice(plan, billingCycle);
   const annualTotal = getAnnualTotal(plan);
   const isYearly = billingCycle === "yearly";
@@ -716,21 +717,15 @@ function PricingCard({ plan, billingCycle, onSelect }) {
           </button>
         ) : (
           <div className="w-full">
-            <WebsiteButton
-              text={plan.cta}
-              href="#"
-              preventDefault
-              onClick={() => onSelect(plan)}
-              variant={plan.highlighted ? "orange" : "white"}
-              className="h-[3.2vw] w-full justify-center text24 max-md:h-12 max-md:text-sm"
-              scaleClass="group-hover:scale-[120]"
-              hoverTextClassName={
+            <WaitlistTrigger
+              className={`h-[3.2vw] w-full rounded-full text24 font-medium transition-colors max-md:h-12 max-md:text-sm ${
                 plan.highlighted
-                  ? "group-hover:text-black"
-                  : "group-hover:text-white"
-              }
-              innerClassName="group-hover:-translate-x-[1vw]"
-            />
+                  ? "bg-primary text-white hover:bg-primary-hover"
+                  : "bg-[#0e0e0e] text-white hover:bg-[#222]"
+              }`}
+            >
+              {plan.cta}
+            </WaitlistTrigger>
           </div>
         )}
 
@@ -1012,12 +1007,12 @@ function PricingInner({ enableColorSwitch = true }) {
               key={plan.id}
               plan={plan}
               billingCycle={billingCycle}
-              onSelect={handleSelectPlan}
             />
           ))}
         </div>
       </section>
 
+      {/* Disabled — replaced by waitlist modal. Re-enable when custom plan intake is ready.
       <PricingPlanModal
         isOpen={isModalOpen}
         isSent={isModalSent}
@@ -1028,6 +1023,7 @@ function PricingInner({ enableColorSwitch = true }) {
         onClose={closePlanModal}
         onSubmitted={handlePlanSubmitted}
       />
+      */}
     </>
   );
 }

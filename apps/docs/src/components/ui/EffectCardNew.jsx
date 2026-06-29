@@ -9,7 +9,6 @@ import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
 
-
 function formatLabel(value = "") {
   return value
     .split(/[-_\s]+/)
@@ -51,6 +50,9 @@ export function EffectCard({
       defaultExtension: "png",
     }) || "/assets/img/image01.webp";
 
+  const effectHref = getEffectHref(effect);
+  const previewHref = getEffectPreviewHref(effect);
+
   const handleMouseEnter = () => {
     clearTimeout(unmountTimerRef.current);
     setIsHovered(true);
@@ -74,9 +76,6 @@ export function EffectCard({
   // showVideo drives opacity; videoMounted drives whether the element is in the DOM
   const showVideo = videoReady && isHovered;
 
-  const effectHref = getEffectHref(effect);
-  const previewHref = getEffectPreviewHref(effect);
-
   const categories = (
     effect.categories?.length ? effect.categories : [effect.category]
   ).filter(Boolean);
@@ -89,14 +88,16 @@ export function EffectCard({
     .filter(Boolean);
 
   return (
-    <div
+    <Link
+      href={effectHref}
+      prefetch={false}
       ref={cardRef}
       style={{
         opacity: isInView ? 1 : 0,
         transition: "opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1)",
         willChange: isInView ? "auto" : "opacity",
       }}
-      className="group relative w-full cursor-pointer rounded-md"
+      className="group relative block w-full cursor-pointer rounded-md"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -132,7 +133,7 @@ export function EffectCard({
             fill
             sizes={sizes}
             priority={priority}
-            className={`object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.02] ${
+            className={`object-cover transition-[opacity,transform] duration-500 ${
               showVideo ? "opacity-0" : "opacity-100"
             }`}
           />
@@ -159,13 +160,9 @@ export function EffectCard({
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
         <div className="flex min-w-0 flex-col gap-0.5">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white max-sm:text-base">
-            <Link
-              href={effectHref}
-              prefetch={false}
-              className="pointer-events-auto hover:underline after:absolute after:inset-0 after:z-10"
-            >
+            <span className="group-hover:underline">
               {effect.title}
-            </Link>
+            </span>
           </h3>
           <p className="text18 text-[#AEAEAE] max-sm:text-xs">
             {primaryCategoryLabel}
@@ -205,18 +202,14 @@ export function EffectCard({
             <Eye className="h-4 w-4 max-md:h-6 max-md:w-6 max-sm:h-5 max-sm:w-5" />
           </button>
 
-          <Link
-            href={effectHref}
-            prefetch={false}
-            data-no-card-link
-            onClick={(e) => e.stopPropagation()}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/85 max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
-            aria-label={`Open ${effect.title || effect.name}`}
+          <span
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white max-md:h-12 max-md:w-12 max-sm:h-10 max-sm:w-10"
+            aria-hidden="true"
           >
             <ArrowUpRight className="h-5 w-5 max-sm:h-4 max-sm:w-4" />
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

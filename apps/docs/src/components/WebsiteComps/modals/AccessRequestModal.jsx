@@ -181,21 +181,20 @@ function AccessRequestModalInner() {
       return;
     }
 
-    try {
-      await fetch("/api/waitlist-extra", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-          role: trimmedRole,
-          emailAddress: trimmedEmail,
-        }),
-      });
-    } catch (error) {
-      console.error("Failed to save extra waitlist fields:", error);
-    }
+    // Disabled for now — re-enable when /api/waitlist-extra is implemented
+    // try {
+    //   await fetch("/api/waitlist-extra", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({
+    //       name: trimmedName,
+    //       role: trimmedRole,
+    //       emailAddress: trimmedEmail,
+    //     }),
+    //   });
+    // } catch (error) {
+    //   console.error("Failed to save extra waitlist fields:", error);
+    // }
 
     setName("");
     setRole("");

@@ -10,7 +10,21 @@ import Button from "@/components/WebsiteComps/Button";
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
-import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
+import { useWaitlistModal } from "../WebsiteComps/modals/AccessRequestModal";
+import { Suspense } from "react";
+
+function RequestAccessButton() {
+  const { openWaitlist } = useWaitlistModal();
+  return (
+    <Button
+      text="Request Access"
+      href="#"
+      preventDefault
+      variant="orange"
+      onClick={openWaitlist}
+    />
+  );
+}
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -175,17 +189,9 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
 
             {!isSignedIn ? (
               <div className="block max-md:hidden">
-                <WaitlistTrigger>
-                  <Button
-                    preventDefault={true}
-                    text="Request Access"
-                    href="#"
-                    variant="orange"
-                    showArrow={false}
-                    innerClassName="group-hover:!translate-x-0"
-                    pillClassName="px-4 py-2 text-xs leading-none"
-                  />
-                </WaitlistTrigger>
+                <Suspense fallback={null}>
+                  <RequestAccessButton />
+                </Suspense>
               </div>
             ) : (
               <div className="max-md:hidden">
