@@ -9,7 +9,6 @@ export default function DashboardLayout({ children }) {
     <DashboardShell>
       {children}
     </DashboardShell>
-
     </VaultLayout>
   );
 }

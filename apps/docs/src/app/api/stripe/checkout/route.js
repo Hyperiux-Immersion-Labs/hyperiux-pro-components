@@ -30,6 +30,14 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}));
     const billingInterval = getBillingInterval(body.billingInterval);
     const priceId = PRICE_IDS[billingInterval];
+    const rawAppUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const appUrl = rawAppUrl
+      ? rawAppUrl.startsWith("http")
+        ? rawAppUrl
+        : `https://${rawAppUrl}`
+      : new URL(request.url).origin;
+    const successPath = body.successUrl || "/pricing/success";
+    const cancelPath = body.cancelUrl || "/pricing?checkout=cancelled";
 
     if (!billingInterval || !priceId) {
       return NextResponse.json(
@@ -92,9 +100,6 @@ export async function POST(request) {
       }
     }
 
-    // const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const appUrl = "http://localhost:3001";
-
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
@@ -118,8 +123,8 @@ export async function POST(request) {
           plan: "pro",
         },
       },
-      success_url: `${appUrl}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/pricing?checkout=cancelled`,
+      success_url: `${appUrl}${successPath}${successPath.includes("?") ? "&" : "?"}session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}${cancelPath}`,
     });
 
     return NextResponse.json({ url: session.url });

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-// import CliTokenManager from "@/components/dashboard/CliTokenManager";
 import CliTokenManager from "@/components/Dashboard/CliTokenManager";
 
 function formatDate(value) {
@@ -59,7 +59,63 @@ function StatCard({
 }
 
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+  const justUpgraded = searchParams.get("upgraded") === "true";
+  const sessionId = searchParams.get("session_id");
+
   const [data, setData] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
+  const [upgradeError, setUpgradeError] = useState(null);
+
+  async function handleUpgrade() {
+    setUpgrading(true);
+    setUpgradeError(null);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          billingInterval: "monthly",
+          successUrl: "/dashboard?upgraded=true",
+          cancelUrl: "/dashboard",
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Checkout failed");
+      window.location.href = json.url;
+    } catch (err) {
+      setUpgradeError(err.message);
+      setUpgrading(false);
+    }
+  }
+
+  // When Stripe redirects back with a session_id, sync the subscription to
+  // Supabase + Clerk immediately (covers local dev where webhooks don't fire).
+  useEffect(() => {
+    if (!justUpgraded || !sessionId) return;
+
+    let active = true;
+    setSyncing(true);
+
+    fetch("/api/stripe/sync-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    })
+      .then((r) => r.json())
+      .then(() => {
+        if (!active) return;
+        // Reload dashboard data to reflect the updated plan
+        return fetch("/api/dashboard")
+          .then((r) => r.json())
+          .then((json) => { if (active) setData(json); });
+      })
+      .catch(console.error)
+      .finally(() => { if (active) setSyncing(false); });
+
+    return () => { active = false; };
+  }, [justUpgraded, sessionId]);
 
   useEffect(() => {
     let active = true;
@@ -119,6 +175,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      {justUpgraded && (
+        <div className="border border-green-500/30 rounded-lg px-6 py-4 bg-green-500/10 text-green-400">
+          {syncing
+            ? "Activating your Pro account…"
+            : "🎉 Welcome to Pro! Your account has been upgraded."}
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-5">
         <StatCard
           label="Saved Effects"
@@ -193,12 +257,18 @@ export default function DashboardPage() {
           </div>
 
           {data.plan === "free" && (
-            <Link
-              href="/pricing"
-              className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
-            >
-              Upgrade
-            </Link>
+            <div className="flex flex-col items-end gap-2">
+              <button
+                onClick={handleUpgrade}
+                disabled={upgrading}
+                className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {upgrading ? "Redirecting…" : "Upgrade to Pro"}
+              </button>
+              {upgradeError && (
+                <p className="text-red-400 text-sm">{upgradeError}</p>
+              )}
+            </div>
           )}
 
           {data.plan === "pro" && (

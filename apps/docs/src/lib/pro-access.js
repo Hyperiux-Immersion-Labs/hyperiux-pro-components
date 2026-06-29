@@ -7,8 +7,8 @@ import { createProPurchaseEmail } from "@/lib/emails/pro-purchase-email";
 
 function getPeriodEnd(subscription) {
   const periodEnd =
-    subscription?.current_period_end ||
     subscription?.items?.data?.[0]?.current_period_end ||
+    subscription?.current_period_end ||
     null;
 
   return periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
