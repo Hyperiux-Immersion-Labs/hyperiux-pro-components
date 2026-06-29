@@ -1,10 +1,12 @@
 {
-  "name": "@hyperiux/hyperiux-glitter-concept",
+  "name": "@hyperiux/hyperiux-glitter",
   "version": "0.0.1",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
-  "main": "MorphingParticleModelNew.jsx",
+  "main": "index.jsx",
   "files": [
+    "index.jsx",
     "MorphingParticleModelNew.jsx",
+    "MouseTrailParticles.jsx",
     "registry.json"
   ],
   "keywords": [

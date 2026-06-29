@@ -26,11 +26,11 @@
     },
     {
       "path": "MorphingParticleModelNew.jsx",
-      "target": "src/components/effects/hyperiux-glitter-concept/MorphingParticleModelNew.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
-      "target": "src/components/effects/hyperiux-glitter-concept/MouseTrailParticles.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
     }
   ]
 }

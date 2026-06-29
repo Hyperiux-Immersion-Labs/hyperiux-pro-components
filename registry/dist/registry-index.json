@@ -105,6 +105,11 @@
     "tarball": "registry/dist/hyperiux-modal-0.0.1.tgz"
   },
   {
+    "name": "@hyperiux/ribbon-drift",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-ribbon-drift-0.0.1.tgz"
+  },
+  {
     "name": "@hyperiux/tabs",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-tabs-0.0.1.tgz"
@@ -250,6 +255,11 @@
     "tarball": "registry/dist/hyperiux-ribbon-drift-0.0.1.tgz"
   },
   {
+    "name": "@hyperiux/rotating-carousel",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-rotating-carousel-0.0.1.tgz"
+  },
+  {
     "name": "@hyperiux/circular-split-roll",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-circular-split-roll-0.0.1.tgz"
@@ -308,11 +318,6 @@
     "name": "@hyperiux/progressive-bloom-valley",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-progressive-bloom-valley-0.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/rotating-carousel",
-    "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-rotating-carousel-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/rotation-slider",
@@ -535,14 +540,19 @@
     "tarball": "registry/dist/hyperiux-grid-tunnel-0.0.1.tgz"
   },
   {
+    "name": "@hyperiux/hero-animated-banner",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-hero-animated-banner-0.0.1.tgz"
+  },
+  {
     "name": "@hyperiux/hero-banner-animated",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-hero-banner-animated-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/hyperiux-glitter-concept",
+    "name": "@hyperiux/hyperiux-glitter",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-hyperiux-glitter-concept-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-hyperiux-glitter-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/infinite-grid-gallery",
