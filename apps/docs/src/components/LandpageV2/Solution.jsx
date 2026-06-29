@@ -7,8 +7,8 @@ import Link from 'next/link'
 const Solution = () => {
     return (
         <section className='w-full h-fit px-[3vw] py-[10%]' id='solution'>
-            <h2 className='text-[5.5vw] w-full text-center'>
-                Vault is That Layer - <span className='italic text-[#ff5f00]'>Installable</span>
+            <h2 className='text110 w-full text-center'>
+                Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
             </h2>
             <div className='w-full h-fit flex justify-center items-center'>
                 <TextFillAnimation
