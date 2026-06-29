@@ -21,7 +21,7 @@
     },
     {
       "path": "HoverSliderComp.jsx",
-      "target": "src/components/effects/interactive-hover-slider/HoverSliderComp.jsx"
+      "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
     }
   ]
 }
