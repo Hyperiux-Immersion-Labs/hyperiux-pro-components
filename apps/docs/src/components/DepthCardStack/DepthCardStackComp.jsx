@@ -40,21 +40,23 @@ function computeSlot(cardIdx, centerIdx, total) {
 
 function useCountdown(targetDate) {
  const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 });
- useEffect(() => {
- if (!targetDate) return;
- const tick = () => {
- const diff = Math.max(0, Math.floor((targetDate.getTime() - Date.now()) / 1000));
- setTime({
- d: Math.floor(diff / 86400),
- h: Math.floor((diff % 86400) / 3600),
- m: Math.floor((diff % 3600) / 60),
- s: diff % 60,
- });
- };
- tick();
- const id = setInterval(tick, 1000);
- return () => clearInterval(id);
- }, [targetDate]);
+  useEffect(() => {
+    if (!targetDate) return;
+    const tick = () => {
+      const diff = Math.max(0, Math.floor((targetDate.getTime() - Date.now()) / 1000));
+      setTime({
+        d: Math.floor(diff / 86400),
+        h: Math.floor((diff % 86400) / 3600),
+        m: Math.floor((diff % 3600) / 60),
+        s: diff % 60,
+      });
+    };
+    queueMicrotask(() => {
+      tick();
+    });
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [targetDate]);
  return time;
 }
 
@@ -77,16 +79,18 @@ export default function DepthCardStackComp({ cards }) {
  const [isTablet, setIsTablet] = useState(false);
  const [isStackReady, setIsStackReady] = useState(false);
 
- useEffect(() => {
- const check = () => {
- const width = window.innerWidth;
- setIsMobile(width <= 640);
- setIsTablet(width > 640 && width <= 1024);
- };
- check();
- window.addEventListener("resize", check);
- return () => window.removeEventListener("resize", check);
- }, []);
+  useEffect(() => {
+    const check = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 640);
+      setIsTablet(width > 640 && width <= 1024);
+    };
+    queueMicrotask(() => {
+      check();
+    });
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
  const cardWidth = isTablet ? TABLET_CARD_W : CARD_W;
  const cardHeight = isTablet ? TABLET_CARD_H : CARD_H;
@@ -109,13 +113,15 @@ export default function DepthCardStackComp({ cards }) {
  });
  }, [cards]);
 
- useEffect(() => {
- setIsStackReady(false);
- applyLayout(false);
- const cards = cardRefs.current;
- const readyFrame = requestAnimationFrame(() => {
- setIsStackReady(true);
- });
+  useEffect(() => {
+    queueMicrotask(() => {
+      setIsStackReady(false);
+    });
+    applyLayout(false);
+    const cards = cardRefs.current;
+    const readyFrame = requestAnimationFrame(() => {
+      setIsStackReady(true);
+    });
 
  return () => {
  cancelAnimationFrame(readyFrame);

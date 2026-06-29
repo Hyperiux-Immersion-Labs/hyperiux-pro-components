@@ -866,7 +866,11 @@ export default function MilkyWay() {
    const [isSceneReady, setIsSceneReady] = useState(false)
 
    useLayoutEffect(() => {
-      const markLoaded = () => setIsPageLoaded(true)
+      const markLoaded = () => {
+         queueMicrotask(() => {
+            setIsPageLoaded(true);
+         });
+      };
       if (document.readyState === 'complete') {
          markLoaded()
       } else {
@@ -874,10 +878,12 @@ export default function MilkyWay() {
       }
 
       const updateViewport = () => {
-         setViewport({
-            dpr: Math.max(1, Math.min(2, window.devicePixelRatio || 1)),
-            isMobile: window.matchMedia(MOBILE_QUERY).matches,
-         })
+         queueMicrotask(() => {
+            setViewport({
+               dpr: Math.max(1, Math.min(2, window.devicePixelRatio || 1)),
+               isMobile: window.matchMedia(MOBILE_QUERY).matches,
+            });
+         });
       }
 
       updateViewport()
@@ -894,7 +900,9 @@ export default function MilkyWay() {
 
    useEffect(() => {
       if (viewport?.isMobile) {
-         setIsSceneReady(false)
+         queueMicrotask(() => {
+            setIsSceneReady(false);
+         });
       }
    }, [viewport?.isMobile])
 

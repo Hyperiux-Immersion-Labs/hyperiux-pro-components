@@ -2,7 +2,7 @@ import { getEffectRouteSlug } from "./effect-slugs";
 import { createPageMetadata } from "./seo-metadata";
 
 export const effectsOverviewContent = {
-  name: "Hyperiux Vault Components",
+  name: "Hyperiux Vault Effects",
   metadata: {
     title: "The Vault by Hyperiux UI | Modern UI Effects & Components",
     description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
@@ -54,24 +54,12 @@ export const freeEffectsContent = {
   ],
   faqs: [
     {
-      question: "Where should I start if I only know the page needs to feel better?",
-      answer: "Start with the page job. If the page needs a stronger story, look at scroll effects. If it needs atmosphere, explore backgrounds or WebGL effects. If it needs better conversion support, review buttons, FAQs, forms, testimonials, and navigation patterns.",
+      question: "Are the free effects free for commercial use?",
+      answer: "Yes, all free effects in the Hyperiux Vault are MIT licensed and can be used in personal and commercial projects without any attribution required."
     },
     {
-      question: "When is browsing the full Vault better than choosing a category first?",
-      answer: "Use the full catalog when you are still exploring the interaction direction. It helps when the goal is clear, such as “make the hero sharper” or “make the CTA feel better,” but the exact component type is not decided yet.",
-    },
-    {
-      question: "How do I choose between a subtle effect and a more expressive one?",
-      answer: "Choose the effect that improves the section without stealing its job. A quiet background may be better for SaaS copy. A WebGL scene may be right for a launch hero. A cursor effect may suit a portfolio, but not a pricing page. The strongest choice is the one that makes the page clearer, sharper, or more memorable.",
-    },
-    {
-      question: "How should the catalog handle heavier previews?",
-      answer: "Keep the page light. Avoid running many WebGL, canvas, video, or continuous animation previews at once. Use static thumbnails, lazy loading, offscreen pause, and click-to-preview behavior where the effect is too heavy for always-on browsing.",
-    },
-    {
-      question:"What changes when reduced motion is enabled?",
-      answer:"Animated previews should pause or become static. Autoplay, looping motion, cursor trails, WebGL movement, and continuous background effects should not run automatically. The catalog should remain fully browsable without motion."
+      question: "How do I upgrade from free to Pro effects?",
+      answer: "You can subscribe to our Pro plans on the Pricing page. Once subscribed, you will receive a CLI token to install Pro effects directly from our registry."
     }
   ],
 };
@@ -178,25 +166,7 @@ export const effectCategories = [
       {
         question:"Are text animations bad for SEO?",
         answer:"No, if the final text exists as real HTML and is not replaced by canvas-only glyphs. Search engines should see the words, not just the choreography."
-      },
-      {
-        question:"Can I animate body copy?",
-        answer:"Avoid it. Animate headlines, labels, or short statements. Long animated paragraphs slow reading and make the page feel like it is narrating itself with jazz hands."
-      },
-      {
-        question:"How do I avoid layout shift with split text?",
-        answer:"Reserve the final text space, avoid changing font metrics during the reveal, and keep final readable text in normal document flow."
-      },
-      {
-        question:"How should reduced motion handle text reveals?",
-        answer:"Show the final readable state immediately. Do not scramble, stagger, or delay words for reduced-motion users."
-      },
-      {
-        question:"Which text effect works best for SaaS hero headlines?",
-        answer:"Use Mask Text Reveal or Overflow Text Reveal for polished SaaS clarity. Use Scramble Text when the brand has a technical, AI, developer-tool, or cyber flavour."
-      },
-      
-
+      }
     ],
   },
   {
@@ -240,30 +210,13 @@ export const effectCategories = [
         answer: "Reduce density, disable pointer reactions, simplify motion, and swap canvas effects for static textures where the device or viewport does not justify animation. Mobile backgrounds should feel lighter than desktop backgrounds.",
       },
       {
-        question: "What should reduced-motion users see on animated background pages?",
-        answer: "Freeze particle drift, stop dither animation, or swap the canvas for a static CSS or image texture. The page should still feel designed, but it should not keep moving in the background.",
-      },
-      {
-        question: "How do I keep animated backgrounds readable behind text?",
-        answer: "Keep contrast high, fade density behind headlines and CTAs, and test the actual text sitting above the effect. Dotted Grid and Dither Canvas should never make the headline fight the surface.",
-      },
-      {
-        question: "Which background effect is safest for performance?",
-        answer: "Dotted Grid is the safest starting point because it can ship as a CSS-heavy pattern. Spider Particles and Dither Canvas need canvas budgets, density caps, and offscreen pause.",
-      },
-      {
-        question: "Should canvas backgrounds pause offscreen?",
-        answer: "Yes. Use IntersectionObserver or page visibility checks so the browser is not busy animating a section nobody can see..",
-      },
-      {
         question: "Can a dotted background be CSS-only?",
         answer: "Yes, and it should be when the design does not need per-pixel interaction. CSS gradients, masks, and opacity are usually enough for a production hero surface.",
       },
       {
         question: "When should I use WebGL instead of a background effect?",
         answer: "Use WebGL when the hero itself needs shader-led depth, 3D interaction, or proof-of-craft. For normal product pages, a lightweight background is usually the better commercial decision.",
-      },
-
+      }
     ],
   },
   {
@@ -309,28 +262,7 @@ export const effectCategories = [
       {
         question: "What should reduced-motion buttons remove?",
         answer: "Remove label scrambling, long staggers, directional fills, looping emphasis, and dramatic hover travel. Keep immediate hover, focus, active, loading, and disabled feedback.",
-      },
-      {
-        question: "Should animated buttons still use normal button and anchor elements?",
-        answer: "Yes. Use a button for actions and an anchor for navigation. Do not change semantics because the hover effect looks clever.",
-      },
-      {
-        question: "How should animated buttons behave on keyboard focus?",
-        answer: "Show a visible focus-visible state and do not rely on hover-only animation. Keyboard users should get a clear target and instant activation path.",
-      },
-      {
-        question: "What about loading and disabled states?",
-        answer: "Give them explicit states. Loading should announce itself where needed; disabled should look disabled and be programmatically unavailable.",
-      },
-      {
-        question: "How long should a CTA animation last?",
-        answer: "Keep it roughly under 200ms when it precedes a click. Longer motion belongs after activation or in decorative contexts.",
-      },
-      {
-        question:"When should I avoid animated buttons?",
-        answer:"Avoid them when the label becomes unreadable, when the action is destructive, or when the page already has too many competing motion signals."
       }
-
     ],
   },
   {
@@ -384,21 +316,9 @@ export const effectCategories = [
         answer: "Only if it pauses on hover, focus, touch interaction and reduced motion. Autoplay is decoration; user control is the feature.",
       },
       {
-        question: "What accessibility controls are required?",
-        answer: "Visible previous/next controls, keyboard support, swipe, pause controls, focus management, and polite slide announcements when the user changes slides.",
-      },
-      {
-        question: "When should I use a grid instead of a carousel?",
-        answer: "Use a grid when content is important, comparative, long-form, search-relevant, or required for conversion.",
-      },
-      {
-        question: "How should carousels work on mobile?",
-        answer: "Support swipe, keep controls reachable, reduce exaggerated depth, and switch to stacked content when slides become informational.",
-      },
-      {
         question: "Can carousels be SEO-friendly?",
         answer: "Yes, if slide content is present in crawlable HTML and important content is not hidden behind client-only states or autoplay.",
-      },
+      }
     ],
   },
   {
@@ -446,25 +366,13 @@ export const effectCategories = [
         answer: "Reduced-motion users should receive the same sections in the same order with pinning, scrubbed transforms, scroll smoothing, and perspective shifts removed. A brief opacity reveal is acceptable, but hidden chapters that only appear at a precise scroll state are not.",
       },
       {
-        question: "Which scroll effect should I use for a SaaS feature section?",
-        answer: "Start with Sticky Content Wrapper when one idea should remain anchored while proof changes beside it, or Scroll Stack when each feature needs to become a chapter. Use Stacking Cards when ordered cards should accumulate without requiring a full-screen takeover.",
-      },
-      {
         question: "How do I avoid scroll-jacking in React?",
         answer: "Keep native scroll behavior, avoid trapping wheel or touch input, preserve real document order, and use scroll-linked animation only as progressive enhancement. If the page cannot be understood as static sections, the scroll effect is doing too much.",
       },
       {
-        question: "What is the safest mobile fallback for pinned scroll effects?",
-        answer: "Turn pinned, horizontal, and perspective behavior into a vertical stack, native swipe, or static cards. Mobile users should be able to read and act without negotiating a desktop scroll mechanic.",
-      },
-      {
         question: "Do scroll animations hurt SEO?",
         answer: "Not when the real content is server-rendered and crawlable. The danger is hiding content behind client-only animation, lazy-loaded empty shells, or scroll states that never render useful text in the initial HTML.",
-      },
-      {
-        question: "When should I avoid scroll effects completely?",
-        answer: "Avoid them on dashboards, forms, pricing tables, documentation, comparison matrices, and pages where users need speed-to-action more than staged storytelling.",
-      },
+      }
     ]
   },
   {
@@ -510,26 +418,6 @@ export const effectCategories = [
       {
         question: "What should reduced-motion do for FAQs, tabs, modals, and forms?",
         answer: "State changes should remain instant and visible. Accordions can open without height animation, tabs can switch without sliding panels, modals can appear without scale or blur, and forms should accept input without waiting for decorative motion.",
-      },
-      {
-        question: "Which component should I ship first on a SaaS landing page?",
-        answer: "Animated FAQ and Form. One removes objections near the CTA; the other captures demand. Pair them with clear copy before adding decorative effects.",
-      },
-      {
-        question: "What accessibility details are non-negotiable?",
-        answer: "Correct roles, labels, keyboard support, visible focus, focus trap/restore for dialogs, and aria-expanded/controls for accordions.",
-      },
-      {
-        question: "How should conversion components use animation?",
-        answer: "Use animation to verify state, guide attention, or reveal supporting content. Do not delay validation, form submission, focus movement, or purchase decisions.",
-      },
-      {
-        question: "When should a modal become an inline section on mobile?",
-        answer: "When the content is long, form-heavy, or central to the task. Mobile dialogs can feel cramped; inline sections or drawers often work better.",
-      },
-      {
-        question: "How do I keep forms fast while animated?",
-        answer: "Keep validation and input handling independent from decorative motion. Avoid re-render-heavy effects during typing and show errors clearly.",
       }
     ],
   },
@@ -576,26 +464,6 @@ export const effectCategories = [
       {
         question: "How should reduced motion simplify navigation?",
         answer: "Open and close menus instantly or with a short opacity change. Direction-aware panels, large overlays, and scroll-linked navbar shifts should reduce to clear state changes.",
-      },
-      {
-        question: "Can animated navigation still be accessible?",
-        answer: "Yes, if the menu works before animation is added: real links, keyboard movement, visible focus, aria-expanded, Escape close, and focus restore.",
-      },
-      {
-        question: "What should happen on mobile?",
-        answer: "Use a plain drawer, accordion, or full-screen menu. Desktop hover menus translated onto touch screens are where good intentions go to develop trust issues.",
-      },
-      {
-        question: "When is a directional menu worth it?",
-        answer: "When the site has enough navigation depth to justify panels: services, products, resources, docs, use cases, or portfolios. For three links, keep it simple.",
-      },
-      {
-        question: "How should Escape and focus restore work?",
-        answer: "Escape should close overlays or expanded menus and return focus to the trigger that opened them. Focus should be trapped only while a modal-style menu is open.",
-      },
-      {
-        question: "Should navigation depend on hover?",
-        answer: "No. Hover can enhance desktop behavior, but click, tap, and keyboard paths must work independently.",
       }
     ],
   },
@@ -642,26 +510,6 @@ export const effectCategories = [
       {
         question: "How should reduced motion affect cursor trails, ripples, and pointer-following effects?",
         answer: "Reduced motion should disable trails, inertia, ripples, lag, and delayed pointer-following entirely. Users should see the native pointer and the same content access through visible cards, links, or tap-accessible previews.",
-      },
-      {
-        question: "Do custom cursor effects work on mobile?",
-        answer: 'No persistent cursor exists on touch devices. Disable cursor effects with `@media (pointer: coarse)` and `window.matchMedia("(pointer: coarse)")`, then return to normal touch behavior.',
-      },
-      {
-        question: "Will a custom cursor hurt usability?",
-        answer: "It will if it hides click intent, covers focus rings, blocks controls, or makes links feel uncertain. Keep the native meaning of hover, focus, and click intact.",
-      },
-      {
-        question: "Which cursor effect is safest for a portfolio homepage?",
-        answer: "Liquid Glass Cursor is a strong atmospheric default; Magnetic Image Trail is better when the cursor should preview work. Both should disable on touch and preserve normal links.",
-      },
-      {
-        question: "Can cursor effects work with buttons and links?",
-        answer: "Yes, but they must never sit above essential states. Test keyboard focus, hover, click, and modal overlays before shipping.",
-      },
-      {
-        question: "How should cursor effects respect reduced motion?",
-        answer: "Remove trailing, inertia, ripples, and delayed following. Reduced-motion users should see the normal pointer and the same content access.",
       }
     ],
   },
@@ -712,22 +560,6 @@ export const effectCategories = [
       {
         question: "Do these transitions work with the Next.js App Router?",
         answer: "Yes, but placement matters. Transitions often need a wrapper that remounts on route change, such as `template.tsx` or a dedicated route transition layer, rather than a persistent layout.",
-      },
-      {
-        question: "How long should a page transition last?",
-        answer: "Usually 300–600ms. Longer transitions start to feel like the website is charging rent between pages.",
-      },
-      {
-        question: "What is the reduced-motion fallback?",
-        answer: "Use instant navigation or a brief opacity fade. Do not run full-screen movement, flips, masks, or pixel dissolves for reduced-motion users.",
-      },
-      {
-        question: "How should focus move after navigation?",
-        answer: "Move focus to the new page’s main heading or main region after the route changes. Do not leave focus trapped in a transition overlay.",
-      },
-      {
-        question: "When should I avoid route transitions?",
-        answer: "Avoid them in dashboards, checkout flows, docs, search, and apps with frequent navigation. Speed and orientation matter more than cinematic movement there.",
       }
     ],
   },
@@ -775,26 +607,6 @@ export const effectCategories = [
       {
         question: "How should reduced motion handle loaders and preloaders?",
         answer: "Replace animated loops with static progress text, a simple bar, skeleton content, or an instant reveal once content is ready. The wait should remain clear without continuous motion.",
-      },
-      {
-        question: "Should Numeric Tunnel show real progress?",
-        answer: "Yes. Tie it to asset, upload, warm-up, or route progress. A fake number that reaches 100 before content appears teaches users not to believe the interface.",
-      },
-      {
-        question: "How should loaders be announced to assistive technology?",
-        answer: "Use aria-busy on the loading region and a concise live region for status text when the change matters. Do not announce every animation frame.",
-      },
-      {
-        question: "When is a skeleton better than a loader?",
-        answer: "When the layout is known and content will stream in place. Skeletons usually feel faster because they show where the page is going.",
-      },
-      {
-        question: "Should a fast page have a preloader?",
-        answer: "No. A preloader on a fast page manufactures waiting. If the page is already fast, ship the speed.",
-      },
-      {
-        question: "How should loaders behave under reduced motion?",
-        answer: "Use static progress text, a simple bar, or skeleton content. The wait should remain clear without looping motion.",
       }
     ],
   },

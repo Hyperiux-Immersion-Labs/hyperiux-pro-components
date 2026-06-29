@@ -36,10 +36,10 @@ export default function Layout({ children }) {
               <VaultHeader showSearch totalEffects={totalEffects} effects={registry?.items || []} />
             </React.Suspense>
             <DocsBody>{children}</DocsBody>
+            <Footer />
           </div>
         </VaultLayout>
       </Suspense>
-      <Footer />
     </>
   );
 }
