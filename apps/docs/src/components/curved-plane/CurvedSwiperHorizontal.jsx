@@ -1,9 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-// Mouse position animation with GSAP
-import gsap from "gsap";
-
 // GLSL shaders with proper horizontal deformation only
 const vertexShader = `
 uniform vec2 uOffset;
@@ -82,7 +79,6 @@ const FIXED_IMAGE_HEIGHT = 320;
 const DEFORMATION_INTENSITY = 8;
 const DEFORMATION_SENSITIVITY = 0.02;
 const DEFORMATION_SMOOTHNESS = 0.15;
-const SCROLL_DEFORMATION_MULTIPLIER = 5; // New: Multiplier for scroll-based deformation
 
 // DRAG CONTROLS
 const DRAG_SENSITIVITY = 2.0;
@@ -166,6 +162,7 @@ const CurvedPlaneHorizontal = () => {
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(viewWidth, viewHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.cursor = "grab";
     container.appendChild(renderer.domElement);
 
     sceneRef.current = scene;
@@ -230,7 +227,7 @@ const CurvedPlaneHorizontal = () => {
 
         // Smooth transition from 1.0 (center) to 0.8 (extreme edges)
         const distFromCenter = Math.min(1.0, Math.abs(xPos) / (viewWidth / 2));
-        
+
         // Using a smooth S-curve (smoothstep logic) for the transition
         const t = distFromCenter;
         const smoothFactor = t * t * (3 - 2 * t);
@@ -262,7 +259,7 @@ const CurvedPlaneHorizontal = () => {
       }
 
       // Only reset deformation when not dragging and scroll intensity is very low
-      if (!dragging.current ) {
+      if (!dragging.current) {
         targetDeformationRef.current = lerp(targetDeformationRef.current, 0, 0.05);
       }
 
@@ -301,6 +298,7 @@ const CurvedPlaneHorizontal = () => {
       lastX.current = getPointerX(e);
       lastTime.current = Date.now();
       velocityRef.current = 0;
+      dom.style.cursor = "grabbing";
       document.body.style.userSelect = "none";
       e.preventDefault();
     };
@@ -339,37 +337,38 @@ const CurvedPlaneHorizontal = () => {
 
     const onPointerUp = () => {
       dragging.current = false;
+      dom.style.cursor = "grab";
       document.body.style.userSelect = "";
     };
 
     // Enhanced scroll handler with intensity-based deformation
     const onWheel = (e) => {
       e.preventDefault();
-      
+
       // Calculate scroll intensity based on deltaY magnitude
       const rawScrollDelta = e.deltaY;
       const scrollIntensity = Math.abs(rawScrollDelta) * 0.002;
-      
+
       // Update scroll intensity (accumulate for sustained scrolling)
       scrollIntensityRef.current = Math.min(1.0, scrollIntensityRef.current + scrollIntensity);
-      
+
       // Accumulate scroll velocity (reduced speed)
       const scrollDelta = rawScrollDelta * 0.0004;
       scrollVelocityRef.current += scrollDelta;
-      
+
       // Clamp scroll velocity
       scrollVelocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY * 0.3,
         Math.min(MAX_SCROLL_VELOCITY * 0.3, scrollVelocityRef.current)
       );
-      
+
       // Set deformation based on scroll intensity (not velocity)
       const intensityBasedDeformation = scrollIntensityRef.current * 0.03;
       const deformIntensity = Math.max(
         -MAX_SCROLL_DEFORMATION,
         Math.min(MAX_SCROLL_DEFORMATION, Math.sign(rawScrollDelta) * intensityBasedDeformation)
       );
-      
+
       targetDeformationRef.current = deformIntensity;
     };
 
@@ -402,90 +401,12 @@ const CurvedPlaneHorizontal = () => {
     };
   }, [imagesLoaded]);
 
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const followerRef = useRef(null);
-  const isInsideBounds = useRef(false);
-
-  useEffect(() => {
-    // Handler to update mouse coordinates
-    const handleMouseMove = (e) => {
-      mouseRef.current.x = e.clientX;
-      mouseRef.current.y = e.clientY;
-      
-      // Check if mouse is inside the swiper container bounds
-      const container = containerRef.current;
-      if (container) {
-        const rect = container.getBoundingClientRect();
-        const isInside = (
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top + 100 &&
-          e.clientY <= rect.bottom - 100
-        );
-        
-        if (isInside && !isInsideBounds.current) {
-          // Mouse entered bounds - show follower
-          isInsideBounds.current = true;
-          gsap.to(followerRef.current, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        } else if (!isInside && isInsideBounds.current) {
-          // Mouse left bounds - hide follower
-          isInsideBounds.current = false;
-          gsap.to(followerRef.current, {
-            opacity: 0,
-            scale: 0.8,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        }
-        
-        // Only animate position if inside bounds
-        if (isInside) {
-          gsap.to(followerRef.current, {
-            x: e.clientX - 50,
-            y: e.clientY - 50,
-            duration: 0.35,
-            ease: "power2.out",
-          });
-        }
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
   return (
     <main
       ref={containerRef}
       className="w-screen h-screen relative overflow-hidden flex items-center justify-center"
       style={{ background: "#f5f5f5", touchAction: "none" }}
     >
-      {/* Custom animated cursor follower */}
-      <p className="text-black absolute top-[15%] hidden mobile:block left-1/2 -translate-x-1/2 text-center text-[7vw] font-medium">Drag & Swipe</p>
-      <div
-        ref={followerRef}
-        className="h-[8vw] w-[8vw] mobile:hidden rounded-full bg-[#ff5f00] text-white flex items-center justify-center "
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          opacity: 0,
-          scale: 0.8,
-          pointerEvents: "none",
-          zIndex: 10000,
-          transform: "translate3d(0,0,0)",
-        }}
-      >
-        <p className="text-[1.2vw] w-3/5 text-center  font-medium">
-          Drag or Scroll
-        </p>
-      </div>
-
       {!imagesLoaded && (
         <div className="absolute text-gray-800 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-light">
           Loading...

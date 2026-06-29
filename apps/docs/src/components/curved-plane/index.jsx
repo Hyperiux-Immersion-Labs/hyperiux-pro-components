@@ -43,7 +43,7 @@ export default function CurvedPlane({ variant = "horizontal", ...props }) {
 
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
-    <nav className="fixed top-4 max-md:top-5 max-sm:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-black/8 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
+    <nav className="fixed bottom-8 h-fit  max-md:bottom-28 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-black/8 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
 

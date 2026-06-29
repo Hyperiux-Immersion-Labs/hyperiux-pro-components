@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import gsap from "gsap";
 
 // GLSL Shaders
 const vertexShader = `
@@ -163,6 +162,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(viewWidth, viewHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.cursor = "grab";
     container.appendChild(renderer.domElement);
 
     sceneRef.current = scene;
@@ -306,6 +306,7 @@ const CurvedPlaneVertical = ({ routes }) => {
       lastY.current = getPointerY(e);
       lastTime.current = Date.now();
       velocityRef.current = 0;
+      dom.style.cursor = "grabbing";
       document.body.style.userSelect = "none";
       e.preventDefault();
     };
@@ -339,7 +340,7 @@ const CurvedPlaneVertical = ({ routes }) => {
 
     const onPointerUp = () => {
       dragging.current = false;
-      document.body.style.cursor = "";
+      dom.style.cursor = "grab";
       document.body.style.userSelect = "";
     };
 
@@ -390,75 +391,6 @@ const CurvedPlaneVertical = ({ routes }) => {
     };
   }, [imagesLoaded]);
 
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const followerRef = useRef(null);
-  const isFollowerVisible = useRef(false);
-
-  useEffect(() => {
-    const getSwiperBounds = () => {
-      const viewWidth = window.innerWidth;
-      const isTablet = viewWidth >= 768 && viewWidth <= 1024;
-      const centerX = viewWidth / 2;
-
-      const numCols = isTablet ? 2 : 3;
-      const totalWidth = numCols * FIXED_IMAGE_WIDTH + (numCols - 1) * 150;
-
-      return {
-        left: centerX - totalWidth / 2,
-        right: centerX + totalWidth / 2,
-      };
-    };
-
-    const handleMouseMove = (e) => {
-      const { left, right } = getSwiperBounds();
-      const isOverSwiper = e.clientX >= left && e.clientX <= right;
-
-      gsap.to(followerRef.current, {
-        x: e.clientX - 50,
-        y: e.clientY - 50,
-        duration: 0.35,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-
-      if (isOverSwiper && !isFollowerVisible.current) {
-        isFollowerVisible.current = true;
-        gsap.to(followerRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      } else if (!isOverSwiper && isFollowerVisible.current) {
-        isFollowerVisible.current = false;
-        gsap.to(followerRef.current, {
-          opacity: 0,
-          scale: 0,
-          duration: 0.3,
-          ease: "power2.out",
-        });
-      }
-    };
-
-    const handleMouseLeave = () => {
-      isFollowerVisible.current = false;
-      gsap.to(followerRef.current, {
-        opacity: 0,
-        scale: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
   return (
     <main
       ref={containerRef}
@@ -466,22 +398,7 @@ const CurvedPlaneVertical = ({ routes }) => {
       id="curved-swiper-vertical"
       style={{ background: "white", touchAction: "none" }}
     >
-      <div
-        ref={followerRef}
-        className="h-[8vw] w-[8vw] mobile:hidden rounded-full bg-[#ff5f00] text-white flex items-center justify-center"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          pointerEvents: "none",
-          zIndex: 10000,
-          transform: "translate3d(0,0,0)",
-          opacity: 0,
-        }}
-      >
-        <p className="text-[1.2vw] text-center w-[70%] font-medium">Drag or Scroll</p>
-      </div>
-      {!imagesLoaded && (
+{!imagesLoaded && (
         <div className="absolute text-black left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-light">
           Loading...
         </div>
