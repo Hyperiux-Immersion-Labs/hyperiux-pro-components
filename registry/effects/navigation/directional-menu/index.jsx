@@ -26,7 +26,7 @@ const ChevronBird = ({ isActive = false, size = 14, strokeWidth = 10, className 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export function DirectionalMenu({
+export default function DirectionalMenu({
   items = [],
   className = "",
   navClassName = "",
