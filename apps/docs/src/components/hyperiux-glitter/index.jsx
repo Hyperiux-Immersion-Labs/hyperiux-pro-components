@@ -42,7 +42,7 @@ useEffect(() => {
         <Suspense fallback={null}>
           <Center>
             <MorphingParticleModel
-              url="/assets/models/hyperiux-new-model.glb"
+              url="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-new-model.glb"
               scale={modelScale}
               particleCount={10000}
               color="#ffffff"
