@@ -49,6 +49,8 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    if (!isSignedIn) return;
+
     async function loadWishlistCount() {
       try {
         const res = await fetch("/api/wishlist");
@@ -64,7 +66,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
     }
 
     loadWishlistCount();
-  }, []);
+  }, [isSignedIn]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;

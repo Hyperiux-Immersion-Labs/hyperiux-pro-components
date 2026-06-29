@@ -25,6 +25,7 @@ import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import { useUser } from "@clerk/nextjs";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -111,6 +112,7 @@ export function VaultContent({
   userPlan = "free",
   isLoading = false,
 }) {
+  const { isSignedIn } = useUser();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -329,6 +331,8 @@ const routeKey = `${pathname}${
   }, [safeEffectCounts]);
 
   useEffect(() => {
+    if (!isSignedIn) return;
+
     async function loadWishlist() {
       try {
         const res = await fetch("/api/wishlist");
@@ -346,7 +350,7 @@ const routeKey = `${pathname}${
     }
 
     loadWishlist();
-  }, []);
+  }, [isSignedIn]);
 
   const toggleWishlist = async (effect) => {
     try {
