@@ -18,7 +18,7 @@ const page = () => {
     <div className='w-[50%] text-center max-md:hidden'>
     <SplitLine>
     <p className=' '>
-      "Text Hover" is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
+      &quot;Text Hover&quot; is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
     </p>
     </SplitLine>
 
@@ -27,7 +27,7 @@ const page = () => {
 
     <SplitLine>
     <p className=''>
-      "Text Hover" is a component, where you can click on the particular label and a frame and content regarding that label just appears smoothly.
+      &quot;Text Hover&quot; is a component, where you can click on the particular label and a frame and content regarding that label just appears smoothly.
     </p>
     </SplitLine>
     </div>

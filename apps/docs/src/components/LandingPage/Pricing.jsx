@@ -302,7 +302,9 @@ function PricingPlanModal({
   useEffect(() => {
     if (!isOpen || !isSent) return;
 
-    setStatus("success");
+    queueMicrotask(() => {
+      setStatus("success");
+    });
 
     const timeoutId = window.setTimeout(() => {
       onClose();

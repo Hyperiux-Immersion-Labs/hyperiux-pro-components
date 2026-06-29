@@ -22,6 +22,13 @@ const withClerk = clerkMiddleware(async (auth, request) => {
 // even non-authenticated visitors to adequate-shad-61.clerk.accounts.dev.
 // Removing the orphaned UAT from the request before Clerk runs prevents this.
 export default async function middleware(request) {
+  const host = request.headers.get("host") || "";
+  if (host.startsWith("www.")) {
+    const url = new URL(request.url);
+    url.host = host.replace(/^www\./, "");
+    return NextResponse.redirect(url.toString(), 301);
+  }
+
   const clientUat = request.cookies.get("__client_uat")?.value;
   const session = request.cookies.get("__session")?.value;
 
@@ -58,7 +65,9 @@ export default async function middleware(request) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-    "/(api|trpc)(.*)",
+    // Skip all internal paths and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };

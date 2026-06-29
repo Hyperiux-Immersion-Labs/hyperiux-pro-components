@@ -456,8 +456,10 @@ export default function NavbarMobile() {
   }, [forceStartLenis]);
 
   useEffect(() => {
-    forceStartLenis();
-    closeMenu();
+    queueMicrotask(() => {
+      forceStartLenis();
+      closeMenu();
+    });
   }, [pathname, forceStartLenis, closeMenu]);
 
   useIsomorphicLayoutEffect(() => {

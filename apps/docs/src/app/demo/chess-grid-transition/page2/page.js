@@ -10,8 +10,8 @@ export default function page() {
 
         {/* Subtext */}
         <p className="mt-8 text-[1.4vw] max-md:w-[80%] max-md:mx-auto max-sm:text-[4.5vw] max-md:text-[3vw]">
-          You've just seen the chess grid transition , now if you want to see
-          again click on the "click here" button.
+          You&apos;ve just seen the chess grid transition , now if you want to see
+          again click on the &quot;click here&quot; button.
         </p>
 
         <div className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center">
