@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 
-export function TextCloning() {
+export default function TextCloning() {
     const canvasRef = useRef(null);
     const [text, setText] = useState("Hyperiux");
 

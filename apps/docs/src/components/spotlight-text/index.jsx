@@ -22,7 +22,7 @@ export default function SpotlightText({
  useEffect(() => {
  const checkMobile = () => {
  const isTouch = window.matchMedia("(pointer: coarse)").matches;
- const isSmallScreen = window.innerWidth < 768;
+ const isSmallScreen = window.innerWidth < 1025;
  setIsMobile(isTouch || isSmallScreen);
  };
 
@@ -33,7 +33,7 @@ export default function SpotlightText({
  }, []);
 
  useEffect(() => {
- if (isMobile) return; // ❌ disable effect on mobile
+ if (isMobile) return; //  disable effect on mobile
 
  const el = containerRef.current;
  let raf;
@@ -114,7 +114,7 @@ export default function SpotlightText({
  }
  >
  {/* Dim text (mobile becomes fully visible) */}
- <p className="text-neutral-600 max-sm:text-white leading-tight whitespace-pre-wrap">
+ <p className="text-neutral-600 max-md:text-white max-md:opacity-90 leading-tight whitespace-pre-wrap">
  {text}
  </p>
 

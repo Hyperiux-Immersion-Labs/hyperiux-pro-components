@@ -2,8 +2,6 @@ import HeadAnim from '@/components/Animations/HeadAnim'
 import TextHover from '@/components/text-hover'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
-import React from 'react'
-
 const page = () => {
   return (
    <>
@@ -17,7 +15,7 @@ const page = () => {
     </HeadAnim>
     <div className='w-[50%] text-center max-md:hidden'>
     <SplitLine>
-    <p className=' '>
+    <p>
       &quot;Text Hover&quot; is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
     </p>
     </SplitLine>

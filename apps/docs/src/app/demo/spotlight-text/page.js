@@ -1,4 +1,4 @@
-import React from "react";
+
 import SpotlightText from "@/components/spotlight-text";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import HeadAnim from "@/components/Animations/HeadAnim";

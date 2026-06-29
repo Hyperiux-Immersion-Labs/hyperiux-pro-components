@@ -1,99 +1,185 @@
-import React from "react";
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import Image from "next/image";
-import ScrambleTextComp from "./ScrambleTextComp";
+'use client';
 
-const notes = [
-  "Characters resolve from noise",
-  "Runs once on scroll enter",
-  "Useful for sharp editorial moments",
-];
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import SplitText from 'gsap/dist/SplitText';
+import ScrambleTextPlugin from 'gsap/dist/ScrambleTextPlugin';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
-const ScrambleText = () => {
-  return (
-    <>
-      <LenisSmoothScroll />
-      <main className="overflow-hidden bg-[#f6f2ea] text-[#121212]">
-        <section className=" px-8 py-8 pt-22 max-md:pt-25 max-sm:pt-20 max-sm:px-4 max-sm:py-4">
-          <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 max-md:gap-6 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-md:min-h-fit max-sm:p-4">
-            <div>
-              <p className="mb-6 text-xs font-bold uppercase tracking-[0.24em] text-black/45 max-sm:tracking-[0.16em]">
-                Scramble Text
-              </p>
-              <ScrambleTextComp
-                text="Signal appears when the noise decides to leave."
-                textSize="text-[6vw] max-sm:text-[3.25rem] max-md:text-[5vw]"
-                textColor="text-[#121212]"
-                align="left"
-                className="font-black uppercase leading-[0.88] max-md:leading-[1.2] max-sm:leading-[0.92]"
-              />
-              <p className="mt-8 max-w-xl text-lg leading-[1.2] text-black/60 max-sm:text-base max-sm:leading-[1.4] max-md:leadng-[1.2]">
-                A minimal scroll reveal for headlines that should feel like they are decoding themselves in real time.
-              </p>
-            </div>
+gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
-            <div className="relative">
-              <div className="h-155 w-full bg-black max-sm:h-90">
+const ScrambleText = ({
+  text,
+  speed = 0.6,
+  charType = 'lowercase',
+  textSize = 'text-base',
+  textColor = 'text-white',
+  align = 'left',
+  start = 'top 40%',
+  className,
+}) => {
+ const elRef = useRef(null);
+ const splitRef = useRef(null);
+ const tlRef = useRef(null);
 
-             
-              <Image
-                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
-                alt="Abstract distortion texture"
-                width={800}
-                height={800}
-               
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute bottom-5 left-5 right-5 bg-[#fbf8f1] px-5 py-4 text-sm font-bold uppercase tracking-[0.18em] text-black max-sm:text-[0.68rem] max-sm:tracking-[0.12em]">
-                Decode / Resolve / Reveal
-              </div>
-               </div>
-            </div>
-          </div>
-        </section>
+ const alignClass =
+ align ==='right'
+ ?'text-right'
+ :'text-left';
 
-        <section className="px-8 py-24 max-sm:px-4 max-sm:py-16">
-          <div className="mx-auto grid max-w-7xl gap-10  max-sm:gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="h-130 max-md:h-95 w-full max-sm:h-75">
+ useEffect(() => {
+ let isCancelled = false;
 
-           
-            <Image
-              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
-              alt="Gradient texture"
-              width={2070}
-              height={1380}
-              className="h-full w-full object-cover"
-        
-            />
-             </div>
+ const setup = async () => {
+ try {
+ if (document?.fonts?.ready) {
+ await document.fonts.ready;
+ } else {
+ await new Promise((r) => requestAnimationFrame(() => r(null)));
+ }
+ } catch {}
 
-            <div className="flex flex-col justify-center">
-              <ScrambleTextComp
-                text="Use it for launch lines, secretive labels, and text that needs a little suspense."
-                textSize="text-5xl max-sm:text-[2.8rem]"
-                textColor="text-[#121212]"
-                align="left"
-                className="font-black uppercase leading-[0.94]"
-                start="top 90%"
-              />
+ if (isCancelled || !elRef.current) return;
 
-              <div className="mt-10 grid gap-4">
-                {notes.map((note, index) => (
-                  <div
-                    key={note}
-                    className="border-t border-black/15 pt-4 text-lg leading-7 text-black/65 max-sm:text-base"
-                  >
-                    <span className="mr-4 font-black text-black">0{index + 1}</span>
-                    {note}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </>
-  );
+ tlRef.current?.kill();
+ splitRef.current?.revert();
+ splitRef.current = null;
+
+ const ctx = gsap.context(() => {
+ const el = elRef.current;
+
+ // Lock height before split to prevent layout shift
+ const originalHeight = el.offsetHeight;
+ gsap.set(el, { minHeight: originalHeight });
+
+ const split = new SplitText(el, { type:'words,chars' });
+ splitRef.current = split;
+
+ const chars = split.chars;
+ const words = split.words;
+
+ // Prevent word breaking
+ gsap.set(words, {
+ display:'inline-block',
+ whiteSpace:'nowrap',
+ });
+
+ gsap.set(el, {
+ wordBreak:'keep-all',
+ });
+
+ // Character styling
+ gsap.set(chars, {
+ display:'inline-block',
+ });
+
+ el.removeAttribute('aria-label');
+ chars.forEach((c) => c.removeAttribute('aria-label'));
+
+ gsap.set(chars, { opacity: 0 });
+
+ const originals = chars.map((c) => c.textContent ||'');
+
+ const tl = gsap.timeline({
+ paused: true,
+ defaults: { ease:'none' },
+ onComplete: () => {
+  gsap.set(el, { minHeight:'auto' });
+ }
+
+ });
+
+ tlRef.current = tl;
+
+ tl.fromTo(
+ el,
+ { opacity: 0 },
+ { opacity: 1, duration: 0.4, ease:'power1.out' }
+ );
+
+ tl.to(chars, {
+ duration: 0.7,
+ scrambleText: {
+ text: (i) => originals[i],
+ chars: charType ||'lowercase',
+ speed,
+ revealDelay: 0.2,
+ },
+ opacity: 1,
+ stagger: 0.04,
+ });
+
+ tl.to(
+ chars,
+ {
+ opacity: 1,
+ duration: 0.4,
+ stagger: 0.02,
+ ease:'power1.out',
+ },
+'>-0.2'
+ );
+
+ tl.to(
+ chars,
+ {
+ opacity: 0.85,
+ duration: 0.3,
+ stagger: 0.02,
+ },
+'>-0.2'
+ );
+
+ ScrollTrigger.create({
+ trigger: el,
+ start,
+ once: true,
+ onEnter: () => tl.play(),
+ });
+ }, elRef);
+
+ return () => ctx.revert();
+ };
+
+ const clean = setup();
+
+ return () => {
+ (async () => {
+ await clean;
+ })();
+ tlRef.current?.kill();
+ splitRef.current?.revert();
+ };
+ }, [text, speed, charType, start]);
+
+ return (
+ <div className="relative w-full">
+ <p
+ aria-hidden="true"
+ className={`${textSize} ${textColor} ${alignClass} invisible w-full tracking-tight ${
+ className ??''
+ }`}
+ style={{
+ wordBreak:'keep-all',
+ overflowWrap:'normal',
+ }}
+ >
+ {text}
+ </p>
+ <p
+ ref={elRef}
+ className={`${textSize} ${textColor} ${alignClass} absolute inset-0 w-full tracking-tight opacity-0 ${
+ className ??''
+ }`}
+ style={{
+ wordBreak:'keep-all',
+ overflowWrap:'normal',
+ }}
+ >
+ {text}
+ </p>
+ </div>
+ );
 };
 
-export default ScrambleText;
+export default ScrambleText ;

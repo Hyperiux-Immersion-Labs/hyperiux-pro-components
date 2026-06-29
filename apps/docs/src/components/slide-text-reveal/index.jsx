@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,7 +12,6 @@ export default function SlideTextReveal({
   animateOnScroll = true,
   delay = 0,
   className = "",
-  scrub = true,
   start = "top 80%",
   end = "bottom 60%",
 }) {
@@ -73,7 +72,7 @@ export default function SlideTextReveal({
               trigger: containerRef.current,
               start,
               end,
-              scrub,
+              scrub: true,
               // markers: true,
             },
           });
@@ -89,7 +88,7 @@ export default function SlideTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, scrub, start, end]);
+  }, [animateOnScroll, delay, start, end]);
 
   return (
     <div

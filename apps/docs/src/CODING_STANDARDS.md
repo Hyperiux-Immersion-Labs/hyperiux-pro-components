@@ -49,6 +49,8 @@ Example
 import EffectName from "@/components/effect-name"
 import DemoHeader from "@/components/WebsiteComps/DemoHeader"
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom"
+import HeadAnim from "@/components/Animations/HeadAnim"
+import SplitLine from "@/components/WebsiteComps/SplitLine"
 
 export default function Page() {
   return (
@@ -58,7 +60,7 @@ export default function Page() {
       <ScrollBottom textColor="#ffffff" />
 
       {/* Optional: relative/absolute UI blocks to hint at interaction */}
-      {/* e.g. scroll indicators, labels, arrows — no business logic */}
+      {/* e.g. scroll indicators, labels, arrows, headings, descriptions */}
     </>
   )
 }
@@ -66,10 +68,13 @@ export default function Page() {
 
 Rules:
 
-* Always include `DemoHeader` and `ScrollBottom`.
-* Only render the corresponding effect component plus `DemoHeader`, `ScrollBottom`, and optional hint UI (scroll indicators, labels, arrows).
-* Hint UI must be purely presentational — no state, no logic.
-* Do not place business logic inside `page.js`.
+* Always include `DemoHeader`.
+* `ScrollBottom` is optional but encouraged.
+* `HeadAnim` and `SplitLine` are allowed for presentational text (headings, descriptions).
+* Decorative text content (headings, descriptions) is allowed inside `page.js`.
+* Do not add critical dependencies that are required for the effect component itself to run.
+* Do not add state or interactive logic inside `page.js`.
+* Do NOT add `"use client"` to demo `page.js` files.
 * File extension is `.js`.
 
 ---
@@ -198,14 +203,26 @@ rounded-xl
 gap-8
 ```
 
-When custom values are required, prefer viewport units.
+Default Tailwind utility classes are always allowed.
+
+```jsx
+text-sm
+text-xl
+gap-4
+gap-25
+space-y-5
+```
+
+When custom values are required, prefer viewport units or percentage units.
 
 ```jsx
 w-[20vw]
 text-[3vw]
+w-[50%]
+pt-[10%]
 ```
 
-Avoid
+Avoid raw CSS unit values outside of Tailwind.
 
 ```jsx
 text-[48px]
@@ -473,21 +490,25 @@ No effect-specific files outside its folder.
 
 # 17. Demo Rules
 
-Each demo must import its corresponding component, `DemoHeader`, and `ScrollBottom`.
+Each demo must import its corresponding component and `DemoHeader`.
 
 ```
 demo/magnetic-button
         │
         ▼
 components/magnetic-button/index.jsx
-+ DemoHeader + ScrollBottom + optional hint UI
++ DemoHeader + optional ScrollBottom + optional hint UI
 ```
 
-Optional hint UI (scroll indicators, labels, arrows) is allowed if purely presentational.
+Optional hint UI (scroll indicators, labels, arrows, headings, descriptions) is allowed if purely presentational.
+
+`HeadAnim` and `SplitLine` may be used for decorative text content.
+
+Do not add `"use client"` to demo `page.js` files.
 
 Do not duplicate effect code inside the demo.
 
-Do not add state or logic to the demo.
+Do not add state or interactive logic to the demo.
 
 ---
 
@@ -512,5 +533,6 @@ Before submitting an effect, verify:
 * Comments are short.
 * No unused imports or variables.
 * Component is fully self-contained.
-* `page.js` includes `DemoHeader`, `ScrollBottom`, the effect component, and optional hint UI only.
+* `page.js` includes `DemoHeader`, the effect component, and optional hint UI only. `ScrollBottom` is optional.
+* No `"use client"` in demo `page.js`.
 * Naming is consistent throughout the project.

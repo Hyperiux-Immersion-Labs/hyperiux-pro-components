@@ -1,8 +1,7 @@
 import HeadAnim from "@/components/Animations/HeadAnim";
-import { TextCloning } from "@/components/text-cloning";
+import TextCloning from "@/components/text-cloning";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
-import React from "react";
 
 const page = () => {
   return (
