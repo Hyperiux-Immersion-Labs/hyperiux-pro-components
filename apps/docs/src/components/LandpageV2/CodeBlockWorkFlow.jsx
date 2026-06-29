@@ -116,9 +116,7 @@ export default function CodeBlockWorkflow() {
   const fileRefs = useRef({});
   const tickRefs = useRef({});
 
-  const loopCallRef = useRef(null);
   const masterTlRef = useRef(null);
-  const inViewRef = useRef(false);
 
   const setTerminalRef = (key) => (el) => {
     terminalRefs.current[key] = el;
@@ -180,7 +178,13 @@ export default function CodeBlockWorkflow() {
           autoAlpha: 0.22,
         });
 
-        gsap.set(fileRefs.current.addedBadge, {
+        const allBadges = [
+          fileRefs.current.addedBadge1,
+          fileRefs.current.addedBadge2,
+          fileRefs.current.addedBadge3,
+        ].filter(Boolean);
+
+        gsap.set(allBadges, {
           autoAlpha: 0,
           x: -8,
         });
@@ -213,7 +217,7 @@ export default function CodeBlockWorkflow() {
 
         const chars = text.length;
         const state = { count: 0 };
-        const finalDuration = duration ?? Math.max(0.45, chars * 0.032);
+        const finalDuration = duration ?? Math.max(0.3, chars * 0.02);
 
         timeline.set(
           element,
@@ -261,7 +265,7 @@ export default function CodeBlockWorkflow() {
           {
             autoAlpha: 1,
             scale: 1,
-            duration: 0.18,
+            duration: 0.12,
             ease: "power2.out",
           },
           position
@@ -271,7 +275,7 @@ export default function CodeBlockWorkflow() {
           path,
           {
             strokeDashoffset: 0,
-            duration: 0.34,
+            duration: 0.2,
             ease: "power2.out",
           },
           position
@@ -287,7 +291,7 @@ export default function CodeBlockWorkflow() {
         duration = null
       ) => {
         drawTick(timeline, tickEl, position);
-        typeText(timeline, textEl, text, duration, `${position}+=0.12`);
+        typeText(timeline, textEl, text, duration, `${position}+=0.06`);
       };
 
       const flashAddedRow = (timeline, rowEl, position) => {
@@ -304,7 +308,7 @@ export default function CodeBlockWorkflow() {
             autoAlpha: 1,
             y: 0,
             backgroundColor: "rgba(34,197,94,0.24)",
-            duration: 0.32,
+            duration: 0.2,
             ease: "power2.out",
           },
           position
@@ -314,25 +318,10 @@ export default function CodeBlockWorkflow() {
           rowEl,
           {
             backgroundColor: "rgba(255,255,255,0)",
-            duration: 0.55,
+            duration: 0.3,
             ease: "power2.out",
           },
           ">-0.02"
-        );
-      };
-
-      const showFile = (timeline, rowEl, position) => {
-        if (!rowEl) return;
-
-        timeline.to(
-          rowEl,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.28,
-            ease: "power2.out",
-          },
-          position
         );
       };
 
@@ -343,7 +332,7 @@ export default function CodeBlockWorkflow() {
           lineEl,
           {
             autoAlpha: 1,
-            duration: 0.1,
+            duration: 0.05,
           },
           position
         );
@@ -352,7 +341,7 @@ export default function CodeBlockWorkflow() {
           timeline,
           lineEl,
           text,
-          Math.max(0.35, text.length * 0.028),
+          Math.max(0.2, text.length * 0.015),
           position
         );
       };
@@ -362,16 +351,6 @@ export default function CodeBlockWorkflow() {
 
         const tl = gsap.timeline({
           paused: true,
-          onComplete: () => {
-            if (!inViewRef.current) return;
-
-            loopCallRef.current?.kill();
-            loopCallRef.current = gsap.delayedCall(1.35, () => {
-              if (inViewRef.current) {
-                playSequence();
-              }
-            });
-          },
         });
 
         typeText(tl, terminalRefs.current.init, "npx hyperiux init");
@@ -381,7 +360,7 @@ export default function CodeBlockWorkflow() {
           tickRefs.current.created,
           terminalRefs.current.created,
           "created hyperiux.config.js",
-          "+=0.14"
+          "+=0.05"
         );
 
         typeText(
@@ -389,7 +368,7 @@ export default function CodeBlockWorkflow() {
           terminalRefs.current.add,
           "npx hyperiux add scroll-stack",
           null,
-          "+=0.18"
+          "+=0.08"
         );
 
         typeText(
@@ -397,31 +376,36 @@ export default function CodeBlockWorkflow() {
           terminalRefs.current.resolving,
           "resolving dependencies: gsap, Lenis",
           null,
-          "+=0.08"
+          "+=0.04"
         );
 
-        flashAddedRow(tl, fileRefs.current.scrollStackRow, "+=0.12");
-
+        flashAddedRow(tl, fileRefs.current.scrollStackRow, "+=0.05");
         tl.to(
-          fileRefs.current.addedBadge,
-          {
-            autoAlpha: 1,
-            x: 0,
-            duration: 0.25,
-            ease: "power2.out",
-          },
+          fileRefs.current.addedBadge1,
+          { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" },
           "<+0.05"
         );
 
-        showFile(tl, fileRefs.current.useLenisRow, "+=0.08");
-        showFile(tl, fileRefs.current.reducedMotionRow, "+=0.08");
+        flashAddedRow(tl, fileRefs.current.useLenisRow, "+=0.04");
+        tl.to(
+          fileRefs.current.addedBadge2,
+          { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" },
+          "<+0.05"
+        );
+
+        flashAddedRow(tl, fileRefs.current.reducedMotionRow, "+=0.04");
+        tl.to(
+          fileRefs.current.addedBadge3,
+          { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" },
+          "<+0.05"
+        );
 
         typeSuccessLine(
           tl,
           tickRefs.current.added,
           terminalRefs.current.added,
           "added 3 files to /components/hyperiux",
-          "<+0.04"
+          "<+0.02"
         );
 
         typeText(
@@ -429,7 +413,7 @@ export default function CodeBlockWorkflow() {
           terminalRefs.current.reduced,
           "reduced-motion fallback included",
           null,
-          "+=0.12"
+          "+=0.05"
         );
 
         typeSuccessLine(
@@ -437,16 +421,16 @@ export default function CodeBlockWorkflow() {
           tickRefs.current.done,
           terminalRefs.current.done,
           "done - own the code.",
-          "+=0.08"
+          "+=0.04"
         );
 
         tl.to(
           terminalRefs.current.doneCursor,
           {
             autoAlpha: 1,
-            duration: 0.12,
+            duration: 0.08,
           },
-          "<+0.1"
+          "<+0.05"
         );
 
         tl.to(
@@ -455,7 +439,7 @@ export default function CodeBlockWorkflow() {
             autoAlpha: 0.35,
             repeat: 5,
             yoyo: true,
-            duration: 0.45,
+            duration: 0.25,
             ease: "none",
           },
           ">"
@@ -465,7 +449,7 @@ export default function CodeBlockWorkflow() {
           tl,
           codeRefs.current.line1,
           `import ScrollStack from "@/components/hyperiux/scroll-stack";`,
-          "+=0.12"
+          "+=0.05"
         );
 
         revealCodeLine(tl, codeRefs.current.line2, "", "+=0.02");
@@ -474,7 +458,7 @@ export default function CodeBlockWorkflow() {
           tl,
           codeRefs.current.line3,
           "export default function Page() {",
-          "+=0.05"
+          "+=0.02"
         );
 
         revealCodeLine(
@@ -491,7 +475,6 @@ export default function CodeBlockWorkflow() {
 
       const playSequence = () => {
         masterTlRef.current?.kill();
-        loopCallRef.current?.kill();
         masterTlRef.current = buildSequence();
         masterTlRef.current.play(0);
       };
@@ -501,23 +484,10 @@ export default function CodeBlockWorkflow() {
       const trigger = ScrollTrigger.create({
         trigger: section,
         start: "top 68%",
-        end: "bottom 32%",
+        once: true,
         onEnter: () => {
-          inViewRef.current = true;
           playSequence();
-        },
-        onEnterBack: () => {
-          inViewRef.current = true;
-          playSequence();
-        },
-        onLeave: () => {
-          inViewRef.current = false;
-          loopCallRef.current?.kill();
-        },
-        onLeaveBack: () => {
-          inViewRef.current = false;
-          loopCallRef.current?.kill();
-        },
+        }
       });
 
       return () => {
@@ -526,7 +496,6 @@ export default function CodeBlockWorkflow() {
     }, section);
 
     return () => {
-      loopCallRef.current?.kill();
       masterTlRef.current?.kill();
       ctx.revert();
     };
@@ -648,7 +617,7 @@ export default function CodeBlockWorkflow() {
                         rowRef={setFileRef("scrollStackRow")}
                         right={
                           <span
-                            ref={setFileRef("addedBadge")}
+                            ref={setFileRef("addedBadge1")}
                             className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
                           >
                             + Added
@@ -660,11 +629,29 @@ export default function CodeBlockWorkflow() {
                       <TreeFile
                         label="use-lenis.jsx"
                         rowRef={setFileRef("useLenisRow")}
+                        right={
+                          <span
+                            ref={setFileRef("addedBadge2")}
+                            className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
+                          >
+                            + Added
+                          </span>
+                        }
+                        className="bg-[linear-gradient(90deg,rgba(255,122,26,0.08),rgba(34,197,94,0.36))]"
                       />
 
                       <TreeFile
                         label="reduced-motion.js"
                         rowRef={setFileRef("reducedMotionRow")}
+                        right={
+                          <span
+                            ref={setFileRef("addedBadge3")}
+                            className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
+                          >
+                            + Added
+                          </span>
+                        }
+                        className="bg-[linear-gradient(90deg,rgba(255,122,26,0.08),rgba(34,197,94,0.36))]"
                       />
                     </div>
                   </div>
