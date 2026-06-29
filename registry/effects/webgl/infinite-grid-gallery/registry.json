@@ -6,8 +6,17 @@
   "category": "webgl",
   "dependencies": [],
   "registryDependencies": [],
+  "previewUrl": "/infinite-grid-gallery",
   "coverImage": "infinite-grid-gallery",
   "videoUrl": "infinite-grid-gallery.mp4",
-  "previewUrl": "/infinite-grid-gallery",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/infinite-grid-gallery",
+  "target": "src/components/effects/infinite-grid-gallery",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/infinite-grid-gallery/index.jsx" },
+    { "path": "InfiniteGrid.jsx", "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx" },
+    { "path": "InfiniteGridGallery.jsx", "target": "src/components/effects/infinite-grid-gallery/InfiniteGridGallery.jsx" },
+    { "path": "util.js", "target": "src/components/effects/infinite-grid-gallery/util.js" }
+  ]
 }

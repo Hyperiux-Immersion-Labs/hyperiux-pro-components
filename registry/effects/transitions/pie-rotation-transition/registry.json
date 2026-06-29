@@ -4,11 +4,14 @@
   "title": "Radial Slice Transition",
   "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
   "category": "transitions",
-  "dependencies": [
-    "gsap",
-    "next-transition-router"
-  ],
+  "dependencies": ["gsap", "next-transition-router"],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/radial-slice-transition",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/radial-slice-transition",
+  "target": "src/components/effects/radial-slice-transition",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/radial-slice-transition/index.jsx" }
+  ]
 }

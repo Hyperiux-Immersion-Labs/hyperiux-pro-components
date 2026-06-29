@@ -1,14 +1,19 @@
 {
   "name": "immersive-full-screen-navigation",
   "type": "registry:component",
-  "title": "Immersive Full screen Navigation",
+  "title": "Immersive Full Screen Navigation",
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
   "category": "navigation",
-  "dependencies": [
-    "gsap",
-    "lucide-react"
-  ],
+  "dependencies": ["gsap", "lucide-react"],
   "registryDependencies": [],
   "previewUrl": "/navigation/immersive-full-screen-nav",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/immersive-full-screen-navigation",
+  "target": "src/components/effects/immersive-full-screen-navigation",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/immersive-full-screen-navigation/index.jsx" },
+    { "path": "immersive-fullscreen-nav-content.jsx", "target": "src/components/effects/immersive-full-screen-navigation/immersive-fullscreen-nav-content.jsx" },
+    { "path": "char-stagger-button.jsx", "target": "src/components/effects/immersive-full-screen-navigation/char-stagger-button.jsx" }
+  ]
 }

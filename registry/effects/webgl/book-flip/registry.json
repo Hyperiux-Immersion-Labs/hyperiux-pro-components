@@ -4,51 +4,21 @@
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
   "category": "webgl",
-  "dependencies": [
-    "three",
-    "@react-three/fiber",
-    "@react-three/drei"
-  ],
+  "dependencies": ["three", "@react-three/fiber", "@react-three/drei"],
   "registryDependencies": [],
+  "previewUrl": "/book-flip",
   "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
-  "previewUrl": "/book-flip",
   "tier": "pro",
-  "categories": [
-    "webgl"
-  ],
-  "exportName": "BookFlip",
-  "exportKind": "named",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/book-flip",
+  "target": "src/components/effects/book-flip",
   "files": [
-  {
-    "path": "book-flip.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/book-flip.jsx"
-  },
-  {
-    "path": "Book.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/Book.jsx"
-  },
-  {
-    "path": "BookFlipViewer.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/BookFlipViewer.jsx"
-  },
-  {
-    "path": "Experience.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/Experience.jsx"
-  },
-  {
-    "path": "PageContext.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/PageContext.jsx"
-  },
-  {
-    "path": "UI.jsx",
-    "type": "registry:component",
-    "target": "components/hyperiux/UI.jsx"
-  }
-]
+    { "path": "index.jsx", "target": "src/components/effects/book-flip/index.jsx" },
+    { "path": "Book.jsx", "target": "src/components/effects/book-flip/Book.jsx" },
+    { "path": "BookFlipViewer.jsx", "target": "src/components/effects/book-flip/BookFlipViewer.jsx" },
+    { "path": "Experience.jsx", "target": "src/components/effects/book-flip/Experience.jsx" },
+    { "path": "PageContext.jsx", "target": "src/components/effects/book-flip/PageContext.jsx" },
+    { "path": "UI.jsx", "target": "src/components/effects/book-flip/UI.jsx" }
+  ]
 }

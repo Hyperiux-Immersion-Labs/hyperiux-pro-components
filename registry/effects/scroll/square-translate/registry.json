@@ -4,12 +4,16 @@
   "title": "Square Translate",
   "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",
   "category": "scroll",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": ["gsap"],
   "registryDependencies": [],
   "previewUrl": "/square-translate",
   "coverImage": "square-translate",
   "videoUrl": "square-translate.mp4",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/square-translate",
+  "target": "src/components/effects/square-translate",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/square-translate/index.jsx" }
+  ]
 }

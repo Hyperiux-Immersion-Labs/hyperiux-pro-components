@@ -4,15 +4,18 @@
   "title": "Hero Banner Animated",
   "description": "Immersive WebGL hero with a 3D room, interactive TV screen with pixelated video transition, mouse-tracked lighting, edge blur, and film grain post-processing.",
   "category": "webgl",
-  "dependencies": [
-    "@react-three/fiber",
-    "@react-three/drei",
-    "@react-three/postprocessing",
-    "postprocessing",
-    "gsap",
-    "three"
-  ],
+  "dependencies": ["@react-three/fiber", "@react-three/drei", "@react-three/postprocessing", "postprocessing", "gsap", "three"],
   "registryDependencies": [],
   "previewUrl": "/hero-banner-animated",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/hero-banner-animated",
+  "target": "src/components/effects/hero-banner-animated",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/hero-banner-animated/index.jsx" },
+    { "path": "custom-grain-noise.jsx", "target": "src/components/effects/hero-banner-animated/custom-grain-noise.jsx" },
+    { "path": "edge-blur-effect.jsx", "target": "src/components/effects/hero-banner-animated/edge-blur-effect.jsx" },
+    { "path": "room-model.jsx", "target": "src/components/effects/hero-banner-animated/room-model.jsx" },
+    { "path": "video-ui.jsx", "target": "src/components/effects/hero-banner-animated/video-ui.jsx" }
+  ]
 }

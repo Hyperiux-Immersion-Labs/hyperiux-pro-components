@@ -6,8 +6,14 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
+  "previewUrl": "/cursor-move",
   "coverImage": "cursor-move",
   "videoUrl": "cursor-move.mp4",
-  "previewUrl": "/cursor-move",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/cursor-move",
+  "target": "src/components/effects/cursor-move",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/cursor-move/index.jsx" }
+  ]
 }

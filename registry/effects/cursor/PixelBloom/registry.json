@@ -9,5 +9,11 @@
   "previewUrl": "/cursors/pixel-bloom",
   "coverImage": "pixel-bloom",
   "videoUrl": "pixel-bloom",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/pixel-bloom",
+  "target": "src/components/effects/pixel-bloom",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/pixel-bloom/index.jsx" }
+  ]
 }

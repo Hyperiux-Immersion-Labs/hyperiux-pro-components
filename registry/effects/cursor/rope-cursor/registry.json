@@ -4,12 +4,16 @@
   "title": "Rope Cursor",
   "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
   "category": "cursor",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": ["gsap"],
   "registryDependencies": [],
   "previewUrl": "/cursors/rope",
   "coverImage": "rope-cursor",
   "videoUrl": "rope-cursor.mp4",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/rope-cursor",
+  "target": "src/components/effects/rope-cursor",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/rope-cursor/index.jsx" }
+  ]
 }

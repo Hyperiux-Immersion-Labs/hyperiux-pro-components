@@ -4,10 +4,15 @@
   "title": "Animated FAQ",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
   "category": "components",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": ["gsap"],
   "registryDependencies": [],
   "previewUrl": "/animated-faq",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/animated-faq",
+  "target": "src/components/effects/animated-faq",
+  "files": [
+    { "path": "index.jsx", "target": "src/components/effects/animated-faq/index.jsx" },
+    { "path": "chevron-bird.jsx", "target": "src/components/effects/animated-faq/chevron-bird.jsx" }
+  ]
 }
