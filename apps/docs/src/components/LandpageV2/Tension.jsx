@@ -162,15 +162,15 @@ const cards = [
 
 export default function Tension() {
   return (
-    <section className="relative w-full overflow-hidden bg-[#0e0e0e] px-[5vw] py-[10%] pt-[20%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
+    <section className="relative w-full overflow-hidden bg-[#0e0e0e] px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
       <div className="mx-auto flex w-full max-w-[90vw] flex-col items-center">
         <div className="w-full text-center">
-          <h2 className="text110 font-normal leading-[0.95] tracking-[-0.06em] max-md:leading-[1.02]">
+          <h2 className="text110 font-normal leading-[0.95]  max-md:leading-[1.02]">
             Good Motion is{" "}
-            <span className="italic text-[#ff5f00]">Harder</span> Than it Looks
+            <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </h2>
 
-          <p className="mx-auto mt-[1.6vw] max-w-[65vw] text-24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+          <p className="mx-auto mt-[1.6vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it:
             timing, restraint, layout awareness, responsive behavior,
             reduced-motion support, dependency clarity, and performance
@@ -194,8 +194,8 @@ export default function Tension() {
                 <MotionIcon type={card.icon} />
               </div>
 
-              <div className="flex min-h-[2.6vw] py-[1.5vw] items-center justify-center rounded-md border border-white/10 bg-[#151515] px-[0.8vw] text-[#ff5f00] max-md:min-h-11 max-md:rounded-lg">
-                <p className="text24 leading-none max-md:text-sm">
+              <div className="flex min-h-[2.6vw] py-[1.5vw] items-center justify-center rounded-md border border-white/10 bg-[#151515] px-[0.8vw] max-md:min-h-11 max-md:rounded-lg">
+                <p className="text18 leading-none max-md:text-sm">
                   {card.label}
                 </p>
               </div>

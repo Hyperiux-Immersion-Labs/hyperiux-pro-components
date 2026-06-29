@@ -128,18 +128,10 @@ export default function FeaturedStoryTelling() {
     // Refs from SpiralInformation
     const infoTextRef = useRef(null);
     const infoButtonWrapperRef = useRef(null);
-    const infoTextRef2 = useRef(null);
 
     // Refs from VaultGrid
-    const vaultTextRef = useRef(null);
-    const vaultMoveTextRef = useRef(null);
     const vaultSecondLayoutRef = useRef(null);
-    const vaultNavigatedTextRef = useRef(null);
-    const vaultReadTextRef = useRef(null);
-    const vaultAndTextRef = useRef(null);
-    const vaultExploreTextRef = useRef(null);
     const stickyContainerRef = useRef(null);
-    const vaultTargetMoveRef = useRef(null);
     const animationActiveRef = useRef(false);
 
     useEffect(() => {
@@ -166,27 +158,6 @@ export default function FeaturedStoryTelling() {
             opacity: 0,
             yPercent: 30,
         });
-
-        gsap.set(infoTextRef2.current, {
-            opacity: 1,
-            filter: "blur(0px)",
-        });
-
-        gsap.set(vaultTextRef.current, { opacity: 0, filter: "blur(10px)" });
-        gsap.set(vaultMoveTextRef.current, { opacity: 0, filter: "blur(10px)" });
-        gsap.set(
-            [
-                vaultNavigatedTextRef.current,
-                vaultReadTextRef.current,
-                vaultAndTextRef.current,
-                vaultExploreTextRef.current
-            ],
-            {
-                xPercent: 20,
-                opacity: 0,
-                filter: "blur(10px)",
-            }
-        );
 
         const TOP_LAYER = [
             { id: "block-top-layer-1", xPercent: 300 },
@@ -244,58 +215,6 @@ export default function FeaturedStoryTelling() {
             type: "lines",
             mask: "lines",
         });
-
-        let splittedText2 = null;
-        if (infoTextRef2.current) {
-            splittedText2 = SplitText.create(infoTextRef2.current, {
-                type: 'chars',
-                charsClass: 'char',
-            });
-        }
-
-        const vaultSplit = SplitText.create(vaultTextRef.current, {
-            type: 'words,chars',
-        });
-
-        const vaultMoveSplit = SplitText.create(vaultMoveTextRef.current, {
-            type: 'words,chars',
-        });
-
-        gsap.set(vaultSplit.chars, { color: "#232323ff" });
-        gsap.set(vaultMoveSplit.chars, { color: "#232323ff" });
-
-        const words = vaultSplit.words;
-        const lastWordElement = words[words.length - 1];
-
-        const updatePositions = () => {
-            if (!stickyContainerRef.current || !lastWordElement || !vaultMoveTextRef.current) return;
-            const stickyRect = stickyContainerRef.current.getBoundingClientRect();
-            const sourceRect = lastWordElement.getBoundingClientRect();
-            const sourceX = sourceRect.left - stickyRect.left;
-            const sourceY = sourceRect.top - stickyRect.top;
-
-            gsap.set(vaultMoveTextRef.current, { x: sourceX, y: sourceY });
-        };
-
-        // Run once initially
-        updatePositions();
-
-        let cachedMoveX = 0;
-        let cachedMoveY = 0;
-
-        const cacheMoveTarget = () => {
-            if (!stickyContainerRef.current || !vaultTargetMoveRef.current) return;
-            const stickyRect = stickyContainerRef.current.getBoundingClientRect();
-            const targetRect = vaultTargetMoveRef.current.getBoundingClientRect();
-            cachedMoveX = targetRect.left - stickyRect.left;
-            cachedMoveY = targetRect.top - stickyRect.top;
-        };
-
-        cacheMoveTarget();
-
-        // Register ScrollTrigger refreshInit listener
-        ScrollTrigger.addEventListener("refreshInit", updatePositions);
-        ScrollTrigger.addEventListener("refreshInit", cacheMoveTarget);
 
         // --- 3. Master Scroll Sequence Timeline ---
         const ctx = gsap.context(() => {
@@ -429,143 +348,35 @@ export default function FeaturedStoryTelling() {
                 6.0
             );
 
-            // 3d. Large H2 "Not another static component kit." Reveal (Duration: 7.2 to 8.8)
-            if (splittedText2 && splittedText2.chars) {
-                masterTL.fromTo(
-                    splittedText2.chars,
-                    { opacity: 0, filter: "blur(10px)" },
-                    { opacity: 1, filter: "blur(0px)", stagger: 0.03, ease: "none", duration: 1.2 },
-                    7.2
-                );
-            }
-
-            // 3e. Large H2 Exit & Cards Fade Out (Duration: 9.0 to 10.8)
-            if (splittedText2 && splittedText2.chars) {
-                masterTL.to(
-                    splittedText2.chars,
-                    { opacity: 0, filter: "blur(15px)", stagger: 0.02, ease: "none", duration: 1.0 },
-                    9.0
-                );
-            }
-            masterTL.set(infoTextRef2.current, { display: "none" }, 10.8);
+            // Cards Fade Out
             masterTL.to(
                 cardsContainerRef.current,
                 { opacity: 0, duration: 1.2, ease: "power2.inOut" },
-                9.0
+                7.0
             );
-            masterTL.set(cardsContainerRef.current, { pointerEvents: "none" }, 10.2);
+            masterTL.set(cardsContainerRef.current, { pointerEvents: "none" }, 8.2);
 
-            // 3f. Vault Grid First Text Reveal (Duration: 11.5 to ~14.0)
-            masterTL.to(
-                [vaultTextRef.current, vaultMoveTextRef.current],
-                { opacity: 1, filter: "blur(0px)", duration: 1.5, ease: "power2.out" },
-                10
-            );
-            masterTL.to(
-                vaultSplit.chars,
-                {
-                    keyframes: [
-                        { color: "#ff5f00", duration: 0.03 },
-                        { color: "#ffffff", duration: 0.225 }
-                    ],
-                    stagger: 0.015
-                },
-                10.5
-            );
-            masterTL.to(
-                vaultMoveSplit.chars,
-                {
-                    keyframes: [
-                        { color: "#ff5f00", duration: 0.1, ease: "power1.out" },
-                        { color: "#ffffff", duration: 0.225, ease: "power1.inOut" }
-                    ],
-                    stagger: { amount: 0.2 },
-                   
-                },
-                12.0
-            );
-
-            // 3g. Vault Grid First Text Exit & "move" Text Transition (Duration: 13.8 to 15.0)
-            masterTL.to(
-                [vaultSplit.words, '.dots'],
-                { opacity: 0, filter: "blur(10px)", stagger: { amount: 0.2, from: "random" }, ease: "power2.out", duration: 1.0 },
-                12.5
-            );
-
-            masterTL.to(
-                vaultMoveTextRef.current,
-                {
-                    x: () => cachedMoveX +10, 
-                    duration: 0.8,
-                    ease: "power2.inOut"
-                },
-                12.8
-            );
-
-            masterTL.to(
-                vaultMoveTextRef.current,
-                {
-                    y: () => cachedMoveY,
-                    duration: 0.4,
-                    // ease: "power2.inOut"
-                },
-                13.5
-            );
-
-            // 3h. Vault Grid Boxes Slide in & Second Text Reveal (Duration: 14.8 to 18.0)
+            // 3d. Vault Grid Boxes Slide in
             TOP_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    14 + i * 0.15
+                    8.0 + i * 0.15
                 );
             });
             BOTTOM_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    14.5 + i * 0.15
+                    8.5 + i * 0.15
                 );
             });
-            masterTL.to(
-                [
-                    vaultNavigatedTextRef.current,
-                    vaultReadTextRef.current,
-                    vaultAndTextRef.current,
-                    vaultExploreTextRef.current
-                ],
-                { xPercent: 0, opacity: 1, filter: "blur(0px)", stagger: 0.15, ease: "power2.out", duration: 1.2 },
-                14.3
-            );
-
-            // 3i. Vault Grid Collapse & Fade Out (Duration: 18.5 to 20.0)
-            masterTL.to(
-                [
-                    vaultNavigatedTextRef.current,
-                    vaultReadTextRef.current,
-                    vaultAndTextRef.current,
-                    vaultExploreTextRef.current,
-                    vaultMoveTextRef.current,
-                ],
-                { opacity: 0, filter: 'blur(10px)', duration: 1.2, ease: "power2.out" },
-                16.8
-            );
-            masterTL.to(
-                "#heading-container",
-                { height: "1.5vw", duration: 1.2, transformOrigin: "center center", ease: "power2.inOut" },
-                16.5
-            );
         }, section);
 
         return () => {
             animationActiveRef.current = false;
-            ScrollTrigger.removeEventListener("refreshInit", updatePositions);
-            ScrollTrigger.removeEventListener("refreshInit", cacheMoveTarget);
             ctx.revert();
             splittedParagraph.revert();
-            if (splittedText2) splittedText2.revert();
-            vaultSplit.revert();
-            vaultMoveSplit.revert();
         };
     }, []);
 
@@ -573,7 +384,7 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[1100vh] max-md:hidden z-50"
+            className="relative w-full h-[800vh] max-md:hidden z-50"
             
         >
             <h2 className='text-[5.5vw] w-[70%] text-center mx-auto'>
@@ -625,12 +436,6 @@ export default function FeaturedStoryTelling() {
                     >
                         Vault is easiest to understand when you feel it. Preview a few high- impact effects below, then open the full catalog when you are ready.
                     </h2>
-                    <h2
-                        ref={infoTextRef2}
-                        className="text140 absolute left-1/2 -translate-x-1/2 w-[60vw] text-center pointer-events-auto"
-                    >
-                        Not another static <br /> component kit.
-                    </h2>
                     {/* <div
                         ref={infoButtonWrapperRef}
                         className="flex items-center justify-center gap-[2vw] pointer-events-auto"
@@ -640,22 +445,7 @@ export default function FeaturedStoryTelling() {
                     </div> */}
                 </div>
 
-                {/* 3. Vault Grid First Text Overlay */}
-                <h2
-                    ref={vaultTextRef}
-                    className="absolute text80 w-[85vw] text-center opacity-0 text-[#939393] z-30 pointer-events-none"
-                >
-                    Hyperiux Vault is built around the interaction layer of a
-                    website, the moments people notice when they scroll, hover, <span className="opacity-0">move</span>
-                </h2>
-                <p
-                    ref={vaultMoveTextRef}
-                    className="absolute left-0 top-0 m-0 p-0 text-[#939393] text80 z-30 pointer-events-none"
-                >
-                    move<span className="dots">...</span>
-                </p>
-
-                {/* 4. Vault Grid Second Layout Layer */}
+                {/* 3. Vault Grid Second Layout Layer */}
                 <div
                     ref={vaultSecondLayoutRef}
                     className="absolute inset-0 flex h-screen flex-col items-center justify-center self-padd z-20 pointer-events-none"
@@ -667,27 +457,8 @@ export default function FeaturedStoryTelling() {
                         ))}
                     </div>
 
-                    {/* Middle Heading Container */}
-                    <div id="heading-container" className="w-full relative z-0 h-[10vw] flex items-center justify-center pointer-events-auto">
-                        <span ref={vaultTargetMoveRef} className="text80 opacity-0 text-center">
-                            move
-                        </span>
-                        <span ref={vaultNavigatedTextRef} className="text80 text-center text-foreground">
-                            &nbsp;, navigate,&nbsp;
-                        </span>
-                        <span ref={vaultReadTextRef} className="text80 text-center text-foreground">
-                            read,&nbsp;
-                        </span>
-                        <span ref={vaultAndTextRef} className="text80 text-center text-foreground">
-                            and&nbsp;
-                        </span>
-                        <span ref={vaultExploreTextRef} className="text80 text-center text-foreground">
-                            explore
-                        </span>
-                    </div>
-
                     {/* Bottom Layer */}
-                    <div className="w-full h-[40vh] relative z-10 gap-[1.5vw] flex items-center justify-center pointer-events-auto">
+                    <div className="w-full h-[40vh] relative z-10 gap-[1.5vw] flex items-center justify-center pointer-events-auto mt-[1.5vw]">
                         {BOXES_BOTTOM.map(box => (
                             <VaultBox key={box.id} {...box} />
                         ))}
