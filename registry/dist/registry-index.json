@@ -120,11 +120,6 @@
     "tarball": "registry/dist/hyperiux-testimonial-swiper-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/pixel-bloom",
-    "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-pixel-bloom-0.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/butterfly-trail-cursor",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-butterfly-trail-cursor-0.0.1.tgz"
@@ -188,6 +183,11 @@
     "name": "@hyperiux/phantom-image-trail",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-phantom-image-trail-0.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/pixel-bloom",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-pixel-bloom-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/pixelated-image-effect",
@@ -470,14 +470,14 @@
     "tarball": "registry/dist/hyperiux-page-flip-transition-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/radial-slice-transition",
-    "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-radial-slice-transition-0.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/pixel-transition",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-pixel-transition-0.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/radial-slice-transition",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-radial-slice-transition-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/svg-brush-transition",

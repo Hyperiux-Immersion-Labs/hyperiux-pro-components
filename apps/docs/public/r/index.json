@@ -642,7 +642,7 @@
         "next-transition-router"
       ],
       "registryDependencies": [],
-      "exportName": "PieRotationTransition",
+      "exportName": "RadialSliceTransition",
       "exportKind": "named"
     },
     {

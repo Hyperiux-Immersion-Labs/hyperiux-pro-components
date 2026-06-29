@@ -945,7 +945,7 @@
     "category": "transitions",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/transitions/pie-rotation-transition/registry.json",
+    "registryPath": "registry/effects/transitions/radial-slice-transition/registry.json",
     "importPath": "@/components/effects/radial-slice-transition",
     "target": "src/components/effects/radial-slice-transition"
   },
