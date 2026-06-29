@@ -30,6 +30,8 @@ const allowedIframeSources = [
 const nextConfig = {
   allowedDevOrigins: ["local.vault.hyperiux.com"],
 
+  outputFileTracingRoot: path.join(__dirname, "../../"),
+
   turbopack: {
     root: __dirname,
   },
