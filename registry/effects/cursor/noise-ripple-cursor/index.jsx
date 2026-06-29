@@ -138,22 +138,23 @@ const resolveTextureSource = (source) => {
  return source;
 };
 
-const getTextureRequestUrl = (source) => {
- const resolvedSource = resolveTextureSource(source);
-
- if (typeof resolvedSource !== 'string') return resolvedSource;
-
- // Route allowed remote assets through our own origin so WebGL texture reads
- // don't fail when the upstream storage bucket omits CORS headers.
- if (/^https?:\/\//i.test(resolvedSource)) {
- return `/api/media-proxy?url=${encodeURIComponent(resolvedSource)}`;
- }
-
- return resolvedSource;
+// Creates a simple canvas gradient texture as a portable fallback
+const createFallbackTexture = () => {
+ const canvas = document.createElement('canvas');
+ canvas.width = 512;
+ canvas.height = 512;
+ const ctx = canvas.getContext('2d');
+ const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+ gradient.addColorStop(0, '#0f0f1a');
+ gradient.addColorStop(0.5, '#1a1a3e');
+ gradient.addColorStop(1, '#0a0a14');
+ ctx.fillStyle = gradient;
+ ctx.fillRect(0, 0, 512, 512);
+ return new THREE.CanvasTexture(canvas);
 };
 
 export const NoiseDietherShader = ({
- imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
+ imageSrc = null,
  noiseColor ='#ffffff',
  className,
  style,
@@ -186,24 +187,32 @@ export const NoiseDietherShader = ({
  const container = containerRef.current;
  if (!container) return;
 
- // Load image. Direct public URLs work when the remote server sends CORS
- // headers that allow anonymous WebGL texture reads.
  const textureLoader = new THREE.TextureLoader();
  textureLoader.setCrossOrigin('anonymous');
- const resolvedImageSrc = getTextureRequestUrl(imageSrc);
- const imageTexture = textureLoader.load(
+ const resolvedImageSrc = resolveTextureSource(imageSrc);
+ let imageTexture;
+ if (resolvedImageSrc) {
+ imageTexture = textureLoader.load(
  resolvedImageSrc,
+ (tex) => {
+ tex.minFilter = THREE.LinearFilter;
+ tex.magFilter = THREE.LinearFilter;
+ },
  undefined,
- undefined,
- (error) => {
- console.error(
- `Unable to load noise image texture: ${resolvedImageSrc}. If this is a remote public URL, the server must allow CORS for WebGL textures.`,
- error
- );
+ () => {
+ // Fall back to canvas gradient if the image can't be loaded
+ // (e.g. CORS not enabled on the remote host)
+ if (threeRef.current?.mainMaterial) {
+ const fallback = createFallbackTexture();
+ threeRef.current.mainMaterial.uniforms.uImage.value = fallback;
+ }
  }
  );
  imageTexture.minFilter = THREE.LinearFilter;
  imageTexture.magFilter = THREE.LinearFilter;
+ } else {
+ imageTexture = createFallbackTexture();
+ }
 
  // Setup renderer
  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -372,7 +381,7 @@ export const NoiseDietherShader = ({
 export default function NoiseRippleCursor({
  overlayColor ='bg-[#1825AA]/30',
  wrapperClassName ='h-screen w-screen',
- imageSrc ='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg',
+ imageSrc = null,
  shaderConfig = {
  pixelSize: .5,
  patternDensity: 1,
@@ -387,19 +396,21 @@ export default function NoiseRippleCursor({
  return (
  <div className={`${wrapperClassName} relative`}>
 
+  {imageSrc && (
   <img
- src={imageSrc}
- alt="Background"
- className='brightness-100'
- style={{
- position:'absolute',
- inset: 0,
- width:'100%',
- height:'100%',
- objectFit:'cover',
- zIndex: 0
- }}
- />
+  src={imageSrc}
+  alt="Background"
+  className='brightness-100'
+  style={{
+  position:'absolute',
+  inset: 0,
+  width:'100%',
+  height:'100%',
+  objectFit:'cover',
+  zIndex: 0
+  }}
+  />
+ )}
  <div className={`h-full w-full ${overlayColor} absolute inset-0`} />
  <NoiseDietherShader
  imageSrc={imageSrc}

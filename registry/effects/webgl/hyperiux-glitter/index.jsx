@@ -4,8 +4,8 @@ import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Center } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import MouseTrailParticles from "@/components/hyperiux-glitter/MouseTrailParticles";
-import MorphingParticleModel from "@/components/hyperiux-glitter/MorphingParticleModelNew";
+import MouseTrailParticles from "./MouseTrailParticles";
+import MorphingParticleModel from "./MorphingParticleModelNew";
 
 export default function HyperiuxGlitter() {
 
