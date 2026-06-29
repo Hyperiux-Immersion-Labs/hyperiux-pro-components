@@ -1,7 +1,7 @@
 "use client";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -9,8 +9,8 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 export default function MaskTextReveal({
     children,
     animateOnScroll = true,
-    stagger=0.2,
-    duration=5.5,
+    stagger = 0.2,
+    duration = 5.5,
     delay = 0,
     className = "",
     scrub = true,

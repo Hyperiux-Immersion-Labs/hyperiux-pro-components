@@ -1,12 +1,11 @@
 import GlitchyText from '@/components/glitchy-text'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
-import React from 'react'
 
 const page = () => {
   return (
    <>
-   <DemoHeader logoColor='#FFFFFF'/>
+   <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'/>
    <GlitchyText/>
    <SplitLine
              as="p"
