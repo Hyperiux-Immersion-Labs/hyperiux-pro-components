@@ -204,7 +204,7 @@ export function EffectDetailContent({
 
 
   //testing purpose
-  
+
   const TEST_MAIN_SKELETON_DELAY = 0; // set to 0 before production
 
   const [hasPassedMainSkeletonDelay, setHasPassedMainSkeletonDelay] = useState(
@@ -385,7 +385,7 @@ export function EffectDetailContent({
     video.defaultMuted = true;
     video.loop = true;
     video.playsInline = true;
-    video.play?.().catch(() => {});
+    video.play?.().catch(() => { });
   };
 
   const previewHref = getEffectPreviewHref({
@@ -404,17 +404,17 @@ export function EffectDetailContent({
 
   return (
     <VaultLayout
-       effectCounts={effectCounts || {}}
-  totalEffects={totalEffects || 0}
-  bgImageSrc=""
-  activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
-  searchEffects={searchEffects}
+      effectCounts={effectCounts || {}}
+      totalEffects={totalEffects || 0}
+      bgImageSrc=""
+      activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
+      searchEffects={searchEffects}
     >
       <div className="min-h-screen text-foreground">
         <Suspense fallback={<div className="h-12" />}>
           <VaultHeader effectName={pageTitle || safeEffect.title}
-  showSearch={true}
-  effects={searchEffects} />
+            showSearch={true}
+            effects={searchEffects} />
         </Suspense>
 
         {isMainDataLoading ? (
@@ -510,17 +510,16 @@ export function EffectDetailContent({
                 </div>
               </div>
 
-              <div className="fadeup max-sm:px-[7vw] max-md:px-[6vw] h-[46vw] rounded-sm w-full">
-                <div className="relative h-full w-full aspect-video overflow-hidden rounded-sm bg-black isolate">
+              <div className="fadeup max-sm:px-[7vw] max-md:px-[6vw] h-auto rounded-sm w-full">
+                <div className="relative h-auto w-full aspect-16/8.5 overflow-hidden rounded-sm bg-black isolate">
                   <Image
                     src={coverImage}
                     alt={safeEffect.title || slug}
                     fill
                     sizes="(max-width: 1024px) 100vw, 980px"
                     priority
-                    className={`rounded-[inherit] object-cover transition-all duration-500 ${
-                      showVideo ? "opacity-0" : "opacity-100"
-                    }`}
+                    className={`rounded-[inherit] object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
+                      }`}
                   />
 
                   {videoPreviewUrl && !videoError && (
@@ -538,9 +537,8 @@ export function EffectDetailContent({
                       onCanPlay={handleVideoReady}
                       onPlaying={handleVideoReady}
                       onError={() => setVideoError(true)}
-                      className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${
-                        showVideo ? "opacity-100" : "opacity-0"
-                      }`}
+                      className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
+                        }`}
                     />
                   )}
                 </div>
@@ -601,32 +599,32 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                <div className="max-md:hidden">
-                  {showRelatedSliderControls && (
-                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                      <CircularButton
-                        type="button"
-                        onClick={() => scrollRelatedEffects("previous")}
-                        disabled={!canScrollPrev}
-                        aria-label="Show previous related effects"
-                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
-                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                          : "hover:border-[#ff5f00]"
-                          }`}
+                  <div className="max-md:hidden">
+                    {showRelatedSliderControls && (
+                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                        <CircularButton
+                          type="button"
+                          onClick={() => scrollRelatedEffects("previous")}
+                          disabled={!canScrollPrev}
+                          aria-label="Show previous related effects"
+                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                            : "hover:border-[#ff5f00]"
+                            }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                      <CircularButton
-                        type="button"
-                        onClick={() => scrollRelatedEffects("next")}
-                        disabled={!canScrollNext}
-                        aria-label="Show next related effects"
-                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
-                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                          : "hover:border-[#ff5f00]"
-                          }`}
+                        <CircularButton
+                          type="button"
+                          onClick={() => scrollRelatedEffects("next")}
+                          disabled={!canScrollNext}
+                          aria-label="Show next related effects"
+                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                            : "hover:border-[#ff5f00]"
+                            }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
@@ -663,32 +661,32 @@ export function EffectDetailContent({
                     </div>
                   </div>
 
-                <div className="hidden max-md:block">
-                  {showRelatedSliderControls && (
-                    <div className="flex items-center justify-end gap-2 max-md:justify-center">
-                      <CircularButton
-                        type="button"
-                        onClick={() => scrollRelatedEffects("previous")}
-                        disabled={!canScrollPrev}
-                        aria-label="Show previous related effects"
-                        className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
-                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                          : "hover:border-[#ff5f00]"
-                          }`}
+                  <div className="hidden max-md:block">
+                    {showRelatedSliderControls && (
+                      <div className="flex items-center justify-end gap-2 max-md:justify-center">
+                        <CircularButton
+                          type="button"
+                          onClick={() => scrollRelatedEffects("previous")}
+                          disabled={!canScrollPrev}
+                          aria-label="Show previous related effects"
+                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
+                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                            : "hover:border-[#ff5f00]"
+                            }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
                         </CircularButton>
 
-                      <CircularButton
-                        type="button"
-                        onClick={() => scrollRelatedEffects("next")}
-                        disabled={!canScrollNext}
-                        aria-label="Show next related effects"
-                        className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
-                          ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                          : "hover:border-[#ff5f00]"
-                          }`}
+                        <CircularButton
+                          type="button"
+                          onClick={() => scrollRelatedEffects("next")}
+                          disabled={!canScrollNext}
+                          aria-label="Show next related effects"
+                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
+                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                            : "hover:border-[#ff5f00]"
+                            }`}
                           bgColor="#ff5f00"
                         >
                           <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
@@ -756,18 +754,18 @@ function EffectCtaSection({ cta, sectionRef }) {
 
         <div className="w-fit max-sm:mt-[4vw] mt-6">
           <CustomAnimationFormTrigger>
-          {cta.buttonText && (
+            {cta.buttonText && (
 
-            <Button
-             preventDefault={false}
-              text={cta.buttonText}
-              href={buttonLink}
-              scaleClass="group-hover:scale-[100]!"
-              target="_blank"
-              variant="white"
-              className="shrink-0 w-fit"
-            />
-          )}
+              <Button
+                preventDefault={false}
+                text={cta.buttonText}
+                href={buttonLink}
+                scaleClass="group-hover:scale-[100]!"
+                target="_blank"
+                variant="white"
+                className="shrink-0 w-fit"
+              />
+            )}
           </CustomAnimationFormTrigger>
         </div>
       </div>
@@ -1320,8 +1318,8 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
       setIsVisible(
         !hasReachedStop &&
-          rect.top <= window.innerHeight * 0.45 &&
-          rect.bottom >= window.innerHeight * 0.25
+        rect.top <= window.innerHeight * 0.45 &&
+        rect.bottom >= window.innerHeight * 0.25
       );
     };
 
