@@ -6,9 +6,7 @@
   "dependencies": [
     "gsap"
   ],
-  "registryDependencies": [
-    "chevron-bird"
-  ],
+  "registryDependencies": [],
   "exportName": "DirectionalMenu",
   "exportKind": "named",
   "files": [

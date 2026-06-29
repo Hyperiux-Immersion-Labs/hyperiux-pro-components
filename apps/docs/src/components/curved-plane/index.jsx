@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import CurvedPlaneHorizontal from "@/components/curved-plane/CurvedSwiperHorizontal";
-import CurvedPlaneVertical from "@/components/curved-plane/CurvedSwiperVertical";
+import CurvedPlaneHorizontal from "./CurvedSwiperHorizontal";
+import CurvedPlaneVertical from "./CurvedSwiperVertical";
 
 
 const VARIANTS = {

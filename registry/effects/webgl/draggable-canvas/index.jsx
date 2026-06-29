@@ -3,8 +3,8 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
-import MaskedContainer from "@/components/draggable-canvas/MaskedContainer";
-import DragCursor from "@/components/draggable-canvas/DragCursor";
+import MaskedContainer from "./MaskedContainer";
+import DragCursor from "./DragCursor";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 

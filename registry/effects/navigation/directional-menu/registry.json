@@ -7,9 +7,7 @@
   "dependencies": [
     "gsap"
   ],
-  "registryDependencies": [
-    "chevron-bird"
-  ],
+  "registryDependencies": [],
   "previewUrl": "/navigation/directional-menu",
   "tier": "free",
   "main": "index.jsx",
