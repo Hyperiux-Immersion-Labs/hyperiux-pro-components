@@ -276,8 +276,8 @@ function Pointer({ vec = new THREE.Vector3() }) {
 
 function Model({ children, color = 'white', roughness = 0 }) {
   const ref = useRef()
-  const { nodes } = useGLTF('/models/hyperiux-logo.glb')
-  const { nodes: nodes2, materials: materials2 } = useGLTF('/models/c-transformed.glb')
+const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb')
+  const { nodes: nodes2, materials: materials2 } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb')
   const geometry = nodes.FINAL?.geometry
   console.log(materials2)
 
