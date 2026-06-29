@@ -15,12 +15,12 @@
   "target": "src/components/effects/liquid-glass-cursor",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/liquid-glass-cursor/index.jsx"
+      "path": "index.js",
+      "target": "src/components/effects/liquid-glass-cursor/index.js"
     },
     {
-      "path": "liquid-tex.js",
-      "target": "src/components/effects/liquid-glass-cursor/liquid-tex.js"
+      "path": "LiquidText.jsx",
+      "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
     }
   ]
 }

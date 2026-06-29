@@ -1,130 +1,163 @@
 'use client'
 
 import { TransitionRouter } from 'next-transition-router'
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-export function PageFlipTransition({
+export default function FlipTransition({
   children,
-  config = {
-    enableBlur: false,
-    overlayColor: '#DE4013',
-    duration: 0.5,
-  },
+  duration = 0.9,
+  bgColor = '#ff5f00',
 }) {
-  const { enableBlur, overlayColor, duration } = config
-  const blackOverlayRef = useRef(null)
-  const flipOverlayRef = useRef(null)
+  const wrapperRef = useRef(null)
+  const exitOverlayRef = useRef(null)
+  const enterOverlayRef = useRef(null)
   const boxesRef = useRef(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    gsap.set(blackOverlayRef.current, { opacity: 0 })
-    gsap.set(flipOverlayRef.current, {
-      clipPath: 'polygon(0 0, 100% 0, 0 0, 0 100%)',
-      opacity: 1,
+    // EXIT overlay: hidden — folded off-screen to the left (-90deg from bottom-left)
+    gsap.set(exitOverlayRef.current, {
+      rotation: -90,
+      transformOrigin: 'bottom left',
     })
+
+    // ENTER overlay: hidden — folded off-screen (-90deg from bottom-right)
+    gsap.set(enterOverlayRef.current, {
+      rotation: -90,
+      transformOrigin: 'bottom right',
+    })
+
+    // Boxes hidden initially
     gsap.set(boxesRef.current.children, { scaleY: 0 })
+
+    requestAnimationFrame(() => setMounted(true))
   }, [])
 
   return (
     <TransitionRouter
       auto
       leave={(next) => {
-        const timeline = gsap.timeline({ onComplete: next })
+        const tl = gsap.timeline({ onComplete: next })
 
-        timeline
-          .to(
-            blackOverlayRef.current,
-            {
-              opacity: 1,
-              duration: 0.3,
-              ease: 'power2.inOut',
-            },
-            0
-          )
-          .to(
-            flipOverlayRef.current,
-            {
-              clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 100%)',
-              duration,
-              ease: 'linear',
-            },
-            0
-          )
-          .to(flipOverlayRef.current, {
-            clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-            duration,
-            ease: 'linear',
-          })
-          .to(
-            boxesRef.current.children,
-            {
-              scaleY: 1,
-              opacity: 1,
-              transformOrigin: 'bottom',
-              duration,
-              stagger: 0.1,
-              ease: 'power2.out',
-            },
-            '-=0.3'
-          )
+        // Fade + shift old content out
+        tl.to(wrapperRef.current, {
+          opacity: 0,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.in',
+        }, 0)
 
-        return () => timeline.kill()
+        // Keep enter overlay hidden during exit
+        tl.set(enterOverlayRef.current, { rotation: -90, transformOrigin: 'bottom right' }, 0)
+
+        // EXIT: bottom-left origin, -90deg → 0deg
+        tl.fromTo(
+          exitOverlayRef.current,
+          { rotation: -90, transformOrigin: 'bottom left' },
+          { rotation: 0, transformOrigin: 'bottom left', duration, ease: 'power3.inOut' },
+          0
+        )
+
+        // Boxes scale up from bottom once overlay is mostly covering screen
+        tl.to(boxesRef.current.children, {
+          scaleY: 1,
+          transformOrigin: 'bottom',
+          duration: 0.4,
+          stagger: 0.08,
+          ease: 'power2.out',
+        }, 0.5)
+
+        return () => tl.kill()
       }}
       enter={(next) => {
-        const timeline = gsap.timeline({ onComplete: next })
+        const tl = gsap.timeline({
+          onComplete: () => {
+            document.documentElement.style.overflow = ''
+            next()
+          },
+        })
 
-        timeline.to(boxesRef.current.children, {
+        // Snap exit overlay away
+        tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)
+
+        // Snap enter overlay flat (covering screen)
+        tl.set(enterOverlayRef.current, { rotation: 0, transformOrigin: 'bottom right' }, 0)
+
+        // Boxes scale down from top first
+        tl.to(boxesRef.current.children, {
           scaleY: 0,
           transformOrigin: 'top',
-          duration,
-          stagger: 0.05,
+          duration: 0.35,
+          stagger: 0.06,
           ease: 'power2.in',
-        })
-        timeline.to(flipOverlayRef.current, {
-          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 0)',
-          duration,
-          delay: 0.3,
-          ease: 'linear',
-        })
-        timeline.to(flipOverlayRef.current, {
-          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 100% 0)',
-          duration,
-          ease: 'linear',
-        })
-        timeline.to(blackOverlayRef.current, {
-          duration,
-          opacity: 0,
-          ease: 'power2.inOut',
-        })
-        timeline.set(flipOverlayRef.current, {
-          clipPath: 'polygon(0 0, 100% 0, 0 0, 0 100%)',
-        })
+        }, 0)
 
-        return () => timeline.kill()
+        // Fade new content in
+        tl.fromTo(wrapperRef.current,
+          { opacity: 0, y: 0 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', clearProps: "all" },
+          0.45
+        )
+
+        // ENTER: bottom-right origin, 0deg → +90deg (clockwise)
+        tl.fromTo(
+          enterOverlayRef.current,
+          { rotation: 0, transformOrigin: 'bottom right' },
+          { rotation: 90, transformOrigin: 'bottom right', duration, ease: 'power3.inOut' },
+          0.3
+        )
+
+        return () => tl.kill()
       }}
     >
+      {/* EXIT overlay — bottom-left anchor */}
       <div
-        ref={blackOverlayRef}
-        className={`pointer-events-none fixed inset-0 z-[998] bg-black/20 opacity-0 ${
-          enableBlur ? 'backdrop-blur-xl' : ''
-        }`}
+        ref={exitOverlayRef}
+        className="fixed bottom-0 left-0 pointer-events-none"
+        style={{
+          width: '150vmax',
+          height: '150vmax',
+          transformOrigin: 'bottom left',
+          zIndex: 9999,
+          opacity: mounted ? 1 : 0,
+          backgroundColor: bgColor,
+          overflow: 'hidden',
+        }}
       />
 
+      {/* ENTER overlay — bottom-right anchor */}
       <div
-        ref={flipOverlayRef}
-        className="fixed top-0 left-0 z-[999] flex h-full w-full items-center justify-center opacity-0"
-        style={{ backgroundColor: overlayColor }}
+        ref={enterOverlayRef}
+        className="fixed bottom-0 right-0 pointer-events-none"
+        style={{
+          width: '150vmax',
+          height: '150vmax',
+          transformOrigin: 'bottom right',
+          zIndex: 9998,
+          opacity: mounted ? 1 : 0,
+          backgroundColor: bgColor,
+          overflow: 'hidden',
+        }}
+      />
+
+      {/* Boxes — fixed to screen center, above both overlays */}
+      <div
+        className="fixed inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 10000 }}
       >
-        <div ref={boxesRef} className="flex h-fit w-fit gap-2">
-          <span className="block h-7 w-4 bg-black" />
-          <span className="block h-7 w-4 bg-black" />
-          <span className="block h-7 w-4 bg-black" />
-          <span className="block h-7 w-4 bg-black" />
+        <div ref={boxesRef} className="flex gap-2">
+          <span className="block w-4 h-7 bg-black scale-y-0" />
+          <span className="block w-4 h-7 bg-black scale-y-0" />
+          <span className="block w-4 h-7 bg-black scale-y-0" />
+          <span className="block w-4 h-7 bg-black scale-y-0" />
         </div>
       </div>
 
-      <div>{children}</div>
+      {/* Page content */}
+      <div ref={wrapperRef} className="relative w-full min-h-screen" style={{ zIndex: 2 }}>
+        {children}
+      </div>
     </TransitionRouter>
   )
 }

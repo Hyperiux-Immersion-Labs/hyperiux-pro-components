@@ -15,6 +15,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/magnetic-image-trail/index.jsx"
+    },
+    {
+      "path": "MagneticTrail.jsx",
+      "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
     }
   ]
 }

@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/svg-path-marquee/index.jsx"
+    },
+    {
+      "path": "SVGPathComp.jsx",
+      "target": "src/components/effects/svg-path-marquee/SVGPathComp.jsx"
     }
   ]
 }

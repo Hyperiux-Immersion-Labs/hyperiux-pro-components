@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/colorful-cursor-aura/index.jsx"
+    },
+    {
+      "path": "ColorfulCursorAuraComp.jsx",
+      "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
     }
   ]
 }

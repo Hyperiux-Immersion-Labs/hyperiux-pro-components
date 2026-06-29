@@ -18,6 +18,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/split-canvas/index.jsx"
+    },
+    {
+      "path": "SplitCanvasComp.jsx",
+      "target": "src/components/effects/split-canvas/SplitCanvasComp.jsx"
+    },
+    {
+      "path": "content.js",
+      "target": "src/components/effects/split-canvas/content.js"
     }
   ]
 }

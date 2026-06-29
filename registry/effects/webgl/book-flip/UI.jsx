@@ -20,7 +20,7 @@ export const UI = ({ images = [] }) => {
 
  return (
  <>
- <main className=" pointer-events-none select-none z-10 fixed inset-0 flex justify-between flex-col">
+ <main className=" pointer-events-none select-none z-10 fixed top-12 w-full left-1/2 translate-x-[-50%] flex justify-between flex-col">
   <div className="w-full overflow-auto pointer-events-auto flex justify-center">
  <div className="overflow-auto flex items-center gap-4 max-w-full p-10">
  {Array.from({ length: pageCount + 1 }).map((_, index) => (
@@ -38,7 +38,22 @@ export const UI = ({ images = [] }) => {
  ))}
  </div>
  </div>
+ 
  </main>
+
+ <div className="relative z-20 h-screen pointer-events-none">
+    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-md:justify-center max-md:gap-8 max-sm:gap-4 max-md:top-[85%] max-sm:top-[80%]">
+    <p className="text-[8vw] max-sm:text-[10vw] leading-[1.2] text-white">
+        BOOK 
+       
+       
+    </p>
+   <p className="text-[8vw] max-sm:text-[10vw] leading-[1.2] text-white">
+         FLIP
+    </p>
+ </div>
+ 
+ </div>
 
  {/* <div className="fixed inset-0 bg-black flex items-start justify-center pt-20 select-none">
  </div> */}

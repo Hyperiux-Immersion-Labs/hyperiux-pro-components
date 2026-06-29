@@ -19,8 +19,8 @@
       "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
     },
     {
-      "path": "card.jsx",
-      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
+      "path": "ScrollShuffledCardsComp.jsx",
+      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
     }
   ]
 }

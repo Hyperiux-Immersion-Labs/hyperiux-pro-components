@@ -14,6 +14,7 @@
   "importPath": "@/components/effects/square-translate",
   "target": "src/components/effects/square-translate",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/square-translate/index.jsx" }
+    { "path": "index.jsx", "target": "src/components/effects/square-translate/index.jsx" },
+    { "path": "SquareTranslateComp.jsx", "target": "src/components/effects/square-translate/SquareTranslateComp.jsx" }
   ]
 }

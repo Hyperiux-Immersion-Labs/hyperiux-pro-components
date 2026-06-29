@@ -18,6 +18,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/curved-plane/index.jsx"
+    },
+    {
+      "path": "CurvedSwiperHorizontal.jsx",
+      "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.jsx"
+    },
+    {
+      "path": "CurvedSwiperVertical.jsx",
+      "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
     }
   ]
 }

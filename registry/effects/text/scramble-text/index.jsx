@@ -1,18 +1,23 @@
 'use client';
 
-import React, { useEffect, useRef } from'react';
-import gsap from'gsap';
-import SplitText from'gsap/dist/SplitText';
-import ScrambleTextPlugin from'gsap/dist/ScrambleTextPlugin';
-import ScrollTrigger from'gsap/dist/ScrollTrigger';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import SplitText from 'gsap/dist/SplitText';
+import ScrambleTextPlugin from 'gsap/dist/ScrambleTextPlugin';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
-const ScrambleText = ({  text,  speed = 0.6,  charType ='lowercase',  textSize ='text-base',
- textColor ='text-white',
- align ='left',
- start ='top 40%',
- className }) => {
+const ScrambleText = ({
+  text,
+  speed = 0.6,
+  charType = 'lowercase',
+  textSize = 'text-base',
+  textColor = 'text-white',
+  align = 'left',
+  start = 'top 40%',
+  className,
+}) => {
  const elRef = useRef(null);
  const splitRef = useRef(null);
  const tlRef = useRef(null);
@@ -43,7 +48,7 @@ const ScrambleText = ({  text,  speed = 0.6,  charType ='lowercase',  textSize =
  const ctx = gsap.context(() => {
  const el = elRef.current;
 
- // LOCK HEIGHT BEFORE SPLIT (IMPORTANT FIX)
+ // Lock height before split to prevent layout shift
  const originalHeight = el.offsetHeight;
  gsap.set(el, { minHeight: originalHeight });
 
@@ -177,4 +182,4 @@ const ScrambleText = ({  text,  speed = 0.6,  charType ='lowercase',  textSize =
  );
 };
 
-export { ScrambleText };
+export default ScrambleText ;

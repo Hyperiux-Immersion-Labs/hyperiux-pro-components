@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from'react'
 import gsap from'gsap'
 
-export function RopeCursor({
+export default function RopeCursor({
 	ropeColor ='#bda985',
 	ropeWidth = 2,
 	ropeOpacity = 0.6,
@@ -19,7 +19,7 @@ export function RopeCursor({
 
 	useEffect(() => {
 		const checkMobile = () => {
-			setIsMobile(window.innerWidth < 640)
+			setIsMobile(window.innerWidth < 1025)
 		}
 
 		checkMobile()

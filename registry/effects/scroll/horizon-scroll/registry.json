@@ -17,6 +17,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/horizontal-feature-reveal/index.jsx"
+    },
+    {
+      "path": "HorizontalFeatureReveal.jsx",
+      "target": "src/components/effects/horizon-scroll/HorizontalFeatureReveal.jsx"
+    },
+    {
+      "path": "HorizontalFeatureRevealComp.jsx",
+      "target": "src/components/effects/horizon-scroll/HorizontalFeatureRevealComp.jsx"
     }
   ]
 }

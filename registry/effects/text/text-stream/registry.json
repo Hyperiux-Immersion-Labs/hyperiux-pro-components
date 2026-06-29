@@ -17,6 +17,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/text-stream/index.jsx"
+    },
+    {
+      "path": "TextStreamComp.jsx",
+      "target": "src/components/effects/text-stream/TextStreamComp.jsx"
+    },
+    {
+      "path": "hooks.js",
+      "target": "src/components/effects/text-stream/hooks.js"
     }
   ]
 }

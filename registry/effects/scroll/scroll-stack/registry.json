@@ -12,6 +12,7 @@
   "importPath": "@/components/effects/scroll-stack",
   "target": "src/components/effects/scroll-stack",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/scroll-stack/index.jsx" }
+    { "path": "index.jsx", "target": "src/components/effects/scroll-stack/index.jsx" },
+    { "path": "ScrollStackComp.jsx", "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx" }
   ]
 }

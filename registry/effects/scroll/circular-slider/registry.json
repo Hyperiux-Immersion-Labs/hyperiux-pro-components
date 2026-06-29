@@ -18,6 +18,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/circular-slider/index.jsx"
+    },
+    {
+      "path": "CircularSliderComp.jsx",
+      "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
     }
   ]
 }

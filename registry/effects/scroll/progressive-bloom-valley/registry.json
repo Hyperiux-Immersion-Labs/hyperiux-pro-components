@@ -23,36 +23,36 @@
       "target": "src/components/effects/progressive-bloom-valley/index.jsx"
     },
     {
-      "path": "camera-rig.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/camera-rig.jsx"
+      "path": "CameraRig.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
     },
     {
-      "path": "edge-blur-effect.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/edge-blur-effect.jsx"
+      "path": "CircularText.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
     },
     {
-      "path": "experience.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/experience.jsx"
+      "path": "EdgeBlurEffect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
     },
     {
-      "path": "film-grain-effect.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/film-grain-effect.jsx"
+      "path": "Experience.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/Experience.jsx"
     },
     {
-      "path": "flowers.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/flowers.jsx"
+      "path": "FilmGrainEffect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
     },
     {
-      "path": "shaders.js",
-      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+      "path": "Flowers.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/Flowers.jsx"
     },
     {
-      "path": "use-input.js",
-      "target": "src/components/effects/progressive-bloom-valley/use-input.js"
+      "path": "useInput.js",
+      "target": "src/components/effects/progressive-bloom-valley/useInput.js"
     },
     {
-      "path": "use-valley-data.js",
-      "target": "src/components/effects/progressive-bloom-valley/use-valley-data.js"
+      "path": "useValleyData.js",
+      "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
     }
   ]
 }

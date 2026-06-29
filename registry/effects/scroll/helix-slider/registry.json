@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/helix-slider/index.jsx"
+    },
+    {
+      "path": "HelixSliderComp.jsx",
+      "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
     }
   ]
 }
