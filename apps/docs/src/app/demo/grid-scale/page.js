@@ -2,7 +2,6 @@ import GridScale from '@/components/grid-scale'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
-import React from 'react'
 
 const page = () => {
   return (

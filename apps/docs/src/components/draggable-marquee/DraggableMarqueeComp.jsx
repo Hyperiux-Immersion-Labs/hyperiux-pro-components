@@ -236,7 +236,7 @@ const DraggableMarqueeComp = ({
 
             imgs.forEach((img) => {
                 if (!img.complete) {
-                    img.addEventListener("load", scheduleMeasure, { once: false });
+                    img.addEventListener("load", scheduleMeasure);
                 }
             });
         });

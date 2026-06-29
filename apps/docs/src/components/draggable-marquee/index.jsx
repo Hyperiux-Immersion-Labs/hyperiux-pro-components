@@ -1,4 +1,4 @@
-import React from 'react'
+
 import DraggableMarqueeComp from './DraggableMarqueeComp'
 
 const DraggableMarquee = () => {

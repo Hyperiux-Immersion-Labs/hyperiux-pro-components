@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { HelixSlider } from '@/components/helix-slider'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
