@@ -15,6 +15,6 @@
   "target": "src/components/effects/pixel-bloom",
   "files": [
     { "path": "index.jsx", "target": "src/components/effects/pixel-bloom/index.jsx" },
-    { "path": "2dcanvasTracker.js", "target": "src/components/effects/PixelBloom/2dcanvasTracker.js" }
+    { "path": "2dcanvasTracker.js", "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js" }
   ]
 }

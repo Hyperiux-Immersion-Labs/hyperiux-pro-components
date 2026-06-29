@@ -163,8 +163,8 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 }
 
 function ButterflyTrail() {
-	const matcapTexture = useLoader(THREE.TextureLoader, '/assets/cursors/butterflies/matcap-white.webp')
-	const { scene: gltfScene, animations: gltfAnimations } = useGLTF('/assets/cursors/butterflies/butterfly3.glb')
+	const matcapTexture = useLoader(THREE.TextureLoader, 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/matcap-white.webp')
+	const { scene: gltfScene, animations: gltfAnimations } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
 	const matcapMaterial = useMemo(() => {
 		return new THREE.MeshMatcapMaterial({
@@ -178,7 +178,7 @@ function ButterflyTrail() {
 	)
 }
 
-useGLTF.preload('/assets/cursors/butterflies/butterfly3.glb')
+useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
 export default function ButterflyTrailCursor() {
 	return (
