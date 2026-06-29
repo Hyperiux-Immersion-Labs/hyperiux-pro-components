@@ -77,5 +77,6 @@
       "target": "public/valley/terrain.png",
       "source": "/valley/terrain.png"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -20,5 +20,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/line-reveal-loader.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

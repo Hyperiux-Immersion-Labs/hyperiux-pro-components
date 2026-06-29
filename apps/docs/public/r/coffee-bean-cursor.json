@@ -23,5 +23,6 @@
       "target": "public/assets/models/coffebean.glb",
       "source": "/assets/models/coffebean.glb"
     }
-  ]
+  ],
+  "tier": "pro"
 }

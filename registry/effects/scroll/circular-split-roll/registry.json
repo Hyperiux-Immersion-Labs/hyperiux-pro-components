@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/circular-split-roll",
-  "tier": "free"
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/circular-split-roll",
+  "target": "src/components/effects/circular-split-roll",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/circular-split-roll/index.jsx"
+    }
+  ]
 }

@@ -9,5 +9,18 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/loaders/lines-loading",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/lines-loader",
+  "target": "src/components/effects/lines-loader",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/lines-loader/index.jsx"
+    },
+    {
+      "path": "line-reveal-loader.jsx",
+      "target": "src/components/effects/lines-loader/line-reveal-loader.jsx"
+    }
+  ]
 }

@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/spotlight-text",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/spotlight-text",
+  "target": "src/components/effects/spotlight-text",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/spotlight-text/index.jsx"
+    }
+  ]
 }

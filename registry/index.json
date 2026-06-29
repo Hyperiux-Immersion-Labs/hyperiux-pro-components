@@ -1,0 +1,1172 @@
+[
+  {
+    "name": "dither-canvas",
+    "title": "Dither Canvas",
+    "category": "backgrounds",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json",
+    "importPath": "@/components/effects/dither-canvas",
+    "target": "src/components/effects/dither-canvas"
+  },
+  {
+    "name": "dotted-grid",
+    "title": "Dotted Grid",
+    "category": "backgrounds",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json",
+    "importPath": "@/components/effects/dotted-grid",
+    "target": "src/components/effects/dotted-grid"
+  },
+  {
+    "name": "spider-particles",
+    "title": "Spider Particles",
+    "category": "backgrounds",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/backgrounds/spider-particles/registry.json",
+    "importPath": "@/components/effects/spider-particles",
+    "target": "src/components/effects/spider-particles"
+  },
+  {
+    "name": "animated-toggle",
+    "title": "Animated Toggle",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/buttons/animated-toggle/registry.json",
+    "importPath": "@/components/effects/animated-toggle",
+    "target": "src/components/effects/animated-toggle"
+  },
+  {
+    "name": "arrow-fill-button",
+    "title": "Arrow Fill Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/buttons/arrow-fill-button/registry.json",
+    "importPath": "@/components/effects/arrow-fill-button",
+    "target": "src/components/effects/arrow-fill-button"
+  },
+  {
+    "name": "char-stagger-button",
+    "title": "Character Stagger Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/buttons/char-stagger-button/registry.json",
+    "importPath": "@/components/effects/char-stagger-button",
+    "target": "src/components/effects/char-stagger-button"
+  },
+  {
+    "name": "char-stagger-primary-button",
+    "title": "Character Stagger Primary Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/buttons/char-stagger-primary-button/registry.json",
+    "importPath": "@/components/effects/char-stagger-primary-button",
+    "target": "src/components/effects/char-stagger-primary-button"
+  },
+  {
+    "name": "dot-fill-button",
+    "title": "Dot Fill Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/buttons/dot-fill-button/registry.json",
+    "importPath": "@/components/effects/dot-fill-button",
+    "target": "src/components/effects/dot-fill-button"
+  },
+  {
+    "name": "link-button",
+    "title": "Link Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/buttons/link-button/registry.json",
+    "importPath": "@/components/effects/link-button",
+    "target": "src/components/effects/link-button"
+  },
+  {
+    "name": "scramble-link-button",
+    "title": "Scramble Link Button",
+    "category": "buttons",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/buttons/scramble-link-button/registry.json",
+    "importPath": "@/components/effects/scramble-link-button",
+    "target": "src/components/effects/scramble-link-button"
+  },
+  {
+    "name": "clippath-slider",
+    "title": "Clip Path Slider",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/carousels/clippath-slider/registry.json",
+    "importPath": "@/components/effects/clippath-slider",
+    "target": "src/components/effects/clippath-slider"
+  },
+  {
+    "name": "infinite-carousel",
+    "title": "Infinite Carousel",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/carousels/infinite-carousel/registry.json",
+    "importPath": "@/components/effects/infinite-carousel",
+    "target": "src/components/effects/infinite-carousel"
+  },
+  {
+    "name": "ring-carousel",
+    "title": "Ring Carousel",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/carousels/ring-carousel/registry.json",
+    "importPath": "@/components/effects/ring-carousel",
+    "target": "src/components/effects/ring-carousel"
+  },
+  {
+    "name": "webgl-slider",
+    "title": "WebGL Slider",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/carousels/webgl-slider/registry.json",
+    "importPath": "@/components/effects/webgl-slider",
+    "target": "src/components/effects/webgl-slider"
+  },
+  {
+    "name": "zoom-slider",
+    "title": "Zoom Slider",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/carousels/zoom-slider/registry.json",
+    "importPath": "@/components/effects/zoom-slider",
+    "target": "src/components/effects/zoom-slider"
+  },
+  {
+    "name": "animated-faq",
+    "title": "Animated FAQ",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/components/animated-faq/registry.json",
+    "importPath": "@/components/effects/animated-faq",
+    "target": "src/components/effects/animated-faq"
+  },
+  {
+    "name": "card-drift",
+    "title": "Card Drift",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/others/card-drift/registry.json",
+    "importPath": "@/components/effects/card-drift",
+    "target": "src/components/effects/card-drift"
+  },
+  {
+    "name": "custom-video-player",
+    "title": "Custom Video Player",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/custom-video-player/registry.json",
+    "importPath": "@/components/effects/custom-video-player",
+    "target": "src/components/effects/custom-video-player"
+  },
+  {
+    "name": "depth-card-stack",
+    "title": "Depth Card Stack",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/depth-card-stack/registry.json",
+    "importPath": "@/components/effects/depth-card-stack",
+    "target": "src/components/effects/depth-card-stack"
+  },
+  {
+    "name": "form",
+    "title": "Form",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/form/registry.json",
+    "importPath": "@/components/effects/form",
+    "target": "src/components/effects/form"
+  },
+  {
+    "name": "gooey-counter",
+    "title": "Gooey Counter",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/others/gooey-counter/registry.json",
+    "importPath": "@/components/effects/gooey-counter",
+    "target": "src/components/effects/gooey-counter"
+  },
+  {
+    "name": "hover-stack",
+    "title": "Hover Stack",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/components/hover-stack/registry.json",
+    "importPath": "@/components/effects/hover-stack",
+    "target": "src/components/effects/hover-stack"
+  },
+  {
+    "name": "interactive-list-preview",
+    "title": "Interactive List Preview",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/others/interactive-list-preview/registry.json",
+    "importPath": "@/components/effects/interactive-list-preview",
+    "target": "src/components/effects/interactive-list-preview"
+  },
+  {
+    "name": "modal",
+    "title": "Modal",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/modal/registry.json",
+    "importPath": "@/components/effects/modal",
+    "target": "src/components/effects/modal"
+  },
+  {
+    "name": "ribbon-drift",
+    "title": "Ribbon Drift",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/others/portfolio-concept/registry.json",
+    "importPath": "@/components/effects/ribbon-drift",
+    "target": "src/components/effects/ribbon-drift"
+  },
+  {
+    "name": "ribbon-drift",
+    "title": "Ribbon Drift",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/ribbon-drift/registry.json",
+    "importPath": "@/components/effects/ribbon-drift",
+    "target": "src/components/effects/ribbon-drift"
+  },
+  {
+    "name": "tabs",
+    "title": "Tabs",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/tabs/registry.json",
+    "importPath": "@/components/effects/tabs",
+    "target": "src/components/effects/tabs"
+  },
+  {
+    "name": "testimonial-swiper",
+    "title": "Testimonial Swiper",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/components/testimonial-swiper/registry.json",
+    "importPath": "@/components/effects/testimonial-swiper",
+    "target": "src/components/effects/testimonial-swiper"
+  },
+  {
+    "name": "butterfly-trail-cursor",
+    "title": "Butterfly Trail Cursor",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/butterfly-trail-cursor/registry.json",
+    "importPath": "@/components/effects/butterfly-trail-cursor",
+    "target": "src/components/effects/butterfly-trail-cursor"
+  },
+  {
+    "name": "character-trail",
+    "title": "Character Trail",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/character-trail/registry.json",
+    "importPath": "@/components/effects/character-trail",
+    "target": "src/components/effects/character-trail"
+  },
+  {
+    "name": "coffee-bean-cursor",
+    "title": "Coffee Bean Cursor",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/coffee-bean-cursor/registry.json",
+    "importPath": "@/components/effects/coffee-bean-cursor",
+    "target": "src/components/effects/coffee-bean-cursor"
+  },
+  {
+    "name": "colorful-cursor-aura",
+    "title": "Colorful Cursor Aura",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/colorful-cursor-aura/registry.json",
+    "importPath": "@/components/effects/colorful-cursor-aura",
+    "target": "src/components/effects/colorful-cursor-aura"
+  },
+  {
+    "name": "cursor-move",
+    "title": "Cursor Move",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/cursor-move/registry.json",
+    "importPath": "@/components/effects/cursor-move",
+    "target": "src/components/effects/cursor-move"
+  },
+  {
+    "name": "fish-eye",
+    "title": "Fish Eye",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/fish-eye/registry.json",
+    "importPath": "@/components/effects/fish-eye",
+    "target": "src/components/effects/fish-eye"
+  },
+  {
+    "name": "full-screen-crosshair",
+    "title": "Full Screen Crosshair",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/full-screen-crosshair/registry.json",
+    "importPath": "@/components/effects/full-screen-crosshair",
+    "target": "src/components/effects/full-screen-crosshair"
+  },
+  {
+    "name": "inertia-img",
+    "title": "Inertia Image",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/inertia-img/registry.json",
+    "importPath": "@/components/effects/inertia-img",
+    "target": "src/components/effects/inertia-img"
+  },
+  {
+    "name": "interactive-arrows",
+    "title": "Interactive Arrows",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/interactive-arrows/registry.json",
+    "importPath": "@/components/effects/interactive-arrows",
+    "target": "src/components/effects/interactive-arrows"
+  },
+  {
+    "name": "liquid-glass-cursor",
+    "title": "Liquid Glass Cursor",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json",
+    "importPath": "@/components/effects/liquid-glass-cursor",
+    "target": "src/components/effects/liquid-glass-cursor"
+  },
+  {
+    "name": "magnetic-image-trail",
+    "title": "Magnetic Image Trail",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/magnetic-image-trail/registry.json",
+    "importPath": "@/components/effects/magnetic-image-trail",
+    "target": "src/components/effects/magnetic-image-trail"
+  },
+  {
+    "name": "noise-ripple-cursor",
+    "title": "Noise Ripple Cursor",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/noise-ripple-cursor/registry.json",
+    "importPath": "@/components/effects/noise-ripple-cursor",
+    "target": "src/components/effects/noise-ripple-cursor"
+  },
+  {
+    "name": "phantom-image-trail",
+    "title": "Phantom Image Trail",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/cursor/phantom-image-trail/registry.json",
+    "importPath": "@/components/effects/phantom-image-trail",
+    "target": "src/components/effects/phantom-image-trail"
+  },
+  {
+    "name": "pixel-bloom",
+    "title": "Pixel Bloom",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/PixelBloom/registry.json",
+    "importPath": "@/components/effects/pixel-bloom",
+    "target": "src/components/effects/pixel-bloom"
+  },
+  {
+    "name": "pixelated-image-effect",
+    "title": "Pixelated Image Effect",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/cursor/pixelated-image-effect/registry.json",
+    "importPath": "@/components/effects/pixelated-image-effect",
+    "target": "src/components/effects/pixelated-image-effect"
+  },
+  {
+    "name": "rope-cursor",
+    "title": "Rope Cursor",
+    "category": "cursor",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/cursor/rope-cursor/registry.json",
+    "importPath": "@/components/effects/rope-cursor",
+    "target": "src/components/effects/rope-cursor"
+  },
+  {
+    "name": "lines-loader",
+    "title": "Lines Loader",
+    "category": "loaders",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/loaders/lines-loader/registry.json",
+    "importPath": "@/components/effects/lines-loader",
+    "target": "src/components/effects/lines-loader"
+  },
+  {
+    "name": "numeric-tunnel",
+    "title": "Numeric Tunnel",
+    "category": "loaders",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json",
+    "importPath": "@/components/effects/numeric-tunnel",
+    "target": "src/components/effects/numeric-tunnel"
+  },
+  {
+    "name": "stack-loader",
+    "title": "Stack Loader",
+    "category": "loaders",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/loaders/stack-loader/registry.json",
+    "importPath": "@/components/effects/stack-loader",
+    "target": "src/components/effects/stack-loader"
+  },
+  {
+    "name": "directional-menu",
+    "title": "Directional Menu",
+    "category": "navigation",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/navigation/directional-menu/registry.json",
+    "importPath": "@/components/effects/directional-menu",
+    "target": "src/components/effects/directional-menu"
+  },
+  {
+    "name": "elevate-navbar",
+    "title": "Elevate Navbar",
+    "category": "navigation",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/navigation/elevate-navbar/registry.json",
+    "importPath": "@/components/effects/elevate-navbar",
+    "target": "src/components/effects/elevate-navbar"
+  },
+  {
+    "name": "expanding-navbar",
+    "title": "Expanding Navbar",
+    "category": "navigation",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/navigation/expanding-navbar/registry.json",
+    "importPath": "@/components/effects/expanding-navbar",
+    "target": "src/components/effects/expanding-navbar"
+  },
+  {
+    "name": "immersive-full-screen-navigation",
+    "title": "Immersive Full Screen Navigation",
+    "category": "navigation",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/navigation/full-screen-navigation/registry.json",
+    "importPath": "@/components/effects/immersive-full-screen-navigation",
+    "target": "src/components/effects/immersive-full-screen-navigation"
+  },
+  {
+    "name": "circular-slider",
+    "title": "Rotating Carousel",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/circular-slider/registry.json",
+    "importPath": "@/components/effects/circular-slider",
+    "target": "src/components/effects/circular-slider"
+  },
+  {
+    "name": "circular-split-roll",
+    "title": "Circular Split Roll",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/circular-split-roll/registry.json",
+    "importPath": "@/components/effects/circular-split-roll",
+    "target": "src/components/effects/circular-split-roll"
+  },
+  {
+    "name": "draggable-marquee",
+    "title": "Draggable Marquee",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
+    "importPath": "@/components/effects/draggable-marquee",
+    "target": "src/components/effects/draggable-marquee"
+  },
+  {
+    "name": "grid-scale",
+    "title": "Grid Scale",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/grid-scale/registry.json",
+    "importPath": "@/components/effects/grid-scale",
+    "target": "src/components/effects/grid-scale"
+  },
+  {
+    "name": "helix-slider",
+    "title": "Helix Slider",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/helix-slider/registry.json",
+    "importPath": "@/components/effects/helix-slider",
+    "target": "src/components/effects/helix-slider"
+  },
+  {
+    "name": "horizontal-feature-reveal",
+    "title": "Horizontal Feature Reveal",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/horizon-scroll/registry.json",
+    "importPath": "@/components/effects/horizontal-feature-reveal",
+    "target": "src/components/effects/horizontal-feature-reveal"
+  },
+  {
+    "name": "inertia-scroll-effect",
+    "title": "Inertia Scroll Effect",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/inertia-scroll-effect/registry.json",
+    "importPath": "@/components/effects/inertia-scroll-effect",
+    "target": "src/components/effects/inertia-scroll-effect"
+  },
+  {
+    "name": "infinite-perspective-slider",
+    "title": "Infinite Perspective Slider",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/infinite-perspective-slider/registry.json",
+    "importPath": "@/components/effects/infinite-perspective-slider",
+    "target": "src/components/effects/infinite-perspective-slider"
+  },
+  {
+    "name": "parallax-footer",
+    "title": "Parallax Footer",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/parallax-footer/registry.json",
+    "importPath": "@/components/effects/parallax-footer",
+    "target": "src/components/effects/parallax-footer"
+  },
+  {
+    "name": "parallax-gallery",
+    "title": "Parallax Gallery",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/parallax-gallery/registry.json",
+    "importPath": "@/components/effects/parallax-gallery",
+    "target": "src/components/effects/parallax-gallery"
+  },
+  {
+    "name": "parallax-image",
+    "title": "Parallax Image",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/parallax-image/registry.json",
+    "importPath": "@/components/effects/parallax-image",
+    "target": "src/components/effects/parallax-image"
+  },
+  {
+    "name": "parallax-slider",
+    "title": "Parallax Slider",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/parallax-slider/registry.json",
+    "importPath": "@/components/effects/parallax-slider",
+    "target": "src/components/effects/parallax-slider"
+  },
+  {
+    "name": "rotation-slider",
+    "title": "Rotation Slider",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/rotation-slider/registry.json",
+    "importPath": "@/components/effects/rotation-slider",
+    "target": "src/components/effects/rotation-slider"
+  },
+  {
+    "name": "scroll-distortion",
+    "title": "Scroll Distortion",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/scroll-distortion/registry.json",
+    "importPath": "@/components/effects/scroll-distortion",
+    "target": "src/components/effects/scroll-distortion"
+  },
+  {
+    "name": "scroll-shuffled-cards",
+    "title": "Scroll Shuffled Cards",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/scroll-shuffled-cards/registry.json",
+    "importPath": "@/components/effects/scroll-shuffled-cards",
+    "target": "src/components/effects/scroll-shuffled-cards"
+  },
+  {
+    "name": "scroll-stack",
+    "title": "Scroll Stack",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/scroll-stack/registry.json",
+    "importPath": "@/components/effects/scroll-stack",
+    "target": "src/components/effects/scroll-stack"
+  },
+  {
+    "name": "split-canvas",
+    "title": "Split Canvas",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/split-canvas/registry.json",
+    "importPath": "@/components/effects/split-canvas",
+    "target": "src/components/effects/split-canvas"
+  },
+  {
+    "name": "square-translate",
+    "title": "Square Translate",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/square-translate/registry.json",
+    "importPath": "@/components/effects/square-translate",
+    "target": "src/components/effects/square-translate"
+  },
+  {
+    "name": "stacking-cards",
+    "title": "Stacking Cards",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/stacking-cards/registry.json",
+    "importPath": "@/components/effects/stacking-cards",
+    "target": "src/components/effects/stacking-cards"
+  },
+  {
+    "name": "sticky-content-wrapper",
+    "title": "Sticky Content Wrapper",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/sticky-content-wrapper/registry.json",
+    "importPath": "@/components/effects/sticky-content-wrapper",
+    "target": "src/components/effects/sticky-content-wrapper"
+  },
+  {
+    "name": "svg-path-marquee",
+    "title": "Marquee on SVG Path",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/svg-path-marquee/registry.json",
+    "importPath": "@/components/effects/svg-path-marquee",
+    "target": "src/components/effects/svg-path-marquee"
+  },
+  {
+    "name": "svg-pixel-reveal",
+    "title": "SVG Pixel Reveal",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/svg-pixel-reveal/registry.json",
+    "importPath": "@/components/effects/svg-pixel-reveal",
+    "target": "src/components/effects/svg-pixel-reveal"
+  },
+  {
+    "name": "text-convergence",
+    "title": "Text Convergence",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/scroll/text-convergence/registry.json",
+    "importPath": "@/components/effects/text-convergence",
+    "target": "src/components/effects/text-convergence"
+  },
+  {
+    "name": "blur-text",
+    "title": "Blur Text",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/blur-text/registry.json",
+    "importPath": "@/components/effects/blur-text",
+    "target": "src/components/effects/blur-text"
+  },
+  {
+    "name": "circle-text-reveal",
+    "title": "Circle Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/circle-text-reveal/registry.json",
+    "importPath": "@/components/effects/circle-text-reveal",
+    "target": "src/components/effects/circle-text-reveal"
+  },
+  {
+    "name": "counter",
+    "title": "Counter",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/counter/registry.json",
+    "importPath": "@/components/effects/counter",
+    "target": "src/components/effects/counter"
+  },
+  {
+    "name": "glitchy-text",
+    "title": "Glitchy Text",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/glitchy-text/registry.json",
+    "importPath": "@/components/effects/glitchy-text",
+    "target": "src/components/effects/glitchy-text"
+  },
+  {
+    "name": "mask-text-reveal",
+    "title": "Mask Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/mask-text-reveal/registry.json",
+    "importPath": "@/components/effects/mask-text-reveal",
+    "target": "src/components/effects/mask-text-reveal"
+  },
+  {
+    "name": "overflow-stagger-text",
+    "title": "Overflow Stagger Text",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/text/overflow-stagger-text/registry.json",
+    "importPath": "@/components/effects/overflow-stagger-text",
+    "target": "src/components/effects/overflow-stagger-text"
+  },
+  {
+    "name": "overflow-text-reveal",
+    "title": "Overflow Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/overflow-text-reveal/registry.json",
+    "importPath": "@/components/effects/overflow-text-reveal",
+    "target": "src/components/effects/overflow-text-reveal"
+  },
+  {
+    "name": "perspective-text-reveal",
+    "title": "Perspective Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/perspective-text-reveal/registry.json",
+    "importPath": "@/components/effects/perspective-text-reveal",
+    "target": "src/components/effects/perspective-text-reveal"
+  },
+  {
+    "name": "rectangular-text-reveal",
+    "title": "Rectangular Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/text/rectangular-text-reveal/registry.json",
+    "importPath": "@/components/effects/rectangular-text-reveal",
+    "target": "src/components/effects/rectangular-text-reveal"
+  },
+  {
+    "name": "scramble-text",
+    "title": "Scramble Text",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/scramble-text/registry.json",
+    "importPath": "@/components/effects/scramble-text",
+    "target": "src/components/effects/scramble-text"
+  },
+  {
+    "name": "slide-text-reveal",
+    "title": "Slide Text Reveal",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/slide-text-reveal/registry.json",
+    "importPath": "@/components/effects/slide-text-reveal",
+    "target": "src/components/effects/slide-text-reveal"
+  },
+  {
+    "name": "spotlight-text",
+    "title": "Spotlight Text",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/spotlight-text/registry.json",
+    "importPath": "@/components/effects/spotlight-text",
+    "target": "src/components/effects/spotlight-text"
+  },
+  {
+    "name": "text-cloning",
+    "title": "Text Cloning",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/text-cloning/registry.json",
+    "importPath": "@/components/effects/text-cloning",
+    "target": "src/components/effects/text-cloning"
+  },
+  {
+    "name": "text-fill-animation",
+    "title": "Text Fill Animation",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/text-fill-animation/registry.json",
+    "importPath": "@/components/effects/text-fill-animation",
+    "target": "src/components/effects/text-fill-animation"
+  },
+  {
+    "name": "text-hover-expand",
+    "title": "Text Hover Expand",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/text-hover-expand/registry.json",
+    "importPath": "@/components/effects/text-hover-expand",
+    "target": "src/components/effects/text-hover-expand"
+  },
+  {
+    "name": "text-stream",
+    "title": "Text Stream",
+    "category": "text",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/text/text-stream/registry.json",
+    "importPath": "@/components/effects/text-stream",
+    "target": "src/components/effects/text-stream"
+  },
+  {
+    "name": "block-transition",
+    "title": "Block Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/transitions/block-transition/registry.json",
+    "importPath": "@/components/effects/block-transition",
+    "target": "src/components/effects/block-transition"
+  },
+  {
+    "name": "chess-grid-transition",
+    "title": "Chess Grid Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/transitions/chess-grid-transition/registry.json",
+    "importPath": "@/components/effects/chess-grid-transition",
+    "target": "src/components/effects/chess-grid-transition"
+  },
+  {
+    "name": "page-flip-transition",
+    "title": "Page Flip Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/transitions/page-flip-transition/registry.json",
+    "importPath": "@/components/effects/page-flip-transition",
+    "target": "src/components/effects/page-flip-transition"
+  },
+  {
+    "name": "pixel-transition",
+    "title": "Pixel Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/transitions/pixel-transition/registry.json",
+    "importPath": "@/components/effects/pixel-transition",
+    "target": "src/components/effects/pixel-transition"
+  },
+  {
+    "name": "radial-slice-transition",
+    "title": "Radial Slice Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/transitions/pie-rotation-transition/registry.json",
+    "importPath": "@/components/effects/radial-slice-transition",
+    "target": "src/components/effects/radial-slice-transition"
+  },
+  {
+    "name": "svg-brush-transition",
+    "title": "SVG Brush Transition",
+    "category": "transitions",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/transitions/svg-draw-page-transition/registry.json",
+    "importPath": "@/components/effects/svg-brush-transition",
+    "target": "src/components/effects/svg-brush-transition"
+  },
+  {
+    "name": "3d-portfolio-slider",
+    "title": "3D Portfolio Slider",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/3d-portfolio-slider/registry.json",
+    "importPath": "@/components/effects/3d-portfolio-slider",
+    "target": "src/components/effects/3d-portfolio-slider"
+  },
+  {
+    "name": "book-flip",
+    "title": "Book Flip",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/book-flip/registry.json",
+    "importPath": "@/components/effects/book-flip",
+    "target": "src/components/effects/book-flip"
+  },
+  {
+    "name": "colliding-models",
+    "title": "Colliding Models",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/colliding-models/registry.json",
+    "importPath": "@/components/effects/colliding-models",
+    "target": "src/components/effects/colliding-models"
+  },
+  {
+    "name": "curved-plane",
+    "title": "Curved Plane",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/curved-plane/registry.json",
+    "importPath": "@/components/effects/curved-plane",
+    "target": "src/components/effects/curved-plane"
+  },
+  {
+    "name": "curved-plane-v2",
+    "title": "Curved Plane V2",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/curved-plane-v2/registry.json",
+    "importPath": "@/components/effects/curved-plane-v2",
+    "target": "src/components/effects/curved-plane-v2"
+  },
+  {
+    "name": "donut-particles",
+    "title": "Donut Particles",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/donut-particles/registry.json",
+    "importPath": "@/components/effects/donut-particles",
+    "target": "src/components/effects/donut-particles"
+  },
+  {
+    "name": "draggable-canvas",
+    "title": "Draggable Canvas",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/draggable-canvas/registry.json",
+    "importPath": "@/components/effects/draggable-canvas",
+    "target": "src/components/effects/draggable-canvas"
+  },
+  {
+    "name": "file-encryption",
+    "title": "File Encryption",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/file-encryption/registry.json",
+    "importPath": "@/components/effects/file-encryption",
+    "target": "src/components/effects/file-encryption"
+  },
+  {
+    "name": "fractal-glass",
+    "title": "Fractal Glass",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/webgl/fractal-glass/registry.json",
+    "importPath": "@/components/effects/fractal-glass",
+    "target": "src/components/effects/fractal-glass"
+  },
+  {
+    "name": "grid-lift",
+    "title": "Grid Lift",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/grid-lift/registry.json",
+    "importPath": "@/components/effects/grid-lift",
+    "target": "src/components/effects/grid-lift"
+  },
+  {
+    "name": "grid-tunnel",
+    "title": "Grid Tunnel",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/grid-tunnel/registry.json",
+    "importPath": "@/components/effects/grid-tunnel",
+    "target": "src/components/effects/grid-tunnel"
+  },
+  {
+    "name": "hero-animated-banner",
+    "title": "Hero Animated Banner",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/hero-animated-banner/registry.json",
+    "importPath": "@/components/effects/hero-animated-banner",
+    "target": "src/components/effects/hero-animated-banner"
+  },
+  {
+    "name": "hero-banner-animated",
+    "title": "Hero Banner Animated",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/hero-banner-animated/registry.json",
+    "importPath": "@/components/effects/hero-banner-animated",
+    "target": "src/components/effects/hero-banner-animated"
+  },
+  {
+    "name": "hover-slider",
+    "title": "Hover Slider",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/interactive-hover-slider/registry.json",
+    "importPath": "@/components/effects/hover-slider",
+    "target": "src/components/effects/hover-slider"
+  },
+  {
+    "name": "hyperiux-glitter-concept",
+    "title": "Hyperiux Glitter Concept",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/hyperiux-glitter-concept/registry.json",
+    "importPath": "@/components/effects/hyperiux-glitter-concept",
+    "target": "src/components/effects/hyperiux-glitter-concept"
+  },
+  {
+    "name": "infinite-grid-gallery",
+    "title": "Infinite Grid Gallery",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/infinite-grid-gallery/registry.json",
+    "importPath": "@/components/effects/infinite-grid-gallery",
+    "target": "src/components/effects/infinite-grid-gallery"
+  },
+  {
+    "name": "interactive-blur-reveal",
+    "title": "Interactive Blur Reveal",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/webgl/interactive-blur-reveal/registry.json",
+    "importPath": "@/components/effects/interactive-blur-reveal",
+    "target": "src/components/effects/interactive-blur-reveal"
+  },
+  {
+    "name": "milkyway",
+    "title": "Milky Way",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/webgl/milkyway/registry.json",
+    "importPath": "@/components/effects/milkyway",
+    "target": "src/components/effects/milkyway"
+  },
+  {
+    "name": "mouse-pixelation",
+    "title": "Mouse Pixelation",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/mouse-pixelation/registry.json",
+    "importPath": "@/components/effects/mouse-pixelation",
+    "target": "src/components/effects/mouse-pixelation"
+  },
+  {
+    "name": "progressive-bloom-valley",
+    "title": "Progressive Bloom Valley",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/scroll/progressive-bloom-valley/registry.json",
+    "importPath": "@/components/effects/progressive-bloom-valley",
+    "target": "src/components/effects/progressive-bloom-valley"
+  },
+  {
+    "name": "strip-slider",
+    "title": "Strip Slider",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "pro",
+    "registryPath": "registry/effects/webgl/strip-slider/registry.json",
+    "importPath": "@/components/effects/strip-slider",
+    "target": "src/components/effects/strip-slider"
+  }
+]

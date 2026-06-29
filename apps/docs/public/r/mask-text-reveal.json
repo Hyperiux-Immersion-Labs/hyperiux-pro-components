@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/mask-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

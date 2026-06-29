@@ -13,5 +13,18 @@
   "coverImage": "ribbon-drift",
   "videoUrl": "ribbon-drift.mp4",
   "previewUrl": "/ribbon-drift",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/ribbon-drift",
+  "target": "src/components/effects/ribbon-drift",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/ribbon-drift/index.jsx"
+    },
+    {
+      "path": "PortfolioConcept.jsx",
+      "target": "src/components/effects/ribbon-drift/PortfolioConcept.jsx"
+    }
+  ]
 }

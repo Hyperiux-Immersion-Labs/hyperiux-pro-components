@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/text-stream",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/text-stream",
+  "target": "src/components/effects/text-stream",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/text-stream/index.jsx"
+    }
+  ]
 }

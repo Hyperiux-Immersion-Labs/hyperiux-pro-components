@@ -11,5 +11,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/cursors/fish-eye",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/fish-eye",
+  "target": "src/components/effects/fish-eye",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/fish-eye/index.jsx"
+    }
+  ]
 }

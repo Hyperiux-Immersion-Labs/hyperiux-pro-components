@@ -48,5 +48,6 @@
       "target": "public/assets/audio/page-flip-01a.mp3",
       "source": "/assets/audio/page-flip-01a.mp3"
     }
-  ]
+  ],
+  "tier": "pro"
 }

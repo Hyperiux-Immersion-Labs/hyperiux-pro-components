@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/scramble-text.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

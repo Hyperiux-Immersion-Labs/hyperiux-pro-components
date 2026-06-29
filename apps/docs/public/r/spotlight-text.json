@@ -13,5 +13,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/spotlight-text.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

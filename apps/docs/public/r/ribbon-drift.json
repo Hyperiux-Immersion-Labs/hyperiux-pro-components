@@ -238,5 +238,6 @@
       "target": "public/assets/dark/image21.png",
       "source": "/assets/dark/image21.png"
     }
-  ]
+  ],
+  "tier": "pro"
 }

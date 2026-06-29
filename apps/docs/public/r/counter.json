@@ -30,5 +30,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/CounterTwo.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/overflow-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/overflow-text-reveal",
+  "target": "src/components/effects/overflow-text-reveal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/overflow-text-reveal/index.jsx"
+    }
+  ]
 }

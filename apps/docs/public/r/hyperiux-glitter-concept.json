@@ -35,5 +35,6 @@
       "target": "public/assets/models/hyperiux-new-model.glb",
       "source": "/assets/models/hyperiux-new-model.glb"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/circle-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/circle-text-reveal",
+  "target": "src/components/effects/circle-text-reveal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/circle-text-reveal/index.jsx"
+    }
+  ]
 }

@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/text-fill-animation.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

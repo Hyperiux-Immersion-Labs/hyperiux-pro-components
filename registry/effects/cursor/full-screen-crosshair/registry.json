@@ -9,5 +9,18 @@
   "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
   "previewUrl": "/full-screen-crosshair",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/full-screen-crosshair",
+  "target": "src/components/effects/full-screen-crosshair",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/full-screen-crosshair/index.jsx"
+    },
+    {
+      "path": "use-mouse.js",
+      "target": "src/components/effects/full-screen-crosshair/use-mouse.js"
+    }
+  ]
 }

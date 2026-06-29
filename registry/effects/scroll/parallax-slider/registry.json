@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/parallax-slider",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/parallax-slider",
+  "target": "src/components/effects/parallax-slider",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/parallax-slider/index.jsx"
+    }
+  ]
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/grid-scale",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/grid-scale",
+  "target": "src/components/effects/grid-scale",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/grid-scale/index.jsx"
+    }
+  ]
 }

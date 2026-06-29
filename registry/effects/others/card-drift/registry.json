@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/card-drift",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/card-drift",
+  "target": "src/components/effects/card-drift",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/card-drift/index.jsx"
+    }
+  ]
 }

@@ -16,5 +16,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/pixel-transition.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

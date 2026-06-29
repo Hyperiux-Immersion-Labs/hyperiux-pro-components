@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/perspective-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

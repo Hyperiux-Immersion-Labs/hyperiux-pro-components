@@ -7,5 +7,14 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/parallax-footer",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/parallax-footer",
+  "target": "src/components/effects/parallax-footer",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/parallax-footer/index.jsx"
+    }
+  ]
 }

@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/overflow-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

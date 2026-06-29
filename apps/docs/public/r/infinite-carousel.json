@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/infinite-carousel.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

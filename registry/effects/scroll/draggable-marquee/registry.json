@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/draggable-marquee",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/draggable-marquee",
+  "target": "src/components/effects/draggable-marquee",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/draggable-marquee/index.jsx"
+    }
+  ]
 }

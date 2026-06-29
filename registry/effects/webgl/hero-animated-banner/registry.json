@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/hero-animated-banner",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/hero-animated-banner",
+  "target": "src/components/effects/hero-animated-banner",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/hero-animated-banner/index.jsx"
+    }
+  ]
 }

@@ -23,5 +23,6 @@
       "target": "components/hyperiux/rotation-card.jsx",
       "content": "\"use client\";\nimport React, { forwardRef } from \"react\";\nimport Image from \"next/image\";\n\nconst RotationCard = forwardRef(({ src, index, total }, ref) => {\n  return (\n    <div\n      ref={ref}\n      className=\"absolute w-[38vw] h-[45vh] max-sm:w-[75vw] max-sm:h-[35vh] origin-right overflow-hidden opacity-0\"\n      style={{\n        transformStyle: \"preserve-3d\",\n        zIndex: total - index,\n      }}\n    >\n      <div\n        className=\"w-full h-full relative\"\n        style={{\n          transformStyle: \"preserve-3d\",\n        }}\n      >\n        <Image\n          src={src}\n          alt=\"slider\"\n          fill\n          className=\"object-cover\"\n          priority\n        />\n      </div>\n    </div>\n  );\n});\n\nexport default RotationCard;"
     }
-  ]
+  ],
+  "tier": "free"
 }

@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/svg-pixel-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/svg-pixel-reveal",
+  "target": "src/components/effects/svg-pixel-reveal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/svg-pixel-reveal/index.jsx"
+    }
+  ]
 }

@@ -22,5 +22,6 @@
       "target": "components/hyperiux/index.js",
       "content": "// Re-export the component from the docs source folder when packaged\nexport { default } from './elevate-navbar/index.jsx';\n"
     }
-  ]
+  ],
+  "tier": "free"
 }

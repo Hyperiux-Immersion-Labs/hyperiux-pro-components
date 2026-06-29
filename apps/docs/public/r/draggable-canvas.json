@@ -25,5 +25,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/masked-container.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

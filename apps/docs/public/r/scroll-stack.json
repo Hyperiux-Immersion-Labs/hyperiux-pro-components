@@ -15,5 +15,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/scroll-stack.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

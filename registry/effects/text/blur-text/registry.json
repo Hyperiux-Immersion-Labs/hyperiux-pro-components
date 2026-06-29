@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/blur-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/blur-text",
+  "target": "src/components/effects/blur-text",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/blur-text/index.jsx"
+    }
+  ]
 }

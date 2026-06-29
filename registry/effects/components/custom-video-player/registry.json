@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/video-player",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/custom-video-player",
+  "target": "src/components/effects/custom-video-player",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/custom-video-player/index.jsx"
+    }
+  ]
 }

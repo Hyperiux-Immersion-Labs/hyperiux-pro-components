@@ -18,5 +18,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/use-mouse.js"
     }
-  ]
+  ],
+  "tier": "pro"
 }

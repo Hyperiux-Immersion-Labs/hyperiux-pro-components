@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/curved-plane",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/curved-plane",
+  "target": "src/components/effects/curved-plane",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/curved-plane/index.jsx"
+    }
+  ]
 }

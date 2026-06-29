@@ -10,5 +10,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/pixels",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/pixel-transition",
+  "target": "src/components/effects/pixel-transition",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/pixel-transition/index.jsx"
+    }
+  ]
 }

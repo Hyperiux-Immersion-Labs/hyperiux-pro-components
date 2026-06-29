@@ -9,5 +9,38 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/interactive-arrows",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/interactive-arrows",
+  "target": "src/components/effects/interactive-arrows",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/interactive-arrows/index.jsx"
+    },
+    {
+      "path": "arrows-limit.jsx",
+      "target": "src/components/effects/interactive-arrows/arrows-limit.jsx"
+    },
+    {
+      "path": "arrows-opacity.jsx",
+      "target": "src/components/effects/interactive-arrows/arrows-opacity.jsx"
+    },
+    {
+      "path": "arrows-play.jsx",
+      "target": "src/components/effects/interactive-arrows/arrows-play.jsx"
+    },
+    {
+      "path": "arrows.jsx",
+      "target": "src/components/effects/interactive-arrows/arrows.jsx"
+    },
+    {
+      "path": "lines.jsx",
+      "target": "src/components/effects/interactive-arrows/lines.jsx"
+    },
+    {
+      "path": "points.jsx",
+      "target": "src/components/effects/interactive-arrows/points.jsx"
+    }
+  ]
 }

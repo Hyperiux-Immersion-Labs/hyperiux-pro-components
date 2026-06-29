@@ -9,5 +9,14 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/svg-path",
-  "tier": "pro"
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/svg-path-marquee",
+  "target": "src/components/effects/svg-path-marquee",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/svg-path-marquee/index.jsx"
+    }
+  ]
 }

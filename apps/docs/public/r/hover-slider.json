@@ -16,5 +16,6 @@
       "type": "registry:component",
       "target": "components/hyperiux/hover-slider.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }
