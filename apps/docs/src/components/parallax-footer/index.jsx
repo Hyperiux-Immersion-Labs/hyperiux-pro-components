@@ -1,13 +1,12 @@
 import { FooterParallax } from "./ParallaxFooter";
-import React from"react";
-import { ReactLenis } from"lenis/react";
+
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const ParallaxFooter = () => {
  return (
  <>
- <ReactLenis root>
+
 
  <div className="w-screen h-screen bg-[#ff6b00] relative z-2 flex justify-center items-center">
  <h1 className="text-[4vw] font-medium max-sm:text-[8.5vw] w-[70%] text-center">
@@ -36,7 +35,7 @@ const ParallaxFooter = () => {
  </div>
  </div>
  </FooterParallax>
- </ReactLenis>
+
  </>
  );
 };

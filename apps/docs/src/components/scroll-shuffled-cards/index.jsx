@@ -1,11 +1,10 @@
 import ScrollShuffledCardsComp from"@/components/scroll-shuffled-cards/ScrollShuffledCardsComp";
-import React from"react";
-import { ReactLenis } from"lenis/react";
+
 
 const ScrollShuffledCards = () => {
  return (
     <>
- <ReactLenis root>
+
  <section className="w-screen h-screen">
  <ScrollShuffledCardsComp
  cards={cardsData}
@@ -24,7 +23,7 @@ const ScrollShuffledCards = () => {
  endRotateRange={[-10, 10]}
  />
  </section>
- </ReactLenis>
+
  </>
  );
 };

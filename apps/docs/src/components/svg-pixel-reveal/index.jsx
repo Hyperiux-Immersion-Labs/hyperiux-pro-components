@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import PixelateSvgFilter from "./PixelatedScgFilter";
+import PixelateSvgFilter from "./PixelatedSvgFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,8 +48,6 @@ export default function SVGPixelReveal({
             trigger: container,
             start,
             end,
-            // scrub: true,
-            // markers: true,
             animation: tween,
             invalidateOnRefresh: true,
         });

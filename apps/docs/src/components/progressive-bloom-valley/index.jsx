@@ -8,7 +8,7 @@ import { EffectComposer, Vignette } from"@react-three/postprocessing";
 import FilmGrainEffect from"./FilmGrainEffect";
 import EdgeBlurEffect from"./EdgeBlurEffect";
 
-export default function ProgressiveBloomValleyComp() {
+export default function ProgressiveBloomValley() {
  return (
  <div className="h-screen w-full relative">
 

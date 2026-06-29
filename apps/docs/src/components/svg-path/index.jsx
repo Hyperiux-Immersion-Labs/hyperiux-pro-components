@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import SVGPathComp from "./SVGPathComp";
 
 const wavePath =
@@ -77,7 +76,6 @@ export default function SVGPath() {
 
   return (
     <>
-      <LenisSmoothScroll />
 
       <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden bg-black">
         <div className="fixed inset-0 h-dvh w-dvw overflow-hidden bg-black">
