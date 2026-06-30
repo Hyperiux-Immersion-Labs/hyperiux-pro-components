@@ -28,9 +28,8 @@ export default function SliderCard({
  >
  <div
  ref={(el) => { cardFaceRefsRef.current[index] = el; }}
- className="relative w-full h-full will-change-transform"
+ className="relative w-full h-full will-change-transform rounded-[18px]"
  style={{
- borderRadius: 18,
  boxShadow:"0 14px 50px rgba(0,0,0,0.28)",
  background: card.color,
  transformOrigin:"center",
@@ -38,9 +37,8 @@ export default function SliderCard({
  >
  <div
  ref={(el) => { textureRefsRef.current[index] = el; }}
- className="absolute bg-repeat-y mix-blend-screen inset-0 pointer-events-none opacity-0"
+ className="absolute bg-repeat-y mix-blend-screen inset-0 pointer-events-none opacity-0 rounded-[18px]"
  style={{
- borderRadius: 18,
  backgroundImage: `url('${card.textureImage}')`,
  backgroundPosition:"center",
  backgroundRepeat:"repeat",

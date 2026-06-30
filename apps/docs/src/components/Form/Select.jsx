@@ -1,4 +1,4 @@
-// components/ui/Select.jsx
+
 import React, { forwardRef, useState, useRef, useEffect } from"react";
 
 const Select = forwardRef(function Select(
@@ -83,14 +83,14 @@ const Select = forwardRef(function Select(
  }
  `}
  >
- <div className="bg-white p-1 border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+ <div className="bg-white p-1 border border-gray-200 rounded-lg shadow-xl overflow-hidden">
  {options.map((opt) => (
  <button
  key={opt.value}
  type="button"
  onClick={() => handleSelect(opt.value)}
  className={`
- w-full text-left px-5 py-3 text-sm transition-all rounded-full
+ w-full text-left px-5 py-3 text-sm transition-all rounded-lg
  hover:bg-gray-100
  ${
  rest.value === opt.value

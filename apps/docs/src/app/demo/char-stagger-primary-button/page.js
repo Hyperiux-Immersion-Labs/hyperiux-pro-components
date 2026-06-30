@@ -32,7 +32,7 @@ export default function Page() {
                 <Image
                     src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg"
                     alt="bg image"
-                    title="Arrow Fill Button"
+                    title="Character Stagger Primary Button"
                     className="h-full w-full object-cover"
                     width={1920}
                     height={1080}

@@ -1,8 +1,7 @@
-import DepthCardStack from '@/components/DepthCardStack'
-import React from'react'
+import DepthCardStack from '@/components/depth-card-stack'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
-const page = () => {
+const Page = () => {
  return (
  <>
  <DemoHeader />
@@ -11,4 +10,4 @@ const page = () => {
  )
 }
 
-export default page
+export default Page

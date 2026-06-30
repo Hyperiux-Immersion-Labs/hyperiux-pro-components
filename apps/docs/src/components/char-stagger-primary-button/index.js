@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from"react";
 import Link from"next/link";
 import { ArrowRight } from"lucide-react";
 
@@ -17,7 +17,7 @@ const CharStaggerPrimaryButton = ({
  showArrow = false,
  icon: Icon = ArrowRight,
  iconClassName ="",
- bgClassName,
+ bgClassName = "",
  onClick,
  ...props
 }) => {

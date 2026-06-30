@@ -3,8 +3,6 @@
 
 /**
  *
- * ─── Props
- *
  * fields: FieldConfig[]
  * Array that drives EVERY form field. Each object can be:
  *

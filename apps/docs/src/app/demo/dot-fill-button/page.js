@@ -1,9 +1,11 @@
 import DotFillBtn from "@/components/dot-fill-button";
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import Image from "next/image";
 
 export default function Page() {
     return (
-
+        <>
+       <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
@@ -29,7 +31,7 @@ export default function Page() {
                 <Image
                     src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"
                     alt="bg image"
-                    title="Arrow Fill Button"
+                    title="Dot Fill Button"
                     className="h-full w-full object-cover"
                     width={1920}
                     height={1080}
@@ -38,6 +40,7 @@ export default function Page() {
                 <div className="absolute inset-0 bg-black/70" />
             </div>
         </div>
+         </>
 
     );
 }

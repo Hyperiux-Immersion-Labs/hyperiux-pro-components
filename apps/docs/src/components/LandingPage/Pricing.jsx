@@ -10,9 +10,9 @@ import React, {
 import SplitLine from "../WebsiteComps/SplitLine";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import WebsiteButton from "../WebsiteComps/Button";
-import Input from "@/components/Form/Input";
-import PhoneInput from "@/components/Form/PhoneInput";
-import Textarea from "@/components/Form/Textarea";
+import Input from "@/components/form/Input";
+import PhoneInput from "@/components/form/PhoneInput";
+import Textarea from "@/components/form/Textarea";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { Check } from "lucide-react";

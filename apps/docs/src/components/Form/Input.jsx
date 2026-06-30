@@ -1,4 +1,4 @@
-// components/ui/Input.jsx
+
 import React, { forwardRef } from"react";
 
 /**
@@ -12,11 +12,22 @@ import React, { forwardRef } from"react";
  * - All standard <input> props (name, value, onChange, onBlur, autoComplete, …)
  */
 const Input = forwardRef(function Input(
- { id, label,placeholder, type ="text", error, className ="", ...rest },
+ { id, label, placeholder, type ="text", error, className ="", ...rest },
  ref
 ) {
  return (
  <div className="w-full">
+ <style>{`
+ input:-webkit-autofill,
+ input:-webkit-autofill:hover,
+ input:-webkit-autofill:focus,
+ input:-webkit-autofill:active {
+   -webkit-text-fill-color: #1f2937;
+   caret-color: #1f2937;
+   box-shadow: 0 0 0 1000px #ffffff inset !important;
+   transition: background-color 9999s ease-in-out 0s;
+ }
+ `}</style>
  <div className="group relative w-full">
  {label && (
  <label
@@ -26,14 +37,16 @@ const Input = forwardRef(function Input(
  group-focus-within:text-gray-700
  has-[+input:not(:placeholder-shown)]:text-gray-700
  absolute top-1/2 block -translate-y-1/2 cursor-text px-2 text-sm
- transition-all
+ transition-all duration-200 ease-out z-10
  group-focus-within:pointer-events-none
  group-focus-within:top-0
+ group-focus-within:-translate-y-1/2
  group-focus-within:cursor-default
  group-focus-within:text-xs
  group-focus-within:font-medium
  has-[+input:not(:placeholder-shown)]:pointer-events-none
  has-[+input:not(:placeholder-shown)]:top-0
+ has-[+input:not(:placeholder-shown)]:-translate-y-1/2
  has-[+input:not(:placeholder-shown)]:cursor-default
  has-[+input:not(:placeholder-shown)]:text-xs
  has-[+input:not(:placeholder-shown)]:font-medium
@@ -49,7 +62,7 @@ const Input = forwardRef(function Input(
  ref={ref}
  id={id}
  type={type}
- placeholder={placeholder}
+ placeholder={placeholder ?? " "}
  className={`
  w-full border rounded-full bg-white
  h-14 pl-5 pr-4 text-sm text-gray-800
