@@ -1,8 +1,14 @@
-export default function VaultBox({ id, styles, img, number, label, textColor = 'text-foreground' }) {
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+export default function VaultBox({ id, styles, img, number, label, containerLink = '#', labelLink = '#', textColor = 'text-foreground' }) {
+    const router = useRouter();
+
     return (
         <div
             id={id}
-            className={`flex p-[1vw] overflow-hidden justify-between relative h-full max-sm:rounded-sm rounded-md ${styles}`}
+            onClick={() => router.push(containerLink)}
+            className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden justify-between relative h-full max-sm:rounded-sm rounded-md ${styles}`}
         >
             <div className='absolute inset-0 bg-black/50'>
                 <video
@@ -15,10 +21,16 @@ export default function VaultBox({ id, styles, img, number, label, textColor = '
                     className={`object-cover  h-full w-full`}
                 />
             </div>
-            <div className='relative z-2 flex justify-between h-full w-full'>
-                <div className='text24'>
-                    {/* <p>{number}</p> */}
-                    <p className={textColor}>{label}</p>
+
+            <div className='absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-1 pointer-events-none! opacity-0 group-hover:opacity-100 transition-all duration-500'></div>
+
+            <div className='relative z-2 flex flex-col justify-between h-full w-full'>
+                <Link href={labelLink} onClick={(e) => e.stopPropagation()} className='text18 w-fit relative z-100 px-[1vw] py-[.5vw] rounded-full bg-grey h-fit opacity-0 hover:bg-foreground hover:text-background group-hover:opacity-100 transition-all duration-500'>
+                    <p>{label}</p>
+                </Link>
+                <div className="opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <p className="text34">WebGL Slider</p>
+                    <p className="text18">For immersive product, portfolio, or campaign visuals.</p>
                 </div>
             </div>
         </div>

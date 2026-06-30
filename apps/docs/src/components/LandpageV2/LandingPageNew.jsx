@@ -18,7 +18,7 @@ import StripTransition from "./StripTransition";
 import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
 import Footer from "../LandingPage/Footer";
-import CTA from "../LandingPage/CTA";
+import CTA from "./CTA";
 
 const faqItems = [
   {
@@ -120,7 +120,7 @@ export default function LandingPageNew() {
         <StripTransition />
         <Pricing />
         <FAQs faqItems={faqItems} />
-        <CTA/>
+       <CTA />
         <Footer/>
 
 

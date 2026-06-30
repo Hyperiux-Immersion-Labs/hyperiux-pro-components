@@ -1,3 +1,4 @@
+import { Check, X } from "lucide-react";
 import React from "react";
 
 const MotionIcon = ({ type }) => {
@@ -120,43 +121,38 @@ const MotionIcon = ({ type }) => {
 const cards = [
   {
     title: "Timing",
-    icon: "timing",
+    description: "Precise sequencing that feels intentional, not random.",
     label: "Drops frames",
   },
   {
     title: "Restraint",
-    icon: "check",
+    description: "Motion that supports content, not distracts from it.",
     label: "Motion noise",
   },
   {
     title: "Reduced-motion",
-    icon: "spark",
+    description: "Respects user preferences and accessibility out of the box.",
     label: "Inaccessible",
   },
   {
     title: "Performance budget",
-    icon: "sun",
+    description: "No jank, no layout jumps, no CLS spikes.",
     label: "Jank + Drain",
   },
   {
     title: "Dependency clarity",
-    icon: "eye",
+    description: "Lightweight by default. Smooth under pressure",
     label: "Hidden Bundle",
   },
   {
     title: "Mobile fallbacks",
-    icon: "phone",
+    description: "No mystery bundles or hidden landmines",
     label: "CLS Spikes",
   },
   {
     title: "Cleanup on unmount",
-    icon: "arrows",
+    description: "No leaks, no ghosts, no lingering listeners",
     label: "Leaks + Ghosts",
-  },
-  {
-    title: "Production QA",
-    icon: "sun",
-    label: "Motion noise",
   },
 ];
 
@@ -180,30 +176,32 @@ export default function Tension() {
           </p>
         </div>
 
-        <div className="mt-[7vw] grid w-[65vw] grid-cols-4 gap-[0.9vw] max-md:mt-14 max-md:w-full max-md:grid-cols-2 max-md:gap-4 max-sm:grid-cols-1">
-          {cards.map((card) => (
-            <div
-              key={card.title}
-              className="flex min-h-[10.5vw] flex-col justify-between rounded-[0.45vw] bg-[#151515] p-[0.45vw] text-center max-md:min-h-44 max-md:rounded-xl max-md:p-2 max-sm:min-h-40"
-            >
-              <div className="flex flex-1 flex-col items-center justify-center gap-[1.2vw] px-[0.5vw] py-[2vw] text-[#ff5f00] max-md:gap-5 max-md:py-5">
-                <p className="text24 leading-none text-white max-md:text-sm">
-                  {card.title}
-                </p>
+        <div className=" h-fit w-[70vw] mt-[8vw] space-y-[1vw]">
+          <div className="text24 px-[.5vw] flex w-full items-center justify-between">
+            <p>Fixes</p>
+            <p>Solves</p>
+          </div>
 
-                <MotionIcon type={card.icon} />
+          {cards.map((items, index) => (
+            <div key={index} className="bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw]">
+              <div className="flex items-center gap-[1vw] w-[25vw] shrink-0">
+                <div className="size-[3vw] flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0">
+                  <Check color="#03E07C" className="h-full w-full object-cover" />
+                </div>
+                <p className="text34 capitalize whitespace-nowrap">{items.title}</p>
               </div>
-
-              <div className="flex min-h-[2.6vw] py-[1.5vw] items-center justify-center rounded-md border border-white/10 bg-[#151515] px-[0.8vw] max-md:min-h-11 max-md:rounded-lg">
-                <p className="text18 leading-none max-md:text-sm">
-                  {card.label}
-                </p>
+              <p className="text-light-grey flex-1 text-left px-[2vw] text18">{items.description}</p>
+              <div className="flex items-center gap-[1vw] w-[13vw] shrink-0">
+                <div className="size-[3vw] flex items-center justify-center shrink-0">
+                  <X color="#FF0B0B" />
+                </div>
+                <p className="text24 capitalize">{items.label}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="mt-[6vw] text-center text-[1.45vw] leading-[1.4] text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base">
+        <p className="mt-[8vw] text-center text-[1.45vw] leading-[1.4] text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base">
           That difference has a name.{" "}
           <span className="italic text-[#ff5f00]">
             It’s the interaction layer.

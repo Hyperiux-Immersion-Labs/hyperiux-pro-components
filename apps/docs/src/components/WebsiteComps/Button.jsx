@@ -11,7 +11,8 @@ const buttonTv = tv({
       orange: "bg-primary text-white border border-primary",
       black: "bg-black text-white border border-background",
       white: "bg-white text-black border border-foreground",
-      outline: "bg-[#F0F0F0] text-background border border-background",
+      outline: "bg-transparent text-background border border-background",
+      outline2: "bg-transparent text-foreground border border-foregound",
     },
   },
   defaultVariants: {

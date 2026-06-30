@@ -76,14 +76,18 @@ const BOXES = [
         styles: "w-[37.5%]",
         img: '/video/1.mp4',
         number: "01",
-        label: "Scroll Effects"
+        label: "Scroll Effects",
+        containerLink: "/effects/scroll-effects",
+        labelLink:"/effects/scroll-effects"
     },
     {
         id: "block-top-layer-2",
         styles: "w-[25%]",
         img: '/video/2.mp4',
         number: "02",
-        label: "Cursor Effects"
+        label: "Cursor Effects",
+        containerLink: "/effects/cursor-effects",
+        labelLink:"/effects/cursor-effects"
     },
     {
         id: "block-top-layer-3",
@@ -92,6 +96,8 @@ const BOXES = [
         number: "03",
         label: "WebGL",
         textColor: "text-black",
+        containerLink: "/effects/webgl",
+        labelLink: "/effects/webgl"
     }
 ];
 
@@ -101,7 +107,9 @@ const BOXES_BOTTOM = [
         styles: "w-[20%]",
         img: '/video/4.mp4',
         number: "04",
-        label: "Text Animations"
+        label: "Text Animations",
+        containerLink: "/effects/text-animations",
+        labelLink: "/effects/text-animations"
     },
     {
         id: "block-bottom-layer-2",
@@ -110,13 +118,17 @@ const BOXES_BOTTOM = [
         number: "05",
         label: "Page Transitions",
         textColor: "text-black",
+        containerLink: "/effects/page-transitions",
+        labelLink: "/effects/page-transitions"
     },
     {
         id: "block-bottom-layer-3",
         styles: "w-[30%]",
         img: '/video/6.mp4',
         number: "06",
-        label: "Navigations"
+        label: "Navigations",
+        containerLink: "/effects/navigations",
+        labelLink:  "/effects/navigations"
     }
 ];
 
