@@ -24,7 +24,7 @@ function categoryLabel(category) {
 }
 
 export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
 
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -184,7 +184,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
               </div>
             ) : (
               <div className="max-md:hidden">
-                <ProfileDropdown savedCount={wishlistCount} plan="free" />
+                <ProfileDropdown savedCount={wishlistCount} plan={user?.publicMetadata?.plan || "free"} />
               </div>
             )}
           </div>

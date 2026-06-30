@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useRef } from "react";
 import Button from "../WebsiteComps/Button";
+import { useUser } from "@clerk/nextjs";
 import { CheckIcon } from "@/utils/Icons";
 import SplitLine from "../WebsiteComps/SplitLine";
 import RandomBlur from "../WebsiteComps/RandomBlur";
@@ -28,6 +29,8 @@ const proBenefits = [
 export default function FreeVault() {
     const freeRef = useRef(null);
     const proRef = useRef(null);
+    const { isSignedIn, user } = useUser();
+    const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
 
     useEffect(() => {
         const mm = gsap.matchMedia();
@@ -242,7 +245,13 @@ export default function FreeVault() {
                         </ul>
 
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
-                            <Button text="Get Started" href="/sign-up" variant="black" />
+                            {userPlan === "pro" ? (
+                                <Button text="Explore Effects" href="/effects" variant="black" />
+                            ) : userPlan === "free" ? (
+                                <Button text="Upgrade to Pro" href="/pricing" variant="black" />
+                            ) : (
+                                <Button text="Get Started" href="/sign-up" variant="black" />
+                            )}
                             <p className="text20">
                                 No Credit Card Required.
                             </p>

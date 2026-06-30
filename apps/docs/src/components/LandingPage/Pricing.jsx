@@ -20,6 +20,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -638,11 +639,54 @@ function PricingToggle({ billingCycle, setBillingCycle }) {
   );
 }
 
-function PricingCard({ plan, billingCycle }) {
+function PricingCard({ plan, billingCycle, userPlan, isLoaded, onUpgrade, checkoutLoading }) {
   const displayedPrice = getPlanPrice(plan, billingCycle);
   const annualTotal = getAnnualTotal(plan);
   const isYearly = billingCycle === "yearly";
   const pricePrefix = plan.pricePrefix || "";
+
+  const BASE_ACTIVE = "flex h-[3.2vw] w-full items-center justify-center rounded-full text24 font-medium transition-colors max-md:h-12 max-md:text-sm";
+  const DISABLED = "flex h-[3.2vw] w-full cursor-default! items-center justify-center gap-3 rounded-full bg-[#e9ebeb] text24 font-medium text-black max-md:h-12 max-md:text-sm";
+  const PLAN_COLOR = plan.highlighted
+    ? "bg-primary text-white hover:bg-primary-hover"
+    : "bg-[#0e0e0e] text-white hover:bg-[#222]";
+
+  let ctaElement;
+
+  if (!isLoaded) {
+    ctaElement = <button type="button" disabled className={DISABLED}>···</button>;
+  } else if (plan.id === "free") {
+    if (userPlan === "free") {
+      ctaElement = <button type="button" disabled className={DISABLED}>Current Plan</button>;
+    } else if (userPlan === "pro") {
+      ctaElement = <button type="button" disabled className={`${DISABLED} opacity-50`}>Free Plan</button>;
+    } else {
+      ctaElement = <Link href="/sign-up" className={`${BASE_ACTIVE} ${PLAN_COLOR}`}>Start Free</Link>;
+    }
+  } else if (plan.id === "pro") {
+    if (userPlan === "pro") {
+      ctaElement = <button type="button" disabled className={DISABLED}>Current Plan</button>;
+    } else if (userPlan === "free") {
+      ctaElement = (
+        <button
+          type="button"
+          onClick={onUpgrade}
+          disabled={checkoutLoading}
+          className={`${BASE_ACTIVE} ${PLAN_COLOR} ${checkoutLoading ? "cursor-wait! opacity-70" : ""}`}
+        >
+          {checkoutLoading ? "Loading..." : "Upgrade to Pro"}
+        </button>
+      );
+    } else {
+      ctaElement = <Link href="/sign-up" className={`${BASE_ACTIVE} ${PLAN_COLOR}`}>Get Started</Link>;
+    }
+  } else {
+    ctaElement = (
+      <a href="mailto:hitesh@weareenigma.com" className={`${BASE_ACTIVE} ${PLAN_COLOR}`}>
+        Contact Us
+      </a>
+    );
+  }
 
   return (
     <article
@@ -707,28 +751,7 @@ function PricingCard({ plan, billingCycle }) {
       </div>
 
       <div className="flex h-full w-full flex-col">
-        {plan.current ? (
-          <button
-            type="button"
-            disabled
-            className="flex h-[3.2vw] w-full cursor-default! items-center justify-center gap-3 rounded-full bg-[#e9ebeb] text24 font-medium text-black max-md:h-12 max-md:text-sm"
-          >
-            {plan.cta}
-          </button>
-        ) : (
-          <div className="w-full">
-            <Link
-              href="/sign-up"
-              className={`flex h-[3.2vw] w-full items-center justify-center rounded-full text24 font-medium transition-colors max-md:h-12 max-md:text-sm ${
-                plan.highlighted
-                  ? "bg-primary text-white hover:bg-primary-hover"
-                  : "bg-[#0e0e0e] text-white hover:bg-[#222]"
-              }`}
-            >
-              {plan.cta}
-            </Link>
-          </div>
-        )}
+        {ctaElement}
 
         <div
           className={`mt-[1vw] h-[85%] rounded-[0.35vw] p-[2vw] max-md:mt-4 max-md:rounded-2xl max-md:p-5 ${
@@ -761,10 +784,37 @@ function PricingCard({ plan, billingCycle }) {
 
 function PricingInner({ enableColorSwitch = true }) {
   const [billingCycle, setBillingCycle] = useState("monthly");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  const { isLoaded, isSignedIn, user } = useUser();
+  const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const handleUpgrade = useCallback(async () => {
+    setCheckoutLoading(true);
+    setCheckoutError("");
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ billingInterval: billingCycle }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setCheckoutError(data.error || "Unable to start checkout. Please try again.");
+        setCheckoutLoading(false);
+      }
+    } catch {
+      setCheckoutError("Something went wrong. Please try again.");
+      setCheckoutLoading(false);
+    }
+  }, [billingCycle]);
 
   const requestState = searchParams.get(PLAN_REQUEST_PARAM);
   const planIdFromRoute = searchParams.get(PLAN_PARAM);
@@ -1008,9 +1058,17 @@ function PricingInner({ enableColorSwitch = true }) {
               key={plan.id}
               plan={plan}
               billingCycle={billingCycle}
+              userPlan={userPlan}
+              isLoaded={isLoaded}
+              onUpgrade={handleUpgrade}
+              checkoutLoading={checkoutLoading}
             />
           ))}
         </div>
+
+        {checkoutError && (
+          <p className="mt-4 text-center text-sm text-red-400">{checkoutError}</p>
+        )}
       </section>
 
       {/* Disabled — replaced by waitlist modal. Re-enable when custom plan intake is ready.
