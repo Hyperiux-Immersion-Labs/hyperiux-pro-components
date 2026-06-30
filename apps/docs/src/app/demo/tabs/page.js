@@ -1,5 +1,5 @@
 import HeadAnim from '@/components/Animations/HeadAnim'
-import Tabs from '@/components/tabs'
+import Tabs from '@/components/Tabs'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
 
