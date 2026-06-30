@@ -1,12 +1,11 @@
 import InertiaImage from "@/components/inertia-img";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import React from "react";
 
-const page = () => {
+const Page = () => {
     return (
         <>
             <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
-        <main className="h-screen overflow-hidden max-sm:min-h-screen max-sm:h-full max-sm:overflow-visible w-full bg-black px-6 py-12 text-white md:px-10">
+        <main className="h-screen overflow-hidden max-sm:min-h-screen max-sm:h-full max-sm:overflow-visible w-full bg-black px-10 py-12 text-white max-md:px-6">
             <div className="mx-auto flex w-full flex-col gap-10 max-sm:gap-14">
                 <div className="max-w-2xl mx-auto text-center pt-10">
                     <p className="text-xl max-md:text-3xl max-sm:text-2xl uppercase tracking-[0.35em] text-white/75">
@@ -35,4 +34,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;

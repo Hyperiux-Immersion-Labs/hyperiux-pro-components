@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -8,62 +8,6 @@ const DEFAULT_HREF = "#";
 const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
-const LINK_TRANSITION = "color 0.5s cubic-bezier(0.625, 0.05, 0, 1)";
-const TRANSFORM_TRANSITION = "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
-const LINE_TRANSITION = "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)";
-const ICON_TRANSITION = "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)";
-const CHAR_STAGGER_LINK_BTN_STYLES = `
-  .char-stagger-link-btn {
-    color: inherit;
-    transition: ${LINK_TRANSITION};
-  }
-
-  .char-stagger-link-btn__char {
-    display: inline-block;
-    position: relative;
-    text-shadow: 0px ${CHAR_TRANSLATE_Y} currentColor;
-    transform: translateY(0em) rotate(0.001deg);
-    transition: ${TRANSFORM_TRANSITION};
-    will-change: transform;
-  }
-
-  .char-stagger-link-btn--active .char-stagger-link-btn__char {
-    transform: translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg);
-  }
-
-  .char-stagger-link-btn__line {
-    position: absolute;
-    left: 0;
-    bottom: 15%;
-    width: 100%;
-    height: 1.5px;
-    background-color: currentColor;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: ${LINE_TRANSITION};
-  }
-
-  .char-stagger-link-btn__line.char-stagger-link-btn__line--exit {
-    transform-origin: right center;
-  }
-
-  .char-stagger-link-btn--active .char-stagger-link-btn__line {
-    transform: scaleX(1);
-    transform-origin: left center;
-  }
-
-  .char-stagger-link-btn__icon-wrapper {
-    display: flex;
-    width: max-content;
-    transform: translateX(-100%);
-    transition: ${ICON_TRANSITION};
-    will-change: transform;
-  }
-
-  .char-stagger-link-btn--active .char-stagger-link-btn__icon-wrapper {
-    transform: translateX(5%);
-  }
-`;
 
 export default function CharStaggerButton({
   text = "",
@@ -83,12 +27,14 @@ export default function CharStaggerButton({
   onClick,
   ...props
 }) {
-  // State and refs
+  // Refs
   const textRef = useRef(null);
   const lineRef = useRef(null);
-  const [isActive, setIsActive] = useState(false);
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
+
+  // State
+  const [isActive, setIsActive] = useState(false);
 
   // Effects
   useEffect(() => {
@@ -98,9 +44,9 @@ export default function CharStaggerButton({
     }
     const line = lineRef.current;
     if (!line || isActive) return;
-    line.classList.add("char-stagger-link-btn__line--exit");
+    line.style.transformOrigin = "right center";
     const onEnd = () => {
-      line.classList.remove("char-stagger-link-btn__line--exit");
+      line.style.transformOrigin = "left center";
       line.removeEventListener("transitionend", onEnd);
     };
     line.addEventListener("transitionend", onEnd);
@@ -115,13 +61,28 @@ export default function CharStaggerButton({
 
     [...sourceText].forEach((char, index) => {
       const span = document.createElement("span");
-      span.className = "char-stagger-link-btn__char";
       span.textContent = char;
+      span.style.display = "inline-block";
+      span.style.position = "relative";
+      span.style.textShadow = `0px ${CHAR_TRANSLATE_Y} currentColor`;
+      span.style.transform = "translateY(0em) rotate(0.001deg)";
+      span.style.transition = "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
+      span.style.willChange = "transform";
       span.style.transitionDelay = `${index * staggerStep}s`;
       if (char === " ") span.style.whiteSpace = "pre";
       textElement.appendChild(span);
     });
   }, [text, staggerStep]);
+
+  useEffect(() => {
+    const textElement = textRef.current;
+    if (!textElement) return;
+    Array.from(textElement.children).forEach((span) => {
+      span.style.transform = isActive
+        ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
+        : "translateY(0em) rotate(0.001deg)";
+    });
+  }, [isActive]);
 
   // Event handlers
   const onMouseEnter = useCallback(() => {
@@ -143,22 +104,22 @@ export default function CharStaggerButton({
     if (isTouchRef.current) e.preventDefault();
   }, []);
 
-  // Derived values
+  // Derived
   const sourceText = typeof children === "string" ? children : text;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
   };
+
   const linkClassName = [
-    "char-stagger-link-btn inline-flex items-center gap-2 no-underline",
-    isActive ? "char-stagger-link-btn--active" : "",
+    "inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)]",
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
   const textClasses = [
-    "overflow-hidden relative inline-block leading-[1.2] max-md:text-[1.25em]",
+    "overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw]",
     textClassName,
   ]
     .filter(Boolean)
@@ -179,64 +140,61 @@ export default function CharStaggerButton({
     .filter(Boolean)
     .join(" ");
 
-  const iconWrapperClassName = [
-    "char-stagger-link-btn__icon-wrapper",
-    iconClassName,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  // Return
+  // Render
   return (
-    <>
-      <style jsx global>{CHAR_STAGGER_LINK_BTN_STYLES}</style>
-
-      <Link
-        href={href}
-        {...linkProps}
-        {...props}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onTouchStart={onTouchStart}
-        onMouseDown={onMouseDown}
-        style={mergedStyle}
-        className={linkClassName}
-      >
-        <div className="mt-[0.3vw]">
-          <span className={lineContainerClassName}>
-            <span
-              ref={textRef}
-              data-text={sourceText}
-              className={textClasses}
-            >
-              {sourceText}
-            </span>
-
-            {showLine && (
-              <span
-                ref={lineRef}
-                aria-hidden="true"
-                className="char-stagger-link-btn__line"
-                style={{ transform: `scaleX(${isActive ? 1 : 0})` }}
-              />
-            )}
+    <Link
+      href={href}
+      {...linkProps}
+      {...props}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onMouseDown={onMouseDown}
+      style={mergedStyle}
+      className={linkClassName}
+    >
+      <div className="mt-[0.3vw]">
+        <span className={lineContainerClassName}>
+          <span ref={textRef} data-text={sourceText} className={textClasses}>
+            {sourceText}
           </span>
-        </div>
 
-        {showArrow && Icon && (
-          <div className={iconContainerClassName}>
-            {iconVariant === "single" ? (
-              <Icon className="h-4 w-4 shrink-0" />
-            ) : (
-              <div className={iconWrapperClassName}>
-                <Icon className="flex-none w-full h-full" />
-                <Icon className="flex-none w-full h-full" />
-              </div>
-            )}
-          </div>
-        )}
-      </Link>
-    </>
+          {showLine && (
+            <span
+              ref={lineRef}
+              aria-hidden="true"
+              className="absolute left-0 bottom-[15%] w-full bg-current"
+              style={{
+                height: "1.5px",
+                transform: `scaleX(${isActive ? 1 : 0})`,
+                transformOrigin: "left center",
+                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+              }}
+            />
+          )}
+        </span>
+      </div>
+
+      {showArrow && Icon && (
+        <div className={iconContainerClassName}>
+          {iconVariant === "single" ? (
+            <Icon className="h-4 w-4 shrink-0" />
+          ) : (
+            <div
+              className="flex w-max"
+              style={{
+                transform: isActive ? "translateX(5%)" : "translateX(-100%)",
+                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+                willChange: "transform",
+              }}
+            >
+              <Icon className="flex-none w-full h-full" />
+              <Icon className="flex-none w-full h-full" />
+            </div>
+          )}
+        </div>
+      )}
+    </Link>
   );
 }

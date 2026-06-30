@@ -237,7 +237,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
 
                         
                         <div className="hidden max-md:flex items-center gap-4 mt-6 max-md:gap-5 max-sm:gap-6">
-                            <div ref={mobileImageRef} className="relative w-22 h-26 shrink-0">
+                            <div ref={mobileImageRef} className="relative max-md:w-30 max-md:h-36 max-sm:w-22 max-sm:h-26 shrink-0">
                                 <Image
                                     src={displayItem.image}
                                     alt={displayItem.name}

@@ -1,0 +1,18 @@
+{
+  "name": "@hyperiux/text-hover",
+  "version": "0.0.1",
+  "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
+  "main": "index.jsx",
+  "files": [
+    "index.jsx",
+    "TextHoverComp.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

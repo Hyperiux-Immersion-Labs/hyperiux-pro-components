@@ -1,6 +1,6 @@
 "use client";
 
-import React, {
+import  {
   useCallback,
   useEffect,
   useMemo,
@@ -592,7 +592,7 @@ const VideoPlayerComp = ({
       ref={wrapperRef}
       className={`${
         isFullscreen
-          ? "fixed inset-0 z-[9999] flex h-screen w-screen items-center justify-center bg-black"
+          ? "fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-black"
           : `h-full w-full ${className}`
       }`}
       onMouseMove={handleMouseMove}
@@ -602,7 +602,7 @@ const VideoPlayerComp = ({
     >
       <div
         className={`relative flex h-full w-full items-center justify-center overflow-hidden bg-black ${
-          rounded && !isFullscreen ? "md:rounded-[2vw]" : ""
+          rounded && !isFullscreen ? "rounded-[2vw]" : ""
         }`}
       >
         <video
@@ -619,7 +619,7 @@ const VideoPlayerComp = ({
 
         <button
           type="button"
-          className={`absolute left-1/2 top-1/2 z-3 flex min-h-15 min-w-15 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-black/40 text-white backdrop-blur-sm transition-[opacity,transform] duration-300 ease-in-out h-[16vw] w-[16vw] min-[541px]:h-[8vw] min-[541px]:w-[8vw] xl:h-[5.5vw] xl:w-[5.5vw] 2xl:h-[4.5vw] 2xl:w-[4.5vw] ${visibilityClasses}`}
+          className={`absolute left-1/2 top-1/2 z-3 flex min-h-15 min-w-15 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-black/40 text-white backdrop-blur-sm transition-[opacity,transform] duration-300 ease-in-out h-[5.5vw] w-[5.5vw] 2xl:h-[4.5vw] 2xl:w-[4.5vw] max-md:h-[8vw] max-md:w-[8vw] max-sm:h-[16vw] max-sm:w-[16vw] ${visibilityClasses}`}
           onClick={handleTogglePlay}
           aria-label={isPlaying ? "Pause video" : "Play video"}
         >
@@ -629,60 +629,59 @@ const VideoPlayerComp = ({
         {showCloseButton && typeof onRequestClose === "function" && (
           <button
             type="button"
-            className={`absolute right-4 top-4 z-5 flex min-h-10.5 min-w-10.5 cursor-pointer items-center justify-center rounded-full border-none bg-black/45 text-white backdrop-blur-sm transition-[opacity,transform,background-color] duration-300 ease-in-out hover:scale-[1.04] hover:bg-black/65 h-[11vw] w-[11vw] min-[541px]:right-[2.4vw] min-[541px]:top-[2.4vw] min-[541px]:h-[5.5vw] min-[541px]:w-[5.5vw] xl:right-[1.8vw] xl:top-[1.8vw] xl:h-[3.8vw] xl:w-[3.8vw] 2xl:right-[1.5vw] 2xl:top-[1.5vw] 2xl:h-[3vw] 2xl:w-[3vw] ${visibilityClasses}`}
+            className={`absolute right-[1.8vw] top-[1.8vw] z-5 flex min-h-10.5 min-w-10.5 cursor-pointer items-center justify-center rounded-full border-none bg-black/45 text-white backdrop-blur-sm transition-[opacity,transform,background-color] duration-300 ease-in-out hover:scale-[1.04] hover:bg-black/65 h-[3.8vw] w-[3.8vw] 2xl:right-[1.5vw] 2xl:top-[1.5vw] 2xl:h-[3vw] 2xl:w-[3vw] max-md:right-[2.4vw] max-md:top-[2.4vw] max-md:h-[5.5vw] max-md:w-[5.5vw] max-sm:right-4 max-sm:top-4 max-sm:h-[11vw] max-sm:w-[11vw] touch-manipulation ${visibilityClasses}`}
             onClick={(event) => {
               event.stopPropagation();
               handleClose();
             }}
             aria-label="Close video"
-            style={{ touchAction: "manipulation" }}
           >
-            <X size={20} style={{ pointerEvents: "none" }} />
+            <X size={20} className="pointer-events-none" />
           </button>
         )}
 
         <div
-          className={`absolute bottom-[3vw] left-[3vw] right-[3vw] z-4 grid grid-cols-[auto_auto_1fr_auto_auto_auto] items-center gap-[2vw] rounded-full bg-black/50 px-[3vw] py-[2.6vw] backdrop-blur-[10px] transition-[opacity,transform] duration-300 ease-in-out min-[541px]:bottom-[2vw] min-[541px]:left-[2vw] min-[541px]:right-[2vw] min-[541px]:gap-[1.6vw] min-[541px]:px-[1.8vw] min-[541px]:py-[1.6vw] xl:bottom-[1.5vw] xl:left-[1.5vw] xl:right-[1.5vw] xl:gap-[1.1vw] xl:px-[1.2vw] xl:py-[1vw] 2xl:bottom-[1.2vw] 2xl:left-[1.2vw] 2xl:right-[1.2vw] 2xl:gap-[0.9vw] 2xl:px-[1vw] 2xl:py-[0.9vw] ${visibilityClasses}`}
+          className={`absolute bottom-[1.5vw] left-[1.5vw] right-[1.5vw] z-4 grid grid-cols-[auto_auto_1fr_auto_auto_auto] items-center gap-[1.1vw] rounded-full bg-black/50 px-[1.2vw] py-[1vw] backdrop-blur-[10px] transition-[opacity,transform] duration-300 ease-in-out 2xl:bottom-[1.2vw] 2xl:left-[1.2vw] 2xl:right-[1.2vw] 2xl:gap-[0.9vw] 2xl:px-[1vw] 2xl:py-[0.9vw] max-md:bottom-[2vw] max-md:left-[2vw] max-md:right-[2vw] max-md:gap-[1.6vw] max-md:px-[1.8vw] max-md:py-[1.6vw] max-sm:bottom-[3vw] max-sm:left-[3vw] max-sm:right-[3vw] max-sm:gap-[2vw] max-sm:px-[3vw] max-sm:py-[2.6vw] ${visibilityClasses}`}
         >
           <button
             type="button"
-            className="flex h-[9vw] w-[9vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white min-[541px]:h-[4.5vw] min-[541px]:w-[4.5vw] xl:h-[3vw] xl:w-[3vw] 2xl:h-[2.5vw] 2xl:w-[2.5vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-md:h-[4.5vw] max-md:w-[4.5vw] max-sm:h-[9vw] max-sm:w-[9vw]"
             onClick={handleTogglePlay}
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
             {isPlaying ? <Pause size={18} /> : <Play size={18} />}
           </button>
 
-          <div className="whitespace-nowrap text-[3vw] leading-none text-white min-[541px]:text-[1.8vw] xl:text-[1.1vw] 2xl:text-[0.95vw]">
+          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-md:text-[1.8vw] max-sm:text-[3vw]">
             <span>{formatTime(currentTime)}</span>
           </div>
 
           <div
             ref={progressBarRef}
-            className="relative flex h-[4vw] w-full cursor-pointer items-center min-h-4.5 min-[541px]:h-[2vw] xl:h-[1.4vw] 2xl:h-[1.2vw]"
+            className="relative flex h-[1.4vw] w-full cursor-pointer items-center min-h-4.5 2xl:h-[1.2vw] max-md:h-[2vw] max-sm:h-[4vw]"
             onClick={handleProgressClick}
             onPointerDown={handlePointerDown}
           >
-            <div className="pointer-events-none absolute inset-x-0 h-[1vw] rounded-full bg-white/20 min-h-1 min-[541px]:h-[0.45vw] xl:h-[0.32vw] 2xl:h-[0.25vw]" />
+            <div className="pointer-events-none absolute inset-x-0 h-[0.32vw] rounded-full bg-white/20 min-h-1 2xl:h-[0.25vw] max-md:h-[0.45vw] max-sm:h-[1vw]" />
 
             <div
-              className="pointer-events-none absolute left-0 h-[1vw] rounded-full bg-white min-h-1 min-[541px]:h-[0.45vw] xl:h-[0.32vw] 2xl:h-[0.25vw]"
+              className="pointer-events-none absolute left-0 h-[0.32vw] rounded-full bg-white min-h-1 2xl:h-[0.25vw] max-md:h-[0.45vw] max-sm:h-[1vw]"
               style={{ width: `${progress}%` }}
             />
 
             <div
-              className="pointer-events-none absolute top-1/2 h-[3vw] w-[3vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 min-[541px]:h-[1.6vw] min-[541px]:w-[1.6vw] xl:h-[1vw] xl:w-[1vw] 2xl:h-[0.9vw] 2xl:w-[0.9vw]"
+              className="pointer-events-none absolute top-1/2 h-[1vw] w-[1vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 2xl:h-[0.9vw] 2xl:w-[0.9vw] max-md:h-[1.6vw] max-md:w-[1.6vw] max-sm:h-[3vw] max-sm:w-[3vw]"
               style={{ left: `${progress}%` }}
             />
           </div>
 
-          <div className="whitespace-nowrap text-[3vw] leading-none text-white min-[541px]:text-[1.8vw] xl:text-[1.1vw] 2xl:text-[0.95vw]">
+          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-md:text-[1.8vw] max-sm:text-[3vw]">
             <span>{formatTime(duration)}</span>
           </div>
 
           <button
             type="button"
-            className="flex h-[9vw] w-[9vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white min-[541px]:h-[4.5vw] min-[541px]:w-[4.5vw] xl:h-[3vw] xl:w-[3vw] 2xl:h-[2.5vw] 2xl:w-[2.5vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-md:h-[4.5vw] max-md:w-[4.5vw] max-sm:h-[9vw] max-sm:w-[9vw]"
             onClick={handleToggleMute}
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
@@ -691,7 +690,7 @@ const VideoPlayerComp = ({
 
           <button
             type="button"
-            className="flex h-[9vw] w-[9vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white min-[541px]:h-[4.5vw] min-[541px]:w-[4.5vw] xl:h-[3vw] xl:w-[3vw] 2xl:h-[2.5vw] 2xl:w-[2.5vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-md:h-[4.5vw] max-md:w-[4.5vw] max-sm:h-[9vw] max-sm:w-[9vw]"
             onClick={handleToggleFullscreen}
             aria-label={isFullscreen ? "Exit fullscreen" : "Open fullscreen"}
           >

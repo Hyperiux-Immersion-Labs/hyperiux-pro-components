@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { clerkClient } from "@clerk/nextjs/server";
 import {
   markUserFree,
   markUserProFromSubscription,
 } from "@/lib/pro-access";
+import { sendEmail } from "@/lib/resend";
+import {
+  createPaymentFailedEmail,
+  createSubscriptionCancelledEmail,
+  createSubscriptionRenewedEmail,
+} from "@/lib/emails/subscription-emails";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +20,19 @@ async function getClerkUserIdFromCustomer(customerId) {
   if (!customer || customer.deleted) return null;
 
   return customer.metadata?.clerk_user_id || null;
+}
+
+async function getClerkUserInfo(clerkUserId) {
+  try {
+    const clerk = await clerkClient();
+    const user = await clerk.users.getUser(clerkUserId);
+    return {
+      email: user?.emailAddresses?.[0]?.emailAddress || null,
+      name: user?.fullName || user?.firstName || "there",
+    };
+  } catch {
+    return { email: null, name: "there" };
+  }
 }
 
 export async function POST(req) {
@@ -135,6 +155,17 @@ export async function POST(req) {
           billingInterval: subscription.metadata?.billing_interval || null,
         });
 
+        // Send renewal email only for recurring billing cycles, not the first payment
+        if (invoice.billing_reason === "subscription_cycle") {
+          const { email, name } = await getClerkUserInfo(clerkUserId);
+          if (email) {
+            const periodEnd = subscription.items?.data?.[0]?.current_period_end;
+            const validUntil = periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
+            const { subject, html, text } = createSubscriptionRenewedEmail({ name, validUntil });
+            await sendEmail({ to: email, subject, html, text, emailType: "subscription_renewal" });
+          }
+        }
+
         break;
       }
 
@@ -147,10 +178,13 @@ export async function POST(req) {
 
         if (!clerkUserId) break;
 
-        await markUserFree({
-          clerkUserId,
-          status: "canceled",
-        });
+        await markUserFree({ clerkUserId, status: "canceled" });
+
+        const { email, name } = await getClerkUserInfo(clerkUserId);
+        if (email) {
+          const { subject, html, text } = createSubscriptionCancelledEmail({ name });
+          await sendEmail({ to: email, subject, html, text, emailType: "subscription_cancelled" });
+        }
 
         break;
       }
@@ -170,10 +204,16 @@ export async function POST(req) {
 
         if (!clerkUserId) break;
 
-        await markUserFree({
-          clerkUserId,
-          status: "inactive",
-        });
+        // Only downgrade after all retries exhaust (attempt_count > 1)
+        if ((invoice.attempt_count || 1) > 1) {
+          await markUserFree({ clerkUserId, status: "inactive" });
+        }
+
+        const { email, name } = await getClerkUserInfo(clerkUserId);
+        if (email) {
+          const { subject, html, text } = createPaymentFailedEmail({ name });
+          await sendEmail({ to: email, subject, html, text, emailType: "payment_failed" });
+        }
 
         break;
       }

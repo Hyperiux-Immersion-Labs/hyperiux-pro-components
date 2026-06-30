@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ScrollablePopupContent from "@/components/modal/ScrollablePopupContent";
+import ScrollablePopupContent from "./ScrollablePopupContent";
 import { ModalContent } from "./Modal";
 
 const popupSections = [

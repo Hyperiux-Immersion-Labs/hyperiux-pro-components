@@ -1,16 +1,5 @@
 import React from 'react'
-import { ClippathSliderComp } from './ClippathSliderComp'
-
-const ClipPathSlider = () => {
-  return (
-    <>
-    <ClippathSliderComp slides={slides}
- clueText="Click either side and watch the next scene cut through."/>
-    </>
-  )
-}
-
-export default ClipPathSlider
+import ClippathSliderComp from './ClippathSliderComp'
 
 const slides = [
   {
@@ -56,3 +45,14 @@ const slides = [
     image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
   },
 ];
+
+const ClipPathSlider = () => {
+  return (
+    <>
+      <ClippathSliderComp slides={slides}
+        clueText="Click either side and watch the next scene cut through." />
+    </>
+  )
+}
+
+export default ClipPathSlider

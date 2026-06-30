@@ -37,7 +37,7 @@ const ModalContent = ({
     <div
       data-lenis-prevent
       className={`
-        fixed inset-0 z-[9999]
+        fixed inset-0 z-9999
         duration-500
         ${
           isOpen
@@ -55,7 +55,7 @@ const ModalContent = ({
           absolute inset-0
           cursor-pointer border-0
           bg-black/82
-          backdrop-blur-[10px]
+          backdrop-blur-md
         "
       />
 
@@ -68,22 +68,22 @@ const ModalContent = ({
           }}
           aria-label="Close modal"
           className={`
-            absolute z-[99999]
+            absolute z-99999
             flex items-center justify-center
             rounded-full border-0
             bg-black/80 text-white
             cursor-pointer
-            backdrop-blur-[10px]
+            backdrop-blur-md
             transition-all duration-300
             hover:scale-[1.04]
             hover:bg-white/20
             pointer-events-auto
             touch-manipulation
+            min-w-10 min-h-10
 
-            top-4 right-4 w-10 h-10 min-w-[40px] min-h-[40px]
-            sm:top-6 sm:right-6 sm:w-12 sm:h-12
-            md:top-8 md:right-8 md:w-14 md:h-14
-            lg:top-[1.5vw] lg:right-[1.5vw] lg:w-[3vw] lg:h-[3vw] lg:min-w-[42px] lg:min-h-[42px]
+            top-[1.5vw] right-[1.5vw] w-[3vw] h-[3vw]
+            max-md:top-8 max-md:right-8 max-md:w-14 max-md:h-14
+            max-sm:top-4 max-sm:right-4 max-sm:w-10 max-sm:h-10
 
             ${closeButtonClassName}
           `}
@@ -94,7 +94,7 @@ const ModalContent = ({
 
       <div
         className={`
-          relative z-[1]
+          relative z-1
           flex h-screen w-screen items-center
           px-0
 

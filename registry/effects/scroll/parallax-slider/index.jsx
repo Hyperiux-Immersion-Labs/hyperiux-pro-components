@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from"react";
-import Image from"next/image";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
 
@@ -138,15 +137,7 @@ function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  clipPath:"inset(0 100% 0 0)",
  }}
  >
- <Image
- src={src}
- alt={`Slide ${i + 1}`}
- fill
- sizes={`${width}vw`}
- className="object-cover parallax-img"
- priority={i < 3}
- draggable={false}
- />
+ <img src={src} alt={`Slide ${i + 1}`} className="absolute inset-0 object-cover parallax-img" draggable={false} />
 
  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
  </div>
@@ -158,4 +149,4 @@ function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  );
 }
 
-export { ParallaxImgSlider as ParallaxSlider };
+export default ParallaxImgSlider;

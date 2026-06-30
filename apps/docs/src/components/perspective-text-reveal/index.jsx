@@ -12,7 +12,7 @@ export default function PerspectiveTextReveal({
  animateOnScroll = true,
  delay = 0,
  className = "",
- scrub = true,
+ scrub = false,
  end = "bottom 60%",
 }) {
  const containerRef = useRef(null);

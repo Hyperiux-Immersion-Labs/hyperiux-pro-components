@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import Card from "../Card/Card";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import Card from "./card";
 
 gsap.registerPlugin(ScrollTrigger);
 

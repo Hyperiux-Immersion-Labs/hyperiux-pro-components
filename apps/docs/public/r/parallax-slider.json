@@ -9,7 +9,7 @@
   ],
   "registryDependencies": [],
   "exportName": "ParallaxSlider",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
       "path": "parallax-slider.jsx",

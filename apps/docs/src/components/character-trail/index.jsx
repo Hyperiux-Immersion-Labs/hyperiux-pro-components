@@ -1,35 +1,6 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CharacterTrailComp from './CharacterTrailComp'
-
-
-const CharacterTrail = () => {
-     const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => {
-      setIsMobile(window.innerWidth < 1025)
-    }
-
-    check()
-    window.addEventListener('resize', check)
-
-    return () => window.removeEventListener('resize', check)
-  }, [])
-  return (
-    <>
-     {isMobile ? (
-        <Content />
-      ) : (
-        <CharacterTrailComp>
-          <Content />
-        </CharacterTrailComp>
-      )}
-    </>
-  )
-}
-
-export default CharacterTrail
 
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
@@ -60,3 +31,31 @@ const Content = () => (
 
   </main>
 )
+
+const CharacterTrail = () => {
+     const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 1025)
+    }
+
+    check()
+    window.addEventListener('resize', check)
+
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  return (
+    <>
+     {isMobile ? (
+        <Content />
+      ) : (
+        <CharacterTrailComp>
+          <Content />
+        </CharacterTrailComp>
+      )}
+    </>
+  )
+}
+
+export default CharacterTrail

@@ -19,6 +19,8 @@ const effectSlugAliasGroups = [
     slug: "clippath-slider",
     aliases: ["clip-path-slider"],
   },
+  { slug: "text-hover", aliases: ["text-hover-expand"] },
+  { slug: "svg-path", aliases: ["svg-path-marquee"] },
 ];
 
 const effectSlugAliasMap = new Map(

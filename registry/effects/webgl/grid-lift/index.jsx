@@ -5,10 +5,7 @@ import { LevaPanel, useControls } from"leva";
 
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
-const DEFAULT_SVG_MASK_URL =
- "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/hyperiux-wordmark.svg";
-
-const getCanvasSafeImageUrl = (source) => source;
+const DEFAULT_SVG_MASK_URL = null;
 
 const levaTheme = {
  colors: {
@@ -76,13 +73,13 @@ export default function GridLift() {
  const cellsRef = useRef([]);
  const svgImageRef = useRef(null);
 
- const [svgName, setSvgName] = useState(DEFAULT_SVG_MASK_URL);
+ const [svgName, setSvgName] = useState(null);
  const [svgVersion, setSvgVersion] = useState(0);
- const [maskSourceState, setMaskSourceState] = useState("SVG");
+ const [maskSourceState, setMaskSourceState] = useState("Text");
  const [maskText, setMaskText] = useState("DESIGN");
 
  // Live ref — Leva's render() callbacks close over this, not stale state
- const maskSourceRef = useRef("SVG");
+ const maskSourceRef = useRef("Text");
  const handleSetMask = (val) => {
  maskSourceRef.current = val;
  setMaskSourceState(val);
@@ -186,6 +183,7 @@ export default function GridLift() {
  const blob = new Blob([svgText || reader.result], { type:"image/svg+xml" });
  const url = URL.createObjectURL(blob);
  const image = new Image();
+ image.crossOrigin = "anonymous";
  image.onload = () => {
  svgImageRef.current = image;
  setSvgName(file.name);
@@ -212,14 +210,16 @@ useEffect(() => {
   return () => window.removeEventListener("resize", updateDesktop);
 }, []);
 
-// Default SVG mask (Hyperiux wordmark)
+// Default SVG mask — only loads if a URL is provided
 useEffect(() => {
+  if (!DEFAULT_SVG_MASK_URL) return;
   const image = new Image();
+  image.crossOrigin = "anonymous";
   image.onload = () => {
     svgImageRef.current = image;
     setSvgVersion((v) => v + 1);
   };
-  image.src = getCanvasSafeImageUrl(DEFAULT_SVG_MASK_URL);
+  image.src = DEFAULT_SVG_MASK_URL;
 }, []);
 
 useEffect(() => {

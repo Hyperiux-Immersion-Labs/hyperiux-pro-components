@@ -1,8 +1,8 @@
-import InteractiveArrows from "@/components/InteractiveArrows";
+import InteractiveArrows from "@/components/interactive-arrows";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
 
-const arrows = () => {
+const Page = () => {
   return (
     <>
       <DemoHeader />
@@ -14,7 +14,7 @@ const arrows = () => {
       </div>
 
       {/* Mobile */}
-     <div className="hidden max-md:flex min-h-screen py-10 relative flex-col items-start justify-between bg-[#f4f4f1] px-8">
+     <div className="hidden max-md:flex h-screen py-10 relative flex-col items-start justify-between bg-[#f4f4f1] px-8">
 
   {/* Top */}
   <div className="w-full">
@@ -53,4 +53,4 @@ const arrows = () => {
   );
 };
 
-export default arrows;
+export default Page;

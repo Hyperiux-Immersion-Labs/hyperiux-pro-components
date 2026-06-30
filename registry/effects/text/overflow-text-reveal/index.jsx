@@ -7,119 +7,112 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export function OverflowTextReveal({
+// direction: "top" | "bottom" | "left" | "right"
+// "bottom" is the original default behavior (yPercent: 100, rotate: 8)
+const DIRECTION_INITIAL = {
+  top: { yPercent: -100, xPercent: 0, rotate: -8 },
+  bottom: { yPercent: 100, xPercent: 0, rotate: 8 },
+  left: { yPercent: 0, xPercent: -100, rotate: -8 },
+  right: { yPercent: 0, xPercent: 100, rotate: 8 },
+};
+
+export default function OverflowTextReveal({
   children,
   animateOnScroll = true,
   delay = 0,
   className = "",
-  scrub = true,
+  scrub = false,
+  direction = "bottom",
 }) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
-  const linesRef = useRef([]);
-  const triggersRef = useRef([]);
+  const charsRef = useRef([]);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const prefersReduced =
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!containerRef.current) return;
 
     splitRefs.current = [];
-    linesRef.current = [];
-    triggersRef.current = [];
+    charsRef.current = [];
 
-    const elements = Array.from(el.children);
+    const elements = containerRef.current.hasAttribute("data-copy-wrapper")
+      ? Array.from(containerRef.current.children)
+      : [containerRef.current];
 
-    const waitForFonts = async () => {
-      if (document.fonts && document.fonts.ready) {
-        try {
-          await document.fonts.ready;
-        } catch {}
-      }
+    let ctx;
+
+    const init = async () => {
+      await document.fonts.ready;
+
+      ctx = gsap.context(() => {
+        elements.forEach((element) => {
+          const split = SplitText.create(element, {
+            type: "lines,chars",
+            mask: "chars",
+            charsClass: "char++",
+            reduceWhiteSpace: false,
+          });
+
+          split.masks?.forEach((mask) => {
+            mask.style.paddingInline = "0.04em";
+            mask.style.marginInline = "-0.04em";
+            mask.style.boxSizing = "content-box";
+          });
+
+          splitRefs.current.push(split);
+          charsRef.current.push(...split.chars);
+        });
+
+        const initialProps = DIRECTION_INITIAL[direction] ?? DIRECTION_INITIAL.bottom;
+
+        // Reveal the container immediately — opacity-0 was only to prevent FOUC
+        // GSAP will handle per-char opacity from here
+        gsap.set(containerRef.current, { opacity: 1 });
+
+        const fromProps = {
+          ...initialProps,
+          opacity: 0,
+          willChange: "transform",
+        };
+
+        const toProps = {
+          yPercent: 0,
+          xPercent: 0,
+          rotate: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.03,
+          ease: "power3.out",
+          delay,
+        };
+
+        if (animateOnScroll) {
+          gsap.fromTo(charsRef.current, fromProps, {
+            ...toProps,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 80%",
+              end: "bottom 68%",
+            //   markers: true,
+              scrub,
+            },
+          });
+        } else {
+          gsap.fromTo(charsRef.current, fromProps, toProps);
+        }
+      }, containerRef);
     };
 
-    let unmounted = false;
-
-    (async () => {
-      await waitForFonts();
-      if (unmounted) return;
-
-      elements.forEach((element) => {
-        const split = SplitText.create(element, {
-          type: "lines",
-          mask: "lines",
-          linesClass: "line",
-          lineThreshold: 0.1,
-        });
-
-        splitRefs.current.push(split);
-
-        const textIndent = getComputedStyle(element).textIndent;
-        if (textIndent && textIndent !== "0px" && split.lines.length > 0) {
-          split.lines[0].style.paddingLeft = textIndent;
-          element.style.textIndent = "0";
-        }
-
-        linesRef.current.push(...split.lines);
-      });
-
-      if (!linesRef.current.length) return;
-
-      if (prefersReduced) {
-        gsap.set(linesRef.current, { y: "0%" });
-        return;
-      }
-
-      gsap.set(linesRef.current, { y: "100%" });
-
-      const animationProps = {
-        y: "0%",
-        duration: 1.4,
-        stagger: 0.15,
-        ease: "power4.out",
-        delay,
-        onComplete: () =>
-          gsap.set(linesRef.current, { clearProps: "transform" }),
-      };
-
-      if (animateOnScroll) {
-        const tween = gsap.to(linesRef.current, {
-          ...animationProps,
-          scrollTrigger: {
-            trigger: el,
-            start: "top 70%",
-            scrub,
-          },
-        });
-
-        if (tween?.scrollTrigger) {
-          triggersRef.current.push(tween.scrollTrigger);
-        }
-      } else {
-        gsap.to(linesRef.current, animationProps);
-      }
-    })();
+    init();
 
     return () => {
-      unmounted = true;
-
-      triggersRef.current.forEach((trigger) => trigger?.kill());
-      triggersRef.current = [];
-
+      if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
-      splitRefs.current = [];
-
-      linesRef.current = [];
     };
-  }, [animateOnScroll, delay, scrub]);
+  }, [animateOnScroll, delay, scrub, direction]);
 
   return (
-    <div ref={containerRef} data-copy-wrapper="true" className={className}>
+    <div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>
       {children}
     </div>
   );
 }
-

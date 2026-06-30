@@ -1,13 +1,22 @@
 'use client'
 
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
-import { texture, uv, uniform, sub, length, mul, add, oneMinus, vec2 } from 'three/tsl'
+import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
 
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
+
+function loadCorsObjectUrl(src) {
+  return fetch(src, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Image request failed with ${res.status}`)
+      return res.blob()
+    })
+    .then((blob) => URL.createObjectURL(blob))
+}
 
 function ImageNodeMaterial({ src, isMobile }) {
   const sourceMap = useTexture(src)
@@ -115,9 +124,27 @@ function ImageNodeMaterial({ src, isMobile }) {
 }
 
 export default function FishEye({ src }) {
+  const [objectUrl, setObjectUrl] = useState(null)
+
+  useEffect(() => {
+    let url = null
+    loadCorsObjectUrl(src)
+      .then((u) => {
+        url = u
+        setObjectUrl(u)
+      })
+      .catch((err) => console.warn('FishEye texture load failed:', err))
+
+    return () => {
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [src])
+
   const isMobile =
     typeof window !== 'undefined' &&
     window.matchMedia('(pointer: coarse)').matches
+
+  if (!objectUrl) return null
 
   return (
     <Canvas
@@ -141,7 +168,7 @@ export default function FishEye({ src }) {
         return renderer
       }}
     >
-      <ImageNodeMaterial src={src} isMobile={isMobile} />
+      <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
     </Canvas>
   )
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from"react";
-import Image from"next/image";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
 
@@ -14,13 +13,7 @@ const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X ="5vw";
 
-const DEFAULT_HEADING ="Scroll to explore";
-
-export default function ParallaxSlider({
- images = [],
- bgColor ="#000000",
- heading = DEFAULT_HEADING,
-}) {
+function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  const outerRef = useRef(null);
  const trackRef = useRef(null);
 
@@ -118,14 +111,7 @@ export default function ParallaxSlider({
  className="relative"
  style={{ height:"400vh", backgroundColor: bgColor }}
  >
- <div className="sticky top-0 h-screen overflow-hidden">
- <div className="absolute top-20 left-1/2 z-10 -translate-x-1/2 px-4 text-center">
- <p className="text-lg uppercase tracking-[0.4em] text-white/80">
- {heading}
- </p>
- </div>
-
- <div className="flex h-full items-center pt-28">
+ <div className="sticky top-0 h-screen overflow-hidden flex items-center">
  <div
  ref={trackRef}
  className="flex items-center will-change-transform"
@@ -151,15 +137,7 @@ export default function ParallaxSlider({
  clipPath:"inset(0 100% 0 0)",
  }}
  >
- <Image
- src={src}
- alt={`Slide ${i + 1}`}
- fill
- sizes={`${width}vw`}
- className="object-cover parallax-img"
- priority={i < 3}
- draggable={false}
- />
+ <img src={src} alt={`Slide ${i + 1}`} className="absolute inset-0 object-cover parallax-img" draggable={false} />
 
  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
  </div>
@@ -168,7 +146,7 @@ export default function ParallaxSlider({
  </div>
  </div>
  </div>
- </div>
  );
 }
 
+export default ParallaxImgSlider;

@@ -360,9 +360,9 @@
     "tarball": "registry/dist/hyperiux-sticky-content-wrapper-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/svg-path-marquee",
+    "name": "@hyperiux/svg-path",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-svg-path-marquee-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-svg-path-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/svg-pixel-reveal",
@@ -445,9 +445,9 @@
     "tarball": "registry/dist/hyperiux-text-fill-animation-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/text-hover-expand",
+    "name": "@hyperiux/text-hover",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-text-hover-expand-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-text-hover-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/text-stream",

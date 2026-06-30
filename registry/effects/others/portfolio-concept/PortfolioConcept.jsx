@@ -4,7 +4,6 @@ import gsap from"gsap";
 import React, { useEffect, useRef } from"react";
 import ScrollTrigger from"gsap/dist/ScrollTrigger";
 import SplitText from"gsap/dist/SplitText";
-import Image from"next/image";
 import Link from"next/link";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -364,13 +363,7 @@ const PortfolioConcept = () => {
  key={`left-${index}`}
  className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
  >
- <Image
- src={item.src}
- alt={item.title}
- width={400}
- height={600}
- className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
- />
+ <img src={item.src} alt={item.title} className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out" />
 
  <div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
  <p
@@ -399,13 +392,7 @@ const PortfolioConcept = () => {
  index === 0 ?"card-1" :""
  } ${index === 1 ?"card-2" :""}`}
  >
- <Image
- src={item.src}
- alt={item.title}
- width={500}
- height={700}
- className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
- />
+ <img src={item.src} alt={item.title} className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out" />
 
  <div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
  <p
@@ -432,13 +419,7 @@ const PortfolioConcept = () => {
  key={`right-${index}`}
  className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
  >
- <Image
- src={item.src}
- alt={item.title}
- width={400}
- height={600}
- className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
- />
+ <img src={item.src} alt={item.title} className="project-image w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out" />
 
  <div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
  <p

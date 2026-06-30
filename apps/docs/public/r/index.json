@@ -290,7 +290,7 @@
       "exportKind": "named"
     },
     {
-      "name": "svg-path-marquee",
+      "name": "svg-path",
       "type": "registry:component",
       "category": "scroll",
       "categories": [
@@ -868,7 +868,7 @@
       "exportKind": "named"
     },
     {
-      "name": "text-hover-expand",
+      "name": "text-hover",
       "type": "registry:component",
       "category": "text",
       "categories": [
@@ -878,8 +878,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "TextHoverExpand",
-      "exportKind": "named"
+      "exportName": "TextHover",
+      "exportKind": "default"
     },
     {
       "name": "text-stream",

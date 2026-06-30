@@ -62,11 +62,11 @@ void main() {
 `;
 
 const imagesArr = [
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+  "https://picsum.photos/seed/curved0/600/900",
+  "https://picsum.photos/seed/curved1/600/900",
+  "https://picsum.photos/seed/curved2/600/900",
+  "https://picsum.photos/seed/curved3/600/900",
+  "https://picsum.photos/seed/curved4/600/900",
 
 ];
 

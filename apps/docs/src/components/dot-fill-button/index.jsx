@@ -80,7 +80,7 @@ const DotFillBtn = ({
 			{...props}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] ${className} max-md:h-[11vw] max-md:pl-[7.6vw] max-md:pr-[4vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:pl-[11.8vw] max-sm:pr-[6vw] max-sm:text-[4.2vw]`}
+			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] ${className} max-md:h-[9vw] max-md:pl-[7.6vw] max-md:pr-[4vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:pl-[11.8vw] max-sm:pr-[6vw] max-sm:text-[4.2vw]`}
 			style={{ background: bgColor, color: hovered ? hoverTextColor : textColor }}
 		>
 			<span

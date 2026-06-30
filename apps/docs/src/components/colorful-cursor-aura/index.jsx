@@ -1,9 +1,9 @@
-import React from 'react'
+
 import ColorfulCursorAuraComp from './ColorfulCursorAuraComp'
 
 const ColorfulCursorAura = () => {
   return (
-     <div className="relative min-h-screen">
+     <div className="relative min-h-screen bg-white">
       <ColorfulCursorAuraComp
         text="One hover, and suddenly your UI has personality"
         colors={{

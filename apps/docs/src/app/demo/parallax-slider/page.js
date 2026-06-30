@@ -1,14 +1,14 @@
 import React from'react'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
-import ParallaxSlider from '@/components/parallax-slider'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import ParallaxImgSlider from '@/components/parallax-slider'
 
 const page = () => {
  return (
  <>
  <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
  <LenisSmoothScroll />
- <ParallaxSlider images={[
+ <ParallaxImgSlider images={[
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',

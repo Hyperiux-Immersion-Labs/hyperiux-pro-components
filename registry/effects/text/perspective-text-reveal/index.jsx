@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useLayoutEffect, useRef } from"react";
-import gsap from"gsap";
-import { SplitText } from"gsap/SplitText";
-import { ScrollTrigger } from"gsap/ScrollTrigger";
+import React, { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -11,8 +11,9 @@ export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
  delay = 0,
- className ="",
- scrub = true,
+ className = "",
+ scrub = false,
+ end = "bottom 60%",
 }) {
  const containerRef = useRef(null);
  const splitRefs = useRef([]);
@@ -72,8 +73,9 @@ export default function PerspectiveTextReveal({
  scrollTrigger: {
  trigger: containerRef.current,
  start:"top 90%",
- end:"bottom 60%",
+ end,
  scrub,
+//  markers:true,
  },
  });
  } else {
@@ -88,7 +90,7 @@ export default function PerspectiveTextReveal({
  if (ctx) ctx.revert();
  splitRefs.current.forEach((split) => split?.revert());
  };
- }, [animateOnScroll, delay, scrub]);
+ }, [animateOnScroll, delay, scrub, end]);
 
  return (
  <div

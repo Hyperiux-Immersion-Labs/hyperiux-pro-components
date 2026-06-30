@@ -1,8 +1,5 @@
 import { CustomAnimationFormEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormEmail";
-import { Resend } from "resend";
-// import { CustomAnimationFormEmail } from "@/components/emails/CustomAnimationFormEmail";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from "@/lib/resend";
 
 function validatePayload(body) {
   const errors = {};
@@ -41,21 +38,6 @@ function validatePayload(body) {
 
 export async function POST(request) {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      return Response.json(
-        { error: "Missing RESEND_API_KEY." },
-        { status: 500 }
-      );
-    }
-
-    if (!process.env.RESEND_FROM_EMAIL) {
-      return Response.json(
-        { error: "Missing RESEND_FROM_EMAIL." },
-        { status: 500 }
-      );
-    }
-
-
     const body = await request.json();
 
     const { errors, values } = validatePayload(body);
@@ -70,27 +52,22 @@ export async function POST(request) {
       );
     }
 
-    const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL,
-      to: [process.env.RESEND_FROM_EMAIL],
-      subject: `New custom animation request from ${values.name}`,
-      replyTo: values.email,
+    const to = process.env.RESEND_FROM_EMAIL;
+    const subject = `New custom animation request from ${values.name}`;
+
+    const { success } = await sendEmail({
+      to,
+      subject,
       react: CustomAnimationFormEmail(values),
+      replyTo: values.email,
+      emailType: "custom_animation_request",
     });
 
-    if (error) {
-      console.error("Resend custom animation form error:", error);
-
-      return Response.json(
-        { error: "Failed to send request." },
-        { status: 500 }
-      );
+    if (!success) {
+      return Response.json({ error: "Failed to send request." }, { status: 500 });
     }
 
-    return Response.json({
-      ok: true,
-      id: data?.id,
-    });
+    return Response.json({ ok: true });
   } catch (error) {
     console.error("Custom animation form API error:", error);
 

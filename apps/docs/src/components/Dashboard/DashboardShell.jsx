@@ -2,27 +2,24 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 
-const tabs = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-  },
-  {
-    label: "Saved Effects",
-    href: "/dashboard/saved",
-  },
- 
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-  },
+const BASE_TABS = [
+  { label: "Overview", href: "/dashboard" },
+  { label: "Saved Effects", href: "/dashboard/saved" },
+  { label: "Settings", href: "/dashboard/settings" },
 ];
+
+const ADMIN_TAB = { label: "Admin", href: "/dashboard/admin" };
 
 export function DashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useUser();
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const tabs = isAdmin ? [...BASE_TABS, ADMIN_TAB] : BASE_TABS;
 
   return (
     <div className="min-h-screen text-white">
@@ -53,7 +50,9 @@ export function DashboardShell({ children }) {
           <div className="flex gap-3 overflow-x-auto max-w-full">
             {tabs.map((tab) => {
               const active =
-                pathname === tab.href;
+                tab.href === "/dashboard"
+                  ? pathname === tab.href
+                  : pathname.startsWith(tab.href);
 
               return (
                 <Link

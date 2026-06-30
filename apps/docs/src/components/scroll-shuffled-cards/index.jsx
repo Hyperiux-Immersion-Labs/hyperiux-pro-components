@@ -1,4 +1,4 @@
-import ScrollShuffledCardsComp from"@/components/scroll-shuffled-cards/ScrollShuffledCardsComp";
+import ScrollShuffledCardsComp from "./ScrollShuffledCardsComp";
 
 
 const ScrollShuffledCards = () => {
