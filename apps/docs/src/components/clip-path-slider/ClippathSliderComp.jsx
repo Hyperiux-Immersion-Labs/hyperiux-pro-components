@@ -5,7 +5,7 @@ import SplitText from "gsap/dist/SplitText";
 
 gsap.registerPlugin(SplitText);
 
-export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
+export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextSlideIndex, setNextSlideIndex] = useState(0);
@@ -30,7 +30,6 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
 
-  // ─── Draw static white lines ───
   const drawStaticLines = useCallback(() => {
     const canvas = linesCanvasRef.current;
     if (!canvas) return;
@@ -76,11 +75,9 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
     ctx.stroke();
   }, []);
 
-  // Init on mount
+  // Init
   useEffect(() => {
-    // Active layer A: visible, locked at 1.25 (resting state after canvas zoom)
     if (bgRefA.current) gsap.set(bgRefA.current, { scale: 1.25, opacity: 1, zIndex: 1 });
-    // Standby layer B: hidden, pre-set to 1.25 ready for reuse
     if (bgRefB.current) gsap.set(bgRefB.current, { scale: 1.25, opacity: 0, zIndex: 0 });
 
     const canvas = canvasRef.current;
@@ -91,7 +88,7 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
     drawStaticLines();
   }, [drawStaticLines]);
 
-  // Redraw lines on resize
+  // Resize
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -172,8 +169,8 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         ) + 10;
 
         const clockAngle = (hour) => ((hour * 30 - 90) * Math.PI) / 180;
-        const pos1 = clockAngle(1.5); // 1:30
-        const pos5 = clockAngle(4.5); // 4:30
+        const pos1 = clockAngle(1.5);
+        const pos5 = clockAngle(4.5);
         const shortSweep = clockAngle(4.5) - clockAngle(1.5);
         const longSweep = 2 * Math.PI - shortSweep;
 
@@ -259,32 +256,26 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
     const outgoingRef = outgoingIsA ? bgRefA : bgRefB;
     const incomingRef = outgoingIsA ? bgRefB : bgRefA;
 
-    // ── 1. Load new image onto incoming layer ──
     if (outgoingIsA) {
       setLayerB({ index: newIndex });
     } else {
       setLayerA({ index: newIndex });
     }
 
-    // One frame for React to paint the new backgroundImage on the incoming layer
     await new Promise((r) => requestAnimationFrame(r));
 
-    // ── 2. Incoming: hidden below everything. Canvas draws the next image during sweep.
     if (incomingRef.current) {
       gsap.set(incomingRef.current, { scale: 1.25, opacity: 0, zIndex: 0 });
     }
-    // Outgoing: stays on top
     if (outgoingRef.current) {
       gsap.set(outgoingRef.current, { zIndex: 1 });
     }
 
-    // ── 3. Outgoing: 1.25 → 1.0 during sweep (zoom out as it exits) ──
     if (outgoingRef.current) {
       gsap.killTweensOf(outgoingRef.current);
       gsap.to(outgoingRef.current, {
         scale: 1.0,
         duration: 1.2,
-        // ease:"power1.inOut",
         ease: "power2.inOut",
       });
     }
@@ -292,20 +283,16 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
     await fadeOutText();
     await runSweepAnimation(newIndex);
 
-    // ── 4. Sweep done. Swap layers. ──
     activeLayerRef.current = outgoingIsA ? "B" : "A";
 
-    // Hide outgoing, reset scale to resting for its next use
     if (outgoingRef.current) {
       gsap.killTweensOf(outgoingRef.current);
       gsap.set(outgoingRef.current, { opacity: 0, scale: 1.25, zIndex: 0 });
     }
 
-    // ── 5. Reveal incoming at 1.25 — canvas ended here, DOM takes over locked at 1.25 ──
     if (incomingRef.current) {
       gsap.killTweensOf(incomingRef.current);
       gsap.set(incomingRef.current, { zIndex: 1, opacity: 1, scale: 1.25 });
-      // No tween — stays at 1.25 until it becomes outgoing and zooms to 1.0
     }
 
     setCurrentSlide(newIndex);
@@ -336,14 +323,12 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
 
     if (!cursor || !l1 || !l2) return;
 
-    // center cursor
     gsap.set(cursor, {
       xPercent: -50,
       yPercent: -50,
       opacity: 0, scale: 0.6,
     });
 
-    // lines setup (keep yours)
     gsap.set(l1, {
       transformOrigin: "100% 50%",
       xPercent: -50,
@@ -371,14 +356,14 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
       mouse.current.x = x;
       mouse.current.y = y;
 
-      // detect if outside viewport (fixes top edge issue)
+      // guard against top-edge ghost position
       const isOut =
         x <= 0 ||
         y <= 0 ||
         x >= window.innerWidth ||
         y >= window.innerHeight;
 
-      // ── OUTSIDE SCREEN ─────────────────────────────
+      // Out of bounds
       if (isOut) {
         if (isInside.current) {
           isInside.current = false;
@@ -393,7 +378,7 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         return;
       }
 
-      // ── FIRST ENTRY (fix top-left jump) ────────────
+      // First entry
       if (!isInside.current) {
         pos.current.x = x;
         pos.current.y = y;
@@ -413,7 +398,7 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         isInside.current = true;
       }
 
-      // ── ARROW SIDE LOGIC ───────────────────────────
+      // Arrow direction
       const isLeft = x < window.innerWidth / 2;
       const nextSide = isLeft ? "left" : "right";
 
@@ -493,7 +478,6 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
   return (
     <section className="relative w-screen h-screen overflow-hidden">
 
-      {/* BG Layer A */}
       <div
         ref={bgRefA}
         className="absolute inset-0 bg-cover bg-center"
@@ -504,7 +488,6 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         }}
       />
 
-      {/* BG Layer B */}
       <div
         ref={bgRefB}
         className="absolute inset-0 bg-cover bg-center"
@@ -515,27 +498,23 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         }}
       />
 
-      {/* Sweep canvas — z-10 */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ zIndex: 10 }}
       />
 
-      {/* Lines canvas — z-20 */}
       <canvas
         ref={linesCanvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ zIndex: 20 }}
       />
 
-      {/* Dark overlay — z-30 */}
       <div
         className="absolute inset-0 bg-black/10 pointer-events-none"
         style={{ zIndex: 30 }}
       />
 
-      {/* Click layer — z-40 */}
       <div
         className="absolute inset-0"
         style={{ zIndex: 40 }}
@@ -546,18 +525,15 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
         }}
       />
 
-      {/* TEXT — z-50 */}
       <div
         ref={textRef}
         className="absolute inset-0 text-white pointer-events-none"
         style={{ zIndex: 50 }}
       >
-        {/* NAME (left center) */}
         <h2 className="absolute left-[5%] max-sm:left-[1%] top-[50%] max-md:text-[3vw] w-[20vw] max-sm:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-sm:text-[4vw] font-medium about-slider-text">
           {slides[currentSlide].name}
         </h2>
         
-        {/* TAGS (right middle stacked) */}
         <div className="absolute right-[5%] max-sm:right-[5%] max-md:right-[10%] top-[50%] max-md:w-[40vw] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
          
             <p className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-light about-slider-text text-shadow-black">
@@ -568,7 +544,6 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
 
       </div>
 
-      {/* CURSOR FOLLOWER */}
       <div
         ref={cursorRef}
         className="fixed max-md:hidden  top-0 left-0 pointer-events-none z-100"
@@ -578,7 +553,6 @@ export function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00"
           style={{ backgroundColor: cursorBg }}
         >
           <div className="relative w-7.5 h-7.5">
-            {/* line 1 */}
             <span
               ref={line1Ref}
               className="absolute left-1/2 top-1/2 w-4 h-0.5"

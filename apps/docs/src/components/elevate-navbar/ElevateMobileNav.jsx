@@ -194,7 +194,7 @@ export function ElevateNavbarMobile({
                       currentIndex === index ? null : index
                     )
                   }
-                  className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw] max-sm:text-[3vw] uppercase text-white/85 transition hover:bg-white/10"
+                  className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw]! max-sm:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10"
                 >
                   {item.name}
 

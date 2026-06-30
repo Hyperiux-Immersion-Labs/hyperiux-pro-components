@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
@@ -118,11 +119,23 @@ export function VaultContent({
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
 
+  const justUpgraded = searchParams.get("upgraded") === "true";
+  const [showWishlistToast, setShowWishlistToast] = useState(false);
+  const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
+  const wishlistTimerRef = useRef(null);
+
+  useEffect(() => {
+    if (!showWishlistToast) return;
+    wishlistTimerRef.current = setTimeout(() => setShowWishlistToast(false), 6000);
+    return () => clearTimeout(wishlistTimerRef.current);
+  }, [showWishlistToast]);
+
 const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
 
   params.delete("waitlist");
-   params.delete("custom-animation-form");
+  params.delete("custom-animation-form");
+  params.delete("upgraded");
 
   return params.toString();
 }, [searchParamString]);
@@ -353,6 +366,11 @@ const routeKey = `${pathname}${
   }, [isSignedIn]);
 
   const toggleWishlist = async (effect) => {
+    if (!isSignedIn) {
+      setShowWishlistToast(true);
+      return;
+    }
+
     try {
       const slug = effect.name;
 
@@ -483,6 +501,7 @@ const routeKey = `${pathname}${
   );
 
   return (
+    <>
     <VaultLayout
       effectCounts={safeEffectCounts}
       effects={safeEffects}
@@ -757,7 +776,40 @@ const routeKey = `${pathname}${
           </div>
         </RouteFade>
       )}
+
     </VaultLayout>
+
+    {typeof document !== "undefined" && createPortal(
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-sm:bottom-4 max-sm:left-4 max-sm:right-4">
+        {/* Pro upgrade success toast */}
+        <div
+          className={`flex w-80 max-sm:w-full flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-[#0d1a10] p-5 shadow-2xl transition-all duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-semibold text-emerald-300">You&apos;re now Pro — full vault unlocked.</p>
+            <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-emerald-400/50 hover:text-emerald-300 transition-colors">✕</button>
+          </div>
+          <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
+            Explore effects
+          </Link>
+        </div>
+
+        {/* Wishlist sign-in toast */}
+        <div
+          className={`flex w-80 max-sm:w-full flex-col gap-3 rounded-2xl border border-white/10 bg-[#111] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-semibold text-white">Sign in to save effects to your wishlist.</p>
+            <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/40 hover:text-white transition-colors">✕</button>
+          </div>
+          <Link href="/sign-in?redirect_url=/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors" onClick={() => setShowWishlistToast(false)}>
+            Sign In
+          </Link>
+        </div>
+      </div>,
+      document.body
+    )}
+    </>
   );
 }
 

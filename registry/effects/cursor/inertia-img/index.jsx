@@ -2,18 +2,18 @@
 import InertiaImageComp from './InertiaImgComp';
 
 const images = [
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-1.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-2.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-3.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-4.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-5.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-6.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-7.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-8.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-9.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-1.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-2.png",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-3.png",
+    "https://picsum.photos/seed/1/800/600",
+    "https://picsum.photos/seed/2/800/600",
+    "https://picsum.photos/seed/3/800/600",
+    "https://picsum.photos/seed/4/800/600",
+    "https://picsum.photos/seed/5/800/600",
+    "https://picsum.photos/seed/6/800/600",
+    "https://picsum.photos/seed/7/800/600",
+    "https://picsum.photos/seed/8/800/600",
+    "https://picsum.photos/seed/9/800/600",
+    "https://picsum.photos/seed/10/800/600",
+    "https://picsum.photos/seed/11/800/600",
+    "https://picsum.photos/seed/12/800/600",
 ];
 
 const InertiaImage = () => {

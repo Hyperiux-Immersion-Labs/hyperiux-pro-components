@@ -21,6 +21,8 @@ const effectSlugAliasGroups = [
   },
   { slug: "text-hover", aliases: ["text-hover-expand"] },
   { slug: "svg-path", aliases: ["svg-path-marquee"] },
+  { slug: "parallax-image-animation", aliases: ["parallax-image"] },
+  { slug: "video-player", aliases: ["custom-video-player"] },
 ];
 
 const effectSlugAliasMap = new Map(

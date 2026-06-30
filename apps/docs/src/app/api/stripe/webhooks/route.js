@@ -7,6 +7,7 @@ import {
 } from "@/lib/pro-access";
 import { sendEmail } from "@/lib/resend";
 import {
+  createCancellationScheduledEmail,
   createPaymentFailedEmail,
   createSubscriptionCancelledEmail,
   createSubscriptionRenewedEmail,
@@ -89,11 +90,25 @@ export async function POST(req) {
           subscription.metadata?.billing_interval ||
           null;
 
+        let invoiceUrl = null;
+        let invoiceNumber = null;
+        if (session.invoice) {
+          try {
+            const invoice = await stripe.invoices.retrieve(session.invoice);
+            invoiceUrl = invoice.hosted_invoice_url || null;
+            invoiceNumber = invoice.number || null;
+          } catch (e) {
+            console.error("INVOICE_FETCH_ERROR:", e.message);
+          }
+        }
+
         await markUserProFromSubscription({
           clerkUserId,
           stripeCustomerId: session.customer,
           subscription,
           billingInterval,
+          invoiceUrl,
+          invoiceNumber,
         });
 
         break;
@@ -120,6 +135,24 @@ export async function POST(req) {
             clerkUserId,
             status: subscription.status,
           });
+          break;
+        }
+
+        // Detect cancellation scheduled (user cancelled but still in billing period)
+        const prevAttributes = event.data.previous_attributes || {};
+        const justScheduledCancel =
+          subscription.cancel_at_period_end === true &&
+          prevAttributes.cancel_at_period_end === false;
+
+        if (justScheduledCancel) {
+          const { email, name } = await getClerkUserInfo(clerkUserId);
+          if (email) {
+            const cancelAt = subscription.cancel_at
+              ? new Date(subscription.cancel_at * 1000).toISOString()
+              : null;
+            const { subject, html, text } = createCancellationScheduledEmail({ name, cancelAt });
+            await sendEmail({ to: email, subject, html, text, emailType: "subscription_cancellation_scheduled" });
+          }
           break;
         }
 

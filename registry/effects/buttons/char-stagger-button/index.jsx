@@ -1,126 +1,168 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
-export function CharStaggerButton({
-  text = "",
-  href = "#",
+const DEFAULT_HREF = "#";
+const DEFAULT_STAGGER_STEP = 0.01;
+const DEFAULT_HOVER_COLOR = "#ff6b00";
+const CHAR_TRANSLATE_Y = "1.3em";
+
+export default function CharStaggerButton({
+  btnText = "",
+  href = DEFAULT_HREF,
   className = "",
   textClassName = "",
   linkProps = {},
   children,
-  staggerStep = 0.01,
+  staggerStep = DEFAULT_STAGGER_STEP,
+  showLine = false,
   lineClassName = "",
-  hoverColor = "",
+  hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
   icon: Icon = ArrowRight,
+  iconVariant = "stacked",
   iconClassName = "",
-  bgClassName,
   onClick,
   ...props
 }) {
-  const linkRef = useRef(null);
-  const [isTouchHovered, setIsTouchHovered] = useState(false);
-  const [supportsTouchHover, setSupportsTouchHover] = useState(false);
-  const sourceText = typeof children === "string" ? children : text;
+  // Refs
+  const textRef = useRef(null);
+  const lineRef = useRef(null);
+  const isTouchRef = useRef(false);
+  const hasMountedRef = useRef(false);
 
+  // State
+  const [isActive, setIsActive] = useState(false);
+
+  // Effects
   useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-
-    const mediaQuery = window.matchMedia("(hover: none), (pointer: coarse)");
-    const updateTouchSupport = () => {
-      setSupportsTouchHover(mediaQuery.matches);
-    };
-
-    updateTouchSupport();
-    mediaQuery.addEventListener("change", updateTouchSupport);
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateTouchSupport);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isTouchHovered) return undefined;
-
-    const handlePointerDown = (event) => {
-      if (linkRef.current?.contains(event.target)) return;
-      setIsTouchHovered(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-    };
-  }, [isTouchHovered]);
-
-  const handleClick = (event) => {
-    if (supportsTouchHover && !isTouchHovered) {
-      event.preventDefault();
-      setIsTouchHovered(true);
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
       return;
     }
+    const line = lineRef.current;
+    if (!line || isActive) return;
+    line.style.transformOrigin = "right center";
+    const onEnd = () => {
+      line.style.transformOrigin = "left center";
+      line.removeEventListener("transitionend", onEnd);
+    };
+    line.addEventListener("transitionend", onEnd);
+  }, [isActive]);
 
-    onClick?.(event);
+  useEffect(() => {
+    const textElement = textRef.current;
+    if (!textElement) return;
+
+    const sourceText = btnText || textElement.getAttribute("data-text") || "";
+    textElement.innerHTML = "";
+
+    [...sourceText].forEach((char, index) => {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.style.display = "inline-block";
+      span.style.position = "relative";
+      span.style.textShadow = `0px ${CHAR_TRANSLATE_Y} currentColor`;
+      span.style.transform = "translateY(0em) rotate(0.001deg)";
+      span.style.transition = "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
+      span.style.willChange = "transform";
+      span.style.transitionDelay = `${index * staggerStep}s`;
+      if (char === " ") span.style.whiteSpace = "pre";
+      textElement.appendChild(span);
+    });
+  }, [btnText, staggerStep]);
+
+  useEffect(() => {
+    const textElement = textRef.current;
+    if (!textElement) return;
+    Array.from(textElement.children).forEach((span) => {
+      span.style.transform = isActive
+        ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
+        : "translateY(0em) rotate(0.001deg)";
+    });
+  }, [isActive]);
+
+  // Event handlers
+  const onMouseEnter = useCallback(() => {
+    if (isTouchRef.current) return;
+    setIsActive(true);
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    if (isTouchRef.current) return;
+    setIsActive(false);
+  }, []);
+
+  const onTouchStart = useCallback(() => {
+    isTouchRef.current = true;
+    setIsActive((prev) => !prev);
+  }, []);
+
+  const onMouseDown = useCallback((e) => {
+    if (isTouchRef.current) e.preventDefault();
+  }, []);
+
+  // Derived
+  const sourceText = typeof children === "string" ? children :  btnText;
+  const mergedStyle = {
+    ...props.style,
+    color: isActive ? hoverColor : props.style?.color,
   };
 
-  const hoverStateClass = isTouchHovered
-    ? "text-[var(--char-hover-color)]"
-    : "";
-  const bgHoverClass = isTouchHovered ? "scale-[0.95]" : "";
-  const iconHoverClass = isTouchHovered ? "translate-x-[5%]" : "";
-
+  // Render
   return (
-    <Link
-      ref={linkRef}
-      href={href}
+    <Link href={href}
       {...linkProps}
       {...props}
-      onClick={handleClick}
-      className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-(--char-hover-color) focus-visible:text-(--char-hover-color) max-md:h-[11vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] ${hoverStateClass} ${className}`}
-      style={{ "--char-hover-color": hoverColor }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onMouseDown={onMouseDown}
+      style={mergedStyle}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${className}`.trim()}
     >
-      <div className="relative z-2 mt-[0.3vw]">
-        <span className="relative inline-block">
-          <span
-            className={`relative inline-block overflow-hidden leading-[1.2] ${textClassName} ${lineClassName}`}
-          >
-            {[...sourceText].map((char, index) => (
-              <span
-                key={`${char}-${index}`}
-                className="relative inline-block translate-y-0 rotate-[0.001deg] transition-transform duration-600 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform group-hover:translate-y-[-1.3em] group-focus-visible:translate-y-[-1.3em]"
-                style={{
-                  transitionDelay: `${index * staggerStep}s`,
-                  transform: isTouchHovered
-                    ? "translateY(-1.3em) rotate(0.001deg)"
-                    : undefined,
-                  textShadow: "0px 1.3em currentColor",
-                  whiteSpace: char === " " ? "pre" : "normal",
-                }}
-              >
-                {char}
-              </span>
-            ))}
+      <div className="mt-[0.3vw]">
+        <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
+          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw] ${textClassName}`.trim()}>
+            {sourceText}
           </span>
+
+          {showLine && (
+            <span
+              ref={lineRef}
+              aria-hidden="true"
+              className="absolute left-0 bottom-[15%] w-full bg-current"
+              style={{
+                height: "1.5px",
+                transform: `scaleX(${isActive ? 1 : 0})`,
+                transformOrigin: "left center",
+                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+              }}
+            />
+          )}
         </span>
       </div>
-      <div
-        className={`absolute h-full w-full duration-500 group-hover:scale-[0.95] group-focus-visible:scale-[0.95] ${bgHoverClass} ${bgClassName || ""}`}
-      />
 
       {showArrow && Icon && (
-        <div
-          className={`flex items-center justify-start overflow-hidden ${iconClassName}`}
-        >
-          <div
-            className={`flex w-max -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform group-hover:translate-x-[5%] group-focus-visible:translate-x-[5%] ${iconHoverClass} ${iconClassName}`}
-          >
-            <Icon className="h-full w-full flex-none" />
-            <Icon className="h-full w-full flex-none" />
-          </div>
+        <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
+          {iconVariant === "single" ? (
+            <Icon className="h-4 w-4 shrink-0" />
+          ) : (
+            <div
+              className="flex w-max"
+              style={{
+                transform: isActive ? "translateX(5%)" : "translateX(-100%)",
+                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+                willChange: "transform",
+              }}
+            >
+              <Icon className="flex-none w-full h-full" />
+              <Icon className="flex-none w-full h-full" />
+            </div>
+          )}
         </div>
       )}
     </Link>

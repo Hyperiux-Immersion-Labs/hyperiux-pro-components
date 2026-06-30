@@ -2,6 +2,8 @@ import DonutParticles from "@/components/donut-particles";
 import React from "react";
 import HeadAnim from '@/components/Animations/HeadAnim'
 import Copy from '@/components/Animations/Copy'
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const index = () => {
   return (
@@ -17,14 +19,19 @@ const index = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-8 right-10 z-20 max-md:bottom-10 max-w-md max-md:right-4  text-right max-md:w-[50vw]">
+      <div className="absolute bottom-8 right-10 z-20 max-md:bottom-10 max-w-md max-md:right-4 space-y-2 text-right  max-md:w-[50vw]">
         <Copy delay={0.5}>
-          <p className="text-white max-md:text-xl max-sm:text-sm text-lg">
+          <p className="text-white max-md:text-xl max-sm:text-sm leading-[1.2] text-lg">
             From strategy to visuals, we craft branding that tells your story
             and leaves a lasting impression.
           </p>
         </Copy>
+        <button className="pr-4 py-1.5 ml-auto flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
+                           <Link href={"/effects"}>Explore Platform</Link>
+                           <ArrowRight className='h-4 w-4' />
+                        </button>
       </div>
+      
 
       <div className="hidden max-md:flex absolute bottom-8 left-6 w-[30vw] max-sm:w-[35vw] max-sm:text-[3.5vw] justify-end text-center bg-white/20 backdrop-blur-[0.5vw] rounded-lg  text-white text-[2.5vw] p-2">
         Experience the full magic on desktop

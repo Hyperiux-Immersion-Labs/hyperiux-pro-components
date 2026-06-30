@@ -1,0 +1,26 @@
+{
+  "name": "video-player",
+  "type": "registry:component",
+  "title": "Custom Video Player",
+  "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
+  "category": "components",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/video-player",
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/effects/video-player",
+  "target": "src/components/effects/video-player",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/video-player/index.jsx"
+    },
+    {
+      "path": "VideoPlayerComp.jsx",
+      "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+    }
+  ]
+}

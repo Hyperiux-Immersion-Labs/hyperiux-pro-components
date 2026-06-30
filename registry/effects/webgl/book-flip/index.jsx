@@ -7,7 +7,7 @@ export default function BookFlip() {
     <>
     <BookFlipp
       images={BOOK_IMAGES}
-      pathPattern="/assets/nature"
+      pathPattern=""
       bgColor="#000000"
       cameraDistance={{
         mobile: 9,
@@ -30,18 +30,18 @@ export default function BookFlip() {
 }
 
 const BOOK_IMAGES = [
-  "nature01",
-  "nature02",
-  "nature03",
-  "nature04",
-  "nature05",
-  "nature06",
-  "nature07",
-  "nature08",
-  "nature09",
-  "nature10",
-  "nature11",
-  "nature12",
-  "nature13",
-  "nature14",
+  "https://picsum.photos/seed/book1/800/600",
+  "https://picsum.photos/seed/book2/800/600",
+  "https://picsum.photos/seed/book3/800/600",
+  "https://picsum.photos/seed/book4/800/600",
+  "https://picsum.photos/seed/book5/800/600",
+  "https://picsum.photos/seed/book6/800/600",
+  "https://picsum.photos/seed/book7/800/600",
+  "https://picsum.photos/seed/book8/800/600",
+  "https://picsum.photos/seed/book9/800/600",
+  "https://picsum.photos/seed/book10/800/600",
+  "https://picsum.photos/seed/book11/800/600",
+  "https://picsum.photos/seed/book12/800/600",
+  "https://picsum.photos/seed/book13/800/600",
+  "https://picsum.photos/seed/book14/800/600",
 ];

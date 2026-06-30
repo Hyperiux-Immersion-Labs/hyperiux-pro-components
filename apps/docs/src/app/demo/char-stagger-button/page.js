@@ -21,7 +21,8 @@ export default function Page() {
                         showLine
                         text="Hover me"
                         hoverColor="#ff6b00"
-                        className="text-[2vw] max-sm:text-[4.5vw] scale-150"
+                        className="  scale-150"
+                        textClassName="text-[2vw] max-md:text-[3vw] max-sm:text-[4.5vw]"
                     />
                 </div>
             </div>
@@ -32,7 +33,7 @@ export default function Page() {
                 <Image
                     src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg"
                     alt="bg image"
-                    title="Arrow Fill Button"
+                    title="Character Stagger Button"
                     className="h-full w-full object-cover"
                     width={1920}
                     height={1080}

@@ -12,9 +12,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "circular-slider.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider.jsx"
+      "target": "components/hyperiux/circular-slider/index.jsx"
+    },
+    {
+      "path": "CircularSliderComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/circular-slider/CircularSliderComp.jsx"
     }
   ],
   "tier": "pro"

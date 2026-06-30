@@ -172,6 +172,7 @@ export default function HoverSliderComp({ items = [] }) {
     renderer.setSize(W, H, false);
 
     const loader = new THREE.TextureLoader();
+    loader.crossOrigin = "anonymous";
     const texCache = {};
 
     const getTexture = (src) => {

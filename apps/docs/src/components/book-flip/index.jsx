@@ -1,7 +1,6 @@
 import { BookFlipp } from "./BookFlip";
 
 
-
 export default function BookFlip() {
   return (
     <>

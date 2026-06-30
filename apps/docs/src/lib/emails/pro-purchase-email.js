@@ -24,6 +24,8 @@ export function createProPurchaseEmail({
   status,
   validUntil,
   stripeSubscriptionId,
+  invoiceUrl,
+  invoiceNumber,
 }) {
   const planName = `${getBillingLabel(billingInterval)} Pro`;
   const validity = formatEmailDate(validUntil);
@@ -38,7 +40,7 @@ Your Hyperiux Vault ${planName} subscription is now active.
 Plan: ${planName}
 Status: ${status || "active"}
 Valid until / renews on: ${validity}
-Subscription ID: ${stripeSubscriptionId || "Not available"}
+Subscription ID: ${stripeSubscriptionId || "Not available"}${invoiceUrl ? `\nInvoice: ${invoiceUrl}` : ""}
 
 Your Pro access includes:
 - 100+ premium interactive effects
@@ -100,6 +102,14 @@ Hyperiux Vault
           <p style="margin:28px 0 0;color:rgba(255,255,255,0.45);font-size:13px;line-height:1.7;">
             Subscription ID: ${stripeSubscriptionId || "Not available"}
           </p>
+
+          ${invoiceUrl ? `
+          <div style="margin:20px 0 0;">
+            <a href="${invoiceUrl}" style="display:inline-block;padding:12px 24px;background:rgba(255,255,255,0.08);color:#ffffff;text-decoration:none;border-radius:9999px;font-size:14px;font-weight:500;border:1px solid rgba(255,255,255,0.15);">
+              ${invoiceNumber ? `View Invoice ${invoiceNumber}` : "View Invoice"}
+            </a>
+          </div>
+          ` : ""}
         </div>
       </div>
     </div>

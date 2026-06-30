@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -92,7 +92,6 @@ export default function OverflowTextReveal({
               trigger: containerRef.current,
               start: "top 80%",
               end: "bottom 68%",
-            //   markers: true,
               scrub,
             },
           });

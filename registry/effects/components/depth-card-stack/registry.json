@@ -17,6 +17,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/depth-card-stack/index.jsx"
+    },
+    {
+      "path": "DepthCardStackComp.jsx",
+      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+    },
+    {
+      "path": "SliderCard.jsx",
+      "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
     }
   ]
 }

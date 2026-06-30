@@ -7,7 +7,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json",
     "importPath": "@/components/effects/dither-canvas",
-    "target": "src/components/effects/dither-canvas"
+    "target": "src/components/effects/dither-canvas",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/dither-canvas/index.jsx"
+      }
+    ]
   },
   {
     "name": "dotted-grid",
@@ -37,7 +43,25 @@
     "tier": "pro",
     "registryPath": "registry/effects/buttons/animated-toggle/registry.json",
     "importPath": "@/components/effects/animated-toggle",
-    "target": "src/components/effects/animated-toggle"
+    "target": "src/components/effects/animated-toggle",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/animated-toggle/index.jsx"
+      },
+      {
+        "path": "ChevronBird.jsx",
+        "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
+      },
+      {
+        "path": "Cross.jsx",
+        "target": "src/components/effects/animated-toggle/Cross.jsx"
+      },
+      {
+        "path": "Plus.jsx",
+        "target": "src/components/effects/animated-toggle/Plus.jsx"
+      }
+    ]
   },
   {
     "name": "arrow-fill-button",
@@ -57,7 +81,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/buttons/char-stagger-button/registry.json",
     "importPath": "@/components/effects/char-stagger-button",
-    "target": "src/components/effects/char-stagger-button"
+    "target": "src/components/effects/char-stagger-button",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/char-stagger-button/index.jsx"
+      }
+    ]
   },
   {
     "name": "char-stagger-primary-button",
@@ -67,7 +97,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/buttons/char-stagger-primary-button/registry.json",
     "importPath": "@/components/effects/char-stagger-primary-button",
-    "target": "src/components/effects/char-stagger-primary-button"
+    "target": "src/components/effects/char-stagger-primary-button",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/char-stagger-primary-button/index.jsx"
+      }
+    ]
   },
   {
     "name": "dot-fill-button",
@@ -77,7 +113,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/buttons/dot-fill-button/registry.json",
     "importPath": "@/components/effects/dot-fill-button",
-    "target": "src/components/effects/dot-fill-button"
+    "target": "src/components/effects/dot-fill-button",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/dot-fill-button/index.jsx"
+      }
+    ]
   },
   {
     "name": "link-button",
@@ -107,7 +149,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/carousels/clippath-slider/registry.json",
     "importPath": "@/components/effects/clippath-slider",
-    "target": "src/components/effects/clippath-slider"
+    "target": "src/components/effects/clippath-slider",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/clippath-slider/index.jsx"
+      },
+      {
+        "path": "ClippathSliderComp.jsx",
+        "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
+      }
+    ]
   },
   {
     "name": "infinite-carousel",
@@ -167,17 +219,41 @@
     "tier": "pro",
     "registryPath": "registry/effects/others/card-drift/registry.json",
     "importPath": "@/components/effects/card-drift",
-    "target": "src/components/effects/card-drift"
+    "target": "src/components/effects/card-drift",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/card-drift/index.jsx"
+      },
+      {
+        "path": "CardDriftComp.jsx",
+        "target": "src/components/effects/card-drift/CardDriftComp.jsx"
+      },
+      {
+        "path": "NavigationButtons.jsx",
+        "target": "src/components/effects/card-drift/NavigationButtons.jsx"
+      }
+    ]
   },
   {
-    "name": "custom-video-player",
+    "name": "video-player",
     "title": "Custom Video Player",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/custom-video-player/registry.json",
-    "importPath": "@/components/effects/custom-video-player",
-    "target": "src/components/effects/custom-video-player"
+    "registryPath": "registry/effects/components/video-player/registry.json",
+    "importPath": "@/components/effects/video-player",
+    "target": "src/components/effects/video-player",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/video-player/index.jsx"
+      },
+      {
+        "path": "VideoPlayerComp.jsx",
+        "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+      }
+    ]
   },
   {
     "name": "depth-card-stack",
@@ -187,7 +263,21 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/depth-card-stack/registry.json",
     "importPath": "@/components/effects/depth-card-stack",
-    "target": "src/components/effects/depth-card-stack"
+    "target": "src/components/effects/depth-card-stack",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/depth-card-stack/index.jsx"
+      },
+      {
+        "path": "DepthCardStackComp.jsx",
+        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+      },
+      {
+        "path": "SliderCard.jsx",
+        "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+      }
+    ]
   },
   {
     "name": "form",
@@ -197,7 +287,41 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/form/registry.json",
     "importPath": "@/components/effects/form",
-    "target": "src/components/effects/form"
+    "target": "src/components/effects/form",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/form/index.jsx"
+      },
+      {
+        "path": "Button.jsx",
+        "target": "src/components/effects/form/Button.jsx"
+      },
+      {
+        "path": "Checkbox.jsx",
+        "target": "src/components/effects/form/Checkbox.jsx"
+      },
+      {
+        "path": "ContactForm.jsx",
+        "target": "src/components/effects/form/ContactForm.jsx"
+      },
+      {
+        "path": "Input.jsx",
+        "target": "src/components/effects/form/Input.jsx"
+      },
+      {
+        "path": "PhoneInput.jsx",
+        "target": "src/components/effects/form/PhoneInput.jsx"
+      },
+      {
+        "path": "Select.jsx",
+        "target": "src/components/effects/form/Select.jsx"
+      },
+      {
+        "path": "Textarea.jsx",
+        "target": "src/components/effects/form/Textarea.jsx"
+      }
+    ]
   },
   {
     "name": "gooey-counter",
@@ -237,7 +361,21 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/modal/registry.json",
     "importPath": "@/components/effects/modal",
-    "target": "src/components/effects/modal"
+    "target": "src/components/effects/modal",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/modal/index.jsx"
+      },
+      {
+        "path": "Modal.jsx",
+        "target": "src/components/effects/modal/Modal.jsx"
+      },
+      {
+        "path": "ScrollablePopupContent.jsx",
+        "target": "src/components/effects/modal/ScrollablePopupContent.jsx"
+      }
+    ]
   },
   {
     "name": "ribbon-drift",
@@ -267,7 +405,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/tabs/registry.json",
     "importPath": "@/components/effects/tabs",
-    "target": "src/components/effects/tabs"
+    "target": "src/components/effects/tabs",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/tabs/index.jsx"
+      },
+      {
+        "path": "TabsComp.jsx",
+        "target": "src/components/effects/tabs/TabsComp.jsx"
+      }
+    ]
   },
   {
     "name": "testimonial-swiper",
@@ -277,7 +425,21 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/testimonial-swiper/registry.json",
     "importPath": "@/components/effects/testimonial-swiper",
-    "target": "src/components/effects/testimonial-swiper"
+    "target": "src/components/effects/testimonial-swiper",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/testimonial-swiper/index.jsx"
+      },
+      {
+        "path": "NavigationButtons.jsx",
+        "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
+      },
+      {
+        "path": "TestimonialComp.jsx",
+        "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
+      }
+    ]
   },
   {
     "name": "butterfly-trail-cursor",
@@ -297,7 +459,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/character-trail/registry.json",
     "importPath": "@/components/effects/character-trail",
-    "target": "src/components/effects/character-trail"
+    "target": "src/components/effects/character-trail",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/character-trail/index.jsx"
+      },
+      {
+        "path": "CharacterTrailComp.jsx",
+        "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
+      }
+    ]
   },
   {
     "name": "coffee-bean-cursor",
@@ -317,7 +489,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/colorful-cursor-aura/registry.json",
     "importPath": "@/components/effects/colorful-cursor-aura",
-    "target": "src/components/effects/colorful-cursor-aura"
+    "target": "src/components/effects/colorful-cursor-aura",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/colorful-cursor-aura/index.jsx"
+      },
+      {
+        "path": "ColorfulCursorAuraComp.jsx",
+        "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
+      }
+    ]
   },
   {
     "name": "cursor-move",
@@ -337,7 +519,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/fish-eye/registry.json",
     "importPath": "@/components/effects/fish-eye",
-    "target": "src/components/effects/fish-eye"
+    "target": "src/components/effects/fish-eye",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/fish-eye/index.jsx"
+      }
+    ]
   },
   {
     "name": "full-screen-crosshair",
@@ -357,7 +545,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/inertia-img/registry.json",
     "importPath": "@/components/effects/inertia-img",
-    "target": "src/components/effects/inertia-img"
+    "target": "src/components/effects/inertia-img",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/inertia-img/index.jsx"
+      },
+      {
+        "path": "InertiaImgComp.jsx",
+        "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
+      }
+    ]
   },
   {
     "name": "interactive-arrows",
@@ -367,7 +565,41 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/interactive-arrows/registry.json",
     "importPath": "@/components/effects/interactive-arrows",
-    "target": "src/components/effects/interactive-arrows"
+    "target": "src/components/effects/interactive-arrows",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/interactive-arrows/index.jsx"
+      },
+      {
+        "path": "Arrows.jsx",
+        "target": "src/components/effects/interactive-arrows/Arrows.jsx"
+      },
+      {
+        "path": "ArrowsLimit.jsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
+      },
+      {
+        "path": "ArrowsOpacity.jsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
+      },
+      {
+        "path": "ArrowsPlay.jsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
+      },
+      {
+        "path": "Lines.jsx",
+        "target": "src/components/effects/interactive-arrows/Lines.jsx"
+      },
+      {
+        "path": "Points.jsx",
+        "target": "src/components/effects/interactive-arrows/Points.jsx"
+      },
+      {
+        "path": "utils.js",
+        "target": "src/components/effects/interactive-arrows/utils.js"
+      }
+    ]
   },
   {
     "name": "liquid-glass-cursor",
@@ -377,7 +609,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json",
     "importPath": "@/components/effects/liquid-glass-cursor",
-    "target": "src/components/effects/liquid-glass-cursor"
+    "target": "src/components/effects/liquid-glass-cursor",
+    "files": [
+      {
+        "path": "index.js",
+        "target": "src/components/effects/liquid-glass-cursor/index.js"
+      },
+      {
+        "path": "LiquidText.jsx",
+        "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
+      }
+    ]
   },
   {
     "name": "magnetic-image-trail",
@@ -387,7 +629,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/magnetic-image-trail/registry.json",
     "importPath": "@/components/effects/magnetic-image-trail",
-    "target": "src/components/effects/magnetic-image-trail"
+    "target": "src/components/effects/magnetic-image-trail",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/magnetic-image-trail/index.jsx"
+      },
+      {
+        "path": "MagneticTrail.jsx",
+        "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
+      }
+    ]
   },
   {
     "name": "noise-ripple-cursor",
@@ -447,7 +699,25 @@
     "tier": "pro",
     "registryPath": "registry/effects/loaders/lines-loader/registry.json",
     "importPath": "@/components/effects/lines-loader",
-    "target": "src/components/effects/lines-loader"
+    "target": "src/components/effects/lines-loader",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/lines-loader/index.jsx"
+      },
+      {
+        "path": "LinesLoading.jsx",
+        "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+      },
+      {
+        "path": "CenterLinesLoading.jsx",
+        "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+      },
+      {
+        "path": "utils.js",
+        "target": "src/components/effects/lines-loader/utils.js"
+      }
+    ]
   },
   {
     "name": "numeric-tunnel",
@@ -497,7 +767,29 @@
     "tier": "pro",
     "registryPath": "registry/effects/navigation/expanding-navbar/registry.json",
     "importPath": "@/components/effects/expanding-navbar",
-    "target": "src/components/effects/expanding-navbar"
+    "target": "src/components/effects/expanding-navbar",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/expanding-navbar/index.jsx"
+      },
+      {
+        "path": "ExpandingNavbarDesktop.jsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+      },
+      {
+        "path": "ExpandingNavbarMobile.jsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+      },
+      {
+        "path": "HoverFillLink.jsx",
+        "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+      },
+      {
+        "path": "data.js",
+        "target": "src/components/effects/expanding-navbar/data.js"
+      }
+    ]
   },
   {
     "name": "immersive-full-screen-navigation",
@@ -517,7 +809,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/circular-slider/registry.json",
     "importPath": "@/components/effects/circular-slider",
-    "target": "src/components/effects/circular-slider"
+    "target": "src/components/effects/circular-slider",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/circular-slider/index.jsx"
+      },
+      {
+        "path": "CircularSliderComp.jsx",
+        "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
+      }
+    ]
   },
   {
     "name": "circular-split-roll",
@@ -537,7 +839,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
     "importPath": "@/components/effects/draggable-marquee",
-    "target": "src/components/effects/draggable-marquee"
+    "target": "src/components/effects/draggable-marquee",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/draggable-marquee/index.jsx"
+      },
+      {
+        "path": "DraggableMarqueeComp.jsx",
+        "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+      }
+    ]
   },
   {
     "name": "grid-scale",
@@ -547,7 +859,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/grid-scale/registry.json",
     "importPath": "@/components/effects/grid-scale",
-    "target": "src/components/effects/grid-scale"
+    "target": "src/components/effects/grid-scale",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/grid-scale/index.jsx"
+      }
+    ]
   },
   {
     "name": "helix-slider",
@@ -557,7 +875,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/helix-slider/registry.json",
     "importPath": "@/components/effects/helix-slider",
-    "target": "src/components/effects/helix-slider"
+    "target": "src/components/effects/helix-slider",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/helix-slider/index.jsx"
+      },
+      {
+        "path": "HelixSliderComp.jsx",
+        "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+      }
+    ]
   },
   {
     "name": "horizontal-feature-reveal",
@@ -597,7 +925,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/parallax-footer/registry.json",
     "importPath": "@/components/effects/parallax-footer",
-    "target": "src/components/effects/parallax-footer"
+    "target": "src/components/effects/parallax-footer",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-footer/index.jsx"
+      },
+      {
+        "path": "ParallaxFooter.jsx",
+        "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
+      }
+    ]
   },
   {
     "name": "parallax-gallery",
@@ -607,17 +945,33 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/parallax-gallery/registry.json",
     "importPath": "@/components/effects/parallax-gallery",
-    "target": "src/components/effects/parallax-gallery"
+    "target": "src/components/effects/parallax-gallery",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-gallery/index.jsx"
+      },
+      {
+        "path": "ParallaxGallery.jsx",
+        "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
+      }
+    ]
   },
   {
-    "name": "parallax-image",
+    "name": "parallax-image-animation",
     "title": "Parallax Image",
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/scroll/parallax-image/registry.json",
-    "importPath": "@/components/effects/parallax-image",
-    "target": "src/components/effects/parallax-image"
+    "registryPath": "registry/effects/scroll/parallax-image-animation/registry.json",
+    "importPath": "@/components/effects/parallax-image-animation",
+    "target": "src/components/effects/parallax-image-animation",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-image-animation/index.jsx"
+      }
+    ]
   },
   {
     "name": "parallax-slider",
@@ -1157,7 +1511,49 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/progressive-bloom-valley/registry.json",
     "importPath": "@/components/effects/progressive-bloom-valley",
-    "target": "src/components/effects/progressive-bloom-valley"
+    "target": "src/components/effects/progressive-bloom-valley",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+      },
+      {
+        "path": "CameraRig.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+      },
+      {
+        "path": "CircularText.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+      },
+      {
+        "path": "EdgeBlurEffect.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+      },
+      {
+        "path": "Experience.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/Experience.jsx"
+      },
+      {
+        "path": "FilmGrainEffect.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+      },
+      {
+        "path": "Flowers.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/Flowers.jsx"
+      },
+      {
+        "path": "useInput.js",
+        "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+      },
+      {
+        "path": "useValleyData.js",
+        "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+      },
+      {
+        "path": "shaders.js",
+        "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+      }
+    ]
   },
   {
     "name": "strip-slider",

@@ -226,7 +226,7 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                 <img
                     src={src}
                     alt="slider"
-                    className="object-cover absolute inset-0"
+                    className="object-cover h-full w-full absolute inset-0"
                 />
             </div>
 

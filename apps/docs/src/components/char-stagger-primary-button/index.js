@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from"react";
 import Link from"next/link";
 import { ArrowRight } from"lucide-react";
 
@@ -17,7 +17,7 @@ const CharStaggerPrimaryButton = ({
  showArrow = false,
  icon: Icon = ArrowRight,
  iconClassName ="",
- bgClassName,
+ bgClassName = "",
  onClick,
  ...props
 }) => {
@@ -78,7 +78,7 @@ const CharStaggerPrimaryButton = ({
  {...linkProps}
  {...props}
  onClick={handleClick}
- className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-(--char-hover-color) focus-visible:text-(--char-hover-color) max-md:h-[11vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] ${hoverStateClass} ${btnClassName}`}
+ className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-(--char-hover-color) focus-visible:text-(--char-hover-color) max-md:h-[9vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] ${hoverStateClass} ${btnClassName}`}
  style={{"--char-hover-color": hoverColor }}
  >
  <div className="relative z-2">

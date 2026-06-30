@@ -1,172 +1,122 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-const injectStyles = () => {
-  if (typeof document === "undefined") return;
-  if (document.getElementById("char-stagger-primary-btn-styles")) return;
+const CharStaggerPrimaryButton = ({
+    btnText = "",
+    href = "#",
+    btnClassName = "",
+    textClassName = "",
+    linkProps = {},
+    children,
+    staggerStep = 0.01,
+    lineClassName = "",
+    hoverColor = "",
+    showArrow = false,
+    icon: Icon = ArrowRight,
+    iconClassName = "",
+    bgClassName = "",
+    onClick,
+    ...props
+}) => {
+    const linkRef = useRef(null);
+    const [isTouchHovered, setIsTouchHovered] = useState(false);
+    const [supportsTouchHover, setSupportsTouchHover] = useState(false);
+    const sourceText = typeof children === "string" ? children : btnText;
 
-  const style = document.createElement("style");
-  style.id = "char-stagger-primary-btn-styles";
-  style.textContent = `
-    .char-stagger-primary-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      position: relative;
-      padding: 0.75rem 2.5rem;
-      text-decoration: none;
-      color: inherit;
-      transition: color 0.5s cubic-bezier(0.625, 0.05, 0, 1);
-      cursor: pointer;
-      border: none;
-      background: transparent;
-    }
+    useEffect(() => {
+        if (typeof window === "undefined") return undefined;
 
-    .char-stagger-primary-btn:hover {
-      color: var(--char-hover-color, currentColor);
-    }
+        const mediaQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+        const updateTouchSupport = () => {
+            setSupportsTouchHover(mediaQuery.matches);
+        };
 
-    .char-stagger-primary-btn__inner {
-      display: inline-block;
-      position: relative;
-    }
+        updateTouchSupport();
+        mediaQuery.addEventListener("change", updateTouchSupport);
 
-    .char-stagger-primary-btn__text {
-      overflow: hidden;
-      position: relative;
-      display: inline-block;
-      line-height: 1.2;
-    }
+        return () => {
+            mediaQuery.removeEventListener("change", updateTouchSupport);
+        };
+    }, []);
 
-    .char-stagger-primary-btn__text span {
-      display: inline-block;
-      position: relative;
-      text-shadow: 0px 1.3em currentColor;
-      transform: translateY(0em) rotate(0.001deg);
-      transition: transform 0.6s cubic-bezier(0.625, 0.05, 0, 1);
-      will-change: transform;
-    }
+    useEffect(() => {
+        if (!isTouchHovered) return undefined;
 
-    .char-stagger-primary-btn:hover .char-stagger-primary-btn__text span {
-      transform: translateY(-1.3em) rotate(0.001deg);
-    }
+        const handlePointerDown = (event) => {
+            if (linkRef.current?.contains(event.target)) return;
+            setIsTouchHovered(false);
+        };
 
-    .char-stagger-primary-btn__icon {
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
+        document.addEventListener("pointerdown", handlePointerDown);
 
-    .char-stagger-primary-btn__icon-wrapper {
-      display: flex;
-      width: max-content;
-      transform: translateX(-100%);
-      transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
-      will-change: transform;
-    }
+        return () => {
+            document.removeEventListener("pointerdown", handlePointerDown);
+        };
+    }, [isTouchHovered]);
 
-    .char-stagger-primary-btn:hover .char-stagger-primary-btn__icon-wrapper {
-      transform: translateX(5%);
-    }
+    const handleClick = (event) => {
+        if (supportsTouchHover && !isTouchHovered) {
+            event.preventDefault();
+            setIsTouchHovered(true);
+            return;
+        }
 
-    .char-stagger-primary-btn__svg {
-      flex: 0 0 auto;
-      width: 1rem;
-      height: 1rem;
-    }
-  `;
-  document.head.appendChild(style);
+        onClick?.(event);
+    };
+
+    const bgHoverClass = isTouchHovered ? "scale-[0.95]" : "";
+    const iconHoverClass = isTouchHovered ? "translate-x-[5%]" : "";
+
+    return (
+        <Link
+            ref={linkRef}
+            href={href}
+            {...linkProps}
+            {...props}
+            onClick={handleClick}
+            className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)]  max-md:h-[9vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] bg-[#ff5f00]  w-fit rounded-full ${btnClassName}`}
+
+        >
+            <div className="relative z-2">
+                <span
+                    className="relative  flex items-center justify-center"
+                >
+                    <span
+                        className={`relative inline-block overflow-hidden leading-[1.2] ${textClassName}`}
+                    >
+                        {[...sourceText].map((char, index) => (
+                            <span
+                                key={`${char}-${index}`}
+                                className="relative inline-block translate-y-0 rotate-[0.001deg] transition-transform duration-600 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform group-hover:translate-y-[-1.3em] group-focus-visible:translate-y-[-1.3em]"
+                                style={{
+                                    transitionDelay: `${index * staggerStep}s`,
+                                    transform: isTouchHovered ? "translateY(-1.3em) rotate(0.001deg)" : undefined,
+                                    textShadow: "0px 1.3em currentColor",
+                                    whiteSpace: char === " " ? "pre" : "normal",
+                                }}
+                            >
+                                {char}
+                            </span>
+                        ))}
+                    </span>
+                </span>
+            </div>
+            <div className={`absolute h-full w-full duration-500 group-hover:scale-[0.95] group-focus-visible:scale-[0.95] ${bgHoverClass} ${bgClassName}`} />
+
+
+            {showArrow && Icon && (
+                <div className={`flex items-center justify-start overflow-hidden ${iconClassName}`}>
+                    <div className={`flex w-max -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform group-hover:translate-x-[5%] group-focus-visible:translate-x-[5%] ${iconHoverClass} ${iconClassName}`}>
+                        <Icon className="h-full w-full flex-none" />
+                        <Icon className="h-full w-full flex-none" />
+                    </div>
+                </div>
+            )}
+        </Link>
+    );
 };
 
-export function CharStaggerPrimaryButton({
-  children,
-  className = "",
-  textClassName = "",
-  staggerStep = 0.01,
-  hoverColor = "",
-  showArrow = false,
-  arrowClassName = "",
-  as: Component = "a",
-  ...props
-}) {
-  const textRef = useRef(null);
-  const hasInjected = useRef(false);
-
-  const text = typeof children === "string" ? children : "";
-
-  useEffect(() => {
-    if (!hasInjected.current) {
-      injectStyles();
-      hasInjected.current = true;
-    }
-  }, []);
-
-  useEffect(() => {
-    const el = textRef.current;
-    if (!el || !text) return;
-
-    el.innerHTML = "";
-
-    [...text].forEach((char, index) => {
-      const span = document.createElement("span");
-      span.textContent = char;
-      span.style.transitionDelay = `${index * staggerStep}s`;
-
-      if (char === " ") {
-        span.style.whiteSpace = "pre";
-      }
-
-      el.appendChild(span);
-    });
-  }, [text, staggerStep]);
-
-  return (
-    <Component
-      {...props}
-      className={`char-stagger-primary-btn ${className}`}
-      style={{ "--char-hover-color": hoverColor }}
-    >
-      <span className="char-stagger-primary-btn__inner">
-        <span
-          ref={textRef}
-          className={`char-stagger-primary-btn__text ${textClassName}`}
-        >
-          {text}
-        </span>
-      </span>
-
-      {showArrow && (
-        <span className={`char-stagger-primary-btn__icon ${arrowClassName}`}>
-          <span className="char-stagger-primary-btn__icon-wrapper">
-            <svg
-              className="char-stagger-primary-btn__svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-            <svg
-              className="char-stagger-primary-btn__svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </span>
-        </span>
-      )}
-    </Component>
-  );
-}
-
+export default CharStaggerPrimaryButton;

@@ -289,7 +289,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										alt={item.title}
 										width={400}
 										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 max-md:object-cover cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
 									<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
@@ -410,11 +410,11 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 								key={`compact-${index}`}
 								className="overflow-hidden rounded-sm max-sm:mx-auto  w-full max-sm:w-[80%]"
 							>
-								<div className="relative max-md:aspect-4/5 max-sm:aspect-auto max-sm:h-[35vh]  ">
+								<div className="relative  max-sm:aspect-auto h-[35vh] max-sm:h-[35vh]  ">
 									<img
 										src={item.src}
 										alt={item.title}
-										className="object-cover absolute inset-0"
+										className="object-cover absolute inset-0 h-[35vh]"
 									/>
 								</div>
 								<div className="px-4 py-4 max-sm:px-2 max-sm:py-5">

@@ -126,7 +126,7 @@
       "exportKind": "named"
     },
     {
-      "name": "parallax-image",
+      "name": "parallax-image-animation",
       "type": "registry:component",
       "category": "scroll",
       "categories": [
@@ -1069,7 +1069,7 @@
       "exportKind": "named"
     },
     {
-      "name": "custom-video-player",
+      "name": "video-player",
       "type": "registry:component",
       "category": "components",
       "categories": [

@@ -9,75 +9,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "magnetic-image-trail.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/magnetic-image-trail.jsx"
+      "target": "components/hyperiux/magnetic-image-trail/index.jsx"
     },
     {
-      "path": "assets/img/distortion.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/distortion.jpg",
-      "source": "/assets/img/distortion.jpg"
-    },
-    {
-      "path": "assets/img/image01.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image01.webp",
-      "source": "/assets/img/image01.webp"
-    },
-    {
-      "path": "assets/img/image02.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image02.webp",
-      "source": "/assets/img/image02.webp"
-    },
-    {
-      "path": "assets/img/image03.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image03.webp",
-      "source": "/assets/img/image03.webp"
-    },
-    {
-      "path": "assets/img/image04.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image04.png",
-      "source": "/assets/img/image04.png"
-    },
-    {
-      "path": "assets/img/image05.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image05.png",
-      "source": "/assets/img/image05.png"
-    },
-    {
-      "path": "assets/img/image06.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image06.png",
-      "source": "/assets/img/image06.png"
-    },
-    {
-      "path": "assets/img/image07.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image07.png",
-      "source": "/assets/img/image07.png"
-    },
-    {
-      "path": "assets/img/image08.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/image08.jpg",
-      "source": "/assets/img/image08.jpg"
-    },
-    {
-      "path": "assets/img/image09.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/image09.jpg",
-      "source": "/assets/img/image09.jpg"
-    },
-    {
-      "path": "assets/img/image10.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/image10.jpg",
-      "source": "/assets/img/image10.jpg"
+      "path": "MagneticTrail.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/magnetic-image-trail/MagneticTrail.jsx"
     }
   ],
   "tier": "pro"
