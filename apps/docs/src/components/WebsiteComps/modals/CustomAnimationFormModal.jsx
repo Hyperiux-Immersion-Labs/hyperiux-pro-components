@@ -4,10 +4,10 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLenis } from "lenis/react";
+import WebsiteButton from "@/components/WebsiteComps/Button";
 import Input from "@/components/form/Input";
 import PhoneInput from "@/components/form/PhoneInput";
 import Textarea from "@/components/form/Textarea";
-import WebsiteButton from "@/components/WebsiteComps/Button";
 
 const MODAL_QUERY_KEY = "custom-animation-form";
 const MODAL_QUERY_VALUE = "open";
