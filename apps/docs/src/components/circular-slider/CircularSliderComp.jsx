@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef } from"react";
+import  { useEffect, useRef } from"react";
 import Link from "next/link";
 import { gsap } from"gsap";
 import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const CircularSliderComp = ({ heading, para, data = [] }) => {
  const outerRef = useRef(null);
- const stickyRef = useRef(null);
  const wheelRef = useRef(null);
 
  useEffect(() => {
@@ -66,11 +65,9 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 
  <section
  ref={outerRef}
- className="hidden lg:block relative"
- style={{ height:"250vh" }}
+ className="max-md:hidden relative h-[250vh]"
  >
  <div
- ref={stickyRef}
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
  >
  <div className="w-full flex justify-center pt-[6%]">
@@ -80,22 +77,10 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </div>
 
  {/* Wheel */}
- <div
- className="absolute"
- style={{ top:"65vw", width:"100%", height:"100vh" }}
- >
+ <div className="absolute top-[65vw] w-full h-screen">
  <div
  ref={wheelRef}
- className="absolute flex items-center justify-center"
- style={{
- top: 0,
- left:"49%",
- transform:"translateX(-50%)",
- width:"100vw",
- height:"100vw",
- maxWidth:"2000px",
- maxHeight:"2000px",
- }}
+ className="absolute flex items-center justify-center top-0 left-[49%] -translate-x-1/2 w-screen h-[100vw] max-w-[125vw] max-h-[125vw]"
  >
  {data.map((product, i) => (
  <div
@@ -158,7 +143,7 @@ export default CircularSliderComp;
 const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  const cardContent = (
  <div
- className="w-full lg:h-full rounded-[1.5vw] max-md:rounded-[5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-md:gap-8 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-md:px-[8%] max-sm:px-6 py-20 max-md:py-12 max-sm:py-10"
+ className="w-full h-full max-md:h-auto rounded-[1.5vw] max-md:rounded-[5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-md:gap-8 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-md:px-[8%] max-sm:px-6 py-20 max-md:py-12 max-sm:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
@@ -196,7 +181,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  }
 
  return (
- <Link href={link} className="block w-full lg:h-full">
+ <Link href={link} className="block w-full h-full max-md:h-auto">
  {cardContent}
  </Link>
  );

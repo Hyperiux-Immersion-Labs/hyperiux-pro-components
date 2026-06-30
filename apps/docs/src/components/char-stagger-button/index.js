@@ -111,35 +111,6 @@ export default function CharStaggerButton({
     color: isActive ? hoverColor : props.style?.color,
   };
 
-  const linkClassName = [
-    "inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)]",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const textClasses = [
-    "overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw]",
-    textClassName,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const lineContainerClassName = [
-    "inline-block relative",
-    showLine ? "w-fit" : "",
-    lineClassName,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const iconContainerClassName = [
-    "overflow-hidden flex items-center justify-start",
-    iconClassName,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
   // Render
   return (
     <Link
@@ -152,11 +123,11 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={linkClassName}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${className}`.trim()}
     >
       <div className="mt-[0.3vw]">
-        <span className={lineContainerClassName}>
-          <span ref={textRef} data-text={sourceText} className={textClasses}>
+        <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
+          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw] ${textClassName}`.trim()}>
             {sourceText}
           </span>
 
@@ -177,7 +148,7 @@ export default function CharStaggerButton({
       </div>
 
       {showArrow && Icon && (
-        <div className={iconContainerClassName}>
+        <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
             <Icon className="h-4 w-4 shrink-0" />
           ) : (

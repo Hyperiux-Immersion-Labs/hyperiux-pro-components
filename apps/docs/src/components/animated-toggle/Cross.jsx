@@ -12,11 +12,9 @@ const Cross = ({
  >
  <span
  className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out'
- // style={{ transform: isActive ?'rotate(45deg)' :'rotate(0deg)' }}
  />
  <span
  className='absolute block w-full h-0.5 bg-current transition-transform rotate-90 duration-300 ease-in-out'
- // style={{ transform: isActive ?'rotate(-45deg)' :'rotate(90deg)' }}
  />
  </div>
  );
