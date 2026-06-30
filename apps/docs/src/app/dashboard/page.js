@@ -69,6 +69,7 @@ export default function DashboardPage() {
   const [upgradeError, setUpgradeError] = useState(null);
   const [openingPortal, setOpeningPortal] = useState(false);
   const [portalError, setPortalError] = useState(null);
+  const [upgradeCycle, setUpgradeCycle] = useState("monthly");
 
   async function handleManageSubscription() {
     setOpeningPortal(true);
@@ -96,8 +97,8 @@ export default function DashboardPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          billingInterval: "monthly",
-          successUrl: "/dashboard?upgraded=true",
+          billingInterval: upgradeCycle,
+          successUrl: "/effects?upgraded=true",
           cancelUrl: "/dashboard",
         }),
       });
@@ -277,7 +278,35 @@ export default function DashboardPage() {
           </div>
 
           {data.plan === "free" && (
-            <div className="flex flex-col items-end gap-2">
+            <div className="flex flex-col items-end gap-3">
+              <div className="flex rounded-full border border-white/15 bg-white/5 p-1 text-sm">
+                <button
+                  type="button"
+                  onClick={() => setUpgradeCycle("monthly")}
+                  className={`rounded-full px-4 py-1.5 transition-colors duration-200 ${
+                    upgradeCycle === "monthly"
+                      ? "bg-white text-black"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUpgradeCycle("yearly")}
+                  className={`rounded-full px-4 py-1.5 transition-colors duration-200 ${
+                    upgradeCycle === "yearly"
+                      ? "bg-white text-black"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  Yearly
+                  <span className="ml-1.5 rounded-full bg-[#ff5f00] px-1.5 py-0.5 text-[10px] font-medium text-white">
+                    20% off
+                  </span>
+                </button>
+              </div>
+
               <button
                 onClick={handleUpgrade}
                 disabled={upgrading}
@@ -285,6 +314,7 @@ export default function DashboardPage() {
               >
                 {upgrading ? "Redirecting…" : "Upgrade to Pro"}
               </button>
+
               {upgradeError && (
                 <p className="text-red-400 text-sm">{upgradeError}</p>
               )}

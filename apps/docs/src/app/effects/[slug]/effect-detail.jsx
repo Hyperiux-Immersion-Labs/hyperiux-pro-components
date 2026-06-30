@@ -10,6 +10,7 @@ import {
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
@@ -994,6 +995,25 @@ function CalloutCardGrid({ body = [] }) {
 }
 
 function LockedCodePlaceholder({ filename, language = "jsx" }) {
+  const { isSignedIn } = useUser();
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
+  const handleUpgrade = async () => {
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ billingInterval: "monthly" }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else setCheckoutLoading(false);
+    } catch {
+      setCheckoutLoading(false);
+    }
+  };
+
   return (
     <section className="fadeup overflow-hidden rounded-xl border border-white/10 bg-[#171717] text-white shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
       <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#202020] px-5 py-3 max-sm:flex-col max-sm:items-start">
@@ -1013,17 +1033,23 @@ function LockedCodePlaceholder({ filename, language = "jsx" }) {
           </div>
         </div>
 
-        <Button
-          text="Unlock Code"
-          href="#"
-          variant="orange"
-          className="shrink-0"
-          hoverTextClassName="group-hover:!text-primary group-hover:underline-none!"
-          pillClassName="px-5 py-2 text-sm"
-          circleWrapperClassName="hidden"
-          showArrow={false}
-          disableHoverShift
-        />
+        {isSignedIn ? (
+          <button
+            type="button"
+            onClick={handleUpgrade}
+            disabled={checkoutLoading}
+            className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-wait disabled:opacity-70"
+          >
+            {checkoutLoading ? "Loading…" : "Upgrade to Pro"}
+          </button>
+        ) : (
+          <Link
+            href="/sign-up?redirect_url=/pricing"
+            className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+          >
+            Sign Up to Unlock
+          </Link>
+        )}
       </div>
 
       <div className="relative p-5">

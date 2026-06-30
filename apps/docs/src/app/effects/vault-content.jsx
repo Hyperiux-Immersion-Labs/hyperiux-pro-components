@@ -118,11 +118,17 @@ export function VaultContent({
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
 
+  const justUpgraded = searchParams.get("upgraded") === "true";
+  const [showWishlistToast, setShowWishlistToast] = useState(false);
+  const wishlistToastTimerRef = useRef(null);
+  const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
+
 const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
 
   params.delete("waitlist");
-   params.delete("custom-animation-form");
+  params.delete("custom-animation-form");
+  params.delete("upgraded");
 
   return params.toString();
 }, [searchParamString]);
@@ -353,6 +359,13 @@ const routeKey = `${pathname}${
   }, [isSignedIn]);
 
   const toggleWishlist = async (effect) => {
+    if (!isSignedIn) {
+      clearTimeout(wishlistToastTimerRef.current);
+      setShowWishlistToast(true);
+      wishlistToastTimerRef.current = setTimeout(() => setShowWishlistToast(false), 5000);
+      return;
+    }
+
     try {
       const slug = effect.name;
 
@@ -755,6 +768,46 @@ const routeKey = `${pathname}${
               </div>
             )}
           </div>
+          {/* Pro upgrade success banner */}
+          {justUpgraded && !upgradeToastDismissed && (
+            <div className="fixed top-24 left-1/2 z-200 -translate-x-1/2 flex items-center gap-3 rounded-full border border-emerald-400/30 bg-[#0d1a10] px-5 py-3 text-sm text-emerald-300 shadow-xl max-sm:w-[90vw] max-sm:justify-center">
+              <span>🎉 You&apos;re now Pro — full vault access unlocked.</span>
+              <button
+                type="button"
+                onClick={() => setUpgradeToastDismissed(true)}
+                className="ml-1 text-emerald-400/60 hover:text-emerald-300 transition-colors"
+                aria-label="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* Wishlist sign-in toast */}
+          {showWishlistToast && (
+            <div className="fixed bottom-6 right-6 z-200 flex max-w-sm flex-col gap-3 rounded-2xl border border-white/10 bg-[#111] p-5 shadow-2xl max-sm:left-4 max-sm:right-4 max-sm:bottom-4">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-sm leading-snug text-white">
+                  Sign in to save effects to your wishlist.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowWishlistToast(false)}
+                  className="shrink-0 text-white/40 hover:text-white transition-colors"
+                  aria-label="Dismiss"
+                >
+                  ✕
+                </button>
+              </div>
+              <Link
+                href="/sign-up?redirect_url=/pricing"
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+                onClick={() => setShowWishlistToast(false)}
+              >
+                Sign Up →
+              </Link>
+            </div>
+          )}
         </RouteFade>
       )}
     </VaultLayout>
