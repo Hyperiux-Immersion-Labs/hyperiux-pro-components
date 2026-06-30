@@ -3,10 +3,10 @@
 import { Suspense } from"react";
 import * as THREE from"three";
 import { Canvas } from"@react-three/fiber";
-import Experience from"./Experience";
 import { EffectComposer, Vignette } from"@react-three/postprocessing";
 import FilmGrainEffect from"./FilmGrainEffect";
 import EdgeBlurEffect from"./EdgeBlurEffect";
+import Experience from "./ExperienceComp";
 
 export default function ProgressiveBloomValley() {
  return (

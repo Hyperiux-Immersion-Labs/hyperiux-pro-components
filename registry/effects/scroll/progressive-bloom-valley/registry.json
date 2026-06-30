@@ -35,8 +35,8 @@
       "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
     },
     {
-      "path": "Experience.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/Experience.jsx"
+      "path": "ExperienceComp.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
     },
     {
       "path": "FilmGrainEffect.jsx",
