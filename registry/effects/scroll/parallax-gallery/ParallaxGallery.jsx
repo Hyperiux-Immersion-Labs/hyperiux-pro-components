@@ -278,7 +278,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  filter:"none",
  }}
  >
- <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
+ <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
  </div>
  </div>
  ))}
@@ -344,7 +344,7 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
  borderRadius: 0,
  }}
  >
- <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
+ <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
  </div>
  ))}
  </div>
