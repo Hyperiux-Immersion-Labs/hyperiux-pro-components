@@ -18,14 +18,11 @@ const page = () => {
           </h1>
         </HeadAnim>
 
-        <SplitLine
-          as="p"
-          start="top 95%"
-          className="absolute bottom-[15%] max-md:text-base w-[40%] text-center max-md:bottom-[20%] max-md:w-[70%]"
+        <p className="fixed bottom-[15%] max-md:text-base w-[40%] text-center max-md:bottom-[20%] max-md:w-[70%]"
         >
           Scroll to see the effect or navigate through tabs to switch up the
           paths.
-        </SplitLine>
+        </p>
       </div>
 
       <SVGPath />
