@@ -60,6 +60,7 @@ export default function PortfolioSlider({ items }) {
 
  // IMAGE SETUP
  const loader = new THREE.TextureLoader();
+ loader.crossOrigin = "anonymous";
 
  // FULLSCREEN CALC
  const frustumHeight =

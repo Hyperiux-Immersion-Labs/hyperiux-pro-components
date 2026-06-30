@@ -21,7 +21,7 @@ export default function OverflowTextReveal({
   animateOnScroll = true,
   delay = 0,
   className = "",
-  scrub = true,
+  scrub = false,
   direction = "bottom",
 }) {
   const containerRef = useRef(null);

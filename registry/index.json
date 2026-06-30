@@ -710,14 +710,14 @@
     "target": "src/components/effects/sticky-content-wrapper"
   },
   {
-    "name": "svg-path-marquee",
-    "title": "Marquee on SVG Path",
+    "name": "svg-path",
+    "title": "SVG Path Marquee",
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/scroll/svg-path-marquee/registry.json",
-    "importPath": "@/components/effects/svg-path-marquee",
-    "target": "src/components/effects/svg-path-marquee"
+    "registryPath": "registry/effects/scroll/svg-path/registry.json",
+    "importPath": "@/components/effects/svg-path",
+    "target": "src/components/effects/svg-path"
   },
   {
     "name": "svg-pixel-reveal",

@@ -13,7 +13,7 @@ export default function MaskTextReveal({
     duration = 5.5,
     delay = 0,
     className = "",
-    scrub = true,
+    scrub = false,
 }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);

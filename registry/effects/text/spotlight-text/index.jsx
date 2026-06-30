@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from"react";
 
 export default function SpotlightText({
- text ="",
+ text ="this is sample text",
  className ="",
  size ="text-3xl md:text-5xl",
  align ="center",

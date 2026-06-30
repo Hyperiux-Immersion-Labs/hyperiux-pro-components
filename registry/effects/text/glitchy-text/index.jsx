@@ -1,108 +1,243 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
-import SplitText from "gsap/dist/SplitText";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(SplitText);
+gsap.registerPlugin(SplitText, ScrollTrigger);
 
-export function GlitchyText() {
+function resetSplitPositions({ splitText, split2, split3, split4 }) {
+  gsap.set(split2.chars, { yPercent: 100 });
+  gsap.set(split4.chars, { yPercent: 100 });
+  gsap.set(splitText.chars, { yPercent: 0 });
+  gsap.set(split3.chars, { yPercent: 0 });
+}
+
+const GlitchyText = ({
+  runOnScroll = false,
+  triggerId = "glitch-section",
+  start = "top 70%",
+  end = "bottom 30%",
+  once = true,
+  markers = false,
+  initialDelay = 2.5,
+  replayDelay = 0.2,
+  text = "Engineering meets artistry",
+}) => {
+  const rootRef = useRef(null);
   const splitRef = useRef({});
+  const scrollTriggerRef = useRef(null);
+  const animationTimelineRef = useRef(null);
+
+  const text1Ref = useRef(null);
+  const text2Ref = useRef(null);
+  const text3Ref = useRef(null);
+  const text4Ref = useRef(null);
+
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const runAnimation = (delay = 0.2) => {
+  const runAnimation = useCallback((delay = 0.2) => {
     const { splitText, split2, split3, split4 } = splitRef.current;
-    if (!splitText) return;
 
-    gsap.set(split2.chars, { yPercent: 100 });
-    gsap.set(split4.chars, { yPercent: 100 });
-    gsap.set(splitText.chars, { yPercent: 0 });
-    gsap.set(split3.chars, { yPercent: 0 });
+    if (!splitText || !split2 || !split3 || !split4) return;
 
-    gsap.to(splitText.chars, {
+    animationTimelineRef.current?.kill();
+
+    gsap.killTweensOf([
+      ...splitText.chars,
+      ...split2.chars,
+      ...split3.chars,
+      ...split4.chars,
+    ]);
+
+    resetSplitPositions({ splitText, split2, split3, split4 });
+
+    const tl = gsap.timeline({
       delay,
-      yPercent: -100,
-      duration: 0.6,
-      ease: "power2.inOut",
-      stagger: 0.025,
+      defaults: {
+        duration: 0.6,
+        ease: "power2.inOut",
+        stagger: 0.025,
+      },
     });
 
-    gsap.to(split3.chars, {
-      delay: delay + 0.03,
-      yPercent: -100,
-      duration: 0.6,
-      ease: "power2.inOut",
-      stagger: 0.025,
-    });
+    animationTimelineRef.current = tl;
 
-    gsap.to(split2.chars, {
-      delay: delay + 0.2,
-      yPercent: 0,
-      duration: 0.6,
-      ease: "power2.inOut",
-      stagger: 0.025,
-    });
+    tl.to(
+      splitText.chars,
+      {
+        yPercent: -100,
+      },
+      0
+    );
 
-    gsap.to(split4.chars, {
-      delay: delay + 0.23,
-      yPercent: 0,
-      duration: 0.6,
-      ease: "power2.inOut",
-      stagger: 0.025,
-    });
-  };
+    tl.to(
+      split3.chars,
+      {
+        yPercent: -100,
+      },
+      0.03
+    );
+
+    tl.to(
+      split2.chars,
+      {
+        yPercent: 0,
+      },
+      0.2
+    );
+
+    tl.to(
+      split4.chars,
+      {
+        yPercent: 0,
+      },
+      0.23
+    );
+  }, []);
 
   const handleReplay = () => {
     if (isDisabled) return;
-    runAnimation();
+
+    runAnimation(replayDelay);
+
     setIsDisabled(true);
-    setTimeout(() => setIsDisabled(false), 1800);
+
+    window.setTimeout(() => {
+      setIsDisabled(false);
+    }, 1800);
   };
 
   useEffect(() => {
-    const splitText = new SplitText(".v2-text1", { type: "chars,lines", linesClass: "lines" });
-    const split2    = new SplitText(".v2-text2", { type: "chars,lines", linesClass: "lines" });
-    const split3    = new SplitText(".v2-text3", { type: "chars,lines", linesClass: "lines" });
-    const split4    = new SplitText(".v2-text4", { type: "chars,lines", linesClass: "lines" });
+    const root = rootRef.current;
 
-    splitRef.current = { splitText, split2, split3, split4 };
-    runAnimation(2.5);
+    if (!root) return;
+
+    const splitText = SplitText.create(text1Ref.current, {
+      type: "chars,lines",
+      linesClass: "lines",
+    });
+
+    const split2 = SplitText.create(text2Ref.current, {
+      type: "chars,lines",
+      linesClass: "lines",
+    });
+
+    const split3 = SplitText.create(text3Ref.current, {
+      type: "chars,lines",
+      linesClass: "lines",
+    });
+
+    const split4 = SplitText.create(text4Ref.current, {
+      type: "chars,lines",
+      linesClass: "lines",
+    });
+
+    splitRef.current = {
+      splitText,
+      split2,
+      split3,
+      split4,
+    };
+
+    resetSplitPositions({ splitText, split2, split3, split4 });
+
+    if (runOnScroll) {
+      const triggerElement = document.getElementById(triggerId) || root;
+
+      scrollTriggerRef.current = ScrollTrigger.create({
+        trigger: triggerElement,
+        start,
+        end,
+        markers,
+        once,
+        onEnter: () => {
+          runAnimation(0);
+        },
+        onEnterBack: () => {
+          if (!once) {
+            runAnimation(0);
+          }
+        },
+      });
+    } else {
+      runAnimation(initialDelay);
+    }
 
     return () => {
+      animationTimelineRef.current?.kill();
+      scrollTriggerRef.current?.kill();
+
       splitText.revert();
       split2.revert();
       split3.revert();
       split4.revert();
+
+      splitRef.current = {};
+      animationTimelineRef.current = null;
+      scrollTriggerRef.current = null;
     };
-  }, []);
+  }, [
+    runAnimation,
+    runOnScroll,
+    triggerId,
+    start,
+    end,
+    once,
+    markers,
+    initialDelay,
+    text,
+  ]);
 
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center bg-[#111111]">
-      <div className="h-[8.2vw] text-white overflow-hidden relative w-full pl-[2vw]">
+    <div
+      id={triggerId}
+      ref={rootRef}
+      className="flex h-screen w-screen flex-col items-center justify-center bg-[#111111]"
+    >
+      <div className="relative h-[8.2vw] w-full overflow-hidden pl-[0.5vw] text-white">
         <div className="relative h-[6vw] w-full overflow-hidden">
-          <p className="text-[6.5vw] leading-[1] z-[4] text-nowrap tracking-tighter italic uppercase absolute top-0 left-[2vw]">
-            <span className="v2-text1 block">Engineering meets artistry</span>
+          <p className="absolute left-[2vw] top-0 z-4 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
+            <span ref={text1Ref} className="block">
+              {text}
+            </span>
           </p>
-          <p className="text-[6.5vw] leading-[1] text-yellow-500 z-[2] text-nowrap tracking-tighter italic uppercase absolute top-0 left-[2vw]">
-            <span className="v2-text3 block">Engineering meets artistry</span>
+
+          <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+            <span ref={text3Ref} className="block">
+              {text}
+            </span>
           </p>
-          <p className="text-[6.5vw] leading-[1] text-nowrap tracking-tighter italic uppercase absolute top-0 left-[2vw] z-[8]">
-            <span className="v2-text2 block">Engineering meets artistry</span>
+
+          <p className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
+            <span ref={text2Ref} className="block">
+              {text}
+            </span>
           </p>
-          <p className="text-[6.5vw] leading-[1] text-nowrap z-[6] tracking-tighter italic uppercase absolute top-0 left-[2vw] text-yellow-500">
-            <span className="v2-text4 block">Engineering meets artistry</span>
+
+          <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+            <span ref={text4Ref} className="block">
+              {text}
+            </span>
           </p>
         </div>
       </div>
 
       <button
+        type="button"
         onClick={handleReplay}
         disabled={isDisabled}
-        className={`mt-10 px-6 py-3 font-bold rounded-lg hover:scale-[0.95] transition-all duration-300 ease-linear ${
-          isDisabled ? "bg-gray-500 text-gray-300 cursor-not-allowed" : "bg-yellow-500 text-black"
+        className={`mt-10 rounded-lg px-6 py-3 font-bold transition-all duration-300 ease-linear hover:scale-[0.95] ${
+          isDisabled
+            ? "cursor-not-allowed bg-gray-500 text-gray-300"
+            : "bg-yellow-500 text-black"
         }`}
       >
         {isDisabled ? "Please wait..." : "Replay Animation"}
       </button>
     </div>
   );
-}
+};
+
+export default GlitchyText;

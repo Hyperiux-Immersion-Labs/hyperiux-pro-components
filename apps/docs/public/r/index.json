@@ -290,7 +290,7 @@
       "exportKind": "named"
     },
     {
-      "name": "svg-path-marquee",
+      "name": "svg-path",
       "type": "registry:component",
       "category": "scroll",
       "categories": [
