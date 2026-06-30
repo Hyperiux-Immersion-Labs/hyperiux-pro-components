@@ -7,9 +7,7 @@ export default function page() {
   return (
     <section className="flex h-screen items-center justify-center bg-white px-6 text-center max-sm:px-[7vw]">
       <div className="mx-auto max-w-5xl text-black">
-
         <HeadAnim>
-
         <h1 className="text-[7vw] max-sm:text-[9vw]">Page Flip Transition</h1>
         </HeadAnim>
 

@@ -8,9 +8,7 @@ import MouseTrailParticles from "./MouseTrailParticles";
 import MorphingParticleModel from "./MorphingParticleModelNew";
 
 export default function HyperiuxGlitter() {
-
-  const [modelScale, setModelScale] = useState(0.15);
-
+const [modelScale, setModelScale] = useState(0.15);
 useEffect(() => {
   const updateScale = () => {
     if (window.innerWidth < 768) {

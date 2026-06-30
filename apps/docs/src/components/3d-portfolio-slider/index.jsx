@@ -1,5 +1,9 @@
 import PortfolioSlider from './PortfolioSlider';
 
+export default function PortfolioSlider3D() {
+  return <PortfolioSlider items={items} />
+}
+
 const items = [
   {
     url: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
@@ -86,7 +90,3 @@ const items = [
     description: "PORTFOLIO 21",
   },
 ];
-
-export default function PortfolioSlider3D() {
-  return <PortfolioSlider items={items} />
-}
