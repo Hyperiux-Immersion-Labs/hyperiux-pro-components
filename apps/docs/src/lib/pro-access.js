@@ -75,6 +75,8 @@ async function sendProAcknowledgementEmail({
   status,
   validUntil,
   stripeSubscriptionId,
+  invoiceUrl,
+  invoiceNumber,
 }) {
   if (!email) return;
 
@@ -84,6 +86,8 @@ async function sendProAcknowledgementEmail({
     status,
     validUntil,
     stripeSubscriptionId,
+    invoiceUrl,
+    invoiceNumber,
   });
 
   await sendEmail({
@@ -100,6 +104,8 @@ export async function markUserProFromSubscription({
   stripeCustomerId,
   subscription,
   billingInterval,
+  invoiceUrl,
+  invoiceNumber,
 }) {
   if (!clerkUserId) {
     throw new Error("Missing clerkUserId in markUserProFromSubscription.");
@@ -181,6 +187,8 @@ export async function markUserProFromSubscription({
         status,
         validUntil: currentPeriodEnd,
         stripeSubscriptionId: subscription.id,
+        invoiceUrl,
+        invoiceNumber,
       });
 
       await supabase
