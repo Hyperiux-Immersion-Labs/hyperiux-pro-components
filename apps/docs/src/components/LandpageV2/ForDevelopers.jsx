@@ -97,7 +97,7 @@ export default function ForDevelopers() {
                 let curAnim = tl.to(cur.card, { height: '6vw', backgroundColor: 'rgba(255, 255, 255, 0.05)', duration: 1, ease: 'none' }, time)
                     .to(cur.title, { y: '0.2vw', scale: 1, duration: 1, ease: 'none' }, time)
                     .to([cur.title, cur.text], { color: '#ffffff', duration: 0.2 }, time + 0.2)
-                
+
                 if (cur.textLines) {
                     curAnim.to(cur.textLines.lines, { yPercent: -50, opacity: 0, duration: 0.3, stagger: 0.02, ease: 'power2.in' }, time)
                 }
@@ -109,7 +109,7 @@ export default function ForDevelopers() {
                 let nxtAnim = tl.to(nxt.card, { height: '22vw', backgroundColor: 'rgba(255, 255, 255, 1)', duration: 1, ease: 'none' }, time)
                     .to(nxt.title, { y: '0vw', scale: 1.3, duration: 1, ease: 'none' }, time)
                     .to([nxt.title, nxt.text, nxt.link], { color: '#000000', duration: 0.2 }, time + 0.2)
-                
+
                 if (nxt.textLines) {
                     nxtAnim.to(nxt.textLines.lines, { yPercent: 0, opacity: 1, stagger: 0.02, duration: 0.3, ease: 'power2.out' }, time + 0.3)
                 }
