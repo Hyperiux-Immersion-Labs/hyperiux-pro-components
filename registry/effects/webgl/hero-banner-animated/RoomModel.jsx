@@ -105,13 +105,13 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  const tvMatRef = useRef();
  const { gl } = useThree();
 
- const { nodes } = useGLTF("/601/finall.glb");
+ const { nodes } = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/finall.glb");
 
 
  // =========================
  // 📺 TEXTURES
  // =========================
- const tvTextureSource = useTexture("/601/tvtexture.png");
+ const tvTextureSource = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/tvtexture.png");
  const TVtexture = useMemo(() => {
  const texture = tvTextureSource.clone();
  texture.colorSpace = THREE.SRGBColorSpace;
@@ -257,7 +257,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  // =========================
  // 🎨 MATERIALS
  // =========================
- const normalMapSource = useTexture("/601/normal.webp");
+ const normalMapSource = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/normal.webp");
  const normalMap = useMemo(() => {
  const texture = normalMapSource.clone();
  texture.colorSpace = THREE.NoColorSpace;
