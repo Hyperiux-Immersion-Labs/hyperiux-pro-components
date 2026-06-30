@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
+import Link from "next/link";
 
 gsap.registerPlugin(CustomEase);
 
@@ -18,7 +19,7 @@ function HoverFillLink({ href, children, className = "", isActive, ...props }) {
                 {...props}
             >
                 {children}
-            </a>
+            </Link>
 
             <style jsx global>{`
                 @media (prefers-reduced-motion: reduce) {

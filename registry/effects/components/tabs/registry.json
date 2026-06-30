@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/tabs/index.jsx"
+    },
+    {
+      "path": "TabsComp.jsx",
+      "target": "src/components/effects/tabs/TabsComp.jsx"
     }
   ]
 }

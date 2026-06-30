@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/custom-video-player/index.jsx"
+    },
+    {
+      "path": "VideoPlayerComp.jsx",
+      "target": "src/components/effects/custom-video-player/VideoPlayerComp.jsx"
     }
   ]
 }

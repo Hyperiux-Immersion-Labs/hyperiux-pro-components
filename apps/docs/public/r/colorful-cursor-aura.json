@@ -11,9 +11,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "colorful-cursor-aura.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/colorful-cursor-aura.jsx"
+      "target": "components/hyperiux/colorful-cursor-aura/index.jsx"
+    },
+    {
+      "path": "ColorfulCursorAuraComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
     }
   ],
   "tier": "pro"

@@ -23,7 +23,6 @@ export default function SignUpPage() {
             routing="path"
             signInUrl="/sign-in"
             fallbackRedirectUrl="/effects"
-            forceRedirectUrl="/effects"
           />
         </div>
       </AuthShell>

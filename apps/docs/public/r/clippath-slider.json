@@ -11,9 +11,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "clippath-slider.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/clippath-slider.jsx"
+      "target": "components/hyperiux/clippath-slider/index.jsx"
+    },
+    {
+      "path": "ClippathSliderComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/clippath-slider/ClippathSliderComp.jsx"
     }
   ],
   "tier": "pro"

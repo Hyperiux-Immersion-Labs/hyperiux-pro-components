@@ -26,6 +26,7 @@ import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
+import { VaultToast } from "@/components/ui/VaultToast";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -118,11 +119,16 @@ export function VaultContent({
   const searchParams = useSearchParams();
   const searchParamString = searchParams.toString();
 
+  const justUpgraded = searchParams.get("upgraded") === "true";
+  const [showWishlistToast, setShowWishlistToast] = useState(false);
+  const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
+
 const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
 
   params.delete("waitlist");
-   params.delete("custom-animation-form");
+  params.delete("custom-animation-form");
+  params.delete("upgraded");
 
   return params.toString();
 }, [searchParamString]);
@@ -353,6 +359,11 @@ const routeKey = `${pathname}${
   }, [isSignedIn]);
 
   const toggleWishlist = async (effect) => {
+    if (!isSignedIn) {
+      setShowWishlistToast(true);
+      return;
+    }
+
     try {
       const slug = effect.name;
 
@@ -755,6 +766,29 @@ const routeKey = `${pathname}${
               </div>
             )}
           </div>
+          {/* Pro upgrade success toast */}
+          <VaultToast
+            show={justUpgraded && !upgradeToastDismissed}
+            onClose={() => setUpgradeToastDismissed(true)}
+            title="You're now Pro — full vault unlocked."
+            description="Enjoy unrestricted access to every effect in the vault."
+            ctaLabel="Explore effects"
+            ctaHref="/effects"
+            duration={8000}
+            variant="success"
+          />
+
+          {/* Wishlist sign-in toast */}
+          <VaultToast
+            show={showWishlistToast}
+            onClose={() => setShowWishlistToast(false)}
+            title="Save effects to your wishlist"
+            description="Create a free account to bookmark your favourite effects."
+            ctaLabel="Sign Up →"
+            ctaHref="/sign-up?redirect_url=/pricing"
+            duration={6000}
+            variant="default"
+          />
         </RouteFade>
       )}
     </VaultLayout>

@@ -11,14 +11,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "liquid-glass-cursor.jsx",
+      "path": "index.js",
       "type": "registry:component",
-      "target": "components/hyperiux/liquid-glass-cursor.jsx"
+      "target": "components/hyperiux/liquid-glass-cursor/index.js"
     },
     {
-      "path": "liquid-tex.js",
+      "path": "LiquidText.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/liquid-tex.js"
+      "target": "components/hyperiux/liquid-glass-cursor/LiquidText.jsx"
     }
   ],
   "tier": "pro"

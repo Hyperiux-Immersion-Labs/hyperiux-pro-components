@@ -11,9 +11,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "tabs.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/tabs.jsx"
+      "target": "components/hyperiux/tabs/index.jsx"
+    },
+    {
+      "path": "TabsComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/tabs/TabsComp.jsx"
     }
   ],
   "tier": "pro"

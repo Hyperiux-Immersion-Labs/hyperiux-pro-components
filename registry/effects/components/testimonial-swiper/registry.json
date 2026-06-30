@@ -19,6 +19,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/testimonial-swiper/index.jsx"
+    },
+    {
+      "path": "NavigationButtons.jsx",
+      "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
+    },
+    {
+      "path": "TestimonialComp.jsx",
+      "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
     }
   ]
 }

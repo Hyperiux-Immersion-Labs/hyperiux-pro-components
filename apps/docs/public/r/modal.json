@@ -11,9 +11,19 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "modal.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/modal.jsx"
+      "target": "components/hyperiux/modal/index.jsx"
+    },
+    {
+      "path": "Modal.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/modal/Modal.jsx"
+    },
+    {
+      "path": "ScrollablePopupContent.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/modal/ScrollablePopupContent.jsx"
     }
   ],
   "tier": "pro"

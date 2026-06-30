@@ -11,9 +11,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "custom-video-player.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/custom-video-player.jsx"
+      "target": "components/hyperiux/custom-video-player/index.jsx"
+    },
+    {
+      "path": "VideoPlayerComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/custom-video-player/VideoPlayerComp.jsx"
     }
   ],
   "tier": "pro"
