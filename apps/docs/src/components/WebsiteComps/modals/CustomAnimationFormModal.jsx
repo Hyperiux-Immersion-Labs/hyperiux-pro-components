@@ -5,9 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLenis } from "lenis/react";
 import WebsiteButton from "@/components/WebsiteComps/Button";
-import Input from "@/components/form/Input";
-import PhoneInput from "@/components/form/PhoneInput";
-import Textarea from "@/components/form/Textarea";
+import Input from "@/components/form-comp/Input";
+import PhoneInput from "@/components/form-comp/PhoneInput";
+import Textarea from "@/components/form-comp/Textarea";
+
 
 const MODAL_QUERY_KEY = "custom-animation-form";
 const MODAL_QUERY_VALUE = "open";

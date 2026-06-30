@@ -18,9 +18,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Input from "../form/Input";
-import PhoneInput from "../form/PhoneInput";
-import Textarea from "../form/Textarea";
+import Input from "../form-comp/Input";
+import PhoneInput from "../form-comp/PhoneInput";
+import Textarea from "../form-comp/Textarea";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
