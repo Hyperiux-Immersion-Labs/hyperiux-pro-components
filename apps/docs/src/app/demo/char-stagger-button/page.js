@@ -21,7 +21,8 @@ export default function Page() {
                         showLine
                         text="Hover me"
                         hoverColor="#ff6b00"
-                        className="text-[2vw] max-sm:text-[4.5vw] scale-150"
+                        className="  scale-150"
+                        textClassName="text-[2vw] max-md:text-[3vw] max-sm:text-[4.5vw]"
                     />
                 </div>
             </div>

@@ -166,7 +166,7 @@ export function HelixSliderComp({
                                     <img
                                         src={item.image}
                                         alt={item.title || `Card ${index + 1}`}
-                                        className="object-cover absolute inset-0"
+                                        className="object-cover h-full w-full absolute inset-0"
                                     />
                                 </div>
 
@@ -174,7 +174,7 @@ export function HelixSliderComp({
                                     <img
                                         src={item.image}
                                         alt={`${item.title || `Card ${index + 1}`} back`}
-                                        className="object-cover absolute inset-0"
+                                        className="object-cover h-full w-full absolute inset-0"
                                     />
                                 </div>
                             </div>

@@ -124,7 +124,6 @@ const SVGPathComp = ({
   draggable = false,
 
   dragSensitivity = 0.2,
-  dragVelocityDecay = 0.96,
   dragAwareDirection = false,
   grabCursor = false,
 
@@ -306,7 +305,7 @@ const SVGPathComp = ({
 
       // Gradually decay drag velocity back to zero
       if (!isDragging.current && Math.abs(dragVelocity.current) > 0.01) {
-        dragVelocity.current *= dragVelocityDecay
+        dragVelocity.current *= 0.9
       } else if (!isDragging.current) {
         dragVelocity.current = 0
       }
