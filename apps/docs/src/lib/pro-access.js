@@ -2,7 +2,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { stripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
-import { resend } from "@/lib/resend";
+import { sendEmail } from "@/lib/resend";
 import { createProPurchaseEmail } from "@/lib/emails/pro-purchase-email";
 
 function getPeriodEnd(subscription) {
@@ -86,12 +86,12 @@ async function sendProAcknowledgementEmail({
     stripeSubscriptionId,
   });
 
-  await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL || "Hyperiux Vault <onboarding@resend.dev>",
+  await sendEmail({
     to: email,
     subject: emailContent.subject,
-    text: emailContent.text,
     html: emailContent.html,
+    text: emailContent.text,
+    emailType: "pro_onboarding",
   });
 }
 

@@ -19,7 +19,7 @@ import { Check } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -717,15 +717,16 @@ function PricingCard({ plan, billingCycle }) {
           </button>
         ) : (
           <div className="w-full">
-            <WaitlistTrigger
-              className={`h-[3.2vw] w-full rounded-full text24 font-medium transition-colors max-md:h-12 max-md:text-sm ${
+            <Link
+              href="/sign-up"
+              className={`flex h-[3.2vw] w-full items-center justify-center rounded-full text24 font-medium transition-colors max-md:h-12 max-md:text-sm ${
                 plan.highlighted
                   ? "bg-primary text-white hover:bg-primary-hover"
                   : "bg-[#0e0e0e] text-white hover:bg-[#222]"
               }`}
             >
               {plan.cta}
-            </WaitlistTrigger>
+            </Link>
           </div>
         )}
 

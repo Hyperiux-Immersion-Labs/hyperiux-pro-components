@@ -67,6 +67,26 @@ export default function DashboardPage() {
   const [syncing, setSyncing] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
   const [upgradeError, setUpgradeError] = useState(null);
+  const [openingPortal, setOpeningPortal] = useState(false);
+  const [portalError, setPortalError] = useState(null);
+
+  async function handleManageSubscription() {
+    setOpeningPortal(true);
+    setPortalError(null);
+    try {
+      const res = await fetch("/api/stripe/portal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ returnPath: "/dashboard/settings" }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Portal unavailable");
+      window.location.href = json.url;
+    } catch (err) {
+      setPortalError(err.message);
+      setOpeningPortal(false);
+    }
+  }
 
   async function handleUpgrade() {
     setUpgrading(true);
@@ -272,12 +292,26 @@ export default function DashboardPage() {
           )}
 
           {data.plan === "pro" && (
-            <Link
-              href="/effects"
-              className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
-            >
-              Explore Pro Effects
-            </Link>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex gap-3">
+                <button
+                  onClick={handleManageSubscription}
+                  disabled={openingPortal}
+                  className="inline-flex px-5 py-3 rounded-full border border-white/20 text-white transition duration-300 hover:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {openingPortal ? "Opening…" : "Manage Subscription"}
+                </button>
+                <Link
+                  href="/effects"
+                  className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
+                >
+                  Explore Pro Effects
+                </Link>
+              </div>
+              {portalError && (
+                <p className="text-red-400 text-sm">{portalError}</p>
+              )}
+            </div>
           )}
         </div>
       </div>

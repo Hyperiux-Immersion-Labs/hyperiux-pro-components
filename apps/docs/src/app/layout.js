@@ -12,7 +12,6 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import AccessRequestModal from "@/components/WebsiteComps/modals/AccessRequestModal";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 const layGrotesk = localFont({
@@ -51,7 +50,6 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }} />
         {/* <PixelRandom color="#ff5f00"> */}
         <ClerkProvider
-          waitlistUrl="/?waitlist=open"
           appearance={{
             cssLayerName: "clerk",
             theme: "simple",
@@ -76,7 +74,6 @@ export default function RootLayout({ children }) {
           <SoftwareApplicationJsonLd />
           {children}
           <Suspense>
-            <AccessRequestModal />
             <CustomAnimationFormModal />
           </Suspense>
           <Analytics />

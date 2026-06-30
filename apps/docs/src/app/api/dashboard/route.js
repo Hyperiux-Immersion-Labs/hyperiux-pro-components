@@ -38,6 +38,21 @@ export async function GET() {
         .maybeSingle(),
     ]);
 
+  // Fallback: if no subscription row exists (webhook missed), provision one now
+  if (!subscriptionError && !subscription) {
+    await supabase
+      .from("subscriptions")
+      .upsert(
+        {
+          clerk_user_id: userId,
+          plan: "free",
+          status: "inactive",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "clerk_user_id" }
+      );
+  }
+
   if (wishlistError) {
     return NextResponse.json(
       { error: wishlistError.message },

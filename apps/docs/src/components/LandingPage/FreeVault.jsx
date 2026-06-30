@@ -6,7 +6,6 @@ import SplitLine from "../WebsiteComps/SplitLine";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { WaitlistTrigger } from "../WebsiteComps/modals/AccessRequestModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,24 +17,24 @@ const freeEffects = [
     "Page Transitions",
 ];
 
-const waitlistBenefits = [
+const proBenefits = [
     "Premium Effects Packs",
     "Complete Website Sections",
     "Advanced Motion Systems",
-    "Founder Pricing",
+    "Priority Support",
     "Exclusive Experimental Releases",
 ];
 
 export default function FreeVault() {
     const freeRef = useRef(null);
-    const waitlistRef = useRef(null);
+    const proRef = useRef(null);
 
     useEffect(() => {
         const mm = gsap.matchMedia();
 
         mm.add("(min-width: 641px)", () => {
             gsap.fromTo(
-                [freeRef.current, waitlistRef.current],
+                [freeRef.current, proRef.current],
                 {
                     xPercent: (index) => (index === 0 ? -100 : 100),
                 },
@@ -224,17 +223,17 @@ export default function FreeVault() {
                     </div>
 
                     <div
-                        ref={waitlistRef}
+                        ref={proRef}
                         className="w-1/2 max-md:w-full py-[4vw] max-md:py-[8vw] px-[3vw] max-md:px-[6vw] h-full max-md:h-auto flex flex-col items-start justify-between rounded-md bg-primary text-white max-md:gap-[8vw]"
                     >
                         <h3 className="text80 font-medium!">
-                            Join the<br />
-                            Founding Waitlist.
+                            Get Full<br />
+                            Vault Access.
                         </h3>
-                        <p className="text24">Get Early Access To:</p>
+                        <p className="text24">Unlock Everything:</p>
 
                         <ul className="list-none flex flex-col gap-[.5vw] max-md:gap-[3vw]">
-                            {waitlistBenefits.map((benefit) => (
+                            {proBenefits.map((benefit) => (
                                 <li key={benefit} className="flex items-center gap-[1vw] text24">
                                     <CheckIcon className="size-[1vw] max-md:size-[4vw]" />
                                     {benefit}
@@ -243,12 +242,9 @@ export default function FreeVault() {
                         </ul>
 
                         <div className="flex flex-col items-start space-y-[1vw] max-md:space-y-[4vw]">
-                            <WaitlistTrigger>
-                                <Button preventDefault={true} text="Join Waitlist" href="#" variant="black" />
-
-                            </WaitlistTrigger>
+                            <Button text="Get Started" href="/sign-up" variant="black" />
                             <p className="text20">
-                                No Spam. Unsubscribe Anytime.
+                                No Credit Card Required.
                             </p>
                         </div>
                     </div>
