@@ -15,6 +15,18 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/animated-toggle/index.jsx"
+    },
+    {
+      "path": "ChevronBird.jsx",
+      "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
+    },
+    {
+      "path": "Cross.jsx",
+      "target": "src/components/effects/animated-toggle/Cross.jsx"
+    },
+    {
+      "path": "Plus.jsx",
+      "target": "src/components/effects/animated-toggle/Plus.jsx"
     }
   ]
 }

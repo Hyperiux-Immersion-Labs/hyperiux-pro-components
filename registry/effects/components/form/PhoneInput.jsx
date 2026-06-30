@@ -1,0 +1,211 @@
+"use client";
+
+import React, { forwardRef, useEffect, useRef, useState } from "react";
+
+export const COUNTRY_CODES = [
+  { code: "IN", dial: "+91", flag: "🇮🇳", name: "India" },
+  { code: "IE", dial: "+353", flag: "🇮🇪", name: "Ireland" },
+  { code: "US", dial: "+1", flag: "🇺🇸", name: "United States" },
+  { code: "GB", dial: "+44", flag: "🇬🇧", name: "United Kingdom" },
+  { code: "AU", dial: "+61", flag: "🇦🇺", name: "Australia" },
+  { code: "CA", dial: "+1", flag: "🇨🇦", name: "Canada" },
+  { code: "DE", dial: "+49", flag: "🇩🇪", name: "Germany" },
+  { code: "FR", dial: "+33", flag: "🇫🇷", name: "France" },
+  { code: "AE", dial: "+971", flag: "🇦🇪", name: "United Arab Emirates" },
+  { code: "SG", dial: "+65", flag: "🇸🇬", name: "Singapore" },
+];
+
+const joinClasses = (...classes) => classes.filter(Boolean).join(" ");
+
+const PhoneInput = forwardRef(function PhoneInput(
+  {
+    id = "phone",
+    label = "Phone Number*",
+    value = "",
+    onChange,
+    defaultCountry = "IN",
+    countries = COUNTRY_CODES,
+    error,
+    className = "",
+    wrapperClassName = "",
+    countryButtonClassName = "",
+    flagClassName = "",
+    dialCodeClassName = "",
+    chevronClassName = "",
+    dropdownClassName = "",
+    optionClassName = "",
+    activeOptionClassName = "",
+    optionFlagClassName = "",
+    optionCodeClassName = "",
+    optionDialClassName = "",
+    dividerClassName = "",
+    inputClassName = "",
+    errorClassName = "",
+    placeholder,
+    showCountryName = false,
+    ...rest
+  },
+  ref
+) {
+  const rootRef = useRef(null);
+
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    return countries.find((country) => country.code === defaultCountry) || countries[0];
+  });
+
+  const [open, setOpen] = useState(false);
+
+  const numberPart = value.startsWith(selectedCountry.dial)
+    ? value.slice(selectedCountry.dial.length).trim()
+    : value;
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (!rootRef.current) return;
+
+      if (!rootRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, []);
+
+  const handleCountrySelect = (country) => {
+    setSelectedCountry(country);
+    setOpen(false);
+
+    onChange?.(`${country.dial} ${numberPart}`.trim());
+  };
+
+  const handleNumberChange = (event) => {
+    const nextNumber = event.target.value.replace(/[^\d\s\-()]/g, "");
+
+    onChange?.(`${selectedCountry.dial} ${nextNumber}`.trim());
+  };
+
+  return (
+    <div ref={rootRef} className={joinClasses("w-full", wrapperClassName)}>
+      <div
+        className={joinClasses(
+          "flex h-14 items-center rounded-full border bg-white transition-all",
+          "border-gray-200 focus-within:border-gray-400",
+          error && "border-red-400 focus-within:border-red-400",
+          className
+        )}
+      >
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            className={joinClasses(
+              "flex h-full cursor-pointer items-center gap-1 pl-4 pr-2 text-sm text-gray-700 transition-colors hover:text-gray-900",
+              countryButtonClassName
+            )}
+            aria-expanded={open}
+            aria-haspopup="listbox"
+          >
+            <span className={joinClasses("text-base", flagClassName)}>
+              {selectedCountry.flag}
+            </span>
+
+            <span className={joinClasses("font-medium", dialCodeClassName)}>
+              {selectedCountry.dial}
+            </span>
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={joinClasses(
+                "transition-transform duration-200",
+                open && "rotate-180",
+                chevronClassName
+              )}
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+
+          {open && (
+            <div
+              role="listbox"
+              className={joinClasses(
+                "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 overflow-y-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg",
+                dropdownClassName
+              )}
+            >
+              {countries.map((country) => {
+                const isActive = selectedCountry.code === country.code;
+
+                return (
+                  <button
+                    key={`${country.code}-${country.dial}`}
+                    type="button"
+                    role="option"
+                    aria-selected={isActive}
+                    onClick={() => handleCountrySelect(country)}
+                    className={joinClasses(
+                      "flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50",
+                      optionClassName,
+                      isActive && joinClasses("font-medium text-orange-500", activeOptionClassName)
+                    )}
+                  >
+                    <span className={joinClasses("", optionFlagClassName)}>
+                      {country.flag}
+                    </span>
+
+                    <span className={joinClasses("", optionCodeClassName)}>
+                      {showCountryName ? country.name : country.code}
+                    </span>
+
+                    <span className={joinClasses("ml-auto text-gray-400", optionDialClassName)}>
+                      {country.dial}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <span
+          className={joinClasses("h-6 w-px shrink-0 bg-gray-200", dividerClassName)}
+        />
+
+        <input
+          ref={ref}
+          id={id}
+          type="tel"
+          value={numberPart}
+          onChange={handleNumberChange}
+          placeholder={placeholder ?? (label === false ? "" : label)}
+          autoComplete="tel"
+          className={joinClasses(
+            "h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-400",
+            inputClassName
+          )}
+          {...rest}
+        />
+      </div>
+
+      {error && (
+        <p className={joinClasses("ml-4 mt-1 text-xs text-red-500", errorClassName)}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+});
+
+export default PhoneInput;

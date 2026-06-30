@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
@@ -9,82 +9,166 @@ import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
 
-function ImageNodeMaterial({ src }) {
-  const map = useTexture(src)
+function loadCorsObjectUrl(src) {
+  return fetch(src, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Image request failed with ${res.status}`)
+      return res.blob()
+    })
+    .then((blob) => URL.createObjectURL(blob))
+}
+
+function ImageNodeMaterial({ src, isMobile }) {
+  const sourceMap = useTexture(src)
   const { size, camera } = useThree()
 
-  const height = 2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * camera.position.z
+  const height =
+    2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * camera.position.z
+
   const width = height * (size.width / size.height)
 
   const mouse = useRef(new THREE.Vector2(0.5, 0.5))
   const target = useRef(new THREE.Vector2(0.5, 0.5))
   const strength = useRef(0)
   const strengthTarget = useRef(0)
+  const materialRef = useRef(null)
+
+  const map = useMemo(() => {
+    const clonedMap = sourceMap.clone()
+    clonedMap.colorSpace = THREE.SRGBColorSpace
+    clonedMap.needsUpdate = true
+    return clonedMap
+  }, [sourceMap])
+
+  useEffect(() => {
+    return () => {
+      map.dispose()
+    }
+  }, [map])
 
   const material = useMemo(() => {
-    map.colorSpace = THREE.SRGBColorSpace
-
     const mat = new THREE.MeshBasicNodeMaterial()
-    const mouseU = uniform(mouse.current)
+
+    const mouseU = uniform(new THREE.Vector2(0.5, 0.5))
     const strengthU = uniform(0)
 
     const baseUV = uv()
     const diff = sub(baseUV, mouseU)
     const dist = length(diff)
+
     const falloff = oneMinus(dist).pow(2)
+
     const displacement = mul(diff, falloff).mul(strengthU.negate())
+
     const distortedUV = add(baseUV, displacement)
 
     mat.colorNode = texture(map, distortedUV)
+
     mat.userData.mouseU = mouseU
     mat.userData.strengthU = strengthU
 
     return mat
   }, [map])
 
+  useEffect(() => {
+    materialRef.current = material
+    return () => {
+      materialRef.current = null
+    }
+  }, [material])
+
   useFrame((_, delta) => {
-    mouse.current.x = damp(mouse.current.x, target.current.x, 12, delta)
-    mouse.current.y = damp(mouse.current.y, target.current.y, 12, delta)
-    strength.current = damp(strength.current, strengthTarget.current, 8, delta)
-    material.userData.strengthU.value = strength.current
+    const currentMaterial = materialRef.current
+    if (!currentMaterial) return
+
+    if (!isMobile) {
+      mouse.current.x = damp(mouse.current.x, target.current.x, 12, delta)
+      mouse.current.y = damp(mouse.current.y, target.current.y, 12, delta)
+
+      strength.current = damp(
+        strength.current,
+        strengthTarget.current,
+        8,
+        delta
+      )
+    }
+
+    currentMaterial.userData.mouseU.value.copy(mouse.current)
+    currentMaterial.userData.strengthU.value = isMobile ? 0 : strength.current
   })
 
   return (
     <mesh
       material={material}
-      onPointerMove={(e) => {
-        if (!e.uv) return
-        target.current.copy(e.uv)
-        strengthTarget.current = 1
-      }}
-      onPointerLeave={() => {
-        target.current.set(0.5, 0.5)
-        strengthTarget.current = 0
-      }}
+      onPointerMove={
+        isMobile
+          ? undefined
+          : (e) => {
+              if (!e.uv) return
+              target.current.copy(e.uv)
+              strengthTarget.current = 1
+            }
+      }
+      onPointerLeave={
+        isMobile
+          ? undefined
+          : () => {
+              target.current.set(0.5, 0.5)
+              strengthTarget.current = 0
+            }
+      }
     >
       <planeGeometry args={[width, height]} />
     </mesh>
   )
 }
 
-export function FishEyeImage({ src }) {
+export default function FishEye({ src }) {
+  const [objectUrl, setObjectUrl] = useState(null)
+
+  useEffect(() => {
+    let url = null
+    loadCorsObjectUrl(src)
+      .then((u) => {
+        url = u
+        setObjectUrl(u)
+      })
+      .catch((err) => console.warn('FishEye texture load failed:', err))
+
+    return () => {
+      if (url) URL.revokeObjectURL(url)
+    }
+  }, [src])
+
+  const isMobile =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(pointer: coarse)').matches
+
+  if (!objectUrl) return null
+
   return (
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0, 5], fov: 45 }}
-      style={{ height: '100%', width: '100%' }}
+      className="h-full w-full"
+      style={{
+        pointerEvents: isMobile ? 'none' : 'auto',
+        touchAction: isMobile ? 'none' : 'auto',
+      }}
       gl={({ canvas }) => {
         const renderer = new THREE.WebGPURenderer({
           canvas,
           antialias: true,
         })
+
         renderer.outputColorSpace = THREE.SRGBColorSpace
         renderer.toneMapping = THREE.NoToneMapping
         renderer.init()
+
         return renderer
       }}
     >
-      <ImageNodeMaterial src={src} />
+      <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
     </Canvas>
   )
 }

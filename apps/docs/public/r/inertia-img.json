@@ -11,9 +11,14 @@
   "exportKind": "default",
   "files": [
     {
-      "path": "inertia-img.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/inertia-img.jsx"
+      "target": "components/hyperiux/inertia-img/index.jsx"
+    },
+    {
+      "path": "InertiaImgComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/inertia-img/InertiaImgComp.jsx"
     }
   ],
   "tier": "pro"

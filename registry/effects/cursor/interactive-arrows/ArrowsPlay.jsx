@@ -1,4 +1,40 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { Point, lerpAngle } from './utils';
+
+class Arrow {
+  constructor(position) {
+    this.pos = position;
+    this.dx = 0;
+    this.dy = 0;
+    this.angle = 0;
+    this.rotationEase = 0.12;
+  }
+
+  update(mouseX, mouseY) {
+    this.dx = mouseX - this.pos.x;
+    this.dy = mouseY - this.pos.y;
+    const targetAngle = Math.atan2(this.dy, this.dx);
+
+    this.angle = lerpAngle(this.angle, targetAngle, this.rotationEase);
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.pos.x, this.pos.y);
+    ctx.rotate(this.angle);
+    ctx.beginPath();
+    ctx.moveTo(30, 0);
+    ctx.lineTo(-30, 0);
+    ctx.moveTo(30, 0);
+    ctx.lineTo(10, -20);
+    ctx.moveTo(30, 0);
+    ctx.lineTo(10, 20);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'white'; 
+    ctx.stroke();
+    ctx.restore();
+  }
+}
 
 const ArrowsPlay = () => {
   const canvasRef = useRef(null);
@@ -7,54 +43,7 @@ const ArrowsPlay = () => {
   const animationFrameRef = useRef(null);
   const divRef = useRef(null); // For the center div with text
 
-  class Point {
-    constructor(x, y) {
-      this.x = x || 0;
-      this.y = y || 0;
-    }
-  }
-
-  class Arrow {
-    constructor(position) {
-      this.pos = position;
-      this.dx = 0;
-      this.dy = 0;
-      this.angle = 0;
-      this.rotationEase = 0.12;
-    }
-
-    update(mouseX, mouseY) {
-      this.dx = mouseX - this.pos.x;
-      this.dy = mouseY - this.pos.y;
-      const targetAngle = Math.atan2(this.dy, this.dx);
-
-      // Ease rotation across the shortest arc so large direction changes do not snap.
-      let delta = targetAngle - this.angle;
-      while (delta > Math.PI) delta -= Math.PI * 2;
-      while (delta < -Math.PI) delta += Math.PI * 2;
-
-      this.angle += delta * this.rotationEase;
-    }
-
-    draw(ctx) {
-      ctx.save();
-      ctx.translate(this.pos.x, this.pos.y);
-      ctx.rotate(this.angle);
-      ctx.beginPath();
-      ctx.moveTo(30, 0);
-      ctx.lineTo(-30, 0);
-      ctx.moveTo(30, 0);
-      ctx.lineTo(10, -20);
-      ctx.moveTo(30, 0);
-      ctx.lineTo(10, 20);
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = 'white'; 
-      ctx.stroke();
-      ctx.restore();
-    }
-  }
-
-  const initializeArrows = (canvas) => {
+  const initializeArrows = useCallback((canvas) => {
     const arrows = [];
     const spacing = 120;
     
@@ -94,20 +83,21 @@ const ArrowsPlay = () => {
       }
     }
     return arrows;
-  };
+  }, []);
   
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       arrowsRef.current = initializeArrows(canvas);
     }
-  };
+  }, [initializeArrows]);
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const rect = canvas.getBoundingClientRect();  
     
     if (
@@ -121,10 +111,11 @@ const ArrowsPlay = () => {
         y: e.clientY - rect.top, 
       };
     }
-  };
+  }, []);
 
-  const main = () => {
+  const main = useCallback(function drawFrame() {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
@@ -136,8 +127,8 @@ const ArrowsPlay = () => {
       arrow.draw(ctx);
     });
 
-    animationFrameRef.current = requestAnimationFrame(main);
-  };
+    animationFrameRef.current = requestAnimationFrame(drawFrame);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -161,24 +152,17 @@ const ArrowsPlay = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [handleMouseMove, handleResize, initializeArrows, main]);
 
   return (
     <div className="relative w-full h-full ">
-      <canvas 
+      <canvas
         ref={canvasRef}
-        className="w-full h-full"
-        style={{ cursor: 'pointer' }}
+        className="w-full h-full cursor-pointer"
       />
-      <div 
+      <div
         ref={divRef}
-        className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-        style={{
-          cursor:"pointer",
-          height:"25vw",
-          width:"32vw",
-          backgroundColor: "transparent", 
-        }}
+        className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center cursor-pointer h-[25vw] w-[32vw] bg-transparent"
       >
         <h1 className='translate-y-[-8vw] translate-x-[-4vw] text-center text-[15vw] leading-none text-white transition-all duration-500 ease'>
           Play

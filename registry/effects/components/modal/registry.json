@@ -17,6 +17,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/modal/index.jsx"
+    },
+    {
+      "path": "Modal.jsx",
+      "target": "src/components/effects/modal/Modal.jsx"
+    },
+    {
+      "path": "ScrollablePopupContent.jsx",
+      "target": "src/components/effects/modal/ScrollablePopupContent.jsx"
     }
   ]
 }

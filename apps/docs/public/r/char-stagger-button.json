@@ -11,9 +11,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "char-stagger-button.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/char-stagger-button.jsx"
+      "target": "components/hyperiux/char-stagger-button/index.jsx"
     }
   ],
   "tier": "pro"

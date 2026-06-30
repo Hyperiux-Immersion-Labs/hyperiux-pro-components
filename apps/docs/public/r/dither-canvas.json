@@ -9,15 +9,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "dither-canvas.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/dither-canvas.jsx"
-    },
-    {
-      "path": "assets/videos/enigma-video.mp4",
-      "type": "registry:asset",
-      "target": "public/assets/videos/enigma-video.mp4",
-      "source": "/assets/videos/enigma-video.mp4"
+      "target": "components/hyperiux/dither-canvas/index.jsx"
     }
   ],
   "tier": "pro"

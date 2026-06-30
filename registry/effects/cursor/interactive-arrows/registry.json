@@ -19,28 +19,32 @@
       "target": "src/components/effects/interactive-arrows/index.jsx"
     },
     {
-      "path": "arrows-limit.jsx",
-      "target": "src/components/effects/interactive-arrows/arrows-limit.jsx"
+      "path": "Arrows.jsx",
+      "target": "src/components/effects/interactive-arrows/Arrows.jsx"
     },
     {
-      "path": "arrows-opacity.jsx",
-      "target": "src/components/effects/interactive-arrows/arrows-opacity.jsx"
+      "path": "ArrowsLimit.jsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
     },
     {
-      "path": "arrows-play.jsx",
-      "target": "src/components/effects/interactive-arrows/arrows-play.jsx"
+      "path": "ArrowsOpacity.jsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
     },
     {
-      "path": "arrows.jsx",
-      "target": "src/components/effects/interactive-arrows/arrows.jsx"
+      "path": "ArrowsPlay.jsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
     },
     {
-      "path": "lines.jsx",
-      "target": "src/components/effects/interactive-arrows/lines.jsx"
+      "path": "Lines.jsx",
+      "target": "src/components/effects/interactive-arrows/Lines.jsx"
     },
     {
-      "path": "points.jsx",
-      "target": "src/components/effects/interactive-arrows/points.jsx"
+      "path": "Points.jsx",
+      "target": "src/components/effects/interactive-arrows/Points.jsx"
+    },
+    {
+      "path": "utils.js",
+      "target": "src/components/effects/interactive-arrows/utils.js"
     }
   ]
 }

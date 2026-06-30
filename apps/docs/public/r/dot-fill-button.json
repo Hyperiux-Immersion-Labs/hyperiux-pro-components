@@ -9,9 +9,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "dot-fill-button.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/dot-fill-button.jsx"
+      "target": "components/hyperiux/dot-fill-button/index.jsx"
     }
   ],
   "tier": "pro"

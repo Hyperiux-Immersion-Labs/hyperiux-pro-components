@@ -9,9 +9,14 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "character-trail.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/character-trail.jsx"
+      "target": "components/hyperiux/character-trail/index.jsx"
+    },
+    {
+      "path": "CharacterTrailComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/character-trail/CharacterTrailComp.jsx"
     }
   ],
   "tier": "pro"

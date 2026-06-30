@@ -1,96 +1,38 @@
 "use client"
+import React, { useState } from 'react'
+import { ChevronBird } from './ChevronBird'
+import Cross from './Cross'
+import Plus from './Plus'
 
-export function ChevronBird({
-  isActive = false,
-  size = 14,
-  strokeWidth = 10,
-  className = "",
-}) {
+const AnimatedToggle = () => {
+  const [chevronActive, setChevronActive] = useState(false);
+  const [crossActive, setCrossActive] = useState(false);
+  const [plusActive, setPlusActive] = useState(false);
   return (
-    <svg
-      className={className}
-      viewBox="0 0 100 100"
-      width={size}
-      height={size}
-      fill="none"
-      aria-hidden="true"
-      style={{
-        transform: isActive ? 'translateY(-25%)' : 'translateY(0%)',
-        transition: 'transform 0.32s ease-in-out',
-      }}
-    >
-      <g>
-        <path
-          d="M10 50H50"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          strokeLinecap="square"
-          style={{
-            transformBox: 'view-box',
-            transformOrigin: '50px 50px',
-            transform: isActive ? 'rotate(-42deg)' : 'rotate(42deg)',
-            transition: 'transform 0.32s ease-in-out',
-          }}
+    <div className="flex gap-8 justify-center">
+      <button
+        onClick={() => setChevronActive((prev) => !prev)}
+        className={`cursor-pointer size-24 max-sm:size-18 rounded-lg flex group items-center justify-center transition-all duration-300 active:scale-90 ${chevronActive ? "bg-primary" : "bg-zinc-400"}`}
+      >
+        <ChevronBird
+          className="mt-2 group-hover:rotate-180 group-hover:translate-y-[-30%] duration-300 transition-all"
+          size={32}
+          isActive={chevronActive}
         />
-        <path
-          d="M90 50H50"
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          strokeLinecap="square"
-          style={{
-            transformBox: 'view-box',
-            transformOrigin: '50px 50px',
-            transform: isActive ? 'rotate(42deg)' : 'rotate(-42deg)',
-            transition: 'transform 0.32s ease-in-out',
-          }}
-        />
-      </g>
-    </svg>
-  );
-}
-
-export function Cross({
-  isActive = false,
-  size = 24,
-  className = "",
-}) {
-  return (
-    <div
-      className={`flex items-center relative justify-center ${className}`}
-      style={{ width: size, height: size }}
-    >
-      <span
-        className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out'
-        style={{ transform: isActive ? 'rotate(45deg)' : 'rotate(0deg)' }}
-      />
-      <span
-        className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out'
-        style={{ transform: isActive ? 'rotate(-45deg)' : 'rotate(90deg)' }}
-      />
+      </button>
+      <button
+        onClick={() => setCrossActive((prev) => !prev)}
+        className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-90 ${crossActive ? "bg-primary" : "bg-zinc-400"}`}
+      >
+        <Cross size={24} isActive={crossActive} />
+      </button>
+      <button
+        onClick={() => setPlusActive((prev) => !prev)}
+        className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-90 ${plusActive ? "bg-primary" : "bg-zinc-400"}`}
+      >
+        <Plus size={24} isActive={plusActive} />
+      </button>
     </div>
-  );
+  )
 }
-
-export function Plus({
-  isActive = false,
-  size = 24,
-  className = "",
-}) {
-  return (
-    <div
-      className={`flex items-center relative justify-center ${className}`}
-      style={{
-        width: size,
-        height: size,
-        transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)',
-        transition: 'transform 0.3s ease-in-out',
-      }}
-    >
-      <span className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out' />
-      <span
-        className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out'
-        style={{ transform: isActive ? 'rotate(180deg)' : 'rotate(90deg)' }}
-      />
-    </div>
-  );
-}
+export default AnimatedToggle

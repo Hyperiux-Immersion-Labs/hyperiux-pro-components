@@ -1,112 +1,84 @@
 "use client";
 
-import { useEffect } from "react";
-import { X } from "lucide-react";
+import { useState } from "react";
+import ScrollablePopupContent from "./ScrollablePopupContent";
+import { ModalContent } from "./Modal";
 
-const Modal = ({
-  isOpen = false,
-  onClose,
-  children,
-  className = "",
-  contentClassName = "",
-  showCloseButton = true,
-  closeOnBackdrop = true,
-  closeOnEsc = true,
-  closeButtonClassName = "",
-}) => {
-  useEffect(() => {
-    if (!isOpen) return;
+const popupSections = [
+  {
+    heading: "Project Overview",
+    paragraph:
+      "This development is envisioned as a premium mixed-use destination, combining residential comfort, retail convenience, and elevated lifestyle experiences in one cohesive ecosystem.",
+    list: [
+      "Prime urban location with excellent access",
+      "Integrated amenities for work, wellness, and leisure",
+      "Architecture focused on long-term livability",
+    ],
+  },
+  {
+    heading: "Design Philosophy",
+    paragraph:
+      "Every detail has been planned to create an experience that feels contemporary, intuitive, and timeless. The emphasis is on spatial openness, natural light, and refined materials.",
+    list: [
+      "Open-plan living concepts",
+      "Daylight-first spatial planning",
+      "Contemporary material palette",
+    ],
+  },
+  {
+    heading: "Investment Potential",
+    paragraph:
+      "With strong connectivity, growing infrastructure, and a carefully positioned offering, the project is designed to appeal to both end-users and long-term investors seeking sustained value.",
+    list: [
+      "High-demand micro-market",
+      "Future-forward development strategy",
+      "Strong long-term appreciation potential",
+    ],
+  },
+  {
+    heading: "Lifestyle Experience",
+    paragraph:
+      "The experience extends beyond residences, offering amenities and shared spaces that promote wellness, community, and a more balanced urban lifestyle.",
+    list: [
+      "Curated leisure and wellness zones",
+      "Community-first shared spaces",
+      "Elevated everyday convenience",
+    ],
+  },
+];
 
-    const handleKeyDown = (e) => {
-      if (closeOnEsc && e.key === "Escape") {
-        onClose?.();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [isOpen, onClose, closeOnEsc]);
+export default function Modal() {
+  const [isContentOpen, setIsContentOpen] = useState(false);
 
   return (
-    <div
-      data-lenis-prevent
-      className={`
-        fixed inset-0 z-[9999]
-        duration-500
-        ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }
-        ${className}
-      `}
-    >
+    <>
       <button
         type="button"
-        aria-label="Close modal"
-        onClick={closeOnBackdrop ? onClose : undefined}
+        onClick={() => {
+          setIsContentOpen(true);
+        }}
         className="
-          absolute inset-0
-          cursor-pointer border-0
-          bg-black/82
-          backdrop-blur-[10px]
+          cursor-pointer rounded-full border-0 bg-[#111111] px-[2vw] py-[1vw]
+          text-white transition-all duration-300 hover:scale-[1.03]
+          text-[1vw]
+          max-md:px-[4vw] max-md:py-[2vw] max-md:text-[2.2vw]
+          max-sm:px-[6vw] max-sm:py-[3.5vw] max-sm:text-[4vw]
         "
-      />
-
-      {showCloseButton && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose?.();
-          }}
-          aria-label="Close modal"
-          className={`
-            absolute z-[99999]
-            flex items-center justify-center
-            rounded-full border-0
-            bg-black/80 text-white
-            cursor-pointer
-            backdrop-blur-[10px]
-            transition-all duration-300
-            hover:scale-[1.04]
-            hover:bg-white/20
-            pointer-events-auto
-            touch-manipulation
-
-            top-4 right-4 w-10 h-10 min-w-[40px] min-h-[40px]
-            sm:top-6 sm:right-6 sm:w-12 sm:h-12
-            md:top-8 md:right-8 md:w-14 md:h-14
-            lg:top-[1.5vw] lg:right-[1.5vw] lg:w-[3vw] lg:h-[3vw] lg:min-w-[42px] lg:min-h-[42px]
-
-            ${closeButtonClassName}
-          `}
-        >
-          <X size={24} className="pointer-events-none" />
-        </button>
-      )}
-
-      <div
-        className={`
-          relative z-[1]
-          flex h-screen w-screen items-center
-          px-0
-
-          max-md:px-0
-          max-sm:justify-center max-sm:px-0
-
-          ${contentClassName}
-        `}
       >
-        {children}
-      </div>
-    </div>
-  );
-};
+        Open Modal
+      </button>
 
-export { Modal };
+      <ModalContent
+        className="h-full backdrop-blur-none "
+        isOpen={isContentOpen}
+        onClose={() => setIsContentOpen(false)}
+      >
+        <ScrollablePopupContent
+          title="A Deeper Look at the Project"
+          subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development."
+          sections={popupSections}
+        />
+      </ModalContent>
+    </>
+  );
+}

@@ -17,6 +17,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/clippath-slider/index.jsx"
+    },
+    {
+      "path": "ClippathSliderComp.jsx",
+      "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
     }
   ]
 }

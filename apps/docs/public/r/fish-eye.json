@@ -13,9 +13,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "fish-eye.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/fish-eye.jsx"
+      "target": "components/hyperiux/fish-eye/index.jsx"
     }
   ],
   "tier": "pro"
