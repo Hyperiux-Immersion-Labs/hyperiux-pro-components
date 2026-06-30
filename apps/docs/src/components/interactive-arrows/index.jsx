@@ -60,7 +60,7 @@ const InteractiveArrows = () => {
         isDark ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
-      <div className="flex min-h-screen flex-col px-6 py-6 sm:px-8 sm:py-8">
+      <div className="flex min-h-screen flex-col px-8 py-8 max-sm:px-6 max-sm:py-6">
         <div className="mx-auto flex w-full max-w-350 justify-center">
           <div
             className={`inline-flex flex-wrap  relative z-200 justify-center gap-2 rounded-full border p-2 backdrop-blur-sm ${
@@ -73,7 +73,7 @@ const InteractiveArrows = () => {
               <button
                 key={variation.id}
                 onClick={() => setActive(variation.id)}
-                className={`cursor-pointer rounded-full px-4 py-2 text-sm transition-all duration-200 sm:px-5 ${
+                className={`cursor-pointer rounded-full px-5 py-2 text-sm transition-all duration-200 max-sm:px-4 ${
                   active === variation.id
                     ? isDark
                       ? "bg-white text-black"
@@ -89,7 +89,7 @@ const InteractiveArrows = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center py-6 sm:py-8">
+        <div className="flex flex-1 items-center justify-center py-8 max-sm:py-6">
           <div
             className={`h-[78vh] w-full max-w-350 overflow-hidden rounded-[28px] border transition-colors duration-300 ${activeVariation.frameClassName}`}
           >

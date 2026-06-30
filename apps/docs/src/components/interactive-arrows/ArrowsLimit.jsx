@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-
-class Point {
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
-  }
-}
+import { Point } from './utils';
 
 class Arrow {
   constructor(position) {

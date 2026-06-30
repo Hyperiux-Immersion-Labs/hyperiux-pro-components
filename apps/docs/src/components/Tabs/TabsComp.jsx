@@ -136,7 +136,7 @@ const TabsComp = ({
 
  return (
  <div className={`h-full w-full px-[7vw] py-[7vw] max-md:p-[6vw] max-sm:px-[5vw] max-sm:py-[8vw] ${className}`}>
- <div className="relative border-b border-b-black/10">
+ <div className="relative border-b  border-b-black/10">
  <div className="flex gap-[2vw] overflow-x-auto max-md:gap-[3vw] max-sm:gap-[4vw]">
  {tabs.map((tab, index) => (
  <button
@@ -155,10 +155,10 @@ const TabsComp = ({
  ))}
  </div>
 
- <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-sm:h-[1.5px]" />
+ <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-sm:h-[0.4vw]" />
  </div>
 
- <div className="relative min-h-[24vw] w-full pt-[2vw] max-md:min-h-[32vw] max-md:pt-[4vw] max-sm:min-h-[48vw] max-sm:pt-[5vw]">
+ <div className="relative min-h-[24vw] w-full max-sm:overflow-hidden pt-[2vw] max-md:min-h-[32vw] max-md:pt-[4vw] max-sm:min-h-[48vw] max-sm:pt-[5vw]">
  {tabs.map((tab, index) => (
  <div
  key={tab.id || index}

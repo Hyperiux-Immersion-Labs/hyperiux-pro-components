@@ -1,9 +1,9 @@
-import React from 'react'
+
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import ColorfulCursorAura from '@/components/colorful-cursor-aura'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 
-const page = () => {
+const Page = () => {
   return (
     <>
     <DemoHeader />
@@ -13,4 +13,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

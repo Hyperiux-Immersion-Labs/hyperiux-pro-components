@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-
-class Point {
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
-  }
-}
+import { Point, lerpAngle } from './utils';
 
 class Arrow {
   constructor(position) {
@@ -21,12 +15,7 @@ class Arrow {
     this.dy = mouseY - this.pos.y;
     const targetAngle = Math.atan2(this.dy, this.dx);
 
-    // Ease rotation across the shortest arc so large direction changes do not snap.
-    let delta = targetAngle - this.angle;
-    while (delta > Math.PI) delta -= Math.PI * 2;
-    while (delta < -Math.PI) delta += Math.PI * 2;
-
-    this.angle += delta * this.rotationEase;
+    this.angle = lerpAngle(this.angle, targetAngle, this.rotationEase);
   }
 
   draw(ctx) {
@@ -167,20 +156,13 @@ const ArrowsPlay = () => {
 
   return (
     <div className="relative w-full h-full ">
-      <canvas 
+      <canvas
         ref={canvasRef}
-        className="w-full h-full"
-        style={{ cursor: 'pointer' }}
+        className="w-full h-full cursor-pointer"
       />
-      <div 
+      <div
         ref={divRef}
-        className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-        style={{
-          cursor:"pointer",
-          height:"25vw",
-          width:"32vw",
-          backgroundColor: "transparent", 
-        }}
+        className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center cursor-pointer h-[25vw] w-[32vw] bg-transparent"
       >
         <h1 className='translate-y-[-8vw] translate-x-[-4vw] text-center text-[15vw] leading-none text-white transition-all duration-500 ease'>
           Play

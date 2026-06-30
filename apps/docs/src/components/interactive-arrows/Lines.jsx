@@ -90,7 +90,7 @@ const Lines = () => {
     };
   }, [handleMouseMove, handleResize, initializePoints, main]);
 
-  return <canvas ref={canvasRef} className="w-full h-full " style={{ cursor: 'pointer' }} />;
+  return <canvas ref={canvasRef} className="w-full h-full cursor-pointer" />;
 };
 
 export default Lines;

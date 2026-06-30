@@ -1,5 +1,4 @@
 
-import React from 'react'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import CharacterTrail from '@/components/character-trail'

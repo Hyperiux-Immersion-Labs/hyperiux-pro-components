@@ -1,11 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-
-class Point {
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
-  }
-}
+import { Point } from './utils';
 
 class Arrow {
   constructor(position) {
@@ -47,16 +41,6 @@ const ArrowsOpacity = () => {
   const requestIdRef = useRef(null);
   const arrowArrRef = useRef([]);
   const mouseRef = useRef({ x: 0, y: 0 });
-
-  const initializeArrows = (canvas) => {
-    arrowArrRef.current = [];
-    for (let y = 0; y < canvas.height / 20; y++) {
-      for (let x = 0; x < canvas.width / 50; x++) {
-        const arr = new Arrow(new Point(x * 75, y * 75));
-        arrowArrRef.current.push(arr);
-      }
-    }
-  };
 
   useEffect(() => {
     const initializeArrows = (canvas) => {
@@ -120,7 +104,7 @@ const ArrowsOpacity = () => {
   }, []);
 
   return (
-      <canvas ref={canvasRef} style={{ width: '100%', height: '100%', pointerEvents: 'auto' }} />
+      <canvas ref={canvasRef} className="w-full h-full pointer-events-auto" />
   );
 };
 

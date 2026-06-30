@@ -27,7 +27,6 @@ export default function Page() {
           <div
             className="
               flex flex-col items-center gap-[2vw]
-              max-md:gap-[2vw]
               max-sm:gap-[4vw]
             "
           >

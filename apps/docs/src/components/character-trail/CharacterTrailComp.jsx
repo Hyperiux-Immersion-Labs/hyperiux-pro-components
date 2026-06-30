@@ -228,7 +228,7 @@ export default function CharacterTrailComp({ children }) {
  return (
  <div
  key={dot.id}
- className="fixed pointer-events-none rounded-full flex items-center justify-center select-none"
+ className="fixed pointer-events-none rounded-full flex items-center justify-center select-none text-[13px] font-extrabold z-9999 scale-100"
  style={{
  width: CELL_SIZE,
  height: CELL_SIZE,
@@ -236,11 +236,7 @@ export default function CharacterTrailComp({ children }) {
  top: dot.row * CELL_SIZE,
  backgroundColor: dot.color.bg,
  color: dot.color.text,
- fontSize: 13,
- fontWeight: 800,
- zIndex: 9999,
  opacity,
- transform:"scale(1)",
  animation: fading
  ?"none"
  : `charTrailPop ${SPAWN_ANIMATION}ms cubic-bezier(0.2,0.8,0.2,1)`,

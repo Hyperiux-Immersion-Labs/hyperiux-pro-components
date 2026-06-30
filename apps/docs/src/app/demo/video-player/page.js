@@ -3,14 +3,14 @@ import VideoPlayer from "@/components/video-player";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 
-export default function Page() {
-  const featurePoints = [
-    "Custom play, pause, mute, close, and progress controls",
-    "Auto-hiding controls that reappear on hover, touch, or interaction",
-    "Smooth seek bar with draggable timeline support",
-    "Responsive control sizing across desktop, tablet, and mobile",
-  ];
+const featurePoints = [
+  "Custom play, pause, mute, close, and progress controls",
+  "Auto-hiding controls that reappear on hover, touch, or interaction",
+  "Smooth seek bar with draggable timeline support",
+  "Responsive control sizing across desktop, tablet, and mobile",
+];
 
+export default function Page() {
   return (
     <>
     <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>

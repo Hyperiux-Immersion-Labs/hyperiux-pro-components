@@ -1,4 +1,4 @@
-import React from 'react'
+
 import VideoPlayerComp from './VideoPlayerComp'
 
 const VideoPlayer = () => {

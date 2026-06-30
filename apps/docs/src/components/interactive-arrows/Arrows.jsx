@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-
-class Point {
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
-  }
-}
+import { Point, lerpAngle } from './utils';
 
 class Arrow {
   constructor(position, arrowsRef) {
@@ -25,11 +19,7 @@ class Arrow {
 
     const targetAngle = Math.atan2(this.dy, this.dx) * 0.95;
 
-    // Lerp angle via shortest arc to avoid wrap-around jumps
-    let delta = targetAngle - this.angle;
-    while (delta > Math.PI) delta -= 2 * Math.PI;
-    while (delta < -Math.PI) delta += 2 * Math.PI;
-    this.angle += delta * 0.15;
+    this.angle = lerpAngle(this.angle, targetAngle, 0.15);
 
     // Check if mouse is near this arrow
     const distance = Math.sqrt(

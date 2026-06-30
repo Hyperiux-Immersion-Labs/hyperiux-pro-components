@@ -1,9 +1,8 @@
 import FishEye from '@/components/fish-eye'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
 
-export default function page() {
+export default function Page() {
     return (
         <>
         <DemoHeader />
