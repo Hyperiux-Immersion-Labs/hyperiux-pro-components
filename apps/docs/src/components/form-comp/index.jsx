@@ -1,5 +1,7 @@
 'use client'
-import ContactForm from"@/components/form/ContactForm";
+
+import ContactForm from "./ContactForm";
+
 
 const FIELDS = [
  { type:"text", name:"name", label:"Name*", required: true },
