@@ -29,9 +29,9 @@ const FLOWER_CONFIG = {
 };
 
 export default function Experience() {
- const gltf = useGLTF("/valley/camera-path07.glb");
- const sprite = useTexture("/valley/pool_summer.png");
- const terrainTex = useTexture("/valley/terrain.png");
+ const gltf = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/camera-path07.glb");
+ const sprite = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/pool_summer.png");
+ const terrainTex = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/terrain.png");
 
  const flowerSprite = useMemo(() => {
  const nextSprite = sprite.clone();
@@ -87,4 +87,4 @@ export default function Experience() {
  );
 }
 
-useGLTF.preload("/valley/camera-path07.glb");
+useGLTF.preload("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/camera-path07.glb");
