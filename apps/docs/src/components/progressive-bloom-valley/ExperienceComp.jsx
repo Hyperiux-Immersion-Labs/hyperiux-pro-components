@@ -2,8 +2,8 @@ import { useEffect, useMemo } from"react";
 import * as THREE from"three";
 import { useGLTF, useTexture } from"@react-three/drei";
 import CameraRig from"./CameraRig";
-import Flowers from"./Flowers";
 import useValleyData from"./useValleyData";
+import Flower from "./Flower";
 
 // Tweak these values to change the look of the valley
 const FLOWER_CONFIG = {
@@ -78,10 +78,10 @@ export default function Experience() {
  loopPoint: 0.85,
  }} />
  {/* Copy 1: flowers at original position */}
- <Flowers data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
+ <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
  {/* Copy 2: same flowers shifted forward — fills the gap at the end */}
  <group position={pathOffset}>
- <Flowers data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
+ <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
  </group>
  </>
  );

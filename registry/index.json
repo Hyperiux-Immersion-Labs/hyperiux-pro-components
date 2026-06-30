@@ -1538,8 +1538,8 @@
         "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
       },
       {
-        "path": "Flowers.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/Flowers.jsx"
+        "path": "Flower.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
       },
       {
         "path": "useInput.js",

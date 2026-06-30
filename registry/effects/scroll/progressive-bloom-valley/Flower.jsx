@@ -3,7 +3,7 @@ import * as THREE from"three";
 import { useFrame } from"@react-three/fiber";
 import { VERTEX, FRAGMENT } from"./shaders";
 
-export default function Flowers({ data, sprite, config }) {
+export default function Flower({ data, sprite, config }) {
  const pointsRef = useRef();
  const materialRef = useRef(null);
 
