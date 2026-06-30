@@ -17,6 +17,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/card-drift/index.jsx"
+    },
+    {
+      "path": "CardDriftComp.jsx",
+      "target": "src/components/effects/card-drift/CardDriftComp.jsx"
+    },
+    {
+      "path": "NavigationButtons.jsx",
+      "target": "src/components/effects/card-drift/NavigationButtons.jsx"
     }
   ]
 }

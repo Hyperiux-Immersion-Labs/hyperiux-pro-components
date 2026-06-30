@@ -167,7 +167,21 @@
     "tier": "pro",
     "registryPath": "registry/effects/others/card-drift/registry.json",
     "importPath": "@/components/effects/card-drift",
-    "target": "src/components/effects/card-drift"
+    "target": "src/components/effects/card-drift",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/card-drift/index.jsx"
+      },
+      {
+        "path": "CardDriftComp.jsx",
+        "target": "src/components/effects/card-drift/CardDriftComp.jsx"
+      },
+      {
+        "path": "NavigationButtons.jsx",
+        "target": "src/components/effects/card-drift/NavigationButtons.jsx"
+      }
+    ]
   },
   {
     "name": "custom-video-player",
@@ -447,7 +461,25 @@
     "tier": "pro",
     "registryPath": "registry/effects/loaders/lines-loader/registry.json",
     "importPath": "@/components/effects/lines-loader",
-    "target": "src/components/effects/lines-loader"
+    "target": "src/components/effects/lines-loader",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/lines-loader/index.jsx"
+      },
+      {
+        "path": "LinesLoading.jsx",
+        "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+      },
+      {
+        "path": "CenterLinesLoading.jsx",
+        "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+      },
+      {
+        "path": "utils.js",
+        "target": "src/components/effects/lines-loader/utils.js"
+      }
+    ]
   },
   {
     "name": "numeric-tunnel",
@@ -497,7 +529,29 @@
     "tier": "pro",
     "registryPath": "registry/effects/navigation/expanding-navbar/registry.json",
     "importPath": "@/components/effects/expanding-navbar",
-    "target": "src/components/effects/expanding-navbar"
+    "target": "src/components/effects/expanding-navbar",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/expanding-navbar/index.jsx"
+      },
+      {
+        "path": "ExpandingNavbarDesktop.jsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+      },
+      {
+        "path": "ExpandingNavbarMobile.jsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+      },
+      {
+        "path": "HoverFillLink.jsx",
+        "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+      },
+      {
+        "path": "data.js",
+        "target": "src/components/effects/expanding-navbar/data.js"
+      }
+    ]
   },
   {
     "name": "immersive-full-screen-navigation",
@@ -537,7 +591,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
     "importPath": "@/components/effects/draggable-marquee",
-    "target": "src/components/effects/draggable-marquee"
+    "target": "src/components/effects/draggable-marquee",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/draggable-marquee/index.jsx"
+      },
+      {
+        "path": "DraggableMarqueeComp.jsx",
+        "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+      }
+    ]
   },
   {
     "name": "grid-scale",
@@ -547,7 +611,13 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/grid-scale/registry.json",
     "importPath": "@/components/effects/grid-scale",
-    "target": "src/components/effects/grid-scale"
+    "target": "src/components/effects/grid-scale",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/grid-scale/index.jsx"
+      }
+    ]
   },
   {
     "name": "helix-slider",
@@ -557,7 +627,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/helix-slider/registry.json",
     "importPath": "@/components/effects/helix-slider",
-    "target": "src/components/effects/helix-slider"
+    "target": "src/components/effects/helix-slider",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/helix-slider/index.jsx"
+      },
+      {
+        "path": "HelixSliderComp.jsx",
+        "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+      }
+    ]
   },
   {
     "name": "horizontal-feature-reveal",
@@ -597,7 +677,17 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/parallax-footer/registry.json",
     "importPath": "@/components/effects/parallax-footer",
-    "target": "src/components/effects/parallax-footer"
+    "target": "src/components/effects/parallax-footer",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-footer/index.jsx"
+      },
+      {
+        "path": "ParallaxFooter.jsx",
+        "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
+      }
+    ]
   },
   {
     "name": "parallax-gallery",
@@ -607,17 +697,33 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/parallax-gallery/registry.json",
     "importPath": "@/components/effects/parallax-gallery",
-    "target": "src/components/effects/parallax-gallery"
+    "target": "src/components/effects/parallax-gallery",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-gallery/index.jsx"
+      },
+      {
+        "path": "ParallaxGallery.jsx",
+        "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
+      }
+    ]
   },
   {
-    "name": "parallax-image",
+    "name": "parallax-image-animation",
     "title": "Parallax Image",
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/scroll/parallax-image/registry.json",
-    "importPath": "@/components/effects/parallax-image",
-    "target": "src/components/effects/parallax-image"
+    "registryPath": "registry/effects/scroll/parallax-image-animation/registry.json",
+    "importPath": "@/components/effects/parallax-image-animation",
+    "target": "src/components/effects/parallax-image-animation",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/parallax-image-animation/index.jsx"
+      }
+    ]
   },
   {
     "name": "parallax-slider",
@@ -1157,7 +1263,49 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/progressive-bloom-valley/registry.json",
     "importPath": "@/components/effects/progressive-bloom-valley",
-    "target": "src/components/effects/progressive-bloom-valley"
+    "target": "src/components/effects/progressive-bloom-valley",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+      },
+      {
+        "path": "CameraRig.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+      },
+      {
+        "path": "CircularText.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+      },
+      {
+        "path": "EdgeBlurEffect.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+      },
+      {
+        "path": "Experience.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/Experience.jsx"
+      },
+      {
+        "path": "FilmGrainEffect.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+      },
+      {
+        "path": "Flowers.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/Flowers.jsx"
+      },
+      {
+        "path": "useInput.js",
+        "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+      },
+      {
+        "path": "useValleyData.js",
+        "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+      },
+      {
+        "path": "shaders.js",
+        "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+      }
+    ]
   },
   {
     "name": "strip-slider",

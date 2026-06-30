@@ -53,6 +53,10 @@
     {
       "path": "useValleyData.js",
       "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+    },
+    {
+      "path": "shaders.js",
+      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
     }
   ]
 }

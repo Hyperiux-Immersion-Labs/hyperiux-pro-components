@@ -18,6 +18,22 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/expanding-navbar/index.jsx"
+    },
+    {
+      "path": "ExpandingNavbarDesktop.jsx",
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+    },
+    {
+      "path": "ExpandingNavbarMobile.jsx",
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+    },
+    {
+      "path": "HoverFillLink.jsx",
+      "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+    },
+    {
+      "path": "data.js",
+      "target": "src/components/effects/expanding-navbar/data.js"
     }
   ]
 }
