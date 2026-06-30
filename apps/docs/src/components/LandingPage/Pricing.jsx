@@ -10,9 +10,7 @@ import React, {
 import SplitLine from "../WebsiteComps/SplitLine";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import WebsiteButton from "../WebsiteComps/Button";
-import Input from "@/components/form/Input";
-import PhoneInput from "@/components/form/PhoneInput";
-import Textarea from "@/components/form/Textarea";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { Check } from "lucide-react";
@@ -20,6 +18,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Input from "../form/Input";
+import PhoneInput from "../form/PhoneInput";
+import Textarea from "../form/Textarea";
 
 gsap.registerPlugin(ScrollTrigger);
 
