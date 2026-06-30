@@ -1,5 +1,5 @@
 {
-  "name": "parallax-image",
+  "name": "parallax-image-animation",
   "type": "registry:component",
   "title": "Parallax Image",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
@@ -11,12 +11,12 @@
   "previewUrl": "/parallax-image-animation",
   "tier": "pro",
   "main": "index.jsx",
-  "importPath": "@/components/effects/parallax-image",
-  "target": "src/components/effects/parallax-image",
+  "importPath": "@/components/effects/parallax-image-animation",
+  "target": "src/components/effects/parallax-image-animation",
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/effects/parallax-image/index.jsx"
+      "target": "src/components/effects/parallax-image-animation/index.jsx"
     }
   ]
 }
