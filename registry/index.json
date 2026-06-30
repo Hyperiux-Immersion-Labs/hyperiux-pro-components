@@ -236,22 +236,22 @@
     ]
   },
   {
-    "name": "custom-video-player",
+    "name": "video-player",
     "title": "Custom Video Player",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/custom-video-player/registry.json",
-    "importPath": "@/components/effects/custom-video-player",
-    "target": "src/components/effects/custom-video-player",
+    "registryPath": "registry/effects/components/video-player/registry.json",
+    "importPath": "@/components/effects/video-player",
+    "target": "src/components/effects/video-player",
     "files": [
       {
         "path": "index.jsx",
-        "target": "src/components/effects/custom-video-player/index.jsx"
+        "target": "src/components/effects/video-player/index.jsx"
       },
       {
         "path": "VideoPlayerComp.jsx",
-        "target": "src/components/effects/custom-video-player/VideoPlayerComp.jsx"
+        "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
       }
     ]
   },

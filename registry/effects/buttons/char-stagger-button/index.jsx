@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const DEFAULT_HREF = "#";
 const DEFAULT_STAGGER_STEP = 0.01;
@@ -9,7 +10,7 @@ const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export default function CharStaggerButton({
-  text = "",
+  btnText = "",
   href = DEFAULT_HREF,
   className = "",
   textClassName = "",
@@ -55,7 +56,7 @@ export default function CharStaggerButton({
     const textElement = textRef.current;
     if (!textElement) return;
 
-    const sourceText = text || textElement.getAttribute("data-text") || "";
+    const sourceText = btnText || textElement.getAttribute("data-text") || "";
     textElement.innerHTML = "";
 
     [...sourceText].forEach((char, index) => {
@@ -71,7 +72,7 @@ export default function CharStaggerButton({
       if (char === " ") span.style.whiteSpace = "pre";
       textElement.appendChild(span);
     });
-  }, [text, staggerStep]);
+  }, [btnText, staggerStep]);
 
   useEffect(() => {
     const textElement = textRef.current;
@@ -104,7 +105,7 @@ export default function CharStaggerButton({
   }, []);
 
   // Derived
-  const sourceText = typeof children === "string" ? children : text;
+  const sourceText = typeof children === "string" ? children :  btnText;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
@@ -112,7 +113,7 @@ export default function CharStaggerButton({
 
   // Render
   return (
-    <a href={href}
+    <Link href={href}
       {...linkProps}
       {...props}
       onClick={onClick}
@@ -164,6 +165,6 @@ export default function CharStaggerButton({
           )}
         </div>
       )}
-    </a>
+    </Link>
   );
 }

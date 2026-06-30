@@ -1,5 +1,5 @@
 {
-  "name": "@hyperiux/custom-video-player",
+  "name": "@hyperiux/video-player",
   "version": "0.0.1",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
   "main": "custom-video-player.jsx",

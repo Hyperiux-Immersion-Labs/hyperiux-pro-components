@@ -102,7 +102,7 @@ const DotFillBtn = ({
 					{btnText}
 				</span>
 			</span>
-		</a>
+		</Link>
 	);
 };
 

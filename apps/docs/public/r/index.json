@@ -1069,7 +1069,7 @@
       "exportKind": "named"
     },
     {
-      "name": "custom-video-player",
+      "name": "video-player",
       "type": "registry:component",
       "category": "components",
       "categories": [

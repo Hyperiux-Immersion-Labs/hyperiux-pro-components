@@ -210,8 +210,8 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                         <img
                             src={displayItem.image}
                             alt={displayItem.name}
-                            fill
-                            className="object-cover object-top grayscale"
+                            
+                            className="object-cover w-full h-full object-top grayscale"
                         />
                     </div>
                 </div>
@@ -240,8 +240,8 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                                 <img
                                     src={displayItem.image}
                                     alt={displayItem.name}
-                                    fill
-                                    className="object-cover object-top grayscale"
+                                    
+                                    className="object-cover w-full h-full object-top grayscale"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">

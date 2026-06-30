@@ -447,7 +447,7 @@ async function loadVideoSource(source) {
 
 /* ── component  */
 export default function DitherCanvas({
-  videoSrc = "https://picsum.photos/seed/1/800/600",
+  videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 
   /**
    * Lower number = bigger binary characters.

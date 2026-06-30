@@ -80,11 +80,6 @@
     "tarball": "registry/dist/hyperiux-animated-faq-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/custom-video-player",
-    "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-custom-video-player-0.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/depth-card-stack",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-depth-card-stack-0.0.1.tgz"
@@ -118,6 +113,11 @@
     "name": "@hyperiux/testimonial-swiper",
     "version": "0.0.1",
     "tarball": "registry/dist/hyperiux-testimonial-swiper-0.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/video-player",
+    "version": "0.0.1",
+    "tarball": "registry/dist/hyperiux-video-player-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/butterfly-trail-cursor",
