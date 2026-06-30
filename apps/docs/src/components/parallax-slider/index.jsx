@@ -137,7 +137,7 @@ function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  clipPath:"inset(0 100% 0 0)",
  }}
  >
- <img src={src} alt={`Slide ${i + 1} className="absolute inset-0 object-cover parallax-img" draggable={false} />
+ <img src={src} alt={`Slide ${i + 1}`} className="absolute inset-0 object-cover parallax-img" draggable={false} />
 
  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
  </div>
@@ -149,4 +149,4 @@ function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  );
 }
 
-export { ParallaxImgSlider as ParallaxSlider };
+export default ParallaxImgSlider;

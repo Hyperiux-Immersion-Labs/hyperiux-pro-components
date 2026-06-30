@@ -8,7 +8,7 @@
   ],
   "registryDependencies": [],
   "exportName": "InertiaImg",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
       "path": "inertia-img.jsx",

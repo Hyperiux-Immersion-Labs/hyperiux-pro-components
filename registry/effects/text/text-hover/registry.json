@@ -1,7 +1,7 @@
 {
-  "name": "text-hover-expand",
+  "name": "text-hover",
   "type": "registry:component",
-  "title": "Text Hover Expand",
+  "title": "Text Hover",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
   "category": "text",
   "dependencies": [
@@ -11,16 +11,16 @@
   "previewUrl": "/text-hover",
   "tier": "pro",
   "main": "index.jsx",
-  "importPath": "@/components/effects/text-hover-expand",
-  "target": "src/components/effects/text-hover-expand",
+  "importPath": "@/components/effects/text-hover",
+  "target": "src/components/effects/text-hover",
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/effects/text-hover-expand/index.jsx"
+      "target": "src/components/effects/text-hover/index.jsx"
     },
     {
       "path": "TextHoverComp.jsx",
-      "target": "src/components/effects/text-hover-expand/TextHoverComp.jsx"
+      "target": "src/components/effects/text-hover/TextHoverComp.jsx"
     }
   ]
 }

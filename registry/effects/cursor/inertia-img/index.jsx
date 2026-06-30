@@ -135,3 +135,4 @@ function InertiaImage({ images = [] }) {
 }
 
 export { InertiaImage as InertiaImg };
+export default InertiaImage;

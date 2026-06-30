@@ -1,10 +1,11 @@
 {
-  "name": "@hyperiux/text-hover-expand",
+  "name": "@hyperiux/text-hover",
   "version": "0.0.1",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
-  "main": "text-hover-expand.jsx",
+  "main": "index.jsx",
   "files": [
-    "text-hover-expand.jsx",
+    "index.jsx",
+    "TextHoverComp.jsx",
     "registry.json"
   ],
   "keywords": [

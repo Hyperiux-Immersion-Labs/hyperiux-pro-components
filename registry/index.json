@@ -880,14 +880,14 @@
     "target": "src/components/effects/text-fill-animation"
   },
   {
-    "name": "text-hover-expand",
-    "title": "Text Hover Expand",
+    "name": "text-hover",
+    "title": "Text Hover",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/text/text-hover-expand/registry.json",
-    "importPath": "@/components/effects/text-hover-expand",
-    "target": "src/components/effects/text-hover-expand"
+    "registryPath": "registry/effects/text/text-hover/registry.json",
+    "importPath": "@/components/effects/text-hover",
+    "target": "src/components/effects/text-hover"
   },
   {
     "name": "text-stream",
