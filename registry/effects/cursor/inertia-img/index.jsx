@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef } from"react";
-import Image from"next/image";
 import { gsap } from"gsap";
 import { InertiaPlugin } from"gsap/InertiaPlugin";
 
@@ -127,13 +126,7 @@ function InertiaImage({ images = [] }) {
  key={i}
  className="media-item relative h-[11vw] w-[11vw] max-sm:h-[35vw] max-sm:w-[35vw]"
  >
- <Image
- src={src}
- alt="asset-image"
- fill
- sizes="(max-width: 640px) 35vw, 11vw"
- className="pointer-events-none block rounded-[4%] object-contain will-change-transform"
- />
+ <img src={src} alt="asset-image" className="absolute inset-0 pointer-events-none block rounded-[4%] object-contain will-change-transform" />
  </div>
  ))}
  </div>

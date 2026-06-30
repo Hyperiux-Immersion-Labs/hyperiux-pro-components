@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from"react";
-import Image from"next/image";
 import * as THREE from"three";
 import Lenis from"lenis";
 import gsap from"gsap";
@@ -288,8 +287,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
 transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
 }}
  >
- <Image  src={item.url}  className="w-full h-full object-cover"  alt={item.description}  fill
- />
+ <img src={item.url} alt={item.description} className="absolute inset-0 w-full h-full object-cover" />
  </div>
  );
  })}

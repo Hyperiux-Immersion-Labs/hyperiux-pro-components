@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef } from"react";
 import gsap from"gsap";
 import ScrollTrigger from"gsap/ScrollTrigger";
 import { useLenis } from"lenis/react";
-import Image from"next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -126,7 +125,7 @@ export default function StackingCardComp({ data = [] }) {
 
  return (
  <section
- className="relative z-0 h-(--stack-height) w-full"
+ className="relative z-0 h-[var(--stack-height)] w-full"
  style={{"--stack-height": `${data.length * 100}vh` }}
  >
  <div
@@ -161,11 +160,11 @@ const SliderCard = ({
  return (
  <div
  className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center ${backgroundColor}
- max-sm:min-h-svh max-md:flex-col max-md:justify-start max-sm:py-8`}
+ max-sm:min-h-[100svh] max-md:flex-col max-md:justify-start max-sm:py-8`}
  >
  <div
- className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4.5vw] max-md:py-28
- max-md:w-full max-md:px-7   max-sm:px-5 max-sm:py-6"
+ className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-md:py-28
+ max-md:w-full max-md:w-[80%]  max-sm:px-5 max-sm:py-6"
  >
  <div>
  <h2
@@ -178,13 +177,7 @@ const SliderCard = ({
 
  <div className="mb-6 hidden h-[42svh] w-full max-md:block">
  <div className="h-full max-sm:w-full overflow-hidden max-md:w-[80%] max-md:mx-auto max-sm:rounded-[6vw] max-md:rounded-[3vw]">
- <Image
- width={1000}
- height={1000}
- src={image}
- alt={title}
- className="h-full w-full object-cover"
- />
+ <img src={image} alt={title} className="h-full w-full object-cover" />
  </div>
  </div>
 
@@ -200,7 +193,7 @@ const SliderCard = ({
  </div>
 
  <div
- className="flex grow flex-col justify-center space-y-[2vw]
+ className="flex flex-grow flex-col justify-center space-y-[2vw]
  max-sm:space-y-3"
  >
  <h3
@@ -224,13 +217,7 @@ const SliderCard = ({
  max-md:hidden"
  >
  <div className="h-full w-full overflow-hidden rounded-[2vw]">
- <Image
- width={1000}
- height={1000}
- src={image}
- alt={title}
- className="card-image h-full w-full rounded-[2vw] object-cover"
- />
+ <img src={image} alt={title} className="card-image h-full w-full rounded-[2vw] object-cover" />
  </div>
  </div>
  </div>

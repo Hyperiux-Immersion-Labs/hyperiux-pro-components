@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, useCallback } from"react";
-import Image from"next/image";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/ScrollTrigger";
 import { useLenis } from"lenis/react";
@@ -279,16 +278,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  filter:"none",
  }}
  >
- <Image
- src={slide.src}
- alt={slide.id}
- fill
- quality={100}
- style={{ objectFit:"cover", borderRadius: 0, filter:"none" }}
- sizes={`${slideW}px`}
- priority={i === 0}
- draggable={false}
- />
+ <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
  </div>
  </div>
  ))}
@@ -354,15 +344,7 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
  borderRadius: 0,
  }}
  >
- <Image
- src={slide.src}
- alt={slide.id}
- fill
- quality={100}
- style={{ objectFit:"cover", borderRadius: 0, filter:"none" }}
- draggable={false}
- sizes={`${thumbW}px`}
- />
+ <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
  </div>
  ))}
  </div>
