@@ -361,14 +361,14 @@ export default function FeaturedStoryTelling() {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    8.0 + i * 0.15
+                    7.5 + i * 0.15
                 );
             });
             BOTTOM_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
                     { xPercent: 0, duration: 1.5, ease: "power2.out" },
-                    8.5 + i * 0.15
+                    8 + i * 0.15
                 );
             });
         }, section);
