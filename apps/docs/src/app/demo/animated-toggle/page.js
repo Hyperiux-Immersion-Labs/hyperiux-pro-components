@@ -4,7 +4,7 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import AnimatedToggle from "@/components/animated-toggle";
 import Image from "next/image";
 
-export default function AnimatedTogglePage() {
+export default function Page() {
   return (
     <>
     <DemoHeader textColor="white" logoColor="white" />
@@ -14,8 +14,12 @@ export default function AnimatedTogglePage() {
             <h1 className="text-[5vw] text-white max-sm:text-[11vw] max-md:text-[7vw] max-sm:text-center">
               Animated Toggle
             </h1>
-            <p className="text-[1.2vw] max-sm:text-[4.5vw] max-md:text-[3vw]">
+            <p className="text-[1.2vw] max-md:hidden max-sm:text-[4.5vw] max-md:text-[3vw]">
               Hover over and click to see the effect for hovered and active
+              state of the toggles below
+            </p>
+            <p className="text-[1.2vw] max-md:block hidden max-sm:text-[4.5vw] max-md:text-[3vw]">
+              Click to see the effect for hovered and active
               state of the toggles below
             </p>
           </div>

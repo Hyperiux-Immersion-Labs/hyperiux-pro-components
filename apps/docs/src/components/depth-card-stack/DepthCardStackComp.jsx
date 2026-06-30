@@ -38,27 +38,6 @@ function computeSlot(cardIdx, centerIdx, total) {
  return null;
 }
 
-function useCountdown(targetDate) {
- const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 });
-  useEffect(() => {
-    if (!targetDate) return;
-    const tick = () => {
-      const diff = Math.max(0, Math.floor((targetDate.getTime() - Date.now()) / 1000));
-      setTime({
-        d: Math.floor(diff / 86400),
-        h: Math.floor((diff % 86400) / 3600),
-        m: Math.floor((diff % 3600) / 60),
-        s: diff % 60,
-      });
-    };
-    queueMicrotask(() => {
-      tick();
-    });
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
- return time;
-}
 
 export default function DepthCardStackComp({ cards }) {
  const cardRefs = useRef([]);
@@ -70,11 +49,6 @@ export default function DepthCardStackComp({ cards }) {
  const timelineRef = useRef(null);
  const [autoplayResetKey, setAutoplayResetKey] = useState(0);
  const [claimedText, setClaimedText] = useState(cards[0].claimedText);
- const [presaleEnd] = useState(
- () => new Date(Date.now() + (2 * 86400 + 16 * 3600 + 36 * 60 + 57) * 1000)
- );
- const countdown = useCountdown(presaleEnd);
- const pad = (n) => String(n).padStart(2,"0");
  const [isMobile, setIsMobile] = useState(false);
  const [isTablet, setIsTablet] = useState(false);
  const [isStackReady, setIsStackReady] = useState(false);

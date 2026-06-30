@@ -3,9 +3,6 @@ import Image from "next/image";
 import MaskTextReveal from "@/components/mask-text-reveal";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 
-
-
-
 const notes = [
   "Masked line splitting",
   "Scrubbed scroll timing",

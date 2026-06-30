@@ -6,6 +6,7 @@ import { SplitText } from "gsap/SplitText";
 import { useFadeUp } from "../Animations/gsapAnimations";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
+import ShimmerText from "../WebsiteComps/ShimmerText";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
@@ -38,7 +39,6 @@ export default function Hero() {
   const pRef = useRef(null);
   const buttonWrapRef = useRef(null);
   const shimmerTextWrapRef = useRef(null);
-  const shimmerRef = useRef(null);
 
   useFadeUp();
 
@@ -71,53 +71,6 @@ export default function Hero() {
       cancelAnimationFrame(rafTwo);
       window.clearTimeout(timeout);
       window.history.scrollRestoration = previousScrollRestoration;
-    };
-  }, []);
-
-  useLayoutEffect(() => {
-    const shimmerEl = shimmerRef.current;
-
-    if (!shimmerEl) return;
-
-    gsap.set(shimmerEl, {
-      color: "transparent",
-      backgroundImage:
-        "linear-gradient(90deg, #939393 0%, #939393 42%, #ffffff 50%, #939393 58%, #939393 100%)",
-      backgroundSize: "130% 100%",
-      backgroundPosition: "120% 0%",
-      backgroundClip: "text",
-      WebkitBackgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-      willChange: "background-position",
-    });
-
-    const shimmerTimeline = gsap.timeline({
-      repeat: -1,
-    });
-
-    shimmerTimeline
-      .set(shimmerEl, {
-        backgroundPosition: "250% 0%",
-      })
-      .to(shimmerEl, {
-        backgroundPosition: "-150% 0%",
-        duration: 2,
-        ease: "none",
-      })
-      .to(
-        {},
-        {
-          duration: 2,
-        }
-      );
-
-    return () => {
-      shimmerTimeline.kill();
-
-      gsap.set(shimmerEl, {
-        clearProps:
-          "color,backgroundImage,backgroundSize,backgroundPosition,backgroundClip,WebkitBackgroundClip,WebkitTextFillColor,willChange",
-      });
     };
   }, []);
 
@@ -436,9 +389,9 @@ export default function Hero() {
             <UnlockIcon className="h-full w-full" />
           </span>
 
-          <span ref={shimmerRef}>
+          <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
             30+ effects free, forever. No credit card.
-          </span>
+          </ShimmerText>
         </p>
       </div>
     </section>

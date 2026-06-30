@@ -126,7 +126,7 @@
       "exportKind": "named"
     },
     {
-      "name": "parallax-image",
+      "name": "parallax-image-animation",
       "type": "registry:component",
       "category": "scroll",
       "categories": [

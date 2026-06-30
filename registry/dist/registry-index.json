@@ -305,9 +305,9 @@
     "tarball": "registry/dist/hyperiux-parallax-gallery-0.0.1.tgz"
   },
   {
-    "name": "@hyperiux/parallax-image",
+    "name": "@hyperiux/parallax-image-animation",
     "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-parallax-image-0.0.1.tgz"
+    "tarball": "registry/dist/hyperiux-parallax-image-animation-0.0.1.tgz"
   },
   {
     "name": "@hyperiux/parallax-slider",

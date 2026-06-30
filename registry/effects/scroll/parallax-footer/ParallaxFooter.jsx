@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from"react";
 
 const FooterParallax = ({
  children,
@@ -44,7 +44,7 @@ const FooterParallax = ({
  return (
  <div
  id={id}
- className={`w-screen relative z-[1] ${outerClassName}`}
+ className={`w-screen relative z-1 ${outerClassName}`}
  style={{
  height,
  clipPath:"rect(0px, 100%, 100%, 0px)",

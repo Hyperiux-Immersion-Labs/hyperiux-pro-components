@@ -5,7 +5,6 @@ import { CustomEase } from "gsap/CustomEase";
 
 gsap.registerPlugin(CustomEase);
 
-import Link from "next/link";
 
 function HoverFillLink({ href, children, className = "", isActive, ...props }) {
     const text = typeof children === "string" ? children : "";
@@ -19,7 +18,7 @@ function HoverFillLink({ href, children, className = "", isActive, ...props }) {
                 {...props}
             >
                 {children}
-            </Link>
+            </a>
 
             <style jsx global>{`
                 @media (prefers-reduced-motion: reduce) {
@@ -451,7 +450,7 @@ export default function ExpandingNavbar() {
                                     autoPlay
                                     loop
                                     muted
-                                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
+                                    src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                                 />
                             </div>
                             <p>Show Reel</p>

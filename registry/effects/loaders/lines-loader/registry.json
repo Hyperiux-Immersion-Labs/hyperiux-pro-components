@@ -19,8 +19,16 @@
       "target": "src/components/effects/lines-loader/index.jsx"
     },
     {
-      "path": "line-reveal-loader.jsx",
-      "target": "src/components/effects/lines-loader/line-reveal-loader.jsx"
+      "path": "LinesLoading.jsx",
+      "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+    },
+    {
+      "path": "CenterLinesLoading.jsx",
+      "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+    },
+    {
+      "path": "utils.js",
+      "target": "src/components/effects/lines-loader/utils.js"
     }
   ]
 }

@@ -11,6 +11,7 @@ const buttonTv = tv({
       orange: "bg-primary text-white border border-primary",
       black: "bg-black text-white border border-background",
       white: "bg-white text-black border border-foreground",
+      outline: "bg-[#F0F0F0] text-background border border-background",
     },
   },
   defaultVariants: {
@@ -49,11 +50,11 @@ export default function Button({
 }) {
   const styles = buttonTv({ variant, className });
 
-  const circleColorClass = variant === "white" ? "bg-black" : "bg-white";
+  const circleColorClass = variant === "outline" ? "bg-background" : (variant === "white" ? "bg-black" : "bg-white");
 
   const hoverTextClass =
     hoverTextClassName ||
-    (variant === "white" ? "group-hover:text-white" : "group-hover:text-black");
+    (variant === "white" || variant === "outline" ? "group-hover:text-white" : "group-hover:text-black");
 
   const handleClick = (event) => {
     if (preventDefault || disabled) {

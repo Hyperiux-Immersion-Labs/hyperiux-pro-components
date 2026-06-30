@@ -1,17 +1,6 @@
 import React from 'react'
 import DepthCardStackComp from './DepthCardStackComp';
 
-
-const DepthCardStack = () => {
-  return (
-   <>
-   <DepthCardStackComp cards={cards}/>
-   </>
-  )
-}
-
-export default DepthCardStack
-
 const cards = [
  { name:"Hyperiux Core", num:"0772", joined:"Apr 20, 2026", color:"#41431B", claimedText:"Alexander claimed 2 hours ago", textureImage:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern03.png" },
  { name:"UI Flux Engine", num:"0771", joined:"Apr 20, 2026", color:"#C084FC", claimedText:"Travis claimed 5 hours ago", textureImage:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern02.png" },
@@ -24,3 +13,13 @@ const cards = [
  { name:"Quantum Cards", num:"0764", joined:"Apr 20, 2026", color:"#A78BFA", claimedText:"Exo Des claimed 3 hours ago", textureImage:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern04.png" },
  { name:"Hype Components", num:"0763", joined:"Apr 20, 2026", color:"#F472B6", claimedText:"Frank Lee claimed 1 hour ago", textureImage:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern05.png" },
 ];
+
+const DepthCardStack = () => {
+  return (
+    <>
+      <DepthCardStackComp cards={cards} />
+    </>
+  )
+}
+
+export default DepthCardStack
