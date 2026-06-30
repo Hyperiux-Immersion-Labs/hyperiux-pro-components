@@ -5,9 +5,9 @@ export default function InfinitePerspectiveSlider() {
     
     return (
         <>
-            <div className=" bg-white h-screen flex flex-col justify-center gap-20">
+            <div className=" bg-white h-screen  pt-8 max-md:pt-20 max-sm:gap-10 max-md:gap-20 max-md:justify-start flex flex-col justify-start gap-8">
                 <div className="w-full px-[7vw] flex flex-col pt-15 max-md:pt-10 gap-[1vw] text-[#111111] items-center text-center">
-                    <h1 className="text-[5vw] max-sm:lg:text-[7vw] max-sm:text-[11vw]">
+                    <h1 className="text-[5vw] leading-[1.2]  max-md:text-[7vw] max-sm:text-[11vw]">
                         Infinite Perspective Slider
                     </h1>
                     <p className="text-base max-sm:text-sm">
