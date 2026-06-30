@@ -125,10 +125,13 @@ const generatePages = (imageArray) => {
 /**
  * Preload textures for better performance
  */
+const resolveTexturePath = (name, pathPattern) =>
+ name.startsWith("http") ? name : `${pathPattern}/${name}.png`;
+
 const preloadTextures = (pages, pathPattern) => {
  pages.forEach((page) => {
- useTexture.preload(`${pathPattern}/${page.front}.png`);
- useTexture.preload(`${pathPattern}/${page.back}.png`);
+ useTexture.preload(resolveTexturePath(page.front, pathPattern));
+ useTexture.preload(resolveTexturePath(page.back, pathPattern));
  });
 };
 
@@ -145,8 +148,8 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  pathPattern,
  pages,
  ...props }) => {
- const frontPath = `${pathPattern}/${front}.png`;
- const backPath = `${pathPattern}/${back}.png`;
+ const frontPath = resolveTexturePath(front, pathPattern);
+ const backPath = resolveTexturePath(back, pathPattern);
 
  const [frontTexture, backTexture] = useTexture([frontPath, backPath]);
 
