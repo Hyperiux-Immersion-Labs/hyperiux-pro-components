@@ -1,9 +1,45 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
+import gsap from "gsap";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
+
+const DIGITS = [...Array(10).keys()];
+
+const PriceDigit = memo(({ digit, visible = true }) => {
+    const containerRef = useRef(null);
+    const hasMounted = useRef(false);
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+        const target = `-${parseInt(digit, 10) * 10}%`;
+        if (!hasMounted.current) {
+            gsap.set(containerRef.current, { y: target });
+            hasMounted.current = true;
+        } else {
+            gsap.to(containerRef.current, { y: target, duration: 0.55, ease: "power3.out" });
+        }
+    }, [digit]);
+
+    return (
+        <span
+            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300"
+            style={{ width: visible ? "0.64em" : "0", opacity: visible ? 1 : 0 }}
+        >
+            <span ref={containerRef} className="flex flex-col will-change-transform">
+                {DIGITS.map((d) => (
+                    <span key={d} className="flex h-[1em] items-center justify-center leading-none">
+                        {d}
+                    </span>
+                ))}
+            </span>
+        </span>
+    );
+});
+
+PriceDigit.displayName = "PriceDigit";
 
 const freeFeatures = [
     "30+ production-ready effects",
@@ -89,7 +125,12 @@ export default function Pricing() {
                         <ShimmerText as="p" className="text24 font-medium -mt-[1vw]">Most Popular</ShimmerText>
 
                         <div className="flex gap-[1vw] items-end">
-                            <p className="text110">${isYearly ? "170" : "20"}</p>
+                            <p className="text110 flex items-center">
+                                <span>$</span>
+                                <PriceDigit digit="1" visible={isYearly} />
+                                <PriceDigit digit={isYearly ? "7" : "2"} />
+                                <PriceDigit digit="0" />
+                            </p>
                             <p className="text24 mb-[1vw]">{isYearly ? "Yearly" : "Monthly"}</p>
                             <p className={`text34 mb-[.75vw] ml-[1vw] text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}>3 Months Free</p>
                         </div>

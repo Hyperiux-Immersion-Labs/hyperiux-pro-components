@@ -36,6 +36,7 @@ const groups = [
 export default function ForDevelopers() {
     const containerRef = useRef(null)
     const accordionRef = useRef(null)
+    const headingRef = useRef(null)
 
     useEffect(() => {
         let splits = []
@@ -139,6 +140,14 @@ export default function ForDevelopers() {
                 }
             }
 
+            tl.fromTo(headingRef.current,{
+                yPercent:70,
+            }, {
+                yPercent: 10,
+                duration: cardData.length - 1,
+                ease: 'none'
+            }, 0)
+
         }, containerRef)
 
         return () => {
@@ -151,7 +160,7 @@ export default function ForDevelopers() {
         <div ref={containerRef}>
             <section ref={accordionRef} className='h-[300vh] w-full relative'>
                 <div className='h-screen w-full overflow-hidden self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
-                    <h2 className='w-[33vw] font-medium text64 h-fit max-md:w-full tracking-tight leading-[1.1]'>
+                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-md:w-full tracking-tight leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
 

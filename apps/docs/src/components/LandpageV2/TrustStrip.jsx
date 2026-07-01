@@ -1,7 +1,7 @@
 "use client"
 import gsap from "gsap";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import MaskTextReveal from "../mask-text-reveal";
 
 const MotionMark = ({ className }) => (
@@ -90,6 +90,7 @@ const StatCard = ({
 };
 
 export default function TrustStrip() {
+    const paragraphText = useRef()
     useEffect(() => {
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -98,6 +99,7 @@ export default function TrustStrip() {
                 end: "bottom top",
                 // markers:true,
                 scrub: true
+                
             }
         })
         tl.to(".strip-1", {
@@ -108,6 +110,10 @@ export default function TrustStrip() {
             yPercent: -20,
             ease: "none"
         }, "<")
+        tl.to(paragraphText.current,{
+            yPercent:20,
+            ease:'none',
+        },"<")
     }, [])
     return (
         <section className="relative w-full z-10 px-[5vw] py-[8vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20" id="trust-strip">
@@ -116,7 +122,7 @@ export default function TrustStrip() {
             <div className="relative flex justify-between w-full h-fit pr-[4vw]">
                 <div className="sticky h-fit top-[12vh] max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[75vw] max-md:text-[6vw] max-sm:max-w-full max-sm:text-[9vw]">
+                        <h2 ref={paragraphText} className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[75vw] max-md:text-[6vw] max-sm:max-w-full max-sm:text-[9vw]">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>
