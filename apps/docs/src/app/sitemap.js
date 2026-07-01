@@ -1,7 +1,10 @@
 import { TECHNOLOGIES } from "@/components/Tech/tech-data";
 import { getEffectCategoryBySlug, getEffectHref } from "@/lib/categories";
-import { getRegistryIndex, getEffectsByCategory } from "@/lib/registry";
-import { applySanityCategorySlugs, getAllSanityEffectEntries } from "@/lib/sanity";
+import {
+  getAllSanityEffectEntries,
+  buildEffectsFromSanity,
+  getEffectsByCategoryFromSanity,
+} from "@/lib/sanity";
 import { homepage } from "@/lib/util";
 
 const staticRoutes = [
@@ -28,11 +31,11 @@ function toSitemapEntry({ path, changeFrequency, priority }) {
 }
 
 export default async function sitemap() {
-  const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = applySanityCategorySlugs(registry.items, sanityEntries);
+  const effects = buildEffectsFromSanity(sanityEntries);
+  const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
 
-  const categoryRoutes = Object.keys(getEffectsByCategory()).map((categorySlug) => {
+  const categoryRoutes = Object.keys(categoriesMap).map((categorySlug) => {
     const category = getEffectCategoryBySlug(categorySlug);
 
     return {

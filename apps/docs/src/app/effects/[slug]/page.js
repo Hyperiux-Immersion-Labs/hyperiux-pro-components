@@ -5,11 +5,14 @@ import {
   getEffectCategoryContent,
   getEffectCategoryMetadata,
 } from "@/lib/categories";
-import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
-import { mergeRegistryWithSanity, getAllSanityEffectEntries } from "@/lib/sanity";
+import {
+  getAllSanityEffectEntries,
+  buildEffectsFromSanity,
+  getEffectsByCategoryFromSanity,
+} from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
@@ -21,15 +24,15 @@ function VaultFallback() {
 }
 
 export async function generateStaticParams() {
-  const slugs = new Set();
+  const entries = await getAllSanityEffectEntries();
+  const slugs = new Set(["free", "featured"]);
 
-  slugs.add("free");
-  slugs.add("featured");
-
-  for (const categorySlug of Object.keys(getEffectsByCategory())) {
-    const category = getEffectCategoryBySlug(categorySlug);
-    slugs.add(categorySlug);
-    slugs.add(category?.slug || categorySlug);
+  for (const entry of entries) {
+    if (entry.categorySlug) {
+      const category = getEffectCategoryBySlug(entry.categorySlug);
+      slugs.add(entry.categorySlug);
+      slugs.add(category?.slug || entry.categorySlug);
+    }
   }
 
   return [...slugs].map((slug) => ({ slug }));
@@ -57,20 +60,17 @@ export default async function EffectsCategoryPage({ params }) {
   const isFreeListing = slug === "free";
   const isFeaturedListing = slug === "featured";
   const category = getEffectCategoryBySlug(slug);
-  const categoriesMap = getEffectsByCategory();
   const userPlan = await getUserPlan(userId);
 
-  // Get effect counts for sidebar
-  const effectCounts = {};
-  for (const [categoryId, effects] of Object.entries(categoriesMap)) {
-    effectCounts[categoryId] = effects.length;
-  }
-
-  const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = mergeRegistryWithSanity(registry.items, sanityEntries);
+  const effects = buildEffectsFromSanity(sanityEntries);
+  const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
   const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
 
+  const effectCounts = {};
+  for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
+    effectCounts[categoryId] = catEffects.length;
+  }
   effectCounts.featured = getFeaturedEffects(sortedEffects).length;
 
   if (!isFreeListing && !isFeaturedListing && (!category || !categoriesMap[category.id])) {

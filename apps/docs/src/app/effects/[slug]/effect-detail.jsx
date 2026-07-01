@@ -43,7 +43,7 @@ function SkeletonBlock({ className = "" }) {
         "relative overflow-hidden bg-[#272727]",
         "before:absolute before:inset-0 before:-translate-x-full",
         "before:animate-[shimmer_1.4s_infinite]",
-        "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+        "before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent",
         className,
       ].join(" ")}
     />
@@ -994,9 +994,16 @@ function CalloutCardGrid({ body = [] }) {
   );
 }
 
-function LockedCodePlaceholder({ filename, language = "jsx" }) {
+function LockedCodePlaceholder({ filename }) {
   const { isSignedIn } = useUser();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const teaserLines = [
+    "const premiumSnippet = unlock({ technique: 'inspect-element-jutsu' });",
+    "if (devtools.open) throw new Error('nice try, detective');",
+    "console.log('inspect will not work every time, boss');",
+    "const fallbackPlan = subscribe({ reason: 'time saved > ego' });",
+    "return 'blurred until your Pro arc begins';",
+  ];
 
   const handleUpgrade = async () => {
     setCheckoutLoading(true);
@@ -1014,59 +1021,77 @@ function LockedCodePlaceholder({ filename, language = "jsx" }) {
     }
   };
 
+  const title = filename ? `${filename} is Locked` : "Pro Source Code is Locked";
+
   return (
-    <section className="fadeup overflow-hidden rounded-xl border border-white/10 bg-[#171717] text-white shadow-[0_24px_80px_rgba(0,0,0,0.28)]">
-      <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#202020] px-5 py-3 max-sm:flex-col max-sm:items-start">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-            <LockKeyhole className="h-4 w-4" strokeWidth={1.8} />
-          </span>
-
-          <div className="min-w-0 flex flex-col items-start justify-between space-y-[-1vw]!">
-            <p className="text-sm font-medium text-white">
-              Pro source code locked
+    <section className="fadeup relative min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 "
+      />
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        
+        <div className="absolute left-2 top-0 max-md:top-3 max-md:left-3 max-sm:top-5 max-sm:left-0 px-6 py-5 text-[11px] leading-6 text-white max-sm:text-[10px]">
+          {teaserLines.map((line, index) => (
+            <p
+              key={`${line}-${index}`}
+              className="whitespace-nowrap  blur-md select-none"
+            >
+              <span className="mr-3 text-primary">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              {line}
             </p>
-
-            <p className="truncate text-xs text-white/45">
-              {`Protected ${language.toUpperCase()} snippet`}
-            </p>
-          </div>
+          ))}
+          <p className="mt-4 whitespace-nowrap blur-md  text-[#9ad0ff]/25 select-none">
+            {"// inspect won't work every time... time to subscribe ;)"}
+          </p>
+          <p className="whitespace-nowrap blur-md  text-[#b7ffb0]/25 select-none">
+            {"export default function AccessDenied() {}"}
+          </p>
         </div>
-
-        {isSignedIn ? (
-          <button
-            type="button"
-            onClick={handleUpgrade}
-            disabled={checkoutLoading}
-            className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-wait disabled:opacity-70"
-          >
-            {checkoutLoading ? "Loading…" : "Upgrade to Pro"}
-          </button>
-        ) : (
-          <Link
-            href="/sign-up?redirect_url=/pricing"
-            className="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
-          >
-            Sign Up to Unlock
-          </Link>
-        )}
       </div>
 
-      <div className="relative p-5">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#171717]/50 to-[#171717]" />
+      <div className="relative z-10 min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] flex rounded-md  flex-col items-center justify-center gap-2  bg-white/5 px-8 py-6 text-center  max-sm:px-6">
+        <LockKeyhole className="h-16 w-16 text-white" strokeWidth={1.2} />
 
-        <div className="space-y-3 opacity-55 blur-[1px]">
-          <div className="h-3 w-4/5 rounded-full bg-white/12" />
-          <div className="h-3 w-3/5 rounded-full bg-white/10" />
-          <div className="h-3 w-11/12 rounded-full bg-white/12" />
-          <div className="h-3 w-2/3 rounded-full bg-white/10" />
-          <div className="h-3 w-5/6 rounded-full bg-white/12" />
+        <div className="flex flex-col items-center gap-0">
+          <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
+            {title}
+          </h3>
+
+          <p className="max-w-lg text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">
+            Subscribe to Hyperiux Pro to access this source code and 100+ others.
+           
+          </p>
+         
         </div>
 
-        <div className="relative z-10 mt-7 rounded-lg border border-white/10 bg-black/30 p-4 text-sm leading-relaxed text-white/70">
-          You can read the full implementation notes for this Pro effect. The
-          copy-paste source code is available after upgrading.
+        <div className="flex flex-wrap items-center pt-3 max-md:pt-6 justify-center gap-3">
+          {isSignedIn ? (
+            <Button
+              text={checkoutLoading ? "Loading…" : "Upgrade to Pro"}
+              href="#"
+              variant="orange"
+              preventDefault
+              onClick={handleUpgrade}
+              disabled={checkoutLoading}
+            />
+          ) : (
+            <Button
+              text="Sign in"
+              href="/sign-in"
+              variant="orange"
+              className="shrink-0"
+              hoverTextClassName='group-hover:text-black!'
+              
+            />
+          )}
+
+        
         </div>
+
+        
       </div>
     </section>
   );
