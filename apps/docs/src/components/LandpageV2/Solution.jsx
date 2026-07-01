@@ -35,8 +35,8 @@ const Solution = () => {
                 {/* <Image src={"/assets/homepage/code-blocks.png"} alt='code block' className='w-full h-full object-contain' width={1920} height={1080}/> */}
                 <CodeBlockWorkflow/>
                 
-            <div className='flex w-full justify-end mt-[2vw]'>
-                <p className="pl-[0.65vw] text-24 leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm">
+            <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
+                <p className="pl-[0.65vw] text24 max-sm:leading-[1.2] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm">
               That’s the whole workflow. The files land in your project. You
               change anything you want.{" "}
               <Link href={"/effects"} className="underline underline-offset-4">

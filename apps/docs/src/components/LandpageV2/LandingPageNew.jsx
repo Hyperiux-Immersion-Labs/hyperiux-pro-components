@@ -162,10 +162,10 @@ export default function LandingPageNew() {
         <SmallMotion />
         <ForDevelopers />
         <StripTransition />
-        <Pricing />
+        {/* <Pricing /> */}
         <FAQs faqItems={faqItems} />
-        <CTA />
-        <Footer />
+        {/* <CTA /> */}
+        {/* <Footer /> */}
 
 
       </VaultShell>
