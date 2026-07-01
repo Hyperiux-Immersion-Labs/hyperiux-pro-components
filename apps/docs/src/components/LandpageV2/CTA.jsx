@@ -23,7 +23,7 @@ export default function CTA() {
     }, [])
 
     return (
-        <section ref={ctaRef} id='CTA' className='h-fit gap-[8vw] max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-start  justify-between max-md:gap-[8vw] flex-col bg-grey text-foreground self-padd relative z-500 w-full  py-[6vw]!'>
+        <section ref={ctaRef} id='CTA' className='h-fit gap-[7vw] max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-start  justify-between max-md:gap-[8vw] flex-col bg-grey text-foreground self-padd relative z-500 w-full  py-[6vw]!'>
             <h2 className='text110 relative z-2'>Need more than a component? We build the whole interaction.</h2>
             <div className='space-y-[2.5vw] relative z-2'>
 
@@ -35,7 +35,7 @@ export default function CTA() {
 
             </div>
             
-            <div className='h-[20vw] z-0 w-[65vw] absolute bottom-0 right-0 pointer-events-none flex justify-between items-end'>
+            <div className='h-[18vw] z-0 w-[65vw] absolute bottom-0 right-0 pointer-events-none flex justify-between items-end'>
                 {Array.from({ length: 75 }).map((_, i) => (
                     <div 
                         key={i} 
