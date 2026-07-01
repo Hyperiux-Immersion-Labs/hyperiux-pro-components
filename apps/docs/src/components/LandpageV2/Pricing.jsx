@@ -1,9 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
+import gsap from "gsap";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
+import RandomBlur from "../WebsiteComps/RandomBlur";
+import SplitLine from "../WebsiteComps/SplitLine";
+
+const DIGITS = [...Array(10).keys()];
+
+const PriceDigit = memo(({ digit, visible = true }) => {
+    const containerRef = useRef(null);
+    const hasMounted = useRef(false);
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+        const target = `-${parseInt(digit, 10) * 10}%`;
+        if (!hasMounted.current) {
+            gsap.set(containerRef.current, { y: target });
+            hasMounted.current = true;
+        } else {
+            gsap.to(containerRef.current, { y: target, duration: 0.55, ease: "power3.out" });
+        }
+    }, [digit]);
+
+    return (
+        <span
+            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300"
+            style={{ width: visible ? "0.64em" : "0", opacity: visible ? 1 : 0 }}
+        >
+            <span ref={containerRef} className="flex flex-col will-change-transform">
+                {DIGITS.map((d) => (
+                    <span key={d} className="flex h-[1em] items-center justify-center leading-none">
+                        {d}
+                    </span>
+                ))}
+            </span>
+        </span>
+    );
+});
+
+PriceDigit.displayName = "PriceDigit";
 
 const freeFeatures = [
     "30+ production-ready effects",
@@ -24,15 +62,15 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(true);
 
     return (
-        <div className="h-fit text-background  flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[55vw]! bg-foreground self-padd  w-full">
+        <div className="h-fit text-background  flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
             <div className=" text-center space-y-[4vw]">
-                <h2 className="text110 w-[70vw]">
+                <RandomBlur as="h2"  className="text110 w-[70vw]">
                     Start free. Upgrade when you’re ready.
-                </h2>
-                <p className="text24">
+                </RandomBlur>
+                <SplitLine as="p" className="text24">
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
-                </p>
+                </SplitLine>
             </div>
             <div className="h-[58vw] relative w-full flex gap-[1.5vw]">
 
@@ -54,7 +92,7 @@ export default function Pricing() {
                             ))}
                         </div>
                     </div>
-                    <Button variant="outline" text="Browse Free Effects" className="mb-[2.5vw]" />
+                    <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw]" />
                 </div>
 
                 {/* TOGGLE */}
@@ -89,7 +127,12 @@ export default function Pricing() {
                         <ShimmerText as="p" className="text24 font-medium -mt-[1vw]">Most Popular</ShimmerText>
 
                         <div className="flex gap-[1vw] items-end">
-                            <p className="text110">${isYearly ? "170" : "20"}</p>
+                            <p className="text110 flex items-center">
+                                <span>$</span>
+                                <PriceDigit digit="1" visible={isYearly} />
+                                <PriceDigit digit={isYearly ? "7" : "2"} />
+                                <PriceDigit digit="0" />
+                            </p>
                             <p className="text24 mb-[1vw]">{isYearly ? "Yearly" : "Monthly"}</p>
                             <p className={`text34 mb-[.75vw] ml-[1vw] text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}>3 Months Free</p>
                         </div>
@@ -112,10 +155,10 @@ export default function Pricing() {
                     </div>
                 </div>
             </div>
-            <p className="text34 relative z-50 text-center w-[45vw]">
+            <SplitLine as="p" className="text34 relative z-50 text-center w-[45vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
-            </p>
+            </SplitLine>
         </div>
     );
 }

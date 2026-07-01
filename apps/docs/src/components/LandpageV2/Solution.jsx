@@ -3,13 +3,15 @@ import { TextFillAnimation } from '../WebsiteComps/TextFillAnimation'
 import Image from 'next/image'
 import CodeBlockWorkflow from './CodeBlockWorkFlow'
 import Link from 'next/link'
+import RandomBlur from '../WebsiteComps/RandomBlur'
 
 const Solution = () => {
     return (
         <section className='w-full h-fit px-[3vw] py-[10%]' id='solution'>
-            <h2 className='text110 w-full text-center'>
+            <RandomBlur as="h2" className="text110 w-full text-center">
                 Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
-            </h2>
+            </RandomBlur>
+       
             <div className='w-full h-fit flex justify-center items-center'>
                 <TextFillAnimation
                     text="Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client

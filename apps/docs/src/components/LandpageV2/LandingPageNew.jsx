@@ -120,8 +120,8 @@ export default function LandingPageNew() {
         <StripTransition />
         <Pricing />
         <FAQs faqItems={faqItems} />
-       <CTA />
-        <Footer/>
+        <CTA />
+        <Footer />
 
 
       </VaultShell>

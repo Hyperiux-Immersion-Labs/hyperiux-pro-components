@@ -7,14 +7,15 @@ import CircularButton from "../WebsiteComps/CirclularButton";
 import { socialLinks, socialLinksList as AgencyLinks, vaultLinks } from "../../utils/Links";
 import LinkHover from "../WebsiteComps/LinksHover";
 import RandomBlur from "../WebsiteComps/RandomBlur";
+import ReflectiveRods from "@/Experience/ReflectiveRods";
 
 // Move dynamic import with ssr: false to client (this file now has "use client" directive)
-const ReflectiveRods = dynamic(() => import('@/Experience/ReflectiveRods'), { ssr: false });
+// const ReflectiveRods = dynamic(() => import('@/Experience/ReflectiveRods'), { ssr: false });
 
 export default function Footer({ animations = true }) {
   return (
     <footer className="h-fit overflow-hidden max-md:mt-20   z-200 relative w-full">
-      {/* <ReflectiveRods /> */}
+      <ReflectiveRods />
       <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
         <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative">
           {
@@ -36,7 +37,7 @@ export default function Footer({ animations = true }) {
 
           <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
             <Button text="Install CLI" href="/docs/installation" />
-            <Button text="Work with Hyperiux" className="border border-white" variant="white" />
+            <Button text="Work with Hyperiux" className="border border-white" target_blank href="https://www.hyperiux.com/" variant="white" />
           </div>
           <div className="w-full h-fit flex items-end pb-[2vw] max-md:pb-[15vw] justify-between relative max-sm:flex-col max-sm:items-center   max-sm:gap-[16vw] max-sm:pb-[8vw]">
             <div className="w-fit max-sm:mb-[-4vw] flex-col gap-[1vw] flex items-start justify-center h-full max-sm:order-2 max-sm:items-center max-sm:gap-[6vw]">

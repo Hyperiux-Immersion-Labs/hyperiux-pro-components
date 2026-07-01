@@ -36,6 +36,7 @@ const groups = [
 export default function ForDevelopers() {
     const containerRef = useRef(null)
     const accordionRef = useRef(null)
+    const headingRef = useRef(null)
 
     useEffect(() => {
         let splits = []
@@ -139,6 +140,14 @@ export default function ForDevelopers() {
                 }
             }
 
+            tl.fromTo(headingRef.current,{
+                yPercent:70,
+            }, {
+                yPercent: 10,
+                duration: cardData.length - 1,
+                ease: 'none'
+            }, 0)
+
         }, containerRef)
 
         return () => {
@@ -149,24 +158,24 @@ export default function ForDevelopers() {
 
     return (
         <div ref={containerRef}>
-            <section ref={accordionRef} className='h-[300vh] w-full relative'>
+            <section ref={accordionRef} className='h-[300vh] mb-[30vw] w-full relative'>
                 <div className='h-screen w-full overflow-hidden self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
-                    <h2 className='w-[33vw] font-medium text64 h-fit max-md:w-full tracking-tight leading-[1.1]'>
+                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-md:w-full tracking-tight leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
 
                     <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full'>
                         {groups.map((group, idx) => (
-                            <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] rounded-md border border-white/5 overflow-hidden w-full backdrop-blur-md'>
-                                <div className='card-overlay absolute inset-0 z-0 overflow-hidden opacity-0'>
+                            <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md'>
+                                <div className='card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0'>
                                     <div className='blob absolute w-[60%] h-[60%] left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw]'></div>
                                     <div className='blob absolute w-[60%] h-[60%] right-[-10%] bottom-[-10%] bg-[#e0e0e0] rounded-full blur-[3vw]'></div>
                                     <div className='blob absolute w-[60%] h-[60%] left-[20%] bottom-[-20%] bg-[#f5f5f5] rounded-full blur-[3vw]'></div>
                                     <div className='blob absolute w-[60%] h-[60%] right-[20%] top-[-10%] bg-[#eaeaea] rounded-full blur-[3vw]'></div>
 
-                                    <div className='noise-layer absolute inset-0 opacity-[0.25] mix-blend-overlay pointer-events-none' style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+                                    {/* <div className='noise-layer absolute inset-0 opacity-[0.25] mix-blend-overlay pointer-events-none' style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div> */}
 
-                                    <div className='solid-fill absolute inset-0 opacity-0 pointer-events-none' style={{ background: 'radial-gradient(120% 100% at 50% 100%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 1) 100%)' }}></div>
+                                    {/* <div className='solid-fill absolute inset-0 opacity-0 pointer-events-none' style={{ background: 'radial-gradient(120% 100% at 50% 100%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 1) 100%)' }}></div> */}
                                 </div>
 
                                 <div className='relative z-10 flex flex-col gap-[2vw] w-full'>

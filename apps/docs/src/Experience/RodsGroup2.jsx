@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { consumeRoll } from './rollDrive'
 
-export default function RodsGroup2({ ctr, RodInstance }) {
+export default function RodsGroup2({ ctr, RodInstance, rollStateRef, active }) {
     const rod1Ref = useRef()
     const rod2Ref = useRef()
     const rod3Ref = useRef()
@@ -11,11 +12,12 @@ export default function RodsGroup2({ ctr, RodInstance }) {
     const rod2 = { posX: -2.5, posY: -.5, posZ: -2, rotX: 0, rotY: 0, rotZ: -30 };
     const rod3 = { posX: -2.5, posY: -1.4, posZ: -2, rotX: 0, rotY: 0, rotZ: -25 };
 
-    // Rolling animation on local longitudinal X axis
+    // Rolling animation on local longitudinal X axis + drag-driven roll
     useFrame((state, delta) => {
-        if (rod1Ref.current) rod1Ref.current.rotation.x += delta * 0.225;
-        if (rod2Ref.current) rod2Ref.current.rotation.x -= delta * 0.225;
-        if (rod3Ref.current) rod3Ref.current.rotation.x += delta * 0.125;
+        const drag = consumeRoll(rollStateRef?.current, active)
+        if (rod1Ref.current) rod1Ref.current.rotation.x += delta * 0.225 + drag;
+        if (rod2Ref.current) rod2Ref.current.rotation.x += -delta * 0.225 + drag;
+        if (rod3Ref.current) rod3Ref.current.rotation.x += delta * 0.125 + drag;
     });
 
     return (

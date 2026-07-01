@@ -990,7 +990,7 @@ export default function Navbar() {
             </Link>
 
             <div className="relative" onMouseLeave={handleNavLeave}>
-                <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
+                <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey translate-x-[3.6vw] p-[0.6vw] font-medium">
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
                         const isExternal = href.startsWith('http')
@@ -1065,8 +1065,9 @@ export default function Navbar() {
                 <NavDropdown panel={activeItem?.dropdown ?? null} />
             </div>
 
-            <div className="flex items-center justify-center gap-[2.5vw]">
-                <Button text="Install CLI" href="/docs/installation" />
+            <div className="flex items-center justify-center gap-[2vw]">
+                <Button variant='black' className='' text="Install CLI" href="/docs/cli" />
+                <Button text="Start Free"  href="/effects/free" />
             </div>
         </nav>
     )
