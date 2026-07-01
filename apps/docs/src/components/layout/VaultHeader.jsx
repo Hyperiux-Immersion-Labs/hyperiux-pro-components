@@ -174,6 +174,17 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
               </button>
             )}
 
+           {user?.publicMetadata?.plan!=="pro"&& <div className="block max-md:hidden">
+              <Button 
+                text="Upgrade to Pro"
+                href="/pricing#pricing-cards"
+                className="border-white/50!"
+                variant="outline2"
+              />
+            </div>
+           
+           }
+
             {!isSignedIn ? (
               <div className="block max-md:hidden">
                 <Button

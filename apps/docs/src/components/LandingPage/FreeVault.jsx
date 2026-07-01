@@ -248,7 +248,7 @@ export default function FreeVault() {
                             {userPlan === "pro" ? (
                                 <Button text="Explore Effects" href="/effects" variant="black" />
                             ) : userPlan === "free" ? (
-                                <Button text="Upgrade to Pro" href="/pricing" variant="black" />
+                                <Button text="Upgrade to Pro" href="/pricing#pricing-cards" variant="black" />
                             ) : (
                                 <Button text="Get Started" href="/sign-up" variant="black" />
                             )}

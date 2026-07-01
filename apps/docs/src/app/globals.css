@@ -402,9 +402,6 @@ h4 {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
-.hyperiux-clerk .cl-footer{
-  display: none;
-}
 
 /* OTP / code fields */
 
@@ -450,162 +447,10 @@ h4 {
 .hyperiux-clerk input {
   color-scheme: dark;
 }
-
-/* -------------------------------------------------------------------------- */
-/* Clerk Waitlist Modal Styling */
-/* Use this if you wrap Waitlist in .hyperiux-waitlist or add it via rootBox */
-/* -------------------------------------------------------------------------- */
-
-.hyperiux-waitlist {
-  width: 100%;
-}
-
-.hyperiux-waitlist .cl-rootBox {
-  width: 100%;
-}
-
-.hyperiux-waitlist .cl-card,
-.hyperiux-waitlist .cl-cardBox {
-  width: 100% !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+.cl-internal-d4j0pk > :first-of-type{
   padding: 0 !important;
-  margin: 0 !important;
 }
 
-.hyperiux-waitlist .cl-header,
-.hyperiux-waitlist .cl-headerTitle,
-.hyperiux-waitlist .cl-headerSubtitle,
-.hyperiux-waitlist .cl-footer,
-.hyperiux-waitlist .cl-footerAction,
-.hyperiux-waitlist .cl-footerActionText,
-.hyperiux-waitlist .cl-footerActionLink,
-.hyperiux-waitlist .cl-socialButtonsRoot,
-.hyperiux-waitlist .cl-socialButtonsBlockButton,
-.hyperiux-waitlist .cl-dividerRow {
-  display: none !important;
-}
-.cl-internal-ji79b9{
-  gap: 0 !important;
-}
-.cl-formFieldInput{
-  height: 3.5vw !important;
-  max-height: none;
-}
-
-.hyperiux-waitlist .cl-form {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-}
-
-.hyperiux-waitlist .cl-formFieldLabel {
-  margin-bottom: 0.5rem !important;
-  display: block !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-size: clamp(14px, 0.9vw, 18px) !important;
-  font-weight: 500 !important;
-}
-
-.hyperiux-waitlist .cl-input,
-.hyperiux-waitlist .cl-formFieldInput {
-  width: 100% !important;
-  min-height: 48px !important;
-  height: clamp(48px, 3vw, 58px) !important;
-  border-radius: 999px !important;
-  border: 1px solid transparent !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  padding: 0 1.75rem !important;
-  color: #ffffff !important;
-  font-size: clamp(15px, 0.95vw, 19px) !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.hyperiux-waitlist .cl-input:focus,
-.hyperiux-waitlist .cl-formFieldInput:focus {
-  border-color: rgba(255, 95, 0, 0.7) !important;
-  box-shadow: none !important;
-}
-
-.hyperiux-waitlist .cl-input::placeholder,
-.hyperiux-waitlist .cl-formFieldInput::placeholder {
-  color: rgba(255, 255, 255, 0.35) !important;
-}
-
-.hyperiux-waitlist .cl-formButtonPrimary {
-  display: flex !important;
-  min-height: 48px !important;
-  height: clamp(48px, 3.3vw, 62px) !important;
-  width: 100% !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 999px !important;
-  border: none !important;
-  background: var(--primary) !important;
-  padding: 0 1.5rem !important;
-  color: #ffffff !important;
-  font-size: clamp(16px, 1.05vw, 22px) !important;
-  font-weight: 500 !important;
-  box-shadow: none !important;
-  transition:
-    background-color 0.25s ease,
-    opacity 0.25s ease;
-}
-
-.hyperiux-waitlist .cl-formButtonPrimary:hover,
-.hyperiux-waitlist .cl-formButtonPrimary:focus {
-  background: var(--primary-hover) !important;
-  box-shadow: none !important;
-}
-
-.hyperiux-waitlist .cl-formButtonPrimary:disabled {
-  cursor: not-allowed !important;
-  opacity: 0.55 !important;
-}
-
-.hyperiux-waitlist .cl-formFieldErrorText,
-.hyperiux-waitlist .cl-alertText {
-  margin-top: 0.5rem !important;
-  border-radius: 1rem !important;
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  background: rgba(239, 68, 68, 0.1) !important;
-  padding: 0.75rem 1rem !important;
-  color: #fecaca !important;
-  font-size: 0.875rem !important;
-  line-height: 1.5rem !important;
-}
-
-.hyperiux-waitlist .cl-alert {
-  border-radius: 1rem !important;
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  background: rgba(239, 68, 68, 0.1) !important;
-  padding: 0.75rem 1rem !important;
-}
-
-/* Remove Clerk Waitlist card shell border and radius */
-.cl-waitlist-root .cl-cardBox {
-  border-width: 0 !important;
-  border-style: none !important;
-  border-color: transparent !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-.hyperiux-waitlist .cl-cardBox {
-  border-width: 0 !important;
-  border-style: none !important;
-  border-color: transparent !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
-.hyperiux-waitlist .cl-card {
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /* Responsive */
@@ -644,9 +489,7 @@ h4 {
     padding: 1.5rem !important;
   }
 
-  .hyperiux-waitlist .cl-formButtonPrimary {
-    margin-top: 2rem !important;
-  }
+
 }
 
 @media (max-width: 542px) {

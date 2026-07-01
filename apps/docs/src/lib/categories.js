@@ -64,6 +64,20 @@ export const freeEffectsContent = {
   ],
 };
 
+export const proEffectsContent = {
+  id: "pro",
+  name: "Pro Effects",
+  slug: "pro",
+  metadata: {
+    title: "Pro Effects | Hyperiux Vault",
+    description: "Browse all Pro effects in Hyperiux Vault - premium-tier components built for teams who need more. Upgrade to unlock instant CLI access.",
+  },
+  description: [
+    "The Pro tier is where Hyperiux Vault goes deeper - more complex interactions, more refined motion, and effects that take real effort to build from scratch.",
+    "Upgrade to Pro to unlock everything here and install any effect directly into your project with a single CLI command.",
+  ],
+};
+
 export const effectCategories = [
   {
     id: "featured",
@@ -735,6 +749,7 @@ export function getEffectCategorySlugAliases(slug) {
 
 export function getEffectCategoryHref(id) {
   if (id === "all") return "/effects";
+  if (id === "pro") return "/effects/pro";
 
   const category = getEffectCategory(id);
   return `/effects/${category?.slug || id}`;
@@ -759,8 +774,9 @@ export function getEffectCategoryMetadata(categoryOrId, overrides = {}) {
       : categoryOrId;
 
   const isFree = requestedId === "free";
-  const isOverview = !isFree && (!category || category?.id === "all");
-  const content = isFree ? freeEffectsContent : isOverview ? effectsOverviewContent : category;
+  const isPro = requestedId === "pro";
+  const isOverview = !isFree && !isPro && (!category || category?.id === "all");
+  const content = isFree ? freeEffectsContent : isPro ? proEffectsContent : isOverview ? effectsOverviewContent : category;
   const title =
     overrides.title ||
     content?.metadata?.title ||
@@ -788,6 +804,7 @@ export function getEffectCategoryContent(categoryOrId) {
       : categoryOrId?.id;
 
   if (requestedId === "free") return freeEffectsContent;
+  if (requestedId === "pro") return proEffectsContent;
   if (requestedId === "all") return effectsOverviewContent;
 
   return (

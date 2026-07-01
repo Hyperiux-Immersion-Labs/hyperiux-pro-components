@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useInView } from "motion/react";
@@ -42,6 +42,56 @@ export function EffectCard({
 
   const isInView = useInView(cardRef, { once: true, margin: "0px", amount: 0.1 });
 
+  // Force-unmount video when card scrolls out of viewport so off-screen
+  // WebMediaPlayers don't accumulate and hit Chrome's hard limit (~75).
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          clearTimeout(unmountTimerRef.current);
+          setIsHovered(false);
+          setVideoMounted(false);
+          setVideoReady(false);
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, []);
+
+  // Explicitly release the WebMediaPlayer when the video element unmounts.
+  // Just removing it from the DOM is not enough — Chrome keeps the player alive
+  // until src is cleared and load() is called (crbug.com/1144736).
+  useEffect(() => {
+    if (!videoMounted) {
+      const video = videoRef.current;
+      if (video) {
+        video.pause();
+        video.src = "";
+        video.load();
+      }
+    }
+  }, [videoMounted]);
+
+  // Release resources and cancel pending timers when the card unmounts entirely
+  // (e.g. user navigates away while videos are still active).
+  useEffect(() => {
+    return () => {
+      clearTimeout(unmountTimerRef.current);
+      const video = videoRef.current;
+      if (video) {
+        video.pause();
+        video.src = "";
+        video.load();
+      }
+    };
+  }, []);
+
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
   const coverImage =
@@ -70,7 +120,7 @@ export function EffectCard({
     unmountTimerRef.current = setTimeout(() => {
       setVideoMounted(false);
       setVideoReady(false);
-    }, 500);
+    }, 300);
   };
 
   // showVideo drives opacity; videoMounted drives whether the element is in the DOM
@@ -160,7 +210,7 @@ export function EffectCard({
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
         <div className="flex min-w-0 flex-col gap-0.5">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white max-sm:text-base">
-            <span className="group-hover:underline">
+            <span className="">
               {effect.title}
             </span>
           </h3>

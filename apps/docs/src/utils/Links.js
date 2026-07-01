@@ -6,7 +6,7 @@ import {
 } from '@/utils/Icons'
 
 export const vaultLinks = [
-    { label: 'Effects', href: '/effects' },
+    // { label: 'Effects', href: '/effects' },
     { label: 'Categories', href: '/effects/featured', dropdown: 'categories' },
     { label: 'Docs', href: '/docs', dropdown: 'docs' },
     { label: 'Pricing', href: '/pricing' },
@@ -16,6 +16,7 @@ export const vaultLinks = [
 /** Two-column category grid for the desktop navbar dropdown. */
 export const navCategoryColumns = [
     [
+        { label: 'All Effects', href: '/effects', icon: '/svgs/menu/home.svg' },
         { label: 'Featured', href: '/effects/featured', icon: '/svgs/menu/Featured.svg' },
         { label: 'Text', href: '/effects/text-animations', icon: '/svgs/menu/Text.svg' },
         { label: 'Backgrounds', href: '/effects/backgrounds', icon: '/svgs/menu/Background.svg' },

@@ -18,6 +18,7 @@ export default function SignUpPage() {
 
       <AuthShell>
         <div className="hyperiux-clerk mx-auto w-[40vw] max-md:w-[90vw] max-sm:w-full">
+         
           <SignUp
             path="/sign-up"
             routing="path"

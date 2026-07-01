@@ -25,7 +25,7 @@ function VaultFallback() {
 
 export async function generateStaticParams() {
   const entries = await getAllSanityEffectEntries();
-  const slugs = new Set(["free", "featured"]);
+  const slugs = new Set(["free", "featured", "pro"]);
 
   for (const entry of entries) {
     if (entry.categorySlug) {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }) {
 
   const category = getEffectCategoryBySlug(slug);
 
-  if (slug === "free" || slug === "featured" || category) {
+  if (slug === "free" || slug === "featured" || slug === "pro" || category) {
     return getEffectCategoryMetadata(slug);
   }
 
@@ -59,6 +59,7 @@ export default async function EffectsCategoryPage({ params }) {
   const { slug } = await params;
   const isFreeListing = slug === "free";
   const isFeaturedListing = slug === "featured";
+  const isProListing = slug === "pro";
   const category = getEffectCategoryBySlug(slug);
   const userPlan = await getUserPlan(userId);
 
@@ -73,15 +74,15 @@ export default async function EffectsCategoryPage({ params }) {
   }
   effectCounts.featured = getFeaturedEffects(sortedEffects).length;
 
-  if (!isFreeListing && !isFeaturedListing && (!category || !categoriesMap[category.id])) {
+  if (!isFreeListing && !isFeaturedListing && !isProListing && (!category || !categoriesMap[category.id])) {
     notFound();
   }
 
   const pageMetadata = getEffectCategoryMetadata(
-    isFreeListing ? "free" : isFeaturedListing ? "featured" : category
+    isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category
   );
   const pageContent = getEffectCategoryContent(
-    isFreeListing ? "free" : isFeaturedListing ? "featured" : category
+    isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category
   );
 
   return (
@@ -93,7 +94,7 @@ export default async function EffectsCategoryPage({ params }) {
         <VaultContent
           effects={sortedEffects}
           effectCounts={effectCounts}
-          initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : category.id}
+          initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category.id}
           userPlan={userPlan}
         />
       </Suspense>

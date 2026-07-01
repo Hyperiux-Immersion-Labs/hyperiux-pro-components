@@ -2,16 +2,131 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
   const fileInputRef = useRef(null);
+
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  // Password change
+  const [pwMessage, setPwMessage] = useState("");
+  const [pwError, setPwError] = useState("");
+  const [savingPw, setSavingPw] = useState(false);
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showResetPw, setShowResetPw] = useState(false);
+
+  // Forgot password OTP flow
+  const [otpStep, setOtpStep] = useState("idle"); // idle | sent | verifying
+  const [otpCode, setOtpCode] = useState("");
+  const [resetNewPassword, setResetNewPassword] = useState("");
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [resettingPw, setResettingPw] = useState(false);
+
+  async function handlePasswordChange(event) {
+    event.preventDefault();
+    if (!user) return;
+
+    // capture before async — event.currentTarget becomes null after await
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const currentPassword = String(formData.get("currentPassword") || "");
+    const newPassword = String(formData.get("newPassword") || "");
+
+    if (!currentPassword || !newPassword) {
+      setPwError("Both fields are required.");
+      return;
+    }
+
+    setSavingPw(true);
+    setPwMessage("");
+    setPwError("");
+
+    try {
+      const res = await fetch("/api/user/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPwError(data.error || "Unable to update password.");
+        return;
+      }
+
+      form.reset();
+      setPwMessage("Password updated successfully.");
+    } catch (err) {
+      console.error("Password change error:", err);
+      setPwError("Something went wrong. Please try again.");
+    } finally {
+      setSavingPw(false);
+    }
+  }
+
+  async function handleForgotPassword() {
+    setSendingOtp(true);
+    setPwError("");
+    setPwMessage("");
+
+    try {
+      const res = await fetch("/api/user/send-reset-otp", { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPwError(data.error || "Unable to send OTP. Please try again.");
+        return;
+      }
+
+      setOtpStep("sent");
+    } catch {
+      setPwError("Something went wrong. Please try again.");
+    } finally {
+      setSendingOtp(false);
+    }
+  }
+
+  async function handleOtpReset(event) {
+    event.preventDefault();
+
+    if (!otpCode || !resetNewPassword) {
+      setPwError("Please enter the OTP and your new password.");
+      return;
+    }
+
+    setResettingPw(true);
+    setPwError("");
+
+    try {
+      const res = await fetch("/api/user/verify-reset-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp: otpCode, newPassword: resetNewPassword }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPwError(data.error || "Invalid OTP or something went wrong.");
+        return;
+      }
+
+      setPwMessage("Password reset successfully.");
+      setOtpStep("idle");
+      setOtpCode("");
+      setResetNewPassword("");
+    } catch {
+      setPwError("Something went wrong. Please try again.");
+    } finally {
+      setResettingPw(false);
+    }
+  }
 
   async function handleProfileSubmit(event) {
     event.preventDefault();
@@ -188,6 +303,147 @@ export default function SettingsPage() {
             Save changes
           </button>
         </form>
+
+        <div className="mt-10 border-t border-white/10 pt-10 max-w-2xl">
+          <h3 className="text-xl font-medium mb-1">Change Password</h3>
+          <p className="text-sm text-white/50 mb-6">Update your account password.</p>
+
+          {otpStep === "idle" ? (
+            <form onSubmit={handlePasswordChange} className="space-y-4 flex flex-col">
+              <label className="block">
+                <span className="text-sm">Current password</span>
+                <div className="relative mt-2">
+                  <input
+                    name="currentPassword"
+                    type={showCurrentPw ? "text" : "password"}
+                    autoComplete="current-password"
+                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+                    aria-label={showCurrentPw ? "Hide password" : "Show password"}
+                  >
+                    {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+
+              <label className="block">
+                <span className="text-sm">New password</span>
+                <div className="relative mt-2">
+                  <input
+                    name="newPassword"
+                    type={showNewPw ? "text" : "password"}
+                    autoComplete="new-password"
+                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+                    aria-label={showNewPw ? "Hide password" : "Show password"}
+                  >
+                    {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={sendingOtp}
+                className="inline-flex items-center gap-2 text-sm text-[#ff5f00] hover:text-[#ff9253] transition duration-300 disabled:opacity-50"
+              >
+                {sendingOtp && <Loader2 className="h-3 w-3 animate-spin" />}
+                Forgot password?
+              </button>
+
+              {(pwMessage || pwError) && (
+                <p className={pwError ? "text-red-400 text-sm" : "text-emerald-400 text-sm"}>
+                  {pwError || pwMessage}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={savingPw}
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] hover:text-white duration-300 disabled:opacity-60 cursor-pointer"
+              >
+                {savingPw && <Loader2 className="h-4 w-4 animate-spin" />}
+                Update password
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleOtpReset} className="space-y-4">
+              <p className="text-sm text-white/60">
+                We sent a verification code to <span className="text-white">{user.primaryEmailAddress?.emailAddress}</span>. Enter it below along with your new password.
+              </p>
+
+              <label className="block">
+                <span className="text-sm">Verification code</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-white outline-none transition focus:border-white/40"
+                  placeholder="Enter OTP"
+                />
+              </label>
+
+              <label className="block">
+                <span className="text-sm">New password</span>
+                <div className="relative mt-2">
+                  <input
+                    type={showResetPw ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={resetNewPassword}
+                    onChange={(e) => setResetNewPassword(e.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowResetPw((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition"
+                    aria-label={showResetPw ? "Hide password" : "Show password"}
+                  >
+                    {showResetPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </label>
+
+              {(pwMessage || pwError) && (
+                <p className={pwError ? "text-red-400 text-sm" : "text-emerald-400 text-sm"}>
+                  {pwError || pwMessage}
+                </p>
+              )}
+
+              <div className="flex items-center gap-4">
+                <button
+                  type="submit"
+                  disabled={resettingPw}
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] hover:text-white duration-300 disabled:opacity-60 cursor-pointer"
+                >
+                  {resettingPw && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Reset password
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setOtpStep("idle"); setOtpCode(""); setResetNewPassword(""); setPwError(""); }}
+                  className="text-sm text-white/50 hover:text-white transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

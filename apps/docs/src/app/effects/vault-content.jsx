@@ -14,6 +14,7 @@ import {
   effectsOverviewContent,
   effectCategories,
   freeEffectsContent,
+  proEffectsContent,
   getEffectCategory,
   getEffectCategoryBySlug,
   getEffectCategoryHref,
@@ -340,7 +341,7 @@ const routeKey = `${pathname}${
         safeEffectCounts[id]
     );
 
-    return ["featured", "free", ...knownCategories, ...extraCategories];
+    return ["featured", "free", "pro", ...knownCategories, ...extraCategories];
   }, [safeEffectCounts]);
 
   useEffect(() => {
@@ -406,6 +407,8 @@ const routeKey = `${pathname}${
     return safeEffects.filter((effect) => {
       if (categoryFilter === "free") {
         if (effect.tier === "pro") return false;
+      } else if (categoryFilter === "pro") {
+        if (effect.tier !== "pro") return false;
       } else if (categoryFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
       } else if (categoryFilter !== "all") {
@@ -445,6 +448,10 @@ const routeKey = `${pathname}${
       return safeEffects.filter((effect) => effect.tier !== "pro").length;
     }
 
+    if (categoryFilter === "pro") {
+      return safeEffects.filter((effect) => effect.tier === "pro").length;
+    }
+
     if (categoryFilter === "featured") {
       return featuredEffects.length;
     }
@@ -461,7 +468,9 @@ const routeKey = `${pathname}${
       ? effectsOverviewContent
       : categoryFilter === "free"
         ? freeEffectsContent
-        : activeCategory;
+        : categoryFilter === "pro"
+          ? proEffectsContent
+          : activeCategory;
 
   const activeCategoryName = activeCategoryContent?.name || categoryFilter;
 
@@ -624,11 +633,13 @@ const routeKey = `${pathname}${
                     const label =
                       cat === "free"
                         ? "Free"
-                        : cat === "featured"
-                          ? "Featured"
-                          : cat === "webgl"
-                            ? "WebGL"
-                            : cat.charAt(0).toUpperCase() + cat.slice(1);
+                        : cat === "pro"
+                          ? "Pro"
+                          : cat === "featured"
+                            ? "Featured"
+                            : cat === "webgl"
+                              ? "WebGL"
+                              : cat.charAt(0).toUpperCase() + cat.slice(1);
 
                     return (
                       <Link
@@ -642,11 +653,10 @@ const routeKey = `${pathname}${
                         className={`
                           px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-                          transition-colors duration-300 max-sm:text-lg
-                          hover:text-[#111111] hover:bg-white text20
+                          transition-colors duration-300 max-sm:text-lg text20
                           ${isSelected
-                            ? "bg-white text-[#111111]"
-                            : "bg-[#272727] text-foreground"
+                            ? "bg-white text-[#111111] hover:text-[#111111] hover:bg-white"
+                            : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
                           }
                         `}
                       >
@@ -783,11 +793,11 @@ const routeKey = `${pathname}${
       <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-sm:bottom-4 max-sm:left-4 max-sm:right-4">
         {/* Pro upgrade success toast */}
         <div
-          className={`flex w-80 max-sm:w-full flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-[#0d1a10] p-5 shadow-2xl transition-all duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+          className={`flex w-80 fixed bottom-6 right-6  max-sm:w-full flex-col gap-3 rounded-md border bg-[#0e0e0e] border-white/20 p-5 shadow-2xl transition-all duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
         >
           <div className="flex items-start justify-between gap-3">
-            <p className="text-sm font-semibold text-emerald-300">You&apos;re now Pro — full vault unlocked.</p>
-            <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-emerald-400/50 hover:text-emerald-300 transition-colors">✕</button>
+            <p className="text-sm ">You&apos;re now Pro — full vault unlocked.</p>
+            <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors">✕</button>
           </div>
           <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
             Explore effects
@@ -796,11 +806,11 @@ const routeKey = `${pathname}${
 
         {/* Wishlist sign-in toast */}
         <div
-          className={`flex w-80 max-sm:w-full flex-col gap-3 rounded-2xl border border-white/10 bg-[#111] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+          className={`flex w-80 fixed bottom-6 right-6  max-sm:w-full flex-col gap-3 rounded-md border border-white/20 bg-[#0e0e0e] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
         >
           <div className="flex items-start justify-between gap-3">
-            <p className="text-sm font-semibold text-white">Sign in to save effects to your wishlist.</p>
-            <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/40 hover:text-white transition-colors">✕</button>
+            <p className="text-sm text-white">Sign in to save effects to your wishlist.</p>
+            <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors">✕</button>
           </div>
           <Link href="/sign-in?redirect_url=/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors" onClick={() => setShowWishlistToast(false)}>
             Sign In

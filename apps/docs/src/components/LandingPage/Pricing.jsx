@@ -985,42 +985,6 @@ function PricingInner({ enableColorSwitch = true }) {
     return () => ctx.revert();
   }, [enableColorSwitch]);
 
-  const selectedPlanPrice = useMemo(() => {
-    if (!selectedPlan) return 0;
-    return getPlanPrice(selectedPlan, billingCycle);
-  }, [billingCycle, selectedPlan]);
-
-  const selectedPlanAnnualTotal = useMemo(() => {
-    if (!selectedPlan) return 0;
-    return getAnnualTotal(selectedPlan);
-  }, [selectedPlan]);
-
-  const closePlanModal = useCallback(() => {
-    router.push(buildUrlWithoutPlanRequest(pathname, searchParams), {
-      scroll: false,
-    });
-  }, [pathname, router, searchParams]);
-
-  const handleSelectPlan = useCallback(
-    (plan) => {
-      if (plan.current) return;
-
-      router.push(buildUrlWithPlanRequest(pathname, searchParams, plan.id), {
-        scroll: false,
-      });
-    },
-    [pathname, router, searchParams]
-  );
-
-  const handlePlanSubmitted = useCallback(
-    (planId) => {
-      router.push(buildUrlWithPlanRequestSent(pathname, searchParams, planId), {
-        scroll: false,
-      });
-    },
-    [pathname, router, searchParams]
-  );
-
   return (
     <>
       <section
@@ -1053,7 +1017,7 @@ function PricingInner({ enableColorSwitch = true }) {
           setBillingCycle={setBillingCycle}
         />
 
-        <div className="grid w-full grid-cols-3 gap-[2vw] max-md:grid-cols-1 max-md:gap-6">
+        <div id="pricing-cards" className="grid w-full grid-cols-3 gap-[2vw] max-md:grid-cols-1 max-md:gap-6">
           {PLANS.map((plan) => (
             <PricingCard
               key={plan.id}

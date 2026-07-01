@@ -43,7 +43,7 @@ export default function ProfileDropdown({
     >
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3"
+        className="flex items-center gap-3 w-fit h-fit relative"
       >
         <img
           src={user.imageUrl}
@@ -52,7 +52,7 @@ export default function ProfileDropdown({
         />
 
         {plan === "pro" && (
-          <span className="px-2 py-1 text-xs rounded-full bg-white text-black font-medium">
+          <span className="px-2 py-1 text-[0.7vw] rounded-full bg-white text-black font-medium absolute -top-2 -right-5">
             PRO
           </span>
         )}
@@ -89,12 +89,7 @@ export default function ProfileDropdown({
               </span>
             </Link>
 
-            <Link
-              href="/dashboard/activity"
-              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
-            >
-              Activity
-            </Link>
+           
 
             <Link
               href="/dashboard/settings"
@@ -103,24 +98,13 @@ export default function ProfileDropdown({
               Settings
             </Link>
 
-            {plan === "free" && (
-              <>
-                <div className="my-2 border-t border-white/10" />
-
-                <Link
-                  href="/pricing"
-                  className="block px-4 py-3 rounded-xl text-[#ff5f00] hover:bg-white/5 transition"
-                >
-                  Upgrade to Pro
-                </Link>
-              </>
-            )}
+            
 
             <div className="my-2 border-t border-white/10" />
 
             <button
               onClick={() => signOut(() => {
-                window.location.href = "/";
+                window.location.href = "/effects";
               })}
               className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/5 transition text-red-400"
             >

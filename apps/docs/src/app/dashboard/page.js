@@ -25,37 +25,20 @@ function getBillingLabel(value) {
   return labels[value] || "Not available";
 }
 
-function StatCard({
-  label,
-  value,
-  detail,
-  href,
-}) {
+function StatCard({ label, value, detail, href }) {
   const content = (
     <div className="h-full border border-white/10 rounded-lg p-6 bg-white/5 backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
-      <p className="text-white/75 mb-3">
-        {label}
-      </p>
+      <p className="text-white/75 mb-3">{label}</p>
 
-      <p className="text-2xl font-medium leading-none">
-        {value}
-      </p>
+      <p className="text-2xl font-medium leading-none">{value}</p>
 
-      {detail && (
-        <p className="text-white/75 mt-4">
-          {detail}
-        </p>
-      )}
+      {detail && <p className="text-white/75 mt-4">{detail}</p>}
     </div>
   );
 
   if (!href) return content;
 
-  return (
-    <Link href={href}>
-      {content}
-    </Link>
-  );
+  return <Link href={href}>{content}</Link>;
 }
 
 export default function DashboardPage() {
@@ -65,11 +48,8 @@ export default function DashboardPage() {
 
   const [data, setData] = useState(null);
   const [syncing, setSyncing] = useState(false);
-  const [upgrading, setUpgrading] = useState(false);
-  const [upgradeError, setUpgradeError] = useState(null);
   const [openingPortal, setOpeningPortal] = useState(false);
   const [portalError, setPortalError] = useState(null);
-  const [upgradeCycle, setUpgradeCycle] = useState("monthly");
 
   async function handleManageSubscription() {
     setOpeningPortal(true);
@@ -89,27 +69,6 @@ export default function DashboardPage() {
     }
   }
 
-  async function handleUpgrade() {
-    setUpgrading(true);
-    setUpgradeError(null);
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          billingInterval: upgradeCycle,
-          successUrl: "/effects?upgraded=true",
-          cancelUrl: "/dashboard",
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Checkout failed");
-      window.location.href = json.url;
-    } catch (err) {
-      setUpgradeError(err.message);
-      setUpgrading(false);
-    }
-  }
 
   // When Stripe redirects back with a session_id, sync the subscription to
   // Supabase + Clerk immediately (covers local dev where webhooks don't fire).
@@ -130,12 +89,18 @@ export default function DashboardPage() {
         // Reload dashboard data to reflect the updated plan
         return fetch("/api/dashboard")
           .then((r) => r.json())
-          .then((json) => { if (active) setData(json); });
+          .then((json) => {
+            if (active) setData(json);
+          });
       })
       .catch(console.error)
-      .finally(() => { if (active) setSyncing(false); });
+      .finally(() => {
+        if (active) setSyncing(false);
+      });
 
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [justUpgraded, sessionId]);
 
   useEffect(() => {
@@ -177,9 +142,7 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-zinc-400">
-          Loading dashboard data...
-        </p>
+        <p className="text-zinc-400">Loading dashboard data...</p>
       </div>
     );
   }
@@ -242,14 +205,13 @@ export default function DashboardPage() {
       <div className="border border-white/10 rounded-lg p-6 bg-white/5 backdrop-blur-lg">
         <div className="flex items-center justify-between gap-6 max-md:flex-col max-md:items-start">
           <div>
-            <h2 className="text-2xl font-semibold">
-              Vault access
-            </h2>
+            <h2 className="text-2xl font-semibold">Vault access</h2>
 
             {data.plan === "pro" ? (
               <div className="mt-2 space-y-2 text-white/75">
                 <p>
-                  Your Pro access is active. You have full access to the Hyperiux Vault.
+                  Your Pro access is active. You have full access to the
+                  Hyperiux Vault.
                 </p>
                 <p>
                   Billing cycle:{" "}
@@ -272,53 +234,22 @@ export default function DashboardPage() {
               </div>
             ) : (
               <p className="text-white/75 mt-2">
-                Free accounts include 30 effects. Upgrade to unlock the full vault.
+                Free accounts include 30 effects. Upgrade to unlock the full
+                vault.
               </p>
             )}
           </div>
 
           {data.plan === "free" && (
-            <div className="flex flex-col items-end gap-3">
-              <div className="flex rounded-full border border-white/15 bg-white/5 p-1 text-sm">
-                <button
-                  type="button"
-                  onClick={() => setUpgradeCycle("monthly")}
-                  className={`rounded-full px-4 py-1.5 transition-colors duration-200 ${
-                    upgradeCycle === "monthly"
-                      ? "bg-white text-black"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  Monthly
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUpgradeCycle("yearly")}
-                  className={`rounded-full px-4 py-1.5 transition-colors duration-200 ${
-                    upgradeCycle === "yearly"
-                      ? "bg-white text-black"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  Yearly
-                  <span className="ml-1.5 rounded-full bg-[#ff5f00] px-1.5 py-0.5 text-[10px] font-medium text-white">
-                    20% off
-                  </span>
-                </button>
-              </div>
-
-              <button
-                onClick={handleUpgrade}
-                disabled={upgrading}
-                className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            <>
+              <Link
+                href="/pricing#pricing-cards"
+                className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
               >
-                {upgrading ? "Redirecting…" : "Upgrade to Pro"}
-              </button>
+                Upgrade to Pro
+              </Link>
 
-              {upgradeError && (
-                <p className="text-red-400 text-sm">{upgradeError}</p>
-              )}
-            </div>
+            </>
           )}
 
           {data.plan === "pro" && (
