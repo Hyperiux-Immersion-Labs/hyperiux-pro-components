@@ -35,7 +35,7 @@ export default function GradientFill() {
                     start: "20% center", // Starts exactly when the section enters the viewport
                     end: "bottom center",   // Ends exactly when the section leaves the viewport (max stretch)
                     markers:false,
-                    scrub: true, // Extra smooth catch-up
+                    scrub: 1, // Lagged catch-up so it isn't glued 1:1 to raw scroll deltas
                 }
             })
 
@@ -44,7 +44,7 @@ export default function GradientFill() {
                     trigger: containerRef.current,
                     start: "10% center",
                     end: "95% center",
-                    scrub: true, // Buttery smooth scrub
+                    scrub: 1, // Lagged catch-up so it isn't glued 1:1 to raw scroll deltas
                     markers:false,
                 }
             })
@@ -54,18 +54,17 @@ export default function GradientFill() {
                 splits.push(split)
 
                 gsap.set(el, { perspective: 2000, opacity: 1 })
-                gsap.set(split.lines, { willChange: 'transform, opacity', transformOrigin: '50% 50%' })
+                gsap.set(split.lines, { willChange: 'transform, opacity', transformOrigin: '50% 50%', backfaceVisibility: 'hidden', force3D: true })
 
-                // 1. Text enters from bottom, fading in
+                // 1. Text enters from bottom, fading in, decelerating into the hold (ends at zero velocity)
                 tl.fromTo(split.lines,
                     { rotationX: -30, yPercent: 200, opacity: 0 },
-                    { rotationX: 0, yPercent: 0, opacity: 1, stagger: 0.2, duration: 1, ease: 'none' }
+                    { rotationX: 0, yPercent: 0, opacity: 1, stagger: 0.1, duration: 1, ease: 'power2.out' }
                 )
 
-                // 2. Holds in place, then text swings up and out before the next paragraph starts
+                // 2. Holds in place, then text swings up and out, accelerating away from rest (starts at zero velocity)
                 tl.to(split.lines,
-                    { rotationX: 30, yPercent: -200, delay:-.2, opacity: 0, stagger: 0.2, duration: 1, ease: 'none' },
-                    "+=1"
+                    { rotationX: 30, yPercent: -200, opacity: 0, stagger: 0.1, duration: 1, ease: 'power2.in' },
                 )
             })
 

@@ -16,28 +16,23 @@ const UI_CARDS = [
   },
   {
     id: 2,
-    title: "Performance first, always",
-    text: "Animations should run at 60fps across devices. We prioritize hardware-accelerated properties and avoid layout thrashing to ensure a buttery smooth experience.",
+    title: "Source code you own",
+    text: "Vault is built for people that want control. Every effect lands in your repo as real, inspectable code. No runtime dependency on us. No lock-in. Change anything, keep everything.",
   },
   {
     id: 3,
-    title: "Meaningful micro-interactions",
-    text: "Small details make a massive difference. Hover states, click feedback, and transitions are meticulously crafted to provide intuitive cues.",
+    title: "Dependency-honest",
+    text: "Effects use serious tools where they are needed: GSAP, Motion, Three.js, WebGL, Lenis, React, and Next.js. No surprise magic. No mystery layer.",
   },
   {
     id: 4,
-    title: "Scalable component architecture",
-    text: "Built with reusability in mind. Each component is modular, allowing you to compose complex interfaces without fighting the framework.",
+    title: "Agency-grade creative frontend",
+    text: "Vault is built from Hyperiux’s creative frontend discipline. These effects are refined on launches we actually shipped. Designed with reduced-motion, mobile, and cleanup considerations. Proven where it counts, not just in a sandbox",
   },
   {
     id: 5,
-    title: "Accessible by default",
-    text: "Motion is beautiful, but accessibility is mandatory. We respect prefers-reduced-motion and ensure contrast ratios meet WCAG standards.",
-  },
-  {
-    id: 6,
-    title: "Seamless integration",
-    text: "Drop these components into your Next.js or React codebase with zero friction. Fully typed with TypeScript and styled with Tailwind CSS.",
+    title: "Free entry, clear upgrade",
+    text: "Start with 30+ free effects. Upgrade to Pro when you need the full library, advanced systems, complete packs, and ongoing drops.",
   },
 ];
 
@@ -60,7 +55,7 @@ export default function UIKit() {
           duration: 0.4,
           ease: "power1.out",
         }).to(".use-case-container", {
-          translateX: "-50%",
+          translateX: "-48%",
           duration: 1.2,
           delay: -1.2,
           ease: "power1.inOut",
@@ -72,7 +67,7 @@ export default function UIKit() {
   }, []);
 
   return (
-    <section id="uikit-section" className="w-full h-[400vh] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
+    <section id="uikit-section" className="w-full h-[350vh] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
             <RandomBlur as="h2" className="text110 w-[90vw] mx-auto text-center">
                Not <span className='text-[#ff5f00]'>Another</span> UI Kit. Not a Side Project.

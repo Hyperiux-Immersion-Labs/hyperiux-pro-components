@@ -62,41 +62,43 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(true);
 
     return (
-        <div className="h-fit max-sm:hidden text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
-            <div className=" text-center space-y-[4vw]">
-                <RandomBlur as="h2"  className="text110 w-[70vw]">
+        <div className="h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-md:gap-[15vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
+            <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
+                <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
                 </RandomBlur>
-                <SplitLine as="p" className="text24">
+                <SplitLine as="p" className="text24 max-md:w-[90vw] mx-auto">
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
                 </SplitLine>
             </div>
-            <div className="h-[58vw] max-md:h-[350vw]! max-md:flex-col max-md:gap-[4vw] relative w-full flex gap-[1.5vw]">
+            <div className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
 
-                <div className="h-full max-md:w-full px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-[#F0F0F0]">
-                    <div className="space-y-[1.5vw]">
+                <div className="h-full max-md:w-full px-[4vw] max-md:p-[6vw] flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0]">
+                    <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
-                        <p className="text80 mb-[4vw]">Free</p>
-                        <div className="flex gap-[1vw] items-end">
-                            <p className="text110">$0</p>
-                            <p className="text24 mb-[1vw]">Forever</p>
+                        <p className="text80 mb-[4vw] max-md:mb-[2vw] font-medium!">Free</p>
+                        <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
+                            <p className="text110 font-medium!">$0</p>
+                            <p className="text24 mb-[1vw] max-md:mb-0">Forever</p>
                         </div>
-                        <p className="text24 -mt-[1vw]">For trying real effects in real projects.</p>
-                        <div className="flex flex-col gap-[1.5vw] pt-[2vw]">
+                        <p className="text24 -mt-[1vw] max-md:mt-0">For trying real effects in real projects.</p>
+                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[4vw] pt-[2vw]">
                             {freeFeatures.map((feature, index) => (
-                                <div key={index} className="flex items-center gap-[1vw]">
-                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-5 max-md:h-5 shrink-0" />
-                                    <p className="text24 leading-none max-md:text-base">{feature}</p>
+                                <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
+                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
+                                    <p className="text24 leading-none max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw]" />
+                    <div className="w-fit max-md:w-full">
+                        <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw] max-md:w-full max-md:mb-0" />
+                    </div>
                 </div>
 
                 {/* TOGGLE */}
-                <div className="h-fit max-md:w-full rounded-md absolute right-[32vw] flex items-center text24 text-background top-[-2.8vw] gap-[1vw] z-0">
+                <div className="h-fit max-md:w-full rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-[32vw] flex  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
                     <p
                         className={`cursor-pointer transition-opacity duration-300`}
                         onClick={() => setIsYearly(false)}
@@ -105,11 +107,11 @@ export default function Pricing() {
                     </p>
                     <button
                         onClick={() => setIsYearly(!isYearly)}
-                        className="p-[.2vw] bg-primary relative flex items-center w-[3.5vw] h-[1.8vw] rounded-full transition-colors duration-300"
+                        className="p-[.2vw] max-md:p-[1vw] bg-primary relative flex items-center w-[3.5vw] max-md:w-[14vw] h-[1.8vw] max-md:h-[7vw] rounded-full transition-colors duration-300"
                         aria-label="Toggle billing cycle"
                     >
                         <span
-                            className={`h-[1.4vw] w-[1.4vw] rounded-full bg-foreground transition-transform duration-300 absolute ${isYearly ? "translate-x-[1.7vw]" : "translate-x-0"}`}
+                            className={`h-[1.4vw] max-md:h-[5vw] w-[1.4vw] max-md:w-[5vw] rounded-full bg-foreground transition-transform duration-300 absolute ${isYearly ? "translate-x-[1.7vw] max-md:translate-x-[7vw]" : "translate-x-0"}`}
                         />
                     </button>
                     <p
@@ -119,43 +121,42 @@ export default function Pricing() {
                         Yearly
                     </p>
                 </div>
-                <div className="h-full max-md:w-full relative px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-background text-foreground">
+                
+                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+                    <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
-                    <div className="space-y-[1.5vw]">
+                        <p className="text80 max-md:mb-[2vw]">Pro</p>
+                        <ShimmerText as="p" className="text24 font-medium -mt-[1vw] max-md:mt-0">Most Popular</ShimmerText>
 
-                        <p className="text80">Pro</p>
-                        <ShimmerText as="p" className="text24 font-medium -mt-[1vw]">Most Popular</ShimmerText>
-
-                        <div className="flex gap-[1vw] items-end">
-                            <p className="text110 flex items-center">
+                        <div className="flex gap-[1vw] max-md:gap-[3vw]  items-end">
+                            <p className="text110 flex items-center font-medium!">
                                 <span>$</span>
                                 <PriceDigit digit="1" visible={isYearly} />
                                 <PriceDigit digit={isYearly ? "7" : "2"} />
                                 <PriceDigit digit="0" />
                             </p>
-                            <p className="text24 mb-[1vw]">{isYearly ? "Yearly" : "Monthly"}</p>
-                            <p className={`text34 mb-[.75vw] ml-[1vw] text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}>3 Months Free</p>
+                            <p className="text24 mb-[1vw] max-md:mb-0">{isYearly ? "Yearly" : "Monthly"}</p>
+                            <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-0 mb-[.75vw] ml-[1vw] text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}>3 Months Free</p>
                         </div>
-                        <p className="text24 -mt-[1vw]">For developers, founders, and agencies shipping premium work.</p>
-                        <div className="flex flex-col gap-[1.5vw] pt-[2vw]">
+                        <p className="text24 -mt-[1vw] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
+                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[4vw] pt-[2vw]">
                             {ProFeatures.map((feature, index) => (
-                                <div key={index} className="flex items-start  gap-[1vw]">
-                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] mt-[.25vw] max-md:w-5 max-md:h-5 shrink-0" />
-                                    <p className="text24 max-md:text-base">{feature}</p>
+                                <div key={index} className="flex items-start max-md:gap-[3vw] gap-[1vw]">
+                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] mt-[.25vw] max-md:mt-0 max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
+                                    <p className="text24 leading-none max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="space-y-[1vw] w-fit">
-                        <div className="w-fit">
-
-                            <Button variant="orange" text="Get PRO" />
+                    <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
+                        <div className="w-fit max-md:w-full">
+                            <Button variant="orange" text="Get PRO" className="max-md:w-full" />
                         </div>
-                        <p className="text-light-grey">Instant access · npx hyperiux login · Cancel anytime</p>
+                        <p className="text-light-grey max-md:text-[3.5vw]">Instant access · npx hyperiux login · Cancel anytime</p>
                     </div>
                 </div>
             </div>
-            <SplitLine as="p" className="text34 relative z-50 text-center w-[45vw]">
+            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-snug relative z-50 text-center w-[45vw] max-md:w-[90vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>

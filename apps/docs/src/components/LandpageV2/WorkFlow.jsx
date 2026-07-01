@@ -15,7 +15,7 @@ const STEPS = [
     {
         num: '01',
         title: 'Preview',
-        text: 'Use the Hyperiux CLI to add only the effect you need. Vault adds only the files that effect needs, not a full interaction circus. You can inspect and own the implementation.',
+        text: 'Browse by the moment you need: a sharper scroll, a cursor with presence, a cleaner transition. See exactly what it does before it touches your project.',
         Icon: Eye,
     },
     {
@@ -27,7 +27,7 @@ const STEPS = [
     {
         num: '03',
         title: 'Tune',
-        text: 'Easily modify timing, colors, and properties. Tweak the animation to seamlessly match your unique brand identity and product feel.',
+        text: 'Edit copy, layout, timing, easing, breakpoints, hover states, mobile fallbacks, and reduced-motion behavior to match your brand and product.',
         Icon: Sliders,
     },
     {
