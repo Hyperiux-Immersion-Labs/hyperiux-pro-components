@@ -2,7 +2,6 @@
 
 import ContactForm from "./ContactForm";
 
-
 const FIELDS = [
  { type:"text", name:"name", label:"Name*", required: true },
  { type:"email", name:"email", label:"Business Email*", required: true },

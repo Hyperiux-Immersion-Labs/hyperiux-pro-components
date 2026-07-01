@@ -1,7 +1,5 @@
 "use client";
 
-
-
 const ScrollablePopupContent = ({
     title = "Popup Title",
     subtitle = "",
