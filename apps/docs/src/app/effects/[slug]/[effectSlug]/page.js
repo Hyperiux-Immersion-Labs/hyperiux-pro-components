@@ -136,7 +136,7 @@ export default async function EffectPage({ params }) {
 
   const relatedEffectNames = content?.relatedEffectNames || [];
 
-  const pinnedRelatedEffects = relatedEffectNames
+  let relatedEffects = relatedEffectNames
     .map((relatedName) => {
       const normalizedRelatedName = normalize(relatedName);
 
@@ -151,23 +151,12 @@ export default async function EffectPage({ params }) {
     .filter(Boolean)
     .filter((item) => item.name !== effectSlug);
 
-  const pinnedRelatedSlugs = new Set(
-    pinnedRelatedEffects.flatMap((item) => [
-      normalize(item.name),
-      normalize(item.slug),
-      normalize(item.effectSlug),
-    ])
-  );
+  if (relatedEffects.length === 0) {
+    relatedEffects = allEffects
+      .filter((item) => item.categorySlug === slug && item.name !== effectSlug)
+      .slice(0, 5);
+  }
 
-  const remainingEffects = allEffects.filter((item) => {
-    if (item.name === effectSlug) return false;
-    if (pinnedRelatedSlugs.has(normalize(item.name))) return false;
-    if (pinnedRelatedSlugs.has(normalize(item.slug))) return false;
-    if (pinnedRelatedSlugs.has(normalize(item.effectSlug))) return false;
-    return true;
-  });
-
-  const relatedEffects = [...pinnedRelatedEffects, ...remainingEffects];
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
 
