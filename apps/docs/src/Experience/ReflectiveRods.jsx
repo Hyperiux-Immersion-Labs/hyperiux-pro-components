@@ -1,14 +1,94 @@
 'use client'
 
 import { Environment, Instances, RoundedBoxGeometry } from '@react-three/drei'
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { usePathname } from 'next/navigation'
 import React, { useMemo, useEffect, useRef, useState } from 'react'
+import { Vector2 } from 'three'
 import RodsGroup1 from './RodsGroup1'
 import RodsGroup2 from './RodsGroup2'
 import { createRollState, ROLL_SENSITIVITY } from './rollDrive'
 
 const ctr = (degrees) => degrees * (Math.PI / 180)
+
+const isInteractive = (target) =>
+    target?.closest?.('a, button, input, textarea, select, [role="button"]')
+
+// Drives drag-to-roll. The canvas is pointer-events:none (so it never blocks
+// the footer buttons), so instead of relying on R3F's DOM events we raycast
+// from the camera through the pointer on each drag and roll only the group the
+// pointer is actually over — keeping the two groups independent.
+function DragController({ group1Ref, group2Ref, roll1Ref, roll2Ref, active }) {
+    const camera = useThree((state) => state.camera)
+    const raycaster = useThree((state) => state.raycaster)
+    const gl = useThree((state) => state.gl)
+
+    useEffect(() => {
+        if (!active) {
+            roll1Ref.current.dragging = false
+            roll2Ref.current.dragging = false
+            return
+        }
+
+        const ndc = new Vector2()
+        let activeRoll = null
+        let lastY = 0
+
+        // Returns the roll state of the nearest group under the pointer, or null.
+        const pickGroup = (clientX, clientY) => {
+            const rect = gl.domElement.getBoundingClientRect()
+            ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1
+            ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1
+            raycaster.setFromCamera(ndc, camera)
+
+            const h1 = group1Ref.current
+                ? raycaster.intersectObject(group1Ref.current, true)
+                : []
+            const h2 = group2Ref.current
+                ? raycaster.intersectObject(group2Ref.current, true)
+                : []
+            const d1 = h1.length ? h1[0].distance : Infinity
+            const d2 = h2.length ? h2[0].distance : Infinity
+
+            if (d1 === Infinity && d2 === Infinity) return null
+            return d1 <= d2 ? roll1Ref : roll2Ref
+        }
+
+        const handlePointerDown = (e) => {
+            if (isInteractive(e.target)) return
+            const picked = pickGroup(e.clientX, e.clientY)
+            if (!picked) return
+            activeRoll = picked
+            lastY = e.clientY
+            picked.current.dragging = true
+            picked.current.velocity = 0
+            picked.current.pendingDelta = 0
+        }
+
+        const handlePointerMove = (e) => {
+            if (!activeRoll) return
+            // Vertical swipe rolls the bars around their own length.
+            activeRoll.current.pendingDelta += (e.clientY - lastY) * ROLL_SENSITIVITY
+            lastY = e.clientY
+        }
+
+        const handlePointerUp = () => {
+            if (activeRoll) activeRoll.current.dragging = false
+            activeRoll = null
+        }
+
+        window.addEventListener('pointerdown', handlePointerDown)
+        window.addEventListener('pointermove', handlePointerMove)
+        window.addEventListener('pointerup', handlePointerUp)
+        return () => {
+            window.removeEventListener('pointerdown', handlePointerDown)
+            window.removeEventListener('pointermove', handlePointerMove)
+            window.removeEventListener('pointerup', handlePointerUp)
+        }
+    }, [active, camera, raycaster, gl, group1Ref, group2Ref, roll1Ref, roll2Ref])
+
+    return null
+}
 
 function RenderKickstart({ active }) {
     const invalidate = useThree((state) => state.invalidate)
@@ -33,56 +113,28 @@ function RenderKickstart({ active }) {
     return null
 }
 
-// A pointer surface that reads drag over its child rods and feeds the motion
-// into `state` as roll. It doesn't transform anything itself — the rods apply
-// the roll around their own longitudinal axis (see rollDrive.js), so they stay
-// in place and just spin, exactly like the ambient animation.
-function RollDragSurface({ stateRef, active, children }) {
-    const lastY = useRef(0)
+// Subtle mouse-follow parallax tilt of the whole assembly (the original effect).
+function ParallaxTilt({ mouse, active, children }) {
+    const groupRef = useRef()
 
-    useEffect(() => {
-        if (!active) stateRef.current.dragging = false
-    }, [active, stateRef])
+    useFrame(() => {
+        if (!active || !groupRef.current) return
 
-    const handlePointerDown = (e) => {
-        e.stopPropagation()
-        e.target.setPointerCapture(e.pointerId)
-        stateRef.current.dragging = true
-        stateRef.current.velocity = 0
-        stateRef.current.pendingDelta = 0
-        lastY.current = e.clientY
-    }
+        const targetRotX = mouse.current.y * 0.05
+        const targetRotY = mouse.current.x * 0.05
 
-    const handlePointerMove = (e) => {
-        if (!stateRef.current.dragging) return
-        e.stopPropagation()
-        // Vertical swipe across the bars rolls them around their length.
-        const dy = e.clientY - lastY.current
-        lastY.current = e.clientY
-        stateRef.current.pendingDelta += dy * ROLL_SENSITIVITY
-    }
+        groupRef.current.rotation.x +=
+            (targetRotX - groupRef.current.rotation.x) * 0.05
+        groupRef.current.rotation.y +=
+            (targetRotY - groupRef.current.rotation.y) * 0.05
+    })
 
-    const handlePointerUp = (e) => {
-        e.stopPropagation()
-        stateRef.current.dragging = false
-        if (e.target.hasPointerCapture?.(e.pointerId)) {
-            e.target.releasePointerCapture(e.pointerId)
-        }
-    }
-
-    return (
-        <group
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerUp}
-        >
-            {children}
-        </group>
-    )
+    return <group ref={groupRef}>{children}</group>
 }
 
-function RodsScene({ active }) {
+function RodsScene({ mouse, active, roll1, roll2 }) {
+    const group1Ref = useRef()
+    const group2Ref = useRef()
     const commonProps = useMemo(
         () => ({
             radius: 0.18,
@@ -101,11 +153,6 @@ function RodsScene({ active }) {
         }),
         [],
     )
-
-    const roll1 = useRef(null)
-    const roll2 = useRef(null)
-    if (roll1.current == null) roll1.current = createRollState()
-    if (roll2.current == null) roll2.current = createRollState()
 
     return (
         <>
@@ -128,6 +175,14 @@ function RodsScene({ active }) {
             />
             <pointLight position={[0, 8, 10]} color="#ffffff" intensity={3} />
 
+            <DragController
+                group1Ref={group1Ref}
+                group2Ref={group2Ref}
+                roll1Ref={roll1}
+                roll2Ref={roll2}
+                active={active}
+            />
+
             <Instances limit={6}>
                 {(RodInstance) => (
                     <>
@@ -137,22 +192,24 @@ function RodsScene({ active }) {
                             smoothness={commonProps.smoothness}
                         />
                         <meshPhysicalMaterial {...commonProps.materialProps} />
-                        <RollDragSurface stateRef={roll1} active={active}>
-                            <RodsGroup1
-                                ctr={ctr}
-                                RodInstance={RodInstance}
-                                rollStateRef={roll1}
-                                active={active}
-                            />
-                        </RollDragSurface>
-                        <RollDragSurface stateRef={roll2} active={active}>
-                            <RodsGroup2
-                                ctr={ctr}
-                                RodInstance={RodInstance}
-                                rollStateRef={roll2}
-                                active={active}
-                            />
-                        </RollDragSurface>
+                        <ParallaxTilt mouse={mouse} active={active}>
+                            <group ref={group1Ref}>
+                                <RodsGroup1
+                                    ctr={ctr}
+                                    RodInstance={RodInstance}
+                                    rollStateRef={roll1}
+                                    active={active}
+                                />
+                            </group>
+                            <group ref={group2Ref}>
+                                <RodsGroup2
+                                    ctr={ctr}
+                                    RodInstance={RodInstance}
+                                    rollStateRef={roll2}
+                                    active={active}
+                                />
+                            </group>
+                        </ParallaxTilt>
                     </>
                 )}
             </Instances>
@@ -163,6 +220,11 @@ function RodsScene({ active }) {
 export default function ReflectiveRods() {
     const pathname = usePathname()
     const containerRef = useRef(null)
+    const mouse = useRef({ x: 0, y: 0 })
+    const roll1 = useRef(null)
+    const roll2 = useRef(null)
+    if (roll1.current == null) roll1.current = createRollState()
+    if (roll2.current == null) roll2.current = createRollState()
     const [inView, setInView] = useState(false)
 
     useEffect(() => {
@@ -186,10 +248,38 @@ export default function ReflectiveRods() {
         return () => observer.disconnect()
     }, [pathname])
 
+    // Parallax follows the pointer at the window level so the canvas can stay
+    // pointer-events:none and never swallow footer clicks. Drag-to-roll lives
+    // in DragController (inside the Canvas) where it can raycast per group.
+    useEffect(() => {
+        if (!inView) {
+            mouse.current.x = 0
+            mouse.current.y = 0
+            return
+        }
+
+        const handleMouseMove = (e) => {
+            mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
+            mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1
+        }
+
+        const handleMouseLeave = () => {
+            mouse.current.x = 0
+            mouse.current.y = 0
+        }
+
+        window.addEventListener('mousemove', handleMouseMove)
+        window.addEventListener('mouseleave', handleMouseLeave)
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove)
+            window.removeEventListener('mouseleave', handleMouseLeave)
+        }
+    }, [inView])
+
     return (
         <section
             ref={containerRef}
-            className="h-[200vh] max-md:hidden w-full z-999 absolute bottom-0 left-0 flex flex-col items-center justify-center"
+            className="h-[200vh] max-md:hidden w-full z-999 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
             id="reflectiveRoadsCanvas"
         >
             <Canvas
@@ -202,10 +292,18 @@ export default function ReflectiveRods() {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    pointerEvents: 'auto',
+                    // R3F forces the container to pointer-events:auto, which
+                    // would swallow clicks/hovers meant for the footer buttons.
+                    // We drive drag/parallax from window events, so disable it.
+                    pointerEvents: 'none',
                 }}
             >
-                <RodsScene active={inView} />
+                <RodsScene
+                    mouse={mouse}
+                    active={inView}
+                    roll1={roll1}
+                    roll2={roll2}
+                />
             </Canvas>
         </section>
     )
