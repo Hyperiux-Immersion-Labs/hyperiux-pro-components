@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import VaultBox from "../WebsiteComps/VaultBoxes";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -399,9 +400,9 @@ export default function FeaturedStoryTelling() {
             className="relative w-full h-[800vh] max-md:hidden z-50"
             
         >
-            <h2 className='text-[5.5vw] w-[70%] text-center mx-auto'>
-                Explore the Moments Your Website is  <span className='italic text-[#ff5f00]'>Missing.</span>
-            </h2>
+            <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
+                Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
+            </RandomBlur>
             <div
                 ref={stickyContainerRef}
                 className="sticky top-0 flex items-center justify-center w-full h-screen overflow-hidden"

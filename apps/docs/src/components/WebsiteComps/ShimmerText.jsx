@@ -3,10 +3,10 @@
 import React, { useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 
-export default function ShimmerText({ 
-    children, 
-    baseColor = "#ffffff", 
-    shimmerColor = "#ff5f00", 
+export default function ShimmerText({
+    children,
+    baseColor = "#ffffff",
+    shimmerColor = "#ff5f00",
     className = "",
     as: Component = "span"
 }) {
@@ -28,7 +28,7 @@ export default function ShimmerText({
         });
 
         const shimmerTimeline = gsap.timeline({ repeat: -1 });
-        
+
         shimmerTimeline
             .set(shimmerEl, { backgroundPosition: "250% 0%" })
             .to(shimmerEl, { backgroundPosition: "-150% 0%", duration: 2, ease: "none" })

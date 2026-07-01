@@ -5,6 +5,8 @@ import gsap from "gsap";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
+import RandomBlur from "../WebsiteComps/RandomBlur";
+import SplitLine from "../WebsiteComps/SplitLine";
 
 const DIGITS = [...Array(10).keys()];
 
@@ -60,15 +62,15 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(true);
 
     return (
-        <div className="h-fit text-background  flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[55vw]! bg-foreground self-padd  w-full">
+        <div className="h-fit text-background  flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
             <div className=" text-center space-y-[4vw]">
-                <h2 className="text110 w-[70vw]">
+                <RandomBlur as="h2"  className="text110 w-[70vw]">
                     Start free. Upgrade when you’re ready.
-                </h2>
-                <p className="text24">
+                </RandomBlur>
+                <SplitLine as="p" className="text24">
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
-                </p>
+                </SplitLine>
             </div>
             <div className="h-[58vw] relative w-full flex gap-[1.5vw]">
 
@@ -90,7 +92,7 @@ export default function Pricing() {
                             ))}
                         </div>
                     </div>
-                    <Button variant="outline" text="Browse Free Effects" className="mb-[2.5vw]" />
+                    <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw]" />
                 </div>
 
                 {/* TOGGLE */}
@@ -153,10 +155,10 @@ export default function Pricing() {
                     </div>
                 </div>
             </div>
-            <p className="text34 relative z-50 text-center w-[45vw]">
+            <SplitLine as="p" className="text34 relative z-50 text-center w-[45vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
-            </p>
+            </SplitLine>
         </div>
     );
 }

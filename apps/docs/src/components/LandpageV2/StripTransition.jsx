@@ -24,8 +24,8 @@ export default function StripTransition() {
                 ease: 'none',
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: '100% center', // Start when container enters from bottom
-                    end: '200% center', // End when container is fully in view
+                    start: '90% 100%', // Start when container enters from bottom
+                    end: '200% 100%', // End when container is fully in view
                     scrub: true,
                     markers: false,
                 }
@@ -38,8 +38,28 @@ export default function StripTransition() {
     return (
         <section ref={containerRef} className="h-[250vh] -mt-[125vw] flex items-center justify-between w-full  bg-transparent pointer-events-none">
             {[...Array(5)].map((_, i) => (
-                <div key={i} className='strip w-1/5 h-full bg-gradient-to-b from-background from-20% via-primary via-70% to-foreground l'></div>
+               <div
+  key={i}
+  className="w-1/5 strip h-full"
+  style={{
+    background: `
+      linear-gradient(
+        to bottom,
+        #0e0e0e 0%,
+        #0e0e0e 5%,
+        #b35a22 12%,
+        #ff5f00 28%,
+        #6b3a1d 40%,
+        #0a0a0a 48%,
+        #ff5f00 60%,
+        #ff5f00 70%,
+        #ffffff 100%
+      )
+    `,
+  }}
+></div>
             ))}
         </section>
+  
     )
 }

@@ -1,11 +1,12 @@
 'use client'
 
 import { Environment, Instances, RoundedBoxGeometry } from '@react-three/drei'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import { usePathname } from 'next/navigation'
 import React, { useMemo, useEffect, useRef, useState } from 'react'
 import RodsGroup1 from './RodsGroup1'
 import RodsGroup2 from './RodsGroup2'
+import { createRollState, ROLL_SENSITIVITY } from './rollDrive'
 
 const ctr = (degrees) => degrees * (Math.PI / 180)
 
@@ -32,30 +33,56 @@ function RenderKickstart({ active }) {
     return null
 }
 
-function RodsGroupWrapper({ mouse, RodInstance, active }) {
-    const groupRef = useRef()
+// A pointer surface that reads drag over its child rods and feeds the motion
+// into `state` as roll. It doesn't transform anything itself — the rods apply
+// the roll around their own longitudinal axis (see rollDrive.js), so they stay
+// in place and just spin, exactly like the ambient animation.
+function RollDragSurface({ stateRef, active, children }) {
+    const lastY = useRef(0)
 
-    useFrame(() => {
-        if (!active || !groupRef.current) return
+    useEffect(() => {
+        if (!active) stateRef.current.dragging = false
+    }, [active, stateRef])
 
-        const targetRotX = mouse.current.y * 0.05
-        const targetRotY = mouse.current.x * 0.05
+    const handlePointerDown = (e) => {
+        e.stopPropagation()
+        e.target.setPointerCapture(e.pointerId)
+        stateRef.current.dragging = true
+        stateRef.current.velocity = 0
+        stateRef.current.pendingDelta = 0
+        lastY.current = e.clientY
+    }
 
-        groupRef.current.rotation.x +=
-            (targetRotX - groupRef.current.rotation.x) * 0.05
-        groupRef.current.rotation.y +=
-            (targetRotY - groupRef.current.rotation.y) * 0.05
-    })
+    const handlePointerMove = (e) => {
+        if (!stateRef.current.dragging) return
+        e.stopPropagation()
+        // Vertical swipe across the bars rolls them around their length.
+        const dy = e.clientY - lastY.current
+        lastY.current = e.clientY
+        stateRef.current.pendingDelta += dy * ROLL_SENSITIVITY
+    }
+
+    const handlePointerUp = (e) => {
+        e.stopPropagation()
+        stateRef.current.dragging = false
+        if (e.target.hasPointerCapture?.(e.pointerId)) {
+            e.target.releasePointerCapture(e.pointerId)
+        }
+    }
 
     return (
-        <group ref={groupRef}>
-            <RodsGroup1 ctr={ctr} RodInstance={RodInstance} />
-            <RodsGroup2 ctr={ctr} RodInstance={RodInstance} />
+        <group
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+        >
+            {children}
         </group>
     )
 }
 
-function RodsScene({ mouse, active }) {
+function RodsScene({ active }) {
     const commonProps = useMemo(
         () => ({
             radius: 0.18,
@@ -74,6 +101,11 @@ function RodsScene({ mouse, active }) {
         }),
         [],
     )
+
+    const roll1 = useRef(null)
+    const roll2 = useRef(null)
+    if (roll1.current == null) roll1.current = createRollState()
+    if (roll2.current == null) roll2.current = createRollState()
 
     return (
         <>
@@ -105,11 +137,22 @@ function RodsScene({ mouse, active }) {
                             smoothness={commonProps.smoothness}
                         />
                         <meshPhysicalMaterial {...commonProps.materialProps} />
-                        <RodsGroupWrapper
-                            mouse={mouse}
-                            RodInstance={RodInstance}
-                            active={active}
-                        />
+                        <RollDragSurface stateRef={roll1} active={active}>
+                            <RodsGroup1
+                                ctr={ctr}
+                                RodInstance={RodInstance}
+                                rollStateRef={roll1}
+                                active={active}
+                            />
+                        </RollDragSurface>
+                        <RollDragSurface stateRef={roll2} active={active}>
+                            <RodsGroup2
+                                ctr={ctr}
+                                RodInstance={RodInstance}
+                                rollStateRef={roll2}
+                                active={active}
+                            />
+                        </RollDragSurface>
                     </>
                 )}
             </Instances>
@@ -120,7 +163,6 @@ function RodsScene({ mouse, active }) {
 export default function ReflectiveRods() {
     const pathname = usePathname()
     const containerRef = useRef(null)
-    const mouse = useRef({ x: 0, y: 0 })
     const [inView, setInView] = useState(false)
 
     useEffect(() => {
@@ -144,35 +186,10 @@ export default function ReflectiveRods() {
         return () => observer.disconnect()
     }, [pathname])
 
-    useEffect(() => {
-        if (!inView) {
-            mouse.current.x = 0
-            mouse.current.y = 0
-            return
-        }
-
-        const handleMouseMove = (e) => {
-            mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1
-            mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1
-        }
-
-        const handleMouseLeave = () => {
-            mouse.current.x = 0
-            mouse.current.y = 0
-        }
-
-        window.addEventListener('mousemove', handleMouseMove)
-        window.addEventListener('mouseleave', handleMouseLeave)
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove)
-            window.removeEventListener('mouseleave', handleMouseLeave)
-        }
-    }, [inView])
-
     return (
         <section
             ref={containerRef}
-            className="h-[200vh] max-md:hidden w-full z-50 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
+            className="h-[200vh] max-md:hidden w-full z-999 absolute bottom-0 left-0 flex flex-col items-center justify-center"
             id="reflectiveRoadsCanvas"
         >
             <Canvas
@@ -185,9 +202,10 @@ export default function ReflectiveRods() {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    pointerEvents: 'auto',
                 }}
             >
-                <RodsScene mouse={mouse} active={inView} />
+                <RodsScene active={inView} />
             </Canvas>
         </section>
     )

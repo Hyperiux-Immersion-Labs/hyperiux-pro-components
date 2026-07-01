@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { Eye, Download, Sliders, Rocket } from 'lucide-react'
+import ShimmerText from '../WebsiteComps/ShimmerText'
+import RandomBlur from '../WebsiteComps/RandomBlur'
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger)
@@ -159,19 +161,19 @@ export default function Workflow() {
     }, [])
 
     return (
-        <div ref={containerRef} className="text-white">
+        <div ref={containerRef} className="text-white mt-[10vw]">
             {/* ── Accordion Section ── */}
             <section
                 ref={accordionRef}
                 id="Workflow"
                 className="h-[400vh] relative"
             >
-                <h2 className="text-[5.5vw] w-[70%] pt-[10vw] text-center mx-auto mb-[6vw] relative z-20">
-                    Preview. Install. Tune <span className="text-primary">Ship.</span>
-                </h2>
+                <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
+                    Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
+                </RandomBlur>
 
-                <div className="h-screen w-full sticky top-0 flex flex-col justify-center max-md:pt-[30vw]">
-                    <div className="w-full h-full relative z-10">
+                <div className="h-screen w-full  sticky top-0 flex flex-col justify-center max-md:pt-[30vw]">
+                    <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}
                         <div
                             className="radial-glow w-[100vw] h-[50vw] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
@@ -179,7 +181,7 @@ export default function Workflow() {
                         />
 
                         {/* Steps */}
-                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative z-100">
+                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] z-100">
                             {STEPS.map((step, idx) => (
                                 <div key={idx} className="flex items-stretch w-[52vw]">
                                     {/* Left column: number box + connecting line */}

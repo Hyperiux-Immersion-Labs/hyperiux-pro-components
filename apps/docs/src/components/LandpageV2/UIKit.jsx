@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import RandomBlur from '../WebsiteComps/RandomBlur'
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger)
@@ -71,11 +72,11 @@ export default function UIKit() {
   }, []);
 
   return (
-    <section id="uikit-section" className="w-full h-[400vh] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-[20]">
+    <section id="uikit-section" className="w-full h-[400vh] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
-            <h2 className='text-[5.5vw] pt-[10vw] w-full text-center'>
+            <RandomBlur as="h2" className="text110 w-[90vw] mx-auto text-center">
                Not <span className='text-[#ff5f00]'>Another</span> UI Kit. Not a Side Project.
-            </h2>
+            </RandomBlur>
         </div>
 
       {/* Use Case Cards */}

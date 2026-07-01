@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import Button from '../WebsiteComps/Button'
 import gsap from 'gsap'
+import RandomBlur from '../WebsiteComps/RandomBlur'
+import SplitLine from '../WebsiteComps/SplitLine'
 
 export default function CTA() {
     const ctaRef = useRef(null)
@@ -24,13 +26,13 @@ export default function CTA() {
 
     return (
         <section ref={ctaRef} id='CTA' className='h-fit gap-[7vw] max-md:h-fit max-md:py-[20vw] max-md:mb-[30vw]  overflow-x-hidden flex items-start  justify-between max-md:gap-[8vw] flex-col bg-grey text-foreground self-padd relative z-500 w-full  py-[6vw]!'>
-            <h2 className='text110 relative z-2'>Need more than a component? We build the whole interaction.</h2>
+            <RandomBlur as="h2" className='text110 relative z-2'>Need more than a component? We build the whole interaction.</RandomBlur>
             <div className='space-y-[2.5vw] relative z-2'>
 
-                <p className='text24 w-[31vw]'>The Vault is a public slice of how Hyperiux thinks about interaction design - the same discipline behind premium websites, product experiences, and immersive digital systems. When a copy-paste effect isn’t enough, we’ll design and build the moment from scratch.</p>
+                <SplitLine as="p" className='text24 w-[31vw]'>The Vault is a public slice of how Hyperiux thinks about interaction design - the same discipline behind premium websites, product experiences, and immersive digital systems. When a copy-paste effect isn’t enough, we’ll design and build the moment from scratch.</SplitLine>
                 <div className='w-fit flex items-center gap-[1.5vw]'>
-                    <Button variant='outline2' text='See our work' />
-                    <Button variant='orange' text='Work with hyperiux' />
+                    <Button variant='outline2' text='See our work' target_blank href='https://www.hyperiux.com/' />
+                    <Button variant='orange' target_blank href='https://www.hyperiux.com/' text='Work with hyperiux' />
                 </div>
 
             </div>

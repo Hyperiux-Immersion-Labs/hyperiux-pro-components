@@ -5,6 +5,10 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 
+// Import WebsiteComps
+import RandomBlur from '../WebsiteComps/RandomBlur'
+import SplitLine from '../WebsiteComps/SplitLine'
+
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
 }
@@ -145,19 +149,19 @@ export default function Tension() {
     <section ref={sectionRef} className="relative w-full overflow-hidden bg-[#0e0e0e] px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
       <div className="mx-auto flex w-full max-w-[90vw] flex-col items-center">
         <div className="w-full text-center">
-          <h2 className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
+          <RandomBlur as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
             Good Motion is{' '}
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
-          </h2>
+          </RandomBlur>
 
-          <p className="mx-auto mt-[1.6vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+          <SplitLine as="p" className="mx-auto mt-[1.6vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it:
             timing, restraint, layout awareness, responsive behavior,
             reduced-motion support, dependency clarity, and performance
-            discipline. Get it wrong and your "wow moment" janks on mobile,
+            discipline. Get it wrong and your &quot;wow moment&quot; janks on mobile,
             tanks your Lighthouse score, or quietly breaks for the people who
             turned motion off.
-          </p>
+          </SplitLine>
         </div>
 
         <div ref={cardsRef} className="h-fit w-[70vw] mt-[8vw] space-y-[1vw]">
@@ -193,7 +197,7 @@ export default function Tension() {
         <p className="mt-[8vw] text-center text-[1.45vw] leading-[1.4] text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base">
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
-            It's the interaction layer.
+            It&apos;s the interaction layer.
           </span>{' '}
           Here it is.
         </p>

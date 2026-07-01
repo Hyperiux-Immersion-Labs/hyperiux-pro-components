@@ -1066,8 +1066,8 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center justify-center gap-[2vw]">
-                <Button variant='black' className='' text="Install CLI" href="/docs/installation" />
-                <Button text="Start Free" href="/docs/installation" />
+                <Button variant='black' className='' text="Install CLI" href="/docs/cli" />
+                <Button text="Start Free"  href="/effects/free" />
             </div>
         </nav>
     )

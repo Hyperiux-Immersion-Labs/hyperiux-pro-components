@@ -9,6 +9,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import RandomBlur from "../WebsiteComps/RandomBlur";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
@@ -47,9 +48,9 @@ export default function FAQs({ faqItems }) {
             <div className="h-[30vw]"></div>
 
             <div className="mx-auto text-center text-white mb-[6vw] relative z-10">
-                <h2 className='text-[5.5vw] w-[70%] text-center mx-auto'>
+                <RandomBlur as="h2" className='text110 w-[70%] text-center mx-auto'>
                     Questions, <span className='text-primary'>Answered.</span>
-                </h2>
+                </RandomBlur>
             </div>
             <div className="mx-auto w-[75vw] space-y-4 max-md:space-y-8 max-sm:space-y-6">
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
