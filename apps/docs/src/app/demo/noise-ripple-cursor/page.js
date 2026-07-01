@@ -3,6 +3,8 @@ import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function page() {
   return (
@@ -38,4 +40,8 @@ export default function page() {
       </div>
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("noise-ripple-cursor");
 }

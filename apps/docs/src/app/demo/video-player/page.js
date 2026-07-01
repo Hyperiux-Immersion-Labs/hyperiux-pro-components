@@ -2,6 +2,8 @@
 import VideoPlayer from "@/components/video-player";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const featurePoints = [
   "Custom play, pause, mute, close, and progress controls",
@@ -54,4 +56,8 @@ export default function Page() {
     
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("video-player");
 }

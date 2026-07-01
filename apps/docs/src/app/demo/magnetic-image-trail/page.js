@@ -2,6 +2,8 @@
 import MagneticImageTrail from '@/components/magnetic-image-trail'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -25,3 +27,6 @@ const page = () => {
 }
 
 export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("magnetic-image-trail");
+}

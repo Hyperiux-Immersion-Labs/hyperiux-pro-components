@@ -2,6 +2,8 @@ import StickyContentWrapper from "@/components/sticky-content-wrapper";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import { ReactLenis } from"lenis/react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
  return (
@@ -11,4 +13,8 @@ export default function Page() {
  <ScrollBottom className="bottom-[5%] left-[20%]! gap-[1vw]" textColor='text-[#111111]' />
      </ReactLenis>
  );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("sticky-content-wrapper");
 }

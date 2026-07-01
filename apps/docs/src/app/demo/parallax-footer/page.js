@@ -1,5 +1,7 @@
 import ParallaxFooter from "@/components/parallax-footer";
 import { ReactLenis } from "lenis/react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -10,3 +12,7 @@ const page = () => {
 };
 
 export default page;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("parallax-footer");
+}

@@ -2,6 +2,8 @@ import HeadAnim from '@/components/Animations/HeadAnim'
 import Tabs from '@/components/Tabs'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const Page = () => {
   return (
@@ -29,3 +31,6 @@ const Page = () => {
 }
 
 export default Page
+export async function generateMetadata() {
+  return getDemoPageMetadata("tabs");
+}

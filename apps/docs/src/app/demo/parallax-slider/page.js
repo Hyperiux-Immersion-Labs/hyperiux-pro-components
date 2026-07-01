@@ -2,6 +2,8 @@ import React from'react'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ParallaxImgSlider from '@/components/parallax-slider'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
  return (
@@ -23,3 +25,7 @@ const page = () => {
 }
 
 export default page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("parallax-slider");
+}

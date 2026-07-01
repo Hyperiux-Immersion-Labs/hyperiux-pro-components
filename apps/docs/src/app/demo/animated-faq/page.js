@@ -8,6 +8,8 @@ import {
 } from "@/components/animated-faq";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import React from "react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function FAQDemo() {
   const defaultOpenItems = faqItems
@@ -96,3 +98,7 @@ const faqItems = [
     defaultOpen: false,
   },
 ];
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("animated-faq");
+}

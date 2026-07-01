@@ -1,5 +1,7 @@
 import InteractiveBlurReveal from '@/components/interactive-blur-reveal'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const Page = () => {
   return (
@@ -35,3 +37,7 @@ const Page = () => {
 }
 
 export default Page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("interactive-blur-reveal");
+}

@@ -1,5 +1,7 @@
 import PixelatedImageEffect from "@/components/pixelated-image-effect";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
   return (
@@ -12,4 +14,8 @@ export default function Page() {
       />
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("pixelated-image-effect");
 }

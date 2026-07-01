@@ -1,15 +1,10 @@
-"use client"
-import GridLift from '@/components/grid-lift'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from'react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import DemoContent from "./_DemoContent";
 
-const page = () => {
- return (
- <>
- <DemoHeader logoColor='#ffffff' textColor='#ffffff' showText={false} />
- <GridLift/>
- </>
-  )
+export async function generateMetadata() {
+  return getDemoPageMetadata("grid-lift");
 }
 
-export default page
+export default function Page() {
+  return <DemoContent />;
+}

@@ -2,6 +2,8 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import FullScreenCrosshair from "@/components/full-screen-crosshair";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
   return (
@@ -38,4 +40,8 @@ export default function Page() {
  </p>
  </main>
  );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("full-screen-crosshair");
 }

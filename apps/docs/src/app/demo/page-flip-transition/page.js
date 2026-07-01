@@ -2,6 +2,8 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { ArrowFillButton } from "@/components/arrow-fill-button";
 import React from "react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function page() {
   return (
@@ -28,4 +30,8 @@ export default function page() {
       </div>
     </section>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("page-flip-transition");
 }

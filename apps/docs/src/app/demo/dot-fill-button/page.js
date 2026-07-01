@@ -1,6 +1,8 @@
 import DotFillBtn from "@/components/dot-fill-button";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import Image from "next/image";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
     return (
@@ -43,4 +45,8 @@ export default function Page() {
          </>
 
     );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("dot-fill-button");
 }

@@ -3,6 +3,8 @@ import { ReactLenis } from"lenis/react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
  return (
@@ -73,3 +75,7 @@ const page = () => {
 };
 
 export default page;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("parallax-image-animation");
+}

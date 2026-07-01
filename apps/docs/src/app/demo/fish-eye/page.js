@@ -1,6 +1,8 @@
 import FishEye from '@/components/fish-eye'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
     return (
@@ -44,4 +46,7 @@ export default function Page() {
         </div>
            </>
     )
+}
+export async function generateMetadata() {
+  return getDemoPageMetadata("fish-eye");
 }

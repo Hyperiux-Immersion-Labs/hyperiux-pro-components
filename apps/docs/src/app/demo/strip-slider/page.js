@@ -3,6 +3,8 @@ import StripSlider from '@/components/strip-slider'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
 import React from 'react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -39,3 +41,6 @@ const page = () => {
 }
 
 export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("strip-slider");
+}

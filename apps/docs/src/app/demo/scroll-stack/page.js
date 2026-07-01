@@ -3,6 +3,8 @@ import { ReactLenis } from'lenis/react'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import ScrollStack from '@/components/scroll-stack'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
  return (
@@ -19,3 +21,7 @@ const page = () => {
 export default page
 
 
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("scroll-stack");
+}

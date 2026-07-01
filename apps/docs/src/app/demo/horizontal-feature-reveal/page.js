@@ -3,6 +3,8 @@ import React from "react";
 import { ReactLenis } from "lenis/react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 
 const Page = () => {
@@ -20,3 +22,7 @@ const Page = () => {
 };
 
 export default Page;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("horizontal-feature-reveal");
+}

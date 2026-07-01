@@ -1,6 +1,8 @@
 import SpiderParticles from '@/components/spider-particles'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import React from'react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const spiderParticlesProps = {
  particleCount:180,
@@ -25,3 +27,7 @@ const page = () => {
 }
 
 export default page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("spider-particles");
+}

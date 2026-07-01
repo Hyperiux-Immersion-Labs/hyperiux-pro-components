@@ -4,6 +4,8 @@ import TextStream from "@/components/text-stream";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -32,3 +34,7 @@ const page = () => {
 };
 
 export default page;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("text-stream");
+}

@@ -1,5 +1,7 @@
 import InertiaImage from "@/components/inertia-img";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const Page = () => {
     return (
@@ -35,3 +37,7 @@ const Page = () => {
 };
 
 export default Page;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("inertia-img");
+}

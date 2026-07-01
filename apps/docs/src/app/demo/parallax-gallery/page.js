@@ -3,6 +3,8 @@ import ParallaxGallery from '@/components/parallax-gallery'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import HeadAnim from '@/components/Animations/HeadAnim'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 
 const page = () => {
@@ -33,3 +35,6 @@ const page = () => {
 }
 
 export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("parallax-gallery");
+}

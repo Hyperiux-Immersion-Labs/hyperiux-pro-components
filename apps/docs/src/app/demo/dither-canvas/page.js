@@ -1,6 +1,8 @@
 
 import DitherCanvas from "@/components/dither-canvas";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
   return (
@@ -15,4 +17,8 @@ export default function Page() {
       />
     </main>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("dither-canvas");
 }

@@ -1,6 +1,8 @@
 import React from'react'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import CircleTextReveal from '@/components/circle-text-reveal'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
  return (
@@ -27,3 +29,7 @@ const page = () => {
 
 
 export default page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("circle-text-reveal");
+}

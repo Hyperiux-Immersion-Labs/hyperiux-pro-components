@@ -1,5 +1,7 @@
 import { ArrowFillButton } from "@/components/arrow-fill-button";
 import React from "react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function page() {
   return (
@@ -21,4 +23,8 @@ export default function page() {
       </div>
     </section>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("block-transition");
 }

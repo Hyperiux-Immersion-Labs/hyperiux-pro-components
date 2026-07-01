@@ -4,6 +4,8 @@ import ScrollDistortion from '@/components/scroll-distortion'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import React from'react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const sections = [
  { text:'SHADOW', src:'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg' },
@@ -32,4 +34,8 @@ export default function page() {
     
     </>
  )
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("scroll-distortion");
 }

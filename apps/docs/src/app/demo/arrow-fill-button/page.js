@@ -1,6 +1,8 @@
 import { ArrowFillButton } from "@/components/arrow-fill-button";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import Image from "next/image";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 
 export default function Page() {
@@ -44,4 +46,8 @@ export default function Page() {
         </div>
         </>
     );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("arrow-fill-button");
 }

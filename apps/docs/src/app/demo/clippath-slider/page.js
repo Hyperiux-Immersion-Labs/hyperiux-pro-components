@@ -1,5 +1,7 @@
 import ClipPathSlider from '@/components/clip-path-slider'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const Page = () => {
  return (
@@ -13,3 +15,7 @@ const Page = () => {
 export default Page
 
 
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("clippath-slider");
+}

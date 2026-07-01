@@ -1,6 +1,8 @@
 import React from 'react'
 import CursorMove from '@/components/cursor-move'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -22,3 +24,7 @@ const page = () => {
 }
 
 export default page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("cursor-move");
+}

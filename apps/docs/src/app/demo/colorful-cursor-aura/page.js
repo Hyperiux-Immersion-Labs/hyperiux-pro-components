@@ -2,6 +2,8 @@
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import ColorfulCursorAura from '@/components/colorful-cursor-aura'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const Page = () => {
   return (
@@ -14,3 +16,6 @@ const Page = () => {
 }
 
 export default Page
+export async function generateMetadata() {
+  return getDemoPageMetadata("colorful-cursor-aura");
+}

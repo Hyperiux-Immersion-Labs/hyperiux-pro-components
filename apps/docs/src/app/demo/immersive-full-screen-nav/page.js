@@ -1,6 +1,8 @@
 import ImmersiveFullscreenNav from '@/components/immersive-full-screen-navigation'
 import Link from 'next/link'
 import React from 'react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -42,3 +44,6 @@ const page = () => {
 }
 
 export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("immersive-full-screen-nav");
+}

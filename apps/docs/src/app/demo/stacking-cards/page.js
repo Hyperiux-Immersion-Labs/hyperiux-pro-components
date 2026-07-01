@@ -2,6 +2,8 @@ import StackingCards from '@/components/stacking-cards'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import { ReactLenis } from'lenis/react'
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const page = () => {
   return (
@@ -18,3 +20,6 @@ const page = () => {
 }
 
 export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("stacking-cards");
+}

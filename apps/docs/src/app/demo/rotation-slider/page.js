@@ -2,6 +2,8 @@ import RotationSlider from "@/components/rotation-slider";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
   return (
@@ -17,4 +19,8 @@ export default function Page() {
       <ScrollBottom textColor={"text-black"} />
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("rotation-slider");
 }

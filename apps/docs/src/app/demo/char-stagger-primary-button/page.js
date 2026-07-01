@@ -1,6 +1,8 @@
 import CharStaggerPrimaryButton from "@/components/char-stagger-primary-button";
 import Image from "next/image";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 
 export default function Page() {
@@ -43,4 +45,8 @@ export default function Page() {
         </div>
           </>
     );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("char-stagger-primary-button");
 }

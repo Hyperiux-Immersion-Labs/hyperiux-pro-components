@@ -4,6 +4,8 @@ import HeadAnim from '@/components/Animations/HeadAnim'
 import Copy from '@/components/Animations/Copy'
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const index = () => {
   return (
@@ -41,3 +43,7 @@ const index = () => {
 };
 
 export default index;
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("donut-particles");
+}

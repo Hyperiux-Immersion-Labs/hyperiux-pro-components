@@ -3,6 +3,8 @@ import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import SVGPixelReveal from "@/components/svg-pixel-reveal";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function Page() {
   return (
@@ -38,4 +40,8 @@ export default function Page() {
       </main>
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("svg-pixel-reveal");
 }

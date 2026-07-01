@@ -2,6 +2,8 @@
 
 import FractalGlass from "@/components/fractal-glass";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 const images = {
   blob: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
@@ -28,4 +30,8 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("fractal-glass");
 }

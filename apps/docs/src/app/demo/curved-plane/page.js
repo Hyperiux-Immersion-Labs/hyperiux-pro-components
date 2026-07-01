@@ -3,6 +3,8 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import CurvedPlane from "@/components/curved-plane";
 import React from "react";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+
 
 export default function v1() {
   return (
@@ -21,4 +23,8 @@ export default function v1() {
       <ScrollBottom textColor='text-black' className="hidden max-md:flex bottom-[5%]" />
     </>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("curved-plane");
 }
