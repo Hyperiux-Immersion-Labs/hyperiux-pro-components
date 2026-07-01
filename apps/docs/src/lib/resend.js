@@ -8,7 +8,7 @@ if (!process.env.RESEND_API_KEY) {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || "Hyperiux Vault <hello@vault.hyperiux.com>";
+const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || "Hyperiux Vault <hello@hyperiux.com>";
 
 /**
  * Send an email via Resend and log the result to the sent_emails Supabase table.
