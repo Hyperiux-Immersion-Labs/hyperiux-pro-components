@@ -116,7 +116,7 @@ export default function TrustStrip() {
         },"<")
     }, [])
     return (
-        <section className="relative w-full  z-10 px-[5vw] py-[8vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20" id="trust-strip">
+        <section className="relative w-full  z-10 px-[5vw] py-[8vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
 
 
             <div className="relative flex max-sm:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-sm:gap-8">
@@ -132,7 +132,7 @@ export default function TrustStrip() {
                 </div>
 
                 <div className="flex items-start gap-0">
-                    <div className="flex flex-col max-sm:flex- w-[19vw] max-sm:w-[47vw] strip-1">
+                    <div className="flex flex-col max-sm:flex- w-[19vw] max-sm:w-[50%] strip-1">
                         <StatCard
                             label="Effects"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
@@ -163,7 +163,7 @@ export default function TrustStrip() {
                         </StatCard>
                     </div>
 
-                    <div className="translate-y-[20%] max-sm:w-[47vw] flex flex-col max-md:mt-8  w-[19vw] strip-2">
+                    <div className="translate-y-[20%] max-sm:w-[50%] flex flex-col max-md:mt-8  w-[19vw] strip-2">
                         <StatCard
                             label="Free"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"

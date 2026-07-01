@@ -505,11 +505,11 @@ export default function CodeBlockWorkflow() {
     <section
       id="code-block"
       ref={sectionRef}
-      className="relative w-full overflow-hidden text-white max-md:px-[5vw] max-md:py-20"
+      className="relative w-full overflow-hidden text-white max-md:px-0 max-md:py-20"
     >
       <div className="mx-auto w-full max-w-[1800px]">
         <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
-          <div className="flex flex-col gap-[1.4vw] max-md:gap-5">
+          <div className="flex flex-col gap-[1.4vw] max-md:contents">
             <Panel title="amazing_project" className="min-h-[25vw]">
               <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
@@ -568,7 +568,7 @@ export default function CodeBlockWorkflow() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="min-h-[20vw]">
+            <Panel title="app/page.jsx" className="min-h-[20vw] max-md:order-last">
               <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />

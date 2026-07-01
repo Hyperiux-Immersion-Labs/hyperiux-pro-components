@@ -43,8 +43,6 @@ const ACTIVE_BG = '#ffffff'
 const ACTIVE_COLOR = '#161616'
 const INACTIVE_BG = '#161616'
 const INACTIVE_COLOR = '#ffffff'
-const OPEN_HEIGHT = '16vw'
-const CLOSED_HEIGHT = '5vw'
 const EASE = 'power1.inOut'
 const STEP_DURATION = 1.8
 const HOLD_DURATION = 1.2
@@ -56,7 +54,20 @@ export default function Workflow() {
     const videoSectionRef = useRef(null)
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const mm = gsap.matchMedia(containerRef)
+
+        mm.add(
+            {
+                isMobile: '(max-width: 640px)',
+                isDesktop: '(min-width: 641px)',
+            },
+            (context) => {
+                const { isMobile } = context.conditions
+
+                /* ── Responsive accordion heights (desktop values unchanged) ── */
+                const OPEN_HEIGHT = isMobile ? '60vw' : '16vw'
+                const CLOSED_HEIGHT = isMobile ? '10vw' : '5vw'
+
             /* ── Query DOM groups ── */
             const numBoxes = gsap.utils.toArray('.wf-num-box')
             const contentBoxes = gsap.utils.toArray('.wf-content-box')
@@ -155,9 +166,10 @@ export default function Workflow() {
                     },
                 }
             )
-        }, containerRef)
+            }
+        )
 
-        return () => ctx.revert()
+        return () => mm.revert()
     }, [])
 
     return (
@@ -176,23 +188,23 @@ export default function Workflow() {
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}
                         <div
-                            className="radial-glow w-[100vw] h-[50vw] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
+                            className="radial-glow w-screen h-[50vw] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
                             style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
                         />
 
                         {/* Steps */}
-                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] z-100">
+                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-sm:pt-[35vw] z-100">
                             {STEPS.map((step, idx) => (
-                                <div key={idx} className="flex items-stretch w-[52vw]">
+                                <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[86vw]">
                                     {/* Left column: number box + connecting line */}
-                                    <div className="flex flex-col items-center w-[5vw] shrink-0">
+                                    <div className="flex flex-col items-center w-[5vw] max-sm:w-[10vw] shrink-0">
                                         {/* Number / Icon box */}
-                                        <div className="wf-num-box h-[5vw] w-[5vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
+                                        <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[10vw] max-sm:w-[10vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
                                             <div className="wf-num absolute inset-0 flex items-center justify-center">
                                                 <p className="text34 pr-[.2vw]">{step.num}</p>
                                             </div>
                                             <div className="wf-icon absolute inset-0 flex items-center justify-center">
-                                                <step.Icon className="w-[2.5vw] h-[2.5vw]" />
+                                                <step.Icon className="w-[2.5vw] h-[2.5vw] max-sm:w-[5vw] max-sm:h-[5vw]" />
                                             </div>
                                         </div>
 
@@ -205,11 +217,11 @@ export default function Workflow() {
                                     </div>
 
                                     {/* Right column: content box */}
-                                    <div className="flex flex-col ml-[1vw] flex-1 mb-[1.5vw]">
-                                        <div className="wf-content-box h-[5vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] bg-dark-card overflow-hidden">
+                                    <div className="flex flex-col ml-[1vw] max-sm:ml-[2vw] flex-1 mb-[1.5vw] max-sm:mb-[3vw]">
+                                        <div className="wf-content-box h-[5vw] max-sm:h-[10vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-sm:px-[4vw] max-sm:py-[3vw] bg-dark-card overflow-hidden">
                                             <p className="leading-none mt-[.25vw]">{step.title}</p>
-                                            <div className="wf-text w-[85%] overflow-hidden opacity-0">
-                                                <p className="text24 pt-[1.5vw] leading-[1.3]">{step.text}</p>
+                                            <div className="wf-text w-[85%] max-sm:w-full overflow-hidden opacity-0">
+                                                <p className="text24 pt-[1.5vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
                                             </div>
                                         </div>
                                     </div>
