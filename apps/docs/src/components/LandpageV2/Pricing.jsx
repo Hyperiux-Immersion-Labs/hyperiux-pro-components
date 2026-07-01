@@ -62,7 +62,7 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(true);
 
     return (
-        <div className="h-fit text-background  flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
+        <div className="h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
             <div className=" text-center space-y-[4vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw]">
                     Start free. Upgrade when you’re ready.
@@ -72,9 +72,9 @@ export default function Pricing() {
                     new drop.
                 </SplitLine>
             </div>
-            <div className="h-[58vw] relative w-full flex gap-[1.5vw]">
+            <div className="h-[58vw] max-md:h-[350vw]! max-md:flex-col max-md:gap-[4vw] relative w-full flex gap-[1.5vw]">
 
-                <div className="h-full px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-[#F0F0F0]">
+                <div className="h-full max-md:w-full px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-[#F0F0F0]">
                     <div className="space-y-[1.5vw]">
 
                         <p className="text80 mb-[4vw]">Free</p>
@@ -96,7 +96,7 @@ export default function Pricing() {
                 </div>
 
                 {/* TOGGLE */}
-                <div className="h-fit rounded-md absolute right-[32vw] flex items-center text24 text-background top-[-2.8vw] gap-[1vw] z-0">
+                <div className="h-fit max-md:w-full rounded-md absolute right-[32vw] flex items-center text24 text-background top-[-2.8vw] gap-[1vw] z-0">
                     <p
                         className={`cursor-pointer transition-opacity duration-300`}
                         onClick={() => setIsYearly(false)}
@@ -119,7 +119,7 @@ export default function Pricing() {
                         Yearly
                     </p>
                 </div>
-                <div className="h-full relative px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-background text-foreground">
+                <div className="h-full max-md:w-full relative px-[4vw] flex-col py-[3vw] flex items-start justify-between w-1/2 bg-background text-foreground">
 
                     <div className="space-y-[1.5vw]">
 

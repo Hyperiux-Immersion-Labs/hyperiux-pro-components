@@ -11,17 +11,17 @@ if (typeof window !== "undefined") {
 
 export default function GradientFill() {
     const containerRef = useRef(null)
-    const textRef = useRef(null)
+    const textRefs = useRef([])
+    textRefs.current = []
+
+    const addTextRef = (el) => {
+        if (el && !textRefs.current.includes(el)) textRefs.current.push(el)
+    }
 
     useEffect(() => {
-        let split;
+        const splits = []
 
         const ctx = gsap.context(() => {
-            split = new SplitText(textRef.current, { type: 'lines' })
-
-            gsap.set(textRef.current, { perspective: 2000 })
-            gsap.set(split.lines, { willChange: 'transform, opacity', transformOrigin: '50% 50%' })
-
             const glow = containerRef.current.querySelector('.radial-glow');
             gsap.set(glow, { opacity: 0.2, scale: 0.8, transformOrigin: 'bottom center', willChange: 'transform, opacity' })
 
@@ -32,8 +32,9 @@ export default function GradientFill() {
                 ease: 'none',
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: "8% bottom", // Starts exactly when the section enters the viewport
-                    end: "bottom top",   // Ends exactly when the section leaves the viewport (max stretch)
+                    start: "20% center", // Starts exactly when the section enters the viewport
+                    end: "bottom center",   // Ends exactly when the section leaves the viewport (max stretch)
+                    markers:false,
                     scrub: true, // Extra smooth catch-up
                 }
             })
@@ -41,38 +42,43 @@ export default function GradientFill() {
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: "-20% top",
-                    end: "bottom bottom",
-                    scrub: 1.5, // Buttery smooth scrub
+                    start: "10% center",
+                    end: "95% center",
+                    scrub: true, // Buttery smooth scrub
+                    markers:false,
                 }
             })
 
-            // 1. Text enters
-            tl.fromTo(split.lines,
-                { rotationX: -15, yPercent: 100, opacity: 0 },
-                { rotationX: 0, yPercent: 0, opacity: 1, stagger: 0.2, duration: 1, ease: 'none' },
-                0
-            )
+            textRefs.current.forEach((el) => {
+                const split = new SplitText(el, { type: 'lines' })
+                splits.push(split)
 
-            // 2. Text holds & Glow holds
-            tl.to({}, { duration: 1 }, 1)
+                gsap.set(el, { perspective: 2000, opacity: 1 })
+                gsap.set(split.lines, { willChange: 'transform, opacity', transformOrigin: '50% 50%' })
 
-            // 3. Text swings up and out (Glow stays!)
-            tl.to(split.lines,
-                { rotationX: 15, yPercent: -100, opacity: 0, stagger: 0.2, duration: 1, ease: 'none' },
-                2
-            )
+                // 1. Text enters from bottom, fading in
+                tl.fromTo(split.lines,
+                    { rotationX: -30, yPercent: 200, opacity: 0 },
+                    { rotationX: 0, yPercent: 0, opacity: 1, stagger: 0.2, duration: 1, ease: 'none' }
+                )
+
+                // 2. Holds in place, then text swings up and out before the next paragraph starts
+                tl.to(split.lines,
+                    { rotationX: 30, yPercent: -200, delay:-.2, opacity: 0, stagger: 0.2, duration: 1, ease: 'none' },
+                    "+=1"
+                )
+            })
 
         }, containerRef)
 
         return () => {
-            if (split) split.revert();
+            splits.forEach((split) => split.revert());
             ctx.revert();
         }
     }, [])
 
     return (
-        <section ref={containerRef} className='h-[200vh] relative w-full bg-[#0e0e0e]'>
+        <section ref={containerRef} className='h-[400vh] -mt-[10vw] relative w-full bg-[#0e0e0e]'>
             <div className='w-full sticky top-0 z-99 h-screen flex justify-center items-center'>
 
                 {/* Pure CSS Radial Glow (No Canvas!) */}
@@ -81,11 +87,21 @@ export default function GradientFill() {
                     style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
                 ></div>
 
-                <p ref={textRef} className='text64 relative z-99 w-[72vw] mx-auto text-center pointer-events-none text-white'>
-                    Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.
-                </p>
+                {[
+                    'Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.',
+                    'The difference now lives in the interaction layer: how your page moves, responds, reveals, transitions, and guides attention.',
+                    'But building that layer from scratch is slow & hard. Good motion needs taste, timing, restraint, performance discipline, cleanup, responsive behavior, mobile fallbacks and reduced-motion support. Most teams either skip it, overdo it, or rebuild the same interaction from scratch for every project.',
+                ].map((text, i) => (
+                    <p
+                        key={i}
+                        ref={addTextRef}
+                        className='text64 leading-[1.2] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99 w-[72vw] mx-auto text-center pointer-events-none text-white'
+                        style={{ opacity: 0 }}
+                    >
+                        {text}
+                    </p>
+                ))}
             </div>
         </section>
     )
 }
-
