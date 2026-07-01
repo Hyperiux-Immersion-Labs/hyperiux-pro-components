@@ -13,23 +13,33 @@ if (typeof window !== "undefined") {
 const groups = [
     {
         title: "Creative Front-End Developers",
-        text: "Build complex, premium interactions without fighting with generic animation libraries. Source-first code means you have complete control over every bezier curve and timing function."
+        text: "Stop rebuilding the same scroll reveal, text animation, cursor trail, and transition from scratch. Start from production-ready source and shape it to your project.",
+        cta: "Browse Effects",
+        link: "/effects"
     },
     {
         title: "Startup Founders & Product Teams",
-        text: "Elevate your product's perceived value with premium motion design that ships fast and scales beautifully, without slowing down your core development."
+        text: "Make your launch page feel more premium without hiring a full motion team. Use Vault to speed up build cycles, and raise perceived product quality.",
+        cta: "Start with Free Effects",
+        link: "/effects/free"
     },
     {
         title: "Agencies & Freelancers",
-        text: "Deliver jaw-dropping websites to your clients in record time without starting from scratch on complex animations for every new project."
+        text: "Move faster on client websites while keeping the work custom. Use Vault as a starting point for high-end interaction systems, then adapt the code for each brand while saving hours of custom motion work on each project.",
+        cta: "See agency licensing (coming soon)",
+        link: "#"
     },
     {
         title: "CTOs & CPOs",
-        text: "Get the creative benefit of premium motion without committing to an opaque dependency. Source-first code, clear stack choices, and a workflow your developers can own."
+        text: "Get the creative benefit of premium motion without committing to an opaque dependency. Source-first code, clear stack choices, and a workflow your developers can own.",
+        cta: "Read the Docs",
+        link: "/docs"
     },
     {
         title: "Marketing Teams",
-        text: "Launch high-converting landing pages that captivate your audience. Stand out from the competition with immersive experiences that drive engagement and results."
+        text: "Upgrade the moments that affect perception: hero sections, campaign pages, product storytelling, proof sections, and final CTAs.",
+        cta: "Explore Use Cases",
+        link: "#"
     }
 ]
 
@@ -182,8 +192,8 @@ export default function ForDevelopers() {
                                     <p className='text34 card-title opacity-0 font-medium tracking-tight max-md:text-[6vw]'>{group.title}</p>
                                     <p className='text34 card-text opacity-0 leading-[1.1]'>{group.text}</p>
                                 </div>
-                                <Link href="/docs" className="card-link relative z-10 text-sm underline underline-offset-4 decoration-1 opacity-0 w-fit font-medium">
-                                    Read the Docs
+                                <Link href={group.link || "#"} className="card-link relative z-10 text-sm underline underline-offset-4 decoration-1 opacity-0 w-fit font-medium">
+                                    {group.cta}
                                 </Link>
                             </div>
                         ))}
