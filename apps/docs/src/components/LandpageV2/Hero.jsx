@@ -343,23 +343,23 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full max-sm:w-screen items-center self-padd">
       <div
         ref={containerRef}
-        className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[8vw]"
+        className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[8vw] max-sm:space-y-[14vw]"
       >
-        <div className="flex h-fit w-full items-center max-md:flex-col max-md:justify-center">
-          <h1 className="text110 relative w-[65%] font-semibold max-md:w-full max-md:text-center max-md:indent-0!">
+        <div className="flex h-fit w-full items-center max-md:flex-col max-sm:items-start max-sm:justify-start">
+          <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block opacity-0">
               The Interaction Layer your Website is{" "}
-              <span className="italic text-[#ff5f00]">Missing</span>
+              <span className="italic max-md:not-italic text-[#ff5f00]">Missing</span>
             </span>
           </h1>
         </div>
 
         <p
           ref={pRef}
-          className="text24 w-[50%] text-[#C9C9C9] opacity-0 max-md:w-full max-md:text-center"
+          className="text24 w-[50%] text-[#C9C9C9] opacity-0 max-md:w-full max-sm:w-[95%] max-md:text-center max-sm:text-left"
         >
           100+ copy-paste interaction effects for React & Next.js. Scroll
           systems, cursor effects, text reveals, page transitions, and WebGL
@@ -369,7 +369,7 @@ export default function Hero() {
 
         <div
           ref={buttonWrapRef}
-          className="pointer-events-auto flex w-fit gap-[1vw] opacity-0 max-md:mx-auto max-md:gap-3"
+          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] opacity-0  max-md:gap-5"
         >
           <Button
             text="Browse the effects"
@@ -383,7 +383,7 @@ export default function Hero() {
 
         <p
           ref={shimmerTextWrapRef}
-          className="shimmer-text flex items-center gap-[0.5vw] text-[#939393] leading-[1] opacity-0 max-md:justify-center max-md:gap-2"
+          className="shimmer-text flex items-center gap-[0.5vw] max-sm:mt-[-6vw] text-[#939393] leading-[1] opacity-0 max-md:justify-center max-md:gap-2"
         >
           <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-md:size-3">
             <UnlockIcon className="h-full w-full" />

@@ -1,4 +1,4 @@
-"use client";
+
 
 import GlowingPlates from "@/Experience/GlowingPlates";
 import VaultShell from "@/Layouts/VaultShell";

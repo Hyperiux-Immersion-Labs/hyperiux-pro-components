@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef } from 'react'
 import Button from '../WebsiteComps/Button'
 import gsap from 'gsap'

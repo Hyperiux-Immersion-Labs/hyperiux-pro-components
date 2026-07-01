@@ -96,23 +96,29 @@
 }
 
 @media (max-width: 640px) {
+
+  body {
+    overflow-x: hidden;
+    width: 100vw;
+  }
+
   .self-padd {
-    padding: 0 8vw;
+    padding: 0 7vw;
   }
   .text80 {
     font-size: 9vw;
   }
   .text140 {
-    font-size: 10vw;
+    font-size: 13vw;
   }
   .text110 {
-    font-size: 8vw;
+    font-size: 10vw;
   }
   .text20 {
     font-size: 4vw;
   }
   .text24 {
-    font-size: 3.9vw;
+    font-size: 4.2vw;
   }
   .text18 {
     font-size: 3.8vw;
