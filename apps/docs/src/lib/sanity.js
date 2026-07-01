@@ -69,6 +69,36 @@ export function mergeRegistryWithSanity(effects = [], entries = []) {
 // Keep old name as alias so any other callers don't break during transition
 export const applySanityCategorySlugs = mergeRegistryWithSanity
 
+export function buildEffectsFromSanity(entries = []) {
+  return normalizeEffectEntries(entries)
+    .filter((entry) => entry?.effectSlug && entry?.categorySlug)
+    .map((entry) => ({
+      name: entry.effectSlug,
+      slug: entry.effectSlug,
+      effectSlug: entry.effectSlug,
+      title: entry.title || entry.effectSlug,
+      description: entry.summary || '',
+      categories: [entry.categorySlug],
+      categorySlug: entry.categorySlug,
+      tier: entry.tier || 'pro',
+      tags: entry.tags || [],
+      addedAt: entry.addedAt ? new Date(entry.addedAt).getTime() : null,
+      coverImage: entry.coverImage || entry.effectSlug,
+      videoUrl: entry.videoUrl || `${entry.effectSlug}.mp4`,
+      previewUrl: entry.previewUrl || null,
+    }))
+}
+
+export function getEffectsByCategoryFromSanity(entries = []) {
+  const categories = {}
+  for (const effect of buildEffectsFromSanity(entries)) {
+    const cat = getEffectCategoryBySlug(effect.categorySlug)?.id || effect.categorySlug || 'other'
+    if (!categories[cat]) categories[cat] = []
+    categories[cat].push(effect)
+  }
+  return categories
+}
+
 function getCategorySlugAliases(categorySlug) {
   return getEffectCategorySlugAliases(categorySlug)
 }

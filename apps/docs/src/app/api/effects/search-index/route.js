@@ -1,8 +1,4 @@
-import { getRegistryIndex } from "@/lib/registry";
-import {
-  mergeRegistryWithSanity,
-  getAllSanityEffectEntries,
-} from "@/lib/sanity";
+import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import { getEffectHref } from "@/lib/categories";
 
 export const dynamic = "force-static";
@@ -42,10 +38,8 @@ function normalizeEffectForSearch(effect) {
 }
 
 export async function GET() {
-  const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-
-  const effects = mergeRegistryWithSanity(registry.items, sanityEntries);
+  const effects = buildEffectsFromSanity(sanityEntries);
 
   const sortedEffects = [...effects].sort(
     (a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0)

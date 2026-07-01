@@ -1,19 +1,13 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import {
-  getAllEffectSlugs,
-  getEffectBySlug,
-  getEffectsByCategory,
-  getRegistryIndex,
-} from "@/lib/registry";
-import { getEffectHref } from "@/lib/categories";
+import { getEffectBySlug } from "@/lib/registry";
 
 import {
-  applySanityCategorySlugs,
-  mergeRegistryWithSanity,
   getAllSanityEffectEntries,
   getSanityEffectContent,
+  buildEffectsFromSanity,
+  getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
 import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { EffectDetailContent } from "../effect-detail";
@@ -24,12 +18,12 @@ function getEffectPageMetadata(effect, content, slug, effectSlug) {
   const title =
     content?.seo?.metaTitle ||
     content?.seo?.title ||
-    `${effect.title} | Hyperiux Vault`;
+    `${effect?.title || effectSlug} | Hyperiux Vault`;
   const description =
     content?.seo?.metaDescription ||
     content?.seo?.description ||
     content?.summary ||
-    effect.description;
+    effect?.description;
 
   return createPageMetadata({
     title,
@@ -85,7 +79,6 @@ function normalize(value = "") {
 
 export async function generateStaticParams() {
   const entries = await getAllSanityEffectEntries();
-  const registry = getRegistryIndex();
   const params = new Map();
 
   for (const entry of entries) {
@@ -95,27 +88,15 @@ export async function generateStaticParams() {
     });
   }
 
-  for (const effect of registry.items) {
-    const [, , categorySlug, effectSlug] = getEffectHref(effect).split("/");
-
-    if (!categorySlug || !effectSlug) continue;
-
-    params.set(`${categorySlug}/${effectSlug}`, {
-      slug: categorySlug,
-      effectSlug,
-    });
-  }
-
   return [...params.values()];
 }
 
 export async function generateMetadata({ params }) {
   const { slug, effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (!effect) {
+  if (!content) {
     return createPageMetadata({
       title: "Effect Not Found",
       description: "Effect not found.",
@@ -123,64 +104,47 @@ export async function generateMetadata({ params }) {
     });
   }
 
+  const effect = getEffectBySlug(effectSlug);
   return getEffectPageMetadata(effect, content, slug, effectSlug);
 }
 
 export default async function EffectPage({ params }) {
   const { slug, effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
   const content = await getSanityEffectContent(slug, effectSlug);
 
-  if (!effect) {
+  if (!content) {
     notFound();
   }
 
-  // Determine access: check Clerk session and subscription plan
+  const effect = getEffectBySlug(effectSlug);
+
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);
-  const isLocked = !canAccessEffect(content?.tier ?? effect.tier ?? "pro", userPlan);
+  const isLocked = !canAccessEffect(content.tier ?? effect?.tier ?? "pro", userPlan);
 
-  const registry = getRegistryIndex();
   const sanityEntries = await getAllSanityEffectEntries();
-  const registryItems = applySanityCategorySlugs(registry.items, sanityEntries);
+  const allEffects = buildEffectsFromSanity(sanityEntries);
+  const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
 
-  const globalSearchEffects = mergeRegistryWithSanity(
-    registry.items,
-    sanityEntries
-  ).sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
-
-  const categoriesMap = getEffectsByCategory();
+  const globalSearchEffects = [...allEffects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
 
   const effectCounts = {};
-
-  for (const [categoryId, effects] of Object.entries(categoriesMap)) {
-    effectCounts[categoryId] = effects.length;
+  for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
+    effectCounts[categoryId] = catEffects.length;
   }
 
-
   const relatedEffectNames = content?.relatedEffectNames || [];
-  const sanityEffectSlugs = new Set(
-    sanityEntries
-      .map((entry) => normalize(entry.effectSlug))
-      .filter(Boolean)
-  );
 
   const pinnedRelatedEffects = relatedEffectNames
     .map((relatedName) => {
       const normalizedRelatedName = normalize(relatedName);
 
-      return registryItems.find((item) => {
-        const normalizedTitle = normalize(item.title);
-
-        const normalizedName = normalize(item.name);
-
-        const normalizedSlug = normalize(item.slug);
-
+      return allEffects.find((item) => {
         return (
-          normalizedTitle === normalizedRelatedName ||
-          normalizedName === normalizedRelatedName ||
-          normalizedSlug === normalizedRelatedName
+          normalize(item.title) === normalizedRelatedName ||
+          normalize(item.name) === normalizedRelatedName ||
+          normalize(item.slug) === normalizedRelatedName
         );
       });
     })
@@ -195,30 +159,17 @@ export default async function EffectPage({ params }) {
     ])
   );
 
-  const remainingSanityEffects = registryItems.filter((item) => {
-    const normalizedName = normalize(item.name);
-    const normalizedSlug = normalize(item.slug);
-    const normalizedEffectSlug = normalize(item.effectSlug);
-
+  const remainingEffects = allEffects.filter((item) => {
     if (item.name === effectSlug) return false;
-    if (pinnedRelatedSlugs.has(normalizedName)) return false;
-    if (pinnedRelatedSlugs.has(normalizedSlug)) return false;
-    if (pinnedRelatedSlugs.has(normalizedEffectSlug)) return false;
-
-    return (
-      sanityEffectSlugs.has(normalizedName) ||
-      sanityEffectSlugs.has(normalizedSlug) ||
-      sanityEffectSlugs.has(normalizedEffectSlug)
-    );
+    if (pinnedRelatedSlugs.has(normalize(item.name))) return false;
+    if (pinnedRelatedSlugs.has(normalize(item.slug))) return false;
+    if (pinnedRelatedSlugs.has(normalize(item.effectSlug))) return false;
+    return true;
   });
 
-  const relatedEffects = [
-    ...pinnedRelatedEffects,
-    ...remainingSanityEffects,
-  ];
+  const relatedEffects = [...pinnedRelatedEffects, ...remainingEffects];
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
-
 
   return (
     <>
@@ -232,7 +183,7 @@ export default async function EffectPage({ params }) {
         content={content}
         relatedEffects={relatedEffects}
         effectCounts={effectCounts}
-        totalEffects={getAllEffectSlugs().length}
+        totalEffects={sanityEntries.length}
         isLocked={isLocked}
         userPlan={userPlan}
         searchEffects={globalSearchEffects}
