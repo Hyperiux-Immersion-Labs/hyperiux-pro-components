@@ -51,7 +51,7 @@ export default function GradientFill() {
                                 start: "top 50%",
                                 end: "bottom 50%",
                                 scrub: true,
-                                markers: true,
+                                markers: false,
                             },
                             ease: 'none',
                         })
