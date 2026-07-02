@@ -52,7 +52,8 @@ export default function LinkHover({
 
     const ctx = gsap.context(() => {
       gsap.set(chars, { yPercent: 0, color: idleColor, force3D: true });
-      gsap.set(shadows, { yPercent: 110, color: idleColor, force3D: true });
+      // shadows are pre-colored to hoverColor — animation is purely positional
+      gsap.set(shadows, { yPercent: 110, color: hoverColor, force3D: true });
 
       if (line) {
         gsap.set(line, {
@@ -64,7 +65,7 @@ export default function LinkHover({
     }, link);
 
     return () => ctx.revert();
-  }, [idleColor, text]);
+  }, [idleColor, hoverColor, text]);
 
   const runHoverAnimation = useCallback(
     (isHovering) => {
@@ -76,7 +77,6 @@ export default function LinkHover({
       if (isHovering) {
         gsap.to(chars, {
           yPercent: -110,
-          color: hoverColor,
           duration,
           stagger,
           ease,
@@ -85,7 +85,6 @@ export default function LinkHover({
 
         gsap.to(shadows, {
           yPercent: 0,
-          color: hoverColor,
           duration,
           stagger,
           ease,
@@ -107,7 +106,6 @@ export default function LinkHover({
 
       gsap.to(chars, {
         yPercent: 0,
-        color: idleColor,
         duration,
         stagger,
         ease,
@@ -116,7 +114,6 @@ export default function LinkHover({
 
       gsap.to(shadows, {
         yPercent: 110,
-        color: idleColor,
         duration,
         stagger,
         ease,

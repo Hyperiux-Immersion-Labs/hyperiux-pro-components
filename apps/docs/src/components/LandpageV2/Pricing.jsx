@@ -74,7 +74,7 @@ export default function Pricing() {
             </div>
             <div className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
 
-                <div className="h-full max-md:w-full px-[4vw] max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
+                <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 mb-[4vw] max-md:mb-[6vw] font-medium!">Free</p>
@@ -98,7 +98,7 @@ export default function Pricing() {
                 </div>
 
                 {/* TOGGLE */}
-                <div className="h-fit max-md:w-full rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-[32vw] flex  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
+                <div className="h-fit max-md:w-full rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-0 flex  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
                     <p
                         className={`cursor-pointer transition-opacity duration-300`}
                         onClick={() => setIsYearly(false)}
@@ -122,7 +122,7 @@ export default function Pricing() {
                     </p>
                 </div>
                 
-                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+                <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 max-md:mb-[2vw]">Pro</p>

@@ -279,7 +279,7 @@ export default function ReflectiveRods() {
     return (
         <section
             ref={containerRef}
-            className="h-[200vh] max-md:hidden w-full z-999 absolute bottom-0 left-0 flex flex-col items-center justify-center pointer-events-none"
+            className="h-[200vh] max-md:hidden w-full z-999 absolute bottom-[-30%] left-0 flex flex-col items-center justify-center pointer-events-none"
             id="reflectiveRoadsCanvas"
         >
             <Canvas

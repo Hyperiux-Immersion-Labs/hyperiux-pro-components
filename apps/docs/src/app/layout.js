@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -48,6 +48,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <GoogleTagManager gtmId="GTM-NCDH9PHF" />
+      <GoogleAnalytics gaId="G-S4RCCRVS5Y" />
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}

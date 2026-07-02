@@ -6,6 +6,38 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { SplitText } from 'gsap/dist/SplitText'
 import Link from 'next/link'
 
+function AnimatedLink({ href, children, className = "" }) {
+    const underlineRef = useRef(null);
+    const isAnimating = useRef(false);
+
+    const handleMouseEnter = () => {
+        if (isAnimating.current) return;
+        isAnimating.current = true;
+        const el = underlineRef.current;
+        if (!el) return;
+        gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
+            .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
+            .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
+    };
+
+    return (
+        <Link href={href} className={`relative w-fit inline-block text-black group ${className}`} onMouseEnter={handleMouseEnter}>
+            <div className="flex items-center gap-[.5vw] w-fit cursor-pointer">
+
+                            <span className="relative overflow-hidden inline-flex h-[1.3em]">
+                                <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full">{children}</span>
+                                <span className="inline-block absolute left-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0">{children}</span>
+                            </span>
+
+                            <svg className="transition-transform duration-300 group-hover:translate-y-[3px] size-2" width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.24036 7.72066C8.30902 7.64697 8.39182 7.58787 8.48382 7.54688C8.57582 7.50589 8.67513 7.48384 8.77583 7.48207C8.87654 7.48029 8.97656 7.49882 9.06995 7.53654C9.16334 7.57426 9.24817 7.6304 9.31939 7.70162C9.39061 7.77284 9.44676 7.85767 9.48448 7.95106C9.5222 8.04445 9.54072 8.14448 9.53895 8.24518C9.53717 8.34588 9.51513 8.4452 9.47414 8.5372C9.43314 8.6292 9.37404 8.712 9.30035 8.78066L5.30035 12.7807C5.15973 12.9211 4.9691 13 4.77035 13C4.5716 13 4.38098 12.9211 4.24035 12.7807L0.240354 8.78066C0.166667 8.712 0.107565 8.6292 0.0665735 8.5372C0.0255818 8.4452 0.00354045 8.34588 0.00176376 8.24518C-1.2927e-05 8.14448 0.0185113 8.04445 0.0562319 7.95106C0.0939526 7.85767 0.150098 7.77284 0.221317 7.70162C0.292535 7.6304 0.377369 7.57426 0.470758 7.53654C0.564147 7.49882 0.664174 7.48029 0.764877 7.48207C0.86558 7.48384 0.964894 7.50589 1.05689 7.54688C1.14889 7.58787 1.23169 7.64697 1.30035 7.72066L4.02035 10.4407L4.02036 0.750659C4.02036 0.551747 4.09937 0.360981 4.24003 0.220329C4.38068 0.0796762 4.57144 0.000659508 4.77036 0.000659526C4.96927 0.000659543 5.16003 0.0796762 5.30069 0.220329C5.44134 0.360982 5.52036 0.551747 5.52036 0.75066L5.52035 10.4407L8.24036 7.72066Z" fill="black" />
+                            </svg>
+                        </div>
+            <div ref={underlineRef} className="absolute left-0 -bottom-0.5 w-full h-px bg-black" />
+        </Link>
+    );
+}
+
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText)
 }
@@ -116,7 +148,7 @@ export default function ForDevelopers() {
             // The open title is enlarged with a transform scale, which on the
             // narrow mobile card pushes long titles past the edge. Scale less on
             // mobile so it stays in bounds; desktop keeps its original 1.3.
-            const openTitleScale = isMobile ? 1.2 : 1.3
+            const openTitleScale = isMobile ? 1.2 : 1.8
 
             // Setup
             cardData.forEach((data, i) => {
@@ -130,7 +162,7 @@ export default function ForDevelopers() {
                 if (i === 0) {
                     gsap.set(data.card, { height: openH() })
                     gsap.set(data.overlay, { opacity: 1 }) // fully open
-                    gsap.set(blobs, { scale: 1.5, opacity: 1 })
+                    gsap.set(blobs, { scale: 5.5, opacity: 1 })
                     gsap.set(data.card.querySelector('.solid-fill'), { opacity: 1 })
                     gsap.set([data.title, data.text, data.link], { color: '#000000' })
                     gsap.set(data.title, { y: '0vw', scale: openTitleScale }) // Scaled up when open
@@ -217,23 +249,23 @@ export default function ForDevelopers() {
                         {groups.map((group, idx) => (
                             <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-sm:px-[6vw] max-sm:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md'>
                                 <div className='card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0'>
-                                    <div className='blob absolute w-[60%] h-[60%] left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw]'></div>
-                                    <div className='blob absolute w-[60%] h-[60%] right-[-10%] bottom-[-10%] bg-[#e0e0e0] rounded-full blur-[3vw]'></div>
-                                    <div className='blob absolute w-[60%] h-[60%] left-[20%] bottom-[-20%] bg-[#f5f5f5] rounded-full blur-[3vw]'></div>
-                                    <div className='blob absolute w-[60%] h-[60%] right-[20%] top-[-10%] bg-[#eaeaea] rounded-full blur-[3vw]'></div>
+                                    <div className='blob absolute size-[80%] left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw] '></div>
+                                    <div className='blob absolute size-[80%] right-[-10%] bottom-[-10%] bg-white rounded-full blur-[3vw] '></div>
+                                    <div className='blob absolute size-[80%] left-[10%] bottom-[-10%] bg-white rounded-full blur-[3vw] '></div>
+                                    <div className='blob absolute size-[80%] right-[10%] top-[-10%] bg-white rounded-full blur-[3vw] '></div>
 
                                     {/* <div className='noise-layer absolute inset-0 opacity-[0.25] mix-blend-overlay pointer-events-none' style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div> */}
 
                                     {/* <div className='solid-fill absolute inset-0 opacity-0 pointer-events-none' style={{ background: 'radial-gradient(120% 100% at 50% 100%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 1) 100%)' }}></div> */}
                                 </div>
 
-                                <div className='relative z-10 flex flex-col gap-[2vw] max-sm:gap-[4vw] w-full'>
+                                <div className='relative z-10 flex flex-col gap-[3vw] max-sm:gap-[4vw] w-full'>
                                     <p className='text34 card-title opacity-0 font-medium tracking-tight max-md:text-[6vw] max-sm:wrap-break-word'>{group.title}</p>
                                     <p className='text34 card-text opacity-0 leading-[1.1]'>{group.text}</p>
                                 </div>
-                                <Link href={group.link || "#"} className="card-link relative z-10 text-sm underline underline-offset-4 decoration-1 opacity-0 w-fit font-medium max-sm:text-base max-sm:font-normal">
+                                <AnimatedLink href={group.link || "#"} className="card-link z-10 text-sm opacity-0 font-medium max-sm:text-base max-sm:font-normal text-black">
                                     {group.cta}
-                                </Link>
+                                </AnimatedLink>
                             </div>
                         ))}
                     </div>

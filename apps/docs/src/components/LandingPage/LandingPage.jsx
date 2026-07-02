@@ -47,7 +47,6 @@ export default function LandingPage() {
             <FeaturedStoryTelling />
             <FeaturedEffects />
             <Workflow />
-            {/* <FreeVault /> */}
             <Pricing/>
             <AgencyProof />
             <div className="mt-[-50vh] max-md:mt-0">

@@ -2,7 +2,7 @@
 
 import React from "react";
 import VaultBox from "../WebsiteComps/VaultBoxes";
-import RandomBlur from "../WebsiteComps/RandomBlur";
+// import RandomBlur from "../WebsiteComps/RandomBlur";
 
 const MOBILE_BOXES = [
     {

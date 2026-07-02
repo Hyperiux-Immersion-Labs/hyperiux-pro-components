@@ -39,9 +39,10 @@ function FooterLink({ href, children }) {
       href={href}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="text18"
+      className="text20"
+      duration={0.3}
       idleColor="#939393"
-      hoverColor="#ffffff"
+      hoverColor="#ff5f00"
       showUnderline={false}
     >
       {children}
@@ -59,13 +60,13 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[10vw]  w-full overflow-hidden max-md:mt-20">
+    <footer className="relative z-200 py-[15vw]  w-full overflow-hidden max-md:mt-20">
       <ReflectiveRods />
       <p className="text-center text18 absolute bottom-[2vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
       <div className="mx-auto w-[70vw] max-md:w-full max-md:px-[5vw]">
         <div className="flex border-x border-foreground/15 max-md:flex-col max-md:border-x-0">
-          <div className="flex flex-[1.65] border-l border-r border-grey max-md:flex-col">
-            <div className="flex w-[28%] flex-col gap-[2vw] px-[2vw] py-[2.5vw] max-md:w-full max-md:border-r-0 max-md:border-b max-md:px-0 max-md:py-[8vw] max-md:gap-[4vw]">
+          <div className="flex flex-[1.65]  border-r border-grey max-md:flex-col">
+            <div className="flex w-[28%] flex-col gap-[2vw] px-[2vw] max-md:w-full max-md:border-r-0 max-md:border-b max-md:px-0 max-md:py-[8vw] max-md:gap-[4vw]">
               <h3 className="text22 font-medium text-foreground">Vault</h3>
               <ul className="flex flex-col gap-[0.8vw] max-md:gap-[3vw]">
                 {vaultFooterLinks.map(({ label, href }) => (
@@ -76,7 +77,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="flex flex-1 flex-col gap-[2vw] px-[2vw] py-[2.5vw] max-md:gap-[4vw] max-md:border-b max-md:border-foreground/15 max-md:px-0 max-md:py-[8vw]">
+            <div className="flex flex-1 flex-col gap-[2vw] px-[2vw] max-md:gap-[4vw] max-md:border-b max-md:border-foreground/15 max-md:px-0 max-md:py-[8vw]">
               <h3 className="text22 font-medium text-foreground">
                 Effects by type
               </h3>
@@ -97,7 +98,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col gap-[1vw] px-[2vw] py-[2.5vw] max-md:border-l-0 max-md:px-0 max-md:py-[8vw] max-md:gap-[3vw]">
+          <div className="flex flex-1 flex-col gap-[1vw] px-[2vw] max-md:border-l-0 max-md:px-0 max-md:py-[8vw] max-md:gap-[3vw]">
             <h3 className="text22 font-medium text-foreground">
               New effects, in your inbox.
             </h3>
