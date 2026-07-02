@@ -5,7 +5,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -82,7 +82,6 @@ export default function RootLayout({ children }) {
           <Analytics />
           <SpeedInsights />
           <GoogleTagManager gtmId="GTM-NCDH9PHF" />
-          <GoogleAnalytics gaId="G-S4RCCRVS5Y" />
           <Script
             id="microsoft-clarity"
             strategy="afterInteractive"
@@ -100,6 +99,13 @@ export default function RootLayout({ children }) {
           <Script
             src="https://openpanel.dev/op1.js"
             strategy="afterInteractive"
+          />
+          <Script
+            id="rb2b"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `!function(key){if(window.reb2b)return;window.reb2b={loaded:true};var s=document.createElement("script");s.async=true;s.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+key+"/"+key+".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s,document.getElementsByTagName("script")[0]);}("5NRP9H7J4EO1");`,
+            }}
           />
         </ClerkProvider>
       </body>
