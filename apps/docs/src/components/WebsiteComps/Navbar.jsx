@@ -13,6 +13,7 @@ import { HyperiuxLogo } from '@/utils/Icons'
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
 import Button from './Button'
 import { LOADER_STORAGE_KEY } from './Loader'
+import { useUser } from '@clerk/nextjs'
 
 gsap.registerPlugin(SplitText)
 
@@ -760,6 +761,8 @@ export default function Navbar() {
     const hasRevealedRef = useRef(false)
     const [activeItem, setActiveItem] = useState(null)
 
+    const { isLoaded, user } = useUser()
+
     const pathname = usePathname()
 
     const activeIndex = vaultLinks.findIndex((link) => {
@@ -989,7 +992,7 @@ export default function Navbar() {
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
             </Link>
 
-            <div className="relative" onMouseLeave={handleNavLeave}>
+            <div className="relative ml-[7vw]" onMouseLeave={handleNavLeave}>
                 <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
@@ -1065,7 +1068,15 @@ export default function Navbar() {
                 <NavDropdown panel={activeItem?.dropdown ?? null} />
             </div>
 
-            <div className="flex items-center justify-center gap-[2.5vw]">
+            <div className="flex items-center justify-center gap-[1vw]">
+                {isLoaded && user?.publicMetadata?.plan !== "pro" && (
+                    <Button
+                        text="Upgrade to Pro"
+                        href="/pricing#pricing-cards"
+                        className="border-white/50! bg-black!"
+                        variant="outline2"
+                    />
+                )}
                 <Button text="Install CLI" href="/docs/installation" />
             </div>
         </nav>

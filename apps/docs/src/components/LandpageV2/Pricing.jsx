@@ -152,7 +152,7 @@ export default function Pricing({padding,content=true}) {
                 <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
-                        <p className="text80 max-md:mb-[2vw]">Pro</p>
+                        <p className="text80">Pro</p>
 
                         <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
                             <p className="text110 max-sm:text-[13vw]! flex items-center font-medium!">
