@@ -19,6 +19,7 @@ import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
 import Footer from "../LandingPage/Footer";
 import CTA from "./CTA";
+import CTA2 from "./CTA2";
 
 const faqItems = [
   {
@@ -162,10 +163,11 @@ export default function LandingPageNew() {
         <SmallMotion />
         <ForDevelopers />
         <StripTransition />
-        {/* <Pricing /> */}
+        <Pricing />
         <FAQs faqItems={faqItems} />
-        {/* <CTA /> */}
-        {/* <Footer /> */}
+        <CTA />
+        <CTA2 />
+        <Footer />
 
 
       </VaultShell>

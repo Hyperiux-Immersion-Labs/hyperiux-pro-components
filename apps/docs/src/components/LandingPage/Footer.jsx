@@ -1,107 +1,129 @@
 "use client";
 
-import React from "react";
-import dynamic from "next/dynamic";
-import Button from "../WebsiteComps/Button";
-import CircularButton from "../WebsiteComps/CirclularButton";
-import { socialLinks, socialLinksList as AgencyLinks, vaultLinks } from "../../utils/Links";
+import React, { useState } from "react";
 import LinkHover from "../WebsiteComps/LinksHover";
-import RandomBlur from "../WebsiteComps/RandomBlur";
 import ReflectiveRods from "@/Experience/ReflectiveRods";
 
-// Move dynamic import with ssr: false to client (this file now has "use client" directive)
-// const ReflectiveRods = dynamic(() => import('@/Experience/ReflectiveRods'), { ssr: false });
+const vaultFooterLinks = [
+  { label: "Documentations", href: "/docs" },
+  { label: "Pricing", href: "/pricing" },
+  {
+    label: "Github",
+    href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components",
+  },
+];
 
-export default function Footer({ animations = true }) {
+const effectTypeColumns = [
+  [
+    { label: "Scroll", href: "/effects/scroll-effects" },
+    { label: "Cursor", href: "/effects/cursor-effects" },
+    { label: "Text", href: "/effects/text-animations" },
+  ],
+  [
+    { label: "Transitions", href: "/effects/page-transitions" },
+    { label: "WebGL", href: "/effects/webgl-effects" },
+    { label: "Navigation", href: "/effects/navigation" },
+  ],
+  [
+    { label: "Backgrounds", href: "/effects/backgrounds" },
+    { label: "Buttons", href: "/effects/buttons" },
+    { label: "Loaders", href: "/effects/loaders" },
+  ],
+];
+
+function FooterLink({ href, children }) {
+  const isExternal = href?.startsWith("http");
+
   return (
-    <footer className="h-fit overflow-hidden max-md:mt-20   z-200 relative w-full">
-      <ReflectiveRods />
-      <div className="self-padd z-100 h-fit min-h-screen flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
-        <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative">
-          {
-            animations ? (
-              <RandomBlur
-                as="h2"
-                className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
-              >
-                Build the interaction layer your website is missing.
-              </RandomBlur>
-            ) : (
-              <h2
-                className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! px-[10vw] text-center"
-              >
-                Build the interaction layer your website is missing.
-              </h2>
-            )
-          }
+    <LinkHover
+      href={href}
+      target={isExternal ? "_blank" : "_self"}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      className="text18"
+      idleColor="#939393"
+      hoverColor="#ffffff"
+      showUnderline={false}
+    >
+      {children}
+    </LinkHover>
+  );
+}
 
-          <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] py-[2vw] mb-[4vw] max-md:mb-[15vw] max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
-            <Button text="Install CLI" href="/docs/installation" />
-            <Button text="Work with Hyperiux" className="border border-white" target_blank href="https://www.hyperiux.com/" variant="white" />
-          </div>
-          <div className="w-full h-fit flex items-end pb-[2vw] max-md:pb-[15vw] justify-between relative max-sm:flex-col max-sm:items-center   max-sm:gap-[16vw] max-sm:pb-[8vw]">
-            <div className="w-fit max-sm:mb-[-4vw] flex-col gap-[1vw] flex items-start justify-center h-full max-sm:order-2 max-sm:items-center max-sm:gap-[6vw]">
-              <div className="space-y-[.5vw] max-sm:space-y-[3vw] max-sm:text-center">
-                <LinkHover className="text22 block" href="mailto:hello@hyperiux.com">
-                  hello@hyperiux.com
-                </LinkHover>
-                <LinkHover className="text22 block" href="tel:+918178026136">
-                  +918178026136
-                </LinkHover>
-              </div>
-              <div className="flex mt-4 gap-3 max-sm:mt-0 max-sm:gap-[4vw]">
-                {socialLinks.map(({ href, Icon, label }) => (
-                  <CircularButton key={label} href={href} variant={undefined}>
-                    <Icon />
-                  </CircularButton>
+export default function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (event) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setEmail("");
+  };
+
+  return (
+    <footer className="relative z-200 py-[10vw]  w-full overflow-hidden max-md:mt-20">
+      <ReflectiveRods />
+      <p className="text-center text18 absolute bottom-[2vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
+      <div className="mx-auto w-[70vw] max-md:w-full max-md:px-[5vw]">
+        <div className="flex border-x border-foreground/15 max-md:flex-col max-md:border-x-0">
+          <div className="flex flex-[1.65] border-l border-r border-grey max-md:flex-col">
+            <div className="flex w-[28%] flex-col gap-[2vw] px-[2vw] py-[2.5vw] max-md:w-full max-md:border-r-0 max-md:border-b max-md:px-0 max-md:py-[8vw] max-md:gap-[4vw]">
+              <h3 className="text22 font-medium text-foreground">Vault</h3>
+              <ul className="flex flex-col gap-[0.8vw] max-md:gap-[3vw]">
+                {vaultFooterLinks.map(({ label, href }) => (
+                  <li key={label}>
+                    <FooterLink href={href}>{label}</FooterLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-1 flex-col gap-[2vw] px-[2vw] py-[2.5vw] max-md:gap-[4vw] max-md:border-b max-md:border-foreground/15 max-md:px-0 max-md:py-[8vw]">
+              <h3 className="text22 font-medium text-foreground">
+                Effects by type
+              </h3>
+              <div className="grid grid-cols-3 gap-x-[2vw] max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-y-[3vw]">
+                {effectTypeColumns.map((column, columnIndex) => (
+                  <ul
+                    key={columnIndex}
+                    className="flex flex-col gap-[0.8vw] max-md:gap-[3vw]"
+                  >
+                    {column.map(({ label, href }) => (
+                      <li key={label}>
+                        <FooterLink href={href}>{label}</FooterLink>
+                      </li>
+                    ))}
+                  </ul>
                 ))}
               </div>
             </div>
-            <div className="w-fit flex flex-row items-start justify-center gap-[4vw] max-sm:order-1 max-sm:flex-col max-sm:items-center max-md:gap-[8vw] max-sm:gap-[14vw]">
-              <div className="flex flex-col gap-[2.5vw] max-sm:items-center max-sm:gap-[8vw]">
-                <h3 className="text22 font-medium!">Hyperiux Vault</h3>
-                <ul className="flex flex-col gap-[.5vw] max-sm:items-center max-sm:gap-[3vw]">
-                  {vaultLinks.map(({ label, href }) => {
-                    const isExternal = href?.startsWith("http");
-                    return (
-                      <li key={label}>
-                        <LinkHover
-                          href={href}
-                          target={isExternal ? "_blank" : "_self"}
-                          rel={isExternal ? "noopener noreferrer" : undefined}
-                          className="text18"
-                        >
-                          {label}
-                        </LinkHover>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div className="flex flex-col gap-[2.5vw] max-sm:items-center max-sm:gap-[8vw]">
-                <h3 className="text22 font-medium!">Agency</h3>
-                <ul className="flex flex-col gap-[.5vw] max-sm:items-center max-sm:gap-[3vw]">
-                  {AgencyLinks.map(({ label, href }) => {
-                    const isExternal = href?.startsWith("http");
-                    return (
-                      <li key={label}>
-                        <LinkHover
-                          href={href}
-                          target={isExternal ? "_blank" : "_self"}
-                          rel={isExternal ? "noopener noreferrer" : undefined}
-                          className="text18 "
-                        >
-                          {label}
-                        </LinkHover>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </div>
-            <p className="text18 text-center absolute bottom-[2vw] left-1/2 text-light-grey/60 -translate-x-1/2 max-sm:order-3 max-sm:relative max-sm:bottom-auto max-sm:left-auto max-sm:translate-x-0 ">
-              2026 Hyperiux Immersion Labs. All rights reserved
+          </div>
+
+          <div className="flex flex-1 flex-col gap-[1vw] px-[2vw] py-[2.5vw] max-md:border-l-0 max-md:px-0 max-md:py-[8vw] max-md:gap-[3vw]">
+            <h3 className="text22 font-medium text-foreground">
+              New effects, in your inbox.
+            </h3>
+            <p className="text18 max-w-[22vw] leading-[1.45] text-light-grey max-md:max-w-full">
+              Get every new drop and the occasional behind-the-
+              scenes build. No spam, unsubscribe anytime.
             </p>
+            <form
+              onSubmit={handleSubscribe}
+              className="mt-[0.5vw] flex items-center gap-[1.5vw] max-md:mt-0 max-md:flex-col max-md:items-stretch max-md:gap-[4vw]"
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Email"
+                aria-label="Email address"
+                className="min-w-0 flex-1 rounded-full border border-grey bg-transparent px-[1.4vw] py-[0.75vw] text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 max-md:px-[4vw] max-md:py-[3vw]"
+              />
+              <button
+                type="submit"
+                className="shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white max-md:self-start"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </div>
       </div>
