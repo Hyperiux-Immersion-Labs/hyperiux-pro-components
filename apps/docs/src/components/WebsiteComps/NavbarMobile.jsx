@@ -237,7 +237,7 @@ function MobileDropdown({
       </button>
 
       <div ref={wrapperRef} className="h-0 overflow-hidden opacity-0">
-        <div ref={contentRef} className="flex flex-col gap-1 pb-4">
+        <div ref={contentRef} className="flex   flex-col gap-1 pb-4">
           {items.map((item) => (
             <MobileDropdownItem
               key={`${dropdownType}-${item.label}`}
