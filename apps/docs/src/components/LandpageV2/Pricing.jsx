@@ -58,7 +58,7 @@ const ProFeatures = [
     "Code you own, commercial-friendly",
 ];
 
-export default function Pricing({padding}) {
+export default function Pricing({padding,content=true}) {
     const [isYearly, setIsYearly] = useState(true);
     const [checkoutLoading, setCheckoutLoading] = useState(false);
     const [checkoutError, setCheckoutError] = useState("");
@@ -90,7 +90,7 @@ export default function Pricing({padding}) {
 
     return (
         <div className={`h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-[-10vh] max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[45vw]!"}`}>
-            <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
+            {content&&<div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
                 </RandomBlur>
@@ -98,8 +98,8 @@ export default function Pricing({padding}) {
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
                 </SplitLine>
-            </div>
-            <div id="pricing-cards" className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
+            </div>}
+            <div id="pricing-cards" className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup">
 
                 <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
