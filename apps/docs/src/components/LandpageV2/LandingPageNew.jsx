@@ -188,7 +188,7 @@ export default function LandingPageNew() {
         <SmallMotion />
         <ForDevelopers />
         <StripTransition />
-        <Pricing />
+        <Pricing padding={isMobile?"pt-[140vw]!":""} />
         <FAQs faqItems={faqItems} isHomePage />
         <CTA />
         <CTA2  href="#pricing-cards"/>

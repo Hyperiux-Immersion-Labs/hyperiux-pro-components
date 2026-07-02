@@ -1087,6 +1087,7 @@ function LockedCodePlaceholder({ filename, effectTier = "pro" }) {
               text={checkoutLoading ? "Loading…" : "Upgrade to Pro"}
               href="#"
               variant="orange"
+              hoverTextClassName="group-hover:text-black!"
               preventDefault
               onClick={handleUpgrade}
               disabled={checkoutLoading}

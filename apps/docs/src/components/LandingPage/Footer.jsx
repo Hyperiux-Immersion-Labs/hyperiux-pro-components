@@ -52,17 +52,41 @@ function FooterLink({ href, children }) {
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubscribe = (event) => {
+  const handleSubscribe = async (event) => {
     event.preventDefault();
-    if (!email.trim()) return;
-    setEmail("");
+    if (!email.trim() || status === "loading") return;
+
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMessage(data.error || "Something went wrong.");
+        setStatus("error");
+      } else {
+        setStatus("success");
+        setEmail("");
+      }
+    } catch {
+      setErrorMessage("Something went wrong. Please try again.");
+      setStatus("error");
+    }
   };
 
   return (
     <footer className="relative z-200 py-[15vw]  w-full overflow-hidden max-sm:mt-16 ">
       <ReflectiveRods />
-      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
+      <p className="text-center max-sm:w-full text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
       <div className="mx-auto w-[70vw] max-sm:w-full max-sm:px-[5vw]">
         <div className="flex border-x border-foreground/15 max-sm:flex-col max-sm:border-x-0">
           <div className="flex flex-[1.65]  border-r border-grey max-sm:border-r-0 max-sm:border-b-0 max-sm:flex-col">
@@ -106,25 +130,43 @@ export default function Footer() {
               Get every new drop and the occasional behind-the-
               scenes build. No spam, unsubscribe anytime.
             </p>
-            <form
-              onSubmit={handleSubscribe}
-              className="mt-[0.5vw] flex items-center gap-[1.5vw] max-sm:mt-0 max-sm:flex-col max-sm:items-stretch max-sm:gap-[4vw]"
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Email"
-                aria-label="Email address"
-                className="min-w-0 flex-1 rounded-full border border-grey bg-transparent px-[1.4vw] py-[0.75vw] text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 max-sm:px-[4vw]  max-sm:py-[3vw]"
-              />
-              <button
-                type="submit"
-                className="shrink-0 text18 max-sm:mx-auto text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white max-sm:self-start"
+            {status === "success" ? (
+              <p className="mt-[0.5vw] text18 text-[#ff5f00] max-sm:mt-0 max-sm:text-center">
+                You&apos;re in. Welcome to the list.
+              </p>
+            ) : (
+              <form
+                onSubmit={handleSubscribe}
+                className="mt-[0.5vw] flex flex-col gap-[0.75vw] max-sm:mt-0 max-sm:gap-[4vw]"
               >
-                Subscribe
-              </button>
-            </form>
+                <div className="flex items-center gap-[1.5vw] max-sm:flex-col max-sm:items-stretch max-sm:gap-[4vw]">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      if (status === "error") setStatus("idle");
+                    }}
+                    placeholder="Email"
+                    aria-label="Email address"
+                    disabled={status === "loading"}
+                    className="min-w-0 flex-1 rounded-full border border-grey bg-transparent px-[1.4vw] py-[0.75vw] text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50 max-sm:px-[4vw] max-sm:py-[3vw]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="shrink-0 text18 max-sm:mx-auto text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white disabled:opacity-50 max-sm:self-start"
+                  >
+                    {status === "loading" ? "Subscribing…" : "Subscribe"}
+                  </button>
+                </div>
+                {status === "error" && (
+                  <p className="text-sm text-red-400 px-[1.4vw] max-sm:px-0 max-sm:text-center">
+                    {errorMessage}
+                  </p>
+                )}
+              </form>
+            )}
           </div>
         </div>
       </div>
