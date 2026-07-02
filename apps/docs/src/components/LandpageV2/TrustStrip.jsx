@@ -122,7 +122,7 @@ export default function TrustStrip() {
             <div className="relative flex max-sm:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-sm:gap-8">
                 <div className="sticky h-fit top-[12vh] max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 ref={paragraphText} className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[75vw] max-sm:w-[90vw] max-md:text-[6vw] max-sm:max-w-full max-sm:text-[7vw]">
+                        <h2 ref={paragraphText} className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[75vw] max-sm:w-[95vw] max-md:text-[6vw] max-sm:max-w-full max-sm:text-[5.5vw] ">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>
@@ -138,7 +138,7 @@ export default function TrustStrip() {
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[22vw]">
+                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 100+
                             </span>
                         </StatCard>
@@ -148,7 +148,7 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[40vw] max-sm:min-h-[54vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[22vw]">
+                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 New
                             </span>
                         </StatCard>
@@ -158,8 +158,8 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-start justify-between gap-[2vw] pt-[1vw]"
                         >
-                            <ThreeMark className={"size-[6vw] max-sm:size-[12vw]"} />
-                            <WebGLMark className={"size-[6vw] max-sm:size-[12vw]"} />
+                            <ThreeMark className={"size-[6vw] max-sm:size-[13vw]"} />
+                            <WebGLMark className={"size-[6vw] max-sm:size-[13vw]"} />
                         </StatCard>
                     </div>
 
@@ -169,7 +169,7 @@ export default function TrustStrip() {
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[22vw]">
+                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 30+
                             </span>
                         </StatCard>
@@ -179,8 +179,8 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-center justify-between pt-[1vw]"
                         >
-                            <MotionMark className={"size-[5.5vw] max-sm:size-[12vw]"} />
-                            <HeroFigure className={"size-[5vw] max-sm:size-[12vw]"} />
+                            <MotionMark className={"size-[5.5vw] max-sm:size-[13vw]"} />
+                            <HeroFigure className={"size-[5vw] max-sm:size-[13vw]"} />
                         </StatCard>
 
                         <StatCard
@@ -188,8 +188,8 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-center gap-[2vw] pt-[1vw] max-sm:justify-between"
                         >
-                            <ReactMark className={"size-[5vw] max-sm:size-[12vw]"} />
-                            <NextMark className={"size-[7vw] max-sm:size-[12vw]"} />
+                            <ReactMark className={"size-[5vw] max-sm:size-[13vw]"} />
+                            <NextMark className={"size-[7vw] max-sm:size-[13vw]"} />
                         </StatCard>
                     </div>
                 </div>

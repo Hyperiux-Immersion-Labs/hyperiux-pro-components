@@ -49,9 +49,15 @@ export default function ForDevelopers() {
     const headingRef = useRef(null)
 
     useEffect(() => {
-        let splits = []
+        const mm = gsap.matchMedia(containerRef)
 
-        const ctx = gsap.context(() => {
+        mm.add({
+            isMobile: '(max-width: 639px)',
+            isDesktop: '(min-width: 640px)'
+        }, (context) => {
+            const { isMobile } = context.conditions
+
+            let splits = []
             const cards = gsap.utils.toArray('.dev-card')
 
             const tl = gsap.timeline({
@@ -84,6 +90,34 @@ export default function ForDevelopers() {
                 return { card, overlay, title, text, textLines, link }
             })
 
+            // On mobile the copy length varies per card, but the open/closed
+            // heights MUST be uniform across all cards - otherwise the total
+            // stack height changes as different cards open/close and the whole
+            // column shifts (exactly like desktop, where every card is 22vw open
+            // / 6vw closed so the total stays constant). So measure every card
+            // and use the tallest open height (fits the longest card without
+            // clipping) and the tallest closed height (fits 2-line titles) for
+            // all of them.
+            let mobileOpen = null
+            let mobileClosed = null
+            if (isMobile) {
+                const opens = cardData.map(({ card }) => Math.ceil(card.offsetHeight * 1.15))
+                const closeds = cardData.map(({ card, title }) => {
+                    const cs = getComputedStyle(card)
+                    const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
+                    return Math.ceil(title.offsetHeight + padY)
+                })
+                mobileOpen = Math.max(...opens)
+                mobileClosed = Math.max(...closeds)
+            }
+
+            const openH = () => (isMobile ? mobileOpen : '22vw')
+            const closedH = () => (isMobile ? mobileClosed : '6vw')
+            // The open title is enlarged with a transform scale, which on the
+            // narrow mobile card pushes long titles past the edge. Scale less on
+            // mobile so it stays in bounds; desktop keeps its original 1.3.
+            const openTitleScale = isMobile ? 1.2 : 1.3
+
             // Setup
             cardData.forEach((data, i) => {
                 const blobs = data.card.querySelectorAll('.blob')
@@ -94,16 +128,16 @@ export default function ForDevelopers() {
                 gsap.set(data.card, { backgroundColor: 'rgba(255, 255, 255, 0.05)' })
 
                 if (i === 0) {
-                    gsap.set(data.card, { height: '22vw' })
+                    gsap.set(data.card, { height: openH() })
                     gsap.set(data.overlay, { opacity: 1 }) // fully open
                     gsap.set(blobs, { scale: 1.5, opacity: 1 })
                     gsap.set(data.card.querySelector('.solid-fill'), { opacity: 1 })
                     gsap.set([data.title, data.text, data.link], { color: '#000000' })
-                    gsap.set(data.title, { y: '0vw', scale: 1.3 }) // Scaled up when open
+                    gsap.set(data.title, { y: '0vw', scale: openTitleScale }) // Scaled up when open
                     if (data.textLines) gsap.set(data.textLines.lines, { yPercent: 0, opacity: 1 })
                     if (data.link) gsap.set(data.link, { opacity: 1, y: 0 })
                 } else {
-                    gsap.set(data.card, { height: '6vw' })
+                    gsap.set(data.card, { height: closedH() })
                     gsap.set(data.overlay, { opacity: 0 }) // fully closed
                     gsap.set(blobs, { scale: 0, opacity: 0 })
                     gsap.set(data.card.querySelector('.solid-fill'), { opacity: 0 })
@@ -120,7 +154,7 @@ export default function ForDevelopers() {
                 const time = i;
 
                 // Close current
-                let curAnim = tl.to(cur.card, { height: '6vw', duration: 1, ease: 'none' }, time)
+                let curAnim = tl.to(cur.card, { height: closedH(), duration: 1, ease: 'none' }, time)
                     .to(cur.overlay, { opacity: 0, duration: 1, ease: 'none' }, time)
                     .to(cur.card.querySelector('.solid-fill'), { opacity: 0, duration: 0.5, ease: 'none' }, time)
                     .to(cur.card.querySelectorAll('.blob'), { scale: 0, opacity: 0, duration: 0.8, stagger: 0.05, ease: 'power2.inOut' }, time)
@@ -135,11 +169,11 @@ export default function ForDevelopers() {
                 }
 
                 // Open next
-                let nxtAnim = tl.to(nxt.card, { height: '22vw', duration: 1, ease: 'none' }, time)
+                let nxtAnim = tl.to(nxt.card, { height: openH(), duration: 1, ease: 'none' }, time)
                     .to(nxt.overlay, { opacity: 1, duration: 0.2, ease: 'none' }, time)
                     .to(nxt.card.querySelectorAll('.blob'), { scale: 1.5, opacity: 1, duration: 1, stagger: 0.1, ease: 'power2.out' }, time)
                     .to(nxt.card.querySelector('.solid-fill'), { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, time + 0.5)
-                    .to(nxt.title, { y: '0vw', scale: 1.3, duration: 1, ease: 'none' }, time)
+                    .to(nxt.title, { y: '0vw', scale: openTitleScale, duration: 1, ease: 'none' }, time)
                     .to([nxt.title, nxt.text, nxt.link], { color: '#000000', duration: 0.2 }, time + 0.2)
 
                 if (nxt.textLines) {
@@ -150,33 +184,38 @@ export default function ForDevelopers() {
                 }
             }
 
-            tl.fromTo(headingRef.current,{
-                yPercent:70,
-            }, {
-                yPercent: 10,
-                duration: cardData.length - 1,
-                ease: 'none'
-            }, 0)
+            // Desktop only: the heading drifts as the cards open/close. On mobile
+            // it sits directly above the stacked cards, so keep it completely
+            // static (no translate) while cards open and close.
+            if (!isMobile) {
+                tl.fromTo(headingRef.current, {
+                    yPercent: 70,
+                }, {
+                    yPercent: 10,
+                    duration: cardData.length - 1,
+                    ease: 'none'
+                }, 0)
+            }
 
-        }, containerRef)
+            return () => {
+                splits.forEach(s => s.revert())
+            }
+        })
 
-        return () => {
-            splits.forEach(s => s.revert())
-            ctx.revert()
-        }
+        return () => mm.revert()
     }, [])
 
     return (
         <div ref={containerRef}>
             <section ref={accordionRef} className='h-[300vh] mb-[30vw] w-full relative'>
                 <div className='h-screen w-full overflow-hidden self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
-                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-md:w-full tracking-tight leading-[1.1]'>
+                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-sm:pt-[5vw] max-md:w-full tracking-tight leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
 
-                    <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full'>
+                    <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-sm:gap-[5vw] max-sm:mt-[12vw]'>
                         {groups.map((group, idx) => (
-                            <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md'>
+                            <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-sm:px-[6vw] max-sm:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md'>
                                 <div className='card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0'>
                                     <div className='blob absolute w-[60%] h-[60%] left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw]'></div>
                                     <div className='blob absolute w-[60%] h-[60%] right-[-10%] bottom-[-10%] bg-[#e0e0e0] rounded-full blur-[3vw]'></div>
@@ -188,11 +227,11 @@ export default function ForDevelopers() {
                                     {/* <div className='solid-fill absolute inset-0 opacity-0 pointer-events-none' style={{ background: 'radial-gradient(120% 100% at 50% 100%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 1) 100%)' }}></div> */}
                                 </div>
 
-                                <div className='relative z-10 flex flex-col gap-[2vw] w-full'>
-                                    <p className='text34 card-title opacity-0 font-medium tracking-tight max-md:text-[6vw]'>{group.title}</p>
+                                <div className='relative z-10 flex flex-col gap-[2vw] max-sm:gap-[4vw] w-full'>
+                                    <p className='text34 card-title opacity-0 font-medium tracking-tight max-md:text-[6vw] max-sm:wrap-break-word'>{group.title}</p>
                                     <p className='text34 card-text opacity-0 leading-[1.1]'>{group.text}</p>
                                 </div>
-                                <Link href={group.link || "#"} className="card-link relative z-10 text-sm underline underline-offset-4 decoration-1 opacity-0 w-fit font-medium">
+                                <Link href={group.link || "#"} className="card-link relative z-10 text-sm underline underline-offset-4 decoration-1 opacity-0 w-fit font-medium max-sm:text-base max-sm:font-normal">
                                     {group.cta}
                                 </Link>
                             </div>

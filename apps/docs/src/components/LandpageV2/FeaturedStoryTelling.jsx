@@ -397,7 +397,7 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[800vh] max-md:hidden z-50"
+            className="relative w-full h-[800vh] max-md:hidden  z-50"
             
         >
             <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">

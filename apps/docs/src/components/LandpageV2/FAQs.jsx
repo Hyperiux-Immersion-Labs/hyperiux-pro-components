@@ -47,12 +47,12 @@ export default function FAQs({ faqItems }) {
 
             <div className="h-[30vw]"></div>
 
-            <div className="mx-auto text-center text-white mb-[6vw] relative z-10">
-                <RandomBlur as="h2" className='text110 w-[70%] text-center mx-auto'>
+            <div className="mx-auto text-center text-white max-sm:mb-[8vw] mb-[6vw] relative z-10">
+                <RandomBlur as="h2" className='text110 w-[70%] max-sm:w-full text-center mx-auto'>
                     Questions, <span className='text-primary'>Answered.</span>
                 </RandomBlur>
             </div>
-            <div className="mx-auto w-[75vw] space-y-4 max-md:space-y-8 max-sm:space-y-6">
+            <div className="mx-auto w-[75vw] max-sm:w-full space-y-4 max-md:space-y-8 max-sm:space-y-6">
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
                     {faqItems.slice(0, visibleCount).map((item) => (
                         <FAQWrapper

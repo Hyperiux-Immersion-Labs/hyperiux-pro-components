@@ -38,6 +38,10 @@ const STEPS = [
     },
 ]
 
+/* ── Video sources  ── */
+const VIDEO_SRC = '/video/tutorial.mp4'
+const VIDEO_SRC_MOBILE = '/video/tutorial.mp4'
+
 /* ── Shared animation config ── */
 const ACTIVE_BG = '#ffffff'
 const ACTIVE_COLOR = '#161616'
@@ -66,7 +70,7 @@ export default function Workflow() {
 
                 /* ── Responsive accordion heights (desktop values unchanged) ── */
                 const OPEN_HEIGHT = isMobile ? '60vw' : '16vw'
-                const CLOSED_HEIGHT = isMobile ? '10vw' : '5vw'
+                const CLOSED_HEIGHT = isMobile ? '12vw' : '5vw'
 
             /* ── Query DOM groups ── */
             const numBoxes = gsap.utils.toArray('.wf-num-box')
@@ -104,8 +108,9 @@ export default function Workflow() {
                     trigger: accordionRef.current,
                     start: 'top top',
                     end: 'bottom bottom',
-                    scrub: 2,
+                    scrub: isMobile ? true : 2,
                     invalidateOnRefresh: true,
+                    // markers: true,
                 },
             })
 
@@ -153,10 +158,12 @@ export default function Workflow() {
             /* ── Video reveal ── */
             gsap.fromTo(
                 videoRef.current,
-                { clipPath: 'inset(15% 15% 15% 15%)', backgroundColor: '#0A1B4B' },
+                { clipPath: 'inset(15% 15% 15% 15%)', 
+                    backgroundColor: '#0A1B4B' 
+                },
                 {
                     clipPath: 'inset(0% 0% 0% 0%)',
-                    backgroundColor: '#ffffff',
+                    // backgroundColor: '#ffffff',
                     ease: 'none',
                     scrollTrigger: {
                         trigger: videoSectionRef.current,
@@ -173,18 +180,21 @@ export default function Workflow() {
     }, [])
 
     return (
-        <div ref={containerRef} className="text-white mt-[10vw]">
+        <div ref={containerRef} className="text-white mt-[10vw] max-sm:pt-[14vh] max-sm:overflow-x-clip">
             {/* ── Accordion Section ── */}
             <section
                 ref={accordionRef}
                 id="Workflow"
-                className="h-[400vh] relative"
+                className="h-[400vh] max-sm:h-[300vh] relative"
             >
-                <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
+                <RandomBlur as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
 
-                <div className="h-screen w-full  sticky top-0 flex flex-col justify-center max-md:pt-[30vw]">
+                <div className="h-screen max-sm:h-[85vh]  w-full  sticky top-0 max-sm:top-10 flex flex-col justify-center max-md:pt-0">
+                     <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-sm:pt-[14vh] text-center">
+                    Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
+                </RandomBlur>
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}
                         <div
@@ -195,11 +205,11 @@ export default function Workflow() {
                         {/* Steps */}
                         <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-sm:pt-[35vw] z-100">
                             {STEPS.map((step, idx) => (
-                                <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[86vw]">
+                                <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[80vw]">
                                     {/* Left column: number box + connecting line */}
                                     <div className="flex flex-col items-center w-[5vw] max-sm:w-[10vw] shrink-0">
                                         {/* Number / Icon box */}
-                                        <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[10vw] max-sm:w-[10vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
+                                        <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[12vw] max-sm:w-[12vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
                                             <div className="wf-num absolute inset-0 flex items-center justify-center">
                                                 <p className="text34 pr-[.2vw]">{step.num}</p>
                                             </div>
@@ -210,15 +220,15 @@ export default function Workflow() {
 
                                         {/* Connecting line (not rendered after the last step) */}
                                         {idx < STEPS.length - 1 && (
-                                            <div className="flex-1 w-[3px] bg-white/10 relative my-0">
+                                            <div className="flex-1 w-0.75 bg-white/10 relative my-0">
                                                 <div className="wf-line-fill absolute inset-0 bg-white/70" />
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Right column: content box */}
-                                    <div className="flex flex-col ml-[1vw] max-sm:ml-[2vw] flex-1 mb-[1.5vw] max-sm:mb-[3vw]">
-                                        <div className="wf-content-box h-[5vw] max-sm:h-[10vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-sm:px-[4vw] max-sm:py-[3vw] bg-dark-card overflow-hidden">
+                                    <div className="flex flex-col ml-[1vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-sm:mb-[6vw]">
+                                        <div className="wf-content-box h-[5vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
                                             <p className="leading-none mt-[.25vw]">{step.title}</p>
                                             <div className="wf-text w-[85%] max-sm:w-full overflow-hidden opacity-0">
                                                 <p className="text24 pt-[1.5vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
@@ -234,15 +244,26 @@ export default function Workflow() {
 
             {/* ── Video Section ── */}
             <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw]">
-                <div ref={videoRef} className="w-[100vw] h-auto max-md:p-[4vw] max-md:h-[35vh] overflow-hidden bg-primary rounded-md">
+                <div ref={videoRef} className="w-screen h-auto max-md:p-0 max-md:h-full max-sm:rounded-0 overflow-hidden bg-primary rounded-md">
+                    {/* Desktop video */}
                     <video
-                        src="/video/tutorial.mp4"
+                        src={VIDEO_SRC}
                         autoPlay
                         loop
                         muted
                         preload="auto"
                         playsInline
-                        className="w-full h-full object-cover rounded-sm"
+                        className="w-full h-full object-cover rounded-sm max-sm:hidden"
+                    />
+                    {/* Mobile video */}
+                    <video
+                        src={VIDEO_SRC_MOBILE}
+                        autoPlay
+                        loop
+                        muted
+                        preload="auto"
+                        playsInline
+                        className="w-full h-full object-cover rounded-sm hidden max-sm:block"
                     />
                 </div>
             </section>

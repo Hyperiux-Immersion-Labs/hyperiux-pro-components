@@ -82,7 +82,7 @@ export default function GradientFill() {
 
                 {/* Pure CSS Radial Glow (No Canvas!) */}
                 <div
-                    className='radial-glow w-[100vw] h-[50vw] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
+                    className='radial-glow w-[100vw] max-sm:left-1/2 max-sm:w- h-[50vw] max-sm:h-[80vh] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
                     style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
                 ></div>
 

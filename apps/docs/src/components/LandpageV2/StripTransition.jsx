@@ -36,7 +36,7 @@ export default function StripTransition() {
     }, [])
 
     return (
-        <section ref={containerRef} className="h-[250vh] -mt-[125vw] flex items-center justify-between w-full  bg-transparent pointer-events-none">
+        <section ref={containerRef} className="h-[250vh] mt-[-125vw]  flex max-sm:mt-[-180vh] items-center justify-between w-full  bg-transparent pointer-events-none">
             {[...Array(5)].map((_, i) => (
                <div
   key={i}

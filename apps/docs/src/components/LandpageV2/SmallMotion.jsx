@@ -78,10 +78,10 @@ export default function SmallMotion() {
     }, [])
 
     return (
-        <section ref={sectionRef} className='h-[300vh] w-full relative'>
-            <div className='h-screen w-full sticky top-0 flex items-center justify-center overflow-hidden'>
-                <h2 ref={textRef} className='text-[17vw] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center font-black'>Small Motion.</h2>
-                <h2 ref={textRef2} className='text-[17vw] w-full text-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 leading-none text-primary font-black'>Big Signal.</h2>
+        <section ref={sectionRef} className='h-[300vh] max-sm:h-[200vh] w-full relative'>
+            <div className='h-screen w-full max-sm:w-[90vw] max-sm:mx-auto sticky top-0 flex items-center justify-center overflow-hidden'>
+                <h2 ref={textRef} className='text-[17vw] max-sm:text-[13vw] max-sm:font-medium! absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center font-black'>Small Motion.</h2>
+                <h2 ref={textRef2} className='text-[17vw] w-full text-center absolute max-sm:text-[13vw] max-sm:font-medium! left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 leading-none text-primary font-black'>Big Signal.</h2>
             </div>
         </section>
     )

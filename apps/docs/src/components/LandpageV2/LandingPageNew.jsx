@@ -20,6 +20,9 @@ import GradientFill from "./GradientFill";
 import Footer from "../LandingPage/Footer";
 import CTA from "./CTA";
 import CTA2 from "./CTA2";
+import StorytellingMobile from "./StoryTellingMoble";
+import { Vault } from "lucide-react";
+import VaultGridNewMobile from "./VaultGridMobile";
 
 const faqItems = [
   {
@@ -158,6 +161,8 @@ export default function LandingPageNew() {
         <Tension />
         <Solution />
         <FeaturedStoryTelling />
+        <StorytellingMobile />
+        <VaultGridNewMobile />
         <Workflow />
         <UIKit />
         <SmallMotion />

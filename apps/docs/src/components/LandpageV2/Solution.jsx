@@ -36,7 +36,7 @@ const Solution = () => {
                 <CodeBlockWorkflow/>
                 
             <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
-                <p className="pl-[0.65vw] text24 max-sm:leading-[1.2] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm">
+                <p className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
               That’s the whole workflow. The files land in your project. You
               change anything you want.{" "}
               <Link href={"/effects"} className="underline underline-offset-4">
