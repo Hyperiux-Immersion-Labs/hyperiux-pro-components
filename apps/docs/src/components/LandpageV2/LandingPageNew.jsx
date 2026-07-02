@@ -1,5 +1,6 @@
+"use client";
 
-
+import useIsMobile from "@/hooks/useIsMobile";
 import GlowingPlates from "@/Experience/GlowingPlates";
 import VaultShell from "@/Layouts/VaultShell";
 import Loader from "@/components/WebsiteComps/Loader";
@@ -149,6 +150,11 @@ const faqItems = [
 
 export default function LandingPageNew() {
 
+  // Mobile/tablet (<1025px) gets the mobile storytelling + vault grid;
+  // desktop gets the FeaturedStoryTelling orbit. Gate on isMounted so the
+  // heavy GSAP component for the wrong viewport never mounts (and no flash).
+  const { isMounted, isMobile } = useIsMobile();
+
   return (
     <>
       <VaultShell>
@@ -160,9 +166,15 @@ export default function LandingPageNew() {
         <GradientFill />
         <Tension />
         <Solution />
-        <FeaturedStoryTelling />
-        <StorytellingMobile />
-        <VaultGridNewMobile />
+        {isMounted &&
+          (isMobile ? (
+            <>
+              <StorytellingMobile />
+              <VaultGridNewMobile />
+            </>
+          ) : (
+            <FeaturedStoryTelling />
+          ))}
         <Workflow />
         <UIKit />
         <SmallMotion />

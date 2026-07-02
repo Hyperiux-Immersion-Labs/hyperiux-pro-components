@@ -5,6 +5,9 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Monorepo root, shared by outputFileTracingRoot and turbopack.root (Next requires them to match).
+const monorepoRoot = path.join(__dirname, "../../");
+
 const shouldUploadSentrySourceMaps = Boolean(
   process.env.CI === "true" || process.env.SENTRY_UPLOAD_SOURCE_MAPS === "true"
 );
@@ -31,10 +34,10 @@ const allowedIframeSources = [
 const nextConfig = {
   allowedDevOrigins: ["local.vault.hyperiux.com"],
 
-  outputFileTracingRoot: path.join(__dirname, "../../"),
+  outputFileTracingRoot: monorepoRoot,
 
   turbopack: {
-    root: __dirname,
+    root: monorepoRoot,
   },
 
   experimental: {

@@ -185,7 +185,7 @@ export default function Workflow() {
             <section
                 ref={accordionRef}
                 id="Workflow"
-                className="h-[400vh] max-sm:h-[300vh] relative"
+                className="h-[400vh] max-sm:mb-4 max-sm:h-[300vh] relative"
             >
                 <RandomBlur as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>

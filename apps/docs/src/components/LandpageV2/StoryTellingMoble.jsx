@@ -31,39 +31,45 @@ function pseudoRandom(seed, i, min, max) {
 }
 
 export default function StorytellingMobile() {
-    const sectionRef = useRef(null);
-    const infoTextRef = useRef(null);
-    const infoButtonWrapperRef = useRef(null);
-    const circleRef = useRef(null);
+    const stmSectionRef = useRef(null);
+    const stmInfoTextRef = useRef(null);
+    const stmInfoButtonWrapperRef = useRef(null);
+    const stmCircleRef = useRef(null);
 
     // Use state to track rotation to avoid ref read in render
-    const [circleRotation, setCircleRotation] = useState(0);
+    const [stmCircleRotation, setStmCircleRotation] = useState(0);
 
     // Phone (<768px) vs tablet (768–1024px) — not the compact layout breakpoint (1025px)
     const { isMounted, isMobile: isPhone } = useIsMobile(PHONE_BREAKPOINT);
 
     useEffect(() => {
-        if (!isMounted) return;
-        ScrollTrigger.refresh();
-    }, [isMounted, isPhone]);
+        // Only run once we're mounted on the client AND actually on a phone, so
+        // the refs below point at the mobile DOM that is really in the document.
+        // (matchMedia used to fire before React re-committed the section, leaving
+        // stmInfoTextRef null and the text permanently stuck at its hidden state.)
+        if (!isMounted || !isPhone) return;
 
-    useEffect(() => {
-        if (!sectionRef.current) return;
+        const section = stmSectionRef.current;
+        if (!section) return;
 
-        let splittedParagraph = null;
-        let scrollTween = null;
+        let split = null;
 
-        // Only mobile (phones, <768px)
-        const mm = gsap.matchMedia();
-        mm.add(`(max-width: ${PHONE_BREAKPOINT - 1}px)`, () => {
-            splittedParagraph = SplitText.create(infoTextRef.current, {
+        const ctx = gsap.context(() => {
+            if (!stmInfoTextRef.current) return;
+
+            split = SplitText.create(stmInfoTextRef.current, {
                 type: "lines",
                 mask: "lines",
             });
 
+            // Scrub-tied reveal + exit — same behaviour as the desktop
+            // FeaturedStoryTelling text: the masked lines slide UP into view,
+            // hold, then slide up and out (yPercent -130) as you scroll. This is
+            // a controlled exit driven by scroll, NOT the paragraph naturally
+            // drifting off with the page.
             const masterTL = gsap.timeline({
                 scrollTrigger: {
-                    trigger: sectionRef.current,
+                    trigger: section,
                     start: "top top",
                     end: "bottom bottom",
                     scrub: true,
@@ -71,60 +77,82 @@ export default function StorytellingMobile() {
                 },
             });
 
+            // Reveal (in)
             masterTL.fromTo(
-                splittedParagraph.lines,
-                { yPercent: 100, opacity: 0 },
-                { yPercent: 0, opacity: 1, ease: "power2.out", stagger: 0.04, duration: 1.5 },
-                0.2
+                split.lines,
+                { yPercent: 100 },
+                { yPercent: 0, ease: "power2.out", stagger: 0.04, duration: 1.5 },
+                0.5
             );
-            masterTL.fromTo(
-                infoButtonWrapperRef.current,
-                { opacity: 0, yPercent: 100 },
-                { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
-                0.35
-            );
+            if (stmInfoButtonWrapperRef.current) {
+                masterTL.fromTo(
+                    stmInfoButtonWrapperRef.current,
+                    { opacity: 0, yPercent: 30 },
+                    { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
+                    0.6
+                );
+            }
+
+            // Exit (out) — masked slide up, like desktop
             masterTL.to(
-                splittedParagraph.lines,
+                split.lines,
                 { yPercent: -130, opacity: 0, ease: "power2.in", stagger: 0.02, duration: 1.0 },
-                1.6
+                2.8
             );
-            masterTL.to(
-                infoButtonWrapperRef.current,
-                { opacity: 0, ease: "power2.in", duration: 0.8 },
-                1.75
-            );
+            if (stmInfoButtonWrapperRef.current) {
+                masterTL.to(
+                    stmInfoButtonWrapperRef.current,
+                    { opacity: 0, ease: "power2.in", duration: 0.8 },
+                    2.8
+                );
+            }
+
+            // The paragraph starts hidden in the DOM (visibility:hidden below) to
+            // avoid a flash of the full text before GSAP runs. Now that each line
+            // is masked/hidden by the reveal from-state above, reveal the
+            // container so the animation plays from truly blank.
+            gsap.set(stmInfoTextRef.current, { autoAlpha: 1 });
+
             // --- Rotating circle on scroll ---
-            if (circleRef.current) {
-                let updateRotation = (angle) => setCircleRotation(angle);
+            if (stmCircleRef.current) {
+                // Remove any direct transform as we control via React state.
+                stmCircleRef.current.style.transform = "";
 
-                // Remove any direct transform as we control via React
-                circleRef.current.style.transform = "";
-
-                scrollTween = ScrollTrigger.create({
-                    trigger: sectionRef.current,
+                ScrollTrigger.create({
+                    trigger: section,
                     start: "top 90%",
                     end: "bottom 10%",
                     scrub: true,
                     onUpdate: (self) => {
-                        // angle in degrees, slow full turn for drama
-                        // more dramatic and longer (e.g. 420 deg)
+                        // more dramatic and longer full turn (420deg)
                         const angle = self.progress * 420;
-                        updateRotation(angle);
+                        setStmCircleRotation(angle);
                     },
-                    markers: false
+                    markers: false,
                 });
             }
+        }, section);
 
-            return () => {
-                if (splittedParagraph) splittedParagraph.revert();
-                if (scrollTween && scrollTween.kill) scrollTween.kill();
-            };
+        // Fonts and next/image can settle AFTER the triggers are built, which
+        // otherwise leaves the split lines stuck at their hidden "from" state.
+        // Recompute trigger positions once things have painted and as images load.
+        const refresh = () => ScrollTrigger.refresh();
+        const rafId = requestAnimationFrame(refresh);
+        window.addEventListener("load", refresh);
+
+        const imgs = Array.from(section.querySelectorAll("img"));
+        imgs.forEach((img) => {
+            if (!img.complete) img.addEventListener("load", refresh, { once: true });
         });
 
         return () => {
-            mm.revert();
+            cancelAnimationFrame(rafId);
+            window.removeEventListener("load", refresh);
+            imgs.forEach((img) => img.removeEventListener("load", refresh));
+            if (split) split.revert();
+            ctx.revert();
         };
-    }, []);
+    }, [isMounted, isPhone]);
 
     // Circle settings (make it a proper circle, not an oval)
     const imageCount = IMAGES.length;
@@ -162,7 +190,7 @@ export default function StorytellingMobile() {
                     overflow: "hidden",
                     boxShadow: "0 0 16px rgba(0,0,0,0.11)",
                     zIndex: 1,
-                    transform: `rotate(${imgExtraRot - circleRotation}deg) scale(${imgScale})`,
+                    transform: `rotate(${imgExtraRot - stmCircleRotation}deg) scale(${imgScale})`,
                     pointerEvents: "none",
                     aspectRatio: "3 / 2",
                 }}
@@ -188,13 +216,13 @@ export default function StorytellingMobile() {
 
     return (
         <section
-            ref={sectionRef}
-            id="storytelling-mobile"
-            className="relative hidden max-sm:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
+            ref={stmSectionRef}
+            id="stm-storytelling-mobile"
+            className="stm-storytelling-section relative hidden max-sm:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
         >
-           <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
+           <h2 className="text110 w-[80vw] mb-[10vw] mx-auto text-center">
                            Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
-                       </RandomBlur>
+                       </h2>
             <div
                 className="sticky top-0 max-sm:top-10 flex items-center justify-center w-full h-screen overflow-hidden"
             >
@@ -211,9 +239,9 @@ export default function StorytellingMobile() {
                             height: "100vh",
                             transformOrigin: "50% 50%",
                             willChange: "transform",
-                            transform: `rotate(${circleRotation}deg)`,
+                            transform: `rotate(${stmCircleRotation}deg)`,
                         }}
-                        ref={circleRef}
+                        ref={stmCircleRef}
                     >
                         {circleImages}
                     </div>
@@ -222,10 +250,11 @@ export default function StorytellingMobile() {
                 {/* 2. Info Layer, CENTERED by absolute full container flexbox */}
                 <div className="absolute inset-0 flex flex-col justify-center items-center h-full z-20 pointer-events-none px-6">
                     <h2
-                        ref={infoTextRef}
+                        ref={stmInfoTextRef}
                         className="text22 w-[85vw] py-40 max-w-125 leading-[1.6]! text-center text-white pointer-events-auto"
                         style={{
                             margin: 0,
+                            visibility: "hidden",
                         }}
                     >
                         Vault is easiest to understand when you feel it. Preview a few
@@ -233,7 +262,7 @@ export default function StorytellingMobile() {
                         ready.
                     </h2>
                     {/* <div
-                        ref={infoButtonWrapperRef}
+                        ref={stmInfoButtonWrapperRef}
                         className="flex flex-col items-center gap-4 w-fit pointer-events-auto mt-8"
                     >
                         <div className="w-fit">

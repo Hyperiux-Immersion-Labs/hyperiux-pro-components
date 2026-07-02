@@ -62,7 +62,7 @@ export default function Pricing() {
     const [isYearly, setIsYearly] = useState(true);
 
     return (
-        <div className="h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-md:gap-[15vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
+        <div className="h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-[-20vh] max-md:gap-[15vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
             <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.

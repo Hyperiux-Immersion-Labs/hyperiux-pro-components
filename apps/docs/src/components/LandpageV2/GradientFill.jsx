@@ -78,7 +78,7 @@ export default function GradientFill() {
 
     return (
         <section ref={containerRef} className='h-[400vh] -mt-[10vw] relative w-full bg-[#0e0e0e]'>
-            <div className='w-full sticky top-0 z-99 h-screen flex justify-center items-center'>
+            <div className='w-full sticky top-0 z-99 h-screen flex justify-center items-center overflow-x-clip'>
 
                 {/* Pure CSS Radial Glow (No Canvas!) */}
                 <div
