@@ -15,7 +15,7 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function FAQs({ faqItems}) {
+export default function FAQs({ faqItems, isHomePage = false }) {
     const containerRef = useRef(null);
     const [visibleCount, setVisibleCount] = useState(5);
 
@@ -24,6 +24,8 @@ export default function FAQs({ faqItems}) {
         .map((item) => item.id);
 
     useEffect(() => {
+        if (!isHomePage) return;
+
         const ctx = gsap.context(() => {
             gsap.to('.faq-gradient', {
                 y: "-15vw",
@@ -38,14 +40,17 @@ export default function FAQs({ faqItems}) {
         }, containerRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [isHomePage]);
 
     return (
         <section ref={containerRef} className="h-full w-full pb-[10vw]! self-padd text-white relative">
-            {/* Full-width gradient transition from the white Pricing section above */}
-            <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh]"></div>
-
-            <div className="h-[30vw] max-sm:h-[30vh]"></div>
+            {isHomePage && (
+                <div className="pointer-events-none">
+                    <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh]"></div>
+                    <div className="h-[30vw] max-sm:h-[30vh]"></div>
+                </div>
+            )}
+            {!isHomePage && <div className="h-[10vw]"></div>}
 
             <div className="mx-auto text-center text-white max-sm:mb-[14vw] mb-[6vw] relative z-10">
                 <RandomBlur as="h2" className='text110 w-[70%] max-sm:w-full text-center mx-auto'>

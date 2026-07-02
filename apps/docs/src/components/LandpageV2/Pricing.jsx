@@ -89,7 +89,7 @@ export default function Pricing({padding,content=true}) {
     }, [isYearly]);
 
     return (
-        <div className={`h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-[-10vh] max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[45vw]!"}`}>
+        <div className={`h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-0 max-sm:pt-[140vw]! max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[45vw]!"}`}>
             {content&&<div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
