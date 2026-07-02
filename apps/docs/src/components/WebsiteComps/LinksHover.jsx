@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link";
 import gsap from "gsap";
 
-const DEFAULT_EASE = "power2.inOut";
+const DEFAULT_EASE = "power2.out";
 
 function splitCharacters(text) {
   return text.split("").map((char, index) => ({
@@ -22,7 +22,7 @@ export default function LinkHover({
   ease = DEFAULT_EASE,
   duration = 0.5,
   lineDuration = 0.55,
-  stagger = 0.012,
+  stagger = 0.01,
   idleColor = "#ffffff",
   hoverColor = "#ff5f00",
   underlineColor = "#ff5f00",
@@ -41,6 +41,7 @@ export default function LinkHover({
   const characters = useMemo(() => splitCharacters(text), [text]);
 
   useEffect(() => {
+    if (!isMounted) return;
     const link = linkRef.current;
     if (!link) return;
 
@@ -52,8 +53,7 @@ export default function LinkHover({
 
     const ctx = gsap.context(() => {
       gsap.set(chars, { yPercent: 0, color: idleColor, force3D: true });
-      // shadows are pre-colored to hoverColor — animation is purely positional
-      gsap.set(shadows, { yPercent: 110, color: hoverColor, force3D: true });
+      gsap.set(shadows, { yPercent: 110, color: idleColor, force3D: true });
 
       if (line) {
         gsap.set(line, {
@@ -65,7 +65,7 @@ export default function LinkHover({
     }, link);
 
     return () => ctx.revert();
-  }, [idleColor, hoverColor, text]);
+  }, [isMounted, idleColor, hoverColor, text]);
 
   const runHoverAnimation = useCallback(
     (isHovering) => {
@@ -77,6 +77,7 @@ export default function LinkHover({
       if (isHovering) {
         gsap.to(chars, {
           yPercent: -110,
+          color: hoverColor,
           duration,
           stagger,
           ease,
@@ -85,6 +86,7 @@ export default function LinkHover({
 
         gsap.to(shadows, {
           yPercent: 0,
+          color: hoverColor,
           duration,
           stagger,
           ease,
@@ -106,6 +108,7 @@ export default function LinkHover({
 
       gsap.to(chars, {
         yPercent: 0,
+        color: idleColor,
         duration,
         stagger,
         ease,
@@ -114,6 +117,7 @@ export default function LinkHover({
 
       gsap.to(shadows, {
         yPercent: 110,
+        color: idleColor,
         duration,
         stagger,
         ease,
