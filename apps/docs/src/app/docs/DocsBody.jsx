@@ -212,7 +212,7 @@ function TableOfContents({ containerRef, watchKey }) {
   if (items.length === 0 || !isVisible) return null;
 
   return (
-    <div className="group relative flex items-center gap-4">
+    <div className="group relative flex items-center gap-4 max-md:hidden">
       <span
         aria-hidden="true"
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
