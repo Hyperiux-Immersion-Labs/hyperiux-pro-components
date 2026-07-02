@@ -189,7 +189,7 @@ export default function LandingPageNew() {
         <ForDevelopers />
         <StripTransition />
         <Pricing />
-        <FAQs faqItems={faqItems} />
+        <FAQs faqItems={faqItems} isHomePage />
         <CTA />
         <CTA2 />
         <Footer />
