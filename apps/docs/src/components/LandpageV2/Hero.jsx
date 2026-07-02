@@ -379,12 +379,12 @@ export default function Hero() {
         >
           <Button
             text="Browse the effects"
-            href="#"
+            href="/effects"
             variant="black"
             className="border-white/20 bg-[#0e0e0e]!"
           />
 
-          <Button text="Get Pro from $20/mo" href="#" variant="orange" />
+          <Button text="Get Pro from $20/mo" href="#pricing-cards" variant="orange" />
         </div>
 
         <p

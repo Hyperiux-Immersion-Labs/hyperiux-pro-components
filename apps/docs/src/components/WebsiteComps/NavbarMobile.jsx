@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, X } from "lucide-react";
 import gsap from "gsap";
 
+import { useUser } from "@clerk/nextjs";
+
 import { HyperiuxLogo } from "@/utils/Icons";
 import Button from "./Button";
 import { navCategoryColumns, navDocsItems, vaultLinks } from "@/utils/Links";
@@ -253,6 +255,7 @@ function MobileDropdown({
 }
 
 export default function NavbarMobile() {
+  const { isLoaded, user } = useUser();
   const navbarRef = useRef(null);
   const menuRef = useRef(null);
   const linksRef = useRef(null);
@@ -612,7 +615,17 @@ export default function NavbarMobile() {
             })}
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-8">
+          <div className="mt-8 border-t border-white/10 pt-8 flex flex-col gap-4">
+            {isLoaded && user?.publicMetadata?.plan !== "pro" && (
+              <div className="flex w-full justify-center" onClick={handleNavigate}>
+                <Button
+                  text="Upgrade to Pro"
+                  href="/pricing#pricing-cards"
+                  className="border-white/50! w-full"
+                  variant="outline2"
+                />
+              </div>
+            )}
             <div className="flex w-full justify-center" onClick={handleNavigate}>
               <Button text="Install CLI" href="/docs/installation" />
             </div>

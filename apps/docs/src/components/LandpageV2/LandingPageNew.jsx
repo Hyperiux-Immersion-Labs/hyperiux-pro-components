@@ -191,7 +191,7 @@ export default function LandingPageNew() {
         <Pricing />
         <FAQs faqItems={faqItems} isHomePage />
         <CTA />
-        <CTA2 />
+        <CTA2  href="#pricing-cards"/>
         <Footer />
       </VaultShell>
     </>
