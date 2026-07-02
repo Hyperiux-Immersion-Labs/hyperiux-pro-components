@@ -15,7 +15,7 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function FAQs({ faqItems }) {
+export default function FAQs({ faqItems}) {
     const containerRef = useRef(null);
     const [visibleCount, setVisibleCount] = useState(5);
 
@@ -66,11 +66,11 @@ export default function FAQs({ faqItems }) {
                         >
                             <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">
                                 <h3>
-                                    {item.title}
+                                    {item.question}
                                 </h3></FAQTitle>
 
-                            <FAQContent className="pt-4  w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]!">
-                                {item.content}
+                            <FAQContent className="pt-4  w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]! pl-10">
+                                {item.answer}
                             </FAQContent>
                         </FAQWrapper>
                     ))}
