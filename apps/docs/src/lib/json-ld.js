@@ -262,9 +262,22 @@ export function BreadcrumbsJSONLD({ pathname }) {
 
   return <JsonLdScript id="breadcrumbs-jsonld" data={breadcrumbsJSONLD} />;
 }
-function stripHTML(html) {
-  if (!html) return "";
-  return html.replace(/<[^>]+>/g, "").trim();
+function nodeToText(value) {
+  if (value == null || typeof value === "boolean") return "";
+  if (typeof value === "string" || typeof value === "number") return String(value);
+  if (Array.isArray(value)) {
+    return value.map((item) => nodeToText(item)).filter(Boolean).join(" ");
+  }
+  if (typeof value === "object" && "props" in value) {
+    return nodeToText(value.props?.children);
+  }
+  return "";
+}
+
+function stripHTML(value) {
+  const text = nodeToText(value);
+  if (!text) return "";
+  return text.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 }
 
 export function FAQJSONLD({ faqs }) {

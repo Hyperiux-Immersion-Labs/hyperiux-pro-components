@@ -21,13 +21,13 @@ import {
 } from "@/lib/categories";
 
 import HeadAnim from "@/components/Animations/HeadAnim";
-import FAQSection from "@/components/LandingPage/FAQ";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
+import FAQs from "@/components/LandpageV2/FAQs";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -502,8 +502,8 @@ const routeKey = `${pathname}${
     () =>
       (activeCategoryContent?.faqs || []).map((item, index) => ({
         id: `${categoryFilter}-faq-${index + 1}`,
-        title: item.question,
-        content: item.answer,
+        question: item.question,
+        answer: item.answer,
         defaultOpen: index === 0,
       })),
     [activeCategoryContent?.faqs, categoryFilter]
@@ -740,7 +740,7 @@ const routeKey = `${pathname}${
               <div className="relative text-foreground w-full mx-auto max-md:w-full">
                 {activeCategoryFaqItems.length > 0 && (
                   <div key={`category-faq-${categoryFilter}`}>
-                    <FAQSection faqItems={activeCategoryFaqItems} />
+                    <FAQs faqItems={activeCategoryFaqItems} />
                   </div>
                 )}
 

@@ -24,12 +24,13 @@ import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import { Vault } from "lucide-react";
 import VaultGridNewMobile from "./VaultGridMobile";
+import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
 const faqItems = [
   {
     id: "faq-1",
-    title: "How much does Pro cost?",
-    content: (
+    question: "How much does Pro cost?",
+    answer: (
       <>
         Pro is $20/month when billed monthly or $179/year when billed annually. Annual billing is equivalent to $14.92/month and saves $61 compared with monthly billing.
       </>
@@ -38,8 +39,8 @@ const faqItems = [
   },
   {
     id: "faq-2",
-    title: "Can I use Vault commercially?",
-    content: (
+    question: "Can I use Vault commercially?",
+    answer: (
       <>
         Free and Pro usage terms are separated clearly in the license. Free effects are commercial-friendly where marked. Pro is designed for production use by developers, teams, founders, and agencies.
       </>
@@ -48,8 +49,8 @@ const faqItems = [
   },
   {
     id: "faq-3",
-    title: "Do I own the code?",
-    content: (
+    question: "Do I own the code?",
+    answer: (
       <>
         Yes. Vault is source-first. Effects are added into your project so you can inspect, customize, and maintain them locally.
       </>
@@ -58,8 +59,8 @@ const faqItems = [
   },
   {
     id: "faq-4",
-    title: "Does Vault work with Next.js?",
-    content: (
+    question: "Does Vault work with Next.js?",
+    answer: (
       <>
         Yes. Vault is built for modern React and Next.js projects. Some browser-heavy effects require client-side boundaries, and the docs explain how to handle them.
       </>
@@ -68,8 +69,8 @@ const faqItems = [
   },
   {
     id: "faq-5",
-    title: "Will these effects hurt performance?",
-    content: (
+    question: "Will these effects hurt performance?",
+    answer: (
       <>
         Motion should earn its place. Vault effects are designed with modern performance practices in mind, but final performance depends on usage, page context, assets, and implementation choices. Use the docs, reduce unnecessary effects, and always test on real devices.
       </>
@@ -78,8 +79,8 @@ const faqItems = [
   },
   {
     id: "faq-6",
-    title: "Do you support reduced motion?",
-    content: (
+    question: "Do you support reduced motion?",
+    answer: (
       <>
         Effects should respect motion-sensitive users. Use reduced-motion fallbacks where appropriate and avoid making critical content dependent on animation.
       </>
@@ -88,8 +89,8 @@ const faqItems = [
   },
   {
     id: "faq-7",
-    title: "Why not build these effects myself?",
-    content: (
+    question: "Why not build these effects myself?",
+    answer: (
       <>
         You can. Vault is for teams that want to skip the blank file, start from a high-quality pattern, and spend their time customizing instead of rebuilding the same interaction from scratch.
       </>
@@ -98,8 +99,8 @@ const faqItems = [
   },
   {
     id: "faq-8",
-    title: "Why not use another animated component library?",
-    content: (
+    question: "Why not use another animated component library?",
+    answer: (
       <>
         Use the tool that matches the job. Vault is built specifically around premium motion identity: scroll systems, cursor reactions, WebGL atmosphere, transitions, source-first workflow, and agency-grade creative frontend thinking.
       </>
@@ -108,8 +109,8 @@ const faqItems = [
   },
   {
     id: "faq-9",
-    title: "Can Hyperiux build a custom effect for us?",
-    content: (
+    question: "Can Hyperiux build a custom effect for us?",
+    answer: (
       <>
         Yes. If your brand needs a custom interaction, immersive visual system, or motion direction beyond the library, you can brief Hyperiux for a bespoke build. <a href="#" className="underline">Request a custom animation →</a>
       </>
@@ -118,8 +119,8 @@ const faqItems = [
   },
   {
     id: "faq-10",
-    title: "What happens after I subscribe?",
-    content: (
+    question: "What happens after I subscribe?",
+    answer: (
       <>
         All 100+ effects unlock instantly. Run npx hyperiux login and start installing. New drops are included. Cancel anytime. Your installed code stays in your repo.
       </>
@@ -128,8 +129,8 @@ const faqItems = [
   },
   {
     id: "faq-11",
-    title: "Does it work with the Next.js App Router and server components?",
-    content: (
+    question: "Does it work with the Next.js App Router and server components?",
+    answer: (
       <>
         Yes. Each effect flags client-component requirements, hydration notes, and any browser-API usage so there are no surprises.
       </>
@@ -138,8 +139,8 @@ const faqItems = [
   },
   {
     id: "faq-12",
-    title: "Copy-paste means no updates. How do I get fixes?",
-    content: (
+    question: "Copy-paste means no updates. How do I get fixes?",
+    answer: (
       <>
         Install with the CLI and pull updates as new versions ship. The changelog tracks every drop and fix.
       </>
@@ -147,6 +148,11 @@ const faqItems = [
     defaultOpen: false,
   }
 ];
+
+export const metadata = {
+  title: "Hyperiux Vault - Beautiful Effects for Your Website",
+  description: "A collection of animated effects and UI components. Copy-paste or use our CLI to add stunning animations to your Next.js project.",
+};
 
 export default function LandingPageNew() {
 
@@ -157,6 +163,8 @@ export default function LandingPageNew() {
 
   return (
     <>
+    <WebpageJsonLd metadata={metadata}/>
+    <FAQJSONLD faqs={faqItems}/>
       <VaultShell>
         <Loader />
         <Hero />
