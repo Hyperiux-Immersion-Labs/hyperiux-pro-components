@@ -50,7 +50,7 @@ const freeFeatures = [
     "Code you own"
 ];
 const ProFeatures = [
-    "All 100+ effects, scroll, cursor, text, transitions, WebGL, nav, backgrounds, buttons",
+    "All 100+ effects",
     "New effects added regularly.",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",
@@ -99,12 +99,12 @@ export default function Pricing({padding,content=true}) {
                     new drop.
                 </SplitLine>
             </div>}
-            <div id="pricing-cards" className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup">
+            <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup">
 
                 <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
-                        <p className="text80 mb-[4vw] max-md:mb-[6vw] font-medium!">Free</p>
+                        <p className="text80 font-medium!">Free</p>
                         <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
                             <p className="text110 max-sm:text-[13vw]! font-medium!">$0</p>
                             <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
