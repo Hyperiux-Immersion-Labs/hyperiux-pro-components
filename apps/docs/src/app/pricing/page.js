@@ -4,6 +4,7 @@ import Pricing from "@/components/LandpageV2/Pricing";
 import GlowingPlates from "@/Experience/GlowingPlates";
 import CTA from "@/components/LandingPage/CTA";
 import Footer from "@/components/LandingPage/Footer";
+import CTA2 from "@/components/LandpageV2/CTA2";
 
 export const metadata = {
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
@@ -19,8 +20,8 @@ export default function PricingPage() {
         <Hero />
         <GlowingPlates waitForLoader={false} />
         {/* <Pricing enableColorSwitch={false} /> */}
-        <Pricing padding="pt-[30vw]!" />
-        <CTA />
+        <Pricing padding="pt-[30vw]!" content={false} />
+        <CTA2 />
         <Footer />
       </VaultShell>
     </>
