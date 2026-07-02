@@ -40,7 +40,7 @@ const ReactMark = ({ className }) => (
 
 const NextMark = ({ className }) => (
     <svg width="144" height="29" viewBox="0 0 144 29" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-        <g clip-path="url(#clip0_2310_134)">
+        <g clipPath="url(#clip0_2310_134)">
             <path d="M95.2109 0.0114746H120.158V4.61598H110.262V28.8397H105.313V4.61598H95.2109V0.0114746Z" fill="white" />
             <path d="M54.181 0.0117188V4.61623H34.1845V12.0235H50.2656V16.628H34.1845V24.2354H54.181V28.8399H29.2364V4.61623H29.2344V0.0117188H54.181Z" fill="white" />
             <path d="M66.6396 0.0234375H60.1641L83.3579 28.8516H89.8523L78.2539 14.4475L89.8338 0.0454316L83.3579 0.0554389L75.0118 10.421L66.6396 0.0234375Z" fill="white" />

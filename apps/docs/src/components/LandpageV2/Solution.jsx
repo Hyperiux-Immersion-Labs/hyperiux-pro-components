@@ -11,7 +11,7 @@ const Solution = () => {
             <RandomBlur as="h2" className="text110 w-full text-center">
                 Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
             </RandomBlur>
-       
+
             <div className='w-full h-fit flex justify-center items-center'>
                 <TextFillAnimation
                     text="Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client
@@ -33,17 +33,17 @@ const Solution = () => {
             </div>
             <div className='w-full h-fit px-[2vw]' id="code-block">
                 {/* <Image src={"/assets/homepage/code-blocks.png"} alt='code block' className='w-full h-full object-contain' width={1920} height={1080}/> */}
-                <CodeBlockWorkflow/>
-                
-            <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
-                <p className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
-              That’s the whole workflow. The files land in your project. You
-              change anything you want.{" "}
-              <Link href={"/effects"} className="underline underline-offset-4">
-                See How it Works
-              </Link>
-            </p>
-            </div>
+                <CodeBlockWorkflow />
+
+                <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
+                    <p className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
+                        That’s the whole workflow. The files land in your project. You
+                        change anything you want.{" "}
+                        <Link href={"/effects"} className="underline underline-offset-4">
+                            See How it Works
+                        </Link>
+                    </p>
+                </div>
             </div>
 
         </section>

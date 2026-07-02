@@ -112,7 +112,7 @@ export function TextFillAnimation({
         .timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top top',
+            start: 'top 50%',
             end: 'bottom bottom',
             scrub: 0.25,
           },

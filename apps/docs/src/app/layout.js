@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -46,9 +47,11 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
+      <GoogleTagManager gtmId="GTM-NCDH9PHF" />
       <body className="min-h-dvh bg-background text-foreground font-sans">
-        <script dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }} />
-        {/* <PixelRandom color="#ff5f00"> */}
+        <script
+          dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
+        />
         <ClerkProvider
           appearance={{
             cssLayerName: "clerk",
@@ -79,7 +82,6 @@ export default function RootLayout({ children }) {
           <Analytics />
           <SpeedInsights />
         </ClerkProvider>
-        {/* </PixelRandom> */}
       </body>
     </html>
   );

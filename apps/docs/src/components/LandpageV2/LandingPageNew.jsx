@@ -173,8 +173,6 @@ export default function LandingPageNew() {
         <CTA />
         <CTA2 />
         <Footer />
-
-
       </VaultShell>
     </>
   );

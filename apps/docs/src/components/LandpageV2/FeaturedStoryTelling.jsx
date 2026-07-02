@@ -78,7 +78,9 @@ const BOXES = [
         img: '/video/1.mp4',
         number: "01",
         label: "Scroll Effects",
-        containerLink: "/effects/scroll-effects",
+        title: "Scroll Stack",
+        paragraph: "For layered storytelling sections that need depth and progression.",
+        containerLink: "/demo/scroll-stack",
         labelLink:"/effects/scroll-effects"
     },
     {
@@ -86,18 +88,22 @@ const BOXES = [
         styles: "w-[25%]",
         img: '/video/2.mp4',
         number: "02",
-        label: "Cursor Effects",
-        containerLink: "/effects/cursor-effects",
-        labelLink:"/effects/cursor-effects"
+        label: "Text Animations",
+        title: "Blur Text",
+        paragraph: "For hero headlines, launch copy, and key messages that should reveal with control.",
+        containerLink: "/demo/blur-text",
+        labelLink:"/effects/text-animations"
     },
     {
         id: "block-top-layer-3",
         styles: "w-[37.5%]",
-        img: '/video/3.mp4',
+        img: '/video/webgl-slider-video.mp4',
         number: "03",
         label: "WebGL",
+        title: "WebGL Slider",
+        paragraph: "For immersive product, portfolio, or campaign visuals.",
         textColor: "text-black",
-        containerLink: "/effects/webgl",
+        containerLink: "/demo/webgl-slider",
         labelLink: "/effects/webgl"
     }
 ];
@@ -108,28 +114,34 @@ const BOXES_BOTTOM = [
         styles: "w-[20%]",
         img: '/video/4.mp4',
         number: "04",
-        label: "Text Animations",
-        containerLink: "/effects/text-animations",
-        labelLink: "/effects/text-animations"
+        label: "page Transitions",
+        title: "Page Flip Transition",
+        paragraph: "For portfolios and editorial experiences where route changes should feel authored.",
+        containerLink: "/demo/page-flip-transition",
+        labelLink: "/effects/page-transitions"
     },
     {
         id: "block-bottom-layer-2",
         styles: "w-[50%]",
         img: '/video/5.mp4',
         number: "05",
-        label: "Page Transitions",
+        label: "Cursor Effects",
+        title: "Liquid Glass Cursor",
+        paragraph: "For desktop experiences that need tactile interaction and premium feedback.",
         textColor: "text-black",
-        containerLink: "/effects/page-transitions",
-        labelLink: "/effects/page-transitions"
+        containerLink: "/demo/liquid-glass-cursor",
+        labelLink: "/effects/cursor-effects"
     },
     {
         id: "block-bottom-layer-3",
         styles: "w-[30%]",
         img: '/video/6.mp4',
         number: "06",
-        label: "Navigations",
-        containerLink: "/effects/navigations",
-        labelLink:  "/effects/navigations"
+        label: "Components",
+        title: "Animated FAQ",
+        paragraph: "Dogfood your own product in the objection-handling section.",
+        containerLink: "/demo/animated-faq",
+        labelLink:  "/effects/components"
     }
 ];
 
@@ -442,26 +454,20 @@ export default function FeaturedStoryTelling() {
                 </div>
 
                 {/* 2. Spiral Information Layer */}
-                <div className="absolute inset-0 flex items-center gap-[3.5vw] flex-col self-padd justify-center h-full z-999 pointer-events-none">
+                <div className="absolute inset-0 flex items-center gap-[3.5vw] flex-col self-padd justify-center h-full z-10 pointer-events-none">
                     <h2
                         ref={infoTextRef}
                         className="text34 w-[45vw] mt-[5vw] leading-[1.6]! text-center pointer-events-auto"
                     >
                         Vault is easiest to understand when you feel it. Preview a few high- impact effects below, then open the full catalog when you are ready.
                     </h2>
-                    {/* <div
-                        ref={infoButtonWrapperRef}
-                        className="flex items-center justify-center gap-[2vw] pointer-events-auto"
-                    >
-                        <Button text="Install CLI" href="/docs/installation" />
-                        <Button text="Work with Hyperiux" className="border border-white" variant="white" />
-                    </div> */}
+                   
                 </div>
 
                 {/* 3. Vault Grid Second Layout Layer */}
                 <div
                     ref={vaultSecondLayoutRef}
-                    className="absolute inset-0 flex h-screen flex-col items-center justify-center self-padd z-20 pointer-events-none"
+                    className="absolute inset-0 top-[3%] flex h-screen flex-col items-center justify-center self-padd z-20 pointer-events-none"
                 >
                     {/* Top Layer */}
                     <div className="w-full relative z-10 h-[40vh] gap-[1.5vw] flex items-center justify-center pointer-events-auto">

@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function VaultBox({ id, styles, img, number, label, containerLink = '#', labelLink = '#', textColor = 'text-foreground' }) {
+export default function VaultBox({ id, styles, img, number, label, containerLink = '#', labelLink = '#', textColor = 'text-foreground', title = "WebGL Slider", paragraph = "For immersive product, portfolio, or campaign visuals." }) {
     const router = useRouter();
 
     return (
         <div
             id={id}
             onClick={() => router.push(containerLink)}
-            className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden justify-between relative h-full max-sm:rounded-sm rounded-md ${styles}`}
+            className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden justify-between relative h-full max-sm:rounded-sm rounded-md ${styles} ${id=="block-bottom-layer-3"?"bg-[#3059FF]":""}`}
         >
-            <div className='absolute inset-0 bg-black/50'>
+            <div className={`absolute inset-0 bg-black/50 ${id=="block-bottom-layer-3"?"top-[12%]":""}`}>
                 <video
                     loop
                     autoPlay
@@ -29,8 +29,8 @@ export default function VaultBox({ id, styles, img, number, label, containerLink
                     <p>{label}</p>
                 </Link>
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <p className="text34">WebGL Slider</p>
-                    <p className="text18">For immersive product, portfolio, or campaign visuals.</p>
+                    <p className="text34">{title}</p>
+                    <p className="text18">{paragraph}</p>
                 </div>
             </div>
         </div>
