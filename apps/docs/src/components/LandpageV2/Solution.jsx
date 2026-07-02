@@ -4,6 +4,7 @@ import Image from 'next/image'
 import CodeBlockWorkflow from './CodeBlockWorkFlow'
 import Link from 'next/link'
 import RandomBlur from '../WebsiteComps/RandomBlur'
+import ShimmerText from '../WebsiteComps/ShimmerText'
 
 const Solution = () => {
     return (
@@ -36,13 +37,17 @@ const Solution = () => {
                 <CodeBlockWorkflow />
 
                 <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
-                    <p className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
+                    <div className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
+                       <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
                         That’s the whole workflow. The files land in your project. You
                         change anything you want.{" "}
-                        <Link href={"/effects"} className="underline underline-offset-4">
+                        </ShimmerText> 
+                        <Link href={"/effects"} className="relative text-white">
+
                             See How it Works
+                            <div className=" w-full absolute left-0 bottom-[-10%] h-[1px] bg-white bottom-underline" />
                         </Link>
-                    </p>
+                    </div>
                 </div>
             </div>
 

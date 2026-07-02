@@ -44,9 +44,10 @@ export default function UIKit() {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: "#uikit-section",
-            start: "20% 90%",
+            start: "10% 90%",
             end: "102% bottom",
             scrub: true,
+            // markers:true,
           },
         });
         tl.to(".use-case", {
@@ -55,9 +56,9 @@ export default function UIKit() {
           duration: 0.4,
           ease: "power1.out",
         }).to(".use-case-container", {
-          translateX: "-48%",
+          translateX: "-38%",
           duration: 1.2,
-          delay: -1.2,
+          delay: -0.8,
           ease: "power1.inOut",
         });
       }
@@ -75,7 +76,7 @@ export default function UIKit() {
         </div>
 
       {/* Use Case Cards */}
-      <div className="w-screen h-screen sticky mt-[-10vw] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
+      <div className="w-screen h-screen sticky mt-[-50vw] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
         <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container ">
           {UI_CARDS.map((card) => (
             <div

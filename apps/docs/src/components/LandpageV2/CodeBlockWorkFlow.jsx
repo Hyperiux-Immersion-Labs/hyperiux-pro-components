@@ -143,7 +143,7 @@ export default function CodeBlockWorkflow() {
           if (el) el.textContent = "";
         });
         Object.values(codeRefs.current).forEach((el) => {
-          if (el) el.textContent = "";
+          if (el) el.innerHTML = "";
         });
       };
 
@@ -237,10 +237,46 @@ export default function CodeBlockWorkflow() {
         timeline.to(rowEl, { backgroundColor: "rgba(255,255,255,0)", duration: 0.3, ease: "power2.out" }, ">-0.02");
       };
 
-      const revealCodeLine = (timeline, lineEl, text, position) => {
+      const escHtml = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      const typeColoredLine = (timeline, lineEl, tokens, position) => {
         if (!lineEl) return;
-        timeline.to(lineEl, { autoAlpha: 1, duration: 0.05 }, position);
-        typeText(timeline, lineEl, text, Math.max(0.2, text.length * 0.015), position);
+        const fullText = tokens.map((t) => t.text).join("");
+        if (!fullText) {
+          timeline.set(lineEl, { innerHTML: "", autoAlpha: 1 }, position);
+          return;
+        }
+        let cumulative = 0;
+        const ranges = tokens.map((t) => {
+          const start = cumulative;
+          cumulative += t.text.length;
+          return { color: t.color, text: t.text, start };
+        });
+        const state = { count: 0 };
+        const duration = Math.max(0.35, fullText.length * 0.022);
+
+        timeline.set(lineEl, { innerHTML: "", autoAlpha: 1 }, position);
+        timeline.to(
+          state,
+          {
+            count: fullText.length,
+            duration,
+            ease: "none",
+            snap: { count: 1 },
+            onUpdate: () => {
+              const n = Math.round(state.count);
+              let html = "";
+              for (const tok of ranges) {
+                if (tok.start >= n) break;
+                const slice = escHtml(tok.text.slice(0, n - tok.start));
+                html += `<span style="color:${tok.color}">${slice}</span>`;
+              }
+              lineEl.innerHTML = html;
+            },
+          },
+          position
+        );
       };
 
       const buildSequence = () => {
@@ -309,17 +345,40 @@ export default function CodeBlockWorkflow() {
           ease: "none",
         }, ">");
 
-        // Code block reveals
-        revealCodeLine(
-          tl,
-          codeRefs.current.line1,
-          `import SplitCanvas from "@/components/effects/split-canvas";`,
-          "+=0.05"
-        );
-        revealCodeLine(tl, codeRefs.current.line2, "", "+=0.02");
-        revealCodeLine(tl, codeRefs.current.line3, "export default function Page() {", "+=0.02");
-        revealCodeLine(tl, codeRefs.current.line4, "  return <SplitCanvas />;", "+=0.02");
-        revealCodeLine(tl, codeRefs.current.line5, "}", "+=0.02");
+        // Code block reveals — typed with per-token syntax colours
+        const W = "rgba(255,255,255,0.7)";
+        typeColoredLine(tl, codeRefs.current.line1, [
+          { text: "import",                            color: "#939393" },
+          { text: " ",                                 color: W },
+          { text: "SplitCanvas",                       color: "#B383D3" },
+          { text: " ",                                 color: W },
+          { text: "from",                              color: "#939393" },
+          { text: " ",                                 color: W },
+          { text: '"@/components/effects/split-canvas"', color: "#DDA75A" },
+          { text: ";",                                 color: W },
+        ], "+=0.05");
+
+        typeColoredLine(tl, codeRefs.current.line2, [], "+=0.02");
+
+        typeColoredLine(tl, codeRefs.current.line3, [
+          { text: "export default function", color: "#939393" },
+          { text: " ",                       color: W },
+          { text: "Page",                    color: "#B383D3" },
+          { text: "()",                      color: W },
+          { text: " {",                      color: W },
+        ], "+=0.02");
+
+        typeColoredLine(tl, codeRefs.current.line4, [
+          { text: "  ",          color: W },
+          { text: "return",      color: "#c084fc" },
+          { text: " <",          color: W },
+          { text: "SplitCanvas", color: "#4378B6" },
+          { text: " />;",        color: W },
+        ], "+=0.02");
+
+        typeColoredLine(tl, codeRefs.current.line5, [
+          { text: "}", color: W },
+        ], "+=0.02");
 
         return tl;
       };
@@ -455,12 +514,12 @@ export default function CodeBlockWorkflow() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge1")}
-                                className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
                             }
-                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.08),rgba(34,197,94,0.36))]"
+                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.01),rgba(34,197,94,0.2))]"
                           />
 
                           <TreeFile
@@ -469,12 +528,12 @@ export default function CodeBlockWorkflow() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge2")}
-                                className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
                             }
-                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.08),rgba(34,197,94,0.36))]"
+                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.01),rgba(34,197,94,0.2))]"
                           />
 
                           <TreeFile
@@ -483,12 +542,12 @@ export default function CodeBlockWorkflow() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge3")}
-                                className="rounded-full bg-[#1a7f37]/20 px-3 py-1 font-mono text-[0.95vw] text-[#61d38d] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
                             }
-                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.08),rgba(34,197,94,0.36))]"
+                            className="bg-[linear-gradient(90deg,rgba(255,122,26,0.01),rgba(34,197,94,0.2))]"
                           />
 
                         </div>
