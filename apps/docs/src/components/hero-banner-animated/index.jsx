@@ -149,6 +149,7 @@ export default function HeroBannerAnimated() {
   const [isZoomed, setIsZoomed] = useState(false)
   const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
+  const isMobile = deviceType === 'mobile'
 
   useEffect(() => {
     const tabletMq = window.matchMedia('(max-width: 1025px)')
@@ -230,11 +231,6 @@ export default function HeroBannerAnimated() {
   <span className='max-md:hidden'>
     Explore The Space
   </span>
-
-  <span className='hidden max-sm:text-sm max-md:text-lg max-md:block'>
-    Open on desktop for the full effect
-  </span>
-
   <Play className='w-4 h-4 max-md:hidden' fill='#ECE4B4' />
 </motion.p>
 
@@ -255,30 +251,47 @@ export default function HeroBannerAnimated() {
           )}
         </AnimatePresence>
 
-        <Canvas
-          dpr={[1, 2]}
-          camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
-        >
-          <Center>
-            <SceneContent
+        {!isMobile && (
+          <>
+            <Canvas
+              dpr={[1, 2]}
+              camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
+            >
+              <Center>
+                <SceneContent
+                  isZoomed={isZoomed}
+                  setIsZoomed={setIsZoomed}
+                  videoRef={videoRef}
+                  deviceType={deviceType}
+                />
+              </Center>
+
+              <EffectComposer>
+                <EdgeBlurEffect blurType="classic" blurStrength={1.5} blurStart={0.4} />
+                <CustomGrainNoise amount={0.01} scale={1.5} opacity={0.9} />
+              </EffectComposer>
+            </Canvas>
+
+            <VideoUI
+              videoRef={videoRef}
               isZoomed={isZoomed}
               setIsZoomed={setIsZoomed}
-              videoRef={videoRef}
-              deviceType={deviceType}
             />
-          </Center>
+          </>
+        )}
 
-          <EffectComposer>
-            <EdgeBlurEffect blurType="classic" blurStrength={1.5} blurStart={0.4} />
-            <CustomGrainNoise amount={0.01} scale={1.5} opacity={0.9} />
-          </EffectComposer>
-        </Canvas>
-
-        <VideoUI
-          videoRef={videoRef}
-          isZoomed={isZoomed}
-          setIsZoomed={setIsZoomed}
-        />
+        {isMobile && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
+            <div className="flex max-w-sm flex-col items-center gap-3 text-[#ECE4B4]">
+              <p className="text-[8vw] font-light leading-none tracking-tight uppercase">
+                Open on desktop
+              </p>            
+              <p className="text-sm leading-relaxed text-[#ECE4B4]/60">
+                For the full room, video, and immersive motion experience, view this scene on a larger screen.
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </>
   )

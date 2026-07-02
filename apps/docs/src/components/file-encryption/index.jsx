@@ -84,7 +84,7 @@ const FileEncryption = () => {
       </div>
 
       {/* Bottom label */}
-      <div className="relative z-10 mt-12 flex max-sm:flex-col items-center gap-6 max-md:gap-8 max-sm:gap-2 font-mono text-xs max-md:text-base max-sm:text-sm text-white/20 tracking-widest uppercase">
+      <div className="relative z-10 mt-12 flex items-center gap-6 max-md:gap-8 max-sm:gap-2 font-mono text-xs max-md:text-base max-sm:text-sm text-white/20 tracking-widest uppercase max-sm:mt-8">
         <span>AES-256-GCM</span>
         <span className="w-1 h-1 rounded-full bg-white/20" />
         <span>RSA-4096</span>
@@ -92,7 +92,7 @@ const FileEncryption = () => {
         <span>ChaCha20-Poly1305</span>
       </div>
 
-      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm max-md:hidden shadow-lg">
+      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white/50 text-sm shadow-lg max-sm:bottom-[18vw] max-sm:w-[90vw] max-sm:px-8 max-sm:py-3">
        Slide a card to either edge - watch it snap into place and spill its secret.
       </div>
 

@@ -63,11 +63,11 @@ const levaTheme = {
 
 };
 
-export default function GridLift() {
+function GridLiftDesktop() {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
-
- const [isDesktop, setIsDesktop] = useState(true);
+ const isDesktop = true;
+ const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef([]);
@@ -196,19 +196,6 @@ export default function GridLift() {
  // allow re-uploading the same file (fires `change` again)
  event.target.value ="";
  };
-
-
-useEffect(() => {
-  const updateDesktop = () => {
-    const gw = typeof window !== "undefined" && typeof window.globalWidth === "number"
-      ? window.globalWidth
-      : (typeof window !== "undefined" ? window.innerWidth : 0);
-    setIsDesktop(!(gw < 1025));
-  };
-  updateDesktop();
-  window.addEventListener("resize", updateDesktop);
-  return () => window.removeEventListener("resize", updateDesktop);
-}, []);
 
 // Default SVG mask — only loads if a URL is provided
 useEffect(() => {
@@ -440,6 +427,8 @@ useEffect(() => {
  return (
  <>
  <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
+ {isDesktop && (
+ <>
  <div className="fixed max-md:hidden left-4 top-25 z-50 pointer-events-auto max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:top-auto">
  <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-sm:w-full max-sm:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
@@ -500,23 +489,35 @@ useEffect(() => {
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />
+ </>
+ )}
 
-  {!isDesktop && (
-    <div className="absolute -translate-x-1/2  left-1/2 bottom-20 z-50 flex items-center justify-center pointer-events-none">
-      <div className="px-4 py-2 rounded text-center bg-black/70 text-white text-lg max-sm:text-sm font-medium">
-        Interactive effect available on desktop only.
-      </div>
-    </div>
-  )}
+ {!isDesktop && (
+   <div className="absolute inset-0 z-50 flex items-center justify-center px-8 text-center pointer-events-none">
+     <div className="flex max-w-sm flex-col items-center gap-3 text-white">
+       <p className="text-[11vw] font-light leading-none tracking-tight uppercase">
+         Open on desktop
+       </p>
+       <p className="text-sm uppercase tracking-[0.3em] text-white/35">
+         Grid Lift
+       </p>
+       <p className="text-sm leading-relaxed text-white/55">
+         Drift your cursor through the grid to lift the form and reveal the motion.
+       </p>
+     </div>
+   </div>
+ )}
  
  
  
  {/* Creative clue hint */}
+ {isDesktop && (
  <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-md:bottom-4 max-md:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
  </div>
+ )}
 
  <input
  ref={fileInputRef}
@@ -525,15 +526,17 @@ useEffect(() => {
  onChange={handleSVGUpload}
  style={{ display:"none" }}
  />
+ {isDesktop && (
  <div className="grid-lift-right-controls max-sm:hidden fixed right-4 top-4 z-60 pointer-events-auto">
  <LevaPanel
  theme={levaTheme}
- collapsed={false}
+ collapsed={{ collapsed: isLevaCollapsed, onChange: setIsLevaCollapsed }}
  oneLineLabels={true}
  flat={false}
  hideCopyButton
  />
  </div>
+ )}
  </div>
  <style jsx global>{`
  @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
@@ -655,4 +658,42 @@ useEffect(() => {
  `}</style>
  </>
  );
+}
+
+export default function GridLift() {
+ const [isDesktop, setIsDesktop] = useState(true);
+
+ useEffect(() => {
+  const updateDesktop = () => {
+   const gw = typeof window !== "undefined" && typeof window.globalWidth === "number"
+    ? window.globalWidth
+    : (typeof window !== "undefined" ? window.innerWidth : 0);
+   setIsDesktop(!(gw < 1025));
+  };
+
+  updateDesktop();
+  window.addEventListener("resize", updateDesktop);
+  return () => window.removeEventListener("resize", updateDesktop);
+ }, []);
+
+ if (!isDesktop) {
+  return (
+   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-md:pt-28">
+    <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-white">
+       <p className="text-[11vw] uppercase text-white">
+      Grid Lift
+     </p>
+     <p className="text-[8vw] font-light leading-none tracking-tight text-white/50">
+      Open on desktop
+     </p>
+    
+     <p className="text-sm leading-relaxed text-white/55 w-[60%]">
+      Drift your cursor through the grid to lift the form and reveal the motion.
+     </p>
+    </div>
+   </div>
+  );
+ }
+
+ return <GridLiftDesktop />;
 }

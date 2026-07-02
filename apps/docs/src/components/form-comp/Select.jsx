@@ -39,14 +39,14 @@ const Select = forwardRef(function Select(
  onClick={() => setOpen((prev) => !prev)}
  className={`
  w-full border rounded-full bg-white
- h-14 pl-5 pr-10 text-sm text-left
+ h-14 pl-5 pr-10 text-left text-sm!
  outline-none transition-all cursor-pointer
  border-gray-200
  focus:border-gray-400
  flex items-center
  ${
  !selectedOption
- ?"text-gray-400"
+ ?"text-gray-700"
  :"text-gray-800"
  }
  ${error ?"border-red-400 focus:border-red-400" :""}

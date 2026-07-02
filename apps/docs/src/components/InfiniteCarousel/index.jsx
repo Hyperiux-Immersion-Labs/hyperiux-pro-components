@@ -30,7 +30,7 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 
 export default function InfiniteCarousel() {
     return (
-        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12">
+        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12 max-sm:min-h-0 max-sm:h-auto max-sm:pb-0">
           
 
             <div className="w-full">

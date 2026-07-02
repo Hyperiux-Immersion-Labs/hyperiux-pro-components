@@ -571,7 +571,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       </div>
 
       {clueText && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-sm leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-6 ">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-sm leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-18 ">
           {clueText}
         </p>
       )}

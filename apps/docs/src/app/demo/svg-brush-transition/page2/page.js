@@ -13,8 +13,7 @@ export default function page() {
         </HeadAnim>
 
       <SplitLine>
-
-        <p className="mt-8 text-[1.4vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+        <p className="text-[1.4vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
           You&apos;ve just seen the Svg Brush Transition, now if you want to
           see it again click on the &quot;Click here&quot; button.
         </p>

@@ -16,7 +16,7 @@ const Page = () => {
       </div>
 
       {/* Mobile */}
-     <div className="hidden max-md:flex h-screen py-10 relative flex-col items-start justify-between bg-[#f4f4f1] px-8">
+     <div className="hidden max-md:flex h-screen py-10 pb-20 relative flex-col items-start justify-between bg-[#f4f4f1] px-8">
 
   {/* Top */}
   <div className="w-full">
@@ -27,21 +27,17 @@ const Page = () => {
     <div className="mt-4 h-px w-full bg-black/30" />
   </div>
 
-    <div className="mb-5 flex h-12 w-12 absolute max-md:hidden max-sm:flex max-sm:bottom-7 bottom-15 right-28 items-center justify-center rounded-full text-black border border-black/50  text-2xl">
+    <div className="mb-5 flex h-12 w-12 absolute max-md:hidden max-sm:flex max-sm:bottom-17 bottom-15 right-28 items-center justify-center rounded-full text-black border border-black/50  text-xl ">
         ↗
       </div>
 
   {/* Bottom */}
   <div className="w-full">
     <div className="text-left">
-      
-    
       <h1 className="font-mono max-sm:text-[12vw] max-md:text-[8vw] leading-[0.95] font-black uppercase text-black">
         Interactive
         <br />
-        Arrows
-        
-        
+        Arrows  
       </h1>
 
       <p className="mt-6 absolute left-1/2 top-90 -translate-x-1/2  rounded-lg bg-black/10 px-5 py-3 text-center text-lg max-sm:text-base leading-[1.3] text-black backdrop-blur-sm">

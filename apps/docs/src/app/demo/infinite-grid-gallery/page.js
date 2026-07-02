@@ -13,10 +13,10 @@ const page = () => {
 
       <InfiniteGridGallery />
 
-      <div className="absolute bottom-5 right-5 py-2 px-4 w-[15vw] max-md:w-[30vw] max-sm:w-[50vw] text-center bg-white/10 backdrop-blur-lg rounded-lg ">
+      <div className="absolute bottom-5 right-5 py-2 px-4 w-[15vw] max-md:w-[30vw] max-sm:w-[50vw] text-center bg-white/10 backdrop-blur-lg rounded-lg max-sm:bottom-20">
       <SplitLine start="top bottom">
 
-        <p className="text-black font-medium leading-[1.2] max-md:text-lg" >
+        <p className="text-black leading-[1.2] max-md:text-lg" >
           Scroll freely, then click any image to zoom in.
         </p>
       </SplitLine>

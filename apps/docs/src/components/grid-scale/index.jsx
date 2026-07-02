@@ -213,7 +213,7 @@ tl.fromTo(
               <br />
               with motion, interaction, and depth.
             </p>
-            <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
+            <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] max-sm:w-[45vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
           </div>
 
           {/* Corner Boxes */}

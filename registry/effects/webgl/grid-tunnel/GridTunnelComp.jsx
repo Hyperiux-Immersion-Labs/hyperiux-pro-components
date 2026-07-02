@@ -278,6 +278,10 @@ function InfiniteScrollCamera() {
   const cameraRef = useRef(null);
   const targetZ = useRef(CAMERA_START_Z);
   const scrollVelocity = useRef(0);
+  const touchState = useRef({
+    active: false,
+    lastY: 0,
+  });
 
   useEffect(() => {
     cameraRef.current = camera;
@@ -300,10 +304,50 @@ function InfiniteScrollCamera() {
       }
     };
 
+    const onTouchStart = (event) => {
+      const touch = event.touches?.[0];
+      if (!touch) return;
+      touchState.current.active = true;
+      touchState.current.lastY = touch.clientY;
+    };
+
+    const onTouchMove = (event) => {
+      const touch = event.touches?.[0];
+      if (!touch || !touchState.current.active) return;
+
+      event.preventDefault();
+
+      const deltaY = touch.clientY - touchState.current.lastY;
+      touchState.current.lastY = touch.clientY;
+
+      scrollVelocity.current += deltaY * SCROLL_SPEED;
+      scrollVelocity.current = THREE.MathUtils.clamp(
+        scrollVelocity.current,
+        -MAX_SCROLL_VELOCITY,
+        MAX_SCROLL_VELOCITY
+      );
+
+      if (targetZ.current > CAMERA_START_Z) {
+        targetZ.current = CAMERA_START_Z;
+      }
+    };
+
+    const onTouchEnd = () => {
+      touchState.current.active = false;
+    };
+
     window.addEventListener("wheel", preventPageScroll, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("touchcancel", onTouchEnd);
 
     return () => {
       window.removeEventListener("wheel", preventPageScroll);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
     };
   }, []);
 

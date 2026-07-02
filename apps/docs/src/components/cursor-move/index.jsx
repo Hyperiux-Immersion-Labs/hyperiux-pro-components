@@ -230,7 +230,7 @@ export default function CursorMove({
         </VariableFontAndCursor>
       </div>
 
-      {showCoordinates ? (
+      {showCoordinates && isDesktop ? (
         <div className={coordinatesClassName}>
           <span className={coordinatesTextClassName}>x: {Math.round(x)}</span>
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>

@@ -78,6 +78,22 @@ export function CircleTextReveal({
       className={`w-full h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] relative overflow-hidden ${className}`}
       style={{ backgroundColor }}
     >
+      {!isPointerFine && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
+          <div className="flex max-w-sm flex-col items-center gap-3">
+            <p className="text-[11vw] font-light leading-none tracking-tight uppercase" style={{ color: textColor }}>
+              Open on desktop
+            </p>
+            <p className="text-sm uppercase tracking-[0.3em]" style={{ color: `${textColor}80` }}>
+              Circle Text Reveal
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: `${textColor}99` }}>
+              Open on desktop to reveal the text underneath.
+            </p>
+          </div>
+        </div>
+      )}
+
       {isPointerFine && smoothPos !== null && (
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-10"
@@ -116,4 +132,3 @@ export function CircleTextReveal({
     </section>
   );
 }
-

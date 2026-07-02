@@ -169,7 +169,7 @@ export function EffectCard({
             ))}
           </div>
           {effect.tier === "pro" && (
-            <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-3 max-sm:py-1 max-sm:text-[3.5vw]!">
+            <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
               Pro
             </span>
           )}

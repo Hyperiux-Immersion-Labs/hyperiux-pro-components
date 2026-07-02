@@ -33,7 +33,7 @@ export default function Page() {
        Move your cursor to see the crosshair come alive ✛
  </SplitLine>
 
- <p className="absolute max-md:block hidden bottom-10 left-1/2 backdrop-blur-sm -translate-x-1/2 w-[50vw] max-sm:w-[80vw] py-3 px-5 bg-white/5 text-center text-neutral-200 text-lg rounded-2xl">
+ <p className="absolute max-md:block hidden bottom-20 left-1/2 backdrop-blur-sm -translate-x-1/2 w-[50vw] max-sm:w-[80vw] py-3 px-5 bg-white/5 text-center text-neutral-200 text-lg rounded-2xl">
   Tap to see the crosshair move ✛
   <br/>
   Best experienced on desktop.

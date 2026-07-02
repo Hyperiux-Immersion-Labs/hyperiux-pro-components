@@ -207,7 +207,7 @@ const OverflowTextRevealWrapper = () => {
           </OverflowTextReveal>
         </div>
 
-        <div className="grid grid-cols-2 max-md:grid-cols-4 gap-px bg-[#e0dbd4]">
+        <div className="grid grid-cols-2 max-md:grid-cols-2 gap-px bg-[#e0dbd4]">
           {[
             { dir: "bottom", label: "↑ Bottom", bg: "#1a1a1a", text: "white", accent: "#e0dbd4" },
             { dir: "top", label: "↓ Top", bg: "#f5f0e8", text: "#1a1a1a", accent: "#8c7b6b" },

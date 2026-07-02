@@ -285,7 +285,7 @@ export default function CenterLinesLoading(
             {done && (
                 <button
                     onClick={run}
-                    className="absolute bottom-7 max-md:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-md:text-base max-sm:text-sm tracking-widest text-black/70 backdrop-blur max-sm:bottom-16"
+                    className="absolute bottom-7 max-md:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-md:text-base max-sm:text-sm tracking-widest text-black/70 backdrop-blur max-sm:bottom-20"
                 >
                     Replay
                 </button>

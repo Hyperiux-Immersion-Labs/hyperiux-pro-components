@@ -21,7 +21,7 @@ export default function SquareTranslate() {
 
             <SquareTranslateComp
                 items={items}
-                textClassName="text-[1.1vw] max-md:text-xl"
+                textClassName="text-[1.1vw] max-md:text-lg"
                 textColor="text-black"
                 squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3 bg-[#FB450F]"
                 containerClassName="w-[50vw]  max-md:w-full"

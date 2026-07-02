@@ -486,13 +486,13 @@ export function EffectDetailContent({
                     </Copy>
                   )}
 
-                  <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup">
+                  <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup max-sm:mt-8">
                     {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
                       <div className="flex flex-wrap items-center gap-2">
                         {dependencies.map((dep) => (
                           <span
                             key={dep}
-                            className="rounded-full bg-[#272727] px-4 py-2 text20 capitalize text-foreground max-sm:text-muted"
+                            className="rounded-full bg-[#272727] px-4 py-2 text20 capitalize text-foreground max-sm:text-muted max-sm:px-6"
                           >
                             {dep}
                           </span>

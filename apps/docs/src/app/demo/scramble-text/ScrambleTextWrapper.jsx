@@ -23,7 +23,7 @@ const ScrambleTextWrapper = () => {
               </p>
               <ScrambleText
                 text="Signal appears when the noise decides to leave."
-                textSize="text-[6vw] max-sm:text-[9vw] max-md:text-[5vw]"
+                textSize="text-[6vw] max-sm:text-[8vw] max-md:text-[5vw]"
                 textColor="text-[#121212]"
                 align="left"
                 className="font-black uppercase mb-8 leading-[0.88] max-md:leading-[1.2] max-sm:leading-[0.92]"
@@ -74,7 +74,7 @@ const ScrambleTextWrapper = () => {
             <div className="flex flex-col justify-center">
               <ScrambleText
                 text="Use it for launch lines, secretive labels, and text that needs a little suspense."
-                textSize="text-5xl max-sm:text-[2.8rem]"
+                textSize="text-5xl max-sm:text-[8vw]"
                 textColor="text-[#121212]"
                 align="left"
                 className="font-black uppercase leading-[0.94]"

@@ -59,7 +59,7 @@ const SlideTextWrapper = () => {
       </section>
 
       {/* Showcase */}
-      <section className="relative min-h-screen overflow-hidden bg-[#f7f2ff]">
+      <section className="relative min-h-screen overflow-hidden bg-[#f7f2ff] ">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
           alt="asset-image"
@@ -71,7 +71,7 @@ const SlideTextWrapper = () => {
 
         <div className="relative z-10 flex min-h-screen items-center justify-center px-8">
           <div className="max-w-6xl">
-            <div className="mb-12 flex items-center gap-4">
+            <div className="my-10 flex items-center gap-4">
               <div className="h-px flex-1 bg-black/10" />
               <span className="text-sm uppercase tracking-[0.35em] text-black/40">
                 Directional Motion
@@ -92,7 +92,7 @@ const SlideTextWrapper = () => {
               </p>
             </SlideTextReveal>
 
-            <div className="mt-20 grid grid-cols-4 gap-6 max-md:grid-cols-2">
+            <div className="mt-20 grid grid-cols-4 gap-6 max-md:grid-cols-2 max-sm:mb-10">
               {[
                 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg',
                 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg',

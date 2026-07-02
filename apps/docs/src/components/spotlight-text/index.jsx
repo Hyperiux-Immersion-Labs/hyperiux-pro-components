@@ -102,7 +102,7 @@ export default function SpotlightText({
  <section className={`w-full ${className}`}>
  <div
  ref={containerRef}
- className={`relative font-semibold ${size} ${alignment}`}
+ className={`relative font-semibold max-sm:font-medium max-sm:text-[7vw]! ${size} ${alignment}`}
  style={
  isMobile
  ? {}

@@ -386,7 +386,7 @@ export default function InfiniteCarouselComp({
  };
 
  return (
- <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-md:gap-4 max-sm:gap-3 ${pageClassName}`} style={pageStyle}>
+ <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-md:gap-4 max-sm:gap-3 max-sm:pb-0 ${pageClassName}`} style={pageStyle}>
  {showNav && !isWrapMode && (
  <div
  className={`flex w-[95%] items-center justify-end gap-4 max-md:w-full max-md:justify-center max-md:px-3 max-sm:gap-3 max-sm:px-2 ${controlsClassName}`}
@@ -450,5 +450,4 @@ export default function InfiniteCarouselComp({
  </div>
  );
 }
-
 

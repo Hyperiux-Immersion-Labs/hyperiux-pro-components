@@ -161,9 +161,7 @@ export function TextFillAnimation({
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff6b00]/5 blur-3xl" />
 
-       
-
-        <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
+        <div className="absolute bottom-[6vh] left-[5vw] max-w-55 max-sm:bottom-[9vh]">
           <p className="text-sm leading-relaxed text-black/35 max-md:text-lg max-sm:text-sm">
             Less friction.
             <br />
@@ -171,7 +169,7 @@ export function TextFillAnimation({
           </p>
         </div>
 
-        <div className="absolute bottom-[6vh] right-[5vw] text-right">
+        <div className="absolute bottom-[6vh] right-[5vw] text-right max-sm:bottom-[9vh]">
           <div className="space-y-1">
             <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
               Systems

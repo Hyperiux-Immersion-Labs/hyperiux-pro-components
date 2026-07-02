@@ -584,7 +584,7 @@ export default function HoverSliderComp({ items = [] }) {
     <section
       ref={mountRef}
       onPointerLeave={onLeave}
-      className="relative isolate pt-24 min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-sm:px-0 max-sm:pb-20 md:overflow-hidden md:px-10"
+      className="relative isolate pt-24 min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-sm:px-0 max-sm:pt-40 max-sm:pb-20 md:overflow-hidden md:px-10"
       style={{ cursor: "crosshair" }}
     >
       <div className="relative z-20 w-full overflow-x-auto pb-8 max-sm:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">
@@ -654,7 +654,7 @@ export default function HoverSliderComp({ items = [] }) {
         the ordinary.
       </p>
 
-      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-md:block max-sm:bottom-2 max-sm:w-[80vw] max-sm:text-sm">
+      <p className="absolute top-15 h-15 my-5 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-md:block max-sm:bottom-2 max-sm:w-[80vw] max-sm:text-sm">
         Click on an item to see the animation. Hover effects available on
         desktop.
       </p>

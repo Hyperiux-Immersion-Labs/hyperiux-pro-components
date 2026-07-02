@@ -7,8 +7,6 @@ export default function layout({ children }) {
   return (
     // <PixelRandom color="#ff5f00">
     <>
-
-
       <NavbarMobile />
       <div className="w-full">
         {children}

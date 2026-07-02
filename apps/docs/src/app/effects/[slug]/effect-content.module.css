@@ -465,6 +465,8 @@
 @media (max-width: 639px) {
   .content h2,
   .calloutTitle {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
     font-size: 7vw;
   }
 

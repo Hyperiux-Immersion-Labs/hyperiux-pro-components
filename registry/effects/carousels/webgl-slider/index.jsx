@@ -1,4 +1,4 @@
-import React from'react'
+import React, { useEffect, useState } from'react'
 import { ReactLenis } from'lenis/react'
 import WebGLSliderComp from './WebGLSliderComp';
 
@@ -17,6 +17,29 @@ const images = [
 ];
 
 const WebGLSlider = () => {
+ const [isMobile, setIsMobile] = useState(false);
+
+ useEffect(() => {
+  const updateViewport = () => setIsMobile(window.innerWidth < 768);
+  updateViewport();
+  window.addEventListener("resize", updateViewport);
+  return () => window.removeEventListener("resize", updateViewport);
+ }, []);
+
+ if (isMobile) {
+ return (
+ <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#050505] px-8 text-white">
+ <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-center">
+ <p className="text-[11vw] font-light leading-none tracking-tight">Open on desktop</p>
+ <p className="text-sm uppercase tracking-[0.3em] text-white/35">WebGL Slider</p>
+ <p className="text-sm leading-relaxed text-white/55">
+ For the full fold, depth, and motion experience, view this slider on a larger screen.
+ </p>
+ </div>
+ </div>
+ )
+ }
+
  return (
  <ReactLenis root options={{  infinite: true,  autoRaf: true,  duration: 1.5,  lerp: 0.075  }}>
  <WebGLSliderComp images={images} />

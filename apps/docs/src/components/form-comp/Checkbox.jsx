@@ -16,7 +16,7 @@ const Checkbox = forwardRef(function Checkbox(
 ) {
  return (
  <div className="w-full">
- <div className="flex items-start gap-3">
+ <div className="flex items-center gap-3">
  <button
  ref={ref}
  type="button"
@@ -25,7 +25,7 @@ const Checkbox = forwardRef(function Checkbox(
  aria-checked={checked}
  onClick={() => onChange && onChange(!checked)}
  className={`
- mt-0.5 shrink-0 w-5 h-5 rounded border-2 transition-all duration-200
+ shrink-0 w-5 h-5 rounded border-2 transition-all duration-200
  flex items-center justify-center cursor-pointer
  ${checked
  ? `${accentColor} border-transparent`
@@ -53,13 +53,9 @@ const Checkbox = forwardRef(function Checkbox(
  </button>
 
  {label && (
- <label
- htmlFor={id}
- className="text-sm text-gray-600 font-light leading-snug cursor-pointer select-none"
- onClick={() => onChange && onChange(!checked)}
- >
+ <div className="text-sm text-gray-600 font-light leading-snug select-none">
  {label}
- </label>
+ </div>
  )}
  </div>
  {error && (

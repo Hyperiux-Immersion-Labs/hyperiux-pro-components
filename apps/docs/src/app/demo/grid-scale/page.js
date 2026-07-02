@@ -11,7 +11,7 @@ const page = () => {
     <LenisSmoothScroll />
     <DemoHeader textColor='#ffffff' logoColor='#ffffff' />
     <GridScale/>
-    <ScrollBottom/>
+    <ScrollBottom textColor="text-[#5a5a5a]" className="bottom-[3%]"/>
     </>
   )
 }

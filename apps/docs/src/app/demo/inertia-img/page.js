@@ -14,7 +14,7 @@ const Page = () => {
                         Inertia Image
                     </p>
                     <p className="text-white/50 mt-0 max-md:mt-8 max-sm:mt-2 hidden max-md:block max-md:text-xl  max-sm:text-base max-sm:pt-2 max-sm:mx-6 max-sm:leading-[1.2] ">
-                        Tap to try it.
+                        Tap on the image try it.
                        <span className="block mt-2 max-md:w-60 max-sm:w-50 mx-auto text-center">
 
                          Hover on desktop to see what it was truly made for.

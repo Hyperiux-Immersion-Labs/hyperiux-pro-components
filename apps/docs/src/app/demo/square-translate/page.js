@@ -4,6 +4,7 @@ import React from "react";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import Image from "next/image";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 
 const page = () => {
@@ -28,7 +29,7 @@ const page = () => {
           {/* <span className="text-[#FB450F] font-mono uppercase ml-[2vw] text-[1.2vw]">// Services</span> */}
         </h2>
         <div className="h-fit w-full py-[10vh] max-md:py-6 flex max-md:flex-col items-center gap-[6vw] max-md:gap-8">
-          <div className="h-[35vw] w-[40vw] max-md:w-full max-md:h-[40vw] bg-red-500 rounded-lg overflow-hidden">
+          <div className="h-[35vw] w-[40vw] max-md:w-full max-md:h-[40vw] max-sm:h-[70vw] rounded-lg overflow-hidden">
             <Image
               alt="Square Translate"
               src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg"
@@ -48,7 +49,9 @@ const page = () => {
           </div>
         </div>
       </div>
+      <ScrollBottom textColor="text-[#000000]" className="bottom-[2%] left-[95%] max-sm:left-[90%]" />
     </>
+  
   );
 };
 

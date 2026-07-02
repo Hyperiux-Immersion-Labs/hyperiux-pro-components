@@ -29,7 +29,7 @@ const menuItems = [
 
 export default function DirectionalMenu() {
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white max-sm:h-full max-sm:overflow-visible max-sm:pb-10">
+    <div className="relative h-screen overflow-hidden text-white max-sm:h-full max-sm:overflow-visible max-sm:pb-10">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto max-md:hidden h-19 flex items-center justify-between">
@@ -88,7 +88,7 @@ export default function DirectionalMenu() {
             motion, and details crafted for a more immersive experience.
           </p>
           {/* Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-sm:mt-20">
             <button className="px-7 py-3 cursor-pointer rounded-full bg-white text-black font-medium hover:bg-white/90 transition-all duration-300">
               <Link href={"/effects/navigation/directional-menu"} className="">
                 Get Started

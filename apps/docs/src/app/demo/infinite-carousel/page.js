@@ -6,7 +6,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 const page = () => {
   return (
-    <>
+    <div className="min-h-screen bg-[#f4f0ea]">
       <DemoHeader />
       <div className=" flex items-center pt-24 max-md:pt-20 max-sm:pt-15 justify-center px-4 bg-[#f4f0ea]">
         <div className="text-center">
@@ -20,7 +20,7 @@ const page = () => {
         </div>
       </div>
       <InfiniteCarousel />
-    </>
+    </div>
   );
 };
 

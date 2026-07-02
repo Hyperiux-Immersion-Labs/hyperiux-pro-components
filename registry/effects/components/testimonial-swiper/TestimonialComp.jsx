@@ -180,7 +180,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-sm:min-h-screen bg-white flex flex-col justify-between overflow-hidden text-black py-5 max-md:px-6 max-sm:px-2"
+        <section className="relative w-full min-h-screen max-sm:min-h-screen bg-white flex flex-col justify-between max-sm:justify-start overflow-hidden text-black py-5 max-md:px-6 max-sm:px-2"
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
@@ -229,13 +229,13 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                     <div className="flex flex-col pl-13 w-[95%] max-md:pl-0 max-md:w-full max-sm:pl-0 max-sm:w-full">
                         <blockquote
                             ref={quoteRef}
-                            className="m-0 mb-10 p-0 text-[4vw] max-sm:min-h-[30vh] max-md:min-h-[30vh]  leading-[1.1] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7.5vw] max-sm:mb-6"
+                            className="m-0 mb-10 p-0 text-[4vw] max-sm:min-h-0 max-md:min-h-[30vh] leading-[1.1] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7.5vw] max-sm:mb-4"
                         >
                             {displayItem.quote}
                         </blockquote>
 
                         
-                        <div className="hidden max-md:flex items-center gap-4 mt-6 max-md:gap-5 max-sm:gap-6">
+                        <div className="hidden max-md:flex items-center gap-4 mt-6 max-md:gap-5 max-sm:mt-3 max-sm:gap-6">
                             <div ref={mobileImageRef} className="relative max-md:w-30 max-md:h-36 max-sm:w-22 max-sm:h-26 shrink-0">
                                 <img
                                     src={displayItem.image}

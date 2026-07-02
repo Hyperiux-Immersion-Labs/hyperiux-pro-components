@@ -57,7 +57,7 @@ export function MobileDirectionalMenu({ items = [] }) {
       </div>
 
       <div
-        className={`absolute left-6 right-6 top-18 z-50 overflow-hidden rounded-lg bg-white text-black transition-all duration-300 ease-in-out ${
+        className={`absolute left-6 right-6 top-18 z-50 overflow-hidden pb-8! rounded-lg bg-white text-black transition-all duration-300 ease-in-out ${
           isMenuOpen
             ? "max-h-[80vh] overflow-y-scroll p-8 opacity-100 max-sm:max-h-[90vh] max-sm:p-3"
             : "max-h-0 p-0 opacity-0 pointer-events-none"

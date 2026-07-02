@@ -40,16 +40,18 @@ export default function Page() {
             </p>
           </SplitLine>
 
-          <SplitLine>
-            <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-md:gap-[1vw] max-md:text-[2vw] max-sm:gap-[2vw] max-sm:text-[3.5vw]">
+          
+            <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-md:gap-[1vw] max-md:text-[2vw] max-sm:gap-[2vw] max-sm:text-[3.5vw] max-sm:pl-[2vw]">
               {featurePoints.map((point) => (
+                
                 <li key={point} className="flex gap-[0.35em]">
-                  <span aria-hidden="true">•</span>
-                  <span>{point}</span>
+                  <SplitLine>
+                  <span> • {point}</span>
+                  </SplitLine>
                 </li>
+                
               ))}
             </ul>
-          </SplitLine>
         </div>
       </div>
     </section>

@@ -855,7 +855,7 @@ export default function DitherCanvas({
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-sm:text-sm max-md:text-lg text-white/50 max-md:block">
+        <p className="pointer-events-none absolute bottom-20 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-sm:text-sm max-md:text-lg text-white/50 max-md:block max-sm:w-[60vw]!">
           Open on desktop for the full experience — cursor effect included.
         </p>
       )}

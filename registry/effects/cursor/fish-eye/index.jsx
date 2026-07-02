@@ -125,8 +125,19 @@ function ImageNodeMaterial({ src, isMobile }) {
 
 export default function FishEye({ src }) {
   const [objectUrl, setObjectUrl] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(pointer: coarse)')
+    const update = () => setIsMobile(mediaQuery.matches)
+    update()
+    mediaQuery.addEventListener('change', update)
+    return () => mediaQuery.removeEventListener('change', update)
+  }, [])
+
+  useEffect(() => {
+    if (isMobile) return undefined
+
     let url = null
     loadCorsObjectUrl(src)
       .then((u) => {
@@ -138,11 +149,9 @@ export default function FishEye({ src }) {
     return () => {
       if (url) URL.revokeObjectURL(url)
     }
-  }, [src])
+  }, [src, isMobile])
 
-  const isMobile =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(pointer: coarse)').matches
+  if (isMobile) return null
 
   if (!objectUrl) return null
 

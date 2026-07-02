@@ -366,7 +366,7 @@ const RingCarouselComp = ({
  <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-md:hidden" />
 
  {showNavigation && totalItems > 1 && (
- <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3">
+ <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3 max-sm:bottom-[8%]">
  <button
  type="button"
  className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
@@ -388,7 +388,7 @@ const RingCarouselComp = ({
  )}
 
  {showDots && totalItems > 1 && (
- <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-md:bottom-[18%] max-md:gap-[2vw] max-md:px-4 max-md:py-3 max-sm:bottom-[14%] max-sm:px-3.5 max-sm:py-2.5" aria-label="Slider pagination">
+ <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-md:bottom-[18%] max-md:gap-[2vw] max-md:px-4 max-md:py-3 max-sm:bottom-[20%] max-sm:px-3.5 max-sm:py-2.5" aria-label="Slider pagination">
  {items.map((_, index) => (
  <button
  key={index}

@@ -113,7 +113,7 @@ const PhoneInput = forwardRef(function PhoneInput(
               {selectedCountry.flag}
             </span>
 
-            <span className={joinClasses("font-medium", dialCodeClassName)}>
+            <span className={joinClasses("font-normal text-sm", dialCodeClassName)}>
               {selectedCountry.dial}
             </span>
 
@@ -141,10 +141,11 @@ const PhoneInput = forwardRef(function PhoneInput(
             <div
               role="listbox"
               className={joinClasses(
-                "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 overflow-y-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg",
+                "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 rounded-xl border border-gray-200 bg-white py-1 shadow-lg",
                 dropdownClassName
               )}
             >
+              <div className="overflow-y-auto">
               {countries.map((country) => {
                 const isActive = selectedCountry.code === country.code;
 
@@ -175,6 +176,7 @@ const PhoneInput = forwardRef(function PhoneInput(
                   </button>
                 );
               })}
+              </div>
             </div>
           )}
         </div>
@@ -192,7 +194,7 @@ const PhoneInput = forwardRef(function PhoneInput(
           placeholder={placeholder ?? (label === false ? "" : label)}
           autoComplete="tel"
           className={joinClasses(
-            "h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-400",
+            "h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-700 placeholder:text-sm",
             inputClassName
           )}
           {...rest}

@@ -4,7 +4,7 @@ import { HelixSliderComp } from "./HelixSliderComp";
 export function HelixSlider() {
    return (
       <>
-         <ReactLenis root options={{ infinite: true, }}>
+         <ReactLenis root options={{ infinite: true, syncTouch: true }}>
             <main>
                <HelixSliderComp
                   cardWidth={210}

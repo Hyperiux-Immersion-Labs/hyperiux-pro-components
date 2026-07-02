@@ -406,7 +406,7 @@ export default function DepthCardStackComp({ cards }) {
 
  <p
  key={claimedText}
- className="mt-4 max-md:mt-8 text-xs max-md:text-lg max-sm:text-base text-gray-400 h-5"
+ className="mt-4 max-md:mt-8 max-sm:mt-3 text-xs max-md:text-lg max-sm:text-base text-gray-400 h-5"
  style={{ animation:"fadeUp 0.4s ease forwards" }}
  >
  {claimedText}

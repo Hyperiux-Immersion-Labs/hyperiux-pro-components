@@ -11,7 +11,12 @@ export default function InfinitePerspectiveSlider() {
                         Infinite Perspective Slider
                     </h1>
                     <p className="text-base max-sm:text-sm">
-                        Scroll for the perspective effect and hover on the cards for the card detail
+                        <span className="max-sm:hidden">
+                            Scroll for the perspective effect and hover on the cards for the card detail
+                        </span>
+                        <span className="hidden max-sm:inline">
+                            Drag the slider and click on the images to reveal the info
+                        </span>
                     </p>
 
                 </div>

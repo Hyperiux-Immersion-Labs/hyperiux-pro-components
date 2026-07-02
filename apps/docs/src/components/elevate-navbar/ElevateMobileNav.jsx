@@ -231,15 +231,6 @@ export function ElevateNavbarMobile({
                             height={80}
                             className="h-full w-full object-cover"
                           />
-
-                          <div
-                            className="absolute inset-0"
-                            style={{
-                              background: "rgba(255, 0, 0, 1)",
-                              mixBlendMode: "multiply",
-                              pointerEvents: "none",
-                            }}
-                          />
                         </div>
 
                         <span className="flex-1">{dropdownItem.title}</span>

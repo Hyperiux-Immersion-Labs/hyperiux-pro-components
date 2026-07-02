@@ -3,6 +3,7 @@ import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ParallaxImgSlider from '@/components/parallax-slider'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import ScrollBottom from '@/components/WebsiteComps/ScrollBottom';
 
 
 const page = () => {
@@ -20,6 +21,7 @@ const page = () => {
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',
  ]} bgColor='#111111' />
+ <ScrollBottom className="bottom-[3%]"/>
  </>
  )
 }

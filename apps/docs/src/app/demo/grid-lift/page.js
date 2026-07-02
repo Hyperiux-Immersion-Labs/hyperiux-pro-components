@@ -1,5 +1,5 @@
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import DemoContent from "./_DemoContent";
+import DemoContent from "./DemoContent";
 
 export async function generateMetadata() {
   return getDemoPageMetadata("grid-lift");

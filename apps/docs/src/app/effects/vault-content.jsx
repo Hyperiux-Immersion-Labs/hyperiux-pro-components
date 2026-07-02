@@ -651,7 +651,7 @@ const routeKey = `${pathname}${
                           handleCategoryLinkClick(cat);
                         }}
                         className={`
-                          px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-4 max-sm:py-2
+                          px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-5 max-sm:py-2
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
                           transition-colors duration-300 max-sm:text-lg text20
                           ${isSelected

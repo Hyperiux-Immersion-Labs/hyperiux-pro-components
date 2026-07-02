@@ -943,6 +943,7 @@ export default function MilkyWay() {
                </EffectComposer>
             </Canvas>
          ) : showMobileContent ? (
+            <>
             <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
                <div className='flex flex-col items-center gap-6'>
                   <p className='rounded-full bg-white/10 px-5 py-3 w-full max-w-[60vw] max-md:max-w-[70vw] max-sm:max-w-full text-2xl max-sm:text-base backdrop-blur-sm'>
@@ -956,29 +957,18 @@ export default function MilkyWay() {
                   </Link>
                </div>
             </div>
+            </>
          ) : null}
 
          {(showDesktopContent || showMobileContent ) && (
             
             <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-299 flex items-center justify-center max-md:hidden">
-
-
                <div className='h-full w-full relative'>
                   {/* Navbar (leave unchanged) */}
-                  <div className='w-full absolute top-0 left-0 pt-[2vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
-                     <p className='text-4xl font-medium'>Galaxy</p>
-                     <div className='w-60 space-y-2'>
-
-                        <p className='leading-[1.2]'>
+                  <div className='absolute top-0 left-[70%] pt-[6vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
+                        <p className='leading-[1.2] '>
                            Move your cursor around and watch the scene respond.
                         </p>
-                        <button className="pr-4 py-1.5 flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
-                           <Link href={"/effects"}>Explore Platform</Link>
-                           <ArrowRight className='h-4 w-4' />
-                        </button>
-                     </div>
-
-
                   </div>
                   {/* Enhanced cosmic hero section */}
                   <div className="absolute bottom-[4vw] max-md:bottom-[12vw] left-[4vw] max-w-[70vw]">

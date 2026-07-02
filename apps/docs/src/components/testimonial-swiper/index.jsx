@@ -45,7 +45,7 @@ const data = [
 
 const TestimonialSwiper = () => {
   return (
-    <div className="h-screen bg-white">
+    <div className="h-screen bg-white max-sm:h-fit">
       <TestimonialComp testimonials={data} bgColor="#edeae2" />
     </div>
   );

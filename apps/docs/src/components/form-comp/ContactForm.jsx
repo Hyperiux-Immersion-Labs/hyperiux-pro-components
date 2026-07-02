@@ -224,12 +224,12 @@ export default function ContactForm({
  >
  {fields.map((field) => renderField(field))}
 
- <div className="flex items-center justify-start max-sm:justify-center max-sm:mt-[10vw]">
+ <div className="flex items-center justify-start  max-sm:mt-[10vw]">
  <Button
  type="submit"
  isLoading={isLoading}
  loadingText={loadingLabel}
- className="mt-[3vw] max-sm:mx-auto max-sm:mt-0 max-md:mt-[3vw]"
+ className="mt-[3vw]  max-sm:mt-0 max-md:mt-[3vw]"
  >
  {submitLabel}
  </Button>

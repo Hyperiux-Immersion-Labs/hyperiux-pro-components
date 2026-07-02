@@ -14,7 +14,7 @@ export default function page() {
       <div className="min-h-screen w-full relative bg-[]">
         <section className="h-screen w-full relative">
           <HeadAnim animateOnScroll={false}>
-            <h1 className="text-[10vw] w-[80vw] font-medium tracking-tight leading-[.9]! p-[2vw] absolute text-white max-md:text-[14vw] max-md:w-[90vw] bottom-[1.5vw] max-md:bottom-[10vw] max-sm:bottom-[20vw] max-sm:left-3 pointer-events-none z-10">
+            <h1 className="text-[10vw] w-[80vw] font-medium tracking-tight leading-[.9]! p-[2vw] absolute text-white max-md:text-[14vw] max-md:w-[90vw] bottom-[1.5vw] max-md:bottom-[10vw] max-sm:bottom-[30vw] max-sm:left-3 pointer-events-none z-10">
               Noise Ripple Effect
             </h1>
           </HeadAnim>
@@ -22,7 +22,7 @@ export default function page() {
           <SplitLine
             as="p"
             start="top 120%"
-            className="hidden max-md:block text-[3.5vw] max-sm:text-[4.5vw] absolute max-sm:bottom-[5vw] max-md:bottom-[3.5vh] max-sm:left-5 max-md:left-5  z-10 text-white w-[70%] leading-[1.2]"
+            className="hidden max-md:block text-[3.5vw] max-sm:text-[4.5vw] absolute max-sm:bottom-[17vw] max-md:bottom-[3.5vh] max-sm:left-5 max-md:left-5  z-10 text-white w-[70%] leading-[1.2]"
           >
             Best enjoyed on desktop for the full effect
           </SplitLine>

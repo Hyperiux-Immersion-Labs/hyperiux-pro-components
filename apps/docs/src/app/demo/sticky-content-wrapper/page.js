@@ -10,7 +10,7 @@ export default function Page() {
      <ReactLenis root>
         <DemoHeader/>
  <StickyContentWrapper />
- <ScrollBottom className="bottom-[5%] left-[20%]! gap-[1vw]" textColor='text-[#111111]' />
+ <ScrollBottom className="bottom-[3%] left-[20%]! gap-[1vw] max-sm:left-1/2!" textColor='text-[#111111]' />
      </ReactLenis>
  );
 }

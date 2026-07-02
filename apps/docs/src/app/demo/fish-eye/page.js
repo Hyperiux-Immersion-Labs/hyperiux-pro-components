@@ -16,27 +16,31 @@ export default function Page() {
                 FISH EYE
             </h2>
 
-            <h2 className='absolute top-[5vw] text-right max-sm:top-[85vh] max-md:top-[85vh] max-sm:right-[5vw] right-[5vw] max-md:w-full text-black max-sm:text-[12vw] max-md:text-[7vw] text-[7vw] leading-none font-bold'>
+            <h2 className='absolute top-[5vw] text-right max-sm:top-[85vh] max-md:top-[85vh] max-sm:right-[5vw] right-[5vw] max-md:w-full text-black max-sm:text-[12vw] max-md:text-[7vw] text-[7vw] leading-none font-bold max-sm:hidden'>
                 WITH <br />
                 <span className='text-red-500'> TSL </span>
             </h2>
 
-            {/* mobile warning */}
-            <div className='hidden max-md:flex absolute z-30 left-0 bottom-0  -translate-y-1/2 px-5'>
-                <div className='rounded-full  px-5 py-3 text-left text-black text-lg max-sm:text-base leading-[1.2] w-80'>
-                     Hover unlocks the illusion <br /> Best experienced on desktop
+            <div className='hidden max-md:flex absolute inset-0 z-30 items-center justify-center px-8 text-center'>
+                <div className='pointer-events-none flex max-w-sm flex-col items-center gap-3 text-black'>
+                    <p className='text-[8vw] font-light leading-none tracking-tight uppercase'>
+                        Open on desktop
+                    </p>
+                    <p className='text-sm leading-relaxed text-black/55'>
+                        Hover unlocks the lens illusion. Best experienced on desktop.
+                    </p>
                 </div>
             </div>
 
-            <div className='h-[30vw] w-[30vw] max-md:size-[40vw] relative'>
+            <div className='h-[30vw] w-[30vw] max-md:hidden relative'>
                 <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg" />
             </div>
 
-            <div className='h-[45vw] w-[30vw] max-md:h-[50vw] max-md:w-[40vw] relative'>
+            <div className='h-[45vw] w-[30vw] max-md:hidden relative'>
                 <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg" />
             </div>
 
-            <div className='size-[25vw] mt-auto max-md:mt-0 max-md:size-[30vw] relative'>
+            <div className='size-[25vw] mt-auto max-md:hidden relative'>
                 <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg" />
             </div>
 

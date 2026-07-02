@@ -25,6 +25,7 @@ export default class InfiniteGrid {
         };
 
         this.isDragging = false;
+        this.activePointerId = null;
         this.drag = { startX: 0, startY: 0, scrollX: 0, scrollY: 0 };
         this.dragMoved = false;
 
@@ -38,16 +39,18 @@ export default class InfiniteGrid {
 
         this.onResize = this.onResize.bind(this);
         this.onWheel = this.onWheel.bind(this);
-        this.onMouseMove = this.onMouseMove.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onPointerMove = this.onPointerMove.bind(this);
+        this.onPointerDown = this.onPointerDown.bind(this);
+        this.onPointerUp = this.onPointerUp.bind(this);
         this.render = this.render.bind(this);
 
         window.addEventListener('resize', this.onResize);
         window.addEventListener('wheel', this.onWheel, { passive: false });
-        window.addEventListener('mousemove', this.onMouseMove);
-        this.$container.addEventListener('mousedown', this.onMouseDown);
-        window.addEventListener('mouseup', this.onMouseUp);
+        window.addEventListener('pointermove', this.onPointerMove, { passive: false });
+        this.$container.addEventListener('pointerdown', this.onPointerDown, { passive: false });
+        window.addEventListener('pointerup', this.onPointerUp);
+        window.addEventListener('pointercancel', this.onPointerUp);
+        this.$container.style.touchAction = 'none';
 
         this.onResize();
         this.render();
@@ -214,10 +217,11 @@ export default class InfiniteGrid {
         this.scroll.target.y -= e.deltaY * factor;
     }
 
-    onMouseDown(e) {
+    onPointerDown(e) {
         if (!this.enabled) return;
         e.preventDefault();
         this.isDragging = true;
+        this.activePointerId = e.pointerId;
         this.dragMoved = false;
         document.documentElement.classList.add('dragging');
         this.mouse.press.t = 1;
@@ -225,20 +229,28 @@ export default class InfiniteGrid {
         this.drag.startY = e.clientY;
         this.drag.scrollX = this.scroll.target.x;
         this.drag.scrollY = this.scroll.target.y;
+        this.$container.setPointerCapture?.(e.pointerId);
     }
 
-    onMouseUp() {
+    onPointerUp(e) {
+        if (e && this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
         this.isDragging = false;
+        if (e && this.activePointerId !== null) {
+            this.$container.releasePointerCapture?.(this.activePointerId);
+        }
+        this.activePointerId = null;
         document.documentElement.classList.remove('dragging');
         this.mouse.press.t = 0;
     }
 
-    onMouseMove(e) {
+    onPointerMove(e) {
         if (!this.enabled) return;
         this.mouse.x.t = e.clientX / this.winW;
         this.mouse.y.t = e.clientY / this.winH;
 
         if (this.isDragging) {
+            if (this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
+            e.preventDefault();
             const dx = e.clientX - this.drag.startX;
             const dy = e.clientY - this.drag.startY;
             if (!this.dragMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
@@ -300,9 +312,10 @@ export default class InfiniteGrid {
     destroy() {
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('wheel', this.onWheel);
-        window.removeEventListener('mousemove', this.onMouseMove);
-        this.$container.removeEventListener('mousedown', this.onMouseDown);
-        window.removeEventListener('mouseup', this.onMouseUp);
+        window.removeEventListener('pointermove', this.onPointerMove);
+        this.$container.removeEventListener('pointerdown', this.onPointerDown);
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointercancel', this.onPointerUp);
     }
 
     setEnabled(next) {

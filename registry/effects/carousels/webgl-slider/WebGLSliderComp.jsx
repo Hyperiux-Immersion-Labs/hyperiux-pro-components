@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
@@ -86,6 +86,14 @@ function WebGLSliderComp({ images = [] }) {
   const scrollTimeout = useRef(null);
   const lenisResumeTimeout = useRef(null);
   const isSnapping = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateViewport = () => setIsMobile(window.innerWidth < 768);
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
 
   useLenis((lenis) => {
     if (isSnapping.current) return;
@@ -146,7 +154,7 @@ function WebGLSliderComp({ images = [] }) {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !images.length) return;
+    if (!container || !images.length || isMobile) return;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -178,13 +186,13 @@ function WebGLSliderComp({ images = [] }) {
     camera.position.z = 7;
 
     const width = window.innerWidth;
-    const isMobile = width < 768;
+    const mobileViewport = width < 768;
     const isTablet = width >= 768 && width < 1025;
     const isCompact = width < 1025;
 
-    const CARD_W = isMobile ? 1.55 : isTablet ? 2.25 : 3.2;
-    const CARD_H = isMobile ? 1.45 : isTablet ? 2.1 : 3.0;
-    const GAP = isMobile ? 4.7 : isTablet ? 5.1 : 4.5;
+    const CARD_W = mobileViewport ? 1.55 : isTablet ? 2.25 : 3.2;
+    const CARD_H = mobileViewport ? 1.45 : isTablet ? 2.1 : 3.0;
+    const GAP = mobileViewport ? 4.7 : isTablet ? 5.1 : 4.5;
 
     const total = images.length;
 
@@ -281,13 +289,13 @@ function WebGLSliderComp({ images = [] }) {
     const loopHalf = loopLength / 2;
     const invFoldRange = 1 / foldRangeConst;
 
-    const CARD_W_OFFSET = isMobile
+    const CARD_W_OFFSET = mobileViewport
       ? CARD_W * 0.32
       : isTablet
         ? CARD_W * 0.46
         : CARD_W * 0.7;
 
-    const CARD_H_75 = isMobile
+    const CARD_H_75 = mobileViewport
       ? CARD_H * 0.48
       : isTablet
         ? CARD_H * 0.58
@@ -314,19 +322,19 @@ function WebGLSliderComp({ images = [] }) {
 
       const viewW = viewH * camera.aspect;
 
-      const arcRadiusX = isMobile
+      const arcRadiusX = mobileViewport
         ? viewW * 2.45
         : isTablet
           ? viewW * 2.05
           : viewW * 1.2;
 
-      const arcRadiusY = isMobile
+      const arcRadiusY = mobileViewport
         ? viewH * 1.75
         : isTablet
           ? viewH * 1.55
           : viewW * 1.2;
 
-      const invArcRadius = 1 / (isMobile ? arcRadiusY : arcRadiusY);
+      const invArcRadius = 1 / arcRadiusY;
 
       const worldOffset = scrollRef.current / pxPerWorldUnit;
       const wrappedOffset = mod(worldOffset, loopLength);
@@ -470,7 +478,21 @@ function WebGLSliderComp({ images = [] }) {
 
       document.body.style.height = "";
     };
-  }, [images]);
+  }, [images, isMobile]);
+
+  if (isMobile) {
+    return (
+      <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#050505] px-8 text-white">
+        <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-center">
+          <p className="text-[11vw] font-light leading-none tracking-tight">Open on desktop</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-white/35">WebGL Slider</p>
+          <p className="text-sm leading-relaxed text-white/55">
+            For the full fold, depth, and motion experience, view this slider on a larger screen.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full">

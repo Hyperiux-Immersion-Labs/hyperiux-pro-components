@@ -6,11 +6,9 @@ import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 
-
 const Page = () => {
   return (
     <ReactLenis root>
-
       <DemoHeader logoColor="#ff5f00" />
       <div className="relative">
       <HorizontalFeatureReveal />
