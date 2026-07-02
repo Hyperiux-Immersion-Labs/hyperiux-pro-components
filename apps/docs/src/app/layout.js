@@ -90,6 +90,17 @@ export default function RootLayout({ children }) {
               __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","xg3k9tc0gm");`,
             }}
           />
+          <Script
+            id="openpanel-init"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `window.op=window.op||function(){var n=[];return new Proxy(function(){arguments.length&&n.push([].slice.call(arguments))},{get:function(t,r){return"q"===r?n:function(){n.push([r].concat([].slice.call(arguments)))}},has:function(t,r){return"q"===r}})}();window.op('init',{clientId:'45f34339-5b18-484e-a126-a77b7d470584',trackScreenViews:true,trackOutgoingLinks:true,trackAttributes:true});`,
+            }}
+          />
+          <Script
+            src="https://openpanel.dev/op1.js"
+            strategy="afterInteractive"
+          />
         </ClerkProvider>
       </body>
     </html>
