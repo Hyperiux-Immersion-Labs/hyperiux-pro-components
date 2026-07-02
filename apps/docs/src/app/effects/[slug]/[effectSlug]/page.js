@@ -121,7 +121,8 @@ export default async function EffectPage({ params }) {
 
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);
-  const isLocked = !canAccessEffect(content.tier ?? effect?.tier ?? "pro", userPlan);
+  const effectTier = content.tier ?? effect?.tier ?? "pro";
+  const isLocked = !canAccessEffect(effectTier, userPlan, userId);
 
   const sanityEntries = await getAllSanityEffectEntries();
   const allEffects = buildEffectsFromSanity(sanityEntries);
@@ -174,6 +175,7 @@ export default async function EffectPage({ params }) {
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}
         isLocked={isLocked}
+        effectTier={effectTier}
         userPlan={userPlan}
         searchEffects={globalSearchEffects}
       />

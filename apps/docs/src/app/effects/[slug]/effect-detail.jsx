@@ -176,6 +176,7 @@ export function EffectDetailContent({
   effectCounts,
   totalEffects,
   isLocked = false,
+  effectTier = "pro",
   userPlan = "free",
   searchEffects = [],
 }) {
@@ -570,6 +571,7 @@ export function EffectDetailContent({
                   ref={contentRef}
                   content={safeContent}
                   isLocked={isLocked}
+                  effectTier={effectTier}
                 />
               </div>
 
@@ -717,7 +719,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false },
+  { content, isLocked = false, effectTier = "pro" },
   ref
 ) {
   if (!content) return null;
@@ -727,7 +729,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
       ref={ref}
       className={`space-y-8 w-[70%] max-md:w-full ${styles.content}`}
     >
-      <SanityBodyRenderer body={content.body} isLocked={isLocked} />
+      <SanityBodyRenderer body={content.body} isLocked={isLocked} effectTier={effectTier} />
     </div>
   );
 });
@@ -776,7 +778,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false }) {
+function SanityBodyRenderer({ body = [], isLocked = false, effectTier = "pro" }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
@@ -788,17 +790,18 @@ function SanityBodyRenderer({ body = [], isLocked = false }) {
           key={block._key || block._groupKey || `${block._type}-${index}`}
           block={block}
           isLocked={isLocked}
+          effectTier={effectTier}
         />
       ))}
     </div>
   );
 }
 
-function SanityBodyBlock({ block, isLocked = false }) {
+function SanityBodyBlock({ block, isLocked = false, effectTier = "pro" }) {
   if (!block) return null;
 
   if (block._type === "block") {
-    return <PortableTextBlock block={block} isLocked={isLocked} />;
+    return <PortableTextBlock block={block} isLocked={isLocked} effectTier={effectTier} />;
   }
 
   if (block._type === "listGroup") {
@@ -838,6 +841,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
         <LockedCodePlaceholder
           filename={block.filename}
           language={block.language || "jsx"}
+          effectTier={effectTier}
         />
       );
     }
@@ -963,7 +967,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
         {shouldRenderAsCardGrid ? (
           <CalloutCardGrid body={block.content || []} />
         ) : (
-          <SanityBodyRenderer body={block.content || []} isLocked={isLocked} />
+          <SanityBodyRenderer body={block.content || []} isLocked={isLocked} effectTier={effectTier} />
         )}
       </section>
     );
@@ -990,7 +994,7 @@ function CalloutCardGrid({ body = [] }) {
   );
 }
 
-function LockedCodePlaceholder({ filename }) {
+function LockedCodePlaceholder({ filename, effectTier = "pro" }) {
   const { isSignedIn } = useUser();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const teaserLines = [
@@ -1017,7 +1021,13 @@ function LockedCodePlaceholder({ filename }) {
     }
   };
 
-  const title = filename ? `${filename} is Locked` : "Pro Source Code is Locked";
+  const isFree = effectTier === "free";
+  const title = isFree
+    ? (filename ? `${filename} — Sign In to View` : "Sign In to View Source Code")
+    : (filename ? `${filename} is Locked` : "Pro Source Code is Locked");
+  const subtitle = isFree
+    ? "Create a free account to access the source code for this effect."
+    : "Subscribe to Hyperiux Pro to access this source code and 100+ others.";
 
   return (
     <section className="fadeup relative min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">
@@ -1057,14 +1067,22 @@ function LockedCodePlaceholder({ filename }) {
           </h3>
 
           <p className="max-w-lg text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">
-            Subscribe to Hyperiux Pro to access this source code and 100+ others.
-           
+            {subtitle}
           </p>
-         
         </div>
 
         <div className="flex flex-wrap items-center pt-3 max-md:pt-6 justify-center gap-3">
-          {isSignedIn ? (
+          {isFree ? (
+            // Free effect — anonymous user only (signed-in users never see this)
+            <Button
+              text="Get Started"
+              href="/sign-up"
+              variant="orange"
+              className="shrink-0"
+              hoverTextClassName="group-hover:text-black!"
+            />
+          ) : isSignedIn ? (
+            // Pro effect — signed-in free user
             <Button
               text={checkoutLoading ? "Loading…" : "Upgrade to Pro"}
               href="#"
@@ -1074,13 +1092,13 @@ function LockedCodePlaceholder({ filename }) {
               disabled={checkoutLoading}
             />
           ) : (
+            // Pro effect — anonymous user
             <Button
-              text="Sign in"
+              text="Get Started"
               href="/sign-in"
               variant="orange"
               className="shrink-0"
-              hoverTextClassName='group-hover:text-black!'
-              
+              hoverTextClassName="group-hover:text-black!"
             />
           )}
 
@@ -1093,14 +1111,14 @@ function LockedCodePlaceholder({ filename }) {
   );
 }
 
-function PortableTextBlock({ block, isLocked = false }) {
+function PortableTextBlock({ block, isLocked = false, effectTier = "pro" }) {
   if (isCodeOnlyBlock(block)) {
     const code = normalizeCodeString(getBlockText(block));
 
     if (!code.trim()) return null;
 
     if (isLocked) {
-      return <LockedCodePlaceholder language={inferCodeLanguage(code)} />;
+      return <LockedCodePlaceholder language={inferCodeLanguage(code)} effectTier={effectTier} />;
     }
 
     return (

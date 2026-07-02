@@ -43,9 +43,10 @@ export async function getUserPlan(userId) {
   return "free";
 }
 
-export function canAccessEffect(effectTier = "free", userPlan = "free") {
+export function canAccessEffect(effectTier = "free", userPlan = "free", userId = null) {
   if (!effectTier || effectTier === "free") {
-    return true;
+    // Free effects require sign-in; anonymous users see the lock
+    return !!userId;
   }
 
   return userPlan === "pro";

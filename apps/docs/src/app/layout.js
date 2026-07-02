@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
+import Script from "next/script";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -47,8 +48,6 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
-      <GoogleTagManager gtmId="GTM-NCDH9PHF" />
-      <GoogleAnalytics gaId="G-S4RCCRVS5Y" />
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
@@ -82,6 +81,15 @@ export default function RootLayout({ children }) {
           </Suspense>
           <Analytics />
           <SpeedInsights />
+          <GoogleTagManager gtmId="GTM-NCDH9PHF" />
+          <GoogleAnalytics gaId="G-S4RCCRVS5Y" />
+          <Script
+            id="microsoft-clarity"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","xg3k9tc0gm");`,
+            }}
+          />
         </ClerkProvider>
       </body>
     </html>
