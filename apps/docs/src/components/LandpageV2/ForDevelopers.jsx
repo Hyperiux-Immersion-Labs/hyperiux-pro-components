@@ -240,12 +240,12 @@ export default function ForDevelopers() {
     return (
         <div ref={containerRef}>
             <section ref={accordionRef} className='h-[300vh] mb-[30vw] w-full relative'>
-                <div className='h-screen w-full overflow-hidden self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
+                <div className='h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
                     <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-sm:pt-[5vw] max-md:w-full tracking-tight leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
 
-                    <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-sm:gap-[5vw] max-sm:mt-[12vw]'>
+                    <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-sm:gap-[5vw] max-sm:mt-[5vw]'>
                         {groups.map((group, idx) => (
                             <div key={idx} className='dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-sm:px-[6vw] max-sm:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md'>
                                 <div className='card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0'>
