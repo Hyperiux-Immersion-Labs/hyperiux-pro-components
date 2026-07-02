@@ -60,15 +60,15 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[15vw]  w-full overflow-hidden max-md:mt-20">
+    <footer className="relative z-200 py-[15vw]  w-full overflow-hidden max-sm:mt-16 ">
       <ReflectiveRods />
-      <p className="text-center text18 absolute bottom-[2vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
-      <div className="mx-auto w-[70vw] max-md:w-full max-md:px-[5vw]">
-        <div className="flex border-x border-foreground/15 max-md:flex-col max-md:border-x-0">
-          <div className="flex flex-[1.65]  border-r border-grey max-md:flex-col">
-            <div className="flex w-[28%] flex-col gap-[2vw] px-[2vw] max-md:w-full max-md:border-r-0 max-md:border-b max-md:px-0 max-md:py-[8vw] max-md:gap-[4vw]">
-              <h3 className="text22 font-medium text-foreground">Vault</h3>
-              <ul className="flex flex-col gap-[0.8vw] max-md:gap-[3vw]">
+      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
+      <div className="mx-auto w-[70vw] max-sm:w-full max-sm:px-[5vw]">
+        <div className="flex border-x border-foreground/15 max-sm:flex-col max-sm:border-x-0">
+          <div className="flex flex-[1.65]  border-r border-grey max-sm:border-r-0 max-sm:border-b-0 max-sm:flex-col">
+            <div className="flex w-[28%] flex-col gap-[2vw] px-[2vw] max-sm:w-full max-sm:border-r-0 max-sm:border-0 max-sm:px-0 max-sm:py-[8vw] max-sm:gap-[4vw]">
+              <h3 className="text22 font-medium text-foreground max-sm:mx-auto">Vault</h3>
+              <ul className="flex flex-col max-sm:items-center gap-[0.8vw] max-sm:gap-[3vw]">
                 {vaultFooterLinks.map(({ label, href }) => (
                   <li key={label}>
                     <FooterLink href={href}>{label}</FooterLink>
@@ -77,15 +77,15 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div className="flex flex-1 flex-col gap-[2vw] px-[2vw] max-md:gap-[4vw] max-md:border-b max-md:border-foreground/15 max-md:px-0 max-md:py-[8vw]">
-              <h3 className="text22 font-medium text-foreground">
+            <div className="flex flex-1 flex-col gap-[2vw] px-[2vw] max-sm:gap-[4vw] max-sm:border-b-0 max-sm:border-foreground/15 max-sm:px-0 max-sm:py-[8vw]">
+              <h3 className="text22 max-sm:mx-auto font-medium text-foreground">
                 Effects by type
               </h3>
-              <div className="grid grid-cols-3 gap-x-[2vw] max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-y-[3vw]">
+              <div className="grid grid-cols-3 gap-x-[2vw] max-sm:grid-cols-1 max-sm:gap-y-[3vw]">
                 {effectTypeColumns.map((column, columnIndex) => (
                   <ul
                     key={columnIndex}
-                    className="flex flex-col gap-[0.8vw] max-md:gap-[3vw]"
+                    className="flex flex-col max-sm:items-center gap-[0.8vw] max-sm:gap-[3vw]"
                   >
                     {column.map(({ label, href }) => (
                       <li key={label}>
@@ -98,17 +98,17 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col gap-[1vw] px-[2vw] max-md:border-l-0 max-md:px-0 max-md:py-[8vw] max-md:gap-[3vw]">
-            <h3 className="text22 font-medium text-foreground">
+          <div className="flex flex-1  flex-col gap-[1vw] px-[2vw] max-sm:border-l-0 max-sm:px-0 max-sm:py-[8vw] max-sm:gap-[3vw]">
+            <h3 className="text22 font-medium max-sm:mx-auto text-foreground">
               New effects, in your inbox.
             </h3>
-            <p className="text18 max-w-[22vw] leading-[1.45] text-light-grey max-md:max-w-full">
+            <p className="text18 max-sm:text-center max-w-[22vw] leading-[1.45] text-light-grey max-sm:max-w-full">
               Get every new drop and the occasional behind-the-
               scenes build. No spam, unsubscribe anytime.
             </p>
             <form
               onSubmit={handleSubscribe}
-              className="mt-[0.5vw] flex items-center gap-[1.5vw] max-md:mt-0 max-md:flex-col max-md:items-stretch max-md:gap-[4vw]"
+              className="mt-[0.5vw] flex items-center gap-[1.5vw] max-sm:mt-0 max-sm:flex-col max-sm:items-stretch max-sm:gap-[4vw]"
             >
               <input
                 type="email"
@@ -116,11 +116,11 @@ export default function Footer() {
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Email"
                 aria-label="Email address"
-                className="min-w-0 flex-1 rounded-full border border-grey bg-transparent px-[1.4vw] py-[0.75vw] text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 max-md:px-[4vw] max-md:py-[3vw]"
+                className="min-w-0 flex-1 rounded-full border border-grey bg-transparent px-[1.4vw] py-[0.75vw] text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 max-sm:px-[4vw]  max-sm:py-[3vw]"
               />
               <button
                 type="submit"
-                className="shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white max-md:self-start"
+                className="shrink-0 text18 max-sm:mx-auto text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white max-sm:self-start"
               >
                 Subscribe
               </button>

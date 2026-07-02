@@ -6,7 +6,7 @@ import { UnlockIcon } from 'lucide-react';
 
 export default function CTA2({ animations = true }) {
     return (
-        <div className=" z-100 h-fit py-[5vw]  overflow-hidden flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw]">
+        <div className=" z-100 h-fit py-[5vw]  overflow-hidden flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw] max-sm:px-[7vw]">
             <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-2">
                 {
                     animations ? (
@@ -31,13 +31,13 @@ export default function CTA2({ animations = true }) {
                     <Button variant='outline2' text="Browse the effects" href="/effects" />
                     <Button text="Get Pro from $20/mo" className="" href="#" variant="orange" />
                     <p
-                        className="shimmer-text flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute bottom-[-.8vw] left-1/2 -translate-x-1/2"
+                        className="shimmer-text flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
                     >
                         <span className="inline-block size-[0.9vw] shrink-0 text-foreground max-md:size-3">
                             <UnlockIcon className="h-full w-full" />
                         </span>
 
-                        <ShimmerText baseColor="#fff" shimmerColor="#ff5f00">
+                        <ShimmerText baseColor="#fff" shimmerColor="#ff5f00" className='max-sm:text-sm max-sm:text-center max-sm:w-[90%] max-sm:leading-[1.2]'>
                             30+ effects free, forever. No credit card.
                         </ShimmerText>
                     </p>
@@ -45,7 +45,7 @@ export default function CTA2({ animations = true }) {
 
             </div>
             <div
-                    className='radial-glow w-[100vw] max-sm:left-1/2 max-sm:w- h-[50vw] max-sm:h-[80vh] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
+                    className='radial-glow w-[100vw] max-sm:left-1/2 max-sm:w- h-[50vw] max-sm:h-[60vh] max-sm:w-[170vw] absolute bottom-[-15vw] max-sm:bottom-[-20vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
                     style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
                 ></div>
         </div>

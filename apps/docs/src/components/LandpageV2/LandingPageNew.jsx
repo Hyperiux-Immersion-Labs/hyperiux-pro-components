@@ -158,7 +158,7 @@ export default function LandingPageNew() {
   return (
     <>
       <VaultShell>
-        <Loader />
+        {/* <Loader />
         <Hero />
         <GlowingPlates />
         <TrustStrip />
@@ -179,7 +179,7 @@ export default function LandingPageNew() {
         <UIKit />
         <SmallMotion />
         <ForDevelopers />
-        <StripTransition />
+        <StripTransition /> */}
         <Pricing />
         <FAQs faqItems={faqItems} />
         <CTA />
