@@ -25,6 +25,11 @@
   scroll-margin-top: 8rem;
 }
 
+
+.content h2 + ul,.content h2 + ol{
+  padding-left: 1rem;
+}
+
 .content h2 + p,
 .content h2 + ul,
 .content h2 + ol,
@@ -146,7 +151,8 @@
 
 .contentDivider {
   width: 100%;
-  height: 0.1vw;
+  height: 1px;
+  transform:translateY(0%) !important;
   margin: 2rem 0;
   border: 0;
   background-color: #272727;

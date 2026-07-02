@@ -255,10 +255,6 @@ export function EffectDetailContent({
     setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 8);
   }, []);
 
-  const componentName = slug
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join("");
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
   const showRelatedSliderControls = safeRelatedEffects.length > 3;

@@ -106,10 +106,14 @@ function GridChunkContent() {
 }
 
 function ImageChunkContent({ images, slotIndex }) {
-  const { viewport, size } = useThree();
+  const { size } = useThree();
   const canvasWidth = size?.width ?? 0;
 
   const panels = useMemo(() => {
+    // Don't compute until the canvas has a real size — avoids
+    // pxToWorld blowing up when canvasWidth is tiny on first paint.
+    if (canvasWidth < 100) return [];
+
     const random = seededRandom(200 + slotIndex * 13);
 
     const halfW = TUNNEL_WIDTH / 2;
@@ -119,17 +123,8 @@ function ImageChunkContent({ images, slotIndex }) {
     const cellH = TUNNEL_HEIGHT / GRID_Y;
     const cellD = TUNNEL_DEPTH / GRID_Z;
 
-    const pxToWorld = canvasWidth ? viewport.width / canvasWidth : 0.01;
-
-    // Reduce padding on smaller screens so images read larger on mobile.
-    const paddingPx = canvasWidth
-      ? canvasWidth < 640
-        ? 4
-        : canvasWidth < 1024
-          ? 8
-          : 10
-      : 10;
-    const paddingWorld = pxToWorld * paddingPx;
+    // Fixed world-space padding — no pixel conversion needed for scene geometry.
+    const paddingWorld = canvasWidth < 640 ? 0.04 : canvasWidth < 1024 ? 0.08 : 0.1;
 
     return Array.from({ length: IMAGE_COUNT_PER_CHUNK }).map((_, i) => {
       const side = Math.floor(random() * 4);
@@ -207,7 +202,7 @@ function ImageChunkContent({ images, slotIndex }) {
         scale,
       };
     });
-  }, [canvasWidth, images, slotIndex, viewport.width]);
+  }, [canvasWidth, images, slotIndex]);
 
   return (
     <>

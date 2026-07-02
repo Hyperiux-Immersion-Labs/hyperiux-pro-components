@@ -21,11 +21,11 @@
     },
     {
       "path": "CustomNavbar.jsx",
-      "target": "src/components/effects/full-screen-navigation/CustomNavbar.jsx"
+      "target": "src/components/effects/immersive-full-screen-navigation/CustomNavbar.jsx"
     },
     {
       "path": "FullscreenNav.jsx",
-      "target": "src/components/effects/full-screen-navigation/FullscreenNav.jsx"
+      "target": "src/components/effects/immersive-full-screen-navigation/FullscreenNav.jsx"
     }
   ]
 }

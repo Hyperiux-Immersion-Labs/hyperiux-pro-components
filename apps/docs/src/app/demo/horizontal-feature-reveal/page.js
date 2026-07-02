@@ -13,7 +13,6 @@ const Page = () => {
 
       <DemoHeader logoColor="#ff5f00" />
       <div className="relative">
-
       <HorizontalFeatureReveal />
       <ScrollBottom textColor="text-[#111111]" className="bottom-[3%] gap-[1vw]" />
       </div>

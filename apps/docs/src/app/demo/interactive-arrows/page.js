@@ -10,7 +10,7 @@ const Page = () => {
       <DemoHeader />
       <div className="max-md:hidden">
         <InteractiveArrows/>
-        <div className="absolute bottom-[0.5vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-7 py-2 rounded-full text-[#545454] text-[1.1vw] max-md:hidden shadow-lg">
+        <div className="absolute bottom-[0.5vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 px-7 py-2 rounded-full text-[#545454] text-[1.1vw] max-md:hidden">
          Drift your cursor inside the canvas - the arrows will skitter, point and follow across every version.
         </div>
       </div>

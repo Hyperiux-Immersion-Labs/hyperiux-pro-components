@@ -31,7 +31,7 @@ class Arrow {
     ctx.moveTo(50, 0);
     ctx.lineTo(10, 40);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = 'white';
+    ctx.strokeStyle = 'black';
     ctx.stroke();
 
     ctx.restore();

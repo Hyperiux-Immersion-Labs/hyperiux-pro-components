@@ -7,8 +7,8 @@ const Page = () => {
   return (
     <main className="relative h-dvh w-dvw overflow-hidden bg-black text-white">
       <InteractiveBlurReveal
-        iChannel0="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
-        iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png"
+        iChannel0="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
+        iChannel1="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png"
       />
       <DemoHeader logoColor={"#ffffff"} textColor='#ffffff' />
       {/* Overlay copy (matches reference layout) */}

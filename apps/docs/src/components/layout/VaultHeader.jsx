@@ -24,7 +24,7 @@ function categoryLabel(category) {
 }
 
 export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
-  const { isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
 
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -174,18 +174,18 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
               </button>
             )}
 
-           {user?.publicMetadata?.plan!=="pro"&& <div className="block max-md:hidden">
-              <Button 
+           {isLoaded && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
+              <Button
                 text="Upgrade to Pro"
                 href="/pricing#pricing-cards"
                 className="border-white/50!"
                 variant="outline2"
               />
             </div>
-           
+
            }
 
-            {!isSignedIn ? (
+            {isLoaded && (!isSignedIn ? (
               <div className="block max-md:hidden">
                 <Button
                   text="Get Started"
@@ -197,7 +197,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
               <div className="max-md:hidden">
                 <ProfileDropdown savedCount={wishlistCount} plan={user?.publicMetadata?.plan || "free"} />
               </div>
-            )}
+            ))}
           </div>
         </div>
       </header>

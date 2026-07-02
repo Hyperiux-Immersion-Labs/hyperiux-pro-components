@@ -356,6 +356,7 @@ export default function ScrollDistortion({
       textTimelineRef.current = null;
 
       gsap.killTweensOf(allChars);
+      gsap.set(".text-container", { opacity: 1 });
 
       gsap.set(allChars, {
         yPercent: 100,
@@ -700,7 +701,7 @@ export default function ScrollDistortion({
 
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
 
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden text-container">
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden text-container opacity-0">
         {splitSections.map((section, sectionIndex) => (
           <h1
             key={`${section.text}-${sectionIndex}`}

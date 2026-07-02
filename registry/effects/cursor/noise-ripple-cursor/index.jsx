@@ -154,7 +154,7 @@ const createFallbackTexture = () => {
 };
 
 export const NoiseDietherShader = ({
- imageSrc = null,
+ imageSrc = "https://picsum.photos/seed/11/800/600",
  noiseColor ='#ffffff',
  className,
  style,

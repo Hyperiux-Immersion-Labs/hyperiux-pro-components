@@ -2,9 +2,9 @@
   "name": "@hyperiux/horizontal-feature-reveal",
   "version": "0.0.1",
   "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",
-  "main": "horizon-scroll.jsx",
+  "main": "horizontal-feature-reveal.jsx",
   "files": [
-    "horizon-scroll.jsx",
+    "horizontal-feature-reveal.jsx",
     "registry.json"
   ],
   "keywords": [

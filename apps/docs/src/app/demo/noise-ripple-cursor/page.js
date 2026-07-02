@@ -27,7 +27,7 @@ export default function page() {
             Best enjoyed on desktop for the full effect
           </SplitLine>
 
-          <NoiseRippleCursor />
+          <NoiseRippleCursor imageSrc="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg" />
 
           <SplitLine
             as="p"

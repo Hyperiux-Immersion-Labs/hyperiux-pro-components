@@ -34,8 +34,8 @@ const Lines = () => {
   const initializePoints = useCallback((canvas) => {
     const points = [];
     const spacing = 60;
-    const cols = Math.floor(canvas.width / spacing);
-    const rows = Math.floor(canvas.height / spacing);
+    const cols = Math.ceil(canvas.width / spacing);
+    const rows = Math.ceil(canvas.height / spacing);
 
     for (let y = 0; y <= rows; y++) {
       for (let x = 0; x <= cols; x++) {
@@ -48,8 +48,9 @@ const Lines = () => {
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const { width, height } = canvas.getBoundingClientRect();
+      canvas.width = width;
+      canvas.height = height;
       pointsRef.current = initializePoints(canvas);
     }
   }, [initializePoints]);
@@ -58,11 +59,9 @@ const Lines = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
     mouseRef.current = {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
     };
   }, []);
 
@@ -77,8 +76,9 @@ const Lines = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const { width, height } = canvas.getBoundingClientRect();
+    canvas.width = width;
+    canvas.height = height;
     pointsRef.current = initializePoints(canvas);
     window.addEventListener('resize', handleResize);
     canvas.addEventListener('mousemove', handleMouseMove);

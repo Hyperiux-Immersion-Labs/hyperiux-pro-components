@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import InfiniteGrid from "./InfiniteGrid";
 
 const OVERLAY_ASPECT_RATIO = 16 / 9;

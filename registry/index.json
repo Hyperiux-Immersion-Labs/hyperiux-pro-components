@@ -797,7 +797,7 @@
     "category": "navigation",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/navigation/full-screen-navigation/registry.json",
+    "registryPath": "registry/effects/navigation/immersive-full-screen-navigation/registry.json",
     "importPath": "@/components/effects/immersive-full-screen-navigation",
     "target": "src/components/effects/immersive-full-screen-navigation"
   },
@@ -893,7 +893,7 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/scroll/horizon-scroll/registry.json",
+    "registryPath": "registry/effects/scroll/horizontal-feature-reveal/registry.json",
     "importPath": "@/components/effects/horizontal-feature-reveal",
     "target": "src/components/effects/horizontal-feature-reveal"
   },

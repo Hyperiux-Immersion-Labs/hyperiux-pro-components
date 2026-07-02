@@ -83,16 +83,14 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
 }
 
 function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
-  const navBgClass = isCompleted 
-    ? "border-black/10 bg-white/20" 
-    : "border-white/20 bg-black/8";
+
 
   return (
-    <nav className={`fixed bottom-30 max-md:bottom-35 max-sm:bottom-40 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border px-1.5 py-1.5 backdrop-blur-md max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5 transition-all duration-300 ${navBgClass}`}>
+    <nav className={`fixed bottom-30 max-md:bottom-35 max-sm:bottom-40 left-1/2  z-2 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 px-1.5 py-1.5 backdrop-blur-md max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5 transition-all duration-300 bg-black`}>
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
         const btnClass = isCompleted
-          ? (isActive ? "bg-black text-white" : "text-black/65 hover:text-black")
+          ? (isActive ? "bg-white text-black" : "text-white/65 hover:text-white")
           : (isActive ? "bg-white text-black" : "text-white/65 hover:text-white");
 
         return (

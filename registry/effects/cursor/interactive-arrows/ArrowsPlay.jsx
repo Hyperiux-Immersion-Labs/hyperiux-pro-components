@@ -30,7 +30,7 @@ class Arrow {
     ctx.moveTo(30, 0);
     ctx.lineTo(10, 20);
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = 'white'; 
+    ctx.strokeStyle = 'black';
     ctx.stroke();
     ctx.restore();
   }
@@ -71,12 +71,12 @@ const ArrowsPlay = () => {
   
         
         if (
-          arrowPos.x >= divLeft && 
-          arrowPos.x <= divRight && 
-          arrowPos.y >= divTop && 
-          arrowPos.y <= divBottom
+          arrowPos.x >= divLeft &&
+          arrowPos.x <= divRight &&
+          arrowPos.y > divTop + spacing &&
+          arrowPos.y < divBottom - spacing
         ) {
-          continue; 
+          continue;
         }
   
         arrows.push(new Arrow(arrowPos));
@@ -89,8 +89,9 @@ const ArrowsPlay = () => {
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const { width, height } = canvas.getBoundingClientRect();
+      canvas.width = width;
+      canvas.height = height;
       arrowsRef.current = initializeArrows(canvas);
     }
   }, [initializeArrows]);
@@ -132,11 +133,12 @@ const ArrowsPlay = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const { width, height } = canvas.getBoundingClientRect();
+    canvas.width = width;
+    canvas.height = height;
     mouseRef.current = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
+      x: width / 2,
+      y: height / 2,
     };
 
     arrowsRef.current = initializeArrows(canvas);
@@ -164,7 +166,7 @@ const ArrowsPlay = () => {
         ref={divRef}
         className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center cursor-pointer h-[25vw] w-[32vw] bg-transparent"
       >
-        <h1 className='translate-y-[-8vw] translate-x-[-4vw] text-center text-[15vw] leading-none text-white transition-all duration-500 ease'>
+        <h1 className='text-center text-[15vw] leading-none text-black transition-all duration-500 ease'>
           Play
         </h1>
       </div>

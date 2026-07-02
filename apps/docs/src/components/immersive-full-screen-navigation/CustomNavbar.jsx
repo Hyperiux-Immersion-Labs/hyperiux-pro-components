@@ -217,7 +217,7 @@ export default function CustomNavbar({
                 <img
                   src={src}
                   alt={`img-${index}`}
-                  className="object-cover transition duration-500 hover:scale-105 absolute inset-0"
+                  className="object-cover transition duration-500 hover:scale-105 absolute inset-0 w-full h-full"
                 />
               </div>
             ))}
