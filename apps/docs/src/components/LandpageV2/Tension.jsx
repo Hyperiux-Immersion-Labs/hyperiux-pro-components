@@ -146,7 +146,7 @@ export default function Tension() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden bg-[#0e0e0e] px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
+    <section ref={sectionRef} className="relative w-full overflow-hidden z-200 px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
       <div className="mx-auto flex w-full max-w-[90vw] flex-col items-center">
         <div className="w-full max-sm:w-[95%] max-sm:mx-auto text-center">
           <RandomBlur as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
