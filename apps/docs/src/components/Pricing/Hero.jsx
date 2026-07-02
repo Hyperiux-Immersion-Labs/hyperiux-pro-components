@@ -6,17 +6,17 @@ const Hero = () => {
     return (
         <section className="relative z-20 pointer-events-none self-padd h-screen flex items-center w-full">
             <div
-                className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2"
+                className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2 w-[60%]"
             >
 
                 <div className="h-fit flex max-md:flex-col max-md:justify-center items-center w-full">
                     <RandomBlur
                         as="h1"
-                        className="text140 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full"
+                        className="text110 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full"
                     >
                         <span className="inline-block">
-                            <span className="max-md:hidden w-45 h-full inline-block"></span>
-                            Build with the free Vault. Upgrade when the interface starts getting ambitious.
+                           
+                            Start free. Upgrade when the interface gets ambitious.
                         </span>
                     </RandomBlur>
                 </div>
@@ -25,8 +25,7 @@ const Hero = () => {
                     start="top 120%"
                     className="text22 max-md:text-center"
                 >
-                    Start with 30+ free effects, move into premium interaction packs, or request
-                    custom motion systems built for your product.
+                    Use the free Vault to ship real React and Next.js interaction effects. Upgrade to Pro when you need the full library, advanced systems, premium packs, and ongoing drops.
                 </SplitLine>
             </div>
         </section>

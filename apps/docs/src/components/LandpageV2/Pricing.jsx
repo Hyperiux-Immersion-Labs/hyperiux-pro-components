@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, memo } from "react";
+import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import gsap from "gsap";
-import ShimmerText from "../WebsiteComps/ShimmerText";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
+import { useUser } from "@clerk/nextjs";
 
 const DIGITS = [...Array(10).keys()];
 
@@ -58,11 +58,38 @@ const ProFeatures = [
     "Code you own, commercial-friendly",
 ];
 
-export default function Pricing() {
+export default function Pricing({padding}) {
     const [isYearly, setIsYearly] = useState(true);
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const [checkoutError, setCheckoutError] = useState("");
+
+    const { isLoaded, isSignedIn, user } = useUser();
+    const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
+
+    const handleUpgrade = useCallback(async () => {
+        setCheckoutLoading(true);
+        setCheckoutError("");
+        try {
+            const res = await fetch("/api/stripe/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ billingInterval: isYearly ? "yearly" : "monthly" }),
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                setCheckoutError(data.error || "Unable to start checkout. Please try again.");
+                setCheckoutLoading(false);
+            }
+        } catch {
+            setCheckoutError("Something went wrong. Please try again.");
+            setCheckoutLoading(false);
+        }
+    }, [isYearly]);
 
     return (
-        <div className="h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-[-20vh] max-md:gap-[15vw] items-center justify-center min-h-screen pt-[45vw]! bg-foreground self-padd  w-full">
+        <div className={`h-fit text-background  max-md:overflow-hidden flex pb-[6vw]! flex-col gap-[10vw] max-sm:mt-[-10vh] max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[45vw]!"}`}>
             <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
@@ -72,7 +99,7 @@ export default function Pricing() {
                     new drop.
                 </SplitLine>
             </div>
-            <div className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
+            <div id="pricing-cards" className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
 
                 <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
@@ -87,7 +114,7 @@ export default function Pricing() {
                             {freeFeatures.map((feature, index) => (
                                 <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
                                     <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
-                                    <p className="text24 leading-none max-md:text-[4.2vw]">{feature}</p>
+                                    <p className="text24 leading-[1.4] max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
@@ -126,7 +153,6 @@ export default function Pricing() {
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 max-md:mb-[2vw]">Pro</p>
-                        <ShimmerText as="p" className="text24 font-medium -mt-[1vw] max-md:mt-0">Most Popular</ShimmerText>
 
                         <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
                             <p className="text110 max-sm:text-[13vw]! flex items-center font-medium!">
@@ -141,18 +167,42 @@ export default function Pricing() {
                         <p className="text24 -mt-[1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
                         <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">
                             {ProFeatures.map((feature, index) => (
-                                <div key={index} className="flex items-start max-md:gap-[3vw] gap-[1vw]">
-                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] mt-[.25vw] max-md:mt-0 max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
-                                    <p className="text24 leading-none max-md:text-[4.2vw]">{feature}</p>
+                                <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
+                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
+                                    <p className="text24 leading-[1.4] max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
                         <div className="w-fit max-md:w-full">
-                            <Button variant="orange" text="Get PRO" className="max-md:w-full" />
+                            {!isLoaded ? (
+                                <Button variant="orange" text="···" className="max-md:w-full" disabled />
+                            ) : userPlan === "pro" ? (
+                                <Button variant="orange" text="Current Plan" className="max-md:w-full" disabled />
+                            ) : userPlan === "free" ? (
+                                <Button
+                                    variant="orange"
+                                    text={checkoutLoading ? "Loading..." : "Upgrade to Pro"}
+                                    className="max-md:w-full"
+                                    onClick={handleUpgrade}
+                                    disabled={checkoutLoading}
+                                    href="#"
+                                    preventDefault
+                                />
+                            ) : (
+                                <Button
+                                    variant="orange"
+                                    text="Get PRO"
+                                    href="/sign-up"
+                                    className="max-md:w-full"
+                                />
+                            )}
                         </div>
                         <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
+                        {checkoutError && (
+                            <p className="text-sm text-red-400">{checkoutError}</p>
+                        )}
                     </div>
                 </div>
             </div>
