@@ -148,7 +148,7 @@ export default function Tension() {
   return (
     <section ref={sectionRef} className="relative w-full overflow-hidden bg-[#0e0e0e] px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
       <div className="mx-auto flex w-full max-w-[90vw] flex-col items-center">
-        <div className="w-full text-center">
+        <div className="w-full max-sm:w-[95%] max-sm:mx-auto text-center">
           <RandomBlur as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
             Good Motion is{' '}
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
@@ -164,37 +164,39 @@ export default function Tension() {
           </SplitLine>
         </div>
 
-        <div ref={cardsRef} className="h-fit w-[70vw] mt-[8vw] space-y-[1vw]">
-          <div className="text24 px-[.5vw] flex w-full items-center justify-between">
+        <div ref={cardsRef} className="h-fit w-[70vw] mt-[8vw] space-y-[1vw] max-sm:w-full max-sm:mt-20 max-sm:space-y-5">
+          <div className="text24 px-[.5vw] flex w-full items-center justify-between max-sm:text-sm">
             <p>Fixes</p>
             <p>Solves</p>
           </div>
 
           {cards.map((items, index) => (
-            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw]">
-              <div className="flex items-center gap-[1vw] w-[25vw] shrink-0">
-                <div className="size-[3vw] flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0">
-                  <svg className="tension-check opacity-0 h-full w-full" viewBox="0 0 24 24" fill="none" stroke="#03E07C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw] max-sm:pr-4 max-sm:p-4">
+              <div className="flex items-center flex-1 min-w-0 max-sm:flex-col max-sm:items-start max-sm:gap-2.5">
+                <div className="flex items-center gap-[1vw] w-[25vw] shrink-0 max-sm:w-auto max-sm:gap-2.5">
+                  <div className="size-[3vw] flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0 max-sm:size-9">
+                    <svg className="tension-check opacity-0 h-full w-full" viewBox="0 0 24 24" fill="none" stroke="#03E07C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <p className="text34 capitalize whitespace-nowrap max-sm:text-lg">{items.title}</p>
                 </div>
-                <p className="text34 capitalize whitespace-nowrap">{items.title}</p>
+                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0 max-sm:text-base! max-sm:leading-[1.2]">{items.description}</p>
               </div>
-              <p className="text-light-grey flex-1 text-left px-[2vw] text18">{items.description}</p>
-              <div className="flex items-center gap-[1vw] w-[13vw] shrink-0">
-                <div className="size-[3vw] flex items-center justify-center shrink-0">
+              <div className="flex items-center gap-[1vw] w-[13vw] shrink-0 max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
+                <div className="size-[3vw] flex items-center justify-center shrink-0 max-sm:size-12">
                   <svg className="tension-x opacity-0 h-[60%] w-[60%]" viewBox="0 0 24 24" fill="none" stroke="#FF0B0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 </div>
-                <p className="text24 capitalize">{items.label}</p>
+                <p lang="en" className="text24 capitalize max-sm:flex-1 max-sm:min-w-0 max-sm:text-lg! max-sm:leading-tight max-sm:wrap-break-word max-sm:hyphens-auto">{items.label}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="mt-[8vw] text-center text-[1.45vw] leading-[1.4] text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
+        <p className="mt-[8vw] text-center text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
             It&apos;s the interaction layer.

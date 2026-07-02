@@ -417,7 +417,7 @@ export default function CodeBlockWorkflow() {
         <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
           {/* LEFT COLUMN — terminal + code */}
           <div className="flex flex-col gap-[1.4vw] max-md:contents">
-            <Panel title="amazing_project" className="min-h-[25vw]">
+            <Panel title="amazing_project" className="min-h-[25vw] max-sm:min-h-[40vh] ">
               <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
                   <span ref={setTerminalRef("dollar1")} className="text-[#ff9f43]">$</span>
@@ -460,7 +460,7 @@ export default function CodeBlockWorkflow() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="min-h-[20vw] max-md:order-last">
+            <Panel title="app/page.jsx" className="min-h-[20vw] max-sm:min-h-[40vh] max-md:order-last">
               <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />
@@ -473,13 +473,13 @@ export default function CodeBlockWorkflow() {
 
           {/* RIGHT COLUMN — file tree */}
           <div className="flex flex-col gap-[1.15vw]">
-            <Panel title="amazing_project / Components" className="h-full">
+            <Panel title="amazing_project / Components" className="h-full max-sm:min-h-[25vh]">
               <div className="space-y-[0.9vw] max-md:space-y-3">
 
                 {/* app/ */}
                 <TreeFolder label="app" depth={0} />
                 <div className="pl-[1.35vw] max-md:pl-5">
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-3">
                     <div className="flex items-center gap-3 text-white/80">
                       <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
                         <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
@@ -492,21 +492,21 @@ export default function CodeBlockWorkflow() {
 
                 {/* components/ */}
                 <TreeFolder label="components" depth={0} />
-                <div className="pl-[1.35vw] max-md:pl-5">
+                <div className="pl-[1.35vw] max-md:pl-3">
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ — hidden until animation */}
                     <div ref={setFileRef("effectsFolder")}>
                       <TreeFolder label="effects" depth={0} />
                     </div>
-                    <div className="pl-[1.35vw] pt-[0.45vw] max-md:pl-5 max-md:pt-1.5">
+                    <div className="pl-[1.35vw] pt-[0.45vw] max-md:pl-3 max-md:pt-1.5">
                       <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
                         {/* split-canvas/ — hidden until animation */}
                         <div ref={setFileRef("splitCanvasFolder")}>
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>
-                        <div className="space-y-[0.35vw] pl-[1.35vw] pt-[0.45vw] max-md:space-y-1.5 max-md:pl-5 max-md:pt-1.5">
+                        <div className="space-y-[0.35vw] pl-[1.35vw] pt-[0.45vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
 
                           <TreeFile
                             label="index.jsx"
@@ -528,7 +528,7 @@ export default function CodeBlockWorkflow() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge2")}
-                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
