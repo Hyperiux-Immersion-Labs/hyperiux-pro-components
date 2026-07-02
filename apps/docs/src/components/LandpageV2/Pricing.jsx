@@ -27,8 +27,8 @@ const PriceDigit = memo(({ digit, visible = true }) => {
 
     return (
         <span
-            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300"
-            style={{ width: visible ? "0.64em" : "0", opacity: visible ? 1 : 0 }}
+            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300 [--pd-w:0.64em] max-sm:[--pd-w:0.52em]"
+            style={{ width: visible ? "var(--pd-w)" : "0", opacity: visible ? 1 : 0 }}
         >
             <span ref={containerRef} className="flex flex-col will-change-transform">
                 {DIGITS.map((d) => (
@@ -74,7 +74,7 @@ export default function Pricing() {
             </div>
             <div className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
 
-                <div className="h-full max-md:w-full px-[4vw] max-md:p-[8vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
+                <div className="h-full max-md:w-full px-[4vw] max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 mb-[4vw] max-md:mb-[6vw] font-medium!">Free</p>
@@ -122,24 +122,24 @@ export default function Pricing() {
                     </p>
                 </div>
                 
-                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[8vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 max-md:mb-[2vw]">Pro</p>
                         <ShimmerText as="p" className="text24 font-medium -mt-[1vw] max-md:mt-0">Most Popular</ShimmerText>
 
-                        <div className="flex gap-[1vw] max-md:gap-[3vw]  items-end">
+                        <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
                             <p className="text110 max-sm:text-[13vw]! flex items-center font-medium!">
                                 <span>$</span>
                                 <PriceDigit digit="1" visible={isYearly} />
                                 <PriceDigit digit={isYearly ? "7" : "2"} />
                                 <PriceDigit digit="0" />
                             </p>
-                            <p className="text24 mb-[1vw] max-md:mb-0">{isYearly ? "Yearly" : "Monthly"}</p>
-                            <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-0 mb-[.75vw] ml-[1vw] text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}>3 Months Free</p>
+                            <p className="text24 mb-[1vw] max-md:mb-2">{isYearly ? "Yearly" : "Monthly"}</p>
+                            <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
                         </div>
-                        <p className="text24 -mt-[1vw] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
-                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[4vw] pt-[2vw]">
+                        <p className="text24 -mt-[1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
+                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">
                             {ProFeatures.map((feature, index) => (
                                 <div key={index} className="flex items-start max-md:gap-[3vw] gap-[1vw]">
                                     <CheckIcon className="w-[1.5vw] h-[1.5vw] mt-[.25vw] max-md:mt-0 max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
@@ -152,11 +152,11 @@ export default function Pricing() {
                         <div className="w-fit max-md:w-full">
                             <Button variant="orange" text="Get PRO" className="max-md:w-full" />
                         </div>
-                        <p className="text-light-grey max-md:text-[3.5vw]">Instant access · npx hyperiux login · Cancel anytime</p>
+                        <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
                     </div>
                 </div>
             </div>
-            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-snug relative z-50 text-center w-[45vw] max-md:w-[90vw]">
+            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>

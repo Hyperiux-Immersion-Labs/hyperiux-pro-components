@@ -43,11 +43,11 @@ export default function FAQs({ faqItems }) {
     return (
         <section ref={containerRef} className="h-full w-full pb-[10vw]! self-padd text-white relative">
             {/* Full-width gradient transition from the white Pricing section above */}
-            <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background"></div>
+            <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh]"></div>
 
-            <div className="h-[30vw]"></div>
+            <div className="h-[30vw] max-sm:h-[30vh]"></div>
 
-            <div className="mx-auto text-center text-white max-sm:mb-[8vw] mb-[6vw] relative z-10">
+            <div className="mx-auto text-center text-white max-sm:mb-[14vw] mb-[6vw] relative z-10">
                 <RandomBlur as="h2" className='text110 w-[70%] max-sm:w-full text-center mx-auto'>
                     Questions, <span className='text-primary'>Answered.</span>
                 </RandomBlur>
