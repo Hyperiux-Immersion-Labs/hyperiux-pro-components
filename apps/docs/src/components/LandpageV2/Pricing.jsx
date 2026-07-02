@@ -159,7 +159,7 @@ export default function Pricing({padding,content=true}) {
                                 <span>$</span>
                                 <PriceDigit digit="1" visible={isYearly} />
                                 <PriceDigit digit={isYearly ? "7" : "2"} />
-                                <PriceDigit digit="0" />
+                                <PriceDigit digit={isYearly ? "9" : "0"} />
                             </p>
                             <p className="text24 mb-[1vw] max-md:mb-2">{isYearly ? "Yearly" : "Monthly"}</p>
                             <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
