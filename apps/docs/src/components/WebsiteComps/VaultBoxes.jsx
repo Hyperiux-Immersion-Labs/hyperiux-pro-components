@@ -30,7 +30,7 @@ export default function VaultBox({ id, styles, img, number, label, containerLink
                 </Link>
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-500  max-sm:opacity-100">
                     <p className="text34">{title}</p>
-                    <p className="text-[3.7vw] max-sm:leading-[1.2]">{paragraph}</p>
+                    <p className="text-sm max-sm:text-[3.7vw] max-sm:leading-[1.2]">{paragraph}</p>
                 </div>
             </div>
         </div>

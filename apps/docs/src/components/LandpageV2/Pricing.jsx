@@ -74,16 +74,16 @@ export default function Pricing() {
             </div>
             <div className="h-[58vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw]">
 
-                <div className="h-full max-md:w-full px-[4vw] max-md:p-[6vw] flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0]">
+                <div className="h-full max-md:w-full px-[4vw] max-md:p-[8vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
-                        <p className="text80 mb-[4vw] max-md:mb-[2vw] font-medium!">Free</p>
+                        <p className="text80 mb-[4vw] max-md:mb-[6vw] font-medium!">Free</p>
                         <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
-                            <p className="text110 font-medium!">$0</p>
-                            <p className="text24 mb-[1vw] max-md:mb-0">Forever</p>
+                            <p className="text110 max-sm:text-[13vw]! font-medium!">$0</p>
+                            <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
                         </div>
-                        <p className="text24 -mt-[1vw] max-md:mt-0">For trying real effects in real projects.</p>
-                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[4vw] pt-[2vw]">
+                        <p className="text24 -mt-[1vw] max-md:mt-[-3.5vw]">For trying real effects in real projects.</p>
+                        <div className="flex flex-col gap-[1.5vw] max-md:gap-[4.5vw] pt-[2vw]">
                             {freeFeatures.map((feature, index) => (
                                 <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
                                     <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
@@ -122,14 +122,14 @@ export default function Pricing() {
                     </p>
                 </div>
                 
-                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+                <div className="h-full max-md:h-fit max-md:w-full max-md:p-[8vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
                     <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
 
                         <p className="text80 max-md:mb-[2vw]">Pro</p>
                         <ShimmerText as="p" className="text24 font-medium -mt-[1vw] max-md:mt-0">Most Popular</ShimmerText>
 
                         <div className="flex gap-[1vw] max-md:gap-[3vw]  items-end">
-                            <p className="text110 flex items-center font-medium!">
+                            <p className="text110 max-sm:text-[13vw]! flex items-center font-medium!">
                                 <span>$</span>
                                 <PriceDigit digit="1" visible={isYearly} />
                                 <PriceDigit digit={isYearly ? "7" : "2"} />

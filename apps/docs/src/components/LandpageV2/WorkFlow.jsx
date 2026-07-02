@@ -203,7 +203,7 @@ export default function Workflow() {
                         />
 
                         {/* Steps */}
-                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-sm:pt-[35vw] z-100">
+                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-sm:pt-[25vw] z-100">
                             {STEPS.map((step, idx) => (
                                 <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[80vw]">
                                     {/* Left column: number box + connecting line */}

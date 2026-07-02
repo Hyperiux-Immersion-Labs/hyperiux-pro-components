@@ -398,8 +398,26 @@ export default function FeaturedStoryTelling() {
             });
         }, section);
 
+        // This section mounts LATE (gated behind isMounted in the parent) and is
+        // 800vh tall. Every ScrollTrigger built by the components below it
+        // (Workflow, UIKit, SmallMotion, …) computed its start/end BEFORE this
+        // section existed in the layout, so once it mounts their positions are
+        // stale and those animations stop firing. A global refresh recomputes
+        // every trigger on the page, re-syncing everything downstream.
+        const refresh = () => ScrollTrigger.refresh();
+        const rafId = requestAnimationFrame(refresh);
+        window.addEventListener("load", refresh);
+
+        const imgs = section ? Array.from(section.querySelectorAll("img")) : [];
+        imgs.forEach((img) => {
+            if (!img.complete) img.addEventListener("load", refresh, { once: true });
+        });
+
         return () => {
             animationActiveRef.current = false;
+            cancelAnimationFrame(rafId);
+            window.removeEventListener("load", refresh);
+            imgs.forEach((img) => img.removeEventListener("load", refresh));
             ctx.revert();
             splittedParagraph.revert();
         };
