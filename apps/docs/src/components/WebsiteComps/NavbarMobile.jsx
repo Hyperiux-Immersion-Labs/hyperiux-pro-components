@@ -626,8 +626,8 @@ export default function NavbarMobile() {
                 />
               </div>
             )}
-            <div className="flex w-full justify-center" onClick={handleNavigate}>
-              <Button text="Install CLI" href="/docs/installation" />
+            <div className="flex  w-full justify-center" onClick={handleNavigate}>
+              <Button text="Install CLI" href="/docs/installation" className="w-full" />
             </div>
           </div>
         </div>
