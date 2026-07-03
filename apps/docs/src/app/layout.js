@@ -5,7 +5,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -82,6 +82,7 @@ export default function RootLayout({ children }) {
           <Analytics />
           <SpeedInsights />
           <GoogleTagManager gtmId="GTM-NCDH9PHF" />
+          <GoogleAnalytics gtagId="G-S4RCCRVS5Y" />
           <Script
             id="microsoft-clarity"
             strategy="afterInteractive"
