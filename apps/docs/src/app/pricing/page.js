@@ -1,6 +1,5 @@
 import VaultShell from "@/Layouts/VaultShell";
 import Hero from "@/components/Pricing/Hero";
-import Pricing from "@/components/LandpageV2/Pricing";
 import GlowingPlates from "@/Experience/GlowingPlates";
 import Footer from "@/components/LandpageV2/Footer";
 import CTA2 from "@/components/LandpageV2/CTA2";
@@ -8,13 +7,12 @@ import PricingCompareTable from "@/components/Pricing/PricingCompareTable";
 import PricingLicense from "@/components/Pricing/PricingLicense";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import FAQs from "@/components/LandpageV2/FAQs";
+import Pricing from "@/components/Pricing/Pricing";
 
 export const metadata = {
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
   description: "Get unlimited access to premium, highly interactive React and Tailwind components. Elevate your website design with fluid animations, custom cursors, and advanced WebGL components.",
 };
-
-
 
 export default function PricingPage() {
   return (
@@ -24,8 +22,7 @@ export default function PricingPage() {
       <VaultShell>
         <Hero />
         <GlowingPlates waitForLoader={false} />
-        {/* <Pricing enableColorSwitch={false} /> */}
-        <Pricing padding="pt-[30vw]!" content={false} />
+        <Pricing padding="pt-[30vw]! pb-[10vw]!" content={false} />
         <PricingCompareTable/>
         <PricingLicense/>
        <FAQs faqItems={faqItems}/>

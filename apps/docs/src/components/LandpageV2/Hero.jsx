@@ -359,7 +359,7 @@ export default function Hero() {
           <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block opacity-0">
               The Interaction Layer your Website is{" "}
-              <span className="italic max-md:not-italic text-[#ff5f00]">Missing</span>
+              Missing
             </span>
           </h1>
         </div>

@@ -7,6 +7,9 @@ import Button from "../WebsiteComps/Button";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import { useUser } from "@clerk/nextjs";
+import Scrolltrigger from "gsap/dist/ScrollTrigger";
+gsap.registerPlugin(Scrolltrigger);
+
 
 const DIGITS = [...Array(10).keys()];
 
@@ -88,8 +91,23 @@ export default function Pricing({padding,content=true}) {
         }
     }, [isYearly]);
 
+     useEffect(() => {
+            gsap.to(".pricing", {
+                opacity: 1,
+                pointerEvents: "auto",
+                scrollTrigger: {
+                  trigger: ".pricing",
+                  start: "15% top",
+                  end:"15% top",
+                  scrub:true,
+                //   markers:true
+                }
+            });
+        })
+
     return (
-        <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[10vw]  max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
+        <div className={`h-[190vw] text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw]`}>
+            <div className="sticky top-[15%] h-fit overflow-hidden flex flex-col gap-[10vw]  max-md:gap-[15vw] items-center justify-center ">
             {content&&<div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
@@ -210,6 +228,8 @@ export default function Pricing({padding,content=true}) {
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>
+
+            </div>
         </div>
     );
 }

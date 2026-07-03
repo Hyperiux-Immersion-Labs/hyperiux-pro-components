@@ -1,8 +1,11 @@
+"use client"
 import React from 'react'
 import SplitLine from '../WebsiteComps/SplitLine'
 import RandomBlur from '../WebsiteComps/RandomBlur'
+import { useFadeUp } from '../Animations/gsapAnimations'
 
 const Hero = () => {
+    useFadeUp()
     return (
         <section className="relative z-20 pointer-events-none self-padd h-screen flex items-center w-full">
             <img

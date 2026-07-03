@@ -64,7 +64,7 @@ export default function PricingLicense() {
         {cards.map((card) => (
           <div
             key={card.title}
-            className="rounded-[1vw] max-md:rounded-[4vw] border border-white/8 bg-white/[0.03] p-[2.2vw] max-md:p-6 flex flex-col gap-[1.2vw] max-md:gap-4"
+            className="rounded-[1vw] max-md:rounded-[4vw] border border-white/8 bg-white/[0.03] p-[2.2vw] max-md:p-6 flex flex-col gap-[1.2vw] max-md:gap-4 fadeup"
           >
             <h3 className="text-[2vw] max-sm:text-[7vw] max-md:text-[4.5vw] font-medium text-white/90">{card.title}</h3>
             <p className="text24 max-md:text-sm text-white/50 leading-relaxed">{card.body}</p>
