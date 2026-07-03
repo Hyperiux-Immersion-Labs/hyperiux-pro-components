@@ -11,6 +11,7 @@ import {
 } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
+import Button from "../WebsiteComps/Button";
 
 gsap.registerPlugin(SplitText);
 
@@ -333,37 +334,36 @@ export default function StackLoader({
   }, []);
 
   return (
-    
     <div
       id="DEMO UI"
       className="relative h-screen w-screen overflow-hidden bg-zinc-900"
     >
-      <p
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-neutral-300 transition-opacity duration-300 text-center ${
-          isLoaderComplete ? "opacity-100" : "opacity-0"
+      <div
+        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${
+          isLoaderComplete
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "translate-y-4 opacity-0 pointer-events-none"
         }`}
       >
-        HYPERIUX VAULT
-      </p>
-
-     <button
-  type="button"
-  onClick={handleReplay}
-  className={`absolute top-[calc(50%+4.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
-    rounded-full border border-white/15 bg-white/5 px-5 py-2
-    text-sm font-medium text-white backdrop-blur-md
-    
-    transition-all duration-300 cursor-pointer
-    hover:scale-105 hover:border-white/30 hover:bg-white/10
-    active:scale-95
-    ${
-      isLoaderComplete
-        ? "opacity-100"
-        : "pointer-events-none opacity-0"
-    }`}
->
-  ↻ Replay
-</button>
+        <p className="text-center text-4xl font-bold text-neutral-300">
+          HYPERIUX VAULT
+        </p>
+        <div>
+          <Button text="Explore All Effects" href="/effects" variant="orange" />
+        </div>
+        <button
+          type="button"
+          onClick={handleReplay}
+          className={`
+            rounded-full border border-white/15 bg-white/5 px-5 py-2
+            text-sm font-medium text-white backdrop-blur-md
+            transition-all duration-300 cursor-pointer
+            hover:scale-105 hover:border-white/30 hover:bg-white/10
+            active:scale-95`}
+        >
+          ↻ Replay
+        </button>
+      </div>
 
       <StackToSpreadIntro
         key={introInstance}

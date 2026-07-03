@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 
@@ -252,5 +252,56 @@ export function Cappen({
         {description}
       </p>
     </section>
+  )
+}
+
+export default function StackLoader({
+  images = DEFAULT_IMAGE_SOURCES,
+}) {
+  const [isLoaderComplete, setIsLoaderComplete] = useState(false)
+  const [introInstance, setIntroInstance] = useState(0)
+
+  const handleLoaderComplete = useCallback(() => {
+    setIsLoaderComplete(true)
+  }, [])
+
+  const handleReplay = useCallback(() => {
+    setIsLoaderComplete(false)
+    setIntroInstance((currentInstance) => currentInstance + 1)
+  }, [])
+
+  return (
+    <div className="relative h-screen w-screen overflow-hidden bg-zinc-900">
+      <div
+        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${
+          isLoaderComplete
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
+            : 'translate-y-4 opacity-0 pointer-events-none'
+        }`}
+      >
+        <p className="text-center text-4xl font-bold text-neutral-300">
+          HYPERIUX VAULT
+        </p>
+        <a
+          href="/effects"
+          className="inline-flex rounded-full bg-[#ff5f00] px-8 py-3 text-sm font-medium text-white transition-transform duration-300 hover:scale-105"
+        >
+          Explore All Effects
+        </a>
+        <button
+          type="button"
+          onClick={handleReplay}
+          className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/30 hover:bg-white/10 active:scale-95"
+        >
+          ↻ Replay
+        </button>
+      </div>
+
+      <Cappen
+        key={introInstance}
+        images={images}
+        onComplete={handleLoaderComplete}
+      />
+    </div>
   )
 }

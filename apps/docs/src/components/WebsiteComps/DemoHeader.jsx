@@ -33,7 +33,7 @@ export default function DemoHeader({
     <>
    
 
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-50 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-3 transition-transform duration-500 ease-out ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-3 transition-transform duration-500 ease-out ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link

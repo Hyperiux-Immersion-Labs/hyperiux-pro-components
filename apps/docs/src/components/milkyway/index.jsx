@@ -962,7 +962,7 @@ export default function MilkyWay() {
 
          {(showDesktopContent || showMobileContent ) && (
             
-            <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-299 flex items-center justify-center max-md:hidden">
+            <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-99 flex items-center justify-center max-md:hidden">
                <div className='h-full w-full relative'>
                   {/* Navbar (leave unchanged) */}
                   <div className='absolute top-0 left-[70%] pt-[6vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>

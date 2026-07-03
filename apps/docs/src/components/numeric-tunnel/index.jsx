@@ -1,6 +1,7 @@
 'use client'
 import React, { useCallback, useState } from'react'
 import { NumericTunnelLoader } from './NumericTunnelLoader'
+import Button from '../WebsiteComps/Button'
 
 export default function NumericTunnel() {
  const [isComplete, setIsComplete] = useState(false)
@@ -18,11 +19,13 @@ export default function NumericTunnel() {
  return (
  <NumericTunnelLoader key={tunnelInstance} onComplete={handleComplete}>
  <div className="h-screen w-full bg-white">
- <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black text-[4vw] font-bold">HYPERIUX VAULT</h2>
+  <div className="h-full w-full flex flex-col items-center justify-center gap-6">
+ <h2 className=" text-black text-[4vw] font-bold max-sm:text-[8vw]">HYPERIUX VAULT</h2>
+  <Button text=" Explore All Effects" href="/effects" variant="orange" />
 <button
   type="button"
   onClick={handleReplay}
-  className={`absolute top-[calc(50%+5.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
+  className={`
     rounded-full border border-black/10 bg-white/60 px-5 py-2
     text-sm font-medium text-black backdrop-blur-md
 
@@ -37,6 +40,7 @@ export default function NumericTunnel() {
 >
   ↻ Replay
 </button>
+</div>
  </div>
  </NumericTunnelLoader>
  )
