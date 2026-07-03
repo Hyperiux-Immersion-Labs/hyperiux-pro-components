@@ -72,7 +72,7 @@ const StatCard = ({
     return (
         <div
             className={[
-                "relative flex min-h-[21vw] flex-col justify-between rounded-[0.45vw] border border-white/20 bg-[#141312] p-[1.65vw] text-white backdrop-blur-sm",
+                "relative flex min-h-[21vw] flex-col justify-between rounded-md border border-white/20 bg-[#141312] p-[1.65vw] text-white backdrop-blur-sm",
                 "max-md:min-h-[34vw]  max-md:p-5",
                 "max-sm:min-h-[48vw]  max-sm:p-5",
                 className,

@@ -91,7 +91,7 @@ export default function UIKit() {
 
       {/* Use Case Cards */}
       <div className="w-screen h-screen sticky mt-[-60vh] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
-        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container translate-x-[20%] ">
+        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container translate-x-[20%] max-sm:translate-x-0 max-sm:pl-[5vw] ">
           {UI_CARDS.map((card) => (
             <div
               key={card.id}

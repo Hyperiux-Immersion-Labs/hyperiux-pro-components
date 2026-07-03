@@ -5,7 +5,7 @@ import React from "react";
 export default function layout({ children }) {
   return (
     <ChessGridTransition >
-      <DemoHeader />
+      {/* <DemoHeader /> */}
       {children}
     </ChessGridTransition>
   );

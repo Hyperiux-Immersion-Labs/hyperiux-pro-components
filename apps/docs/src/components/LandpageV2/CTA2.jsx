@@ -31,13 +31,13 @@ export default function CTA2({ animations = true ,href="/pricing#pricing-cards" 
                     <Button variant='outline2' text="Browse the effects" href="/effects" className='max-sm:w-full' />
                     <Button text="Get Pro from $20/mo" className="max-sm:w-full" href={href} variant="orange"  />
                     <p
-                        className="shimmer-text flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
+                        className="shimmer-text w-full flex justify-center items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
                     >
-                        <span className="inline-block size-[0.9vw] shrink-0 text-foreground max-md:size-3">
+                        <span className="inline-block size-[0.9vw] shrink-0 text-[#d2d2d2] max-md:size-3">
                             <UnlockIcon className="h-full w-full" />
                         </span>
 
-                        <ShimmerText baseColor="#fff" shimmerColor="#ff5f00" className='max-sm:text-sm max-sm:text-center max-sm:w-[90%] max-sm:leading-[1.2]'>
+                        <ShimmerText baseColor="#d2d2d2" shimmerColor="#ffffff" className='max-sm:text-sm max-sm:text-center max-sm:leading-[1.2]'>
                             30+ effects free, forever. No credit card.
                         </ShimmerText>
                     </p>

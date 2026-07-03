@@ -59,7 +59,7 @@ function Scene() {
   return (
     <Canvas
       onClick={click}
-      shadows
+      shadows={{ type: THREE.PCFShadowMap }}
       dpr={[1.0, 1.1]}
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}

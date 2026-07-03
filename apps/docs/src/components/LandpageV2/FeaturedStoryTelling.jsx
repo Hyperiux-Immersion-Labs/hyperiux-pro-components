@@ -180,10 +180,12 @@ export default function FeaturedStoryTelling() {
             opacity: 1,
         });
 
-        gsap.set(infoButtonWrapperRef.current, {
-            opacity: 0,
-            yPercent: 30,
-        });
+        if (infoButtonWrapperRef.current) {
+            gsap.set(infoButtonWrapperRef.current, {
+                opacity: 0,
+                yPercent: 30,
+            });
+        }
 
         const TOP_LAYER = [
             { id: "block-top-layer-1", xPercent: 300 },
@@ -355,12 +357,14 @@ export default function FeaturedStoryTelling() {
                 { yPercent: 0, ease: "power2.out", stagger: 0.04, duration: 1.5 },
                 3.85
             );
-            masterTL.fromTo(
-                infoButtonWrapperRef.current,
-                { opacity: 0, yPercent: 30 },
-                { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
-                3.95
-            );
+            if (infoButtonWrapperRef.current) {
+                masterTL.fromTo(
+                    infoButtonWrapperRef.current,
+                    { opacity: 0, yPercent: 30 },
+                    { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
+                    3.95
+                );
+            }
 
             // 3c. Spiral Information Exit (Duration: 6.0 to 7.2)
             masterTL.to(
@@ -368,11 +372,13 @@ export default function FeaturedStoryTelling() {
                 { yPercent: -130, opacity: 0, ease: "power2.in", stagger: 0.02, duration: 1.0 },
                 6.0
             );
-            masterTL.to(
-                infoButtonWrapperRef.current,
-                { opacity: 0, ease: "power2.in", duration: 0.8 },
-                6.0
-            );
+            if (infoButtonWrapperRef.current) {
+                masterTL.to(
+                    infoButtonWrapperRef.current,
+                    { opacity: 0, ease: "power2.in", duration: 0.8 },
+                    6.0
+                );
+            }
 
             // Cards Fade Out
             masterTL.to(

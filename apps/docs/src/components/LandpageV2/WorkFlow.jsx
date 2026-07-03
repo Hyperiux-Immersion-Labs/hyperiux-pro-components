@@ -191,7 +191,7 @@ export default function Workflow() {
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
 
-                <div className="h-screen max-sm:h-[85vh]  w-full  sticky top-0 max-sm:top-10 flex flex-col justify-center max-md:pt-0">
+                <div className="h-screen max-sm:h-[85vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
                      <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-sm:pt-[14vh] text-center">
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
@@ -243,7 +243,7 @@ export default function Workflow() {
             </section>
 
             {/* ── Video Section ── */}
-            <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw]">
+            <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw] max-sm:py-[20vw]">
                 <div ref={videoRef} className="w-screen h-auto max-md:p-0 max-md:h-full max-sm:rounded-0 overflow-hidden bg-primary rounded-md">
                     {/* Desktop video */}
                     <video

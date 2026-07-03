@@ -154,8 +154,8 @@ export default function ForDevelopers() {
             // Setup
             cardData.forEach((data, i) => {
                 const blobs = data.card.querySelectorAll('.blob')
-                gsap.set([data.title, data.text, data.link], { opacity: 1 })
-                gsap.set(data.title, { transformOrigin: "left top" }) // Set origin for scaling
+                gsap.set([data.title, data.text, data.link].filter(Boolean), { opacity: 1 })
+                gsap.set(data.title, { transformOrigin: "left top" })
 
                 // Base closed background
                 gsap.set(data.card, { backgroundColor: 'rgba(255, 255, 255, 0.05)' })
@@ -164,18 +164,16 @@ export default function ForDevelopers() {
                     gsap.set(data.card, { height: openH() })
                     gsap.set(data.overlay, { opacity: 1 }) // fully open
                     gsap.set(blobs, { scale: 5.5, opacity: 1 })
-                    gsap.set(data.card.querySelector('.solid-fill'), { opacity: 1 })
-                    gsap.set([data.title, data.text, data.link], { color: '#000000' })
-                    gsap.set(data.title, { y: '0vw', scale: openTitleScale }) // Scaled up when open
+                    gsap.set([data.title, data.text, data.link].filter(Boolean), { color: '#000000' })
+                    gsap.set(data.title, { y: '0vw', scale: openTitleScale })
                     if (data.textLines) gsap.set(data.textLines.lines, { yPercent: 0, opacity: 1 })
                     if (data.link) gsap.set(data.link, { opacity: 1, y: 0 })
                 } else {
                     gsap.set(data.card, { height: closedH() })
                     gsap.set(data.overlay, { opacity: 0 }) // fully closed
                     gsap.set(blobs, { scale: 0, opacity: 0 })
-                    gsap.set(data.card.querySelector('.solid-fill'), { opacity: 0 })
-                    gsap.set([data.title, data.text, data.link], { color: '#ffffff' })
-                    gsap.set(data.title, { y: '0vw', scale: 1 }) // Normal scale when closed
+                    gsap.set([data.title, data.text, data.link].filter(Boolean), { color: '#ffffff' })
+                    gsap.set(data.title, { y: '0vw', scale: 1 })
                     if (data.textLines) gsap.set(data.textLines.lines, { yPercent: 100, opacity: 0 })
                     if (data.link) gsap.set(data.link, { opacity: 0, y: 20 })
                 }
@@ -185,15 +183,19 @@ export default function ForDevelopers() {
                 const cur = cardData[i];
                 const nxt = cardData[i + 1];
                 const time = i;
+                const curSolidFill = cur.card.querySelector('.solid-fill');
+                const nxtSolidFill = nxt.card.querySelector('.solid-fill');
 
                 // Close current
                 let curAnim = tl.to(cur.card, { height: closedH(), duration: 1, ease: 'none' }, time)
                     .to(cur.overlay, { opacity: 0, duration: 1, ease: 'none' }, time)
-                    .to(cur.card.querySelector('.solid-fill'), { opacity: 0, duration: 0.5, ease: 'none' }, time)
                     .to(cur.card.querySelectorAll('.blob'), { scale: 0, opacity: 0, duration: 0.8, stagger: 0.05, ease: 'power2.inOut' }, time)
                     .to(cur.title, { y: '0vw', scale: 1, duration: 1, ease: 'none' }, time)
-                    .to([cur.title, cur.text], { color: '#ffffff', duration: 0.2 }, time + 0.2)
+                    .to([cur.title, cur.text].filter(Boolean), { color: '#ffffff', duration: 0.2 }, time + 0.2)
 
+                if (curSolidFill) {
+                    curAnim.to(curSolidFill, { opacity: 0, duration: 0.5, ease: 'none' }, time)
+                }
                 if (cur.textLines) {
                     curAnim.to(cur.textLines.lines, { yPercent: -50, opacity: 0, duration: 0.3, stagger: 0.02, ease: 'power2.in' }, time)
                 }
@@ -205,9 +207,12 @@ export default function ForDevelopers() {
                 let nxtAnim = tl.to(nxt.card, { height: openH(), duration: 1, ease: 'none' }, time)
                     .to(nxt.overlay, { opacity: 1, duration: 0.2, ease: 'none' }, time)
                     .to(nxt.card.querySelectorAll('.blob'), { scale: 1.5, opacity: 1, duration: 1, stagger: 0.1, ease: 'power2.out' }, time)
-                    .to(nxt.card.querySelector('.solid-fill'), { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, time + 0.5)
                     .to(nxt.title, { y: '0vw', scale: openTitleScale, duration: 1, ease: 'none' }, time)
-                    .to([nxt.title, nxt.text, nxt.link], { color: '#000000', duration: 0.2 }, time + 0.2)
+                    .to([nxt.title, nxt.text, nxt.link].filter(Boolean), { color: '#000000', duration: 0.2 }, time + 0.2)
+
+                if (nxtSolidFill) {
+                    nxtAnim.to(nxtSolidFill, { opacity: 1, duration: 0.5, ease: 'power2.inOut' }, time + 0.5)
+                }
 
                 if (nxt.textLines) {
                     nxtAnim.to(nxt.textLines.lines, { yPercent: 0, opacity: 1, stagger: 0.02, duration: 0.3, ease: 'power2.out' }, time + 0.3)

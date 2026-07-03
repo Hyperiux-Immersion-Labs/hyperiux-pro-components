@@ -684,7 +684,7 @@ export default function GlowingPlates({
           className="h-full w-full"
           frameloop="always"
           dpr={CONFIG.canvasDpr}
-          shadows={!isMobile}
+          shadows={!isMobile ? { type: THREE.PCFShadowMap } : false}
           onCreated={() => {
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {

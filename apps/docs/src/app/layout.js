@@ -26,11 +26,12 @@ const layGrotesk = localFont({
     {
       path: "../fonts/laygrotesk-trial-medium.woff2",
       weight: "500",
-      style: "medium",
+      style: "normal",
     },
   ],
   variable: "--font-laygrotesk",
   display: "swap",
+  preload: false,
 });
 
 export const metadata = createRootMetadata();

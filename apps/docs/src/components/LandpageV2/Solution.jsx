@@ -26,7 +26,7 @@ const Solution = () => {
                 Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
             </RandomBlur>
 
-            <div className='w-full h-fit flex justify-center items-center'>
+            <div className='w-full h-fit flex justify-center items-center max-md:my-[15vw]'>
                 <TextFillAnimation
                     text="Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client
                     launches. Preview the moment you need, install it with one command, then tune it in your own repo.

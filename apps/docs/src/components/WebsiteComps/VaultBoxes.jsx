@@ -28,8 +28,8 @@ export default function VaultBox({ id, styles, img, number, label, containerLink
                 <Link href={labelLink} onClick={(e) => e.stopPropagation()} className='text18 w-fit relative z-100 px-[1vw] py-[.5vw] max-sm:px-5 max-sm:py-2.5 rounded-full bg-grey h-fit opacity-0 max-sm:opacity-100 hover:bg-foreground hover:text-background group-hover:opacity-100 transition-all duration-500'>
                     <p>{label}</p>
                 </Link>
-                <div className="opacity-0 group-hover:opacity-100 transition-all duration-500  max-sm:opacity-100">
-                    <p className="text34">{title}</p>
+                <div className="opacity-0 group-hover:opacity-100 transition-all duration-500  max-sm:opacity-100 max-sm:space-y-[4vw]">
+                    <p className="text34 max-sm:text-[5.5vw]!">{title}</p>
                     <p className="text-sm max-sm:text-[3.7vw] max-sm:leading-[1.2]">{paragraph}</p>
                 </div>
             </div>

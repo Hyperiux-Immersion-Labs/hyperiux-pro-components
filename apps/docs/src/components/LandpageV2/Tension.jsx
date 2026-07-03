@@ -171,7 +171,7 @@ export default function Tension() {
           </div>
 
           {cards.map((items, index) => (
-            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw] max-sm:pr-4 max-sm:p-4">
+            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw] max-sm:pr-4 max-sm:p-2">
               <div className="flex items-center flex-1 min-w-0 max-sm:flex-col max-sm:items-start max-sm:gap-2.5">
                 <div className="flex items-center gap-[1vw] w-[25vw] shrink-0 max-sm:w-auto max-sm:gap-2.5">
                   <div className="size-[3vw] flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0 max-sm:size-9">
