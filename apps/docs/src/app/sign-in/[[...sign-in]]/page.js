@@ -8,6 +8,7 @@ export const metadata = createPageMetadata({
   title: "Sign In | Hyperiux Vault",
   description: "Sign in to Hyperiux Vault to access saved effects, dashboards, and pro resources.",
   path: "/sign-in",
+  image: "/seo/homepage.png",
 });
 
 export default function SignInPage() {

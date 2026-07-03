@@ -38,6 +38,7 @@ export default function Hero() {
   const vaultDesktopRef = useRef(null);
   const vaultMobileRef = useRef(null);
   const pRef = useRef(null);
+  const paraRef=useRef(null);
   const buttonWrapRef = useRef(null);
   const shimmerTextWrapRef = useRef(null);
 
@@ -83,6 +84,7 @@ export default function Hero() {
     );
 
     const pEl = pRef.current;
+    const paraEl = paraRef.current;
     const buttonWrapEl = buttonWrapRef.current;
     const shimmerTextWrapEl = shimmerTextWrapRef.current;
 
@@ -95,6 +97,7 @@ export default function Hero() {
       !headingEl &&
       !vaultEls.length &&
       !pEl &&
+      !paraEl &&
       !buttonWrapEl &&
       !shimmerTextWrapEl &&
       !navigationEls.length
@@ -115,6 +118,11 @@ export default function Hero() {
     });
 
     if (pEl) {
+      gsap.set(pEl, {
+        autoAlpha: 0,
+      });
+    }
+     if (paraEl) {
       gsap.set(pEl, {
         autoAlpha: 0,
       });
@@ -249,6 +257,33 @@ export default function Hero() {
             "-=0.5"
           );
         }
+        if (paraEl) {
+          gsap.set(paraEl, {
+            autoAlpha: 1,
+          });
+
+          const split = SplitText.create(paraEl, {
+            type: "lines",
+          });
+
+          splits.push(split);
+
+          heroTimeline.fromTo(
+            split.lines,
+            {
+              y: 24,
+              opacity: 0,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.95,
+              ease: "power3.out",
+              // stagger: 0.08,
+            },
+            "-=2.2"
+          );
+        }
 
         if (buttonWrapEl) {
           heroTimeline.to(
@@ -347,7 +382,7 @@ export default function Hero() {
     <section className="pointer-events-none relative z-20 flex h-screen w-full max-sm:h-[95vh] max-sm:w-screen items-center self-padd">
      <img
         src="/landing-page/hero-bg.png"
-        alt=""
+        alt="hero-bg"
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-sm:block"
       />
@@ -355,7 +390,8 @@ export default function Hero() {
         ref={containerRef}
         className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[8vw] max-sm:space-y-[14vw]"
       >
-        <div className="flex h-fit w-full items-center max-md:flex-col max-sm:items-start max-sm:justify-start">
+        <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:justify-start">
+          <p  ref={paraRef} className="text24 font-medium text-[#ff5f00] opacity-0">React & Next.js Animation Effects Library</p>
           <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block opacity-0">
               The Interaction Layer your Website is{" "}

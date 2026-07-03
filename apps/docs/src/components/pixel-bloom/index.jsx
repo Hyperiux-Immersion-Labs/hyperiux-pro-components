@@ -360,7 +360,7 @@ export function PixelBloom({
     };
   }, [cellLifetime, effectRadius, gridImages, gridSize, src, type]);
 
-  const defaultVideoSrc = "/assets/videos/draggable-video.mp4";
+  const defaultVideoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/draggable-video.mp4";
 
   return (
     <div

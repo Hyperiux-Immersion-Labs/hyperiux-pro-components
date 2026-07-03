@@ -7,7 +7,7 @@
   "dependencies": ["gsap"],
   "registryDependencies": [],
   "previewUrl": "/counter",
-  "coverImage": "image12",
+  "coverImage": "counter",
   "videoUrl": "/counter.mp4",
   "tier": "pro",
   "main": "index.jsx",

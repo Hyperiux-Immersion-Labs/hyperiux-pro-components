@@ -1,8 +1,8 @@
 import { homepage } from "./util";
 
-const DEFAULT_TITLE = "Hyperiux Vault - Beautiful Effects for Your Website";
+const DEFAULT_TITLE = "Hyperiux Vault: React & Next.js Motion Effects";
 const DEFAULT_DESCRIPTION =
-  "A collection of animated effects and UI components. Copy-paste or use our CLI to add stunning animations to your Next.js project.";
+  "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.";
 const DEFAULT_IMAGE = "/seo/homepage.png";
 
 export function getCanonicalUrl(path = "/") {
@@ -10,31 +10,39 @@ export function getCanonicalUrl(path = "/") {
 }
 
 export function createPageMetadata({
-  title = DEFAULT_TITLE,
-  description = DEFAULT_DESCRIPTION,
+  title,
+  description,
   path = "/",
+  canonicalPath,
+  openGraphPath,
+  languagesPath,
+  image = DEFAULT_IMAGE,
   keywords,
   robots,
 } = {}) {
-  const canonical = getCanonicalUrl(path);
-  const imageUrl = getCanonicalUrl(DEFAULT_IMAGE);
+  const canonical = getCanonicalUrl(canonicalPath || path);
+  const openGraphUrl = getCanonicalUrl(openGraphPath || canonicalPath || path);
+  const languagesUrl = getCanonicalUrl(languagesPath || path);
+  const imageUrl = getCanonicalUrl(image || DEFAULT_IMAGE);
+  const resolvedTitle = title || DEFAULT_TITLE;
+  const resolvedDescription = description || DEFAULT_DESCRIPTION;
 
   return {
-    title,
-    description,
+    title: resolvedTitle,
+    description: resolvedDescription,
     keywords,
     url: path,
     alternates: {
       canonical,
       languages: {
-        "en-US": canonical,
-        "x-default": canonical,
+        "en-US": languagesUrl,
+        "x-default": languagesUrl,
       },
     },
     openGraph: {
-      title,
-      description,
-      url: canonical,
+      title: resolvedTitle || DEFAULT_TITLE,
+      description: resolvedDescription || DEFAULT_DESCRIPTION,
+      url: openGraphUrl,
       siteName: "Hyperiux Vault",
       images: [
         {
@@ -49,8 +57,8 @@ export function createPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: resolvedTitle,
+      description: resolvedDescription,
       images: [imageUrl],
     },
     robots,
@@ -69,6 +77,9 @@ export function createRootMetadata() {
       title,
       description,
       path: "/",
+      canonicalPath: "/",
+      openGraphPath: "/",
+      image: DEFAULT_IMAGE,
       robots: {
         index: true,
         follow: true,

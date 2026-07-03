@@ -4,9 +4,10 @@ import { WebpageJsonLd, BreadcrumbsJSONLD } from "@/lib/json-ld";
 import DocsIntro from "./DocsIntro";
 
 export const metadata = createPageMetadata({
-  title: "Hyperiux Vault: Creative React & Next.js Effects",
-  description: "Explore Hyperiux Vault, a source-first library of scroll effects, cursors, text animations, WebGL scenes, and microinteractions for React and Next.js.",
+  title: "Hyperiux Vault Docs: Creative Effects Guide",
+  description: "Learn how Vault works, when to use it, what’s inside, and how to add source-first interaction patterns to React and Next.js projects.",
   path: "/docs",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/introduction.jpg",
 });
 
 export default function Page() {

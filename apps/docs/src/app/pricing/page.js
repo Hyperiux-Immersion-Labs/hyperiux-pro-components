@@ -8,11 +8,16 @@ import PricingLicense from "@/components/Pricing/PricingLicense";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import FAQs from "@/components/LandpageV2/FAQs";
 import Pricing from "@/components/Pricing/Pricing";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
   description: "Get unlimited access to premium, highly interactive React and Tailwind components. Elevate your website design with fluid animations, custom cursors, and advanced WebGL components.",
-};
+  path: "/pricing",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
+});
+
+
 
 export default function PricingPage() {
   return (

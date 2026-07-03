@@ -76,7 +76,7 @@ export default function PricingLicense() {
       <div className="text24 max-md:text-sm text-white/40 text-center mt-[4vw] max-md:mt-[10vw]">
         Need the complete legal text?{" "}
         <Link
-          href="/license"
+          href="/docs/license"
           className="relative text-white inline-block"
           onMouseEnter={handleLinkEnter}
         >

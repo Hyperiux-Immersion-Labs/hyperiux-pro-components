@@ -4,9 +4,10 @@ import { WebpageJsonLd, BreadcrumbsJSONLD } from "@/lib/json-ld";
 import DocsLicense from "./DocsLicense";
 
 export const metadata = createPageMetadata({
-  title: "Hyperiux Vault License: Usage, Pro Terms, and Limits",
-  description: "Learn how Hyperiux Vault licensing works for Free Core and Pro effects, including client work, SaaS use, source edits, redistribution, and template limits.",
+  title: "Hyperiux Vault License: Free Core & Pro Usage",
+  description: "Understand what you can do with Vault Free Core and Pro effects, including commercial projects, client work, source edits, and redistribution limits.",
   path: "/docs/license",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/license.jpg",
 });
 
 export default function Page() {

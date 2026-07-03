@@ -1,6 +1,7 @@
 import LandingPageNew from "@/components/LandpageV2/LandingPageNew";
 import React from "react";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
+import { createPageMetadata } from "@/lib/seo-metadata";
 
 const faqItems = [
   {
@@ -151,11 +152,13 @@ const faqItems = [
   },
 ];
 
-export const metadata = {
-  title: "Hyperiux Vault - Beautiful Effects for Your Website",
+export const metadata = createPageMetadata({
+  title: "Hyperiux Vault: React & Next.js Motion Effects",
   description:
-    "A collection of animated effects and UI components. Copy-paste or use our CLI to add stunning animations to your Next.js project.",
-};
+    "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
+  path: "/",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
+});
 
 export default function page() {
   return (

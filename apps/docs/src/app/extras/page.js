@@ -7,6 +7,7 @@ export const metadata = createPageMetadata({
   title: "Extra | Hyperiux UI",
   description: "Browse all extra demos",
   path: "/extras",
+  image: "/seo/homepage.png",
 });
 
 async function getExtraFolderNames() {

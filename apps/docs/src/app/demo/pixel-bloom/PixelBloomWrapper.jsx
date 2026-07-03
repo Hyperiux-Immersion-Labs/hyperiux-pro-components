@@ -52,7 +52,7 @@ export default function PixelBloomWrapper() {
                  it’s way more fun on desktop
                 </span>
             </p>
-            <PixelBloom className='w-[85vh] h-[50vh] absolute! top-50! left-1/2 -translate-x-1/2 z-10 aspect-video max-md:hidden' />
+            {/* <PixelBloom className='w-[85vh] h-[50vh] absolute! top-50! left-1/2 -translate-x-1/2 z-10 aspect-video max-md:hidden' /> */}
             <div className="h-[20vh] max-sm:h-[10vh] max-md:h-[8vh] w-full"></div>
             <div className="relative w-full flex flex-col  gap-[10vh]  items-center">
                 {/* On mobile, center each image horizontally with mx-auto and remove ml/mr */}

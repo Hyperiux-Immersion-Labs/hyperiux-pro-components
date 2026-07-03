@@ -4,9 +4,10 @@ import { WebpageJsonLd, BreadcrumbsJSONLD } from "@/lib/json-ld";
 import DocsInstallation from "./DocsInstallation";
 
 export const metadata = createPageMetadata({
-  title: "Hyperiux Vault Installation Guide for React & Next.js",
-  description: "Install Hyperiux Vault effects with the CLI or manually. Add editable source files, manage dependencies, and ship creative interactions in React or Next.js.",
+  title: "Install Hyperiux Vault Effects in Your Project",
+  description: "Set up Vault with the CLI or manual workflow, add only the effect files you need, verify dependencies, and keep the source code editable in your repo.",
   path: "/docs/installation",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/installation.jpg",
 });
 
 export default function Page() {

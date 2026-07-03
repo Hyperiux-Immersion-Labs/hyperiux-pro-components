@@ -20,12 +20,14 @@ export async function generateMetadata({ params }) {
       title: "Technology Not Found | Hyperiux UI",
       description: "Technology page not found.",
       path: `/tech/${slug}`,
+      image: "/seo/homepage.png",
     });
   }
   return createPageMetadata({
     title: `${tech.title} | Hyperiux UI`,
     description: tech.description,
     path: `/tech/${slug}`,
+    image: "/seo/homepage.png",
   });
 }
 

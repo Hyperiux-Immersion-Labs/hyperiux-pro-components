@@ -13,6 +13,7 @@ import { getUserPlan, canAccessEffect } from "@/lib/subscription";
 import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import { resolveOgImageUrl } from "@/lib/media";
 
 function getEffectPageMetadata(effect, content, slug, effectSlug) {
   const title =
@@ -24,11 +25,17 @@ function getEffectPageMetadata(effect, content, slug, effectSlug) {
     content?.seo?.description ||
     content?.summary ||
     effect?.description;
+  const image =
+    resolveOgImageUrl(content?.coverImage || effect?.coverImage || effectSlug, {
+      defaultDirectory: "vault-listing-images",
+      defaultExtension: "png",
+    }) || "/seo/homepage.png";
 
   return createPageMetadata({
     title,
     description,
     path: `/effects/${slug}/${effectSlug}`,
+    image,
     keywords: [
       content?.seo?.primaryKeyword,
       ...(content?.seo?.secondaryKeywords || []),
@@ -101,6 +108,7 @@ export async function generateMetadata({ params }) {
       title: "Effect Not Found",
       description: "Effect not found.",
       path: `/effects/${slug}/${effectSlug}`,
+      image: "/seo/homepage.png",
     });
   }
 

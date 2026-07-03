@@ -18,7 +18,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
+    description: "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -32,10 +32,10 @@ export function OrganizationJsonLd() {
     },
     logo: `${homepage}/favicon.ico`,
     sameAs: [
-      "https://www.facebook.com/",
-      "https://www.linkedin.com/in/",
-      "https://www.linkedin.com/in/",
-      "https://x.com/"
+      "https://www.facebook.com",
+      "https://www.linkedin.com/in",
+      "https://www.instagram.com",
+      "https://x.com"
     ]
   };
 
@@ -72,7 +72,7 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Hyperiux Vault is a growing library of production-ready interactive components, motion systems, WebGL effects, loaders, navigation patterns, buttons, sliders, text animations, and page transitions for React and Next.js websites.",
+      "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
@@ -162,10 +162,10 @@ export function LocalBusiness() {
       "addressRegion": "India"
     },
     "sameAs": [
-      "https://www.facebook.com/",
-      "https://www.linkedin.com/in/",
-      "https://www.linkedin.com/in/",
-      "https://x.com/"
+      "https://www.facebook.com",
+      "https://www.linkedin.com/in",
+      "https://www.instagram.com",
+      "https://x.com"
     ],
     priceRange: "$20-$50",
     "openingHoursSpecification": [
@@ -190,7 +190,7 @@ export function LocalBusiness() {
 export function WebpageJsonLd({ metadata = {} }) {
   const {
     title,
-    url = "/",
+    url = "",
     description,
     date_published,
     date_modified,
