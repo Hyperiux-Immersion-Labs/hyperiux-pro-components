@@ -992,7 +992,7 @@ export default function Navbar() {
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
             </Link>
 
-            <div className="relative ml-[7vw]" onMouseLeave={handleNavLeave}>
+            <div className={`relative ${isLoaded && user?.publicMetadata?.plan !== "pro"?"ml-[13.5vw]":""}`} onMouseLeave={handleNavLeave}>
                 <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
                     {vaultLinks.map(({ label, href, dropdown }, index) => {
                         const highlighted = isHighlighted(index, dropdown)
@@ -1072,8 +1072,8 @@ export default function Navbar() {
                 {isLoaded && user?.publicMetadata?.plan !== "pro" && (
                     <Button
                         text="Upgrade to Pro"
-                        href="/pricing#pricing-cards"
-                        className="border-white/50! bg-black!"
+                        href="#pricing-cards"
+                        className="border-white/20! bg-[#0E0E0E]!"
                         variant="outline2"
                     />
                 )}

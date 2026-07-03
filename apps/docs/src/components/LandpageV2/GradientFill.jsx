@@ -103,13 +103,13 @@ export default function GradientFill() {
                         })
                         tl2.to(glow, {
                             scale: 2,
-                            yPercent: 80,
+                            yPercent: 60,
                             duration: 2,
                             opacity: .75,
                         })
                         tl2.to(glow, {
                             scale: 2.5,
-                            yPercent: 80,
+                            yPercent: 30,
                             duration: 2,
                             opacity: 1.0,
                         })

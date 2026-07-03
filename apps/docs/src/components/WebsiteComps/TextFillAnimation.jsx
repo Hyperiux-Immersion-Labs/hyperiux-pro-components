@@ -102,9 +102,10 @@ export function TextFillAnimation({
         .timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 50%',
-            end: 'bottom bottom',
+            start: 'top 70%',
+            end: 'bottom 70%',
             scrub: 0.25,
+            // markers:true
           },
         })
         .to(
@@ -147,10 +148,10 @@ export function TextFillAnimation({
     <section
       id={id}
       ref={sectionRef}
-      className={`relative h-[150vh] w-full ${containerClassName}`}
+      className={`relative h-fit w-full ${containerClassName}`}
       style={{ backgroundColor }}
     >
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
+      <div className="flex h-screen items-center justify-center overflow-x-hidden">
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto">
           <h2

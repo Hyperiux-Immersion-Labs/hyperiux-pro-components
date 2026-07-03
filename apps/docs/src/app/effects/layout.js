@@ -1,5 +1,5 @@
 import PixelRandom from "@/components/pixel-random";
-import Footer from "@/components/LandingPage/Footer";
+import Footer from "@/components/LandpageV2/Footer";
 import React from "react";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 

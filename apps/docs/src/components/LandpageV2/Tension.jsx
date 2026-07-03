@@ -154,7 +154,7 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[1.6vw] max-sm:mt-[12vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-sm:mt-[12vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it:
             timing, restraint, layout awareness, responsive behavior,
             reduced-motion support, dependency clarity, and performance

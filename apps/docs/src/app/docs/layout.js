@@ -3,7 +3,7 @@ import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import DocsBody from "./DocsBody";
 import { VaultHeader } from "@/components/layout/VaultHeader";
-import Footer from "@/components/LandingPage/Footer";
+import Footer from "@/components/LandpageV2/Footer";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 
 function VaultLayoutFallback() {

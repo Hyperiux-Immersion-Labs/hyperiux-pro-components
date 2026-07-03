@@ -116,7 +116,7 @@ export default function TrustStrip() {
         },"<")
     }, [])
     return (
-        <section className="relative w-full  z-10 px-[5vw] py-[8vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
+        <section className="relative w-full  z-10 px-[5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
 
 
             <div className="relative flex max-sm:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-sm:gap-8">
