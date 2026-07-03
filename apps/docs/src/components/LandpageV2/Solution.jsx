@@ -68,7 +68,7 @@ const Solution = () => {
                             </svg>
                         </div>
 
-                            <div ref={underlineRef} className="w-full absolute left-0 bottom-[-20%] h-px bg-white bottom-underline" />
+                            <div ref={underlineRef} className="w-full absolute left-0 bottom-[-20%]  h-px bg-white bottom-underline" />
                         </Link>
                     </div>
                 </div>

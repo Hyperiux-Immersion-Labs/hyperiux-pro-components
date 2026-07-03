@@ -190,7 +190,7 @@ export default function Tension() {
                     <line x1="6" y1="6" x2="18" y2="18" />
                   </svg>
                 </div>
-                <p lang="en" className="text24 capitalize max-sm:flex-1 max-sm:min-w-0 max-sm:text-lg! max-sm:leading-tight max-sm:wrap-break-word max-sm:hyphens-auto">{items.label}</p>
+                <p lang="en" className="text24 capitalize max-sm:flex-1 max-sm:min-w-0 max-sm:text-base! max-sm:leading-tight max-sm:wrap-break-word max-sm:hyphens-auto">{items.label}</p>
               </div>
             </div>
           ))}
