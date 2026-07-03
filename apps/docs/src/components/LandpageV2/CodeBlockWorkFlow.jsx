@@ -3,6 +3,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useFadeUp } from "../Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -110,6 +111,8 @@ export default function CodeBlockWorkflow() {
   const tickRefs = useRef({});
 
   const masterTlRef = useRef(null);
+
+  useFadeUp(sectionRef);
 
   const setTerminalRef = (key) => (el) => { terminalRefs.current[key] = el; };
   const setCodeRef    = (key) => (el) => { codeRefs.current[key]    = el; };
@@ -417,7 +420,7 @@ export default function CodeBlockWorkflow() {
         <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
           {/* LEFT COLUMN — terminal + code */}
           <div className="flex flex-col gap-[1.4vw] max-md:contents">
-            <Panel title="amazing_project" className="min-h-[25vw] max-sm:min-h-[40vh] ">
+            <Panel title="amazing_project" className="fadeup min-h-[25vw] max-sm:min-h-[40vh] ">
               <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
                   <span ref={setTerminalRef("dollar1")} className="text-[#ff9f43]">$</span>
@@ -460,7 +463,7 @@ export default function CodeBlockWorkflow() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="min-h-[20vw] max-sm:min-h-[40vh] max-md:order-last">
+            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-sm:min-h-[40vh] max-md:order-last">
               <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />
@@ -473,7 +476,7 @@ export default function CodeBlockWorkflow() {
 
           {/* RIGHT COLUMN — file tree */}
           <div className="flex flex-col gap-[1.15vw]">
-            <Panel title="amazing_project / Components" className="h-full max-sm:min-h-[25vh]">
+            <Panel title="amazing_project / Components" className="fadeup h-full max-sm:min-h-[25vh]">
               <div className="space-y-[0.9vw] max-md:space-y-3">
 
                 {/* app/ */}

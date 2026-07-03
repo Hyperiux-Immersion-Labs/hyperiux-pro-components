@@ -179,7 +179,7 @@ export default function RandomBlur({
 
       split?.revert();
     };
-  }, [children, start, once, duration, staggerAmount, ease, delay, blur]);
+  }, [start, once, duration, staggerAmount, ease, delay, blur]);
 
   return (
     <Tag ref={containerRef} className={`${className} opacity-0`}>

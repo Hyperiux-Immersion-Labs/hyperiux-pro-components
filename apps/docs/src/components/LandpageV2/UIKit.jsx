@@ -61,6 +61,20 @@ export default function UIKit() {
           delay: -0.8,
           ease: "power1.inOut",
         });
+      } else {
+        gsap.set(".use-case", { autoAlpha: 0, y: 50 });
+        gsap.to(".use-case", {
+          scrollTrigger: {
+            trigger: ".use-case-container",
+            start: "top 90%",
+            once: true,
+          },
+          autoAlpha: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 1,
+          ease: "power3.out",
+        });
       }
     });
 

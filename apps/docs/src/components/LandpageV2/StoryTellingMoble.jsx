@@ -220,9 +220,13 @@ export default function StorytellingMobile() {
             id="stm-storytelling-mobile"
             className="stm-storytelling-section relative hidden max-sm:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
         >
-           <h2 className="text110 w-[95vw] mb-[10vw] mx-auto text-center">
-                           Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
-                       </h2>
+            <RandomBlur
+                as="h2"
+                className="text110  w-[95vw] mb-[10vw] mx-auto text-center"
+            >
+                Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
+            </RandomBlur>
+           
             <div
                 className="sticky top-0 max-sm:top-10 flex items-center justify-center w-full h-screen overflow-hidden"
             >

@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { SplitText } from 'gsap/dist/SplitText'
 import Link from 'next/link'
+import MaskTextReveal from '../mask-text-reveal'
 
 function AnimatedLink({ href, children, className = "" }) {
     const underlineRef = useRef(null);
@@ -241,9 +242,13 @@ export default function ForDevelopers() {
         <div ref={containerRef}>
             <section ref={accordionRef} className='h-[300vh] mb-[30vw] w-full relative'>
                 <div className='h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
+                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
+
+                   
                     <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-sm:pt-[5vw] max-md:w-full tracking-tight leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
+                      </MaskTextReveal>
 
                     <div className='relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-sm:gap-[5vw] max-sm:mt-[5vw]'>
                         {groups.map((group, idx) => (

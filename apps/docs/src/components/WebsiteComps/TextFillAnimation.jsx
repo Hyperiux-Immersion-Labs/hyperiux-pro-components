@@ -39,20 +39,8 @@ export function TextFillAnimation({
 
     styleElement.id = styleId;
     styleElement.textContent = `
-      @keyframes color-transition-${id} {
-        0% { color: ${dimColor}; }
-        30% { color: ${primaryColor}; }
-        100% { color: ${textColor}; }
-      }
-
       #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR} {
-        transition: color .4s;
         color: ${dimColor};
-      }
-
-      #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
-        animation: color-transition-${id} .5s;
-        color: ${textColor};
       }
 
       #${id} .tfa-text-wrapper {
@@ -108,6 +96,8 @@ export function TextFillAnimation({
         textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
       );
 
+      gsap.set(characters, { color: dimColor });
+
       gsap
         .timeline({
           scrollTrigger: {
@@ -120,10 +110,12 @@ export function TextFillAnimation({
         .to(
           characters,
           {
-            className: 'split-chars show',
+            keyframes: {
+              color: [dimColor, primaryColor, textColor],
+              easeEach: 'power2.inOut',
+            },
             duration: 0.4,
             stagger: 0.05,
-            ease: 'power2.inOut',
           },
           0
         );

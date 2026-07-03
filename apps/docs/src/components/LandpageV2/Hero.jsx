@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -344,11 +345,14 @@ export default function Hero() {
 
   return (
     <section className="pointer-events-none relative z-20 flex h-screen w-full max-sm:h-[95vh] max-sm:w-screen items-center self-padd">
-      <img
+      <Image
         src="/landing-page/hero-bg.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-sm:block"
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none absolute inset-0 -z-10 hidden object-cover max-sm:block"
       />
       <div
         ref={containerRef}

@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import VaultBox from "../WebsiteComps/VaultBoxes";
+import { useFadeUp } from "../Animations/gsapAnimations";
 // import RandomBlur from "../WebsiteComps/RandomBlur";
 
 const MOBILE_BOXES = [
@@ -47,10 +48,15 @@ const MOBILE_BOXES = [
 ];
 
 export default function VaultGridNewMobile() {
+    const containerRef = useRef(null);
+
+    useFadeUp(containerRef);
+
     return (
         <section
+            ref={containerRef}
             id="vault-grid-mobile"
-            className="w-full self-padd overflow-x-hidden py-[20vw] gap-[20vw] flex flex-col items-center justify-center md:hidden"
+            className="w-full self-padd overflow-clip py-[20vw] gap-[20vw] flex flex-col items-center justify-center md:hidden"
         >
            
             {/* Vertically Stacked Card Boxes (Exact same UI structure and classnames as desktop VaultBox) */}
@@ -65,7 +71,7 @@ export default function VaultGridNewMobile() {
                         <VaultBox
                             key={box.id}
                             {...box}
-                            styles={`w-[45%] shrink-0 max-sm:w-full ${extraHeight} max-md:!p-5`}
+                            styles={`fadeup w-[45%] shrink-0 max-sm:w-full ${extraHeight} max-md:!p-5`}
                         />
                     );
                 })}
