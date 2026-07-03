@@ -55,6 +55,37 @@ function TableOfContents({ containerRef, watchKey }) {
     setActiveId(id);
 
     scrollTweenRef.current?.kill();
+    scrollTweenRef.current = null;
+
+    window.history.pushState(null, "", `#${id}`);
+
+    const scrollDuration = 1.15;
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const releaseLock = () => {
+      if (activeLockRef.current.timeoutId) {
+        window.clearTimeout(activeLockRef.current.timeoutId);
+      }
+      activeLockRef.current = { id: "", targetTop: 0, timeoutId: null };
+    };
+
+    if (lenis) {
+      lenis.scrollTo(targetTop, {
+        duration: scrollDuration,
+        easing: easeOutCubic,
+        lock: true,
+        force: true,
+        onComplete: releaseLock,
+      });
+
+      // Safety net in case onComplete never fires (e.g. target clamped).
+      activeLockRef.current.timeoutId = window.setTimeout(
+        releaseLock,
+        scrollDuration * 1000 + 300
+      );
+
+      return;
+    }
 
     const scrollState = {
       y: window.scrollY,
@@ -62,46 +93,16 @@ function TableOfContents({ containerRef, watchKey }) {
 
     scrollTweenRef.current = gsap.to(scrollState, {
       y: targetTop,
-      duration: 1.15,
+      duration: scrollDuration,
       ease: "power3.out",
       onUpdate: () => {
-        if (lenis) {
-          lenis.scrollTo(scrollState.y, {
-            immediate: true,
-            force: true,
-          });
-
-          return;
-        }
-
         window.scrollTo(0, scrollState.y);
       },
       onComplete: () => {
         scrollTweenRef.current = null;
+        releaseLock();
       },
     });
-
-    window.history.pushState(null, "", `#${id}`);
-
-    const releaseWhenSettled = (startedAt = performance.now()) => {
-      const isSettled = Math.abs(window.scrollY - targetTop) < 2;
-      const timedOut = performance.now() - startedAt > 1800;
-
-      if (isSettled || timedOut) {
-        activeLockRef.current = { id: "", targetTop: 0, timeoutId: null };
-        return;
-      }
-
-      activeLockRef.current.timeoutId = window.setTimeout(
-        () => releaseWhenSettled(startedAt),
-        80
-      );
-    };
-
-    activeLockRef.current.timeoutId = window.setTimeout(
-      () => releaseWhenSettled(),
-      120
-    );
   };
 
   useEffect(() => {

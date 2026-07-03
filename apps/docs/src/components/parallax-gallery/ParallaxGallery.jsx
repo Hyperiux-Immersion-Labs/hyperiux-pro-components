@@ -129,7 +129,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  delay: 0,
  inertia: false,
  onStart: () => {
- lenis.stop();
+ lenis?.stop();
  },
  onComplete: () => {
  lenis?.start();
@@ -151,14 +151,23 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
 
  // Measure the viewport before first paint so mobile refreshes do not flash desktop sizing.
  useLayoutEffect(() => {
- const checkMobile = () => {
+
+ let lastWidth = window.innerWidth;
+
+ const measure = () => {
  setIsLayoutReady(false);
  setIsMobile(window.innerWidth < 640);
  };
 
- checkMobile();
- window.addEventListener("resize", checkMobile);
- return () => window.removeEventListener("resize", checkMobile);
+ const onResize = () => {
+ if (window.innerWidth === lastWidth) return;
+ lastWidth = window.innerWidth;
+ measure();
+ };
+
+ measure();
+ window.addEventListener("resize", onResize);
+ return () => window.removeEventListener("resize", onResize);
  }, []);
 
  useEffect(() => {
