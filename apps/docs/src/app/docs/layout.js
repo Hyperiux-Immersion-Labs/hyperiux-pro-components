@@ -5,6 +5,7 @@ import DocsBody from "./DocsBody";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import Footer from "@/components/LandpageV2/Footer";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
+import CTA2 from "@/components/LandpageV2/CTA2";
 
 function VaultLayoutFallback() {
   return (
@@ -36,9 +37,11 @@ export default function Layout({ children }) {
               <VaultHeader showSearch totalEffects={totalEffects} effects={registry?.items || []} />
             </React.Suspense>
             <DocsBody>{children}</DocsBody>
-            <Footer />
+           
           </div>
         </VaultLayout>
+        <CTA2 />
+         <Footer />
       </Suspense>
     </>
   );
