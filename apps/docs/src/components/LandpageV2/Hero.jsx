@@ -345,14 +345,11 @@ export default function Hero() {
 
   return (
     <section className="pointer-events-none relative z-20 flex h-screen w-full max-sm:h-[95vh] max-sm:w-screen items-center self-padd">
-      <Image
+     <img
         src="/landing-page/hero-bg.png"
         alt=""
         aria-hidden="true"
-        fill
-        priority
-        sizes="100vw"
-        className="pointer-events-none absolute inset-0 -z-10 hidden object-cover max-sm:block"
+        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-sm:block"
       />
       <div
         ref={containerRef}
