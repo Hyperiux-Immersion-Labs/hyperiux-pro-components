@@ -66,11 +66,12 @@ export const sizeThemePresets = {
       saturation: 1.2,
     },
     light: {
-      strokeOpacity: 0.12,
-      innerOpacity: 0.26,
-      bloomOpacity: 0.34,
-      innerShadow: 'rgba(0, 0, 0, 0.14)',
-      saturation: 1.5,
+      strokeOpacity: 0.8,
+      innerOpacity: 0.85,
+      bloomOpacity: 0.95,
+      innerShadow: 'rgba(0, 0, 0, 0.18)',
+      saturation: 2.0,
+      brightness: 1.6,
     },
   },
   line: {
@@ -150,15 +151,23 @@ export const themeColors = {
 const colorPalettes = {
   colorful: {
     border: [
-      { color: 'rgb(255, 50, 100)', pos: '33% -7.4%', size: '70px 40px' },
-      { color: 'rgb(40, 140, 255)', pos: '12% -5%', size: '60px 35px' },
-      { color: 'rgb(50, 200, 80)', pos: '2.1% 68.3%', size: '40px 70px' },
-      { color: 'rgb(30, 185, 170)', pos: '2.1% 68.3%', size: '20px 35px' },
-      { color: 'rgb(100, 70, 255)', pos: '74.4% 100%', size: '180px 32px' },
-      { color: 'rgb(40, 140, 255)', pos: '55% 100%', size: '85px 26px' },
-      { color: 'rgb(255, 120, 40)', pos: '93.9% 0%', size: '74px 32px' },
-      { color: 'rgb(240, 50, 180)', pos: '100% 27.1%', size: '26px 42px' },
-      { color: 'rgb(180, 40, 240)', pos: '100% 27.1%', size: '52px 48px' },
+      // Top edge → elongate on X (wide ovals), sat ON the edge so they reach inward.
+      // Spaced ~20% apart with overlapping widths so the top glow stays continuous.
+      { color: 'rgb(40, 140, 255)', pos: '12% 1%', size: '130px 65px' },
+      { color: 'rgb(255, 50, 100)', pos: '33% 0%', size: '150px 75px' },
+      { color: 'rgb(180, 40, 240)', pos: '55% 0%', size: '160px 72px' },
+      { color: 'rgb(255, 90, 70)', pos: '74% 1%', size: '160px 72px' },
+      // Left edge → elongate on Y (tall, narrow ovals)
+      { color: 'rgb(50, 200, 80)', pos: '2.1% 68.3%', size: '46px 130px' },
+      { color: 'rgb(30, 185, 170)', pos: '2.1% 68.3%', size: '24px 68px' },
+      // Bottom edge → elongate on X
+      { color: 'rgb(100, 70, 255)', pos: '74.4% 100%', size: '280px 56px' },
+      { color: 'rgb(40, 140, 255)', pos: '55% 100%', size: '150px 50px' },
+      // Top-right → elongate on X
+      { color: 'rgb(255, 120, 40)', pos: '93.9% 1%', size: '150px 82px' },
+      // Right edge → elongate on Y
+      { color: 'rgb(240, 50, 180)', pos: '100% 27.1%', size: '30px 80px' },
+      { color: 'rgb(180, 40, 240)', pos: '100% 27.1%', size: '56px 92px' },
     ],
     spike: { primary: 'rgb(255, 60, 80)', secondary: 'rgba(40, 190, 180, 0.98)' },
     spikeLt: { primary: 'rgb(200, 30, 60)', secondary: 'rgb(20, 150, 140)' },
@@ -1248,9 +1257,9 @@ function generateBorderVariantCSS(options) {
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes beam-hue-shift-${id} {
-  0% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) - ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
-  50% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) + ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
-  100% { filter: hue-rotate(calc(var(--beam-hue-base, 0deg) - ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
+  0% { filter: blur(9px) hue-rotate(calc(var(--beam-hue-base, 0deg) - ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
+  50% { filter: blur(9px) hue-rotate(calc(var(--beam-hue-base, 0deg) + ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
+  100% { filter: blur(9px) hue-rotate(calc(var(--beam-hue-base, 0deg) - ${hueRange}deg)) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)}); }
 }`;
 
   const isDark = theme === 'dark';
@@ -1302,18 +1311,18 @@ function generateBorderVariantCSS(options) {
       )`
     : `conic-gradient(
         from var(--beam-angle-${id}),
-        transparent 0%, transparent 58%,
-        rgba(0, 0, 0, 0.02) 62%,
-        rgba(0, 0, 0, 0.08) 65%,
-        rgba(0, 0, 0, 0.2) 67%,
-        rgba(0, 0, 0, 0.4) 69%,
+        transparent 0%, transparent 50%,
+        rgba(0, 0, 0, 0.02) 55%,
+        rgba(0, 0, 0, 0.08) 60%,
+        rgba(0, 0, 0, 0.2) 65%,
+        rgba(0, 0, 0, 0.4) 68%,
         rgba(0, 0, 0, 0.6) 70%,
-        rgba(0, 0, 0, 0.6) 70.5%,
-        rgba(0, 0, 0, 0.4) 71.5%,
-        rgba(0, 0, 0, 0.2) 73%,
-        rgba(0, 0, 0, 0.08) 75%,
-        rgba(0, 0, 0, 0.02) 78%,
-        transparent 82%
+        rgba(0, 0, 0, 0.6) 71%,
+        rgba(0, 0, 0, 0.4) 74%,
+        rgba(0, 0, 0, 0.2) 78%,
+        rgba(0, 0, 0, 0.08) 83%,
+        rgba(0, 0, 0, 0.02) 88%,
+        transparent 93%
       )`;
 
   return `
@@ -1402,8 +1411,8 @@ function generateBorderVariantCSS(options) {
       rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
       transparent 95%, transparent 100%
     ),
-    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
-    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+    linear-gradient(white, transparent 420px, transparent calc(100% - 420px), white),
+    linear-gradient(to right, white, transparent 420px, transparent calc(100% - 420px), white);
   -webkit-mask-composite: source-in, source-over;
   mask-image:
     conic-gradient(
@@ -1414,8 +1423,8 @@ function generateBorderVariantCSS(options) {
       rgba(255, 255, 255, 0.35) 86%, rgba(255, 255, 255, 0.1) 92%,
       transparent 95%, transparent 100%
     ),
-    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
-    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
+    linear-gradient(white, transparent 420px, transparent calc(100% - 420px), white),
+    linear-gradient(to right, white, transparent 420px, transparent calc(100% - 420px), white);
   mask-composite: intersect, add;
   pointer-events: none;
   z-index: 1;
@@ -1436,7 +1445,7 @@ function generateBorderVariantCSS(options) {
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   padding: ${borderWidth}px;
-  filter: blur(8px) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)});
+  filter: blur(20px) brightness(${brightness.toFixed(2)}) saturate(${saturation.toFixed(2)});
   pointer-events: none;
   z-index: 3;
   opacity: 0;

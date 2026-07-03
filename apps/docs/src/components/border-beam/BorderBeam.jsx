@@ -65,8 +65,8 @@ export const BeamBorder = forwardRef(function BeamBorder(
   {
     children,
     size = 'md',
-    colorVariant = 'colorful',
-    theme = 'dark',
+    colorVariant = 'sunset',
+    theme = 'light',
     staticColors = false,
     duration,
     active = true,

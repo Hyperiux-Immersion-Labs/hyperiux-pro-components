@@ -9,6 +9,7 @@ const cardData = {
   statValue: 'Continuous rotation',
   size: 'md',
   colorVariant: 'colorful',
+  strength:0.7,
 }
 
 export default function BorderBeam() {
@@ -16,34 +17,34 @@ export default function BorderBeam() {
     <BeamBorder
       size={cardData.size}
       colorVariant={cardData.colorVariant}
-      theme="dark"
+      theme="light"
     >
-      <div className="bg-white/6 rounded-md p-[2.2vw] backdrop-blur-sm max-md:p-[4.8vw] max-sm:p-[6vw]">
+      <div className="bg-[#f4f5f7] rounded-md p-[2.2vw] backdrop-blur-sm max-md:p-[4.8vw] max-sm:p-[6vw]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[0.8vw] uppercase tracking-[0.22em] text-white/45 max-md:text-[1.8vw] max-sm:text-[3vw]">
+            <p className="text-[0.8vw] uppercase tracking-[0.22em] text-black/45 max-md:text-[1.8vw] max-sm:text-[3vw]">
               Featured Surface
             </p>
-            <h2 className="mt-[0.8vw] max-w-[28vw] text-[2.2vw] font-medium leading-[1.1] tracking-[-0.04em] text-white max-md:mt-[1.6vw] max-md:max-w-full max-md:text-[5vw] max-sm:mt-[2vw] max-sm:text-[7vw]">
+            <h2 className="mt-[0.8vw] max-w-[28vw] text-[2.2vw] font-medium leading-[1.1] tracking-[-0.04em] text-black max-md:mt-[1.6vw] max-md:max-w-full max-md:text-[5vw] max-sm:mt-[2vw] max-sm:text-[7vw]">
               {cardData.title}
             </h2>
           </div>
 
-          <span className="rounded-full border border-white/10 bg-white/8 px-[1vw] py-[0.4vw] text-[0.7vw] uppercase tracking-[0.18em] text-white/70 max-md:px-[2.4vw] max-md:py-[1vw] max-md:text-[1.6vw] max-sm:px-[3.5vw] max-sm:py-[1.6vw] max-sm:text-[2.6vw]">
+          <span className="rounded-full border border-black/10 bg-black/5 px-[1vw] py-[0.4vw] text-[0.7vw] uppercase tracking-[0.18em] text-black/70 max-md:px-[2.4vw] max-md:py-[1vw] max-md:text-[1.6vw] max-sm:px-[3.5vw] max-sm:py-[1.6vw] max-sm:text-[2.6vw]">
             {cardData.label}
           </span>
         </div>
 
-        <p className="mt-[1.6vw] max-w-[32vw] text-[1vw] leading-[1.6] text-white/60 max-md:mt-[3vw] max-md:max-w-full max-md:text-[2.1vw] max-sm:mt-[4vw] max-sm:text-[3.4vw]">
+        <p className="mt-[1.6vw] max-w-[32vw] text-[1vw] leading-[1.6] text-black/60 max-md:mt-[3vw] max-md:max-w-full max-md:text-[2.1vw] max-sm:mt-[4vw] max-sm:text-[3.4vw]">
           {cardData.description}
         </p>
 
-        <div className="mt-[2.4vw] flex items-end justify-between gap-4 border-t border-white/10 pt-[1.6vw] max-md:mt-[5vw] max-md:pt-[3vw] max-sm:mt-[6vw] max-sm:flex-col max-sm:items-start max-sm:pt-[4vw]">
+        <div className="mt-[2.4vw] flex items-end justify-between gap-4 border-t border-black/10 pt-[1.6vw] max-md:mt-[5vw] max-md:pt-[3vw] max-sm:mt-[6vw] max-sm:flex-col max-sm:items-start max-sm:pt-[4vw]">
           <div>
-            <p className="text-[0.7vw] uppercase tracking-[0.2em] text-white/40 max-md:text-[1.5vw] max-sm:text-[2.5vw]">
+            <p className="text-[0.7vw] uppercase tracking-[0.2em] text-black/40 max-md:text-[1.5vw] max-sm:text-[2.5vw]">
               {cardData.statLabel}
             </p>
-            <p className="mt-[0.5vw] text-[1.2vw] font-medium text-white max-md:mt-[1vw] max-md:text-[2.5vw] max-sm:mt-[1.4vw] max-sm:text-[4vw]">
+            <p className="mt-[0.5vw] text-[1.2vw] font-medium text-black max-md:mt-[1vw] max-md:text-[2.5vw] max-sm:mt-[1.4vw] max-sm:text-[4vw]">
               {cardData.statValue}
             </p>
           </div>
