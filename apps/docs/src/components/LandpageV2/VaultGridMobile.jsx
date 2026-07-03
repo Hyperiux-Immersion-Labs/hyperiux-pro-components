@@ -9,40 +9,64 @@ const MOBILE_BOXES = [
     {
         id: "mobile-block-top-layer-1",
         img: '/video/1.mp4',
-        number: "01",
-        label: "Scroll Effects"
+       number: "01",
+        label: "Scroll Effects",
+        title: "Scroll Stack",
+        paragraph: "For layered storytelling sections that need depth and progression.",
+        containerLink: "/demo/scroll-stack",
+        labelLink:"/effects/scroll-effects"
     },
     {
         id: "mobile-block-top-layer-2",
         img: '/video/2.mp4',
-        number: "02",
-        label: "Cursor Effects"
+       number: "02",
+        label: "Text Animations",
+        title: "Blur Text",
+        paragraph: "For hero headlines, launch copy, and key messages that should reveal with control.",
+        containerLink: "/demo/blur-text",
+        labelLink:"/effects/text-animations"
     },
     {
         id: "mobile-block-top-layer-3",
-        img: '/video/3.mp4',
+        img: '/video/webgl-slider-video.mp4',
         number: "03",
         label: "WebGL",
+        title: "WebGL Slider",
+        paragraph: "For immersive product, portfolio, or campaign visuals.",
         textColor: "text-black",
+        containerLink: "/demo/webgl-slider",
+        labelLink: "/effects/webgl"
     },
     {
         id: "mobile-block-bottom-layer-1",
         img: '/video/4.mp4',
-        number: "04",
-        label: "Text Animations"
+         number: "04",
+        label: "page Transitions",
+        title: "Page Flip Transition",
+        paragraph: "For portfolios and editorial experiences where route changes should feel authored.",
+        containerLink: "/demo/page-flip-transition",
+        labelLink: "/effects/page-transitions"
     },
     {
         id: "mobile-block-bottom-layer-2",
         img: '/video/5.mp4',
         number: "05",
-        label: "Page Transitions",
+        label: "Cursor Effects",
+        title: "Liquid Glass Cursor",
+        paragraph: "For desktop experiences that need tactile interaction and premium feedback.",
         textColor: "text-black",
+        containerLink: "/demo/liquid-glass-cursor",
+        labelLink: "/effects/cursor-effects"
     },
     {
         id: "mobile-block-bottom-layer-3",
         img: '/video/6.mp4',
         number: "06",
-        label: "Navigations"
+        label: "Components",
+        title: "Animated FAQ",
+        paragraph: "Dogfood your own product in the objection-handling section.",
+        containerLink: "/demo/animated-faq",
+        labelLink:  "/effects/components"
     },
 
 ];

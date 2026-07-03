@@ -106,7 +106,7 @@ export default function Workflow() {
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: accordionRef.current,
-                    start: 'top top',
+                    start: 'top 30%',
                     end: 'bottom bottom',
                     scrub: isMobile ? true : 2,
                     invalidateOnRefresh: true,
@@ -185,7 +185,7 @@ export default function Workflow() {
             <section
                 ref={accordionRef}
                 id="Workflow"
-                className="h-[240vh] max-sm:mb-4 max-sm:h-[300vh] relative"
+                className="h-[200vh] max-sm:mb-4 max-sm:h-[300vh] relative"
             >
                 <RandomBlur as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>

@@ -84,7 +84,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[15vw]  w-full overflow-hidden max-sm:mt-16 ">
+    <footer className="relative z-200 py-[20vw]  w-full overflow-hidden max-sm:mt-16 ">
       <ReflectiveRods />
       <p className="text-center max-sm:w-full text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
       <div className="mx-auto w-[70vw] max-sm:w-full max-sm:px-[5vw]">

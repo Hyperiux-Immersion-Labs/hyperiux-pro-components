@@ -44,7 +44,7 @@ export default function UIKit() {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: "#uikit-section",
-            start: "10% 90%",
+            start: "30% 90%",
             end: "102% bottom",
             scrub: true,
             // markers:true,
@@ -58,7 +58,7 @@ export default function UIKit() {
         }).to(".use-case-container", {
           translateX: "-38%",
           duration: 1.2,
-          delay: -0.8,
+          delay: -1,
           ease: "power1.inOut",
         });
       } else {
@@ -82,7 +82,7 @@ export default function UIKit() {
   }, []);
 
   return (
-    <section id="uikit-section" className="w-full h-[350vh] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
+    <section id="uikit-section" className="w-full h-[250vh] pt-[7%] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
             <RandomBlur as="h2" className="text110 w-[90vw] mx-auto text-center">
                Not <span className='text-[#ff5f00]'>Another</span> UI Kit. Not a Side Project.
@@ -90,8 +90,8 @@ export default function UIKit() {
         </div>
 
       {/* Use Case Cards */}
-      <div className="w-screen h-screen sticky mt-[-50vw] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
-        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container ">
+      <div className="w-screen h-screen sticky mt-[-60vh] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
+        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container translate-x-[20%] ">
           {UI_CARDS.map((card) => (
             <div
               key={card.id}

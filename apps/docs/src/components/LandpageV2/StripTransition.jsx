@@ -15,7 +15,7 @@ export default function StripTransition() {
         const ctx = gsap.context(() => {
             // Start strips below the container
             gsap.set('.strip', { yPercent: 100 })
-            
+
             // Animate them up to their natural position
             gsap.to('.strip', {
                 yPercent: -100,
@@ -24,25 +24,29 @@ export default function StripTransition() {
                 ease: 'none',
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: '90% 100%', // Start when container enters from bottom
-                    end: '200% 100%', // End when container is fully in view
+                    start: '100% 180%', // Start when container enters from bottom
+                    end: '220% 100%', // End when container is fully in view
                     scrub: true,
-                    markers: false,
+                    // markers: true,
                 }
             })
+            // gsap.to(".pricing",{
+            //     ypercent: -20,
+
+            // })
         }, containerRef)
 
         return () => ctx.revert()
     }, [])
 
     return (
-        <section ref={containerRef} className="h-[250vh] mt-[-125vw]  flex max-sm:mt-[-180vh] items-center justify-between w-full  bg-transparent pointer-events-none">
+        <section ref={containerRef} className="h-[250vh] mt-[-280vh]  flex max-sm:mt-[-180vh] items-center justify-between w-full  bg-transparent pointer-events-none relative z-3">
             {[...Array(5)].map((_, i) => (
-               <div
-  key={i}
-  className="w-1/5 strip h-full"
-  style={{
-    background: `
+                <div
+                    key={i}
+                    className="w-1/5 strip h-full"
+                    style={{
+                        background: `
       linear-gradient(
         to bottom,
         #0e0e0e 0%,
@@ -56,10 +60,10 @@ export default function StripTransition() {
         #ffffff 100%
       )
     `,
-  }}
-></div>
+                    }}
+                ></div>
             ))}
         </section>
-  
+
     )
 }

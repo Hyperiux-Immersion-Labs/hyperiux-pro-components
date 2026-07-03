@@ -97,7 +97,7 @@ export default function ForDevelopers() {
                 scrollTrigger: {
                     trigger: accordionRef.current,
                     start: 'top top',
-                    end: 'bottom bottom',
+                    end: '80% bottom',
                     scrub: 0.5,
                 }
             })
@@ -149,7 +149,7 @@ export default function ForDevelopers() {
             // The open title is enlarged with a transform scale, which on the
             // narrow mobile card pushes long titles past the edge. Scale less on
             // mobile so it stays in bounds; desktop keeps its original 1.3.
-            const openTitleScale = isMobile ? 1.2 : 1.8
+            const openTitleScale = isMobile ? 1.2 : 1.6
 
             // Setup
             cardData.forEach((data, i) => {
@@ -240,7 +240,7 @@ export default function ForDevelopers() {
 
     return (
         <div ref={containerRef}>
-            <section ref={accordionRef} className='h-[300vh] mb-[30vw] w-full relative'>
+            <section ref={accordionRef} className='h-[300vh] mt-[-20vh] w-full relative'>
                 <div className='h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
                      <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
 

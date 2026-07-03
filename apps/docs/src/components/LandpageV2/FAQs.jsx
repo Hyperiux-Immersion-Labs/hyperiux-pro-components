@@ -46,7 +46,7 @@ export default function FAQs({ faqItems, isHomePage = false }) {
         <section ref={containerRef} className="h-full w-full pb-[10vw]! self-padd text-white relative">
             {isHomePage && (
                 <div className="pointer-events-none">
-                    <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh]"></div>
+                    <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh] z-4"></div>
                     <div className="h-[30vw] max-sm:h-[30vh]"></div>
                 </div>
             )}

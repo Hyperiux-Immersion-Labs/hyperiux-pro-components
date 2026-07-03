@@ -6,7 +6,7 @@ import { UnlockIcon } from 'lucide-react';
 
 export default function CTA2({ animations = true ,href="/pricing#pricing-cards" }) {
     return (
-        <div className=" z-100 h-fit py-[5vw]  overflow-hidden flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw] max-sm:px-[7vw]">
+        <div className=" z-100 h-fit py-[5vw] pt-[12vw]  overflow-hidden flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw] max-sm:px-[7vw]">
             <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-2">
                 {
                     animations ? (
