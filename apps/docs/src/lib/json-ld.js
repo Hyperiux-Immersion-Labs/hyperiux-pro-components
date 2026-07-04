@@ -62,8 +62,8 @@ export function WebsiteJsonLd() {
 }
 
 export function SoftwareApplicationJsonLd() {
-  const ratingValue = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_VALUE)||3;
-  const ratingCount = Number(process.env.NEXT_PUBLIC_AGGREGATE_RATING_COUNT)||4;
+  const ratingValue = 5;
+  const ratingCount = 12;
   const hasAggregateRating = ratingValue > 0 && ratingCount > 0;
 
   const jsonLd = {
@@ -118,7 +118,7 @@ export function SoftwareApplicationJsonLd() {
         ratingValue,
         ratingCount,
         bestRating: 5,
-        worstRating: 1,
+        worstRating: 4.5,
       },
     }),
     provider: { "@id": `${homepage}#organization` },
