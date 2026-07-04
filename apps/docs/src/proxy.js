@@ -8,12 +8,6 @@ const isProtectedRoute = createRouteMatcher([
   "/api/stripe(.*)",
 ]);
 
-// Bots and LLM crawlers don't carry Clerk cookies. Running clerkMiddleware on
-// their requests triggers a handshake redirect chain they can't follow, making
-// the page inaccessible to AI scrapers, SEO crawlers, and link previewers.
-// All bot-accessed routes are public anyway, so skip Clerk entirely for them.
-const BOT_UA = /bot|crawl|spider|slurp|facebookexternalhit|GPTBot|ClaudeBot|anthropic-ai|PerplexityBot|Bytespider|BingBot|Googlebot|YandexBot|DuckDuckBot|Baiduspider|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|TelegramBot|AppleBot/i;
-
 const withClerk = clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
@@ -33,13 +27,6 @@ export default async function middleware(request) {
     const url = new URL(request.url);
     url.host = host.replace(/^www\./, "");
     return NextResponse.redirect(url.toString(), 301);
-  }
-
-  // Skip Clerk for bots — they only access public routes and can't handle
-  // the cookie-based handshake redirect chain Clerk issues.
-  const ua = request.headers.get("user-agent") || "";
-  if (BOT_UA.test(ua)) {
-    return NextResponse.next();
   }
 
   const clientUat = request.cookies.get("__client_uat")?.value;
