@@ -123,7 +123,10 @@ export function VaultContent({
   const justUpgraded = searchParams.get("upgraded") === "true";
   const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const wishlistTimerRef = useRef(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!showWishlistToast) return;
@@ -789,7 +792,7 @@ const routeKey = `${pathname}${
 
     </VaultLayout>
 
-    {typeof document !== "undefined" && createPortal(
+    {mounted && createPortal(
       <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-sm:bottom-4 max-sm:left-4 max-sm:right-4">
         {/* Pro upgrade success toast */}
         <div
