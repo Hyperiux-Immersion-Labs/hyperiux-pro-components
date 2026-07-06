@@ -61,12 +61,7 @@ export default function GradientFill() {
                             opacity: .5,
                             duration: 2,
                         })
-                        tl2.to(glow, {
-                            scale: 2.7,
-                            yPercent: 35,
-                            duration: 2,
-                            opacity: .85,
-                        })
+                        
                         tl2.to(glow, {
                             scale: 3.2,
                             yPercent: 0,
@@ -79,7 +74,7 @@ export default function GradientFill() {
                         gsap.set(glow, {
                             opacity: 0.3,
                             scaleX: 1,
-                            yPercent: 150,
+                            yPercent: 120,
                             scaleY: 1,
                             transformOrigin: "bottom center",
                             willChange: "transform, opacity"
@@ -91,22 +86,17 @@ export default function GradientFill() {
                                 start: "top center",
                                 end: "bottom center",
                                 scrub: true,
-                                markers: false,
+                                // markers: true,
                             },
                             ease: 'none',
                         })
                         tl2.to(glow, {
                             scale: 1.5,
-                            yPercent: 100,
+                            yPercent: 70,
                             opacity: .5,
                             duration: 2,
                         })
-                        tl2.to(glow, {
-                            scale: 2,
-                            yPercent: 60,
-                            duration: 2,
-                            opacity: .75,
-                        })
+                       
                         tl2.to(glow, {
                             scale: 2.5,
                             yPercent: 30,
@@ -163,7 +153,7 @@ export default function GradientFill() {
     }, [])
 
     return (
-        <section ref={containerRef} className="h-[400vh] mt-[-10vw] relative w-full bg-[#0e0e0e]">
+        <section ref={containerRef} className="h-[240vh] mt-[-10vw] relative w-full bg-[#0e0e0e]">
             <div className="w-full sticky top-0 z-99 h-screen flex justify-center items-center overflow-x-clip">
 
                 {/* CSS Radial Glow, using the 'fill' style & class from CTA2.jsx */}
@@ -175,9 +165,9 @@ export default function GradientFill() {
                 ></div>
 
                 {[
-                    'Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.',
-                    'The difference now lives in the interaction layer: how your page moves, responds, reveals, transitions, and guides attention.',
-                    'But building that layer from scratch is slow & hard. Good motion needs taste, timing, restraint, performance discipline, cleanup, responsive behavior, mobile fallbacks and reduced-motion support. Most teams either skip it, overdo it, or rebuild the same interaction from scratch for every project.',
+                    'Most websites are not broken. They are forgettable.',
+                    'The difference now lives in the interaction layer: how the page moves, responds, reveals, transitions, and guides attention.',
+                    // 'But building that layer from scratch is slow & hard. Good motion needs taste, timing, restraint, performance discipline, cleanup, responsive behavior, mobile fallbacks and reduced-motion support. Most teams either skip it, overdo it, or rebuild the same interaction from scratch for every project.',
                 ].map((text, i) => (
                     <p
                         key={i}

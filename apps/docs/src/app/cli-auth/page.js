@@ -15,9 +15,6 @@ export const metadata = createPageMetadata({
   },
 });
 
-
-
-
 export default async function CliAuthPage() {
   const { userId } = await auth();
 
