@@ -36,6 +36,10 @@ const layGrotesk = localFont({
 
 export const metadata = createRootMetadata();
 
+// Runs synchronously before any HTML is painted — adds a class when loader hasn't run yet
+// so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
+const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
+
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
   var hasSession=document.cookie.indexOf('__session=')!==-1;
@@ -49,6 +53,9 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
+      </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}

@@ -481,8 +481,8 @@ export default function CodeBlockWorkflow() {
 
                 {/* app/ */}
                 <TreeFolder label="app" depth={0} />
-                <div className="pl-[1.35vw] max-md:pl-5">
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-3">
+                <div className="">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-md:ml-1.5 max-md:pl-3">
                     <div className="flex items-center gap-3 text-white/80">
                       <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
                         <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
@@ -495,21 +495,21 @@ export default function CodeBlockWorkflow() {
 
                 {/* components/ */}
                 <TreeFolder label="components" depth={0} />
-                <div className="pl-[1.35vw] max-md:pl-3">
+                <div className="">
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ — hidden until animation */}
                     <div ref={setFileRef("effectsFolder")}>
                       <TreeFolder label="effects" depth={0} />
                     </div>
-                    <div className="pl-[1.35vw] pt-[0.45vw] max-md:pl-3 max-md:pt-1.5">
+                    <div className=" pt-[0.45vw]  max-md:pt-1.5">
                       <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
                         {/* split-canvas/ — hidden until animation */}
                         <div ref={setFileRef("splitCanvasFolder")}>
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>
-                        <div className="space-y-[0.35vw] pl-[1.35vw] pt-[0.45vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
+                        <div className="space-y-[0.35vw]  pt-[0.45vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
 
                           <TreeFile
                             label="index.jsx"

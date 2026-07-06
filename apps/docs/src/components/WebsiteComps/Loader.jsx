@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { HyperiuxLogo } from "@/utils/Icons";
@@ -332,17 +332,24 @@ export default function Loader() {
     drawWhitePixels(canvas, 0);
   }, [drawWhitePixels]);
 
+  // Runs synchronously before the first browser paint. On first visit, immediately
+  // puts the loader canvas in the DOM (setIsVisible causes a synchronous re-render
+  // in useLayoutEffect) and removes the CSS class that was hiding body content.
+  // This closes the gap where the hero was briefly visible before the canvas appeared.
+  useLayoutEffect(() => {
+    document.documentElement.classList.remove("loader-first-visit");
+    if (!hasLoaderRun()) {
+      setIsVisible(true);
+      setShouldRun(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (hasLoaderRun()) {
       document.body.classList.remove("loader-active");
       setLoaderRuntimeState({ running: false, complete: true });
 
       unlockScrollHard();
-
-      queueMicrotask(() => {
-        setIsVisible(false);
-        setShouldRun(false);
-      });
 
       requestAnimationFrame(() => {
         dispatchLoaderComplete(true);
@@ -355,11 +362,6 @@ export default function Loader() {
 
     document.body.classList.add("loader-active");
     setLoaderRuntimeState({ running: true, complete: false });
-
-    queueMicrotask(() => {
-      setShouldRun(true);
-      setIsVisible(true);
-    });
 
     return () => {
       if (!hasLoaderRun()) {
