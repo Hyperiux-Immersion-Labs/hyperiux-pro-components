@@ -35,7 +35,7 @@ export default function BorderBeam() {
           </span>
         </div>
 
-        <p className="mt-[1.6vw] max-w-[32vw] text-[1vw] leading-[1.6] text-black/60 max-md:mt-[3vw] max-md:max-w-full max-md:text-[2.1vw] max-sm:mt-[4vw] max-sm:text-[3.4vw]">
+        <p className="mt-[1.6vw] max-w-[32vw] text-[1vw] leading-[1.6] text-black/60 max-md:mt-[3vw] max-md:max-w-full max-md:text-[2.5vw] max-sm:mt-[4vw] max-sm:text-[3.4vw]">
           {cardData.description}
         </p>
 

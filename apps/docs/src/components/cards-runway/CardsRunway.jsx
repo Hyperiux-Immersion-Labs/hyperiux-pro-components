@@ -76,7 +76,7 @@ export default function CardsRunway({
               {/* Always visible top accent bar */}
               <div
                 style={{ backgroundColor: accentColor }}
-                className="w-full h-[0.5vw] max-md:h-[1.5vw] shrink-0"
+                className="w-full h-[0.5vw] max-md:h-[1vw] max-sm:h-[1.5vw] shrink-0"
               />
 
               {/* Card content */}

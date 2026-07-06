@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from"react";
 import Link from"next/link";
 
+const MOBILE_BREAKPOINT = 640;
+const MOBILE_HOLD_MS = 1000;
 
 const DotFillBtn = ({
  btnText ="",
@@ -18,6 +20,8 @@ const DotFillBtn = ({
 }) => {
  const textRef = useRef(null);
  const [hovered, setHovered] = useState(false);
+ const [isMobile, setIsMobile] = useState(false);
+ const releaseTimeoutRef = useRef(null);
 
  useEffect(() => {
  const el = textRef.current;
@@ -55,7 +59,29 @@ const DotFillBtn = ({
 		});
 	}, [btnText, staggerStep]);
 
-	const handleMouseEnter = () => {
+	useEffect(() => {
+		const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+		const syncIsMobile = (event) => {
+			const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+			setIsMobile(matches);
+		};
+
+		syncIsMobile(mediaQuery);
+		mediaQuery.addEventListener("change", syncIsMobile);
+
+		return () => mediaQuery.removeEventListener("change", syncIsMobile);
+	}, []);
+
+	useEffect(() => {
+		return () => {
+			if (releaseTimeoutRef.current) {
+				window.clearTimeout(releaseTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	const activate = () => {
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
@@ -65,7 +91,7 @@ const DotFillBtn = ({
 		setHovered(true);
 	};
 
-	const handleMouseLeave = () => {
+	const deactivate = () => {
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
@@ -75,11 +101,41 @@ const DotFillBtn = ({
 		setHovered(false);
 	};
 
+	const handleMouseEnter = () => {
+		if (isMobile) return;
+		activate();
+	};
+
+	const handleMouseLeave = () => {
+		if (isMobile) return;
+		deactivate();
+	};
+
+	const handlePointerDown = (event) => {
+		props.onPointerDown?.(event);
+
+		if (!isMobile || event.pointerType === "mouse") {
+			return;
+		}
+
+		if (releaseTimeoutRef.current) {
+			window.clearTimeout(releaseTimeoutRef.current);
+		}
+
+		activate();
+
+		releaseTimeoutRef.current = window.setTimeout(() => {
+			deactivate();
+			releaseTimeoutRef.current = null;
+		}, MOBILE_HOLD_MS);
+	};
+
 	return (
 		<Link
 			{...props}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
+			onPointerDown={handlePointerDown}
 			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] ${className} max-md:h-[9vw] max-md:pl-[7.6vw] max-md:pr-[4vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:pl-[11.8vw] max-sm:pr-[6vw] max-sm:text-[4.2vw]`}
 			style={{ background: bgColor, color: hovered ? hoverTextColor : textColor }}
 		>
