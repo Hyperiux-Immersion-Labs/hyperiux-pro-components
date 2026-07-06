@@ -63,7 +63,7 @@
   }
 
   .text24 {
-    font-size: 2.6vw;
+    font-size: 2.8vw;
   }
 
   .text32 {
@@ -72,6 +72,10 @@
 
   .text34 {
     font-size: 3.4vw;
+  }
+
+  .text64 {
+    font-size: 4vw;
   }
 
   .text80 {

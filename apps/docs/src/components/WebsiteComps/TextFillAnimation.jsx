@@ -151,7 +151,7 @@ export function TextFillAnimation({
       className={`relative h-fit w-full ${containerClassName}`}
       style={{ backgroundColor }}
     >
-      <div className="flex h-screen items-center justify-center overflow-x-hidden max-sm:h-fit">
+      <div className="flex h-screen items-center justify-center overflow-x-hidden max-md:h-fit">
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto">
           <h2

@@ -163,12 +163,12 @@ export default function GradientFill() {
     }, [])
 
     return (
-        <section ref={containerRef} className="h-[400vh] -mt-[10vw] relative w-full bg-[#0e0e0e]">
+        <section ref={containerRef} className="h-[400vh] mt-[-10vw] relative w-full bg-[#0e0e0e]">
             <div className="w-full sticky top-0 z-99 h-screen flex justify-center items-center overflow-x-clip">
 
                 {/* CSS Radial Glow, using the 'fill' style & class from CTA2.jsx */}
                 <div
-                    className="radial-glow-fill w-[100vw] max-sm:left-1/2 max-sm:w-[170vw] h-[50vw] max-sm:h-[60vh] absolute bottom-0 max-sm:bottom-[-30vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
+                    className="radial-glow-fill w-screen max-sm:left-1/2 max-sm:w-[170vw] h-[50vw] max-sm:h-[60vh] absolute bottom-0 max-sm:bottom-[-30vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
                     style={{
                         background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)'
                     }}

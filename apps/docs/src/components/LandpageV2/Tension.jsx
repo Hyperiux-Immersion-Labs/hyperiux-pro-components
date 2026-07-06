@@ -154,7 +154,7 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[2vw] max-sm:mt-[12vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[12vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it:
             timing, restraint, layout awareness, responsive behavior,
             reduced-motion support, dependency clarity, and performance
@@ -164,27 +164,27 @@ export default function Tension() {
           </SplitLine>
         </div>
 
-        <div ref={cardsRef} className="h-fit w-[70vw] mt-[8vw] space-y-[1vw] max-sm:w-full max-sm:mt-20 max-sm:space-y-5">
+        <div ref={cardsRef} className="h-fit w-[70vw] mt-[8vw] space-y-[1vw] max-md:w-full max-sm:mt-20 max-md:mt-20 max-md:space-y-5 max-sm:space-y-5">
           <div className="text24 px-[.5vw] flex w-full items-center justify-between max-sm:text-sm">
             <p>Fixes</p>
             <p>Solves</p>
           </div>
 
           {cards.map((items, index) => (
-            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw] max-sm:pr-4 max-sm:p-2">
-              <div className="flex items-center flex-1 min-w-0 max-sm:flex-col max-sm:items-start max-sm:gap-2.5">
-                <div className="flex items-center gap-[1vw] w-[25vw] shrink-0 max-sm:w-auto max-sm:gap-2.5">
-                  <div className="size-[3vw] flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0 max-sm:size-9">
+            <div key={index} className="tension-card bg-dark-card rounded-sm flex items-center justify-between pr-[1.5vw] p-[.7vw] max-sm:pr-4 max-md:p-3 max-sm:p-2">
+              <div className="flex items-center flex-1 min-w-0 max-md:flex-col max-md:items-start max-sm:gap-2.5 max-md:gap-3">
+                <div className="flex items-center gap-[1vw] w-[25vw] shrink-0 max-sm:w-auto max-sm:gap-2.5 max-md:gap-4">
+                  <div className="size-[3vw] max-md:size-8 flex items-center justify-center p-1.5 bg-black rounded-sm shrink-0 max-sm:size-9">
                     <svg className="tension-check opacity-0 h-full w-full" viewBox="0 0 24 24" fill="none" stroke="#03E07C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
                   <p className="text34 capitalize whitespace-nowrap max-sm:text-lg">{items.title}</p>
                 </div>
-                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0 max-sm:text-base! max-sm:leading-[1.2]">{items.description}</p>
+                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0  max-sm:text-base! max-sm:leading-[1.2]">{items.description}</p>
               </div>
-              <div className="flex items-center gap-[1vw] w-[13vw] shrink-0 max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
-                <div className="size-[3vw] flex items-center justify-center shrink-0 max-sm:size-12">
+              <div className="flex items-center gap-[1vw] w-[13vw] shrink-0 max-md:w-[30%] max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
+                <div className="size-[3vw] max-md:size-9 flex items-center justify-center shrink-0 max-sm:size-12">
                   <svg className="tension-x opacity-0 h-[60%] w-[60%]" viewBox="0 0 24 24" fill="none" stroke="#FF0B0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" />
                     <line x1="6" y1="6" x2="18" y2="18" />

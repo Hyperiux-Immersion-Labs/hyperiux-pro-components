@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 // import Button from "../Reusable/Button";
-import useIsMobile, { PHONE_BREAKPOINT } from "@/hooks/useIsMobile";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
@@ -40,16 +39,7 @@ export default function StorytellingMobile() {
     // Use state to track rotation to avoid ref read in render
     const [stmCircleRotation, setStmCircleRotation] = useState(0);
 
-    // Phone (<768px) vs tablet (768–1024px) — not the compact layout breakpoint (1025px)
-    const { isMounted, isMobile: isPhone } = useIsMobile(PHONE_BREAKPOINT);
-
     useEffect(() => {
-        // Only run once we're mounted on the client AND actually on a phone, so
-        // the refs below point at the mobile DOM that is really in the document.
-        // (matchMedia used to fire before React re-committed the section, leaving
-        // stmInfoTextRef null and the text permanently stuck at its hidden state.)
-        if (!isMounted || !isPhone) return;
-
         const section = stmSectionRef.current;
         if (!section) return;
 
@@ -153,7 +143,7 @@ export default function StorytellingMobile() {
             if (split) split.revert();
             ctx.revert();
         };
-    }, [isMounted, isPhone]);
+    }, []);
 
     // Circle settings (make it a proper circle, not an oval)
     const imageCount = IMAGES.length;
@@ -162,8 +152,10 @@ export default function StorytellingMobile() {
     const SEED = 42;
     const imageDiameterVW = 19;
 
-    // Phone: wider spread (70vw). Tablet: tighter circle (50vw).
-    const radiusVW = isMounted && isPhone ? 70 : 50;
+    // Phone: wider spread (70vw). Tablet: tighter spread (50vw).
+    const isTablet =
+        typeof window !== "undefined" && window.innerWidth >= 768;
+    const radiusVW = isTablet ? 55 : 70;
 
     // Images: compensate for the circle rotation to keep them upright!
     const circleImages = IMAGES.map((src, i) => {
@@ -212,14 +204,11 @@ export default function StorytellingMobile() {
         );
     });
 
-    // Nothing renders or runs on desktop — phones only (<768px)
-    if (isMounted && !isPhone) return null;
-
     return (
         <section
             ref={stmSectionRef}
             id="stm-storytelling-mobile"
-            className="stm-storytelling-section relative hidden max-sm:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
+            className="stm-storytelling-section relative hidden max-md:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
         >
             <RandomBlur
                 as="h2"
