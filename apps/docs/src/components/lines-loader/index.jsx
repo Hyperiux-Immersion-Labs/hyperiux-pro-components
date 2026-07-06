@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import Link from "next/link";
 import Option1 from "./LinesLoading";
 import Option2 from "./CenterLinesLoading";
-import Button from "../WebsiteComps/Button";
+import { ArrowRight } from "lucide-react";
 
 const VARIANTS = {
   option1: Option1,
@@ -86,13 +87,19 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
 function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
   return (
     <div
-      className={`fixed bottom-30 left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 transition-all duration-500 max-md:bottom-35 max-sm:bottom-40 ${
+      className={`fixed bottom-30 max-sm:bottom-[18vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-sm:gap-4 transition-all duration-500 max-md:bottom-35  ${
         isCompleted
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none"
       }`}
     >
-        <Button text=" Explore all effects" href="/effects" variant="orange" />
+        <Link
+          href="/effects"
+          className="rounded-full flex items-center gap-1 bg-orange-500 px-6 py-2 text-base  text-white transition-colors hover:bg-orange-600"
+        >
+          Explore all effects
+          <ArrowRight className="size-4" />
+        </Link>
       <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5">
         {VERSIONS.map((variant) => {
           const isActive = activeVariant === variant.value;
