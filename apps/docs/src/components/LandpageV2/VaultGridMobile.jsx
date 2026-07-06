@@ -84,7 +84,7 @@ export default function VaultGridNewMobile() {
         >
            
             {/* Vertically Stacked Card Boxes (Exact same UI structure and classnames as desktop VaultBox) */}
-            <div className="flex items-center justify-center flex-wrap max-sm:flex-col w-full max-sm:gap-[8vw] gap-[4vw]">
+            <div className="flex items-center justify-center flex-col max-sm:flex-col w-full max-sm:gap-[8vw] gap-[4vw]">
                 {MOBILE_BOXES.map((box, idx) => {
                     // Indices for "second , fourth 6tgh" (i.e. 2nd, 4th, 6th): idx 1, 3, 5
                     const extraHeight =
@@ -95,7 +95,7 @@ export default function VaultGridNewMobile() {
                         <VaultBox
                             key={box.id}
                             {...box}
-                            styles={`fadeup w-[45%] shrink-0 max-sm:w-full ${extraHeight} max-md:!p-5`}
+                            styles={`fadeup w-[45%] shrink-0 max-md:w-[90%] max-sm:w-full ${extraHeight} max-md:!p-5`}
                         />
                     );
                 })}

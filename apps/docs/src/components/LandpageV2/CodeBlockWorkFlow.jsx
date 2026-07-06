@@ -42,7 +42,7 @@ function TerminalTick({ tickRef }) {
 function Panel({ title, children, className = "" }) {
   return (
     <div
-      className={`overflow-hidden rounded-[1.6vw] border border-white/8 bg-[#161616] shadow-[0_20px_80px_rgba(0,0,0,0.35)] max-md:rounded-[4vw] ${className}`}
+      className={`overflow-hidden rounded-[1.6vw] border border-white/8 bg-[#161616] shadow-[0_20px_80px_rgba(0,0,0,0.35)] max-md:rounded-[1.6vw] max-sm:rounded-[4vw] ${className}`}
     >
       <div className="flex h-[3vw] items-center gap-[1vw] bg-[#272727] px-[1.4vw] max-md:h-12 max-md:px-5">
         <WindowDots />
@@ -463,7 +463,7 @@ export default function CodeBlockWorkflow() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-md:min-h-[20vh] max-sm:min-h-[40vh] max-md:order-last">
+            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
               <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />

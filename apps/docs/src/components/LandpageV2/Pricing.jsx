@@ -106,13 +106,13 @@ export default function Pricing({padding,content=true}) {
         })
 
     return (
-        <div className={`h-[190vw] text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw]`}>
-            <div className="sticky top-[15%] h-fit overflow-hidden flex flex-col gap-[10vw]  max-md:gap-[15vw] items-center justify-center ">
-            {content&&<div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
+        <div className={`h-[190vw] text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
+            <div className="sticky top-[15%] h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
+            {content&&<div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
                 <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
                 </RandomBlur>
-                <SplitLine as="p" className="text24 max-md:w-[90vw] mx-auto">
+                <SplitLine as="p" className="text24 max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
                 </SplitLine>
@@ -120,24 +120,24 @@ export default function Pricing({padding,content=true}) {
             <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup">
 
                 <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
-                    <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
+                    <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
 
                         <p className="text80 font-medium!">Free</p>
                         <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
                             <p className="text110 max-sm:text-[13vw]! font-medium!">$0</p>
                             <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
                         </div>
-                        <p className="text24 -mt-[1vw] max-md:mt-[-3.5vw]">For trying real effects in real projects.</p>
+                        <p className="text24 mt-[-1vw] max-md:mt-[-1vw] max-sm:mt-[-3.5vw]">For trying real effects in real projects.</p>
                         <div className="flex flex-col gap-[1.5vw] max-md:gap-[4.5vw] pt-[2vw]">
                             {freeFeatures.map((feature, index) => (
                                 <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
-                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
+                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:w-[3.5vw] max-md:h-[3.5vw] max-sm:w-[4vw] max-sm:h-[4vw] shrink-0" />
                                     <p className="text24 leading-[1.4] max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="w-fit max-md:w-full">
+                    <div className="w-fit max-sm:w-full">
                         <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw] max-md:w-full max-md:mb-0" />
                     </div>
                 </div>
@@ -182,18 +182,18 @@ export default function Pricing({padding,content=true}) {
                             <p className="text24 mb-[1vw] max-md:mb-2">{isYearly ? "Yearly" : "Monthly"}</p>
                             <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
                         </div>
-                        <p className="text24 -mt-[1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
+                        <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
                         <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">
                             {ProFeatures.map((feature, index) => (
                                 <div key={index} className="flex items-center max-md:gap-[3vw] gap-[1vw]">
-                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-md:w-[4vw] max-md:h-[4vw] shrink-0" />
+                                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-sm:w-[4vw] max-sm:h-[4vw] shrink-0 max-md:h-[3.5vw] max-md:w-[3.5vw]" />
                                     <p className="text24 leading-[1.4] max-md:text-[4.2vw]">{feature}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
-                        <div className="w-fit max-md:w-full">
+                        <div className="w-fit max-sm:w-full">
                             {!isLoaded ? (
                                 <Button variant="orange" text="···" className="max-md:w-full" disabled />
                             ) : userPlan === "pro" ? (
@@ -217,14 +217,14 @@ export default function Pricing({padding,content=true}) {
                                 />
                             )}
                         </div>
-                        <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
+                        <p className="text-light-grey max-sm:text-center max-md:text-[2.5vw] max-sm:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
                         {checkoutError && (
                             <p className="text-sm text-red-400">{checkoutError}</p>
                         )}
                     </div>
                 </div>
             </div>
-            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
+            <SplitLine as="p" className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>

@@ -379,12 +379,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-sm:w-screen items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen items-center self-padd">
      <img
         src="/landing-page/hero-bg.png"
         alt="hero-bg"
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-sm:block"
+        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-md:block"
       />
       <div
         ref={containerRef}

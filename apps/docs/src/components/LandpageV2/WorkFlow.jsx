@@ -63,14 +63,15 @@ export default function Workflow() {
         mm.add(
             {
                 isMobile: '(max-width: 640px)',
-                isDesktop: '(min-width: 641px)',
+                isTablet: '(min-width: 641px) and (max-width: 1025px)',
+                isDesktop: '(min-width: 1025px)',
             },
             (context) => {
-                const { isMobile } = context.conditions
+                const { isMobile, isTablet } = context.conditions
 
                 /* ── Responsive accordion heights (desktop values unchanged) ── */
-                const OPEN_HEIGHT = isMobile ? '60vw' : '16vw'
-                const CLOSED_HEIGHT = isMobile ? '12vw' : '5vw'
+                const OPEN_HEIGHT = isMobile ? '60vw' : isTablet ? '40vw' : '16vw'
+                const CLOSED_HEIGHT = isMobile ? '12vw' : isTablet ? '10vw' : '5vw'
 
             /* ── Query DOM groups ── */
             const numBoxes = gsap.utils.toArray('.wf-num-box')
@@ -180,7 +181,7 @@ export default function Workflow() {
     }, [])
 
     return (
-        <div ref={containerRef} className="text-white mt-[10vw] max-sm:pt-[14vh] max-sm:overflow-x-clip">
+        <div ref={containerRef} className="text-white mt-[10vw] max-md:pt-[10vh] max-sm:pt-[14vh] max-md:overflow-x-clip">
             {/* ── Accordion Section ── */}
             <section
                 ref={accordionRef}
@@ -191,8 +192,8 @@ export default function Workflow() {
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
 
-                <div className="h-screen max-sm:h-[85vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
-                     <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-sm:pt-[14vh] text-center">
+                <div className="h-screen max-sm:h-[85vh] max-md:h-[80vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
+                     <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
                     Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
@@ -203,18 +204,18 @@ export default function Workflow() {
                         />
 
                         {/* Steps */}
-                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-sm:pt-[25vw] z-100">
+                        <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-md:pt-[15vw] max-sm:pt-[25vw] z-100">
                             {STEPS.map((step, idx) => (
-                                <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[80vw]">
+                                <div key={idx} className="flex items-stretch w-[52vw] max-sm:w-[80vw] max-md:w-[80vw]">
                                     {/* Left column: number box + connecting line */}
-                                    <div className="flex flex-col items-center w-[5vw] max-sm:w-[10vw] shrink-0">
+                                    <div className="flex flex-col items-center w-[5vw] max-sm:w-[10vw] max-md:w-[10vw] shrink-0">
                                         {/* Number / Icon box */}
-                                        <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[12vw] max-sm:w-[12vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
+                                        <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[12vw] max-sm:w-[12vw] max-md:h-[10vw] max-md:w-[10vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
                                             <div className="wf-num absolute inset-0 flex items-center justify-center">
                                                 <p className="text34 pr-[.2vw]">{step.num}</p>
                                             </div>
                                             <div className="wf-icon absolute inset-0 flex items-center justify-center">
-                                                <step.Icon className="w-[2.5vw] h-[2.5vw] max-sm:w-[5vw] max-sm:h-[5vw]" />
+                                                <step.Icon className="w-[2.5vw] h-[2.5vw] max-sm:w-[5vw] max-sm:h-[5vw] max-md:w-[4vw] max-md:h-[4vw]" />
                                             </div>
                                         </div>
 
@@ -227,11 +228,11 @@ export default function Workflow() {
                                     </div>
 
                                     {/* Right column: content box */}
-                                    <div className="flex flex-col ml-[1vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-sm:mb-[6vw]">
-                                        <div className="wf-content-box h-[5vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
+                                    <div className="flex flex-col ml-[1vw] max-md:ml-[2vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-md:mb-[3vw] max-sm:mb-[6vw]">
+                                        <div className="wf-content-box h-[5vw] max-md:h-[10vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-md:px-[3vw] max-md:py-[2.5vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
                                             <p className="leading-none mt-[.25vw]">{step.title}</p>
                                             <div className="wf-text w-[85%] max-sm:w-full overflow-hidden">
-                                                <p className="text24 pt-[1.5vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
+                                                <p className="text24 pt-[1.5vw] max-md:pt-[2vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
                                             </div>
                                         </div>
                                     </div>

@@ -47,7 +47,7 @@ export default function FAQs({ faqItems, isHomePage = false }) {
         <section ref={containerRef} className="h-full w-full pb-[10vw]! text-white relative">
             {isHomePage && (
                 <div className="pointer-events-none">
-                    <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh] z-4"></div>
+                    <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-linear-to-b from-white via-primary to-background max-sm:h-[30vh] z-4"></div>
                     <div className="h-[30vw] max-sm:h-[30vh]"></div>
                 </div>
             )}
@@ -58,7 +58,7 @@ export default function FAQs({ faqItems, isHomePage = false }) {
                     Questions, <span className='text-primary'>Answered.</span>
                 </RandomBlur>
             </div>
-            <div className={`mx-auto w-full max-sm:max-w-full  ${isHomePage ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
+            <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full  ${isHomePage ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
                     {faqItems.map((item, index) => {
                         const isHidden = !isExpanded && index >= INITIAL_COUNT;

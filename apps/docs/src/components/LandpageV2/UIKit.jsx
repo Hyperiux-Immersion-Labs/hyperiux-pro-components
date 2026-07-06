@@ -90,18 +90,18 @@ export default function UIKit() {
         </div>
 
       {/* Use Case Cards */}
-      <div className="w-screen h-screen sticky mt-[-60vh] max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[10vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
-        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container translate-x-[20%] max-sm:translate-x-0 max-sm:pl-[5vw] ">
+      <div className="w-screen h-screen sticky mt-[-60vh]  max-sm:mt-[8vh] top-0  overflow-hidden px-[3vw] max-md:h-fit max-md:static max-md:mt-[12vw] max-md:pb-[4vw] max-md:overflow-x-scroll mobile-scrollbar max-md:pr-[7vw] z-15 ">
+        <div className="w-fit h-full flex gap-[3vw] max-sm:gap-[6vw] items-end use-case-container translate-x-[20%] max-md:translate-x-0 max-sm:pl-[5vw] ">
           {UI_CARDS.map((card) => (
             <div
               key={card.id}
               className="w-[28vw] h-fit flex flex-col relative use-case justify-between max-sm:w-[70vw] max-md:w-[55vw]"
             >
               {/* Always visible top orange bar */}
-              <div className="w-full h-[0.5vw] bg-[#ff5f00] max-md:h-[1.5vw] shrink-0" />
+              <div className="w-full h-[0.5vw] bg-[#ff5f00] max-md:h-[1vw] max-sm:h-[1.5vw] shrink-0" />
 
               {/* Expanding card content */}
-              <div className="w-full h-[37vw]  bg-[#161616] content-container overflow-hidden max-sm:h-[40vh] max-md:h-[65vw]">
+              <div className="w-full h-[37vw]  bg-[#161616] content-container overflow-hidden max-sm:h-[40vh] max-md:h-[60vw]">
                 <div className="p-[2.5vw] flex flex-col justify-between h-full max-md:p-[5vw]">
                   <h3 className="text64 max-sm:w-[80%]">
                     {card.title}

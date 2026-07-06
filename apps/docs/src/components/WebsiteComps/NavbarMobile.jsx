@@ -615,9 +615,9 @@ export default function NavbarMobile() {
             })}
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-8 flex flex-col gap-4">
+          <div className="mt-8 border-t border-white/10 pt-8 flex max-sm:flex-col gap-4">
             {isLoaded && user?.publicMetadata?.plan !== "pro" && (
-              <div className="flex w-full justify-center" onClick={handleNavigate}>
+              <div className="flex w-fit max-sm:w-full justify-center" onClick={handleNavigate}>
                 <Button
                   text="Upgrade to Pro"
                   href="/pricing#pricing-cards"
@@ -626,8 +626,8 @@ export default function NavbarMobile() {
                 />
               </div>
             )}
-            <div className="flex  w-full justify-center" onClick={handleNavigate}>
-              <Button text="Install CLI" href="/docs/installation" className="w-full" />
+            <div className="flex w-fit  max-sm:w-full justify-center" onClick={handleNavigate}>
+              <Button text="Install CLI" href="/docs/installation" className="w-fit max-sm:w-full" />
             </div>
           </div>
         </div>

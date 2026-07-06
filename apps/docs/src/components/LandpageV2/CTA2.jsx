@@ -38,7 +38,7 @@ export default function CTA2({
                     <Button variant='outline2' text="Browse the effects" href="/effects" className='max-sm:w-full' />
                     <Button text="Get Pro from $20/mo" className="max-sm:w-full" href={href} variant="orange" />
                     <p
-                        className="shimmer-text w-full flex justify-center items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
+                        className="shimmer-text w-full flex justify-center items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
                     >
                         <span className="inline-block size-[0.9vw] shrink-0 text-[#d2d2d2] max-md:size-3">
                             <UnlockIcon className="h-full w-full" />
@@ -52,7 +52,7 @@ export default function CTA2({
 
             </div>
             <div
-                    className='radial-glow w-[100vw] max-sm:left-1/2 max-sm:w- h-[50vw] max-sm:h-[60vh] max-sm:w-[170vw] absolute bottom-[-15vw] max-sm:bottom-[-20vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
+                    className='radial-glow w-screen max-sm:left-1/2 max-sm:w- h-[50vw] max-md:h-[60vh] max-sm:h-[60vh] max-md:w-[150vw] max-sm:w-[170vw] absolute bottom-[-15vw] max-sm:bottom-[-20vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0'
                     style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
                 ></div>
         </div>

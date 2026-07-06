@@ -28,12 +28,12 @@ export default function CTA() {
     }, [])
 
     return (
-        <section ref={ctaRef} id='CTA' className='h-fit gap-[7vw] max-md:h-fit max-md:py-[15vw]! max-md:mb-[30vw]  overflow-x-hidden flex items-start  justify-between max-md:gap-[24vw] flex-col text-foreground self-padd relative z-500 w-full  py-[6vw]!'>
+        <section ref={ctaRef} id='CTA' className='h-fit gap-[7vw] max-md:h-fit max-md:py-[10vw] max-sm:py-[15vw]! max-sm:mb-[30vw] max-md:mb-[10vw]   overflow-x-hidden flex items-start  justify-between max-sm:gap-[24vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full  py-[6vw]!'>
             <RandomBlur as="h2" className='text110 relative z-2'>Need more than a component? We build the whole interaction.</RandomBlur>
             <div className='space-y-[2.5vw] max-md:space-y-[10vw] relative z-2'>
 
                 <SplitLine as="p" className='text24 max-md:w-full w-[31vw]'>The Vault is a public slice of how Hyperiux thinks about interaction design - the same discipline behind premium websites, product experiences, and immersive digital systems. When a copy-paste effect isn’t enough, we’ll design and build the moment from scratch.</SplitLine>
-                <div className='w-fit flex  max-md:gap-[4vw] items-center max-md:flex-col max-md:items-start max-md:w-full gap-[1.5vw]'>
+                <div className='w-fit flex max-md:gap-[2vw]  max-sm:gap-[4vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-full gap-[1.5vw]'>
                     <Button variant='outline2' className='max-md:w-full' text='See our work'  href='#' />
                     <Button variant='orange' className='max-md:w-full'  href='#' text='Work with hyperiux' />
                 </div>
