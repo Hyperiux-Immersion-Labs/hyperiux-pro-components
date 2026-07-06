@@ -9,7 +9,14 @@ export const metadata = createPageMetadata({
   description: "Generate your Hyperiux CLI token to install pro effects.",
   path: "/cli-auth",
   image: "/seo/homepage.png",
+  robots: {
+    index: false,
+    follow: false,
+  },
 });
+
+
+
 
 export default async function CliAuthPage() {
   const { userId } = await auth();
