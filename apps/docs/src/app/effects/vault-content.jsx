@@ -42,14 +42,22 @@ function resolveEffectCategoryId(effect) {
 }
 
 function RouteAnimationSync({ syncKey }) {
-  useFadeUp(null, [syncKey]);
+  const refreshCallRef = useRef(null);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    refreshCallRef.current?.kill();
+
+    refreshCallRef.current = gsap.delayedCall(0.12, () => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh(true);
+        });
       });
     });
+
+    return () => {
+      refreshCallRef.current?.kill();
+    };
   }, [syncKey]);
 
   return null;
@@ -529,10 +537,7 @@ const routeKey = `${pathname}${
           className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
         >
           
-          <RouteAnimationSync
-            key={`route-animation-sync-${routeKey}`}
-            syncKey={routeKey}
-          />
+          <RouteAnimationSync syncKey={routeKey} />
 
           <VaultHeader
            showSearch

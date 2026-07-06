@@ -7,21 +7,28 @@ import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RouteFade } from "@/components/layout/RouteFade";
-import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-function RouteAnimationSync({ syncKey, containerRef }) {
-  useFadeUp(containerRef, [syncKey]);
+function RouteAnimationSync({ syncKey }) {
+  const refreshCallRef = useRef(null);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    refreshCallRef.current?.kill();
+
+    refreshCallRef.current = gsap.delayedCall(0.12, () => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh(true);
+        });
       });
     });
+
+    return () => {
+      refreshCallRef.current?.kill();
+    };
   }, [syncKey]);
 
   return null;
@@ -380,25 +387,33 @@ export default function DocsBody({ children }) {
   }, [navigateWithDocsFade]);
 
   useEffect(() => {
-    routeTweenRef.current?.kill();
+  routeTweenRef.current?.kill();
 
-    if (routeContentRef.current) {
-      gsap.set(routeContentRef.current, {
-        autoAlpha: 1,
-        y: 0,
-      });
-    }
+  const routeContent = routeContentRef.current;
 
+  if (routeContent) {
+    gsap.killTweensOf(routeContent);
+
+    gsap.set(routeContent, {
+      autoAlpha: 1,
+      y: 0,
+      clearProps: "transform",
+    });
+  }
+
+  const refreshCall = gsap.delayedCall(0.12, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh(true);
       });
     });
+  });
 
-    return () => {
-      routeTweenRef.current?.kill();
-    };
-  }, [pathname]);
+  return () => {
+    routeTweenRef.current?.kill();
+    refreshCall.kill();
+  };
+}, [pathname]);
 
   return (
     <div className="mx-auto w-full pt-25">
