@@ -38,7 +38,7 @@ export default function Page() {
 
               <div className="mt-[1.8vw] max-w-[28vw] max-md:mt-[4vw] max-md:max-w-full max-sm:mt-[5vw]">
                 <SplitLine>
-                  <p className="text-[1vw] leading-[1.6] text-black/62 max-md:text-[2.2vw] max-sm:text-[3.7vw]">
+                  <p className="text-[1vw] leading-[1.6] text-black/62 max-md:text-[2.5vw] max-sm:text-[3.7vw]">
                     Border Beam wraps a surface with animated edge light, so you can shift between
                     a continuous rotating orbit and a softer pulse glow without changing the card
                     content itself.
