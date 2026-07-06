@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, memo, useCallback } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import gsap from "gsap";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
@@ -60,33 +60,9 @@ const ProFeatures = [
 
 export default function Pricing({padding,content=true}) {
     const [isYearly, setIsYearly] = useState(true);
-    const [checkoutLoading, setCheckoutLoading] = useState(false);
-    const [checkoutError, setCheckoutError] = useState("");
 
     const { isLoaded, isSignedIn, user } = useUser();
     const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
-
-    const handleUpgrade = useCallback(async () => {
-        setCheckoutLoading(true);
-        setCheckoutError("");
-        try {
-            const res = await fetch("/api/stripe/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ billingInterval: isYearly ? "yearly" : "monthly" }),
-            });
-            const data = await res.json();
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                setCheckoutError(data.error || "Unable to start checkout. Please try again.");
-                setCheckoutLoading(false);
-            }
-        } catch {
-            setCheckoutError("Something went wrong. Please try again.");
-            setCheckoutLoading(false);
-        }
-    }, [isYearly]);
 
     return (
         <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[10vw]  max-md:gap-[15vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding?padding:"pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
@@ -183,12 +159,9 @@ export default function Pricing({padding,content=true}) {
                             ) : userPlan === "free" ? (
                                 <Button
                                     variant="orange"
-                                    text={checkoutLoading ? "Loading..." : "Upgrade to Pro"}
+                                    text="Upgrade to Pro"
+                                    href="/sign-up"
                                     className="max-md:w-full"
-                                    onClick={handleUpgrade}
-                                    disabled={checkoutLoading}
-                                    href="#"
-                                    preventDefault
                                 />
                             ) : (
                                 <Button
@@ -200,9 +173,6 @@ export default function Pricing({padding,content=true}) {
                             )}
                         </div>
                         {/* <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p> */}
-                        {checkoutError && (
-                            <p className="text-sm text-red-400">{checkoutError}</p>
-                        )}
                     </div>
                 </div>
             </div>
