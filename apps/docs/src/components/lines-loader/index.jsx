@@ -4,7 +4,7 @@ import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import Option1 from "./LinesLoading";
 import Option2 from "./CenterLinesLoading";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 const VARIANTS = {
   option1: Option1,
@@ -95,10 +95,10 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
     >
         <Link
           href="/effects"
-          className="rounded-full flex items-center gap-1 bg-orange-500 px-6 py-2 text-base  text-white transition-colors hover:bg-orange-600"
+          className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors hover:bg-orange-600"
         >
           Explore all effects
-          <ArrowRight className="size-4" />
+          <ArrowUpRight className="size-4" />
         </Link>
       <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5">
         {VERSIONS.map((variant) => {

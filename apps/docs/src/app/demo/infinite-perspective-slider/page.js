@@ -10,7 +10,7 @@ export default function Page() {
     <DemoHeader />
       <LenisSmoothScroll />
       <InfinitePerspectiveSlider />
-      <ScrollBottom />
+      <ScrollBottom className="bottom-[5%] gap-[1vw] max-md:hidden" />
 
     </>
   );

@@ -38,7 +38,7 @@ export default function PixelBloomWrapper() {
         <>
      
      
-        <section className="w-screen overflow-x-hidden bg-gray-400 max-md:h-auto max-md:flex-col max-md:p-0 h-[750vh] flex items-center justify-center relative">
+        <section className="w-screen overflow-x-hidden bg-gray-400 max-md:h-auto max-md:flex-col max-md:p-0 h-[750vh] max-sm:h-full flex items-center justify-center relative">
 
             <h1 className=" text-[8vw] max-md:text-[5vw] mix-blend-difference  text-white fixed max-md:static max-md:pt-24  top-1/2 left-1/2 -translate-x-1/2 max-md:translate-x-0 max-md:top-0 max-md:left-0 max-md:translate-y-0 w-full max-sm:text-[11vw] text-center leading-[.5] -translate-y-1/2 max-md:text-white z-1">
                 PIXEL BLOOM <br />
@@ -77,11 +77,11 @@ export default function PixelBloomWrapper() {
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden mr-[25vw]  max-md:mx-auto rounded-[2vw] transform-gpu backface-hidden">
                     <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg' />
                 </div>
-                <div className="curved-scroll-box size-[30vw] max-md:size-[20vw] overflow-hidden ml-[25vw]  max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden ">
-                    <PixelBloom className='w-full h-full' />
+                <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw]  max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden ">
+                    <PixelBloom className='w-full h-full' type='video' />
                 </div>
             </div>
-            <div className="h-[20vh] max-md:h-0  w-full"></div>
+            <div className="h-[20vh] max-md:h-[10vh]  w-full"></div>
         </section>
          </>
     );
