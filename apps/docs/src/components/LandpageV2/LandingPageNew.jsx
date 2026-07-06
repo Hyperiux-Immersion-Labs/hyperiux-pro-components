@@ -1,8 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
-import GlowingPlates from "@/Experience/GlowingPlates";
+import DeferredMount from "@/components/WebsiteComps/DeferredMount";
 import VaultShell from "@/Layouts/VaultShell";
+
+// Three.js scene — loaded as its own chunk after the page is idle so the
+// WebGL bundle never blocks first paint / TBT.
+const GlowingPlates = dynamic(() => import("@/Experience/GlowingPlates"), {
+  ssr: false,
+});
 import Loader from "@/components/WebsiteComps/Loader";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
@@ -35,7 +42,9 @@ export default function LandingPageNew({faqItems}) {
       <VaultShell>
         <Loader />
         <Hero />
-        <GlowingPlates />
+        <DeferredMount strategy="idle">
+          <GlowingPlates />
+        </DeferredMount>
         <TrustStrip />
         <Problem />
         <GradientFill />

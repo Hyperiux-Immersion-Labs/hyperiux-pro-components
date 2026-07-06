@@ -38,7 +38,7 @@ export const metadata = createRootMetadata();
 
 // Runs synchronously before any HTML is painted — adds a class when loader hasn't run yet
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
-const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
+const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
 
 const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

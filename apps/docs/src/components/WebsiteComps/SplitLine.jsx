@@ -14,7 +14,12 @@ const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
 
-  return window.localStorage.getItem(LOADER_STORAGE_KEY) === "true";
+  // Loader.jsx writes sessionStorage (not localStorage) and sets the window
+  // flag when it completes or is skipped.
+  return (
+    window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true" ||
+    window.__HYPERIUX_LOADER_COMPLETE__ === true
+  );
 }
 
 function isLoaderActive() {

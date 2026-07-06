@@ -1,8 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import LinkHover from "../WebsiteComps/LinksHover";
-import ReflectiveRods from "@/Experience/ReflectiveRods";
+import DeferredMount from "../WebsiteComps/DeferredMount";
+
+// Three.js footer scene — own chunk, mounted only when the footer nears the viewport.
+const ReflectiveRods = dynamic(() => import("@/Experience/ReflectiveRods"), {
+  ssr: false,
+});
 
 const vaultFooterLinks = [
   { label: "Documentations", href: "/docs" },
@@ -85,7 +91,9 @@ export default function Footer() {
 
   return (
     <footer className="relative z-200 py-[20vw]  w-full overflow-hidden max-sm:mt-16 ">
-      <ReflectiveRods />
+      <DeferredMount strategy="visible">
+        <ReflectiveRods />
+      </DeferredMount>
       <p className="text-center max-sm:w-full text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-1/2 -translate-x-1/2 text-light-grey">2026 Hyperiux Immersion Labs. All rights reserved</p>
       <div className="mx-auto w-[70vw] max-sm:w-full max-sm:px-[5vw]">
         <div className="flex border-x border-foreground/15 max-sm:flex-col max-sm:border-x-0">

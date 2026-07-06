@@ -21,7 +21,13 @@ const lerp = (a, b, t) => a + (b - a) * t;
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
 
-  return window.localStorage.getItem(LOADER_STORAGE_KEY) === "true";
+  // Loader.jsx writes sessionStorage (not localStorage) and sets the window
+  // flag when it completes or is skipped. Must match, or components mounting
+  // after loader completion never see it and their intros never play.
+  return (
+    window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true" ||
+    window.__HYPERIUX_LOADER_COMPLETE__ === true
+  );
 }
 
 function isLoaderActive() {

@@ -25,6 +25,14 @@ function hasLoaderRun() {
   return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
 }
 
+// Phones and tablets skip the intro loader entirely (matches
+// COMPACT_LAYOUT_BREAKPOINT in useIsMobile). On slow mobile connections the
+// loader delays LCP by several seconds and tanks the PageSpeed score.
+function shouldSkipLoader() {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth < 1025;
+}
+
 function markLoaderAsRun() {
   if (typeof window === "undefined") return;
   window.sessionStorage.setItem(LOADER_STORAGE_KEY, "true");
@@ -338,14 +346,14 @@ export default function Loader() {
   // This closes the gap where the hero was briefly visible before the canvas appeared.
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
-    if (!hasLoaderRun()) {
+    if (!hasLoaderRun() && !shouldSkipLoader()) {
       setIsVisible(true);
       setShouldRun(true);
     }
   }, []);
 
   useEffect(() => {
-    if (hasLoaderRun()) {
+    if (hasLoaderRun() || shouldSkipLoader()) {
       document.body.classList.remove("loader-active");
       setLoaderRuntimeState({ running: false, complete: true });
 
@@ -364,7 +372,7 @@ export default function Loader() {
     setLoaderRuntimeState({ running: true, complete: false });
 
     return () => {
-      if (!hasLoaderRun()) {
+      if (!hasLoaderRun() && !shouldSkipLoader()) {
         lockScrollHard();
       }
     };
