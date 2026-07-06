@@ -156,22 +156,22 @@ export default function CodeBlockWorkflow() {
         // Hide dollar signs — they animate in with their commands
         gsap.set(
           [terminalRefs.current.dollar1, terminalRefs.current.dollar2].filter(Boolean),
-          { autoAlpha: 0 }
+          { opacity: 0 }
         );
 
         // Hide folder rows — they appear during installation sequence
         gsap.set(
           [fileRefs.current.effectsFolder, fileRefs.current.splitCanvasFolder].filter(Boolean),
-          { autoAlpha: 0, y: 8 }
+          { opacity: 0, y: 8 }
         );
 
         gsap.set(allFileRows, {
-          autoAlpha: 0,
+          opacity: 0,
           y: 10,
           backgroundColor: "rgba(255,255,255,0)",
         });
 
-        gsap.set(allCodeLines, { autoAlpha: 0.22 });
+        gsap.set(allCodeLines, { opacity: 0.22 });
 
         const allBadges = [
           fileRefs.current.addedBadge1,
@@ -179,13 +179,13 @@ export default function CodeBlockWorkflow() {
           fileRefs.current.addedBadge3,
         ].filter(Boolean);
 
-        gsap.set(allBadges, { autoAlpha: 0, x: -8 });
+        gsap.set(allBadges, { opacity: 0, x: -8 });
 
-        gsap.set(terminalRefs.current.doneCursor, { autoAlpha: 0 });
+        gsap.set(terminalRefs.current.doneCursor, { opacity: 0 });
 
         allTicks.forEach((tick) => {
           const path = tick.querySelector("path");
-          gsap.set(tick, { autoAlpha: 0, scale: 0.86 });
+          gsap.set(tick, { opacity: 0, scale: 0.86 });
           if (path) {
             const length = path.getTotalLength();
             gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
@@ -199,7 +199,7 @@ export default function CodeBlockWorkflow() {
         const state = { count: 0 };
         const finalDuration = duration ?? Math.max(0.3, chars * 0.02);
 
-        timeline.set(element, { textContent: "", autoAlpha: 1 }, position);
+        timeline.set(element, { textContent: "", opacity: 1 }, position);
         timeline.to(
           state,
           {
@@ -220,7 +220,7 @@ export default function CodeBlockWorkflow() {
         const length = path.getTotalLength();
 
         timeline.set(path, { strokeDasharray: length, strokeDashoffset: length }, position);
-        timeline.to(tickEl, { autoAlpha: 1, scale: 1, duration: 0.12, ease: "power2.out" }, position);
+        timeline.to(tickEl, { opacity: 1, scale: 1, duration: 0.12, ease: "power2.out" }, position);
         timeline.to(path, { strokeDashoffset: 0, duration: 0.2, ease: "power2.out" }, position);
       };
 
@@ -233,8 +233,8 @@ export default function CodeBlockWorkflow() {
         if (!rowEl) return;
         timeline.fromTo(
           rowEl,
-          { autoAlpha: 0, y: 10, backgroundColor: "rgba(34,197,94,0)" },
-          { autoAlpha: 1, y: 0, backgroundColor: "rgba(34,197,94,0.24)", duration: 0.2, ease: "power2.out" },
+          { opacity: 0, y: 10, backgroundColor: "rgba(34,197,94,0)" },
+          { opacity: 1, y: 0, backgroundColor: "rgba(34,197,94,0.24)", duration: 0.2, ease: "power2.out" },
           position
         );
         timeline.to(rowEl, { backgroundColor: "rgba(255,255,255,0)", duration: 0.3, ease: "power2.out" }, ">-0.02");
@@ -247,7 +247,7 @@ export default function CodeBlockWorkflow() {
         if (!lineEl) return;
         const fullText = tokens.map((t) => t.text).join("");
         if (!fullText) {
-          timeline.set(lineEl, { innerHTML: "", autoAlpha: 1 }, position);
+          timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
           return;
         }
         let cumulative = 0;
@@ -259,7 +259,7 @@ export default function CodeBlockWorkflow() {
         const state = { count: 0 };
         const duration = Math.max(0.35, fullText.length * 0.022);
 
-        timeline.set(lineEl, { innerHTML: "", autoAlpha: 1 }, position);
+        timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
         timeline.to(
           state,
           {
@@ -288,7 +288,7 @@ export default function CodeBlockWorkflow() {
         const tl = gsap.timeline({ paused: true, timeScale: 1 / 0.7 });
 
         // $ sign 1 fades in, then init command types
-        tl.to(terminalRefs.current.dollar1, { autoAlpha: 1, duration: 0.15 });
+        tl.to(terminalRefs.current.dollar1, { opacity: 1, duration: 0.15 });
         typeText(tl, terminalRefs.current.init, "npx hyperiux init");
 
         typeSuccessLine(
@@ -300,26 +300,26 @@ export default function CodeBlockWorkflow() {
         );
 
         // $ sign 2 fades in, then add command types
-        tl.to(terminalRefs.current.dollar2, { autoAlpha: 1, duration: 0.15 }, "+=0.08");
+        tl.to(terminalRefs.current.dollar2, { opacity: 1, duration: 0.15 }, "+=0.08");
         typeText(tl, terminalRefs.current.add, "npx hyperiux add split-canvas");
 
         typeText(tl, terminalRefs.current.resolving, "resolving dependencies: gsap", null, "+=0.04");
 
         // effects/ folder slides in
-        tl.to(fileRefs.current.effectsFolder, { autoAlpha: 1, y: 0, duration: 0.18, ease: "power2.out" }, "+=0.05");
+        tl.to(fileRefs.current.effectsFolder, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, "+=0.05");
 
         // split-canvas/ folder slides in
-        tl.to(fileRefs.current.splitCanvasFolder, { autoAlpha: 1, y: 0, duration: 0.18, ease: "power2.out" }, "+=0.06");
+        tl.to(fileRefs.current.splitCanvasFolder, { opacity: 1, y: 0, duration: 0.18, ease: "power2.out" }, "+=0.06");
 
         // Three files appear one by one
         flashAddedRow(tl, fileRefs.current.indexRow, "+=0.05");
-        tl.to(fileRefs.current.addedBadge1, { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
+        tl.to(fileRefs.current.addedBadge1, { opacity: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
 
         flashAddedRow(tl, fileRefs.current.splitCanvasCompRow, "+=0.04");
-        tl.to(fileRefs.current.addedBadge2, { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
+        tl.to(fileRefs.current.addedBadge2, { opacity: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
 
         flashAddedRow(tl, fileRefs.current.contentRow, "+=0.04");
-        tl.to(fileRefs.current.addedBadge3, { autoAlpha: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
+        tl.to(fileRefs.current.addedBadge3, { opacity: 1, x: 0, duration: 0.15, ease: "power2.out" }, "<+0.05");
 
         typeSuccessLine(
           tl,
@@ -339,9 +339,9 @@ export default function CodeBlockWorkflow() {
           "+=0.04"
         );
 
-        tl.to(terminalRefs.current.doneCursor, { autoAlpha: 1, duration: 0.08 }, "<+0.05");
+        tl.to(terminalRefs.current.doneCursor, { opacity: 1, duration: 0.08 }, "<+0.05");
         tl.to(terminalRefs.current.doneCursor, {
-          autoAlpha: 0.35,
+          opacity: 0.35,
           repeat: 5,
           yoyo: true,
           duration: 0.25,

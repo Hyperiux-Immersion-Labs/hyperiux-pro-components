@@ -84,18 +84,18 @@ export default function Workflow() {
             const setInactive = (i) => {
                 gsap.set(contentBoxes[i], { height: CLOSED_HEIGHT, backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR })
                 gsap.set(numBoxes[i], { backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR })
-                gsap.set(nums[i], { autoAlpha: 1, scale: 1 })
-                gsap.set(icons[i], { autoAlpha: 0, scale: 0.6 })
-                gsap.set(texts[i], { autoAlpha: 0 })
+                gsap.set(nums[i], { opacity: 1, scale: 1 })
+                gsap.set(icons[i], { opacity: 0, scale: 0.6 })
+                gsap.set(texts[i], { opacity: 0 })
             }
 
             /* ── Helper: set a step to its open state ── */
             const setActive = (i) => {
                 gsap.set(contentBoxes[i], { height: OPEN_HEIGHT, backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR })
                 gsap.set(numBoxes[i], { backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR })
-                gsap.set(nums[i], { autoAlpha: 0, scale: 0.6 })
-                gsap.set(icons[i], { autoAlpha: 1, scale: 1 })
-                gsap.set(texts[i], { autoAlpha: 1 })
+                gsap.set(nums[i], { opacity: 0, scale: 0.6 })
+                gsap.set(icons[i], { opacity: 1, scale: 1 })
+                gsap.set(texts[i], { opacity: 1 })
             }
 
             /* ── Initial state: first open, rest closed ── */
@@ -136,18 +136,18 @@ export default function Workflow() {
                 const t = segmentStart
 
                 /* Close previous step — fade text out early to avoid squish glitch */
-                tl.to(texts[i - 1], { autoAlpha: 0, duration: STEP_DURATION * 0.35, ease: 'power2.in' }, t)
+                tl.to(texts[i - 1], { opacity: 0, duration: STEP_DURATION * 0.35, ease: 'power2.in' }, t)
                 tl.to(contentBoxes[i - 1], { height: CLOSED_HEIGHT, backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(numBoxes[i - 1], { backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(nums[i - 1], { autoAlpha: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(icons[i - 1], { autoAlpha: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
+                tl.to(nums[i - 1], { opacity: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
+                tl.to(icons[i - 1], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
 
                 /* Open current step — expand first, then fade text in late */
                 tl.to(contentBoxes[i], { height: OPEN_HEIGHT, backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(numBoxes[i], { backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(nums[i], { autoAlpha: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(icons[i], { autoAlpha: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(texts[i], { autoAlpha: 1, duration: STEP_DURATION * 0.5, ease: 'power2.out' }, t + STEP_DURATION * 0.5)
+                tl.to(nums[i], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
+                tl.to(icons[i], { opacity: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
+                tl.to(texts[i], { opacity: 1, duration: STEP_DURATION * 0.5, ease: 'power2.out' }, t + STEP_DURATION * 0.5)
 
                 /* Hold & fill the connecting line to the next step */
                 if (lineFills[i]) {
@@ -230,7 +230,7 @@ export default function Workflow() {
                                     <div className="flex flex-col ml-[1vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-sm:mb-[6vw]">
                                         <div className="wf-content-box h-[5vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
                                             <p className="leading-none mt-[.25vw]">{step.title}</p>
-                                            <div className="wf-text w-[85%] max-sm:w-full overflow-hidden opacity-0">
+                                            <div className="wf-text w-[85%] max-sm:w-full overflow-hidden">
                                                 <p className="text24 pt-[1.5vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
                                             </div>
                                         </div>

@@ -107,6 +107,7 @@ export function FAQWrapper({
 
   const contentOuterRef = useRef(null);
   const contentInnerRef = useRef(null);
+  const openHeightRef = useRef(0);
 
   const contentId = useId();
   const buttonId = useId();
@@ -157,13 +158,12 @@ export function FAQWrapper({
 
     if (isOpen) {
       gsap.set(outer, {
-        display: "block",
         overflow: "hidden",
         height: "auto",
       });
 
       const targetHeight = outer.scrollHeight;
-      gsap.set(outer, {height: 0});
+      gsap.set(outer, { height: 0 });
 
       gsap.fromTo(
         outer,
@@ -175,7 +175,7 @@ export function FAQWrapper({
           onComplete: () => {
             gsap.set(outer, {
               height: "auto",
-              overflow: "hidden",
+              overflow: "visible",
             });
           },
         }
@@ -189,11 +189,6 @@ export function FAQWrapper({
         height: 0,
         duration,
         ease: "power3.out",
-        onComplete: () => {
-          gsap.set(outer, {
-            display: "none",
-          });
-        },
       });
     }
   }, [isOpen, duration]);
@@ -293,6 +288,7 @@ export function FAQContent({
   innerClassName = "",
 }) {
   const {
+    isOpen,
     contentOuterRef,
     contentInnerRef,
     contentId,
@@ -307,9 +303,8 @@ export function FAQContent({
       role="region"
       aria-labelledby={buttonId}
       style={{
-        height: 0,
-        display: "none",
-        overflow: "hidden",
+        height: isOpen ? "auto" : 0,
+        overflow: isOpen ? "visible" : "hidden",
       }}
       className={contentClassName}
     >

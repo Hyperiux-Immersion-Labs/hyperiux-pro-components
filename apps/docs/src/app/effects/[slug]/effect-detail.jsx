@@ -13,7 +13,6 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { useLenis } from "lenis/react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -33,7 +32,6 @@ import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
-import { RouteFade } from "@/components/layout/RouteFade";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
 function SkeletonBlock({ className = "" }) {

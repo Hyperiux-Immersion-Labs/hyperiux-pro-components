@@ -109,9 +109,9 @@ const faqItems = [
         Yes. If your brand needs a custom interaction, immersive visual system,
         or motion direction beyond the library, you can brief Hyperiux for a
         bespoke build.{" "}
-        <a href="#" className="underline">
+        {/* <a href="#" className="underline">
           Request a custom animation →
-        </a>
+        </a> */}
       </>
     ),
     defaultOpen: false,

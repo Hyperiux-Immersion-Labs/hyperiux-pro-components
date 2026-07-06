@@ -183,7 +183,6 @@ export default function GradientFill() {
                         key={i}
                         ref={addTextRef}
                         className="text64 leading-[1.2] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99 w-[72vw] max-sm:w-[90vw] mx-auto text-center pointer-events-none text-white"
-                        style={{ opacity: 0 }}
                     >
                         {text}
                     </p>

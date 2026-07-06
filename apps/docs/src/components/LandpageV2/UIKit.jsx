@@ -62,14 +62,14 @@ export default function UIKit() {
           ease: "power1.inOut",
         });
       } else {
-        gsap.set(".use-case", { autoAlpha: 0, y: 50 });
+        gsap.set(".use-case", { opacity: 0, y: 50 });
         gsap.to(".use-case", {
           scrollTrigger: {
             trigger: ".use-case-container",
             start: "top 90%",
             once: true,
           },
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           stagger: 0.15,
           duration: 1,

@@ -58,8 +58,8 @@ export default function HeadAnim({
 
     if (shouldSkipSidebarDocsAnimation()) {
       gsap.set(container, {
-        autoAlpha: 1,
-        clearProps: "visibility,opacity,transform",
+        opacity: 1,
+        clearProps: "opacity,transform",
       });
       return;
     }
@@ -67,7 +67,7 @@ export default function HeadAnim({
     let isKilled = false;
 
     gsap.set(container, {
-      autoAlpha: 0,
+      opacity: 0,
     });
 
     const elements = container.hasAttribute("data-copy-wrapper")
@@ -108,8 +108,8 @@ export default function HeadAnim({
 
       if (!allChars.length) {
         gsap.set(container, {
-          autoAlpha: 1,
-          clearProps: "visibility,opacity",
+          opacity: 1,
+          clearProps: "opacity",
         });
         return;
       }
@@ -121,7 +121,7 @@ export default function HeadAnim({
       });
 
       gsap.set(container, {
-        autoAlpha: 1,
+        opacity: 1,
       });
 
       const animationProps = {
@@ -189,7 +189,7 @@ export default function HeadAnim({
       ref: mergeRefs(child.ref, containerRef),
       style: {
         ...child.props.style,
-        visibility: "hidden",
+        opacity: 0,
       },
     });
   }
@@ -198,7 +198,7 @@ export default function HeadAnim({
     <div
       ref={containerRef}
       data-copy-wrapper="true"
-      style={{ visibility: "hidden" }}
+      style={{ opacity: 0 }}
     >
       {children}
     </div>

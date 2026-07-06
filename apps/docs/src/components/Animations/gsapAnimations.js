@@ -46,9 +46,9 @@ export function useFadeUp(containerRef, deps = []) {
 
     if (shouldSkipSidebarDocsAnimation()) {
       gsap.set(content, {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
-        clearProps: "visibility,opacity,transform",
+        clearProps: "opacity,transform",
       });
 
       refreshScrollTrigger();
@@ -57,7 +57,7 @@ export function useFadeUp(containerRef, deps = []) {
     }
 
     gsap.set(content, {
-      autoAlpha: 0,
+      opacity: 0,
       y: 50,
     });
 
@@ -69,13 +69,13 @@ export function useFadeUp(containerRef, deps = []) {
             start: "top 90%",
             once: true,
           },
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           ease: "power3.out",
           duration: 1.2,
           onComplete: () => {
             gsap.set(element, {
-              clearProps: "visibility,opacity,transform",
+              clearProps: "opacity,transform",
             });
           },
         });

@@ -58,8 +58,8 @@ export default function Copy({
 
     if (shouldSkipSidebarDocsAnimation()) {
       gsap.set(container, {
-        autoAlpha: 1,
-        clearProps: "visibility,opacity,transform",
+        opacity: 1,
+        clearProps: "opacity,transform",
       });
       return;
     }
@@ -67,7 +67,7 @@ export default function Copy({
     let isKilled = false;
 
     gsap.set(container, {
-      autoAlpha: 0,
+      opacity: 0,
     });
 
     const prefersReduced =
@@ -113,8 +113,8 @@ export default function Copy({
 
       if (!allLines.length || prefersReduced) {
         gsap.set(container, {
-          autoAlpha: 1,
-          clearProps: "visibility,opacity",
+          opacity: 1,
+          clearProps: "opacity",
         });
 
         gsap.set(allLines, {
@@ -131,7 +131,7 @@ export default function Copy({
       });
 
       gsap.set(container, {
-        autoAlpha: 1,
+        opacity: 1,
       });
 
       const animationProps = {
@@ -197,7 +197,7 @@ export default function Copy({
       ref: mergeRefs(child.ref, containerRef),
       style: {
         ...child.props.style,
-        visibility: "hidden",
+        opacity: 0,
       },
     });
   }
@@ -206,7 +206,7 @@ export default function Copy({
     <div
       ref={containerRef}
       data-copy-wrapper="true"
-      style={{ visibility: "hidden" }}
+      style={{ opacity: 0 }}
     >
       {children}
     </div>

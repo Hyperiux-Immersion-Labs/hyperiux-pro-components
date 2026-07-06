@@ -107,30 +107,30 @@ export default function Hero() {
 
     if (headingEl) {
       gsap.set(headingEl, {
-        autoAlpha: 0,
+        opacity: 0,
       });
     }
 
     vaultEls.forEach((el) => {
       gsap.set(el, {
-        autoAlpha: 0,
+        opacity: 0,
       });
     });
 
     if (pEl) {
       gsap.set(pEl, {
-        autoAlpha: 0,
+        opacity: 0,
       });
     }
-     if (paraEl) {
-      gsap.set(pEl, {
-        autoAlpha: 0,
+    if (paraEl) {
+      gsap.set(paraEl, {
+        opacity: 0,
       });
     }
 
     if (buttonWrapEl) {
       gsap.set(buttonWrapEl, {
-        autoAlpha: 0,
+        opacity: 0,
         y: 18,
         filter: "blur(8px)",
       });
@@ -138,7 +138,7 @@ export default function Hero() {
 
     if (shimmerTextWrapEl) {
       gsap.set(shimmerTextWrapEl, {
-        autoAlpha: 0,
+        opacity: 0,
         y: 14,
         filter: "blur(8px)",
       });
@@ -146,7 +146,7 @@ export default function Hero() {
 
     if (navigationEls.length) {
       gsap.set(navigationEls, {
-        autoAlpha: 0,
+        opacity: 0,
         y: -18,
         yPercent: 0,
       });
@@ -187,7 +187,7 @@ export default function Hero() {
           });
 
           gsap.set(headingEl, {
-            autoAlpha: 1,
+            opacity: 1,
           });
 
           heroTimeline.to(headingSplit.chars, {
@@ -205,7 +205,7 @@ export default function Hero() {
 
         vaultEls.forEach((el) => {
           gsap.set(el, {
-            autoAlpha: 1,
+            opacity: 1,
           });
 
           const split = SplitText.create(el, {
@@ -232,7 +232,7 @@ export default function Hero() {
 
         if (pEl) {
           gsap.set(pEl, {
-            autoAlpha: 1,
+            opacity: 1,
           });
 
           const split = SplitText.create(pEl, {
@@ -259,7 +259,7 @@ export default function Hero() {
         }
         if (paraEl) {
           gsap.set(paraEl, {
-            autoAlpha: 1,
+            opacity: 1,
           });
 
           const split = SplitText.create(paraEl, {
@@ -289,7 +289,7 @@ export default function Hero() {
           heroTimeline.to(
             buttonWrapEl,
             {
-              autoAlpha: 1,
+              opacity: 1,
               y: 0,
               filter: "blur(0px)",
               duration: 0.75,
@@ -303,7 +303,7 @@ export default function Hero() {
           heroTimeline.to(
             shimmerTextWrapEl,
             {
-              autoAlpha: 1,
+              opacity: 1,
               y: 0,
               filter: "blur(0px)",
               duration: 0.75,
@@ -316,7 +316,7 @@ export default function Hero() {
 
       if (navigationEls.length) {
         navigationTween = gsap.to(navigationEls, {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           yPercent: 0,
           duration: 0.75,
@@ -391,9 +391,9 @@ export default function Hero() {
         className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[8vw] max-sm:space-y-[14vw]"
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:justify-start">
-          <p  ref={paraRef} className="text24 font-medium text-[#ff5f00] opacity-0">React & Next.js Animation Effects Library</p>
+          <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Animation Effects Library</p>
           <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
-            <span ref={headingRef} className="inline-block opacity-0">
+            <span ref={headingRef} className="inline-block">
               The Interaction Layer your Website is{" "}
               Missing
             </span>
@@ -402,7 +402,7 @@ export default function Hero() {
 
         <p
           ref={pRef}
-          className="text24 w-[50%] text-[#C9C9C9] opacity-0 max-md:w-full max-sm:w-[100%] max-md:text-center max-sm:text-left"
+          className="text24 w-[50%] text-[#C9C9C9] max-md:w-full max-sm:w-[100%] max-md:text-center max-sm:text-left"
         >
           100+ copy-paste interaction effects for React & Next.js. Scroll
           systems, cursor effects, text reveals, page transitions, and WebGL
@@ -412,7 +412,7 @@ export default function Hero() {
 
         <div
           ref={buttonWrapRef}
-          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] opacity-0  max-md:gap-5"
+          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:gap-5"
         >
           <Button
             text="Browse the effects"
@@ -426,7 +426,7 @@ export default function Hero() {
 
         <p
           ref={shimmerTextWrapRef}
-          className="shimmer-text flex items-center gap-[0.5vw] max-sm:mt-[-6vw] text-[#939393] leading-none opacity-0 max-md:justify-center max-md:gap-2"
+          className="shimmer-text flex items-center gap-[0.5vw] max-sm:mt-[-6vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2"
         >
           <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-md:size-3">
             <UnlockIcon className="h-full w-full" />

@@ -17,7 +17,8 @@ if (typeof window !== "undefined") {
 
 export default function FAQs({ faqItems, isHomePage = false }) {
     const containerRef = useRef(null);
-    const [visibleCount, setVisibleCount] = useState(5);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const INITIAL_COUNT = 5;
 
     const defaultOpenItems = faqItems
         .filter((item) => item.defaultOpen)
@@ -43,7 +44,7 @@ export default function FAQs({ faqItems, isHomePage = false }) {
     }, [isHomePage]);
 
     return (
-        <section ref={containerRef} className="h-full w-full pb-[10vw]! self-padd text-white relative">
+        <section ref={containerRef} className="h-full w-full pb-[10vw]! text-white relative">
             {isHomePage && (
                 <div className="pointer-events-none">
                     <div className="faq-gradient absolute top-0 left-0 w-full h-[30vw] bg-gradient-to-b from-white via-primary to-background max-sm:h-[30vh] z-4"></div>
@@ -57,32 +58,41 @@ export default function FAQs({ faqItems, isHomePage = false }) {
                     Questions, <span className='text-primary'>Answered.</span>
                 </RandomBlur>
             </div>
-            <div className="mx-auto w-full max-w-[75vw] max-sm:max-w-full space-y-4 max-md:space-y-8 max-sm:space-y-6">
+            <div className={`mx-auto w-full max-sm:max-w-full  ${isHomePage ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
-                    {faqItems.slice(0, visibleCount).map((item) => (
-                        <FAQWrapper
-                            key={item.id}
-                            itemId={item.id}
-                            className="rounded-md border border-white/20 px-6 py-5 fadeup"
-                            titleClassName="text-[1.1rem] font-medium text-white"
-                            iconSize={16}
-                            iconStrokeWidth={2}
-                            duration={0.5}
-                        >
-                            <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">
-                                <h3>
-                                    {item.question}
-                                </h3></FAQTitle>
+                    {faqItems.map((item, index) => {
+                        const isHidden = !isExpanded && index >= INITIAL_COUNT;
+                        return (
+                            <div
+                                key={item.id}
+                                style={isHidden ? { height: 0, overflow: 'hidden', pointerEvents: 'none', marginTop: 0 } : undefined}
+                                aria-hidden={isHidden ? 'true' : undefined}
+                            >
+                                <FAQWrapper
+                                    itemId={item.id}
+                                    className={`rounded-md border border-white/20 px-6 py-5 fadeup ${isHidden ? 'mb-0' : 'mb-4'}`}
+                                    titleClassName="text-[1.1rem] font-medium text-white"
+                                    iconSize={16}
+                                    iconStrokeWidth={2}
+                                    duration={0.5}
+                                >
+                                    <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">
+                                        <h3>
+                                            {item.question}
+                                        </h3>
+                                    </FAQTitle>
 
-                            <FAQContent className="pt-4  w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]! pl-10">
-                                {item.answer}
-                            </FAQContent>
-                        </FAQWrapper>
-                    ))}
+                                    <FAQContent className="pt-4 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]! pl-10">
+                                        {item.answer}
+                                    </FAQContent>
+                                </FAQWrapper>
+                            </div>
+                        );
+                    })}
                 </FAQGroup>
-                {visibleCount < faqItems.length && (
-                <div className="w-full flex mt-[4vw] items-center justify-center">
-                    <span onClick={() => setVisibleCount(faqItems.length)} className="relative group flex items-center gap-[.5vw] w-fit cursor-pointer">
+                {!isExpanded && faqItems.length > INITIAL_COUNT && (
+                <div className="w-full flex items-center justify-center mt-[4vw]">
+                    <span onClick={() => setIsExpanded(true)} className="relative group flex items-center gap-[.5vw] w-fit cursor-pointer">
 
                         <span className="relative overflow-hidden inline-flex h-[1.3em]">
                             <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full">View More</span>
