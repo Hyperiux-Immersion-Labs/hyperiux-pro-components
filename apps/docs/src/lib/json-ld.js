@@ -210,7 +210,7 @@ export function WebpageJsonLd({ metadata = {} }) {
     name,
     description,
     datePublished: date_published || "06/22/2026",
-    dateModified: date_modified || "06/22/2026",
+    dateModified: date_modified || "07/07/2026",
     publisher: {
       "@type": "Organization",
       name: "Hyperiux",

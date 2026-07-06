@@ -1,0 +1,22 @@
+{
+  "name": "border-beam",
+  "type": "registry:component",
+  "title": "Border Beam",
+  "description": "Animated border beam effect for cards and surfaces",
+  "category": "components",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/border-beam",
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/border-beam",
+  "target": "src/components/border-beam",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/border-beam/index.jsx"
+    }
+  ]
+}

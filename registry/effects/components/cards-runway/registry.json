@@ -1,0 +1,22 @@
+{
+  "name": "cards-runway",
+  "type": "registry:component",
+  "title": "Cards Runway",
+  "description": "A horizontal runway of cards that animates as you scroll",
+  "category": "components",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/cards-runway",
+  "tier": "free",
+  "main": "index.jsx",
+  "importPath": "@/components/cards-runway",
+  "target": "src/components/cards-runway",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/cards-runway/index.jsx"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import { getEffectBySlug } from "@/lib/registry";
+import { getAllPrivateEffects, getEffectBySlug } from "@/lib/registry";
 
 import {
   getAllSanityEffectEntries,
@@ -14,6 +14,32 @@ import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { resolveOgImageUrl } from "@/lib/media";
+
+function getFallbackContent(effect, effectSlug) {
+  if (!effect) return null;
+
+  const title = effect.title || effectSlug;
+  const description = effect.description || "";
+
+  return {
+    title,
+    summary: description,
+    seo: {
+      title,
+      description,
+      metaTitle: title,
+      metaDescription: description,
+      primaryKeyword: effectSlug,
+      secondaryKeywords: [],
+    },
+    body: [],
+    ctaBanner: null,
+    coverImage: effect.coverImage || effectSlug,
+    videoUrl: effect.videoUrl || `${effectSlug}.mp4`,
+    tier: effect.tier || "pro",
+    relatedEffectNames: [],
+  };
+}
 
 function getEffectPageMetadata(effect, content, slug, effectSlug) {
   const title =
@@ -95,15 +121,26 @@ export async function generateStaticParams() {
     });
   }
 
+  for (const effect of getAllPrivateEffects()) {
+    if (!effect.effectSlug || !effect.categorySlug) continue;
+
+    params.set(`${effect.categorySlug}/${effect.effectSlug}`, {
+      slug: effect.categorySlug,
+      effectSlug: effect.effectSlug,
+    });
+  }
+
   return [...params.values()];
 }
 
 export async function generateMetadata({ params }) {
   const { slug, effectSlug } = await params;
+  const effect = getEffectBySlug(effectSlug);
+  const content =
+    (await getSanityEffectContent(slug, effectSlug)) ||
+    getFallbackContent(effect, effectSlug);
 
-  const content = await getSanityEffectContent(slug, effectSlug);
-
-  if (!content) {
+  if (!content && !effect) {
     return createPageMetadata({
       title: "Effect Not Found",
       description: "Effect not found.",
@@ -112,20 +149,20 @@ export async function generateMetadata({ params }) {
     });
   }
 
-  const effect = getEffectBySlug(effectSlug);
   return getEffectPageMetadata(effect, content, slug, effectSlug);
 }
 
 export default async function EffectPage({ params }) {
   const { slug, effectSlug } = await params;
 
-  const content = await getSanityEffectContent(slug, effectSlug);
+  const effect = getEffectBySlug(effectSlug);
+  const content =
+    (await getSanityEffectContent(slug, effectSlug)) ||
+    getFallbackContent(effect, effectSlug);
 
-  if (!content) {
+  if (!content && !effect) {
     notFound();
   }
-
-  const effect = getEffectBySlug(effectSlug);
 
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);

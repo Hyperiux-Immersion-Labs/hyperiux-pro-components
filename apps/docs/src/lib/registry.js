@@ -31,6 +31,40 @@ function getExistingPrivateRegistryRoot() {
   );
 }
 
+export function getAllPrivateEffects() {
+  const privateRoot = getExistingPrivateRegistryRoot();
+
+  if (!privateRoot) return [];
+
+  const effects = [];
+  const categories = fs.readdirSync(privateRoot);
+
+  for (const category of categories) {
+    const categoryPath = path.join(privateRoot, category);
+
+    if (!fs.statSync(categoryPath).isDirectory()) continue;
+
+    for (const effectDirName of fs.readdirSync(categoryPath)) {
+      const effectDir = path.join(categoryPath, effectDirName);
+      const registryPath = path.join(effectDir, "registry.json");
+
+      if (!fs.statSync(effectDir).isDirectory() || !fs.existsSync(registryPath)) {
+        continue;
+      }
+
+      const registry = readJson(registryPath);
+
+      effects.push({
+        ...registry,
+        categorySlug: registry.category || category,
+        effectSlug: registry.name,
+      });
+    }
+  }
+
+  return effects;
+}
+
 function findPrivateRegistryPath(slug) {
   const privateRoot = getExistingPrivateRegistryRoot();
 
