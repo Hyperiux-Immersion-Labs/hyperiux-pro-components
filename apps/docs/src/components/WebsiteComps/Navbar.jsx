@@ -1004,7 +1004,7 @@ export default function Navbar() {
                 opacity: 0,
                 transform: 'translateY(-18px)',
             }}
-            className="fixed top-0 left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden"
+            className="fixed top-(--announcement-offset) transition-[top] duration-300 ease-out left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden"
         >
             <Link href="/">
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />

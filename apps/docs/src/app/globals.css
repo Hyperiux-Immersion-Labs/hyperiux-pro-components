@@ -15,6 +15,18 @@
   --muted: #d2d2d2;
   --grey: #272727;
   --light-grey: #939393;
+  /* Global announcement bar height — body top padding stays constant */
+  --announcement-h: 36px;
+  /* Fixed navbars offset by this; flips to 0 when the bar hides on scroll */
+  --announcement-offset: var(--announcement-h);
+}
+
+html.announcement-hidden {
+  --announcement-offset: 0px;
+}
+
+body {
+  padding-top: var(--announcement-h);
 }
 
 @theme inline {
@@ -211,16 +223,17 @@ h4 {
 
 .hyperiux-clerk .cl-headerTitle {
   color: #ffffff !important;
+  text-transform: capitalize !important;
   font-size: clamp(2rem, 3vw, 3.75rem) !important;
   font-weight: 400 !important;
-  letter-spacing: -0.05em !important;
+  letter-spacing: 0px !important;
   line-height: 1 !important;
 }
 
 .hyperiux-clerk .cl-headerSubtitle {
   margin-top: 0.75rem !important;
   color: rgba(255, 255, 255, 0.5) !important;
-  font-size: clamp(0.875rem, 0.9vw, 1rem) !important;
+  font-size: clamp(1rem, 0.9vw, 1rem) !important;
   line-height: 1.5rem !important;
 }
 

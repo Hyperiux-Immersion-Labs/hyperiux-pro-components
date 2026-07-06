@@ -95,7 +95,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-50 px-10 py-5 pr-[3.6vw] max-md:z-600 max-md:hidden max-md:px-6 max-sm:px-4 ${
+        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-md:z-600 max-md:hidden max-md:px-6 max-sm:px-4 ${
           isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
         }`}
       >

@@ -14,6 +14,7 @@ import {
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import AnnouncementBar from "@/components/WebsiteComps/AnnouncementBar";
 
 const layGrotesk = localFont({
   src: [
@@ -75,6 +76,7 @@ export default function RootLayout({ children }) {
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
+        <AnnouncementBar />
         <ClerkProvider
           appearance={{
             cssLayerName: "clerk",

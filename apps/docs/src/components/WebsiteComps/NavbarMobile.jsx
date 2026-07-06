@@ -542,7 +542,7 @@ export default function NavbarMobile() {
           visibility: "hidden",
           transform: "translate3d(0, -18px, 0)",
         }}
-        className="fixed left-0 top-0 z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
+        className="fixed left-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
       >
         <Link href="/" onClick={handleNavigate}>
           <HyperiuxLogo className="h-auto max-sm:w-[40vw] text-primary max-md:w-[25vw]" />
