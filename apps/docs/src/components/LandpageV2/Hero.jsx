@@ -421,7 +421,12 @@ export default function Hero() {
             className="border-white/20 bg-[#0e0e0e]!"
           />
 
-          <Button text="Get Pro from $20/mo" href="#pricing-cards" variant="orange" />
+          <Button
+            text="Get Pro from $20/mo"
+            href="#pricing-cards"
+            variant="orange"
+            scrollOffset={-1000}
+          />
         </div>
 
         <p

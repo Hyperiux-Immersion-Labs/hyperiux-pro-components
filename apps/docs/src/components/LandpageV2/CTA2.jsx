@@ -4,7 +4,14 @@ import RandomBlur from '../WebsiteComps/RandomBlur';
 import ShimmerText from '../WebsiteComps/ShimmerText';
 import { UnlockIcon } from 'lucide-react';
 
-export default function CTA2({ animations = true ,href="/pricing#pricing-cards" }) {
+export default function CTA2({
+    animations = true,
+    href = "/pricing#pricing-cards",
+    isHomePage = false,
+    isHomepage = false,
+}) {
+    // const shouldOffsetPricingScroll = isHomePage || isHomepage;
+
     return (
         <div className=" z-100 h-fit py-[5vw] pt-[12vw]  overflow-hidden flex items-end justify-end relative max-md:min-h-0 max-sm:py-[15vw] max-sm:px-[7vw]">
             <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-2">
@@ -29,7 +36,7 @@ export default function CTA2({ animations = true ,href="/pricing#pricing-cards" 
 
                 <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
                     <Button variant='outline2' text="Browse the effects" href="/effects" className='max-sm:w-full' />
-                    <Button text="Get Pro from $20/mo" className="max-sm:w-full" href={href} variant="orange"  />
+                    <Button text="Get Pro from $20/mo" className="max-sm:w-full" href={href} variant="orange" />
                     <p
                         className="shimmer-text w-full flex justify-center items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
                     >

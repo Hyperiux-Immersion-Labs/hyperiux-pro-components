@@ -82,6 +82,17 @@ function getPaneHeight(element) {
     return element.offsetHeight || element.scrollHeight || 0
 }
 
+function getPageScrollProgress() {
+    if (typeof window === 'undefined') return 0
+
+    const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight
+
+    if (scrollableHeight <= 0) return 1
+
+    return window.scrollY / scrollableHeight
+}
+
 function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
     const defaultLabelRef = useRef(null)
     const hoverLabelRef = useRef(null)
@@ -766,6 +777,12 @@ export default function Navbar() {
 
     const pathname = usePathname()
 
+    const getUpgradeScrollOffset = useCallback(() => {
+        if (pathname !== '/') return 0
+
+        return getPageScrollProgress() < 0.85 ? -1000 : 0
+    }, [pathname])
+
     const activeIndex = vaultLinks.findIndex((link) => {
         if (link.href === '/') return pathname === '/'
         return pathname.startsWith(link.href)
@@ -1076,6 +1093,7 @@ export default function Navbar() {
                         href="#pricing-cards"
                         className="border-white/20! bg-[#0E0E0E]!"
                         variant="outline2"
+                        scrollOffset={getUpgradeScrollOffset}
                     />
                 )}
                 <Button

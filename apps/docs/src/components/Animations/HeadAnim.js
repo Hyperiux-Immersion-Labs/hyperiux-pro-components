@@ -3,7 +3,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 
 if (typeof window !== "undefined") {
@@ -28,6 +28,28 @@ function mergeRefs(...refs) {
   };
 }
 
+function waitForFontsAndLayout() {
+  return new Promise(async (resolve) => {
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      try {
+        await document.fonts.ready;
+      } catch (_) {}
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
+}
+
+function isInViewport(element) {
+  if (!element || typeof window === "undefined") return false;
+
+  const rect = element.getBoundingClientRect();
+
+  return rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
+}
+
 export default function HeadAnim({
   children,
   animateOnScroll = true,
@@ -38,6 +60,7 @@ export default function HeadAnim({
   const splitRefs = useRef([]);
   const tweenRef = useRef(null);
   const triggerRef = useRef(null);
+  const refreshRef = useRef(null);
   const runIdRef = useRef(0);
 
   useIsomorphicLayoutEffect(() => {
@@ -49,37 +72,32 @@ export default function HeadAnim({
 
     tweenRef.current?.kill();
     triggerRef.current?.kill();
+    refreshRef.current?.kill();
 
-    splitRefs.current.forEach((split) => {
-      split?.revert();
-    });
-
+    splitRefs.current.forEach((split) => split?.revert());
     splitRefs.current = [];
-
-    if (shouldSkipSidebarDocsAnimation()) {
-      gsap.set(container, {
-        opacity: 1,
-        clearProps: "opacity,transform",
-      });
-      return;
-    }
 
     let isKilled = false;
 
     gsap.set(container, {
-      opacity: 0,
+      autoAlpha: 0,
     });
+
+    if (shouldSkipSidebarDocsAnimation()) {
+      gsap.set(container, {
+        autoAlpha: 1,
+        clearProps: "visibility,opacity,transform",
+      });
+
+      return;
+    }
 
     const elements = container.hasAttribute("data-copy-wrapper")
       ? Array.from(container.children)
       : [container];
 
     const run = async () => {
-      if (document.fonts?.ready) {
-        try {
-          await document.fonts.ready;
-        } catch (_) {}
-      }
+      await waitForFontsAndLayout();
 
       if (isKilled || runId !== runIdRef.current || !containerRef.current) {
         return;
@@ -88,6 +106,8 @@ export default function HeadAnim({
       const allChars = [];
 
       elements.forEach((element) => {
+        if (!element) return;
+
         const split = SplitText.create(element, {
           type: "lines,words,chars",
           mask: "chars",
@@ -108,9 +128,9 @@ export default function HeadAnim({
 
       if (!allChars.length) {
         gsap.set(container, {
-          opacity: 1,
-          clearProps: "opacity",
+          autoAlpha: 1,
         });
+
         return;
       }
 
@@ -121,40 +141,55 @@ export default function HeadAnim({
       });
 
       gsap.set(container, {
-        opacity: 1,
+        autoAlpha: 1,
       });
 
-      const animationProps = {
+      tweenRef.current = gsap.to(allChars, {
         yPercent: 0,
         rotate: 0,
         duration: 0.5,
         stagger: 0.02,
         ease: "power3.out",
         delay,
+        paused: animateOnScroll,
         onComplete: () => {
           gsap.set(allChars, {
             clearProps: "willChange",
           });
 
-          ScrollTrigger.refresh(true);
+          refreshRef.current?.kill();
+          refreshRef.current = gsap.delayedCall(0.05, () => {
+            ScrollTrigger.refresh(true);
+          });
         },
-      };
+      });
 
-      if (animateOnScroll) {
-        tweenRef.current = gsap.to(allChars, {
-          ...animationProps,
-          scrollTrigger: {
-            trigger: container,
-            start: "top 70%",
-            end: "bottom 50%",
-            once: true,
-          },
-        });
-
-        triggerRef.current = tweenRef.current.scrollTrigger;
-      } else {
-        tweenRef.current = gsap.to(allChars, animationProps);
+      if (!animateOnScroll) {
+        tweenRef.current.play(0);
+        return;
       }
+
+      triggerRef.current = ScrollTrigger.create({
+        trigger: container,
+        start: "top 85%",
+        once: true,
+        invalidateOnRefresh: true,
+        onEnter: () => {
+          tweenRef.current?.play(0);
+        },
+      });
+
+      refreshRef.current?.kill();
+
+      refreshRef.current = gsap.delayedCall(0.2, () => {
+        ScrollTrigger.refresh(true);
+
+        if (isInViewport(container) && tweenRef.current?.progress() === 0) {
+          tweenRef.current.play(0);
+          triggerRef.current?.kill();
+          triggerRef.current = null;
+        }
+      });
     };
 
     run();
@@ -164,11 +199,9 @@ export default function HeadAnim({
 
       tweenRef.current?.kill();
       triggerRef.current?.kill();
+      refreshRef.current?.kill();
 
-      splitRefs.current.forEach((split) => {
-        split?.revert();
-      });
-
+      splitRefs.current.forEach((split) => split?.revert());
       splitRefs.current = [];
 
       if (container) {
@@ -195,11 +228,7 @@ export default function HeadAnim({
   }
 
   return (
-    <div
-      ref={containerRef}
-      data-copy-wrapper="true"
-      style={{ opacity: 0 }}
-    >
+    <div ref={containerRef} data-copy-wrapper="true" style={{ opacity: 0 }}>
       {children}
     </div>
   );

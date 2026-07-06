@@ -12,33 +12,33 @@ import { createPageMetadata } from "@/lib/seo-metadata";
 
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
-  description: "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 100+ effect library, WebGL scenes, and cursor effects from $20/month.",
+  description:
+    "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 100+ effect library, WebGL scenes, and cursor effects from $20/month.",
   path: "/pricing",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
+  image:
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
 });
-
-
 
 export default function PricingPage() {
   return (
     <>
-    <WebpageJsonLd metadata={metadata}/>
-    <FAQJSONLD faqs={faqItems}/>
+      <WebpageJsonLd metadata={metadata} />
+      <FAQJSONLD faqs={faqItems} />
       <VaultShell>
         <Hero />
         <GlowingPlates waitForLoader={false} />
-        <Pricing padding="pt-[30vw]! pb-[10vw]!" content={false} />
-        <PricingCompareTable/>
-        <PricingLicense/>
-       <FAQs faqItems={faqItems}/>
+        <div className=" relative z-20">
+          <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} />
+        </div>
+        <PricingCompareTable />
+        <PricingLicense />
+        <FAQs faqItems={faqItems} />
         <CTA2 />
         <Footer />
       </VaultShell>
     </>
   );
 }
-
-
 
 const faqItems = [
   {
@@ -97,9 +97,9 @@ const faqItems = [
   },
   {
     id: "faq10",
-    question: "Do you offer discounts for students, nonprofits, or open-source projects?",
+    question:
+      "Do you offer discounts for students, nonprofits, or open-source projects?",
     answer:
       "We review student, nonprofit, and open-source discount requests case by case — email hi@hyperiux.com with a short description of your use case.",
-  }
-
-]
+  },
+];

@@ -7,18 +7,17 @@ import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RouteFade } from "@/components/layout/RouteFade";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-function RouteAnimationSync({ syncKey }) {
-  const refreshCallRef = useRef(null);
+function RouteAnimationSync({ syncKey, containerRef }) {
+  useFadeUp(containerRef, [syncKey]);
 
   useEffect(() => {
-    refreshCallRef.current?.kill();
-
-    refreshCallRef.current = gsap.delayedCall(0.12, () => {
+    const refreshCall = gsap.delayedCall(0.2, () => {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           ScrollTrigger.refresh(true);
@@ -27,7 +26,7 @@ function RouteAnimationSync({ syncKey }) {
     });
 
     return () => {
-      refreshCallRef.current?.kill();
+      refreshCall.kill();
     };
   }, [syncKey]);
 
@@ -386,7 +385,7 @@ export default function DocsBody({ children }) {
     };
   }, [navigateWithDocsFade]);
 
-  useEffect(() => {
+ useEffect(() => {
   routeTweenRef.current?.kill();
 
   const routeContent = routeContentRef.current;
@@ -401,7 +400,7 @@ export default function DocsBody({ children }) {
     });
   }
 
-  const refreshCall = gsap.delayedCall(0.12, () => {
+  const refreshCall = gsap.delayedCall(0.25, () => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ScrollTrigger.refresh(true);

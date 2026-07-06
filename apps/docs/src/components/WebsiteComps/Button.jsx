@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLenis } from "lenis/react";
 import { BtnArrow } from "../WebsiteComps/Icons";
 import { tv } from "tailwind-variants";
 
@@ -48,7 +49,9 @@ export default function Button({
   arrowClassName = "",
   children,
   ariaLabel,
+  scrollOffset = 0,
 }) {
+  const lenis = useLenis();
   const styles = buttonTv({ variant, className });
 
   const circleColorClass = variant === "outline" ? "bg-background" : (variant === "white" ? "bg-black" : "bg-white");
@@ -63,6 +66,48 @@ export default function Button({
     }
 
     if (disabled) return;
+
+    if (typeof window !== "undefined") {
+      const targetUrl = new URL(href, window.location.href);
+      const currentUrl = new URL(window.location.href);
+      const isSamePageHash =
+        targetUrl.origin === currentUrl.origin &&
+        targetUrl.pathname === currentUrl.pathname &&
+        targetUrl.hash;
+
+      if (isSamePageHash) {
+        const target = document.getElementById(
+          decodeURIComponent(targetUrl.hash.slice(1))
+        );
+
+        if (target) {
+          event.preventDefault();
+          const resolvedScrollOffset =
+            typeof scrollOffset === "function"
+              ? scrollOffset(event)
+              : scrollOffset;
+
+          const targetTop =
+            target.getBoundingClientRect().top +
+            window.scrollY -
+            resolvedScrollOffset;
+
+          if (lenis) {
+            lenis.scrollTo(targetTop, {
+              force: true,
+            });
+          } else {
+            window.scrollTo({
+              top: targetTop,
+              left: 0,
+              behavior: "smooth",
+            });
+          }
+
+          window.history.pushState(null, "", targetUrl.hash);
+        }
+      }
+    }
 
     onClick?.(event);
   };
