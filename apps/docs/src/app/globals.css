@@ -532,6 +532,14 @@ h4 {
   }
 }
 
+/* Prevent hero flash before the loader canvas is ready on first visit.
+   The inline script in layout.js adds this class synchronously. Loader.jsx removes it
+   in useLayoutEffect (before first paint) once the canvas is in the DOM. */
+html.loader-first-visit body {
+  visibility: hidden;
+  background: #ffffff;
+}
+
 .effect-card-shell {
   opacity: 0;
 }
