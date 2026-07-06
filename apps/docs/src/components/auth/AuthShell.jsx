@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AuthBgVideo from "./AuthBgVideo";
 
 export default function AuthShell({
   children,
@@ -6,16 +7,7 @@ export default function AuthShell({
 }) {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-6 py-20 text-white">
-      <video
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        src={"/assets/videos/bg-video.mp4"}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-      />
+      <AuthBgVideo />
 
 
       {/* <Link
