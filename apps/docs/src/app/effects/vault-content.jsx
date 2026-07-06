@@ -530,22 +530,25 @@ const routeKey = `${pathname}${
       onCategoryNavigate={handleCategoryLinkClick}
     >
       {({ isSidebarOpen }) => (
+        <>
+        {/* Outside RouteFade: its transform would turn the header's
+            position:fixed into transform-relative and scroll it away. */}
+        <VaultHeader
+          showSearch
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          totalEffects={totalEffects}
+          effects={safeEffects}
+        />
+
         <RouteFade
           key={routeKey}
           motionKey={routeKey}
           ref={categoryPageRef}
           className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
         >
-          
-          <RouteAnimationSync syncKey={routeKey} />
 
-          <VaultHeader
-           showSearch
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            totalEffects={totalEffects}
-            effects={safeEffects}
-          />
+          <RouteAnimationSync syncKey={routeKey} />
 
           <div>
             <div
@@ -793,6 +796,7 @@ const routeKey = `${pathname}${
             )}
           </div>
         </RouteFade>
+        </>
       )}
 
     </VaultLayout>
@@ -894,7 +898,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-[20%_40%_40%] max-sm:grid-cols-[20%_40%_40%] max-md:gap-10 max-sm:gap-16"
+        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
       >
         {visibleEffects.map((effect, i) => (
           <div key={effect.name} className="effect-card-shell">
