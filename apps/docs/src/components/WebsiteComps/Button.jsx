@@ -69,6 +69,7 @@ export default function Button({
 
   return (
     <Link
+      prefetch={false}
       href={href}
       onClick={handleClick}
       target={target_blank ? "_blank" : undefined}

@@ -11,6 +11,7 @@ import { SplitText } from 'gsap/SplitText'
 
 import { HyperiuxLogo } from '@/utils/Icons'
 import { navCategoryColumns, navDocsItems, vaultLinks } from '@/utils/Links'
+import { sendGTMEvent } from '@next/third-parties/google'
 import Button from './Button'
 import { LOADER_STORAGE_KEY } from './Loader'
 import { useUser } from '@clerk/nextjs'
@@ -1077,7 +1078,17 @@ export default function Navbar() {
                         variant="outline2"
                     />
                 )}
-                <Button text="Install CLI" href="/docs/installation" />
+                <Button
+                    text="Install CLI"
+                    href="/docs/installation"
+                    onClick={() =>
+                        sendGTMEvent({
+                            event: 'install_cli_click',
+                            location: 'homepage_navbar',
+                        })
+                    }
+                    prefetch={false}
+                />
             </div>
         </nav>
     )
