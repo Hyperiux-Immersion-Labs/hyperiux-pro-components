@@ -379,7 +379,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[30vw] items-center self-padd">
      <img
         src="/landing-page/hero-bg.png"
         alt="hero-bg"
@@ -388,7 +388,7 @@ export default function Hero() {
       />
       <div
         ref={containerRef}
-        className="relative z-2 mt-[2vw] space-y-[2vw] max-sm:mt-8  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[14vw]"
+        className="relative z-2 mt-[2vw] space-y-[2vw] max-sm:mt-[30vw]  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[14vw]"
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
           <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Animation Effects Library</p>

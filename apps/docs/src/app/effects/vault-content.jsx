@@ -81,7 +81,7 @@ function SkeletonBlock({ className = "" }) {
 
 function EffectsGridSkeleton({ count = 6 }) {
   return (
-    <div className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16">
+    <div className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-[20%_40%_40%] max-sm:grid-cols-[20%_40%_40%] max-md:gap-10 max-sm:gap-16">
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={`effect-card-skeleton-${index}`}
@@ -894,7 +894,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
+        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-[20%_40%_40%] max-sm:grid-cols-[20%_40%_40%] max-md:gap-10 max-sm:gap-16"
       >
         {visibleEffects.map((effect, i) => (
           <div key={effect.name} className="effect-card-shell">

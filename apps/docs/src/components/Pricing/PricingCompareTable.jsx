@@ -55,7 +55,7 @@ function Cell({ value, highlight = false }) {
 
 export default function PricingCompareTable() {
   return (
-    <section className="w-full bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[6vw] max-md:py-[16vw]">
+    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[0vw] max-md:py-[16vw]">
 
       {/* Heading */}
       <RandomBlur
@@ -66,7 +66,8 @@ export default function PricingCompareTable() {
       </RandomBlur>
 
       {/* Table card */}
-      <div className="mx-auto w-full max-w-[82vw] max-md:max-w-full rounded-[1.2vw] max-md:rounded-[4vw] border border-white/8 overflow-hidden fadeup">
+      <div className="w-full h-fit max-md:overflow-x-scroll max-md:pb-[7vw] max-md:px-[7vw] fadeup">
+      <div className="mx-auto w-full max-w-[82vw]  rounded-[1.2vw] max-md:rounded-[4vw] border border-white/8 overflow-hidden  max-sm:max-w-[240vw] max-sm:w-[240vw] max-md:max-w-[150vw] max-md:w-[150vw]">
 
         {/* Column headers */}
         <div className="grid grid-cols-[2.2fr_1fr_1fr] bg-white/[0.04] px-[2.5vw] py-[1.3vw] max-md:px-6 max-md:py-4 border-b border-white/8">
@@ -100,6 +101,8 @@ export default function PricingCompareTable() {
             </span>
           </div>
         ))}
+      </div>
+
       </div>
 
       {/* Footer note */}

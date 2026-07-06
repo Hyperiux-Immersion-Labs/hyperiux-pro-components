@@ -15,7 +15,7 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function FAQs({ faqItems, isHomePage = false }) {
+export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
     const containerRef = useRef(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const INITIAL_COUNT = 5;
@@ -58,7 +58,7 @@ export default function FAQs({ faqItems, isHomePage = false }) {
                     Questions, <span className='text-primary'>Answered.</span>
                 </RandomBlur>
             </div>
-            <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full  ${isHomePage ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
+            <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full   ${fixWidth ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
                     {faqItems.map((item, index) => {
                         const isHidden = !isExpanded && index >= INITIAL_COUNT;
