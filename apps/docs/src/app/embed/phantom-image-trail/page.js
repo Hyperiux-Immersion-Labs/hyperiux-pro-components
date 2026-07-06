@@ -10,6 +10,13 @@ const images = [
   { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", alt: "Gradient 7" },
 ];
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default function EmbedPhantomImageTrail() {
   return (
     <div className="w-screen h-screen relative bg-[#f8fdfe]">

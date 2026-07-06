@@ -283,6 +283,13 @@ const images = [
 "/img/7.png",
 "/img/8.png",
 ];
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 
 export default function Page() {
  return (

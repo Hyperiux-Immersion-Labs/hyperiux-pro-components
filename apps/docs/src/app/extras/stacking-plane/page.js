@@ -2,6 +2,13 @@ import React from'react'
 import StackingPlane from'@/components/StackingPlane/StackingPlane'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 const STACKING_PLANE_IMAGES = [
 "/assets/nature/nature01.png",
 "/assets/nature/nature02.png",

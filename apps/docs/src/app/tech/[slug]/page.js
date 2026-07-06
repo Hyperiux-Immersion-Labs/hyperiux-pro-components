@@ -28,7 +28,12 @@ export async function generateMetadata({ params }) {
     description: tech.description,
     path: `/tech/${slug}`,
     image: "/seo/homepage.png",
+    robots: {
+    index: false,
+    follow: false,
+  },
   });
+  
 }
 
 export default async function TechDetailPage({ params }) {

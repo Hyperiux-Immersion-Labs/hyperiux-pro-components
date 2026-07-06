@@ -8,6 +8,10 @@ export const metadata = createPageMetadata({
   description: "Browse all extra demos",
   path: "/extras",
   image: "/seo/homepage.png",
+  robots: {
+    index: false,
+    follow: false,
+  },
 });
 
 async function getExtraFolderNames() {

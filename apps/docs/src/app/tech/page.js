@@ -7,6 +7,13 @@ import TechHeader from "@/components/Tech/TechHeader";
 import TechCard from "@/components/Tech/TechCard";
 import TechBackground from "@/components/Tech/TechBackground";
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function TechOverviewPage() {
   const registry = getRegistryIndex();
   const categoriesMap = getEffectsByCategory();

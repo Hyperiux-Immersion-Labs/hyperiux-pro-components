@@ -1,6 +1,13 @@
 import { ArrowFillButton } from "@/components/arrow-fill-button";
 import React from "react";
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default function page() {
   return (
     <section className="flex h-screen items-center justify-center bg-white px-6 text-center max-sm:px-[7vw]">
