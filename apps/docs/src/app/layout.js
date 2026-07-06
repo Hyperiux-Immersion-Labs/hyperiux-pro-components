@@ -36,10 +36,6 @@ const layGrotesk = localFont({
 
 export const metadata = createRootMetadata();
 
-// Runs synchronously before any HTML is painted — adds a class when loader hasn't run yet
-// so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
-const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
-
 const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -61,7 +57,6 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: GTM_SNIPPET }} />
-        <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <noscript>
