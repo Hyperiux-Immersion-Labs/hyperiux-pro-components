@@ -87,7 +87,7 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
 function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
   return (
     <div
-      className={`fixed bottom-30 max-sm:bottom-[18vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-sm:gap-4 transition-all duration-500 max-md:bottom-35  ${
+      className={`fixed bottom-30 max-sm:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-sm:gap-4 transition-all duration-500 max-md:bottom-35  ${
         isCompleted
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none"
