@@ -6,12 +6,17 @@ import React, {
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+
 import gsap from "gsap";
 import { ChevronDown, ChevronRight } from "lucide-react";
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const FAQContext = createContext(null);
 const FAQGroupContext = createContext(null);
@@ -148,7 +153,7 @@ export function FAQWrapper({
     }
   };
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!contentOuterRef.current || !contentInnerRef.current) return;
 
     const outer = contentOuterRef.current;
@@ -163,6 +168,7 @@ export function FAQWrapper({
       });
 
       const targetHeight = outer.scrollHeight;
+      openHeightRef.current = targetHeight;
       gsap.set(outer, { height: 0 });
 
       gsap.fromTo(
@@ -181,15 +187,17 @@ export function FAQWrapper({
         }
       );
     } else {
-      gsap.set(outer, {
-        overflow: "hidden",
-      });
+      gsap.set(outer, { overflow: "hidden" });
 
-      gsap.to(outer, {
-        height: 0,
-        duration,
-        ease: "power3.out",
-      });
+      gsap.fromTo(
+        outer,
+        { height: openHeightRef.current },
+        {
+          height: 0,
+          duration,
+          ease: "power3.out",
+        }
+      );
     }
   }, [isOpen, duration]);
 
