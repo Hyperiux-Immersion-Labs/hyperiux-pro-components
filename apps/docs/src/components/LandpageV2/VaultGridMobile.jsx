@@ -8,7 +8,7 @@ import { useFadeUp } from "../Animations/gsapAnimations";
 const MOBILE_BOXES = [
     {
         id: "mobile-block-top-layer-1",
-        img: '/video/1.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/1.mp4',
        number: "01",
         label: "Scroll Effects",
         title: "Scroll Stack",
@@ -18,7 +18,7 @@ const MOBILE_BOXES = [
     },
     {
         id: "mobile-block-top-layer-2",
-        img: '/video/2.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/2.mp4',
        number: "02",
         label: "Text Animations",
         title: "Blur Text",
@@ -28,7 +28,7 @@ const MOBILE_BOXES = [
     },
     {
         id: "mobile-block-top-layer-3",
-        img: '/video/webgl-slider-video.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/3.mp4',
         number: "03",
         label: "WebGL",
         title: "WebGL Slider",
@@ -39,7 +39,7 @@ const MOBILE_BOXES = [
     },
     {
         id: "mobile-block-bottom-layer-1",
-        img: '/video/4.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/4.mp4',
          number: "04",
         label: "page Transitions",
         title: "Page Flip Transition",
@@ -49,7 +49,7 @@ const MOBILE_BOXES = [
     },
     {
         id: "mobile-block-bottom-layer-2",
-        img: '/video/5.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/5.mp4',
         number: "05",
         label: "Cursor Effects",
         title: "Liquid Glass Cursor",
@@ -60,7 +60,7 @@ const MOBILE_BOXES = [
     },
     {
         id: "mobile-block-bottom-layer-3",
-        img: '/video/6.mp4',
+        img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/6.mp4',
         number: "06",
         label: "Components",
         title: "Animated FAQ",

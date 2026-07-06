@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import LazyVideo from "./LazyVideo";
 
 export default function VaultBox({ id, styles, img, number, label, containerLink = '#', labelLink = '#', textColor = 'text-foreground', title = "WebGL Slider", paragraph = "For immersive product, portfolio, or campaign visuals." }) {
     const router = useRouter();
@@ -11,14 +12,9 @@ export default function VaultBox({ id, styles, img, number, label, containerLink
             className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden max-md:min-h-[30vh] justify-between relative h-full max-md:rounded-md max-sm:rounded-sm rounded-md ${styles} ${id=="block-bottom-layer-3"?"bg-[#3059FF]":""}`}
         >
             <div className={`absolute inset-0 bg-black/50 ${id=="block-bottom-layer-3"?"top-[12%]":""}`}>
-                <video
-                    loop
-                    autoPlay
-                    playsInline
-                    muted
-                    preload='auto'
+                <LazyVideo
                     src={img}
-                    className={`object-cover  h-full w-full`}
+                    className="object-cover h-full w-full"
                 />
             </div>
 

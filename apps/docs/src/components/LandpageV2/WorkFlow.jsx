@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { Eye, Download, Sliders, Rocket } from 'lucide-react'
 import ShimmerText from '../WebsiteComps/ShimmerText'
+import LazyVideo from '../WebsiteComps/LazyVideo'
 import RandomBlur from '../WebsiteComps/RandomBlur'
 
 if (typeof window !== 'undefined') {
@@ -39,8 +40,7 @@ const STEPS = [
 ]
 
 /* ── Video sources  ── */
-const VIDEO_SRC = '/video/tutorial.mp4'
-const VIDEO_SRC_MOBILE = '/video/tutorial.mp4'
+const VIDEO_SRC = 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/tutorial.mp4'
 
 /* ── Shared animation config ── */
 const ACTIVE_BG = '#ffffff'
@@ -246,25 +246,9 @@ export default function Workflow() {
             {/* ── Video Section ── */}
             <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw] max-sm:py-[20vw]">
                 <div ref={videoRef} className="w-screen h-auto max-md:p-0 max-md:h-full max-sm:rounded-0 overflow-hidden bg-primary rounded-md">
-                    {/* Desktop video */}
-                    <video
+                    <LazyVideo
                         src={VIDEO_SRC}
-                        autoPlay
-                        loop
-                        muted
-                        preload="auto"
-                        playsInline
-                        className="w-full h-full object-cover rounded-sm max-sm:hidden"
-                    />
-                    {/* Mobile video */}
-                    <video
-                        src={VIDEO_SRC_MOBILE}
-                        autoPlay
-                        loop
-                        muted
-                        preload="auto"
-                        playsInline
-                        className="w-full h-full object-cover rounded-sm hidden max-sm:block"
+                        className="w-full h-full object-cover rounded-sm"
                     />
                 </div>
             </section>
