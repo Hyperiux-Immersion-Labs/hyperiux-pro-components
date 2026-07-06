@@ -257,7 +257,7 @@ export default function LinesLoading({ onComplete } = {}) {
     const flatTop = NAV_H;
 
     const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-    const rH = isMobile ? 32 : ROW_H;
+    const rH = isMobile ? 28 : ROW_H;
     setRowHeight(rH);
 
     for (let i = 0; i < LINE_COUNT; i++) {
@@ -508,7 +508,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-md:bottom-1 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 max-sm:bottom-20"
+          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>
