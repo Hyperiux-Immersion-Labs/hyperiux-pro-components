@@ -26,7 +26,7 @@ const Solution = () => {
                 Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
             </RandomBlur>
 
-            <div className='w-full h-fit flex justify-center items-center max-md:my-[15vw]'>
+            <div className='w-full h-fit flex justify-center items-center max-md:my-15 max-sm:my-[15vw]'>
                 <TextFillAnimation
                     text="Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client
                     launches. Preview the moment you need, install it with one command, then tune it in your own repo.
@@ -49,7 +49,7 @@ const Solution = () => {
                 {/* <Image src={"/assets/homepage/code-blocks.png"} alt='code block' className='w-full h-full object-contain' width={1920} height={1080}/> */}
                 <CodeBlockWorkflow />
 
-                <div className='flex w-full justify-end mt-[2vw] max-sm:mt-0'>
+                <div className='flex w-full justify-end max-md:justify-center mt-[2vw] max-md:mt-0'>
                     <div className="pl-[0.65vw] text18 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
                         <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
                             That’s the whole workflow. The files land in your project. You

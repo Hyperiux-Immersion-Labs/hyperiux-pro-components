@@ -56,6 +56,8 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
       </head>
+      <GoogleTagManager gtmId="GTM-NCDH9PHF" />
+      {/* <GoogleAnalytics gtagId="G-S4RCCRVS5Y" /> */}
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
@@ -89,8 +91,6 @@ export default function RootLayout({ children }) {
           </Suspense>
           <Analytics />
           <SpeedInsights />
-          <GoogleTagManager gtmId="GTM-NCDH9PHF" />
-          <GoogleAnalytics gtagId="G-S4RCCRVS5Y" />
           <Script
             id="microsoft-clarity"
             strategy="afterInteractive"

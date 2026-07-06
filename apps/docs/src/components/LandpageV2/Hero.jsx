@@ -379,7 +379,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full max-sm:h-[95vh] max-sm:w-screen items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-sm:w-screen items-center self-padd">
      <img
         src="/landing-page/hero-bg.png"
         alt="hero-bg"
@@ -388,9 +388,9 @@ export default function Hero() {
       />
       <div
         ref={containerRef}
-        className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[8vw] max-sm:space-y-[14vw]"
+        className="relative z-2 mt-[2vw] space-y-[2vw] max-sm:mt-8  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[14vw]"
       >
-        <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:justify-start">
+        <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
           <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Animation Effects Library</p>
           <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
@@ -402,7 +402,7 @@ export default function Hero() {
 
         <p
           ref={pRef}
-          className="text24 w-[50%] text-[#C9C9C9] max-md:w-full max-sm:w-[100%] max-md:text-center max-sm:text-left"
+          className="text24 w-[50%] text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
         >
           100+ copy-paste interaction effects for React & Next.js. Scroll
           systems, cursor effects, text reveals, page transitions, and WebGL
@@ -426,7 +426,7 @@ export default function Hero() {
 
         <p
           ref={shimmerTextWrapRef}
-          className="shimmer-text flex items-center gap-[0.5vw] max-sm:mt-[-6vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2"
+          className="shimmer-text flex items-center gap-[0.5vw] max-md:mt-[-3vw] max-sm:mt-[-6vw] max-sm:pl-0 max-md:pl-2 text-[#939393] leading-none opacity-0 max-sm:justify-center max-md:gap-2"
         >
           <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-md:size-3">
             <UnlockIcon className="h-full w-full" />

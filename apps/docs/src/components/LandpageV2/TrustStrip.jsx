@@ -119,10 +119,10 @@ export default function TrustStrip() {
         <section className="relative w-full  z-10 px-[5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
 
 
-            <div className="relative flex max-sm:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-sm:gap-8">
+            <div className="relative flex max-md:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-md:gap-14 max-sm:gap-8">
                 <div className="sticky h-fit top-[12vh] max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 ref={paragraphText} className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[75vw] max-sm:w-[95vw] max-md:text-[6vw] max-sm:max-w-full max-sm:text-[5.5vw] ">
+                        <h2 ref={paragraphText} className="max-w-[39vw] text-[4vw] font-normal text-white max-md:max-w-[95vw] max-md:w-[95vw] max-md:text-[5vw] max-sm:max-w-full max-sm:text-[5.5vw] ">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>
@@ -131,8 +131,8 @@ export default function TrustStrip() {
 
                 </div>
 
-                <div className="flex items-start gap-0">
-                    <div className="flex flex-col max-sm:flex- w-[19vw] max-sm:w-[50%] strip-1">
+                <div className="flex items-start max-md:justify-center max-sm:items-start gap-0">
+                    <div className="flex flex-col max-sm:flex- w-[19vw] max-md:w-[40%] max-sm:w-[50%] strip-1">
                         <StatCard
                             label="Effects"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
@@ -158,12 +158,12 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-start justify-between gap-[2vw] pt-[1vw]"
                         >
-                            <ThreeMark className={"size-[6vw] max-sm:size-[13vw]"} />
-                            <WebGLMark className={"size-[6vw] max-sm:size-[13vw]"} />
+                            <ThreeMark className={"size-[6vw] max-md:size-[9vw] max-sm:size-[13vw]"} />
+                            <WebGLMark className={"size-[6vw] max-md:size-[9vw] max-sm:size-[13vw]"} />
                         </StatCard>
                     </div>
 
-                    <div className="translate-y-[20%] max-sm:w-[50%] flex flex-col max-md:mt-8  w-[19vw] strip-2">
+                    <div className="translate-y-[20%] max-md:w-[40%] flex flex-col max-md:mt-8  w-[19vw] strip-2 max-sm:w-[50%]">
                         <StatCard
                             label="Free"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
@@ -179,17 +179,17 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-center justify-between pt-[1vw]"
                         >
-                            <MotionMark className={"size-[5.5vw] max-sm:size-[13vw]"} />
-                            <HeroFigure className={"size-[5vw] max-sm:size-[13vw]"} />
+                            <MotionMark className={"size-[5.5vw] max-md:size-[9vw] max-sm:size-[13vw]"} />
+                            <HeroFigure className={"size-[5vw] max-md:size-[9vw] max-sm:size-[13vw]"} />
                         </StatCard>
 
                         <StatCard
                             label="React.JS | Next.JS"
                             className="-mt-px min-h-[24vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
-                            contentClassName="flex h-full items-center gap-[2vw] pt-[1vw] max-sm:justify-between"
+                            contentClassName="flex h-full items-center gap-[2vw] pt-[1vw] max-md:justify-between"
                         >
-                            <ReactMark className={"size-[5vw] max-sm:size-[13vw]"} />
-                            <NextMark className={"size-[7vw] max-sm:size-[13vw]"} />
+                            <ReactMark className={"size-[5vw] max-md:size-[9vw] max-sm:size-[13vw]"} />
+                            <NextMark className={"size-[7vw] max-md:size-[11vw] max-sm:size-[13vw]"} />
                         </StatCard>
                     </div>
                 </div>
