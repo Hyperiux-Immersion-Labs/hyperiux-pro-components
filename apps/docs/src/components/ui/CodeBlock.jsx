@@ -49,6 +49,7 @@ export function CodeBlock({
                         <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
                         <button
                             onClick={handleCopy}
+                            aria-label="Copy code to clipboard"
                             className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground  max-sm:text-xl"
                         >
                             {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
@@ -57,6 +58,7 @@ export function CodeBlock({
                 ) : (
                     <button
                         onClick={handleCopy}
+                        aria-label="Copy code to clipboard"
                         className="absolute top-5 right-5 max-sm:top-3.5 max-sm:right-6  z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
                     >
                         {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
