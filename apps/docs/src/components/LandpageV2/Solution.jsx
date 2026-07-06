@@ -38,9 +38,9 @@ const Solution = () => {
                     dimColor="#272727"
                     id="hero-break"
                     containerClassName="text-start"
-                    mobileTextSize="8vw"
+                    mobileTextSize="6.5vw"
                     mobileTextWidth="92%"
-                    tabletTextSize='6vw'
+                    tabletTextSize='5vw'
                     tabletTextWidth='88%'
                 />
 

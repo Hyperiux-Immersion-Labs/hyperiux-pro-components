@@ -30,7 +30,7 @@ const PriceDigit = memo(({ digit, visible = true }) => {
 
     return (
         <span
-            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300 [--pd-w:0.64em] max-sm:[--pd-w:0.52em]"
+            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300 [--pd-w:0.64em] max-sm:[--pd-w:0.64em]"
             style={{ width: visible ? "var(--pd-w)" : "0", opacity: visible ? 1 : 0 }}
         >
             <span ref={containerRef} className="flex flex-col will-change-transform">
@@ -103,21 +103,34 @@ export default function Pricing({padding,content=true}) {
                 //   markers:true
                 }
             });
+            gsap.fromTo(".fadeup-cards", {
+                y: 20,
+                opacity: 0,
+
+            },{ opacity: 1, y: 0, duration: 0.8, 
+                scrollTrigger: {
+                  trigger: "#pricing-cards",
+                  start: "top 80%",
+                  end:"top 80%",
+                //   scrub:true,
+                //   markers:true
+                }
+            });
         })
 
     return (
-        <div className={`h-[190vw] text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
-            <div className="sticky top-[15%] h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
+        <div className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
+            <div className=" w-full h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
             {content&&<div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
-                <RandomBlur as="h2"  className="text110 w-[70vw] max-md:w-full">
+                <RandomBlur start="top 50%" as="h2"  className="text110 w-[70vw] max-md:w-full">
                     Start free. Upgrade when you’re ready.
                 </RandomBlur>
-                <SplitLine as="p" className="text24 max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
+                <SplitLine start="top 60%" as="p" className="text24 max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
                     The free core stays free, forever. Pro unlocks everything and every
                     new drop.
                 </SplitLine>
             </div>}
-            <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup">
+            <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup-cards ">
 
                 <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                     <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
@@ -180,7 +193,7 @@ export default function Pricing({padding,content=true}) {
                                 <PriceDigit digit={isYearly ? "9" : "0"} />
                             </p>
                             <p className="text24 mb-[1vw] max-md:mb-2">{isYearly ? "Yearly" : "Monthly"}</p>
-                            <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
+                            <p className={`text34 max-sm:text-[4vw]! font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
                         </div>
                         <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
                         <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">

@@ -580,11 +580,7 @@
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
-<url>
-  <loc>https://vault.hyperiux.com/sign-in</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
+
 <url>
   <loc>https://vault.hyperiux.com/effects/scroll-effects/split-canvas</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
@@ -605,11 +601,7 @@
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
-<url>
-  <loc>https://vault.hyperiux.com/sign-up</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
+
 <url>
   <loc>https://vault.hyperiux.com/demo/elevate-navbar</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
@@ -1110,11 +1102,7 @@
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.41</priority>
 </url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/chess-grid-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
+
 <url>
   <loc>https://vault.hyperiux.com/demo/colorful-cursor-aura</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
@@ -1175,31 +1163,7 @@
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.41</priority>
 </url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/page-flip-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/svg-brush-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/block-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/pixel-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://vault.hyperiux.com/demo/radial-slice-transition/page2</loc>
-  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
+
 <url>
   <loc>https://vault.hyperiux.com/demo/full-screen-crosshair</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>

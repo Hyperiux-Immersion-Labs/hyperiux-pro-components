@@ -230,9 +230,9 @@ export default function Workflow() {
                                     {/* Right column: content box */}
                                     <div className="flex flex-col ml-[1vw] max-md:ml-[2vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-md:mb-[3vw] max-sm:mb-[6vw]">
                                         <div className="wf-content-box h-[5vw] max-md:h-[10vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-md:px-[3vw] max-md:py-[2.5vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
-                                            <p className="leading-none mt-[.25vw]">{step.title}</p>
+                                            <p className="leading-none mt-[.25vw] max-sm:text-[5.5vw]">{step.title}</p>
                                             <div className="wf-text w-[85%] max-sm:w-full overflow-hidden">
-                                                <p className="text24 pt-[1.5vw] max-md:pt-[2vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
+                                                <p className="text24 max-sm:text-[4vw]! pt-[1.5vw] max-md:pt-[2vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
                                             </div>
                                         </div>
                                     </div>

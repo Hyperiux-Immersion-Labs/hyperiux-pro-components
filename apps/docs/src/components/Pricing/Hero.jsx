@@ -12,7 +12,7 @@ const Hero = () => {
         src="/landing-page/hero-bg.png"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-sm:block"
+        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-md:block"
       />
             <div
                 className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2 w-[60%] max-md:w-full"

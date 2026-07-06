@@ -27,7 +27,7 @@ const PriceDigit = memo(({ digit, visible = true }) => {
 
     return (
         <span
-            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300 [--pd-w:0.64em] max-sm:[--pd-w:0.52em]"
+            className="overflow-hidden h-[1em] leading-none inline-block relative transition-all duration-300 [--pd-w:0.64em] max-sm:[--pd-w:0.64em]"
             style={{ width: visible ? "var(--pd-w)" : "0", opacity: visible ? 1 : 0 }}
         >
             <span ref={containerRef} className="flex flex-col will-change-transform">
@@ -120,7 +120,7 @@ export default function Pricing({padding,content=true}) {
                         </div>
                     </div>
                     <div className="w-fit max-md:w-full">
-                        <Button variant="outline" href="/effects/free" text="Browse Free Effects" className="mb-[2.5vw] max-md:w-full max-md:mb-0" />
+                        <Button variant="outline" href="/effects/free" text="Browse Free Effects" className=" max-md:w-full max-md:mb-0" />
                     </div>
                 </div>
 
@@ -162,7 +162,7 @@ export default function Pricing({padding,content=true}) {
                                 <PriceDigit digit={isYearly ? "9" : "0"} />
                             </p>
                             <p className="text24 mb-[1vw] max-md:mb-2">{isYearly ? "Yearly" : "Monthly"}</p>
-                            <p className={`text34 max-md:text-[4vw] font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
+                            <p className={`text34 max-sm:text-[4vw]! font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
                         </div>
                         <p className="text24 -mt-[1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
                         <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">
@@ -199,7 +199,7 @@ export default function Pricing({padding,content=true}) {
                                 />
                             )}
                         </div>
-                        <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
+                        {/* <p className="text-light-grey max-sm:text-center max-md:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p> */}
                         {checkoutError && (
                             <p className="text-sm text-red-400">{checkoutError}</p>
                         )}

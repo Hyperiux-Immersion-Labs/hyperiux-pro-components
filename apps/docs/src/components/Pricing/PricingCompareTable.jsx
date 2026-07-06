@@ -67,7 +67,7 @@ export default function PricingCompareTable() {
 
       {/* Table card */}
       <div className="w-full h-fit max-md:overflow-x-scroll max-md:pb-[7vw] max-md:px-[7vw] fadeup">
-      <div className="mx-auto w-full max-w-[82vw]  rounded-[1.2vw] max-md:rounded-[4vw] border border-white/8 overflow-hidden  max-sm:max-w-[240vw] max-sm:w-[240vw] max-md:max-w-[150vw] max-md:w-[150vw]">
+      <div className="mx-auto w-full max-w-[82vw]  rounded-lg border border-white/8 overflow-hidden  max-sm:max-w-[240vw] max-sm:w-[240vw] max-md:max-w-[150vw] max-md:w-[150vw]">
 
         {/* Column headers */}
         <div className="grid grid-cols-[2.2fr_1fr_1fr] bg-white/[0.04] px-[2.5vw] py-[1.3vw] max-md:px-6 max-md:py-4 border-b border-white/8">

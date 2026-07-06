@@ -208,7 +208,7 @@ export default function StorytellingMobile() {
         <section
             ref={stmSectionRef}
             id="stm-storytelling-mobile"
-            className="stm-storytelling-section relative hidden max-md:block w-full h-[350vh] z-500 mt-[10vw] mb-[20vw]"
+            className="stm-storytelling-section relative hidden max-md:block w-full h-[250vh] z-500 mt-[10vw] mb-[20vw]"
         >
             <RandomBlur
                 as="h2"
