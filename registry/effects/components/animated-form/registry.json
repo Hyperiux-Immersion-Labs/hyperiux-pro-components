@@ -14,7 +14,7 @@
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/effects/form/index.jsx"
+      "target": "src/components/effects/animated-form/index.jsx"
     },
     {
       "path": "Button.jsx",
@@ -30,7 +30,7 @@
     },
     {
       "path": "Input.jsx",
-      "target": "src/components/effects/form/Input.jsx"
+      "target": "src/components/effects/animated-form/Input.jsx"
     },
     {
       "path": "PhoneInput.jsx",
