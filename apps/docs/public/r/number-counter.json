@@ -1,0 +1,35 @@
+{
+  "name": "number-counter",
+  "type": "registry:component",
+  "title": "Number Counter",
+  "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "exportName": "NumberCounter",
+  "exportKind": "default",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/number-counter/index.jsx"
+    },
+    {
+      "path": "NumberCounterOne.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/number-counter/NumberCounterOne.jsx"
+    },
+    {
+      "path": "NumberCounterThree.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/number-counter/NumberCounterThree.jsx"
+    },
+    {
+      "path": "NumberCounterTwo.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/number-counter/NumberCounterTwo.jsx"
+    }
+  ],
+  "tier": "pro"
+}

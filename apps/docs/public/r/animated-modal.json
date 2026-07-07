@@ -1,0 +1,30 @@
+{
+  "name": "animated-modal",
+  "type": "registry:component",
+  "title": "Animated Modal",
+  "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedModal",
+  "exportKind": "default",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/animated-modal/index.jsx"
+    },
+    {
+      "path": "AnimatedModalContent.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/animated-modal/AnimatedModalContent.jsx"
+    },
+    {
+      "path": "ScrollablePopupContent.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/animated-modal/ScrollablePopupContent.jsx"
+    }
+  ],
+  "tier": "pro"
+}

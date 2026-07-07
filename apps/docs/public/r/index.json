@@ -704,7 +704,7 @@
       "exportKind": "named"
     },
     {
-      "name": "counter",
+      "name": "number-counter",
       "type": "registry:component",
       "category": "text",
       "categories": [
@@ -714,8 +714,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "Counter",
-      "exportKind": "named"
+      "exportName": "NumberCounter",
+      "exportKind": "default"
     },
     {
       "name": "glitchy-text",
@@ -1097,7 +1097,7 @@
       "exportKind": "named"
     },
     {
-      "name": "form",
+      "name": "animated-form",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1105,8 +1105,8 @@
       ],
       "dependencies": [],
       "registryDependencies": [],
-      "exportName": "Form",
-      "exportKind": "named"
+      "exportName": "AnimatedForm",
+      "exportKind": "default"
     },
     {
       "name": "hover-stack",
@@ -1121,7 +1121,7 @@
       "exportKind": "named"
     },
     {
-      "name": "modal",
+      "name": "animated-modal",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1131,11 +1131,11 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "Modal",
-      "exportKind": "named"
+      "exportName": "AnimatedModal",
+      "exportKind": "default"
     },
     {
-      "name": "tabs",
+      "name": "animated-tabs",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1145,8 +1145,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "Tabs",
-      "exportKind": "named"
+      "exportName": "AnimatedTabs",
+      "exportKind": "default"
     },
     {
       "name": "testimonial-swiper",
@@ -1503,7 +1503,7 @@
       "exportKind": "default"
     },
     {
-      "name": "milkyway",
+      "name": "milky-way",
       "type": "registry:component",
       "category": "webgl",
       "categories": [
