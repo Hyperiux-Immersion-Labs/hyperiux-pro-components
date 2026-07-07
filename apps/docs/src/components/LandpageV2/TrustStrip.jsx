@@ -26,7 +26,7 @@ const StatCard = ({
             className={[
                 "relative flex min-h-[21vw] flex-col justify-between rounded-md border border-white/20 bg-[#141312] p-[1.65vw] text-white backdrop-blur-sm",
                 "max-md:min-h-[34vw]  max-md:p-5",
-                "max-sm:min-h-[48vw]  max-sm:p-5",
+                "max-sm:min-h-[48vw]  max-sm:p-3",
                 className,
             ].join(" ")}
         >
@@ -101,7 +101,7 @@ export default function TrustStrip() {
                             contentClassName="flex h-full items-start"
                         >
                             <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
-                                New
+                                New<sup>+</sup>
                             </span>
                         </StatCard>
 

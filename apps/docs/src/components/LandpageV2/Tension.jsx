@@ -154,8 +154,8 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[55vw] text24 font-light leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
-           Performance guidance: know where risk lives before the effect ships. No library can promise performance in every project; a serious effect should show the tradeoffs before install.
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 font-light leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
+            Anyone can add a fade. The hard part is everything around it - timing, restraint, responsive behavior, reduced-motion support, performance discipline. Get it wrong and your &quot;wow moment&quot; janks on mobile or breaks for anyone who turned motion off. So most teams play it safe and look like everyone else!
           </SplitLine>
         </div>
 
@@ -195,8 +195,7 @@ export default function Tension() {
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
             It&apos;s the interaction layer.
-          </span>{' '}
-          Here it is.
+          </span>
         </p>
       </div>
     </section>

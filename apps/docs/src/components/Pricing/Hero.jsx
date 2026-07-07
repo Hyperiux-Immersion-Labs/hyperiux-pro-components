@@ -33,7 +33,7 @@ const Hero = () => {
                     start="top 120%"
                     className="text24 max-sm:text-left text-[#C9C9C9] w-[70%] max-sm:w-[95%] max-md:w-[80%]"
                 >
-                    Free Core is open today with 30+ source-owned React and Next.js effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
+                    Free Core is open today with 30+ source-first React and Next.js effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                 </SplitLine>
             </div>
         </section>

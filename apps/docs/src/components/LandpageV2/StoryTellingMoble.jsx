@@ -254,9 +254,7 @@ export default function StorytellingMobile() {
                             visibility: "hidden",
                         }}
                     >
-                        Vault is easiest to understand when you feel it. Preview a few
-                        high-impact effects below, then open the full catalog when you are
-                        ready.
+                        Vault is easiest to understand when you feel it. Every effect in the free tier is production-tested. No teaser previews. No locked exports. Copy the code and it&apos;s yours.
                     </h2>
                     
                 </div>
