@@ -133,7 +133,7 @@ export function ElevateNavbarMobile({
   }, [activeDropdownIndex]);
 
   return (
-    <div className="fixed h-fit left-1/2 max-md:top-[10%] max-sm:top-[42%] -translate-x-1/2 z-999">
+    <div className="fixed h-fit left-1/2 max-md:top-[10%] max-sm:top-[38%] -translate-x-1/2 z-999">
       <div
         ref={backdropRef}
         onClick={() => setIsMenuOpen(false)}
