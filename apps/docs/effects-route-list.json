@@ -152,12 +152,12 @@
     "demoRoute": "https://vault.hyperiux.com/demo/depth-card-stack"
   },
   {
-    "title": "Form",
-    "name": "form",
+    "title": "Animated Form",
+    "name": "animated-form",
     "tier": "pro",
     "category": "components",
-    "detailRoute": "https://vault.hyperiux.com/effects/components/form",
-    "demoRoute": "https://vault.hyperiux.com/form"
+    "detailRoute": "https://vault.hyperiux.com/effects/components/animated-form",
+    "demoRoute": "https://vault.hyperiux.com/animated-form"
   },
   {
     "title": "Gooey Counter",
@@ -184,12 +184,12 @@
     "demoRoute": "https://vault.hyperiux.com/demo/interactive-list-preview"
   },
   {
-    "title": "Modal",
-    "name": "modal",
+    "title": "Animated Modal",
+    "name": "animated-modal",
     "tier": "pro",
     "category": "components",
-    "detailRoute": "https://vault.hyperiux.com/effects/components/modal",
-    "demoRoute": "https://vault.hyperiux.com/pro/modal"
+    "detailRoute": "https://vault.hyperiux.com/effects/components/animated-modal",
+    "demoRoute": "https://vault.hyperiux.com/pro/animated-modal"
   },
   {
     "title": "Ribbon Drift",
@@ -200,12 +200,12 @@
     "demoRoute": "https://vault.hyperiux.com/pro/ribbon-drift"
   },
   {
-    "title": "Tabs",
-    "name": "tabs",
+    "title": "Animated Tabs",
+    "name": "animated-tabs",
     "tier": "pro",
     "category": "components",
-    "detailRoute": "https://vault.hyperiux.com/effects/components/tabs",
-    "demoRoute": "https://vault.hyperiux.com/pro/tabs"
+    "detailRoute": "https://vault.hyperiux.com/effects/components/animated-tabs",
+    "demoRoute": "https://vault.hyperiux.com/pro/animated-tabs"
   },
   {
     "title": "Testimonial Swiper",
@@ -600,12 +600,12 @@
     "demoRoute": "https://vault.hyperiux.com/demo/circle-text-reveal"
   },
   {
-    "title": "Counter",
-    "name": "counter",
+    "title": "Number Counter",
+    "name": "number-counter",
     "tier": "pro",
     "category": "text",
-    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/counter",
-    "demoRoute": "https://vault.hyperiux.com/demo/counter"
+    "detailRoute": "https://vault.hyperiux.com/effects/text-animations/number-counter",
+    "demoRoute": "https://vault.hyperiux.com/demo/number-counter"
   },
   {
     "title": "Glitchy Text",
@@ -889,11 +889,11 @@
   },
   {
     "title": "Milky Way",
-    "name": "milkyway",
+    "name": "milky-way",
     "tier": "free",
     "category": "webgl",
-    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/milkyway",
-    "demoRoute": "https://vault.hyperiux.com/demo/milkyway"
+    "detailRoute": "https://vault.hyperiux.com/effects/webgl-effects/milky-way",
+    "demoRoute": "https://vault.hyperiux.com/demo/milky-way"
   },
   {
     "title": "Mouse Pixelation",

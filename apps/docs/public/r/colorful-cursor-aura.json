@@ -7,19 +7,18 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "ColorfulCursorAura",
-  "exportKind": "named",
+  "exportName": "ColorfulCursorAuraComp",
+  "exportKind": "default",
   "files": [
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/colorful-cursor-aura/index.jsx"
-    },
     {
       "path": "ColorfulCursorAuraComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
+      "target": "components/hyperiux/ColorfulCursorAuraComp.jsx"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

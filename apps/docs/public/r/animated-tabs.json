@@ -1,0 +1,24 @@
+{
+  "name": "animated-tabs",
+  "type": "registry:component",
+  "title": "Tabs",
+  "description": "Animated tabs with a moving active indicator and panel transitions",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedTabs",
+  "exportKind": "default",
+  "files": [
+    {
+      "path": "AnimatedTabsComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/AnimatedTabsComp.jsx"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
+    }
+  ]
+}

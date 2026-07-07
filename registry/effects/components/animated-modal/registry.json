@@ -1,0 +1,30 @@
+{
+  "name": "animated-modal",
+  "type": "registry:component",
+  "title": "Animated Modal",
+  "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
+  "category": "components",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/animated-modal",
+  "tier": "pro",
+  "main": "index.jsx",
+  "importPath": "@/components/animated-modal",
+  "target": "src/components/animated-modal",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/animated-modal/index.jsx"
+    },
+    {
+      "path": "AnimatedModal.jsx",
+      "target": "src/components/animated-modal/AnimatedModal.jsx"
+    },
+    {
+      "path": "ScrollablePopupContent.jsx",
+      "target": "src/components/animated-modal/ScrollablePopupContent.jsx"
+    }
+  ]
+}

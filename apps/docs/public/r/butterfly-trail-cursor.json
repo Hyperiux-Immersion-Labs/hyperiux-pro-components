@@ -10,25 +10,12 @@
   ],
   "registryDependencies": [],
   "exportName": "ButterflyTrailCursor",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "butterfly-trail-cursor.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/butterfly-trail-cursor.jsx"
-    },
-    {
-      "path": "assets/cursors/butterflies/matcap-white.webp",
-      "type": "registry:asset",
-      "target": "public/assets/cursors/butterflies/matcap-white.webp",
-      "source": "/assets/cursors/butterflies/matcap-white.webp"
-    },
-    {
-      "path": "assets/cursors/butterflies/butterfly3.glb",
-      "type": "registry:asset",
-      "target": "public/assets/cursors/butterflies/butterfly3.glb",
-      "source": "/assets/cursors/butterflies/butterfly3.glb"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

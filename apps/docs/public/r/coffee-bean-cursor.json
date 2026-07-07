@@ -10,19 +10,12 @@
   ],
   "registryDependencies": [],
   "exportName": "CoffeeBeanCursor",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "coffee-bean-cursor.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/coffee-bean-cursor.jsx"
-    },
-    {
-      "path": "assets/models/coffebean.glb",
-      "type": "registry:asset",
-      "target": "public/assets/models/coffebean.glb",
-      "source": "/assets/models/coffebean.glb"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

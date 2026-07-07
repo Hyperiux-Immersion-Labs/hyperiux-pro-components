@@ -1,0 +1,52 @@
+{
+  "name": "animated-form",
+  "type": "registry:component",
+  "title": "Animated Form",
+  "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
+  "dependencies": [],
+  "registryDependencies": [],
+  "exportName": "AnimatedForm",
+  "exportKind": "default",
+  "files": [
+    {
+      "path": "Button.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Button.jsx"
+    },
+    {
+      "path": "Checkbox.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Checkbox.jsx"
+    },
+    {
+      "path": "ContactForm.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/ContactForm.jsx"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "Input.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Input.jsx"
+    },
+    {
+      "path": "PhoneInput.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/PhoneInput.jsx"
+    },
+    {
+      "path": "Select.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Select.jsx"
+    },
+    {
+      "path": "Textarea.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/Textarea.jsx"
+    }
+  ]
+}

@@ -8,13 +8,12 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrambleText",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "scramble-text.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/scramble-text.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

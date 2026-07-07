@@ -13,9 +13,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "scroll-distortion.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/scroll-distortion.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "assets/img/image01.webp",
@@ -41,6 +41,5 @@
       "target": "public/assets/img/distortion.jpg",
       "source": "/assets/img/distortion.jpg"
     }
-  ],
-  "tier": "pro"
+  ]
 }

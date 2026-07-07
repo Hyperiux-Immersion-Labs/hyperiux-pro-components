@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/cards-runway",
+  "version": "0.0.1",
+  "description": "A horizontal runway of cards that animates as you scroll",
+  "main": "index.jsx",
+  "files": [
+    "index.jsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

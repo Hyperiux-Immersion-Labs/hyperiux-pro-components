@@ -8,19 +8,18 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "RotatingCarousel",
-  "exportKind": "named",
+  "exportName": "CircularSlider",
+  "exportKind": "default",
   "files": [
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/index.jsx"
-    },
     {
       "path": "CircularSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/CircularSliderComp.jsx"
+      "target": "components/hyperiux/CircularSliderComp.jsx"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

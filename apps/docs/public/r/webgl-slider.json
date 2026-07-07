@@ -10,13 +10,17 @@
   ],
   "registryDependencies": [],
   "exportName": "WebglSlider",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "webgl-slider.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/webgl-slider.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "WebGLSliderComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/WebGLSliderComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

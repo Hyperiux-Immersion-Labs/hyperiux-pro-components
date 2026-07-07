@@ -7,20 +7,18 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "NoiseRippleCursor",
+  "exportName": "registerFxTarget",
   "exportKind": "named",
   "files": [
     {
-      "path": "noise-ripple-cursor.jsx",
+      "path": "2dCanvasTracker.js",
       "type": "registry:component",
-      "target": "components/hyperiux/noise-ripple-cursor.jsx"
+      "target": "components/hyperiux/2dCanvasTracker.js"
     },
     {
-      "path": "assets/img/image02.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image02.webp",
-      "source": "/assets/img/image02.webp"
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

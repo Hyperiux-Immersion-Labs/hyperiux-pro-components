@@ -12,9 +12,9 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "curved-plane-v2.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/curved-plane-v2.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "assets/img/image01.webp",
@@ -46,6 +46,5 @@
       "target": "public/assets/img/image05.png",
       "source": "/assets/img/image05.png"
     }
-  ],
-  "tier": "pro"
+  ]
 }

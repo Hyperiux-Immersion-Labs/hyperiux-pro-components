@@ -8,19 +8,12 @@
   ],
   "registryDependencies": [],
   "exportName": "GridLift",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "grid-lift.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/grid-lift.jsx"
-    },
-    {
-      "path": "hyperiux-wordmark.svg",
-      "type": "registry:asset",
-      "target": "public/hyperiux-wordmark.svg",
-      "source": "/hyperiux-wordmark.svg"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

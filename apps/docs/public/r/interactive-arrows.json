@@ -8,48 +8,47 @@
   ],
   "registryDependencies": [],
   "exportName": "InteractiveArrows",
-  "exportKind": "named",
+  "exportKind": "default",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "arrows.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/index.jsx"
-    },
-    {
-      "path": "Arrows.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/Arrows.jsx"
+      "target": "components/hyperiux/arrows.jsx"
     },
     {
       "path": "ArrowsLimit.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/ArrowsLimit.jsx"
+      "target": "components/hyperiux/ArrowsLimit.jsx"
     },
     {
       "path": "ArrowsOpacity.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/ArrowsOpacity.jsx"
+      "target": "components/hyperiux/ArrowsOpacity.jsx"
     },
     {
       "path": "ArrowsPlay.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/ArrowsPlay.jsx"
+      "target": "components/hyperiux/ArrowsPlay.jsx"
     },
     {
-      "path": "Lines.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/Lines.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "Points.jsx",
+      "path": "lines.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/Points.jsx"
+      "target": "components/hyperiux/lines.jsx"
+    },
+    {
+      "path": "points.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/points.jsx"
     },
     {
       "path": "utils.js",
       "type": "registry:component",
-      "target": "components/hyperiux/interactive-arrows/utils.js"
+      "target": "components/hyperiux/utils.js"
     }
-  ],
-  "tier": "pro"
+  ]
 }

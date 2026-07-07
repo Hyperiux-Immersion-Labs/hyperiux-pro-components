@@ -7,14 +7,18 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "FileEncryption",
+  "exportName": "FileEncryptionComp",
   "exportKind": "named",
   "files": [
     {
-      "path": "file-encryption.jsx",
+      "path": "FileEncryptionComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/file-encryption.jsx"
+      "target": "components/hyperiux/FileEncryptionComp.jsx"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

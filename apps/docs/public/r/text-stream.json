@@ -7,14 +7,23 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "TextStream",
+  "exportName": "useIsMobile",
   "exportKind": "named",
   "files": [
     {
-      "path": "text-stream.jsx",
+      "path": "hooks.js",
       "type": "registry:component",
-      "target": "components/hyperiux/text-stream.jsx"
+      "target": "components/hyperiux/hooks.js"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "TextStreamComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/TextStreamComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

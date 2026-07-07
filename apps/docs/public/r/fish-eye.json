@@ -9,14 +9,13 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "FishEyeImage",
-  "exportKind": "named",
+  "exportName": "FishEye",
+  "exportKind": "default",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/fish-eye/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }
