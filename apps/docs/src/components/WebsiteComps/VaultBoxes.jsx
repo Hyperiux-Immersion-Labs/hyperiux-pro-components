@@ -9,7 +9,7 @@ export default function VaultBox({ id, styles, img, number, label, containerLink
         <div
             id={id}
             onClick={() => router.push(containerLink)}
-            className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden max-md:min-h-[30vh] justify-between relative h-full max-md:rounded-md max-sm:rounded-sm rounded-md ${styles} ${id=="block-bottom-layer-3"?"bg-[#3059FF]":""}`}
+            className={`cursor-pointer group flex p-[1vw] z-999 overflow-hidden max-md:min-h-[65vw] justify-between relative h-full max-md:rounded-md max-sm:rounded-sm rounded-md  ${styles} ${id=="block-bottom-layer-3"?"bg-[#3059FF]":""}`}
         >
             <div className={`absolute inset-0 bg-black/50 ${id=="block-bottom-layer-3"?"top-[12%]":""}`}>
                 <LazyVideo
