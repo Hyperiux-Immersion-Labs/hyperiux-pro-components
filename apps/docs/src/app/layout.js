@@ -78,6 +78,7 @@ export default function RootLayout({ children }) {
         />
         <AnnouncementBar />
         <ClerkProvider
+          waitlistUrl="/waitlist"
           appearance={{
             cssLayerName: "clerk",
             theme: "simple",
