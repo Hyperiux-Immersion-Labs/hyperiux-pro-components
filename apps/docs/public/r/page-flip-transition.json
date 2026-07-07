@@ -8,13 +8,14 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "exportName": "FlipTransition",
-  "exportKind": "default",
+  "exportName": "PageFlipTransition",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "page-flip-transition.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/page-flip-transition.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

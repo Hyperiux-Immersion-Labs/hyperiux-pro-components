@@ -9,18 +9,14 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "exportName": "PortfolioSlider3D",
-  "exportKind": "default",
+  "exportName": "WebGLPortfolioSlider",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "webgl-portfolio-slider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "PortfolioSlider.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/PortfolioSlider.jsx"
+      "target": "components/hyperiux/webgl-portfolio-slider.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

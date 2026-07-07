@@ -9,18 +9,44 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "GridTunnelComp",
-  "exportKind": "default",
+  "exportName": "GridTunnel",
+  "exportKind": "named",
   "files": [
     {
-      "path": "GridTunnelComp.jsx",
+      "path": "grid-tunnel.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/GridTunnelComp.jsx"
+      "target": "components/hyperiux/grid-tunnel.jsx"
     },
     {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "path": "assets/img/image01.webp",
+      "type": "registry:asset",
+      "target": "public/assets/img/image01.webp",
+      "source": "/assets/img/image01.webp"
+    },
+    {
+      "path": "assets/img/image02.webp",
+      "type": "registry:asset",
+      "target": "public/assets/img/image02.webp",
+      "source": "/assets/img/image02.webp"
+    },
+    {
+      "path": "assets/img/image03.webp",
+      "type": "registry:asset",
+      "target": "public/assets/img/image03.webp",
+      "source": "/assets/img/image03.webp"
+    },
+    {
+      "path": "assets/img/image04.png",
+      "type": "registry:asset",
+      "target": "public/assets/img/image04.png",
+      "source": "/assets/img/image04.png"
+    },
+    {
+      "path": "assets/img/image05.png",
+      "type": "registry:asset",
+      "target": "public/assets/img/image05.png",
+      "source": "/assets/img/image05.png"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -11,14 +11,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "svg-pixel-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "PixelatedScgFilter.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/PixelatedScgFilter.jsx"
+      "target": "components/hyperiux/svg-pixel-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

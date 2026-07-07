@@ -6,17 +6,18 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "MagneticImageTrail",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/magnetic-image-trail/index.jsx"
     },
     {
       "path": "MagneticTrail.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MagneticTrail.jsx"
+      "target": "components/hyperiux/magnetic-image-trail/MagneticTrail.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -9,19 +9,15 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "full-screen-crosshair.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/full-screen-crosshair.jsx"
     },
     {
       "path": "use-mouse.js",
       "type": "registry:component",
       "target": "components/hyperiux/use-mouse.js"
-    },
-    {
-      "path": "useMouse.js",
-      "type": "registry:component",
-      "target": "components/hyperiux/useMouse.js"
     }
-  ]
+  ],
+  "tier": "pro"
 }

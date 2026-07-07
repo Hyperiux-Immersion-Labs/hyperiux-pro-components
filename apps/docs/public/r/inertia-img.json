@@ -13,12 +13,13 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/inertia-img/index.jsx"
     },
     {
       "path": "InertiaImgComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InertiaImgComp.jsx"
+      "target": "components/hyperiux/inertia-img/InertiaImgComp.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -8,17 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "InfiniteCarousel",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "infinite-carousel.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "InfiniteCarouselComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/InfiniteCarouselComp.jsx"
+      "target": "components/hyperiux/infinite-carousel.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

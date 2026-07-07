@@ -280,46 +280,46 @@
     ]
   },
   {
-    "name": "animated-form",
-    "title": "Animated Form",
+    "name": "form",
+    "title": "Form",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/animated-form/registry.json",
-    "importPath": "@/components/animated-form",
-    "target": "src/components/animated-form",
+    "registryPath": "registry/effects/components/form/registry.json",
+    "importPath": "@/components/effects/form",
+    "target": "src/components/effects/form",
     "files": [
       {
         "path": "index.jsx",
-        "target": "src/components/animated-form/index.jsx"
+        "target": "src/components/effects/form/index.jsx"
       },
       {
         "path": "Button.jsx",
-        "target": "src/components/animated-form/Button.jsx"
+        "target": "src/components/effects/form/Button.jsx"
       },
       {
         "path": "Checkbox.jsx",
-        "target": "src/components/animated-form/Checkbox.jsx"
+        "target": "src/components/effects/form/Checkbox.jsx"
       },
       {
         "path": "ContactForm.jsx",
-        "target": "src/components/animated-form/ContactForm.jsx"
+        "target": "src/components/effects/form/ContactForm.jsx"
       },
       {
         "path": "Input.jsx",
-        "target": "src/components/animated-form/Input.jsx"
+        "target": "src/components/effects/form/Input.jsx"
       },
       {
         "path": "PhoneInput.jsx",
-        "target": "src/components/animated-form/PhoneInput.jsx"
+        "target": "src/components/effects/form/PhoneInput.jsx"
       },
       {
         "path": "Select.jsx",
-        "target": "src/components/animated-form/Select.jsx"
+        "target": "src/components/effects/form/Select.jsx"
       },
       {
         "path": "Textarea.jsx",
-        "target": "src/components/animated-form/Textarea.jsx"
+        "target": "src/components/effects/form/Textarea.jsx"
       }
     ]
   },
@@ -354,26 +354,26 @@
     "target": "src/components/effects/interactive-list-preview"
   },
   {
-    "name": "animated-modal",
-    "title": "Animated Modal",
+    "name": "modal",
+    "title": "Modal",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/animated-modal/registry.json",
-    "importPath": "@/components/animated-modal",
-    "target": "src/components/animated-modal",
+    "registryPath": "registry/effects/components/modal/registry.json",
+    "importPath": "@/components/effects/modal",
+    "target": "src/components/effects/modal",
     "files": [
       {
         "path": "index.jsx",
-        "target": "src/components/animated-modal/index.jsx"
+        "target": "src/components/effects/modal/index.jsx"
       },
       {
         "path": "Modal.jsx",
-        "target": "src/components/animated-modal/Modal.jsx"
+        "target": "src/components/effects/modal/Modal.jsx"
       },
       {
         "path": "ScrollablePopupContent.jsx",
-        "target": "src/components/animated-modal/ScrollablePopupContent.jsx"
+        "target": "src/components/effects/modal/ScrollablePopupContent.jsx"
       }
     ]
   },
@@ -398,22 +398,22 @@
     "target": "src/components/effects/ribbon-drift"
   },
   {
-    "name": "animated-tabs",
-    "title": "Animated Tabs",
+    "name": "tabs",
+    "title": "Tabs",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/animated-tabs/registry.json",
-    "importPath": "@/components/animated-tabs",
-    "target": "src/components/animated-tabs",
+    "registryPath": "registry/effects/components/tabs/registry.json",
+    "importPath": "@/components/effects/tabs",
+    "target": "src/components/effects/tabs",
     "files": [
       {
         "path": "index.jsx",
-        "target": "src/components/animated-tabs/index.jsx"
+        "target": "src/components/effects/tabs/index.jsx"
       },
       {
         "path": "TabsComp.jsx",
-        "target": "src/components/animated-tabs/TabsComp.jsx"
+        "target": "src/components/effects/tabs/TabsComp.jsx"
       }
     ]
   },
@@ -1114,14 +1114,14 @@
     "target": "src/components/effects/circle-text-reveal"
   },
   {
-    "name": "number-counter",
-    "title": "Number Counter",
+    "name": "counter",
+    "title": "Counter",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/text/number-counter/registry.json",
-    "importPath": "@/components/number-counter",
-    "target": "src/components/number-counter"
+    "registryPath": "registry/effects/text/counter/registry.json",
+    "importPath": "@/components/effects/counter",
+    "target": "src/components/effects/counter"
   },
   {
     "name": "glitchy-text",
@@ -1484,14 +1484,14 @@
     "target": "src/components/effects/interactive-blur-reveal"
   },
   {
-    "name": "milky-way",
+    "name": "milkyway",
     "title": "Milky Way",
     "category": "webgl",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/webgl/milky-way/registry.json",
-    "importPath": "@/components/milky-way",
-    "target": "src/components/milky-way"
+    "registryPath": "registry/effects/webgl/milkyway/registry.json",
+    "importPath": "@/components/effects/milkyway",
+    "target": "src/components/effects/milkyway"
   },
   {
     "name": "mouse-pixelation",

@@ -6,12 +6,13 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "DotFillButton",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/dot-fill-button/index.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

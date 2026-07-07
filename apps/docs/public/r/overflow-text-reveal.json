@@ -8,12 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "OverflowTextReveal",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "overflow-text-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/overflow-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -12,9 +12,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "pixel-transition.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/pixel-transition.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

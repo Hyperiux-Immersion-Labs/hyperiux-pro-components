@@ -1,20 +1,21 @@
 {
   "name": "svg-brush-transition",
   "type": "registry:component",
-  "title": "SVG Brush Transition",
+  "title": "Svg Brush Transition",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
   "dependencies": [
     "gsap",
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "exportName": "SVGBrushTransition",
-  "exportKind": "default",
+  "exportName": "SvgDrawPageTransition",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "svg-draw-page-transition.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/svg-draw-page-transition.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

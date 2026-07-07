@@ -6,12 +6,13 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "DitherCanvas",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/dither-canvas/index.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

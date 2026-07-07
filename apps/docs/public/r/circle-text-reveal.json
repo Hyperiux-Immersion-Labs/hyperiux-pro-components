@@ -11,9 +11,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "circle-text-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/circle-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -8,12 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "PerspectiveTextReveal",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "perspective-text-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/perspective-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

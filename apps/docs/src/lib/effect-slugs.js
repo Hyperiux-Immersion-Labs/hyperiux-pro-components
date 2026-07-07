@@ -1,25 +1,5 @@
 const effectSlugAliasGroups = [
   {
-    slug: "animated-form",
-    aliases: ["form"],
-  },
-  {
-    slug: "animated-tabs",
-    aliases: ["tabs"],
-  },
-  {
-    slug: "animated-modal",
-    aliases: ["modal", "animated modal"],
-  },
-  {
-    slug: "milky-way",
-    aliases: ["milkyway"],
-  },
-  {
-    slug: "number-counter",
-    aliases: ["counter"],
-  },
-  {
     slug: "hyperiux-glitter",
     aliases: ["hyperiux-glitter-concept"],
   },

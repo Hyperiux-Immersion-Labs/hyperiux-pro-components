@@ -401,17 +401,17 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/animated-form</loc>
+  <loc>https://vault.hyperiux.com/effects/components/form</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/animated-modal</loc>
+  <loc>https://vault.hyperiux.com/effects/components/modal</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/animated-tabs</loc>
+  <loc>https://vault.hyperiux.com/effects/components/tabs</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -546,7 +546,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/webgl-effects/milky-way</loc>
+  <loc>https://vault.hyperiux.com/effects/webgl-effects/milkyway</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -913,17 +913,17 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/animated-form</loc>
+  <loc>https://vault.hyperiux.com/demo/form</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/animated-modal</loc>
+  <loc>https://vault.hyperiux.com/demo/modal</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/animated-tabs</loc>
+  <loc>https://vault.hyperiux.com/demo/tabs</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -933,7 +933,7 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/text-animations/number-counter</loc>
+  <loc>https://vault.hyperiux.com/effects/text-animations/counter</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -1063,7 +1063,7 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/milky-way</loc>
+  <loc>https://vault.hyperiux.com/demo/milkyway</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -1159,7 +1159,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/number-counter</loc>
+  <loc>https://vault.hyperiux.com/demo/counter</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.41</priority>
 </url>

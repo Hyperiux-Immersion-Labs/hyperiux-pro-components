@@ -9,24 +9,25 @@
   "exportKind": "named",
   "files": [
     {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/animated-toggle/index.jsx"
+    },
+    {
       "path": "ChevronBird.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ChevronBird.jsx"
+      "target": "components/hyperiux/animated-toggle/ChevronBird.jsx"
     },
     {
       "path": "Cross.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Cross.jsx"
-    },
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/animated-toggle/Cross.jsx"
     },
     {
       "path": "Plus.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Plus.jsx"
+      "target": "components/hyperiux/animated-toggle/Plus.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

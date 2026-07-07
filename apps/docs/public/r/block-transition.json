@@ -12,9 +12,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "block-transition.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/block-transition.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

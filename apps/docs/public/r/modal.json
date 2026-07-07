@@ -1,0 +1,30 @@
+{
+  "name": "modal",
+  "type": "registry:component",
+  "title": "Modal",
+  "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "exportName": "Modal",
+  "exportKind": "named",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/modal/index.jsx"
+    },
+    {
+      "path": "Modal.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/modal/Modal.jsx"
+    },
+    {
+      "path": "ScrollablePopupContent.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/modal/ScrollablePopupContent.jsx"
+    }
+  ],
+  "tier": "pro"
+}

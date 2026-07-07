@@ -8,22 +8,18 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrollShuffledCards",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
+    {
+      "path": "scroll-shuffled-cards.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/scroll-shuffled-cards.jsx"
+    },
     {
       "path": "card.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/card.jsx"
-    },
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "ScrollShuffledCardsComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/ScrollShuffledCardsComp.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

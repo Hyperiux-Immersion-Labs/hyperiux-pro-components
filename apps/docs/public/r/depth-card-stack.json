@@ -7,23 +7,24 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "DepthCardStackComp",
-  "exportKind": "default",
+  "exportName": "DepthCardStack",
+  "exportKind": "named",
   "files": [
-    {
-      "path": "DepthCardStackComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/DepthCardStackComp.jsx"
-    },
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/depth-card-stack/index.jsx"
+    },
+    {
+      "path": "DepthCardStackComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/depth-card-stack/DepthCardStackComp.jsx"
     },
     {
       "path": "SliderCard.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/SliderCard.jsx"
+      "target": "components/hyperiux/depth-card-stack/SliderCard.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

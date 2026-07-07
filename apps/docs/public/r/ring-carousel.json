@@ -9,17 +9,13 @@
   ],
   "registryDependencies": [],
   "exportName": "RingCarousel",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "ring-carousel.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "RingCarouselComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/RingCarouselComp.jsx"
+      "target": "components/hyperiux/ring-carousel.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

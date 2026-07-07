@@ -23,13 +23,13 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 17 | Card Drift | `card-drift` | pro | components | `/effects/components/card-drift` | `/demo/card-drift` | — | — | `/card-drift` |
 | 18 | Custom Video Player | `custom-video-player` | pro | components | `/effects/components/custom-video-player` | — | `/pro/video-player` | — | `/video-player` |
 | 19 | Depth Card Stack | `depth-card-stack` | pro | components | `/effects/components/depth-card-stack` | `/demo/depth-card-stack` | — | — | `/depth-card-stack` |
-| 20 | Animated Form | `animated-form` | pro | components | `/effects/components/animated-form` | — | — | `/animated-form` | `/animated-form` |
+| 20 | Form | `form` | pro | components | `/effects/components/form` | — | — | `/form` | `/form` |
 | 21 | Gooey Counter | `gooey-counter` | free | components | `/effects/components/gooey-counter` | `/demo/gooey-counter` | — | — | `/gooey-counter` |
 | 22 | Hover Stack | `hover-stack` | free | components | `/effects/components/hover-stack` | `/demo/hover-stack` | — | — | `/hover-stack` |
 | 23 | Interactive List Preview | `interactive-list-preview` | free | components | `/effects/components/interactive-list-preview` | `/demo/interactive-list-preview` | — | — | `/interactive-list-preview` |
-| 24 | Animated Modal | `animated-modal` | pro | components | `/effects/components/animated-modal` | — | `/pro/animated-modal` | — | `/animated-modal` |
+| 24 | Modal | `modal` | pro | components | `/effects/components/modal` | — | `/pro/modal` | — | `/modal` |
 | 25 | Ribbon Drift | `ribbon-drift` | pro | components | `/effects/components/ribbon-drift` | — | `/pro/ribbon-drift` | — | `/ribbon-drift` |
-| 26 | Animated Tabs | `animated-tabs` | pro | components | `/effects/components/animated-tabs` | — | `/pro/animated-tabs` | — | `/animated-tabs` |
+| 26 | Tabs | `tabs` | pro | components | `/effects/components/tabs` | — | `/pro/tabs` | — | `/tabs` |
 | 27 | Testimonial Swiper | `testimonial-swiper` | pro | components | `/effects/components/testimonial-swiper` | — | `/pro/testimonial` | — | `/testimonial` |
 | 28 | Butterfly Trail Cursor | `butterfly-trail-cursor` | pro | cursor | `/effects/cursor-effects/butterfly-trail-cursor` | `/demo/butterfly-trail-cursor` | — | — | `/cursors/butterflies` |
 | 29 | Character Trail | `character-trail` | pro | cursor | `/effects/cursor-effects/character-trail` | `/demo/character-trail` | — | — | `/character-trail` |
@@ -79,7 +79,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 73 | Text Convergence | `text-convergence` | free | scroll | `/effects/scroll-effects/text-convergence` | `/demo/text-convergence` | — | — | `/text-convergence` |
 | 74 | Blur Text | `blur-text` | pro | text | `/effects/text-animations/blur-text` | `/demo/blur-text` | — | — | `/blur-text-reveal` |
 | 75 | Circle Text Reveal | `circle-text-reveal` | pro | text | `/effects/text-animations/circle-text-reveal` | `/demo/circle-text-reveal` | — | — | `/circle-reveal` |
-| 76 | Number Counter | `number-counter` | pro | text | `/effects/text-animations/number-counter` | `/demo/number-counter` | — | — | `/number-counter` |
+| 76 | Counter | `counter` | pro | text | `/effects/text-animations/counter` | `/demo/counter` | — | — | `/counter` |
 | 77 | Glitchy Text | `glitchy-text` | pro | text | `/effects/text-animations/glitchy-text` | — | `/pro/glitchy-text` | — | `/glitchy-text` |
 | 78 | Mask Text Reveal | `mask-text-reveal` | pro | text | `/effects/text-animations/mask-text-reveal` | — | `/pro/mask-text-reveal` | — | `/mask-text-reveal` |
 | 79 | Overflow Stagger Text | `overflow-stagger-text` | free | text | `/effects/text-animations/overflow-stagger-text` | `/demo/overflow-stagger-text` | — | — | `/overflow-stagger-text` |
@@ -115,7 +115,7 @@ Generated from `apps/docs/public/r/index.json`. Total effects: 115.
 | 109 | Hyperiux Glitter Concept | `hyperiux-glitter-concept` | pro | webgl | `/effects/webgl-effects/hyperiux-glitter` | `/demo/hyperiux-glitter` | — | — | `/hyperiux-glitter` |
 | 110 | Infinite Grid Gallery | `infinite-grid-gallery` | pro | webgl | `/effects/webgl-effects/infinite-grid-gallery` | — | `/pro/infinite-grid-gallery` | — | `/infinite-grid-gallery` |
 | 111 | Interactive Blur Reveal | `interactive-blur-reveal` | free | webgl | `/effects/webgl-effects/interactive-blur-reveal` | `/demo/interactive-blur-reveal` | — | — | `/webgl/interactive-blur-reveal` |
-| 112 | Milky Way | `milky-way` | pro | webgl | `/effects/webgl-effects/milky-way` | `/demo/milky-way` | — | — | `/milky-way` |
+| 112 | Milky Way | `milkyway` | pro | webgl | `/effects/webgl-effects/milkyway` | `/demo/milkyway` | — | — | `/milkyway` |
 | 113 | Mouse Pixelation | `mouse-pixelation` | free | webgl | `/effects/webgl-effects/mouse-pixelation` | `/demo/mouse-pixelation` | — | — | `/mouse-pixelation` |
 | 114 | Progressive Bloom Valley | `progressive-bloom-valley` | pro | webgl | `/effects/webgl-effects/progressive-bloom-valley` | `/demo/progressive-bloom-valley` | — | — | `/webgl/progressive-bloom-valley` |
 | 115 | Strip Slider | `strip-slider` | pro | webgl | `/effects/webgl-effects/strip-slider` | — | `/pro/strip-slider` | — | `/strip-slider` |
