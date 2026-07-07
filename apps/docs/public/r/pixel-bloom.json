@@ -5,18 +5,14 @@
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
   "dependencies": [],
   "registryDependencies": [],
-  "exportName": "registerFxTarget",
+  "exportName": "PixelBloom",
   "exportKind": "named",
   "files": [
     {
-      "path": "2dcanvasTracker.js",
+      "path": "pixel-bloom.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/2dcanvasTracker.js"
-    },
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/pixel-bloom.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

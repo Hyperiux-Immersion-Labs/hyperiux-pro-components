@@ -8,12 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "RopeCursor",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "rope-cursor.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/rope-cursor.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -12,9 +12,10 @@
   "exportKind": "default",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "parallax-slider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/parallax-slider.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

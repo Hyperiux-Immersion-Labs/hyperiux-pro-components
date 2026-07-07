@@ -12,22 +12,22 @@
   ],
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/index.jsx"
     },
     {
       "path": "MorphingParticleModelNew.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MorphingParticleModelNew.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MouseTrailParticles.jsx"
+      "target": "components/hyperiux/hyperiux-glitter/MouseTrailParticles.jsx"
     },
     {
       "path": "assets/models/hyperiux-new-model.glb",
@@ -35,5 +35,6 @@
       "target": "public/assets/models/hyperiux-new-model.glb",
       "source": "/assets/models/hyperiux-new-model.glb"
     }
-  ]
+  ],
+  "tier": "pro"
 }

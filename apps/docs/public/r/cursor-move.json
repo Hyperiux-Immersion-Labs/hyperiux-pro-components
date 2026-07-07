@@ -6,12 +6,13 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CursorMove",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "cursor-move.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/cursor-move.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

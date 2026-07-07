@@ -11,9 +11,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "text-fill-animation.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/text-fill-animation.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

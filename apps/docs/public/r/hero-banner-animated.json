@@ -12,33 +12,52 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "CustomGrainNoise",
-  "exportKind": "default",
+  "exportName": "HeroBanner",
+  "exportKind": "named",
   "files": [
     {
-      "path": "CustomGrainNoise.jsx",
+      "path": "hero-banner.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CustomGrainNoise.jsx"
+      "target": "components/hyperiux/hero-banner.jsx"
     },
     {
-      "path": "EdgeBlurEffect.jsx",
+      "path": "custom-grain-noise.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/EdgeBlurEffect.jsx"
+      "target": "components/hyperiux/custom-grain-noise.jsx"
     },
     {
-      "path": "index.jsx",
+      "path": "edge-blur-effect.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/edge-blur-effect.jsx"
     },
     {
-      "path": "RoomModel.jsx",
+      "path": "room-model.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/RoomModel.jsx"
+      "target": "components/hyperiux/room-model.jsx"
     },
     {
-      "path": "VideoUI.jsx",
+      "path": "video-ui.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/VideoUI.jsx"
+      "target": "components/hyperiux/video-ui.jsx"
+    },
+    {
+      "path": "601/finall.glb",
+      "type": "registry:asset",
+      "target": "public/601/finall.glb",
+      "source": "/601/finall.glb"
+    },
+    {
+      "path": "601/tvtexture.png",
+      "type": "registry:asset",
+      "target": "public/601/tvtexture.png",
+      "source": "/601/tvtexture.png"
+    },
+    {
+      "path": "601/normal.webp",
+      "type": "registry:asset",
+      "target": "public/601/normal.webp",
+      "source": "/601/normal.webp"
     }
-  ]
+  ],
+  "tier": "pro"
 }

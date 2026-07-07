@@ -6,12 +6,13 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "TextCloning",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "text-cloning.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/text-cloning.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

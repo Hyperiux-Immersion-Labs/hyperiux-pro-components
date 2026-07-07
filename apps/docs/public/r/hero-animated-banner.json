@@ -11,9 +11,10 @@
   "exportKind": "default",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "hero-animated-banner.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/hero-animated-banner.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

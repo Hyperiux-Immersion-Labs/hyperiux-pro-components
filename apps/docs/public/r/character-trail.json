@@ -5,18 +5,19 @@
   "description": "Cursor wrapper that leaves a snake-like grid trail of character tiles as the mouse moves. Tiles snap to a 50px grid, cycle through a configurable alphabet and color palette, pop in with a spring animation, then stagger-fade out after the cursor idles.",
   "dependencies": [],
   "registryDependencies": [],
-  "exportName": "CharacterTrailComp",
-  "exportKind": "default",
+  "exportName": "CharacterTrail",
+  "exportKind": "named",
   "files": [
-    {
-      "path": "CharacterTrailComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/CharacterTrailComp.jsx"
-    },
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/character-trail/index.jsx"
+    },
+    {
+      "path": "CharacterTrailComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/character-trail/CharacterTrailComp.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

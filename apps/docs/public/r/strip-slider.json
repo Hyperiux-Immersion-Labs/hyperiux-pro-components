@@ -9,17 +9,19 @@
   ],
   "registryDependencies": [],
   "exportName": "StripSlider",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "strip-slider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/strip-slider.jsx"
     },
     {
-      "path": "StripSliderComp.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/StripSliderComp.jsx"
+      "path": "assets/nature/nature01.png",
+      "type": "registry:asset",
+      "target": "public/assets/nature/nature01.png",
+      "source": "/assets/nature/nature01.png"
     }
-  ]
+  ],
+  "tier": "pro"
 }

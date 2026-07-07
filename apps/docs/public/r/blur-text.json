@@ -11,9 +11,10 @@
   "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "blur-text.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/blur-text.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

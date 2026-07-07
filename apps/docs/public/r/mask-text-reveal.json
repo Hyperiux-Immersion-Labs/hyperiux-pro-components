@@ -8,12 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "MaskTextReveal",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "mask-text-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/mask-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

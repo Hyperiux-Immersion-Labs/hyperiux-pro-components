@@ -8,12 +8,13 @@
   ],
   "registryDependencies": [],
   "exportName": "SlideTextReveal",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "slide-text-reveal.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/slide-text-reveal.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

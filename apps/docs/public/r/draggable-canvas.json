@@ -7,23 +7,24 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "DragCursor",
-  "exportKind": "default",
+  "exportName": "DraggableCanvas",
+  "exportKind": "named",
   "files": [
     {
-      "path": "DragCursor.jsx",
+      "path": "draggable-canvas.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/DragCursor.jsx"
+      "target": "components/hyperiux/draggable-canvas.jsx"
     },
     {
-      "path": "index.jsx",
+      "path": "drag-cursor.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/drag-cursor.jsx"
     },
     {
-      "path": "MaskedContainer.jsx",
+      "path": "masked-container.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MaskedContainer.jsx"
+      "target": "components/hyperiux/masked-container.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

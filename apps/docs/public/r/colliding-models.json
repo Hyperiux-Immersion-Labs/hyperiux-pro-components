@@ -15,12 +15,30 @@
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "colliding-models.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/colliding-models.jsx"
+    },
+    {
+      "path": "MagneticEffect.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/MagneticEffect.jsx"
+    },
+    {
+      "path": "models/hyperiux-logo.glb",
+      "type": "registry:asset",
+      "target": "public/models/hyperiux-logo.glb",
+      "source": "/models/hyperiux-logo.glb"
+    },
+    {
+      "path": "models/c-transformed.glb",
+      "type": "registry:asset",
+      "target": "public/models/c-transformed.glb",
+      "source": "/models/c-transformed.glb"
     }
-  ]
+  ],
+  "tier": "pro"
 }

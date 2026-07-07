@@ -6,12 +6,13 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpotlightText",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "spotlight-text.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/spotlight-text.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

@@ -10,28 +10,29 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "EnhancedPixelCube",
-  "exportKind": "default",
+  "exportName": "MousePixelation",
+  "exportKind": "named",
   "files": [
     {
-      "path": "EnhancedPixelCube.jsx",
+      "path": "mouse-pixelation.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/EnhancedPixelCube.jsx"
+      "target": "components/hyperiux/mouse-pixelation/mouse-pixelation.jsx"
     },
     {
-      "path": "index.jsx",
+      "path": "enhanced-pixel-cube.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/mouse-pixelation/enhanced-pixel-cube.jsx"
     },
     {
-      "path": "PixelCircle.jsx",
+      "path": "pixel-circle.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PixelCircle.jsx"
+      "target": "components/hyperiux/mouse-pixelation/pixel-circle.jsx"
     },
     {
-      "path": "PixelShift.jsx",
+      "path": "pixel-shift.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PixelShift.jsx"
+      "target": "components/hyperiux/mouse-pixelation/pixel-shift.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }

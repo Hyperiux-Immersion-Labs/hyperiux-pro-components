@@ -8,22 +8,18 @@
   ],
   "registryDependencies": [],
   "exportName": "LiquidGlassCursor",
-  "exportKind": "default",
+  "exportKind": "named",
   "files": [
     {
       "path": "index.js",
       "type": "registry:component",
-      "target": "components/hyperiux/index.js"
-    },
-    {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "components/hyperiux/liquid-glass-cursor/index.js"
     },
     {
       "path": "LiquidText.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/LiquidText.jsx"
+      "target": "components/hyperiux/liquid-glass-cursor/LiquidText.jsx"
     }
-  ]
+  ],
+  "tier": "pro"
 }
