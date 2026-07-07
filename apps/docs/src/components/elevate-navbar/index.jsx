@@ -35,7 +35,7 @@ export default function ElevateNavbar() {
     <>
     <DemoHeader/>
     <div className="relative h-screen w-full bg-purple-300 font-mono text-[0.75vw]">
-      <div className="absolute left-1/2 top-[30%] max-sm:top-[22%] w-full -translate-x-1/2 -translate-y-1/2 text-center  text-[#363737]">
+      <div className="absolute left-1/2 top-[30%] max-sm:top-[18%] w-full -translate-x-1/2 -translate-y-1/2 text-center  text-[#363737]">
       <h1 className="text-[8vw] font-black uppercase">
         Elevate Navbar
       </h1>
