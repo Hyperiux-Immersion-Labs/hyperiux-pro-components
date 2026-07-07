@@ -220,7 +220,7 @@ export default function Footer() {
         <div className="grid grid-cols-[1fr_1.2fr_1.5fr_2.3fr] py-[3vw] max-md:grid-cols-2 max-sm:flex max-sm:flex-col max-md:py-[6vw] max-sm:py-[8vw]">
 
           {/* Socials */}
-          <div className="flex flex-col gap-[1.5vw] pr-[2vw]  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
+          <div className="flex flex-col gap-[1.1vw] pr-[2vw]  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
               <span className="text18 text-[#B3B3B3]">Socials</span>
@@ -237,9 +237,9 @@ export default function Footer() {
           </div>
 
           {/* Contact Us */}
-          <div className="flex flex-col gap-[1.5vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
+          <div className="flex flex-col gap-[1.1vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
-              <span className="size-[0.45vw] max-md:size-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00] " />
               <span className="text18 text-[#B3B3B3]">Contact Us</span>
             </div>
             <div className="w-full h-px  border-t  border-foreground/50" />

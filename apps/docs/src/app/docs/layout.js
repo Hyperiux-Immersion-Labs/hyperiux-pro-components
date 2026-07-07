@@ -40,7 +40,7 @@ export default function Layout({ children }) {
            
           </div>
         </VaultLayout>
-        <CTA2 />
+        {/* <CTA2 /> */}
          <Footer />
       </Suspense>
     </>

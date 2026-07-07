@@ -32,7 +32,7 @@ export default function PricingPage() {
         <PricingCompareTable />
         <PricingLicense />
         <FAQs faqItems={faqItems} fixWidth={true} />
-        <CTA2 />
+        {/* <CTA2 /> */}
         <Footer />
       </VaultShell>
     </>

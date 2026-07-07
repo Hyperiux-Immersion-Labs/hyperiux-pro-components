@@ -9,7 +9,7 @@ export default function layout({ children }) {
       <NavbarMobile />
       <div className="w-full">
         {children}
-        <CTA2 />
+        {/* <CTA2 /> */}
         <Footer animations={false} />
       </div>
       </>
