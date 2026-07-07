@@ -10,6 +10,7 @@ export default function DeferredMount({
   strategy = "idle",
   rootMargin = "600px 0px",
   className = "",
+  fallback = null,
 }) {
   const [ready, setReady] = useState(false);
   const wrapperRef = useRef(null);
@@ -57,10 +58,10 @@ export default function DeferredMount({
   if (strategy === "visible") {
     return (
       <div ref={wrapperRef} className={className}>
-        {ready ? children : null}
+        {ready ? children : fallback}
       </div>
     );
   }
 
-  return ready ? children : null;
+  return ready ? children : fallback;
 }
