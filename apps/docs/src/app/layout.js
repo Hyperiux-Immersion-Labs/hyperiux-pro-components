@@ -5,6 +5,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -40,12 +41,6 @@ export const metadata = createRootMetadata();
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
 
-const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
-
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
   var hasSession=document.cookie.indexOf('__session=')!==-1;
@@ -60,10 +55,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.className} antialiased`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: GTM_SNIPPET }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
+        <GoogleTagManager gtmId="GTM-NCDH9PHF" />
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
@@ -127,7 +122,7 @@ export default function RootLayout({ children }) {
           />
           <Script
             id="rb2b"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `!function(key){if(window.reb2b)return;window.reb2b={loaded:true};var s=document.createElement("script");s.async=true;s.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+key+"/"+key+".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s,document.getElementsByTagName("script")[0]);}("5NRP9H7J4EO1");`,
             }}

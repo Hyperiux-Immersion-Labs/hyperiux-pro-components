@@ -41,7 +41,7 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ["lucide-react", "motion", "framer-motion", "gsap"],
+    optimizePackageImports: ["lucide-react", "motion", "gsap"],
     optimizeCss: true,
   },
 
