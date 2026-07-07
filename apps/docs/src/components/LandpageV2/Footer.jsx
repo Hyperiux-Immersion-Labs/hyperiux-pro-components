@@ -150,7 +150,7 @@ export default function Footer() {
         </div>
 
       </div>
-      <p className="text-center max-sm:w-full text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-[4%] text-light-grey z-4">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
+      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-[4%] text-light-grey z-4 max-md:w-[75vw] max-sm:left-[12%]">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-sm:mt-[25vw] ">
 
@@ -217,7 +217,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom row: Socials | Contact Us | (gap) | Newsletter */}
-        <div className="grid grid-cols-[1fr_1.2fr_1.5fr_2.3fr] py-[3vw] max-md:grid-cols-2 max-sm:grid-cols-1 max-md:py-[6vw] max-sm:py-[8vw]">
+        <div className="grid grid-cols-[1fr_1.2fr_1.5fr_2.3fr] py-[3vw] max-md:grid-cols-2 max-sm:flex max-sm:flex-col max-md:py-[6vw] max-sm:py-[8vw]">
 
           {/* Socials */}
           <div className="flex flex-col gap-[1.5vw] pr-[2vw]  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
@@ -237,7 +237,7 @@ export default function Footer() {
           </div>
 
           {/* Contact Us */}
-          <div className="flex flex-col gap-[1.5vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-t max-sm:border-foreground/50">
+          <div className="flex flex-col gap-[1.5vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
               <span className="text18 text-[#B3B3B3]">Contact Us</span>
@@ -258,7 +258,7 @@ export default function Footer() {
 
 
           {/* Newsletter */}
-          <div className="flex flex-col gap-[1vw] pl-[2vw]  border-foreground/50  max-md:border-t max-md:border-foreground/50 max-md:pt-[5vw] max-md:col-span-2 max-md:pl-0 max-md:gap-[3vw] max-sm:pt-[6vw]">
+          <div className="flex flex-col gap-[1vw] pl-[2vw]  border-foreground/50  max-md:border-foreground/50 max-md:pt-[5vw] max-md:col-span-2 max-md:pl-0 max-md:gap-[3vw] max-sm:py-[6vw] max-sm:pb-[20vw]">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
               <span className="text18 text-[#979797]">New effects, in your inbox.</span>
