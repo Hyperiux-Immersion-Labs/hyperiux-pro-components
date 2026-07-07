@@ -70,7 +70,7 @@ export { PixelCircle, PixelShift, EnhancedPixelCube };
 
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
-    <nav className="fixed top-4 max-md:top-5 max-sm:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
+    <nav className="fixed top-4 max-md:top-5 max-sm:top-[85%] left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
 
