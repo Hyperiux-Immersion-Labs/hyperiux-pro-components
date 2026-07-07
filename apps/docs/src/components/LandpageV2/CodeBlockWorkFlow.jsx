@@ -44,7 +44,7 @@ function Panel({ title, children, className = "" }) {
     <div
       className={`overflow-hidden rounded-[1.6vw] border border-white/8 bg-[#161616] shadow-[0_20px_80px_rgba(0,0,0,0.35)] max-md:rounded-[1.6vw] max-sm:rounded-[4vw] ${className}`}
     >
-      <div className="flex h-[3vw] items-center gap-[1vw] bg-[#272727] px-[1.4vw] max-md:h-12 max-md:px-5">
+      <div className="flex h-[3vw] items-center max-sm:gap-[4vw] gap-[1vw] bg-[#272727] px-[1.4vw] max-md:h-12 max-md:px-5">
         <WindowDots />
         <p className="font-mono text-[1.02vw] text-white/72 max-md:text-sm">
           {title}

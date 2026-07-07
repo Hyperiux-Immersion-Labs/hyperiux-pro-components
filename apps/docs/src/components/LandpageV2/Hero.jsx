@@ -379,7 +379,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
      <img
         src="/landing-page/hero-bg.png"
         alt="hero-bg"
@@ -388,11 +388,11 @@ export default function Hero() {
       />
       <div
         ref={containerRef}
-        className="relative z-2 mt-[2vw] space-y-[2vw]  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[14vw]"
+        className="relative z-2 mt-[2vw] space-y-[2vw]  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[12vw]"
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
           <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Interaction Effects Library</p>
-          <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
+          <h1 className=" relative text120 w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
              The Interaction Layer your React Site is Missing
             </span>
@@ -427,13 +427,13 @@ export default function Hero() {
 
         <p
           ref={shimmerTextWrapRef}
-          className="shimmer-text flex items-center gap-[0.5vw] max-md:mt-[-3vw] max-sm:mt-[-6vw] max-sm:pl-0 max-md:pl-2 text-[#939393] leading-none opacity-0 max-sm:justify-center max-md:gap-2"
+          className="shimmer-text flex items-center max-sm:items-start  gap-[0.5vw] max-md:mt-[-3vw] max-sm:mt-[-6vw] max-sm:pl-0 max-md:pl-2 text-[#939393] leading-none opacity-0 max-sm:justify-center max-md:gap-2"
         >
           <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-md:size-3">
             <UnlockIcon className="h-full w-full" />
           </span>
 
-          <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
+          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw]">
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-owned code
           </ShimmerText>
         </p>

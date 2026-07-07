@@ -38,7 +38,7 @@ const Solution = () => {
                     dimColor="#272727"
                     id="hero-break"
                     containerClassName="text-start"
-                    mobileTextSize="6.5vw"
+                    mobileTextSize="7vw"
                     mobileTextWidth="92%"
                     tabletTextSize='5vw'
                     tabletTextWidth='88%'
@@ -51,7 +51,7 @@ const Solution = () => {
 
                 <div className='flex w-full justify-end max-md:justify-center mt-[2vw] max-md:mt-0'>
                     <div className="pl-[0.65vw] text18 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-white/62 max-md:pl-0 max-md:text-sm! ">
-                        <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
+                        <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className='max-sm:text-[3.8vw]'>
                             That’s the whole workflow. The files land in your project. You
                             change anything you want.{" "}
                         </ShimmerText>

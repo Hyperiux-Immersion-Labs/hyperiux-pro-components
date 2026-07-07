@@ -1,4 +1,7 @@
 /* TEXT SIZES */
+.text120 {
+  font-size: 5.5vw;
+}
 .self-padd {
   padding: 0 3.5vw;
 }
@@ -47,6 +50,11 @@
 @media (max-width: 1025px) and (min-width: 641px) {
   .self-padd {
     padding: 0 5vw;
+  }
+
+  .text120 {
+    font-size: 6.5vw;
+    line-height: 1.2;
   }
 
   .text18 {
@@ -101,6 +109,11 @@
 
 @media (max-width: 640px) {
 
+  .text120 {
+    font-size: 12.2vw;
+    line-height: 1.2;
+  }
+
   body {
     overflow-x: hidden;
     width: 100vw;
@@ -110,13 +123,13 @@
     padding: 0 7vw;
   }
   .text80 {
-    font-size: 8.5vw;
+    font-size: 8vw;
   }
   .text140 {
     font-size: 13vw;
   }
   .text110 {
-    font-size: 9vw;
+    font-size: 9.2vw;
   }
   .text64 {
     font-size:6vw;

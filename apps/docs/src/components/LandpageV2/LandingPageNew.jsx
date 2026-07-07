@@ -54,7 +54,7 @@ export default function LandingPageNew({ faqItems }) {
             <FeaturedStoryTelling />
           ))}
         <Workflow />
-        <UIKit />
+        <UIKit /> 
         <SmallMotion />
         <ForDevelopers />
         <StripTransition />

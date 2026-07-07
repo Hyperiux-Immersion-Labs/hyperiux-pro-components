@@ -103,11 +103,11 @@ export default function UIKit() {
               {/* Expanding card content */}
               <div className="w-full h-[37vw]  bg-[#161616] content-container overflow-hidden max-sm:h-[40vh] max-md:h-[60vw]">
                 <div className="p-[2.5vw] flex flex-col justify-between h-full max-md:p-[5vw]">
-                  <h3 className="text64 max-sm:w-[80%]">
+                  <h3 className="text64 max-sm:text-[6.5vw]! max-sm:w-[80%]">
                     {card.title}
                   </h3>
 
-                  <p className="text24 max-sm:leading-[1.2]">
+                  <p className="text24 max-sm:text-[4vw]! max-sm:leading-[1.2]">
                     {card.text}
                   </p>
                 </div>

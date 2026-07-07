@@ -101,7 +101,7 @@ export default function Pricing({ padding, content = true }) {
     }, [])
 
     return (
-        <div className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
+        <div className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-110vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
             <div className=" w-full h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
                 {content && <div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
                     <RandomBlur start="top 50%" as="h2" className="text110 w-[70vw] max-md:w-full">
@@ -122,7 +122,7 @@ export default function Pricing({ padding, content = true }) {
                                 <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
                             </div>
                             <p className="text24 mt-[-1vw] max-md:mt-[-1vw] max-sm:mt-[-3.5vw]">For trying real effects in real projects.</p>
-                            <div className="flex flex-col gap-[1.5vw] max-md:gap-[4.5vw] pt-[2vw]">
+                            <div className="flex flex-col gap-[1.5vw] max-md:gap-[4.5vw] pt-[2vw] max-sm:pt-[5vw]">
                                 {freeFeatures.map((feature, index) => (
                                     <div key={index} className="flex items-center w-full">
                                         <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
@@ -179,7 +179,7 @@ export default function Pricing({ padding, content = true }) {
                                 <p className={`text34 max-sm:text-[4vw]! font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}>3 Months Free</p>
                             </div>
                             <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">For developers, founders, and agencies shipping premium work.</p>
-                            <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw]">
+                            <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw] max-sm:pt-[3vw]">
                                 {ProFeatures.map((feature, index) => (
                                     <div key={index} className="flex items-center w-full">
                                         <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
@@ -212,7 +212,7 @@ export default function Pricing({ padding, content = true }) {
                                     />
                                 )}
                             </div>
-                            {/* <p className="text-light-grey max-sm:text-center max-md:text-[2.5vw] max-sm:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p> */}
+                            
                         </div>
                     </div>
                 </div>

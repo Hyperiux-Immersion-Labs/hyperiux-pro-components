@@ -212,7 +212,7 @@ export default function StorytellingMobile() {
         >
             <RandomBlur
                 as="h2"
-                className="text110  w-[95vw] mb-[10vw] mx-auto text-center"
+                className="text110  w-[95vw] max-sm:w-[98vw] mb-[10vw] mx-auto text-center"
             >
                 Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
             </RandomBlur>
@@ -248,7 +248,7 @@ export default function StorytellingMobile() {
                 <div className="absolute inset-0 flex flex-col justify-center items-center h-full z-20 pointer-events-none px-6">
                     <h2
                         ref={stmInfoTextRef}
-                        className="text22 w-[85vw] py-40 max-w-125 leading-[1.6]! text-center text-white pointer-events-auto"
+                        className="text22 max-sm:text-[5.2vw]! w-[85vw] max-sm:w-[85vw] py-40 max-w-125 leading-[1.4]! text-center text-white pointer-events-auto"
                         style={{
                             margin: 0,
                             visibility: "hidden",
