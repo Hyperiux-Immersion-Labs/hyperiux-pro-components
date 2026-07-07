@@ -76,7 +76,7 @@ export default function Pricing({ padding, content = true }) {
                     start: "30% top",
                     end: "30% top",
                     scrub: true,
-                      markers:true
+                    //   markers:true
                 }
             });
         }
