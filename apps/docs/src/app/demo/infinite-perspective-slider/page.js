@@ -10,7 +10,7 @@ export default function Page() {
     <DemoHeader />
       <LenisSmoothScroll />
       <InfinitePerspectiveSlider />
-      <ScrollBottom className="bottom-[5%] gap-[1vw] max-md:hidden" />
+      <ScrollBottom textColor='text-[#111111]' className="bottom-[5%] gap-[1vw] max-md:hidden" />
 
     </>
   );
