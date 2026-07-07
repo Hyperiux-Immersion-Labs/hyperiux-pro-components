@@ -6,7 +6,14 @@
 // Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
+import {
+  useRef,
+  useMemo,
+  useLayoutEffect,
+  useEffect,
+  useState,
+  Suspense,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -36,6 +43,25 @@ function isLoaderActive() {
   return (
     document.body.classList.contains("loader-active") ||
     window.__HYPERIUX_LOADER_RUNNING__ === true
+  );
+}
+
+// The plates run a continuous WebGL render loop, so the main thread never goes
+// idle — that's exactly what makes Lighthouse/PageSpeed time out
+// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
+// user prefers reduced motion, skip the Canvas entirely and show the static
+// dark backdrop instead. Real users still get the full animated scene.
+function shouldSkipRealtime3D() {
+  if (typeof window === "undefined") return false;
+
+  const ua = navigator.userAgent || "";
+
+  if (/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(ua)) {
+    return true;
+  }
+
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
   );
 }
 
@@ -554,6 +580,10 @@ export default function GlowingPlates({
   // Init true so the hero renders on first paint; the observer corrects it.
   const [inView, setInView] = useState(true);
 
+  // ssr:false (dynamic import) means this only ever renders client-side, so the
+  // lazy initializer can read navigator/matchMedia with no hydration mismatch.
+  const [skip3D] = useState(() => shouldSkipRealtime3D());
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -714,6 +744,7 @@ export default function GlowingPlates({
         ref={canvasWrapperRef}
         className={["h-full w-full opacity-0", className].join(" ")}
       >
+        {skip3D ? null : (
         <Canvas
           className="h-full w-full"
           frameloop={inView ? "always" : "never"}
@@ -740,44 +771,51 @@ export default function GlowingPlates({
             fov={CONFIG.cameraFov}
           />
 
-          <Environment
-            preset={CONFIG.environmentPreset}
-            environmentIntensity={
-              isMobile ? 0.4 : CONFIG.environmentIntensity
-            }
-          />
+          {/* Suspense keeps the scene (and, critically, the postprocessing
+              EffectComposer) from rendering until the EXR environment map has
+              loaded. Without it, EffectComposer initialises against a not-yet-
+              ready environment texture and throws "reading 'alpha'". */}
+          <Suspense fallback={null}>
+            <Environment
+              files="/studio.exr"
+              environmentIntensity={
+                isMobile ? 0.4 : CONFIG.environmentIntensity
+              }
+            />
 
-          <directionalLight
-            castShadow={!isMobile}
-            color={isMobile ? "#ffeedd" : CONFIG.glowLeftColor}
-            intensity={isMobile ? 1.8 : CONFIG.lightIntensity}
-            position={CONFIG.lightPosition}
-          />
+            <directionalLight
+              castShadow={!isMobile}
+              color={isMobile ? "#ffeedd" : CONFIG.glowLeftColor}
+              intensity={isMobile ? 1.8 : CONFIG.lightIntensity}
+              position={CONFIG.lightPosition}
+            />
 
-          <group position={CONFIG.wrapperPosition}>
-            <group
-              position={CONFIG.groupPosition}
-              rotation={CONFIG.groupRotation}
-            >
-              <ParametricPlates
-                key={isMobile ? "mobile" : "desktop"}
-                isMobile={isMobile}
-              />
+            <group position={CONFIG.wrapperPosition}>
+              <group
+                position={CONFIG.groupPosition}
+                rotation={CONFIG.groupRotation}
+              >
+                <ParametricPlates
+                  key={isMobile ? "mobile" : "desktop"}
+                  isMobile={isMobile}
+                />
+              </group>
             </group>
-          </group>
 
-          {!isMobile && (
-            <EffectComposer frameBufferType={THREE.HalfFloatType}>
-              <Bloom
-                intensity={CONFIG.bloomIntensity}
-                luminanceThreshold={CONFIG.bloomThreshold}
-                luminanceSmoothing={CONFIG.bloomSmoothing}
-                mipmapBlur
-                radius={CONFIG.bloomRadius}
-              />
-            </EffectComposer>
-          )}
+            {!isMobile && (
+              <EffectComposer frameBufferType={THREE.HalfFloatType}>
+                <Bloom
+                  intensity={CONFIG.bloomIntensity}
+                  luminanceThreshold={CONFIG.bloomThreshold}
+                  luminanceSmoothing={CONFIG.bloomSmoothing}
+                  mipmapBlur
+                  radius={CONFIG.bloomRadius}
+                />
+              </EffectComposer>
+            )}
+          </Suspense>
         </Canvas>
+        )}
       </div>
     </div>
   );

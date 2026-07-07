@@ -4,7 +4,7 @@ import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import LinkButton from "../link-button";
-import { ArrowFillButton } from "../arrow-fill-button";
+import Button from "./Button";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
@@ -31,7 +31,7 @@ export default function DemoHeader({
 
   return (
     <>
-   
+
 
       <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-3 transition-transform duration-500 ease-out pt-10 max-sm:pt-10 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
@@ -94,7 +94,7 @@ export default function DemoHeader({
           <div className="min-w-0 text-right">
             {showText ? (
               <>
-                <ArrowFillButton
+                {/* <ArrowFillButton
                   href={href}
                   btnText={text}
                   textColor="#ffffff"
@@ -102,6 +102,12 @@ export default function DemoHeader({
                   arrowColor="#ff6b00"
                   hoverArrowColor="#ff6b00"
                   className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
+                /> */}
+                <Button
+                  text={text}
+                  href={href}
+                  variant="orange"
+                  className=" max-md:hidden text-[1.2vw]  "
                 />
                 <LinkButton
                   href={href}

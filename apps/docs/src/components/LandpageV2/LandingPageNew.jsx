@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
 import DeferredMount from "@/components/WebsiteComps/DeferredMount";
 import VaultShell from "@/Layouts/VaultShell";
@@ -23,7 +24,16 @@ import CTA from "./CTA";
 import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
-import GlowingPlates from "@/Experience/GlowingPlates";
+// Keep the three.js/@react-three bundle out of the initial page chunk — it only
+// downloads/parses when DeferredMount actually mounts the scene. The dark
+// placeholder matches --background (#0e0e0e) so there's never a white flash;
+// the effect fades in on top exactly as before.
+const GlowingPlates = dynamic(() => import("@/Experience/GlowingPlates"), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 z-10 h-[140vh] max-md:hidden w-full bg-background" />
+  ),
+});
 
 
 

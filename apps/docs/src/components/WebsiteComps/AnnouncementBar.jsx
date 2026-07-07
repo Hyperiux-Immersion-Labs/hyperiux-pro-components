@@ -28,7 +28,7 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className={`fixed inset-x-0 top-0 z-500 flex h-(--announcement-h) items-center justify-center gap-4 bg-primary px-4 text-white transition-transform duration-300 ease-out max-sm:gap-2.5 max-sm:px-3 ${
+      className={`fixed inset-x-0 top-0 z-500 flex h-(--announcement-h) items-center justify-center gap-4 bg-[linear-gradient(to_right,#ff5f00,#E84002)] px-4 text-white transition-transform duration-300 ease-out max-sm:gap-2.5 max-sm:px-3 ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >

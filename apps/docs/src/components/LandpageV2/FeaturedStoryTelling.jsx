@@ -487,7 +487,7 @@ export default function FeaturedStoryTelling() {
                         ref={infoTextRef}
                         className="text34 w-[45vw] mt-[5vw] leading-[1.6]! text-center pointer-events-auto"
                     >
-                        Vault is easiest to understand when you feel it. Preview a few high- impact effects below, then open the full catalog when you are ready.
+                        Vault is easiest to understand when you feel it. Preview a few high-impact effects below, then open the full catalog when you are ready.
                     </h2>
                    
                 </div>
