@@ -19,8 +19,8 @@ export default function StripTransition() {
             // Animate them up to their natural position
             gsap.to('.strip', {
                 yPercent: -100,
-                stagger: 0.05,
-                duration: (i) => 1 - (i * 0.12), // left is 1s, right is faster
+                stagger: 0.08,
+                duration: (i) => 1 - (i * 0.16), // left is 1s, right is faster
                 ease: 'none',
                 scrollTrigger: {
                     trigger: containerRef.current,
@@ -40,7 +40,7 @@ export default function StripTransition() {
     }, [])
 
     return (
-        <section ref={containerRef} className="h-[250vh] mt-[-280vh] max-md:mt-[-260vh]  flex max-sm:mt-[-150vh] items-center justify-between w-full  bg-transparent pointer-events-none relative z-3">
+        <section ref={containerRef} className="h-[200vh] mt-[-220vh] max-md:mt-[-260vh]  flex max-sm:mt-[-150vh] items-center justify-between w-full  bg-transparent pointer-events-none relative z-3">
             {[...Array(5)].map((_, i) => (
                 <div
                     key={i}
@@ -50,13 +50,11 @@ export default function StripTransition() {
       linear-gradient(
         to bottom,
         #0e0e0e 0%,
-        #0e0e0e 5%,
-        #b35a22 12%,
-        #ff5f00 28%,
-        #6b3a1d 40%,
-        #0a0a0a 48%,
+        #0e0e0e 15%,
+        #b35a22 28%,
+        #ff5f00 40%,
         #ff5f00 60%,
-        #ff5f00 70%,
+        #ff5f00 80%,
         #ffffff 100%
       )
     `,

@@ -57,7 +57,7 @@ export default function LandingPageNew({ faqItems }) {
         <UIKit /> 
         <SmallMotion />
         <ForDevelopers />
-        <StripTransition />
+        {/* <StripTransition /> */}
         <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
         <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
         <CTA />
