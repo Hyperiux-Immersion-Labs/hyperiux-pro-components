@@ -739,7 +739,7 @@ export default function GlowingPlates({
           </group>
 
           {!isMobile && (
-            <EffectComposer>
+            <EffectComposer frameBufferType={THREE.HalfFloatType}>
               <Bloom
                 intensity={CONFIG.bloomIntensity}
                 luminanceThreshold={CONFIG.bloomThreshold}

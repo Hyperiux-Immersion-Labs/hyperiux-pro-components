@@ -1,15 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
 import DeferredMount from "@/components/WebsiteComps/DeferredMount";
 import VaultShell from "@/Layouts/VaultShell";
-
-// Three.js scene — loaded as its own chunk after the page is idle so the
-// WebGL bundle never blocks first paint / TBT.
-const GlowingPlates = dynamic(() => import("@/Experience/GlowingPlates"), {
-  ssr: false,
-});
 import Loader from "@/components/WebsiteComps/Loader";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
@@ -30,15 +23,16 @@ import CTA from "./CTA";
 import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
+import GlowingPlates from "@/Experience/GlowingPlates";
 
 
 
-export default function LandingPageNew({faqItems}) {
+export default function LandingPageNew({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
 
   return (
     <>
-  
+
       <VaultShell>
         <Loader />
         <Hero />
@@ -64,10 +58,10 @@ export default function LandingPageNew({faqItems}) {
         <SmallMotion />
         <ForDevelopers />
         <StripTransition />
-        <Pricing padding={isMobile?"pt-[130vw]! max-sm:mt-[-20vw]":""} />
+        <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
         <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
         <CTA />
-        <CTA2  href="#pricing-cards" isHomePage/>
+        <CTA2 href="#pricing-cards" isHomePage />
         <Footer />
       </VaultShell>
     </>

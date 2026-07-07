@@ -65,6 +65,8 @@ export default function RandomBlur({
     let split;
     let poll;
     let bootCheck;
+    let raf1 = null;
+    let raf2 = null;
     let hasCreatedAnimation = false;
 
     ctx = gsap.context(() => {
@@ -102,8 +104,9 @@ export default function RandomBlur({
 
       refreshScrollTriggerSafely();
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          if (!split?.chars?.length || !document.contains(split.chars[0])) return;
           gsap.fromTo(
             split.chars,
             {
@@ -163,6 +166,9 @@ export default function RandomBlur({
 
     return () => {
       window.removeEventListener("loaderComplete", handleLoaderComplete);
+
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
 
       if (poll) {
         window.clearInterval(poll);
