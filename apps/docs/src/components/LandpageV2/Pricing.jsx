@@ -67,18 +67,47 @@ export default function Pricing({ padding, content = true }) {
     const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
 
     useEffect(() => {
-        const t1 = gsap.to(".pricing", {
-            opacity: 1,
-            pointerEvents: "auto",
-            scrollTrigger: {
-                trigger: ".pricing",
-                start: "15% top",
-                end: "15% top",
-                scrub: true,
-                //   markers:true
-            }
-        });
-        const t2 = gsap.fromTo(".fadeup-cards", {
+        if (globalThis.innerWidth < 542) {
+            gsap.to(".pricing", {
+                opacity: 1,
+                pointerEvents: "auto",
+                scrollTrigger: {
+                    trigger: ".pricing",
+                    start: "30% top",
+                    end: "30% top",
+                    scrub: true,
+                      markers:true
+                }
+            });
+        }
+        if (globalThis.innerWidth >= 542 && globalThis.innerWidth < 1025) {
+            gsap.to(".pricing", {
+                opacity: 1,
+                pointerEvents: "auto",
+                scrollTrigger: {
+                    trigger: ".pricing",
+                    start: "20% top",
+                    end: "20% top",
+                    scrub: true,
+                    // markers: true
+                }
+            });
+        }
+        
+        if(globalThis.innerWidth >= 1025){ 
+            gsap.to(".pricing", {
+                opacity: 1,
+                pointerEvents: "auto",
+                scrollTrigger: {
+                    trigger: ".pricing",
+                    start: "5% top",
+                    end: "5% top",
+                    scrub: true,
+                    //   markers:true
+                }
+            });
+        }
+        gsap.fromTo(".fadeup-cards", {
             y: 20,
             opacity: 0,
 
@@ -92,16 +121,11 @@ export default function Pricing({ padding, content = true }) {
                 //   markers:true
             }
         });
-        return () => {
-            t1.scrollTrigger?.kill();
-            t1.kill();
-            t2.scrollTrigger?.kill();
-            t2.kill();
-        };
+
     }, [])
 
     return (
-        <div className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-110vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[700vw] max-md:h-[550vw]`}>
+        <div className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[920vw] max-md:h-[550vw]`}>
             <div className=" w-full h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
                 {content && <div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
                     <RandomBlur start="top 50%" as="h2" className="text110 w-[70vw] max-md:w-full">
@@ -217,7 +241,7 @@ export default function Pricing({ padding, content = true }) {
                     </div>
                 </div>
                 <SplitLine as="p" className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[85vw]">
-                   Code you install stays in your repo. Free Core effects are available now. Pro downloads, Pro updates, and new Pro effect access require active Pro access.
+                    Code you install stays in your repo. Free Core effects are available now. Pro downloads, Pro updates, and new Pro effect access require active Pro access.
                 </SplitLine>
 
             </div>

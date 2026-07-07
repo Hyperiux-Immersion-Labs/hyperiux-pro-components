@@ -214,7 +214,7 @@ export default function StorytellingMobile() {
                 as="h2"
                 className="text110  w-[95vw] max-sm:w-[98vw] mb-[10vw] mx-auto text-center"
             >
-                Explore the Moments Your Website is  <span className='text-[#ff5f00]'>Missing.</span>
+                Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
             </RandomBlur>
             <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 font-light leading-[1.55] text-white max-md:mt-4 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
                             Hover it. Scroll it. Break it. Then copy it
@@ -258,15 +258,7 @@ export default function StorytellingMobile() {
                         high-impact effects below, then open the full catalog when you are
                         ready.
                     </h2>
-                    {/* <div
-                        ref={stmInfoButtonWrapperRef}
-                        className="flex flex-col items-center gap-4 w-fit pointer-events-auto mt-8"
-                    >
-                        <div className="w-fit">
-                            <Button text="Install CLI" href="/docs/installation"  />
-                        </div>
-                        <Button text="Work with Hyperiux" variant="white"  href="#" />
-                    </div> */}
+                    
                 </div>
             </div>
         </section>
