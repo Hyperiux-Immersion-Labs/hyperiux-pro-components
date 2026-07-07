@@ -92,7 +92,7 @@ const FileEncryption = () => {
         <span>ChaCha20-Poly1305</span>
       </div>
 
-      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white/50 text-sm shadow-lg max-sm:bottom-[18vw] max-sm:w-[90vw] max-sm:px-8 max-sm:py-3">
+      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white/50 text-sm shadow-lg max-sm:bottom-[18vw] max-sm:w-[85vw] max-sm:px-8 max-sm:py-3">
        Slide a card to either edge - watch it snap into place and spill its secret.
       </div>
 

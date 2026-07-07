@@ -18,7 +18,7 @@ const page = () => {
             </h1>
           </HeadAnim>
           <SplitLine>
-          <p className="mx-auto w-fit max-sm:w-[90vw] max-sm:text-center">
+          <p className="mx-auto w-fit max-sm:w-[85vw] max-sm:text-center">
             Click on Navigation buttons to change the slide or you can drag the slider itself
 
           </p>

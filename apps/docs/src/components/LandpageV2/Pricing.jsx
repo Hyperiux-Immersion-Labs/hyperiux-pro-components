@@ -107,7 +107,7 @@ export default function Pricing({ padding, content = true }) {
                     <RandomBlur start="top 50%" as="h2" className="text110 w-[70vw] max-md:w-full">
                         Start free. Join Founding Access for Pro.
                     </RandomBlur>
-                    <SplitLine start="top 60%" as="p" className="text24 w-[50vw] max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
+                    <SplitLine start="top 60%" as="p" className="text24 w-[50vw] max-md:w-[70vw] max-sm:w-[85vw] mx-auto">
                         Free Core is open today with 30+ source-owned effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                     </SplitLine>
                 </div>}
@@ -216,7 +216,7 @@ export default function Pricing({ padding, content = true }) {
                         </div>
                     </div>
                 </div>
-                <SplitLine as="p" className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
+                <SplitLine as="p" className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[85vw]">
                     Cancel anytime. The free core stays free forever. Every effect lives in
                     your repo. So even if you leave, your code stays.
                 </SplitLine>

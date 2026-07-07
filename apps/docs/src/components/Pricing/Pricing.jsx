@@ -180,7 +180,7 @@ export default function Pricing({padding,content=true}) {
                                      </div>
                                  </div>
                              </div>
-            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
+            <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[85vw]">
                Code you install stays in your repo. Free Core effects are available now. Pro downloads, Pro updates, and new Pro effect access require active Pro access.
             </SplitLine>
         </div>
