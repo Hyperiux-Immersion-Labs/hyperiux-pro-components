@@ -234,6 +234,8 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
     };
 
     const onWheel = (event) => {
+      if (isMobileViewport || isTabletViewport) return;
+
       const delta = event.deltaY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {

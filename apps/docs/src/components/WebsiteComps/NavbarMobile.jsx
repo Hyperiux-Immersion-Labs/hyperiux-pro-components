@@ -615,9 +615,9 @@ export default function NavbarMobile() {
             })}
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-8 flex max-sm:flex-col gap-4">
+          <div className="mt-8 border-t border-white/10 pt-8 flex max-sm:flex-col gap-4 max-sm:gap-6">
             {isLoaded && user?.publicMetadata?.plan !== "pro" && (
-              <div className="flex w-fit max-sm:w-full justify-center" onClick={handleNavigate}>
+              <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
                 <Button
                   text="Join Founding Access"
                   href="/waitlist"
@@ -626,7 +626,7 @@ export default function NavbarMobile() {
                 />
               </div>
             )}
-            <div className="flex w-fit  max-sm:w-full justify-center" onClick={handleNavigate}>
+            <div className="flex w-fit  max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
               <Button text="Install CLI" href="/docs/installation" className="w-fit max-sm:w-full" />
             </div>
           </div>

@@ -818,7 +818,7 @@ const routeKey = `${pathname}${
 
         {/* Wishlist sign-in toast */}
         <div
-          className={`flex w-80 fixed bottom-6 right-6  max-sm:w-full flex-col gap-3 rounded-md border border-white/20 bg-[#0e0e0e] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+          className={`flex w-80 fixed bottom-6 right-6 max-sm:translate-x-[-50%] max-sm:left-1/2 max-md:bottom-12 max-sm:w-[80vw] max-md:w-[40vw] max-sm:bottom-20 flex-col gap-3 rounded-md border border-white/20 bg-[#0e0e0e] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
         >
           <div className="flex items-start justify-between gap-3">
             <p className="text-sm text-white">Sign in to save effects to your wishlist.</p>
