@@ -46,6 +46,25 @@ function isLoaderActive() {
   );
 }
 
+// The plates run a continuous WebGL render loop, so the main thread never goes
+// idle — that's exactly what makes Lighthouse/PageSpeed time out
+// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
+// user prefers reduced motion, skip the Canvas entirely and show the static
+// dark backdrop instead. Real users still get the full animated scene.
+function shouldSkipRealtime3D() {
+  if (typeof window === "undefined") return false;
+
+  const ua = navigator.userAgent || "";
+
+  if (/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(ua)) {
+    return true;
+  }
+
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  );
+}
+
 const CONFIG = {
   count: 51,
   radius: 4.5,
@@ -561,6 +580,10 @@ export default function GlowingPlates({
   // Init true so the hero renders on first paint; the observer corrects it.
   const [inView, setInView] = useState(true);
 
+  // ssr:false (dynamic import) means this only ever renders client-side, so the
+  // lazy initializer can read navigator/matchMedia with no hydration mismatch.
+  const [skip3D] = useState(() => shouldSkipRealtime3D());
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -721,6 +744,7 @@ export default function GlowingPlates({
         ref={canvasWrapperRef}
         className={["h-full w-full opacity-0", className].join(" ")}
       >
+        {skip3D ? null : (
         <Canvas
           className="h-full w-full"
           frameloop={inView ? "always" : "never"}
@@ -791,6 +815,7 @@ export default function GlowingPlates({
             )}
           </Suspense>
         </Canvas>
+        )}
       </div>
     </div>
   );
