@@ -244,7 +244,7 @@ export default function Workflow() {
             </section>
 
             {/* ── Video Section ── */}
-            <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw] max-sm:py-[20vw] h-screen">
+            <section ref={videoSectionRef} className="w-full flex items-center justify-center py-[10vw] max-sm:py-[20vw] h-screen max-sm:h-[100vw]">
                 <div ref={videoRef} className="w-screen h-auto max-md:p-0 max-md:h-full max-sm:rounded-0 overflow-hidden bg-primary rounded-md">
                     <LazyVideo
                         src={VIDEO_SRC}
