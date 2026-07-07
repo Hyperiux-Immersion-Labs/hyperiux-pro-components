@@ -71,7 +71,7 @@ export default function LandingPageNew({ faqItems }) {
         <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
         <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
         <CTA />
-        <CTA2 href="#pricing-cards" isHomePage />
+        {/* <CTA2 href="#pricing-cards" isHomePage /> */}
         <Footer />
       </VaultShell>
     </>
