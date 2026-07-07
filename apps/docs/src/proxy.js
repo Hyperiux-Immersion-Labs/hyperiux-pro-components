@@ -5,7 +5,14 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/api/dashboard(.*)",
   "/api/wishlist(.*)",
-  "/api/stripe(.*)",
+  // Not /api/stripe/webhooks — Stripe's server sends these with no Clerk
+  // session. auth.protect() 404s unauthenticated non-browser requests, which
+  // silently dropped every webhook delivery (Stripe emailed about 24 failed
+  // attempts). The route already authenticates via the stripe-signature
+  // header, so it must never sit behind Clerk's auth wall.
+  "/api/stripe/checkout(.*)",
+  "/api/stripe/portal(.*)",
+  "/api/stripe/sync-session(.*)",
 ]);
 
 const withClerk = clerkMiddleware(async (auth, request) => {
