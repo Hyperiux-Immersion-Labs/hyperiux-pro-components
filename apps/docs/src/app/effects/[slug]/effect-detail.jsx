@@ -739,7 +739,7 @@ function EffectCtaSection({ cta, sectionRef }) {
       ref={sectionRef}
       className="fadeup w-full bg-[#272727] rounded-md my-[5vw] mx-auto"
     >
-      <div className="mx-auto w-full flex flex-col items-start max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+      <div className="mx-auto w-full flex flex-col items-start max-w-6xl px-10 max-md:px-6 max-sm:px-[6vw] py-15">
         {cta.heading && (
           <h2 className="text-[2.5vw] font-medium text-foreground max-sm:text-[7vw]">
             {cta.heading}
@@ -752,9 +752,9 @@ function EffectCtaSection({ cta, sectionRef }) {
           </p>
         )}
 
-        <div className="w-fit max-sm:mt-[4vw] mt-6">
+        <div className="w-fit max-sm:mt-[8vw] mt-6">
           <CustomAnimationFormTrigger>
-            {cta.buttonText && (
+            {cta.buttonText && (  
 
               <Button
                 preventDefault={false}
@@ -763,7 +763,7 @@ function EffectCtaSection({ cta, sectionRef }) {
                 scaleClass="group-hover:scale-[100]!"
                 target="_blank"
                 variant="white"
-                className="shrink-0 w-fit"
+                className="shrink-0 w-fit max-sm:px-5! max-sm:py-3! max-sm:gap-4! max-sm:text-lg!"
               />
             )}
           </CustomAnimationFormTrigger>
