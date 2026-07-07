@@ -5,7 +5,7 @@ import { useLenis } from 'lenis/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 

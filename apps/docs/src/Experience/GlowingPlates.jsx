@@ -6,7 +6,7 @@
 // Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useMemo, useLayoutEffect, useEffect } from "react";
+import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -548,6 +548,34 @@ export default function GlowingPlates({
 
   const { isMobile } = useIsMobile();
 
+  // Pause the render loop while the hero is scrolled out of view (or hidden on
+  // mobile via max-md:hidden). Rotation is a function of absolute elapsed time,
+  // so resuming looks seamless — no visual change, just no wasted GPU work.
+  // Init true so the hero renders on first paint; the observer corrects it.
+  const [inView, setInView] = useState(true);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const syncVisibility = () => {
+      const rect = el.getBoundingClientRect();
+      // A display:none element (mobile) reports an all-zero rect → not in view.
+      return rect.bottom > 0 && rect.top < window.innerHeight;
+    };
+
+    // IntersectionObserver can miss the initial state after client navigations.
+    setInView(syncVisibility());
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0, rootMargin: "200px 0px" }
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
   const playFadeIfReady = () => {
     const el = canvasWrapperRef.current;
 
@@ -688,7 +716,7 @@ export default function GlowingPlates({
       >
         <Canvas
           className="h-full w-full"
-          frameloop="always"
+          frameloop={inView ? "always" : "never"}
           dpr={CONFIG.canvasDpr}
           shadows={!isMobile ? { type: THREE.PCFShadowMap } : false}
           onCreated={() => {

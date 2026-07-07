@@ -10,7 +10,7 @@ import CustomGrainNoise from'./CustomGrainNoise'
 import { EffectComposer } from'@react-three/postprocessing'
 import VideoUI from'./VideoUI'
 import { Play } from'lucide-react'
-import { AnimatePresence, motion } from'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import Link from 'next/link'
 
