@@ -217,7 +217,7 @@ function MobileDropdown({
   }, [isOpen]);
 
   return (
-    <div className="border-b border-white/5">
+    <div className="border-b  border-white/5">
       <button
         type="button"
         onClick={onToggle}
@@ -569,7 +569,7 @@ export default function NavbarMobile() {
       >
         <div
           data-lenis-prevent
-          className="absolute inset-0 overflow-y-auto px-[8vw] pt-24 pb-8"
+          className="absolute inset-0 overflow-y-auto px-[8vw] pt-32 max-sm:pt-24 pb-8"
         >
           <div ref={linksRef} className="flex flex-1 flex-col">
             {vaultLinks.map(({ label, href, dropdown }) => {
