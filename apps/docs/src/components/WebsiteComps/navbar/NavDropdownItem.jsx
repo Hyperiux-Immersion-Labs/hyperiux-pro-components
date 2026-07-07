@@ -1,0 +1,295 @@
+'use client'
+
+import { useCallback, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import gsap from 'gsap'
+import { SplitText } from 'gsap/SplitText'
+
+import { DROPDOWN_TEXT_ANIM } from './constants'
+import { useIsomorphicLayoutEffect } from './utils'
+
+gsap.registerPlugin(SplitText)
+
+export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
+    const defaultLabelRef = useRef(null)
+    const hoverLabelRef = useRef(null)
+
+    const splitRef = useRef({
+        default: null,
+        hover: null,
+    })
+
+    const getChars = useCallback(() => {
+        const { default: defaultSplit, hover: hoverSplit } = splitRef.current
+
+        if (!defaultSplit?.chars?.length || !hoverSplit?.chars?.length) {
+            return null
+        }
+
+        return {
+            defaultChars: defaultSplit.chars,
+            hoverChars: hoverSplit.chars,
+            allChars: [...defaultSplit.chars, ...hoverSplit.chars],
+        }
+    }, [])
+
+    const setIdleText = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
+
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.set(defaultChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+            force3D: true,
+        })
+
+        gsap.set(hoverChars, {
+            yPercent: 100,
+            autoAlpha: 1,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            force3D: true,
+        })
+    }, [getChars])
+
+    const playEnter = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
+
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.to(defaultChars, {
+            yPercent: -100,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            duration: DROPDOWN_TEXT_ANIM.duration,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.stagger,
+                from: 'start',
+            },
+            ease: DROPDOWN_TEXT_ANIM.ease,
+            overwrite: true,
+        })
+
+        gsap.fromTo(
+            hoverChars,
+            {
+                yPercent: 100,
+                color: DROPDOWN_TEXT_ANIM.hoverColor,
+            },
+            {
+                yPercent: 0,
+                color: DROPDOWN_TEXT_ANIM.hoverColor,
+                duration: DROPDOWN_TEXT_ANIM.duration,
+                stagger: {
+                    each: DROPDOWN_TEXT_ANIM.stagger,
+                    from: 'start',
+                },
+                ease: DROPDOWN_TEXT_ANIM.ease,
+                overwrite: true,
+            }
+        )
+    }, [getChars])
+
+    const playLeave = useCallback(() => {
+        const chars = getChars()
+        if (!chars) return
+
+        const { defaultChars, hoverChars, allChars } = chars
+
+        gsap.killTweensOf(allChars)
+
+        gsap.to(defaultChars, {
+            yPercent: 0,
+            color: DROPDOWN_TEXT_ANIM.idleColor,
+            duration: DROPDOWN_TEXT_ANIM.leaveDuration,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.leaveStagger,
+                from: 'end',
+            },
+            ease: DROPDOWN_TEXT_ANIM.leaveEase,
+            overwrite: true,
+        })
+
+        gsap.to(hoverChars, {
+            yPercent: 100,
+            color: DROPDOWN_TEXT_ANIM.hoverColor,
+            duration: DROPDOWN_TEXT_ANIM.leaveDuration,
+            stagger: {
+                each: DROPDOWN_TEXT_ANIM.leaveStagger,
+                from: 'end',
+            },
+            ease: DROPDOWN_TEXT_ANIM.leaveEase,
+            overwrite: true,
+        })
+    }, [getChars])
+
+    useIsomorphicLayoutEffect(() => {
+        const defaultEl = defaultLabelRef.current
+        const hoverEl = hoverLabelRef.current
+
+        if (!defaultEl || !hoverEl) return
+
+        let defaultSplit = null
+        let hoverSplit = null
+        let cancelled = false
+
+        const initSplit = async () => {
+            if (document.fonts?.ready) {
+                try {
+                    await document.fonts.ready
+                } catch (_) {}
+            }
+
+            if (
+                cancelled ||
+                !defaultLabelRef.current ||
+                !hoverLabelRef.current
+            ) {
+                return
+            }
+
+            defaultSplit = SplitText.create(defaultLabelRef.current, {
+                type: 'chars',
+                mask: 'chars',
+                charsClass: 'nav-dropdown-char',
+            })
+
+            hoverSplit = SplitText.create(hoverLabelRef.current, {
+                type: 'chars',
+                mask: 'chars',
+                charsClass: 'nav-dropdown-shadow-char',
+            })
+
+            splitRef.current = {
+                default: defaultSplit,
+                hover: hoverSplit,
+            }
+
+            gsap.set([...defaultSplit.chars, ...hoverSplit.chars], {
+                display: 'inline-block',
+                willChange: 'transform',
+                force3D: true,
+            })
+
+            setIdleText()
+        }
+
+        initSplit()
+
+        return () => {
+            cancelled = true
+
+            gsap.killTweensOf([
+                ...(defaultSplit?.chars || []),
+                ...(hoverSplit?.chars || []),
+            ])
+
+            defaultSplit?.revert()
+            hoverSplit?.revert()
+
+            splitRef.current = {
+                default: null,
+                hover: null,
+            }
+        }
+    }, [label, setIdleText])
+
+    useEffect(() => {
+        if (!hoverGroupRef) return
+
+        const group = hoverGroupRef.current
+
+        group.resetters.set(label, playLeave)
+
+        return () => {
+            group.resetters.delete(label)
+
+            if (group.activeKey === label) {
+                group.activeKey = null
+            }
+        }
+    }, [hoverGroupRef, label, playLeave])
+
+    const handleTextEnter = useCallback(() => {
+        if (hoverGroupRef) {
+            const group = hoverGroupRef.current
+
+            if (group.activeKey && group.activeKey !== label) {
+                group.resetters.get(group.activeKey)?.()
+            }
+
+            group.activeKey = label
+        }
+
+        playEnter()
+    }, [hoverGroupRef, label, playEnter])
+
+    const handleTextLeave = useCallback(
+        (event) => {
+            const related = event.relatedTarget
+
+            const movingToSibling =
+                related instanceof Element &&
+                related.closest('[data-nav-dropdown-link]')
+
+            playLeave()
+
+            if (!hoverGroupRef) return
+
+            if (hoverGroupRef.current.activeKey === label) {
+                hoverGroupRef.current.activeKey = null
+            }
+
+            if (movingToSibling) return
+        },
+        [hoverGroupRef, label, playLeave]
+    )
+
+    return (
+        <Link
+            href={href}
+            data-nav-dropdown-link
+            className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw] transition-colors duration-300 hover:bg-black"
+            onMouseEnter={handleTextEnter}
+            onMouseLeave={handleTextLeave}
+        >
+            <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
+                <Image
+                    src={icon}
+                    alt=""
+                    width={35}
+                    height={35}
+                    aria-hidden="true"
+                    className="size-full object-contain"
+                />
+            </span>
+
+            <span className="relative block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap leading-[1.15]">
+                <span
+                    ref={defaultLabelRef}
+                    className="block"
+                    aria-hidden="true"
+                >
+                    {label}
+                </span>
+
+                <span
+                    ref={hoverLabelRef}
+                    className="pointer-events-none absolute inset-0 block"
+                    aria-hidden="true"
+                >
+                    {label}
+                </span>
+
+                <span className="sr-only">{label}</span>
+            </span>
+        </Link>
+    )
+}
