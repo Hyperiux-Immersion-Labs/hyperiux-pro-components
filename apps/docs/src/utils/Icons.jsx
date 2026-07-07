@@ -66,7 +66,7 @@ export function GithubIcon({ className }) {
 export function CheckIcon({ className, checkboxColor = "#0E0E0E" }) {
     return (
         <div className={className}>
-            <svg className="h-full w-full object-contain" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="h-full w-full" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_526_925)">
                     <path fillRule="evenodd" clipRule="evenodd" d="M0 8.98751C0 6.60388 0.946896 4.31787 2.63238 2.63238C4.31787 0.946896 6.60388 0 8.98751 0C11.3711 0 13.6572 0.946896 15.3426 2.63238C17.0281 4.31787 17.975 6.60388 17.975 8.98751C17.975 11.3711 17.0281 13.6572 15.3426 15.3426C13.6572 17.0281 11.3711 17.975 8.98751 17.975C6.60388 17.975 4.31787 17.0281 2.63238 15.3426C0.946896 13.6572 0 11.3711 0 8.98751ZM8.47462 12.8342L13.649 6.36555L12.7143 5.61779L8.30206 11.1313L5.17681 8.52735L4.40987 9.44767L8.47462 12.8342Z" fill="currentColor" />
                 </g>

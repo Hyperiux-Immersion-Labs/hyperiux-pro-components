@@ -99,7 +99,7 @@ export default function ForDevelopers() {
                 scrollTrigger: {
                     trigger: accordionRef.current,
                     start: 'top top',
-                    end: '80% bottom',
+                    end: `${isMobile?'100%':'80%'} bottom`,
                     scrub: 0.5,
                 }
             })
