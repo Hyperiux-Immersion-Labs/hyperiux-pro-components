@@ -1,6 +1,6 @@
 import VaultShell from "@/Layouts/VaultShell";
 import Hero from "@/components/Pricing/Hero";
-import GlowingPlates from "@/Experience/GlowingPlates";
+import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import Footer from "@/components/LandpageV2/Footer";
 import CTA2 from "@/components/LandpageV2/CTA2";
 import PricingCompareTable from "@/components/Pricing/PricingCompareTable";
@@ -25,7 +25,7 @@ export default function PricingPage() {
       <FAQJSONLD faqs={faqItems} />
       <VaultShell>
         <Hero />
-        <GlowingPlates waitForLoader={false} />
+        <GlowingPlatesDeferred waitForLoader={false} />
         <div className=" relative z-20">
           <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} />
         </div>

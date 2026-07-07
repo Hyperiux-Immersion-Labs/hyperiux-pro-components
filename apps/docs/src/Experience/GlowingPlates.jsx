@@ -784,12 +784,12 @@ export default function GlowingPlates({
               loaded. Without it, EffectComposer initialises against a not-yet-
               ready environment texture and throws "reading 'alpha'". */}
           <Suspense fallback={null}>
-            {/* <Environment
+            <Environment
               files="/studio.exr"
               environmentIntensity={
                 isMobile ? 0.4 : CONFIG.environmentIntensity
               }
-            /> */}
+            />
 
             <directionalLight
               castShadow={!isMobile}
