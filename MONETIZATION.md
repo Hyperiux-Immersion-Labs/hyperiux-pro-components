@@ -1,6 +1,6 @@
 # Hyperiux Monetization Plan
 
-A complete implementation plan for gating 100+ effects behind a subscription paywall, while keeping 10–15 effects permanently free. Both the docs site and the CLI are gated.
+A complete implementation plan for gating 115 effects behind a subscription paywall, while keeping 10–15 effects permanently free. Both the docs site and the CLI are gated.
 
 ---
 
@@ -448,7 +448,7 @@ export function UpgradeCard() {
       <h2>Pro Effect</h2>
       <p>Subscribe to Hyperiux Pro to access this effect and 90+ others.</p>
       <button onClick={handleUpgrade}>
-        Upgrade to Pro — $X/month
+        Join Founding Access — $X/month
       </button>
     </div>
   )

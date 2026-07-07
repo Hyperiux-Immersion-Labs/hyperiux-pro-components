@@ -38,7 +38,7 @@ export default function AnnouncementBar() {
         </span>
       </p>
       <Link
-        href="/sign-up"
+        href="/waitlist"
         className="shrink-0 max-md:hidden whitespace-nowrap rounded-full bg-black px-3.5 py-1 text-[12px] font-medium text-white transition-colors duration-300 hover:bg-white hover:text-black max-sm:px-3 max-sm:text-[11px]"
       >
         Join Waitlist

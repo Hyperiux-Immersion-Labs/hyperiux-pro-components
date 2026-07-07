@@ -928,7 +928,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
 
             <tbody>
               {(block.rows || []).map((row, rowIndex) => (
-                <tr key={row._key || rowIndex}>
+                <tr key={row._key || `${rowIndex}`}>
                   {(row.cells || []).map((cell, cellIndex) => (
                     <td key={`${rowIndex}-${cellIndex}`}>{cell}</td>
                   ))}
@@ -996,9 +996,8 @@ function LockedCodePlaceholder({ filename }) {
     "return 'blurred until your Pro arc begins';",
   ];
 
-  const title = filename ? `${filename} is Locked` : "Pro Source Code is Locked";
   const subtitle =
-    "Subscribe to Hyperiux Pro to access this source code and 100+ others.";
+    "You can preview it now. Pro install access opens next week for Founding Access users.";
 
   return (
     <section className="fadeup relative min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">
@@ -1034,18 +1033,18 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-col items-center gap-0">
           <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
-            {title}
+           This is a Pro effect.
           </h3>
 
-          <p className="max-w-lg text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">
+          <p className="max-w-sm text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">
             {subtitle}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center pt-3 max-md:pt-6 justify-center gap-3">
           <Button
-            text="Upgrade to Pro"
-            href="/sign-up"
+            text="Join Founding Access"
+            href="/waitlist"
             variant="orange"
             className="shrink-0"
             hoverTextClassName="group-hover:text-black!"

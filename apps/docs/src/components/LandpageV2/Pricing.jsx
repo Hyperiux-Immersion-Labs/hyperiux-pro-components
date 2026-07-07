@@ -53,7 +53,7 @@ const freeFeatures = [
     "Code you own"
 ];
 const ProFeatures = [
-    "All 100+ effects",
+    "All 115 effects",
     "New effects added regularly.",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",
@@ -99,11 +99,10 @@ export default function Pricing({padding,content=true}) {
             <div className=" w-full h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
             {content&&<div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
                 <RandomBlur start="top 50%" as="h2"  className="text110 w-[70vw] max-md:w-full">
-                    Start free. Upgrade when you’re ready.
+                    Start free. Join Founding Access for Pro.
                 </RandomBlur>
-                <SplitLine start="top 60%" as="p" className="text24 max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
-                    The free core stays free, forever. Pro unlocks everything and every
-                    new drop.
+                <SplitLine start="top 60%" as="p" className="text24 w-[50vw] max-md:w-[70vw] max-sm:w-[90vw] mx-auto">
+                   Free Core is open today with 30+ source-owned effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                 </SplitLine>
             </div>}
             <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup-cards ">
@@ -190,26 +189,27 @@ export default function Pricing({padding,content=true}) {
                             ) : userPlan === "free" ? (
                                 <Button
                                     variant="orange"
-                                    text="Upgrade to Pro"
-                                    href="/sign-up"
+                                    text={checkoutLoading ? "Loading..." : "Join Founding Access"}
                                     className="max-md:w-full"
                                 />
                             ) : (
                                 <Button
                                     variant="orange"
-                                    text="Get PRO"
-                                    href="/sign-up"
+                                    text="Join Founding Access"
+                                    href="/waitlist"
                                     className="max-md:w-full"
                                 />
                             )}
                         </div>
-                        <p className="text-light-grey max-sm:text-center max-md:text-[2.5vw] max-sm:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p>
+                        {/* <p className="text-light-grey max-sm:text-center max-md:text-[2.5vw] max-sm:text-[3.2vw]">Instant access · npx hyperiux login · Cancel anytime</p> */}
+                        {/* {checkoutError && (
+                            <p className="text-sm text-red-400">{checkoutError}</p>
+                        )} */}
                     </div>
                 </div>
             </div>
             <SplitLine as="p" className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
-                Cancel anytime. The free core stays free forever. Every effect lives in
-                your repo. So even if you leave, your code stays.
+              Code you install stays in your repo. Free Core effects are available now. Pro downloads, Pro updates, and new Pro effect access require active Pro access.
             </SplitLine>
 
             </div>

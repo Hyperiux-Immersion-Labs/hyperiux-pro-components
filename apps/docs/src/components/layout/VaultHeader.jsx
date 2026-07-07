@@ -176,8 +176,8 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
 
            {isLoaded && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
               <Button
-                text="Upgrade to Pro"
-                href="/pricing#pricing-cards"
+                text="Join Founding Access"
+                href="/waitlist"
                 className="border-white/50!"
                 variant="outline2"
               />
@@ -188,8 +188,8 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
             {isLoaded && (!isSignedIn ? (
               <div className="block max-md:hidden">
                 <Button
-                  text="Get Started"
-                  href="/sign-up"
+                  text="Browse Free Effects"
+                  href="/effects/free"
                   variant="orange"
                 />
               </div>

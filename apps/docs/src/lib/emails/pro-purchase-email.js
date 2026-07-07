@@ -43,7 +43,7 @@ Valid until / renews on: ${validity}
 Subscription ID: ${stripeSubscriptionId || "Not available"}${invoiceUrl ? `\nInvoice: ${invoiceUrl}` : ""}
 
 Your Pro access includes:
-- 100+ premium interactive effects
+- 115 premium interactive effects
 - Copy-paste React and Next.js components
 - Hyperiux CLI installation support
 - Scroll effects, WebGL effects, loaders, navbars, buttons, sliders, text animations, and transitions
@@ -89,7 +89,7 @@ Hyperiux Vault
           </h2>
 
           <ul style="margin:0;padding:0;list-style:none;color:rgba(255,255,255,0.72);font-size:15px;line-height:1.8;">
-            <li>✓ 100+ premium interactive effects</li>
+            <li>✓ 115 premium interactive effects</li>
             <li>✓ Copy-paste React and Next.js components</li>
             <li>✓ Hyperiux CLI installation support</li>
             <li>✓ Scroll effects, WebGL effects, loaders, navbars, buttons, sliders, text animations, and transitions</li>

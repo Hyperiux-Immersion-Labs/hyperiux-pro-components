@@ -8,7 +8,7 @@ Welcome to Hyperiux Vault. Your account is now active.
 
 With your free account you get access to 30+ effects — scroll interactions, cursor effects, text animations, and more — all copy-paste ready for React and Next.js.
 
-To access the full vault of 100+ premium effects, upgrade to Pro from your dashboard.
+To access the full vault of 115 premium effects, upgrade to Pro from your dashboard.
 
 Get started: https://vault.hyperiux.com/effects
 
@@ -44,7 +44,7 @@ Hyperiux Vault
             Unlock the full Vault with Pro
           </h2>
           <p style="margin:0 0 24px;color:rgba(255,255,255,0.68);font-size:15px;line-height:1.7;">
-            Upgrade to access 100+ premium effects, WebGL components, advanced motion systems, and Hyperiux CLI support.
+            Upgrade to access 115 premium effects, WebGL components, advanced motion systems, and Hyperiux CLI support.
           </p>
 
           <a href="https://vault.hyperiux.com/effects" style="display:inline-block;padding:14px 28px;background:#ff5f00;color:#ffffff;text-decoration:none;border-radius:9999px;font-size:15px;font-weight:600;">

@@ -243,10 +243,10 @@ export default function DashboardPage() {
           {data.plan === "free" && (
             <>
               <Link
-                href="/pricing#pricing-cards"
+                href="/waitlist"
                 className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
               >
-                Upgrade to Pro
+               Join Founding Access
               </Link>
 
             </>

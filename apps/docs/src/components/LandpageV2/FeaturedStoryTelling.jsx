@@ -115,7 +115,7 @@ const BOXES_BOTTOM = [
         styles: "w-[20%]",
         img: 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/4.mp4',
         number: "04",
-        label: "page Transitions",
+        label: "Page Transitions",
         title: "Page Flip Transition",
         paragraph: "For portfolios and editorial experiences where route changes should feel authored.",
         containerLink: "/demo/page-flip-transition",

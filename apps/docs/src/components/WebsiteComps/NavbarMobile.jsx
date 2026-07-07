@@ -619,8 +619,8 @@ export default function NavbarMobile() {
             {isLoaded && user?.publicMetadata?.plan !== "pro" && (
               <div className="flex w-fit max-sm:w-full justify-center" onClick={handleNavigate}>
                 <Button
-                  text="Upgrade to Pro"
-                  href="/pricing#pricing-cards"
+                  text="Join Founding Access"
+                  href="/waitlist"
                   className="border-white/50! w-full"
                   variant="outline2"
                 />

@@ -6,7 +6,7 @@ import { UnlockIcon } from 'lucide-react';
 
 export default function CTA2({
     animations = true,
-    href = "/pricing#pricing-cards",
+    href = "/waitlist",
     isHomePage = false,
     isHomepage = false,
 }) {
@@ -32,11 +32,12 @@ export default function CTA2({
                     )
                 }
 
-                <p className="text-center text24 py-[2vw]">Copy the code. Tune the motion. Ship the moment.</p>
+                <p className="text-center text24 py-[2vw]">Start with Free Core today. Join Founding Access for Pro next week.
+</p>
 
                 <div className="flex max-sm:flex-col items-center max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] justify-center gap-[2vw] fadeup">
-                    <Button variant='outline2' text="Browse the effects" href="/effects" className='max-sm:w-full' />
-                    <Button text="Get Pro from $20/mo" className="max-sm:w-full" href={href} variant="orange" />
+                    <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-full' />
+                    <Button text="Join Founding Access" className="max-sm:w-full" href={href} variant="orange"  />
                     <p
                         className="shimmer-text w-full flex justify-center items-center gap-[0.5vw] text-[#939393] leading-none max-md:justify-center max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
                     >

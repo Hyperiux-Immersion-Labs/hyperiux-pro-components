@@ -1,6 +1,6 @@
 # Hyperiux Vault
 
-> Hyperiux Vault is a curated library of 100+ creative interaction effects and UI components for React and Next.js — scroll systems, cursor effects, text reveals, page transitions, WebGL scenes, animated backgrounds, buttons, and loaders. Effects are previewed live on the site and installed into projects via the `hyperiux-components` CLI.
+> Hyperiux Vault is a curated library of 115 creative interaction effects and UI components for React and Next.js — scroll systems, cursor effects, text reveals, page transitions, WebGL scenes, animated backgrounds, buttons, and loaders. Effects are previewed live on the site and installed into projects via the `hyperiux-components` CLI.
 
 Hyperiux Vault is built by Hyperiux Immersion Labs. Free effects can be installed by anyone with a free account; Pro effects require a Hyperiux Pro subscription. Every effect ships as real source code (React components using GSAP, Motion, Three.js, or CSS) that developers own and customize — not a locked-in package import.
 

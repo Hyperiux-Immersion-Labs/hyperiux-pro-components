@@ -21,6 +21,7 @@ export default function DocsLicense() {
       <Heading>License</Heading>
 
       <Para>Use the code. Ship the work. Do not repackage the Vault.</Para>
+      <Para>Code already installed remains in project, new Pro downloads and new client-project usage require active access.</Para>
 
       <Para>
         Hyperiux Vault is built around a simple licensing idea: developers should know what

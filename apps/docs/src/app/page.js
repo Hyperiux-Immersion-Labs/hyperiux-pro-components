@@ -121,7 +121,7 @@ const faqItems = [
     question: "What happens after I subscribe?",
     answer: (
       <>
-        All 100+ effects unlock instantly. Run npx hyperiux login and start
+        All 115 effects unlock instantly. Run npx hyperiux login and start
         installing. New drops are included. Cancel anytime. Your installed code
         stays in your repo.
       </>
@@ -153,9 +153,9 @@ const faqItems = [
 ];
 
 export const metadata = createPageMetadata({
-  title: "Hyperiux Vault: React & Next.js Motion Effects",
+  title: "Hyperiux Vault - React & Next.js Interaction Effects.",
   description:
-    "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
+    "Start with 30+ free source-owned effects. Join Founding Access for 80+ Pro effects opening next week.",
   path: "/",
   image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
 });

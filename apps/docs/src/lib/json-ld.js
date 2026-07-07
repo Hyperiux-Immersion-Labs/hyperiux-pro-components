@@ -18,7 +18,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
+    description: "Start with 30+ free source-owned effects. Join Founding Access for 80+ Pro effects opening next week.",
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -72,7 +72,7 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.",
+      "Start with 30+ free source-owned effects. Join Founding Access for 80+ Pro effects opening next week.",
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
@@ -81,7 +81,7 @@ export function SoftwareApplicationJsonLd() {
     browserRequirements: "Requires JavaScript and a modern web browser",
     softwareVersion: "0.1.0",
     featureList: [
-      "100+ premium interactive effects",
+      "115 premium interactive effects",
       "Copy-paste React and Next.js components",
       "Hyperiux CLI installation support",
       "Scroll, WebGL, loader, navigation, button, text, slider, and transition effects",

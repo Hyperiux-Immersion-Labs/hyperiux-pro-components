@@ -1089,8 +1089,8 @@ export default function Navbar() {
             <div className="flex items-center justify-center gap-[1vw]">
                 {isLoaded && user?.publicMetadata?.plan !== "pro" && (
                     <Button
-                        text="Upgrade to Pro"
-                        href="#pricing-cards"
+                        text="Join Founding Access"
+                        href="/waitlist"
                         className="border-white/20! bg-[#0E0E0E]!"
                         variant="outline2"
                         scrollOffset={getUpgradeScrollOffset}

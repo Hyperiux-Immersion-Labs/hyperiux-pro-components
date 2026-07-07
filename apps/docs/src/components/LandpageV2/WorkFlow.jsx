@@ -189,12 +189,12 @@ export default function Workflow() {
                 className="h-[200vh] max-sm:mb-4 max-sm:h-[300vh] relative"
             >
                 <RandomBlur as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
-                    Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
+                    Preview. Install. Tune. <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
 
                 <div className="h-screen max-sm:h-[85vh] max-md:h-[80vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
                      <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
-                    Preview. Install. Tune <span className='text-[#ff5f00]!'>Ship.</span>
+                    Preview. Install. Tune. <span className='text-[#ff5f00]!'>Ship.</span>
                 </RandomBlur>
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}

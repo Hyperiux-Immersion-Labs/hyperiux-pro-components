@@ -21,10 +21,10 @@ const Hero = () => {
                 <div className="h-fit flex max-md:flex-col max-md:justify-center items-center w-full">
                     <RandomBlur
                         as="h1"
-                        className="text110 max-md:text-center max-md:indent-0! relative w-[78vw] max-md:w-full"
+                        className="text110 max-md:text-center max-md:indent-0! relative w-[45vw] max-md:w-full"
                     >
                         <span className="inline-block">
-                            Start free. Upgrade when the interface gets ambitious.
+                           Start free. Join Founding Access for Pro.
                         </span>
                     </RandomBlur>
                 </div>
@@ -33,7 +33,7 @@ const Hero = () => {
                     start="top 120%"
                     className="text24 max-md:text-center text-[#C9C9C9] w-[70%] max-md:w-full"
                 >
-                    Use the free Vault to ship real React and Next.js interaction effects. Upgrade to Pro when you need the full library, advanced systems, premium packs, and ongoing drops.
+                    Free Core is open today with 30+ source-owned React and Next.js effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                 </SplitLine>
             </div>
         </section>

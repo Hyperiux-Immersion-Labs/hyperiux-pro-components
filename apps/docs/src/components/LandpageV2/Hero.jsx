@@ -391,11 +391,10 @@ export default function Hero() {
         className="relative z-2 mt-[2vw] space-y-[2vw]  max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[14vw]"
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
-          <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Animation Effects Library</p>
+          <p  ref={paraRef} className="text24 font-medium text-[#ff5f00]">React & Next.js Interaction Effects Library</p>
           <h1 className="text110 relative w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
-              The Interaction Layer your Website is{" "}
-              Missing
+             The Interaction Layer your React Site is Missing
             </span>
           </h1>
         </div>
@@ -404,10 +403,7 @@ export default function Hero() {
           ref={pRef}
           className="text24 w-[50%] text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
         >
-          100+ copy-paste interaction effects for React & Next.js. Scroll
-          systems, cursor effects, text reveals, page transitions, and WebGL
-          scenes -the moments that make a site feel authored, not assembled.
-          Preview them, install them with the CLI
+         Source-owned scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today. Join Founding Access for first access to 80+ Pro effects next week.
         </p>
 
         <div
@@ -415,15 +411,15 @@ export default function Hero() {
           className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:gap-5"
         >
           <Button
-            text="Browse the effects"
-            href="/effects"
+            text="Browse Free Effects"
+            href="/effects/free"
             variant="black"
             className="border-white/20 bg-[#0e0e0e]!"
           />
 
           <Button
-            text="Get Pro from $20/mo"
-            href="#pricing-cards"
+            text="Join Founding Access"
+            href="/waitlist"
             variant="orange"
             scrollOffset={-1000}
           />
@@ -438,7 +434,7 @@ export default function Hero() {
           </span>
 
           <ShimmerText baseColor="#939393" shimmerColor="#ffffff">
-            30+ effects free, forever. No credit card.
+            115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-owned code
           </ShimmerText>
         </p>
       </div>

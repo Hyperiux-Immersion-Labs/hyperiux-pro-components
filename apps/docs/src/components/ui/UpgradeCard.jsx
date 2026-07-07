@@ -53,7 +53,7 @@ export function UpgradeCard({ effectTitle }) {
           {effectTitle ?? "This effect"} is locked
         </h3>
         <p className="text-white/60 text-sm max-w-sm leading-relaxed">
-          Subscribe to Hyperiux Pro to access this effect and 100+ others.
+          Subscribe to Hyperiux Pro to access this effect and 115 others.
           Unlimited installs via CLI, full source code, forever.
         </p>
       </div>
@@ -67,7 +67,7 @@ export function UpgradeCard({ effectTitle }) {
           {loading ? (
             <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
           ) : null}
-          {loading ? "Redirecting…" : isSignedIn ? "Upgrade to Pro" : "Sign in to Upgrade"}
+          {loading ? "Redirecting…" : isSignedIn ? "Join Founding Access" : "Sign in to Upgrade"}
         </button>
 
         {!isSignedIn && (

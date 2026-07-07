@@ -50,7 +50,7 @@ const freeFeatures = [
     "Code you own"
 ];
 const ProFeatures = [
-    "All 100+ effects",
+    "All 115 effects",
     "New effects added regularly.",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",
@@ -159,15 +159,14 @@ export default function Pricing({padding,content=true}) {
                             ) : userPlan === "free" ? (
                                 <Button
                                     variant="orange"
-                                    text="Upgrade to Pro"
-                                    href="/sign-up"
+                                    text={checkoutLoading ? "Loading..." : "Join Founding Access"}
                                     className="max-md:w-full"
                                 />
                             ) : (
                                 <Button
                                     variant="orange"
-                                    text="Get PRO"
-                                    href="/sign-up"
+                                    text="Join Founding Access"
+                                    href="/waitlist"
                                     className="max-md:w-full"
                                 />
                             )}
@@ -177,8 +176,7 @@ export default function Pricing({padding,content=true}) {
                 </div>
             </div>
             <SplitLine as="p" className="text34 max-md:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[90vw]">
-                Cancel anytime. The free core stays free forever. Every effect lives in
-                your repo. So even if you leave, your code stays.
+               Code you install stays in your repo. Free Core effects are available now. Pro downloads, Pro updates, and new Pro effect access require active Pro access.
             </SplitLine>
         </div>
     );

@@ -154,13 +154,8 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[12vw] max-w-[65vw] text24 font-light leading-[1.55] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
-            Anyone can add a fade. The hard part is everything around it:
-            timing, restraint, layout awareness, responsive behavior,
-            reduced-motion support, dependency clarity, and performance
-            discipline. Get it wrong and your &quot;wow moment&quot; janks on mobile,
-            tanks your Lighthouse score, or quietly breaks for the people who
-            turned motion off.
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[12vw] max-w-[55vw] text24 font-light leading-[1.55] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
+           Performance guidance: know where risk lives before the effect ships. No library can promise performance in every project; a serious effect should show the tradeoffs before install.
           </SplitLine>
         </div>
 

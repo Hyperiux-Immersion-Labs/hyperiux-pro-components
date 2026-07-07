@@ -243,7 +243,7 @@ export default function AdminPage() {
                           ? "Updating…"
                           : user.plan === "pro"
                             ? "Downgrade"
-                            : "Upgrade to Pro"}
+                            : "Join Founding Access"}
                       </button>
                     </td>
                   </tr>

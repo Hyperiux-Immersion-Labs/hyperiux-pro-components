@@ -139,7 +139,7 @@ export default function TrustStrip() {
                             contentClassName="flex h-full items-start"
                         >
                             <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
-                                100+
+                                115
                             </span>
                         </StatCard>
 
@@ -170,7 +170,7 @@ export default function TrustStrip() {
                             contentClassName="flex h-full items-start"
                         >
                             <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
-                                30+
+                                32
                             </span>
                         </StatCard>
 

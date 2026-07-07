@@ -1,8 +1,8 @@
 import { homepage } from "./util";
 
-const DEFAULT_TITLE = "Hyperiux Vault: React & Next.js Motion Effects";
+const DEFAULT_TITLE = "Hyperiux Vault - React & Next.js Interaction Effects.";
 const DEFAULT_DESCRIPTION =
-  "Preview and install 100+ creative interaction effects for React and Next.js - scroll systems, cursor effects, text reveals, transitions, WebGL scenes and more.";
+  "Start with 30+ free source-owned effects. Join Founding Access for 80+ Pro effects opening next week.";
 const DEFAULT_IMAGE = "/seo/homepage.png";
 
 export function getCanonicalUrl(path = "/") {
