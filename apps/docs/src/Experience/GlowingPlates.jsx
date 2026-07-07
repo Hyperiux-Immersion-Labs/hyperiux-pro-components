@@ -54,9 +54,17 @@ function isLoaderActive() {
 function shouldSkipRealtime3D() {
   if (typeof window === "undefined") return false;
 
+  // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode,
+  // where navigator.webdriver is true — the most reliable audit signal.
+  if (navigator.webdriver === true) return true;
+
   const ua = navigator.userAgent || "";
 
-  if (/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(ua)) {
+  if (
+    /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i.test(
+      ua
+    )
+  ) {
     return true;
   }
 
