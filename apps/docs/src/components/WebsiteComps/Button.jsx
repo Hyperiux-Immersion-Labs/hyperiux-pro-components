@@ -9,7 +9,7 @@ const buttonTv = tv({
   base: "group flex overflow-hidden items-center gap-[1vw] max-md:gap-5 max-sm:gap-8 rounded-full px-[1.5vw] py-[.8vw]  max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 relative text-[1.15vw] font-medium tracking-wide max-md:text-xl max-sm:font-normal transition-all duration-500",
   variants: {
     variant: {
-      orange: "bg-primary text-white border border-primary",
+      orange: "bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white ",
       black: "bg-black text-white border border-background",
       white: "bg-white text-black border border-foreground",
       outline: "bg-transparent text-background border border-background",
@@ -134,7 +134,7 @@ export default function Button({
         {children ?? text}
       </p>
 
-      <span className={`${styles.arrow()} ${hoverTextClass} ${arrowClassName}`}>
+      <span className={`${styles.arrow()} ${hoverTextClass} ${arrowClassName} group-hover:translate-x-0 translate-x-[2vw]`}>
         <BtnArrow />
       </span>
     </Link>
