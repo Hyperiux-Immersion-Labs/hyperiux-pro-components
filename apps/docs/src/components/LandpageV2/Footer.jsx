@@ -239,7 +239,7 @@ export default function Footer() {
           {/* Contact Us */}
           <div className="flex flex-col gap-[1.5vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
-              <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
+              <span className="size-[0.45vw] max-md:size-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text18 text-[#B3B3B3]">Contact Us</span>
             </div>
             <div className="w-full h-px  border-t  border-foreground/50" />
@@ -264,7 +264,7 @@ export default function Footer() {
               <span className="text18 text-[#979797]">New effects, in your inbox.</span>
             </div>
             <div className="w-full h-px border-t  border-foreground/50" />
-            <p className="text18 leading-[1.45] text-light-grey max-w-[25vw] max-md:max-w-full">
+            <p className="text18 leading-[1.45] text-light-grey max-w-[25vw] max-md:max-w-full max-sm:mb-[6vw]">
               Every new drop, plus the occasional behind-the-scenes build. No spam. Unsubscribe anytime.
             </p>
             {status === "success" ? (
