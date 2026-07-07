@@ -6,7 +6,14 @@
 // Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useRef, useMemo, useLayoutEffect, useEffect, useState } from "react";
+import {
+  useRef,
+  useMemo,
+  useLayoutEffect,
+  useEffect,
+  useState,
+  Suspense,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -740,43 +747,49 @@ export default function GlowingPlates({
             fov={CONFIG.cameraFov}
           />
 
-          <Environment
-            preset={CONFIG.environmentPreset}
-            environmentIntensity={
-              isMobile ? 0.4 : CONFIG.environmentIntensity
-            }
-          />
+          {/* Suspense keeps the scene (and, critically, the postprocessing
+              EffectComposer) from rendering until the EXR environment map has
+              loaded. Without it, EffectComposer initialises against a not-yet-
+              ready environment texture and throws "reading 'alpha'". */}
+          <Suspense fallback={null}>
+            <Environment
+              files="/studio.exr"
+              environmentIntensity={
+                isMobile ? 0.4 : CONFIG.environmentIntensity
+              }
+            />
 
-          <directionalLight
-            castShadow={!isMobile}
-            color={isMobile ? "#ffeedd" : CONFIG.glowLeftColor}
-            intensity={isMobile ? 1.8 : CONFIG.lightIntensity}
-            position={CONFIG.lightPosition}
-          />
+            <directionalLight
+              castShadow={!isMobile}
+              color={isMobile ? "#ffeedd" : CONFIG.glowLeftColor}
+              intensity={isMobile ? 1.8 : CONFIG.lightIntensity}
+              position={CONFIG.lightPosition}
+            />
 
-          <group position={CONFIG.wrapperPosition}>
-            <group
-              position={CONFIG.groupPosition}
-              rotation={CONFIG.groupRotation}
-            >
-              <ParametricPlates
-                key={isMobile ? "mobile" : "desktop"}
-                isMobile={isMobile}
-              />
+            <group position={CONFIG.wrapperPosition}>
+              <group
+                position={CONFIG.groupPosition}
+                rotation={CONFIG.groupRotation}
+              >
+                <ParametricPlates
+                  key={isMobile ? "mobile" : "desktop"}
+                  isMobile={isMobile}
+                />
+              </group>
             </group>
-          </group>
 
-          {!isMobile && (
-            <EffectComposer frameBufferType={THREE.HalfFloatType}>
-              <Bloom
-                intensity={CONFIG.bloomIntensity}
-                luminanceThreshold={CONFIG.bloomThreshold}
-                luminanceSmoothing={CONFIG.bloomSmoothing}
-                mipmapBlur
-                radius={CONFIG.bloomRadius}
-              />
-            </EffectComposer>
-          )}
+            {!isMobile && (
+              <EffectComposer frameBufferType={THREE.HalfFloatType}>
+                <Bloom
+                  intensity={CONFIG.bloomIntensity}
+                  luminanceThreshold={CONFIG.bloomThreshold}
+                  luminanceSmoothing={CONFIG.bloomSmoothing}
+                  mipmapBlur
+                  radius={CONFIG.bloomRadius}
+                />
+              </EffectComposer>
+            )}
+          </Suspense>
         </Canvas>
       </div>
     </div>
