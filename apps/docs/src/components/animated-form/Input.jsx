@@ -12,7 +12,7 @@ import React, { forwardRef } from"react";
  * - All standard <input> props (name, value, onChange, onBlur, autoComplete, …)
  */
 const Input = forwardRef(function Input(
- { id, label, placeholder, type ="text", error, className ="", ...rest },
+ { id, label, placeholder, type ="text", error,labelBg="", className ="", ...rest },
  ref
 ) {
  return (
@@ -53,7 +53,7 @@ const Input = forwardRef(function Input(
  ml-4
 "
  >
- <span className="bg-white text-gray-700 inline-flex px-1 text-sm">
+ <span className={`bg-white text-gray-700 inline-flex px-1 text-sm ${labelBg?labelBg:"bg-white"}`}>
  {label}
  </span>
  </label>
