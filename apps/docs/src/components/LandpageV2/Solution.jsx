@@ -39,7 +39,7 @@ const Solution = () => {
                     id="hero-break"
                     containerClassName="text-start"
                     mobileTextSize="7vw"
-                    mobileTextWidth="92%"
+                    mobileTextWidth="95%"
                     tabletTextSize='5vw'
                     tabletTextWidth='88%'
                 />

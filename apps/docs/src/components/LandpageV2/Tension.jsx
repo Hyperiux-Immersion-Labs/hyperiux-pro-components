@@ -154,7 +154,7 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than it Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[12vw] max-w-[55vw] text24 font-light leading-[1.55] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[55vw] text24 font-light leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
            Performance guidance: know where risk lives before the effect ships. No library can promise performance in every project; a serious effect should show the tradeoffs before install.
           </SplitLine>
         </div>

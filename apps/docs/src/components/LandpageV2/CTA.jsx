@@ -33,7 +33,7 @@ export default function CTA() {
             <div className='space-y-[2.5vw] max-md:space-y-[10vw] relative z-2'>
 
                 <SplitLine as="p" className='text24 max-md:w-full w-[31vw]'>The Vault is a public slice of how Hyperiux thinks about interaction design - the same discipline behind premium websites, product experiences, and immersive digital systems. When a copy-paste effect isn’t enough, we’ll design and build the moment from scratch.</SplitLine>
-                <div className='w-fit flex max-md:gap-[2vw]  max-sm:gap-[4vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-full gap-[1.5vw]'>
+                <div className='w-fit flex max-md:gap-[2vw]  max-sm:gap-[7vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-[88%] gap-[1.5vw]'>
                     <Button variant='outline2' className='max-md:w-full' text='See our work'  href='#' />
                     <Button variant='orange' className='max-md:w-full'  href='#' text='Work with hyperiux' />
                 </div>

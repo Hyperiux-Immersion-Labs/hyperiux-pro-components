@@ -251,7 +251,7 @@ export default function ForDevelopers() {
             <section ref={accordionRef} className='h-[300vh] mt-[-20vh] max-md:mt-0 w-full relative'>
                 <div className='h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col'>
                      <MaskTextReveal stagger={0.08} scrub={false} duration={2} > 
-                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-md:pt-22 max-sm:pt-[5vw] max-md:w-full tracking-tight leading-[1.1]'>
+                    <h2 ref={headingRef} className='w-[33vw] font-medium text64 h-fit max-md:pt-22 max-sm:pt-[5vw] max-md:w-full tracking-tight max-sm:leading-[1.25]! leading-[1.1]'>
                         For Developers, Founders, Agencies, and Teams That Need the Site to Feel as Premium as the Product.
                     </h2>
                       </MaskTextReveal>
@@ -270,7 +270,7 @@ export default function ForDevelopers() {
                                 </div>
 
                                 <div className='relative z-10 flex flex-col gap-[3vw] max-sm:gap-[4vw] w-full'>
-                                    <p className='text34 card-title opacity-0 font-medium tracking-tight max-md:text-[6vw] max-sm:wrap-break-word'>{group.title}</p>
+                                    <p className='text34 card-title opacity-0 max-sm:font-normal font-medium tracking-tight max-md:text-[6vw] max-sm:text-[4.6vw]! max-sm:wrap-break-word'>{group.title}</p>
                                     <p className='text34 card-text opacity-0 leading-[1.1]'>{group.text}</p>
                                 </div>
                                 <AnimatedLink href={group.link || "#"} className="card-link z-10 text-sm opacity-0 font-medium max-md:text-lg max-sm:text-base max-sm:font-normal text-black">

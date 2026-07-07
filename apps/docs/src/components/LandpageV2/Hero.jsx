@@ -408,7 +408,7 @@ export default function Hero() {
 
         <div
           ref={buttonWrapRef}
-          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:gap-5"
+          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:mx-auto max-sm:w-[88%] gap-[1vw] max-md:gap-5"
         >
           <Button
             text="Browse Free Effects"
@@ -433,7 +433,7 @@ export default function Hero() {
             <UnlockIcon className="h-full w-full" />
           </span>
 
-          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw]">
+          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw] max-sm:text-center">
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-owned code
           </ShimmerText>
         </p>

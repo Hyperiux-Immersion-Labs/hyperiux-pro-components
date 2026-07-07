@@ -111,7 +111,34 @@ export default function Pricing({ padding, content = true }) {
                         Free Core is open today with 30+ source-owned effects. Vault Pro opens next week through Founding Access, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                     </SplitLine>
                 </div>}
-                <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col max-md:gap-[8vw] relative w-full flex gap-[1.5vw] fadeup-cards ">
+                <div id="pricing-cards" className="h-[55vw] max-md:h-fit max-md:flex-col-reverse max-md:gap-[8vw] relative w-full flex gap-[1.5vw] max-sm:gap-[15vw] fadeup-cards ">
+
+                      {/* TOGGLE for mobile */}
+                      
+
+                    <div className="h-fit max-sm:flex sm:hidden order-last rounded-md  max-sm:relative max-sm:right-0 max-sm:justify-end right-0   items-center text24 text-background max-sm:top-10 top-[-2.8vw]  gap-[1vw] max-sm:gap-[4vw] z-0">
+                        <p
+                            className={`cursor-pointer max-sm:font-medium transition-opacity duration-300`}
+                            onClick={() => setIsYearly(false)}
+                        >
+                            Monthly
+                        </p>
+                        <button
+                            onClick={() => setIsYearly(!isYearly)}
+                            className="p-[.2vw] max-md:p-[1vw] bg-primary relative flex items-center w-[3.5vw] max-md:w-[14vw] h-[1.8vw] max-md:h-[7vw] rounded-full transition-colors duration-300"
+                            aria-label="Toggle billing cycle"
+                        >
+                            <span
+                                className={`h-[1.4vw] max-md:h-[5vw] w-[1.4vw] max-md:w-[5vw] rounded-full bg-foreground transition-transform duration-300 absolute ${isYearly ? "translate-x-[1.7vw] max-md:translate-x-[7vw]" : "translate-x-0"}`}
+                            />
+                        </button>
+                        <p
+                            className={`cursor-pointer max-sm:font-medium transition-opacity duration-300 `}
+                            onClick={() => setIsYearly(true)}
+                        >
+                            Yearly
+                        </p>
+                    </div>
 
                     <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
                         <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
@@ -138,8 +165,8 @@ export default function Pricing({ padding, content = true }) {
                         </div>
                     </div>
 
-                    {/* TOGGLE */}
-                    <div className="h-fit max-md:w-full rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-0 flex  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
+                    {/* TOGGLE for desktop */}
+                    <div className="h-fit max-sm:hidden sm:flex rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-0  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
                         <p
                             className={`cursor-pointer transition-opacity duration-300`}
                             onClick={() => setIsYearly(false)}
