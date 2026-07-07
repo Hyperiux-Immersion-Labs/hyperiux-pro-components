@@ -30,7 +30,7 @@ async function submitHandler(data) {
  console.log("Contact form submitted:", data);
 }
 
-export default function Form() {
+export default function AnimatedForm() {
  return (
  <main className="w-full bg-white min-h-screen mx-auto py-20 max-md:pt-28 px-6">
   <div className="w-[50%] max-md:w-[90%] max-sm:w-[95%] mx-auto">  <h1 className="text-3xl text-black mb-8">Get in touch</h1>

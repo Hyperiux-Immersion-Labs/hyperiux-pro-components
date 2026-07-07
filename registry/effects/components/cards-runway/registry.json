@@ -11,12 +11,18 @@
   "previewUrl": "/cards-runway",
   "tier": "free",
   "main": "index.jsx",
-  "importPath": "@/components/cards-runway",
-  "target": "src/components/cards-runway",
+  "exportName": "CardsRunway",
+  "exportKind": "default",
+  "importPath": "@/components/effects/cards-runway",
+  "target": "src/components/effects/cards-runway",
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/cards-runway/index.jsx"
+      "target": "src/components/effects/cards-runway/index.jsx"
+    },
+    {
+      "path": "CardsRunway.jsx",
+      "target": "src/components/effects/cards-runway/CardsRunway.jsx"
     }
   ]
 }

@@ -324,6 +324,58 @@
     ]
   },
   {
+    "name": "border-beam",
+    "title": "Border Beam",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "dependencies": [],
+    "registryPath": "registry/effects/components/border-beam/registry.json",
+    "importPath": "@/components/effects/border-beam",
+    "target": "src/components/effects/border-beam",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/border-beam/index.jsx"
+      },
+      {
+        "path": "BorderBeam.jsx",
+        "target": "src/components/effects/border-beam/BorderBeam.jsx"
+      },
+      {
+        "path": "PulseDriver.js",
+        "target": "src/components/effects/border-beam/PulseDriver.js"
+      },
+      {
+        "path": "styles.js",
+        "target": "src/components/effects/border-beam/styles.js"
+      }
+    ]
+  },
+  {
+    "name": "cards-runway",
+    "title": "Cards Runway",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "free",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryPath": "registry/effects/components/cards-runway/registry.json",
+    "importPath": "@/components/effects/cards-runway",
+    "target": "src/components/effects/cards-runway",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/cards-runway/index.jsx"
+      },
+      {
+        "path": "CardsRunway.jsx",
+        "target": "src/components/effects/cards-runway/CardsRunway.jsx"
+      }
+    ]
+  },
+  {
     "name": "gooey-counter",
     "title": "Gooey Counter",
     "category": "components",

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from'react'
 import gsap from'gsap'
-import { CupSoda, Stars } from'lucide-react'
+import {  Stars } from'lucide-react'
 
 const CircularText = ({
  text ='',
@@ -31,8 +31,6 @@ const CircularText = ({
 
  return () => tweenRef.current?.kill()
  }, [spinDuration, text])
-
- // ───────── Hover ─────────
  const handleEnter = () => {
  if (!tweenRef.current) return
 
@@ -72,8 +70,7 @@ const CircularText = ({
 
  return (
  <div>
- {/* Central Juice Icon */}
- {/* Central Juice Icon replaced with Lucide cup-soda */}
+
  <span
  style={{
  position:'absolute',

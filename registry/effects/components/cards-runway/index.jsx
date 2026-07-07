@@ -1,6 +1,6 @@
 "use client";
 
-import CardsRunway from "@/components/cards-runway";
+import CardsRunwayComponent from "./CardsRunway";
 
 const UI_CARDS = [
   {
@@ -30,9 +30,9 @@ const UI_CARDS = [
   },
 ];
 
-export default function Index() {
+export default function CardsRunway() {
   return (
-    <CardsRunway
+    <CardsRunwayComponent
       data={UI_CARDS}
       accentColor="#ff5f00"
       cardColor="#161616"

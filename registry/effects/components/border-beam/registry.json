@@ -4,19 +4,31 @@
   "title": "Border Beam",
   "description": "Animated border beam effect for cards and surfaces",
   "category": "components",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/border-beam",
   "tier": "free",
   "main": "index.jsx",
-  "importPath": "@/components/border-beam",
-  "target": "src/components/border-beam",
+  "exportName": "BorderBeam",
+  "exportKind": "default",
+  "importPath": "@/components/effects/border-beam",
+  "target": "src/components/effects/border-beam",
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/border-beam/index.jsx"
+      "target": "src/components/effects/border-beam/index.jsx"
+    },
+    {
+      "path": "BorderBeam.jsx",
+      "target": "src/components/effects/border-beam/BorderBeam.jsx"
+    },
+    {
+      "path": "PulseDriver.js",
+      "target": "src/components/effects/border-beam/PulseDriver.js"
+    },
+    {
+      "path": "styles.js",
+      "target": "src/components/effects/border-beam/styles.js"
     }
   ]
 }

@@ -964,13 +964,11 @@ export default function MilkyWay() {
             
             <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-99 flex items-center justify-center max-md:hidden">
                <div className='h-full w-full relative'>
-                  {/* Navbar (leave unchanged) */}
-                  <div className='absolute top-0 left-[70%] pt-[6vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
+                  <div className='absolute top-0 left-[70%] pt-[10vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
                         <p className='leading-[1.2] '>
                            Move your cursor around and watch the scene respond.
                         </p>
                   </div>
-                  {/* Enhanced cosmic hero section */}
                   <div className="absolute bottom-[4vw] max-md:bottom-[12vw] left-[4vw] max-w-[70vw]">
                      <p className='flex items-center bg-white/20  max-md:text-sm backdrop-blur-sm rounded-full text-xs px-[1vw] py-[.5vw] w-fit gap-2'><Stars size={12} />Data Driven And Creative</p>
                      <h1 className="text-[7vw] mt-[1vw] max-md:mt-[3vw] font leading-[1.1] text-white drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]">
@@ -982,8 +980,6 @@ export default function MilkyWay() {
 
                   {!viewport?.isMobile && (
                      <div className='h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
-
-
                         <CircularText
                            text="EXPLORE THE GALAXY "
                            spinDuration={20}

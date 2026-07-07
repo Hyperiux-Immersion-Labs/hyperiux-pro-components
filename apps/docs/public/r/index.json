@@ -22,9 +22,7 @@
       "categories": [
         "scroll"
       ],
-      "dependencies": [
-        "gsap"
-      ],
+      "dependencies": [],
       "registryDependencies": [],
       "exportName": "CircularScrollShowcase",
       "exportKind": "default"
@@ -1106,6 +1104,32 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "AnimatedForm",
+      "exportKind": "default"
+    },
+    {
+      "name": "border-beam",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "BorderBeam",
+      "exportKind": "default"
+    },
+    {
+      "name": "cards-runway",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "CardsRunway",
       "exportKind": "default"
     },
     {

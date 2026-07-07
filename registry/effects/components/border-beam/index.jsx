@@ -1,4 +1,4 @@
-import BorderBeam from "@/components/border-beam";
+import BeamBorder from "./BorderBeam";
 
 const cardData = {
   label: "Rotate",
@@ -11,9 +11,9 @@ const cardData = {
   colorVariant: "colorful",
 };
 
-export default function BorderBeamDemo() {
+export default function BorderBeam() {
   return (
-    <BorderBeam
+    <BeamBorder
       size={cardData.size}
       colorVariant={cardData.colorVariant}
       theme="light"
@@ -55,6 +55,6 @@ export default function BorderBeamDemo() {
           </div>
         </div>
       </div>
-    </BorderBeam>
+    </BeamBorder>
   );
 }
