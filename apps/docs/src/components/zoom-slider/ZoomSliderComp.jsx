@@ -159,16 +159,18 @@ export function ZoomSliderComp({
       state.velocity = 0;
     };
 
-    const moveDrag = (clientX, clientY) => {
+    const moveDrag = (clientX, clientY, direction = 1) => {
       if (!state.isDragging) return;
 
       // Drive by whichever axis the gesture moved most, so a horizontal drag
       // OR a vertical (scroll-like) swipe advances the slider — in both
-      // directions. Swiping left/up moves forward, right/down moves back.
+      // directions. `direction` flips the sign so touch matches the natural
+      // mobile scroll feel.
       const deltaX = clientX - state.lastX;
       const deltaY = clientY - state.lastY;
-      const delta =
+      const rawDelta =
         Math.abs(deltaX) >= Math.abs(deltaY) ? -deltaX : -deltaY;
+      const delta = rawDelta * direction;
 
       state.target += delta;
       // Smooth the recorded velocity so momentum isn't driven by one jumpy frame.
@@ -188,7 +190,7 @@ export function ZoomSliderComp({
     const onTouchStart = (event) =>
       beginDrag(event.touches[0].clientX, event.touches[0].clientY);
     const onTouchMove = (event) =>
-      moveDrag(event.touches[0].clientX, event.touches[0].clientY);
+      moveDrag(event.touches[0].clientX, event.touches[0].clientY, -1);
     const onTouchEnd = endDrag;
 
     window.addEventListener('wheel', onWheel, { passive: true });
