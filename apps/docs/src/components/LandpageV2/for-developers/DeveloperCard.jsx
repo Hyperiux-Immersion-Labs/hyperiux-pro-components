@@ -4,7 +4,7 @@ import LinkButton from "@/components/WebsiteComps/LinkButton"
 
 // import LinkButton from '@/components/link-button'
 
-export default function DeveloperCard({ group }) {
+export default function DeveloperCard({ group, onCtaClick }) {
     return (
         <div className="dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md">
             <div className="card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0">
@@ -28,6 +28,7 @@ export default function DeveloperCard({ group }) {
             </div>
             <LinkButton
                 href={group.link || '#'}
+                onClick={onCtaClick}
                 className="card-link z-10 text-sm opacity-0 font-medium max-md:text-lg max-sm:text-base max-sm:font-normal text-black"
             >
                 {group.cta}

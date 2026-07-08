@@ -344,6 +344,8 @@ function CustomAnimationFormModalInner() {
             <div
               className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl max-md:h-[75vh] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
               onWheelCapture={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
             >
             {/* Desktop close button — inside the box */}
             <button
@@ -368,7 +370,7 @@ function CustomAnimationFormModalInner() {
                   : "Request a Custom Animation"}
               </h3>
 
-              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-[4vw]">
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-[4vw]!">
                 {isSuccess
                   ? "We received your request. Closing this window now."
                   : "Tell us what interaction, loader, transition, cursor, or WebGL detail you want. We will review it and get back to you."}
