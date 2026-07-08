@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import DeferredMount from "../WebsiteComps/DeferredMount";
@@ -9,10 +10,12 @@ import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import Input from "../animated-form/Input";
+import LinkButton from "../WebsiteComps/LinkButton";
+import Image from "next/image";
 
 // Three.js footer background plane — own chunk, mounted only when the footer nears the viewport
 // (was previously imported eagerly, forcing three.js onto every page site-wide via the shared Footer).
-const FlowFieldHero = dynamic(() => import("../WebsiteComps/FlowFieldPlane"), {
+const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
   ssr: false,
 });
 
@@ -39,7 +42,7 @@ const categoryColumns = [
     { label: "Transitions", href: "/effects/page-transitions" },
     { label: "Loaders", href: "/effects/loaders" },
   ],
-  
+
 ];
 
 const docsLinks = [
@@ -84,10 +87,17 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
+  const { isMounted, isMobile } = useIsMobile();
+
 
   const handleSubscribe = async (event) => {
     event.preventDefault();
-    if (!email.trim() || status === "loading") return;
+    if (status === "loading") return;
+    if (!email.trim()) {
+      setErrorMessage("Please enter your email address.");
+      setStatus("error");
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -114,13 +124,16 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw]">
+    <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
 
-      <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
+      {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
         <DeferredMount strategy="visible">
           <FlowFieldHero texturePath="/assets/textures/orange-1.png" />
         </DeferredMount>
-      </div>
+      </div> :
+        <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
+          <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.png"} alt="footer-img" />
+        </div>}
       <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-3">
 
         <RandomBlur
@@ -136,16 +149,15 @@ export default function Footer() {
 
         <div className="flex max-sm:flex-col  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
           <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%] border-white/40' />
-          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="#pricing" variant="orange" />
+          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="/waitlist" variant="orange" />
           <p
             className="shimmer-text w-full flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
           >
             <span className="inline-block size-[0.9vw] shrink-0 text-[#d2d2d2] max-md:size-3">
               <UnlockIcon className="h-full w-full" />
             </span>
-
-            <ShimmerText baseColor="#d2d2d2" shimmerColor="#ffffff" className='max-sm:text-sm max-sm:leading-[1.2]'>
-              30+ effects free, forever. No credit card.
+            <ShimmerText baseColor="#d2d2d2" shimmerColor="#ffffff" className="max-sm:text-sm max-sm:leading-[1.2] tracking-tight">
+              115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-first code
             </ShimmerText>
           </p>
         </div>
@@ -287,13 +299,15 @@ export default function Footer() {
                     disabled={status === "loading"}
                     className="min-w-0 flex-1 rounded-none border border-grey bg-transparent! px-[1.2vw] py-[0.6vw] max-md:px-4 max-md:py-3 text18 outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50 text-white"
                   />
-                  <button
-                    type="submit"
-                    disabled={status === "loading"}
-                    className="shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white disabled:opacity-50"
-                  >
-                    {status === "loading" ? "Subscribing…" : "Subscribe"}
-                  </button>
+                  <LinkButton
+                    href="#"
+                    text={status === "loading" ? "Subscribing…" : "Subscribe"}
+                    showArrow={false}
+                    tilted={false}
+                    shimmer
+                    onClick={handleSubscribe}
+                    className={`text18 shrink-0${status === "loading" ? " pointer-events-none opacity-50" : ""}`}
+                  />
                 </div>
                 {status === "error" && (
                   <p className="text-sm text-red-400 px-[1.2vw] max-md:px-0">{errorMessage}</p>
@@ -303,9 +317,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]">
+      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]" />
 
-      </div>
     </footer>
   );
 }
