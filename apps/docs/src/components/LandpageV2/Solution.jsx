@@ -59,7 +59,7 @@ const Solution = () => {
                 <div className='flex w-full justify-center max-md:justify-center mt-[2vw] max-md:mt-0'>
                     <div className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-[#939393] max-md:pl-0 max-md:text-sm! ">
                         <span className="inline-block">That&apos;s the whole workflow. The files land in your project. You change anything you want.&nbsp;</span>
-                        {/* <Link href={"#Workflow"} className="relative group w-fit inline-block" onMouseEnter={handleLinkEnter} onClick={handleLinkClick}>
+                        {/* <Link prefetch={false} href={"#Workflow"} className="relative group w-fit inline-block" onMouseEnter={handleLinkEnter} onClick={handleLinkClick}>
                             <span className="flex text-[#939393] items-center gap-[.5vw] w-fit cursor-pointer">
                                 <span className="relative overflow-hidden inline-flex h-[1.3em]">
                                     <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="inline-block max-sm:text-[3.8vw] transition-transform duration-300 group-hover:-translate-y-full">

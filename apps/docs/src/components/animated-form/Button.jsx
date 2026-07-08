@@ -19,13 +19,19 @@ const Button = forwardRef(function Button(
  loadingText ="Sending...",
  className ="",
  disabled,
+ id,
  ...rest
  },
  ref
 ) {
+ const autoId = !id && typeof children === "string"
+   ? children.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+   : undefined;
+
  return (
  <button
  ref={ref}
+ id={id ?? autoId}
  type={type}
  disabled={isLoading || disabled}
  className={`

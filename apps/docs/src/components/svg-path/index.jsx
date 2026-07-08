@@ -115,7 +115,7 @@ export default function SVGPath() {
             grabCursor
           >
             {imgs.map((img, i) => (
-              <Link key={`${currentTab.id}-${i}`} href={img.link}>
+              <Link prefetch={false} key={`${currentTab.id}-${i}`} href={img.link}>
                 <div className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-md:w-16 max-sm:w-18">
                   <Image
                     src={img.src}

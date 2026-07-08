@@ -32,6 +32,7 @@ export default function LinkButton({
   shimmerBaseColor = "#979797",
   shimmerColor = "#ffffff",
   onClick,
+  id,
   ...props
 }) {
   const underlineRef = useRef(null);
@@ -42,6 +43,10 @@ export default function LinkButton({
   const isExternal = href?.startsWith("http");
   const resolvedTarget = target ?? (isExternal ? "_blank" : "_self");
   const label = text ?? children;
+
+  const autoId = !id && typeof label === "string"
+    ? label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    : undefined;
 
   useEffect(() => {
     if (!shimmer) return;
@@ -97,7 +102,9 @@ export default function LinkButton({
   return (
     <Link
       {...props}
+      id={id ?? autoId}
       href={href}
+      prefetch={false}
       target={resolvedTarget}
       rel={isExternal ? "noopener noreferrer" : undefined}
       className={`relative text-white group w-fit inline-block pb-1 ${className}`}

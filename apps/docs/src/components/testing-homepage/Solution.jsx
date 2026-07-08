@@ -55,7 +55,7 @@ const Solution = () => {
                             That’s the whole workflow. The files land in your project. You
                             change anything you want.{" "}
                         </ShimmerText>
-                        <Link href={"/effects"} className="relative text-white group w-fit inline-block" onMouseEnter={handleLinkEnter}>
+                        <Link prefetch={false} href={"/effects"} className="relative text-white group w-fit inline-block" onMouseEnter={handleLinkEnter}>
                         <div className="flex items-center gap-[.5vw] w-fit cursor-pointer">
 
                             <span className="relative overflow-hidden inline-flex h-[1.3em]">

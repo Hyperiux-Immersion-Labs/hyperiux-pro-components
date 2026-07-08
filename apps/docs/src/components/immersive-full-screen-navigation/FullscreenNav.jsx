@@ -154,7 +154,7 @@ export default function FullscreenNav({
         className={`fixed top-6 max-sm:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3 cursor-pointer">
+          <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
           <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 ${isOpen ? "brightness-100  delay-700" : "brightness-0  delay-700"}`}>
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>

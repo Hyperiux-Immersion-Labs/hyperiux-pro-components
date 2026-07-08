@@ -32,7 +32,7 @@ const Footer = () => {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-300 md:gap-8">
               {["Overview", "Components", "Templates", "Pricing", "Documentation", "Blog", "Contact"].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <Link href="#" className="cursor-pointer text-base max-sm:text-lg transition hover:text-primary">
+                  <Link prefetch={false} href="#" className="cursor-pointer text-base max-sm:text-lg transition hover:text-primary">
                     {item}
                   </Link>
                   {i !== 6 && <span className="text-primary max-sm:text-xl">•</span>}

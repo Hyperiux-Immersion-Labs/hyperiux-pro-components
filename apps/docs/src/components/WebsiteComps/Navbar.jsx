@@ -89,7 +89,7 @@ export default function Navbar() {
             }}
             className="fixed top-(--announcement-offset) transition-[top] duration-300 ease-out left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden"
         >
-            <Link href="/" aria-label="Hyperiux Vault home">
+            <Link prefetch={false} href="/" aria-label="Hyperiux Vault home">
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
             </Link>
 

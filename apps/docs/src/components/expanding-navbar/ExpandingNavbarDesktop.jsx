@@ -398,7 +398,7 @@ export function ExpandingNavbarDesktop() {
                         ref={seprationLineRef}
                         className="block w-full h-0.5 absolute top-[-.5vw] left-1/2 -translate-x-1/2 bg-[#1A1A1A] transition-all duration-300 opacity-0"
                     />
-                    <Link href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
+                    <Link prefetch={false} href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
                         <svg className="w-[8vw] h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
                             <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
                             <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>

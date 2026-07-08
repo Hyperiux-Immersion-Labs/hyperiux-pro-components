@@ -197,7 +197,7 @@ export default function CustomNavbar({
               style={{ opacity: 0, transform: `translateY(${LINK_Y_OFFSET}px)` }}
             >
 
-              <Link href={link.href}>
+              <Link prefetch={false} href={link.href}>
                 {link.label}
               </Link>
             </div>

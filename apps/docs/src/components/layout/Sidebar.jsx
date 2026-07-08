@@ -359,7 +359,7 @@ export function Sidebar({
 
       <div className="flex h-full flex-col items-start overflow-hidden border-r border-b border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
-          <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Link prefetch={false} href="/" className="flex min-w-0 items-center gap-3">
             <Image
               src="/hyperiux.svg"
               alt="Hyperiux"

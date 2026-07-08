@@ -82,7 +82,7 @@ const TechLogo = ({ slug, color }) => {
 export default function TechDetailShowcase({ slug, tech, filteredEffects }) {
   return (
     <div className="mx-auto px-8 pt-28 pb-8 max-sm:px-0">
-      <Link href="/tech" className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-8 group transition-colors">
+      <Link prefetch={false} href="/tech" className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-8 group transition-colors">
         <svg className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
         </svg>

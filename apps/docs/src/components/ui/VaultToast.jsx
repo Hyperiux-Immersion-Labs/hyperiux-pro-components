@@ -14,7 +14,7 @@ import { X } from "lucide-react";
  *   title       - bold line at the top
  *   description - secondary text below title (optional)
  *   ctaLabel    - text for the action button/link (optional)
- *   ctaHref     - if set, renders an <a>/<Link>; otherwise a <button>
+ *   ctaHref     - if set, renders an <a>/<Link prefetch={false}>; otherwise a <button>
  *   onCtaClick  - called when CTA is clicked (fires before navigation if ctaHref set)
  *   duration    - auto-dismiss in ms (default 5000, 0 = no auto-dismiss)
  *   variant     - "default" | "success" | "pro"
@@ -126,7 +126,7 @@ export function VaultToast({
             {ctaLabel && (
               <div className="mt-4">
                 {ctaHref ? (
-                  <Link href={ctaHref} className={ctaClass} onClick={handleCtaClick}>
+                  <Link prefetch={false} href={ctaHref} className={ctaClass} onClick={handleCtaClick}>
                     {ctaLabel}
                   </Link>
                 ) : (

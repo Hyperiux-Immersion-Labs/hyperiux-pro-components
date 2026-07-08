@@ -181,7 +181,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  }
 
  return (
- <Link href={link} className="block w-full h-full max-md:h-auto">
+ <Link prefetch={false} href={link} className="block w-full h-full max-md:h-auto">
  {cardContent}
  </Link>
  );

@@ -30,7 +30,7 @@ export function MobileDirectionalMenu({ items = [] }) {
   return (
     <div className="relative hidden max-md:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center  gap-3 cursor-pointer">
+        <Link prefetch={false} href="/" className="flex items-center  gap-3 cursor-pointer">
           <Image
             src="/hyperiux.svg"
             alt="Hyperiux"
