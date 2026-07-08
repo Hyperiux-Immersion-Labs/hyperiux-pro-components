@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useInView } from "motion/react";
 import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
@@ -49,108 +48,95 @@ export function EffectCard({
   isProUser = false,
   sizes = VAULT_GRID_SIZES,
 }) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [active, setActive] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-  const [videoMounted, setVideoMounted] = useState(false);
-  const [videoError, setVideoError] = useState(false);
+  const [hasAppeared, setHasAppeared] = useState(false);
 
   const router = useRouter();
   const cardRef = useRef(null);
   const videoRef = useRef(null);
-  const unmountTimerRef = useRef(null);
+  const prefetchTimerRef = useRef(null);
 
-  const isInView = useInView(cardRef, { once: true, margin: "0px", amount: 0.1 });
-
-  // Force-unmount video when card scrolls out of viewport so off-screen
-  // WebMediaPlayers don't accumulate and hit Chrome's hard limit (~75).
+  // Single observer: latches the one-time entrance fade and stops playback once
+  // the card scrolls away. setState lives in the observer callback (external
+  // event), the sanctioned alternative to setState in an effect body.
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) {
-          clearTimeout(unmountTimerRef.current);
-          setIsHovered(false);
-          setVideoMounted(false);
-          setVideoReady(false);
+        if (entry.isIntersecting) {
+          setHasAppeared(true);
+        } else {
+          setActive(false);
         }
       },
-      { rootMargin: "200px 0px" }
+      { rootMargin: "200px 0px", threshold: 0.1 }
     );
 
     observer.observe(card);
     return () => observer.disconnect();
   }, []);
 
-  // Explicitly release the WebMediaPlayer when the video element unmounts.
-  // Just removing it from the DOM is not enough - Chrome keeps the player alive
-  // until src is cleared and load() is called (crbug.com/1144736).
-  useEffect(() => {
-    if (!videoMounted) {
-      const video = videoRef.current;
-      if (video) {
-        video.pause();
-        video.src = "";
-        video.load();
-      }
-    }
-  }, [videoMounted]);
-
-  // Release resources and cancel pending timers when the card unmounts entirely
-  // (e.g. user navigates away while videos are still active).
-  useEffect(() => {
-    return () => {
-      clearTimeout(unmountTimerRef.current);
-      const video = videoRef.current;
-      if (video) {
-        video.pause();
-        video.src = "";
-        video.load();
-      }
-    };
-  }, []);
-
-  const videoPreviewUrl = resolveEffectVideoUrl(effect);
-
-  const coverImage = resolveEffectCoverImage(effect);
+  const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
+  const coverImage = useMemo(() => resolveEffectCoverImage(effect), [effect]);
 
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
 
+  // Drive the <video> imperatively so React never owns `src`. Activating attaches
+  // the source and plays; deactivating detaches it, releasing the WebMediaPlayer
+  // (crbug.com/1144736). An empty <video> holds no decoder, so the element stays
+  // mounted without accumulating toward Chrome's ~75-player limit. (Managing src
+  // via a React prop + a cleanup ref breaks under StrictMode's mount/remount,
+  // which strips the attribute and never restores it.)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !videoPreviewUrl) return;
+
+    if (active) {
+      if (video.getAttribute("src") !== videoPreviewUrl) {
+        video.src = videoPreviewUrl;
+        video.load();
+      }
+      video.play().catch(() => {});
+    } else if (video.getAttribute("src")) {
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    }
+  }, [active, videoPreviewUrl]);
+
   const handleMouseEnter = () => {
-    clearTimeout(unmountTimerRef.current);
-    setIsHovered(true);
-    if (videoPreviewUrl && !videoError) setVideoMounted(true);
-    router.prefetch(effectHref);
+    if (videoPreviewUrl) setActive(true);
+    // Delay prefetch so brushing past a card while moving the cursor doesn't
+    // queue a request for every card under the pointer.
+    prefetchTimerRef.current = setTimeout(() => router.prefetch(effectHref), 120);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-    // Keep video in DOM for the fade-out duration before unmounting
-    unmountTimerRef.current = setTimeout(() => {
-      setVideoMounted(false);
-      setVideoReady(false);
-    }, 300);
+    clearTimeout(prefetchTimerRef.current);
+    setActive(false);
   };
 
-  // showVideo drives opacity; videoMounted drives whether the element is in the DOM
-  const showVideo = videoReady && isHovered;
+  useEffect(() => () => clearTimeout(prefetchTimerRef.current), []);
 
-  const categories = (
-    effect.categories?.length ? effect.categories : [effect.category]
-  ).filter(Boolean);
+  // active drives whether the source is attached/playing; showVideo drives opacity
+  const showVideo = active && videoReady;
 
-  const primaryCategoryLabel = formatLabel(categories[0] || "components");
+  const primaryCategoryLabel = useMemo(() => {
+    const categories = (
+      effect.categories?.length ? effect.categories : [effect.category]
+    ).filter(Boolean);
+    return formatLabel(categories[0] || "components");
+  }, [effect.categories, effect.category]);
 
-  const dependencyPills = (effect.dependencies || [])
-    .slice(0, 2)
-    .map(formatLabel)
-    .filter(Boolean);
+  const dependencyPills = useMemo(
+    () =>
+      (effect.dependencies || []).slice(0, 2).map(formatLabel).filter(Boolean),
+    [effect.dependencies]
+  );
 
   return (
     <Link
@@ -158,9 +144,9 @@ export function EffectCard({
       prefetch={false}
       ref={cardRef}
       style={{
-        opacity: isInView ? 1 : 0,
+        opacity: hasAppeared ? 1 : 0,
         transition: "opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1)",
-        willChange: isInView ? "auto" : "opacity",
+        willChange: hasAppeared ? "auto" : "opacity",
       }}
       className="group relative block w-full cursor-pointer rounded-md"
       onMouseEnter={handleMouseEnter}
@@ -204,17 +190,16 @@ export function EffectCard({
               showVideo ? "opacity-0" : "opacity-100"
             }`}
           />
-          {videoMounted && (
+          {hasAppeared && videoPreviewUrl && (
             <video
               ref={videoRef}
-              src={videoPreviewUrl}
-              autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               onLoadedData={() => setVideoReady(true)}
-              onError={() => setVideoError(true)}
+              onEmptied={() => setVideoReady(false)}
+              onError={() => setVideoReady(false)}
               className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}
