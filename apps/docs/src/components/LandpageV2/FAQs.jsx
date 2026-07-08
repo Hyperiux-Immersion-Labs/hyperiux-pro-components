@@ -88,8 +88,8 @@ export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
                     ))}
                 </FAQGroup>
                 {!isExpanded && faqItems.length > INITIAL_COUNT && (
-                <div className="w-full flex items-center justify-center mt-[4vw]">
-                                            <LinkButton href={"#"} onClick={() => setIsExpanded(true)} shimmer tilted={false} showArrow  text={"View More"}/>
+                <div className="w-full flex items-center justify-center mt-[4vw] max-sm:mt-[10vw]">
+                                            <LinkButton href={"#"} onClick={() => setIsExpanded(true)} shimmer tilted={false} showArrow  text={"View More"} className="max-sm:text34"/>
                 
                 </div>
                 )}

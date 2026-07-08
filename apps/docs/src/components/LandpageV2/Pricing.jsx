@@ -250,8 +250,8 @@ export default function Pricing({ padding, content = true }) {
             </p>
           </div>
 
-          <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
-            <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
+          <div className="h-full rounded-md max-md:h-fit max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 max-md:w-full bg-background text-foreground">
+            <div className="space-y-[1.5vw] max-md:space-y-[6vw] w-full">
               <p className="text80 font-heading">Pro</p>
 
               <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
@@ -268,7 +268,7 @@ export default function Pricing({ padding, content = true }) {
                   as="div"
                   shimmerColor="#fab389"
                   baseColor="#ff5f00"
-                  className="inline-block w-[20vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]!"
+                  className="inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]!"
                 >
                   <p
                     className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}
