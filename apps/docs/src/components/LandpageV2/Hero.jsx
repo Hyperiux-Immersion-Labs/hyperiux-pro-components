@@ -416,7 +416,7 @@ export default function Hero() {
 
         <div
           ref={buttonWrapRef}
-          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:mx-auto max-sm:w-[88%] gap-[1vw] max-md:gap-5"
+          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-[88%] gap-[1vw] max-md:gap-5"
         >
           <Button
             text="Browse Free Effects"
