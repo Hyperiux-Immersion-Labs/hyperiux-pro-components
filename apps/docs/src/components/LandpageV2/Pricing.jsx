@@ -146,7 +146,7 @@ export default function Pricing({ padding, content = true }) {
             <RandomBlur
               start="top 50%"
               as="h2"
-              className="text110 w-[60vw] max-md:w-full"
+              className="text110 w-full"
             >
               Start Free Today.<br/> Join Founding Access for Pro.
             </RandomBlur>
