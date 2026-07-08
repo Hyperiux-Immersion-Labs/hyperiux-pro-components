@@ -6,7 +6,7 @@ import { RibbonDriftComp } from "./RibbonDriftComp";
 const RibbonDrift = () => {
  return (
  <ReactLenis root>
- <section className="w-screen h-fit">
+ <section className="w-screen h-fit max-snm:h-full">
  <RibbonDriftComp images={IMAGE_POOL} projectNames={PROJECT_NAMES} />
  </section>
  </ReactLenis>

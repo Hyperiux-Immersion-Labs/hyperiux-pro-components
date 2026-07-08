@@ -6,7 +6,7 @@ import { ScrollTrigger } from'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const DIGITS = [...Array(10).keys()].concat(0);
+const DIGITS = [...Array(10).keys()];
 
 const FONT_WEIGHTS = {
  normal:'font-normal',
@@ -24,7 +24,7 @@ const DigitScroller = memo(({ digit, index, triggerRef }) => {
  const digitIndex = parseInt(digit, 10);
  const ctx = gsap.context(() => {
  gsap.to(digitRef.current, {
- yPercent: -(digitIndex * 100),
+ yPercent: -(digitIndex * 10),
  duration: 1.5,
  ease:'power2.inOut',
  delay: index * 0.1,

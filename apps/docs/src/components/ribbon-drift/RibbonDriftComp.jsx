@@ -250,7 +250,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh] max-sm:h-full bg-white text-[#1a1a1a] max-md:hidden"
+				className="w-screen h-[1000vh]  bg-white text-[#1a1a1a] max-md:hidden"
 				id="ribbon-drift"
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
@@ -390,7 +390,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 				</div>
 			</div>
 
-			<div className="hidden w-screen bg-white text-[#1a1a1a] max-md:block max-md:px-8 max-md:py-24 max-sm:px-5 max-md:pt-35 max-sm:pt-24 max-sm:py-10">
+			<div className="hidden w-screen h-full bg-white text-[#1a1a1a] max-md:block max-md:px-8 max-md:py-24 max-sm:px-5 max-md:pt-35 max-sm:pt-24 max-sm:py-10">
 				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-sm:gap-10">
 					<div className="flex flex-col gap-8 max-sm:gap-6">
 						<p className="text-[6vw] text-center font-medium leading-none max-sm:text-[10vw]">
