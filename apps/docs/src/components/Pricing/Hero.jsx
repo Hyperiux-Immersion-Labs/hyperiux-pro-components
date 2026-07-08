@@ -9,7 +9,7 @@ const Hero = () => {
     return (
         <section className="relative z-20 pointer-events-none self-padd h-screen flex items-center w-full">
             <img
-        src="/landing-page/hero-bg.png"
+        src="/landing-page/hero-bg.webp"
         alt=""
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-md:block"

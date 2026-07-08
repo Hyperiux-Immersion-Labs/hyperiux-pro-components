@@ -163,6 +163,13 @@ export const metadata = createPageMetadata({
 export default function page() {
   return (
     <>
+      <link
+        rel="preload"
+        as="image"
+        href="/landing-page/hero-bg.webp"
+        fetchPriority="high"
+        media="(max-width: 768px)"
+      />
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
       <LandingPageV2 faqItems={faqItems} />

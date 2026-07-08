@@ -192,11 +192,9 @@ export default function StorytellingMobile() {
                     src={src}
                     alt="spiral-images"
                     fill
-                    style={{
-                        objectFit: "cover",
-                        borderRadius: "5px",
-                    }}
+                    className="object-cover rounded-md"
                     sizes={`${imageDiameterVW * 1.5}vw`}
+                    quality={60}
                     priority={i < 3}
                 />
             </div>

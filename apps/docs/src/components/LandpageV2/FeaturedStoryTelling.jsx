@@ -474,6 +474,7 @@ export default function FeaturedStoryTelling() {
                                     fill
                                     className="object-cover"
                                     sizes="(max-width: 1024px) 0vw, 18vw"
+                                    quality={60}
                                     loading="lazy"
                                 />
                             </div>
