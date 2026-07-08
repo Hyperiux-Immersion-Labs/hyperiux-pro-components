@@ -396,22 +396,32 @@
   <priority>0.64</priority>
 </url>
 <url>
+  <loc>https://vault.hyperiux.com/effects/components/border-beam</loc>
+  <lastmod>2026-07-08T09:02:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://vault.hyperiux.com/effects/components/cards-runway</loc>
+  <lastmod>2026-07-08T09:02:48+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
   <loc>https://vault.hyperiux.com/effects/components/video-player</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/form</loc>
+  <loc>https://vault.hyperiux.com/effects/components/animated-form</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/modal</loc>
+  <loc>https://vault.hyperiux.com/effects/components/animated-modal</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/components/tabs</loc>
+  <loc>https://vault.hyperiux.com/effects/components/animated-tabs</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -546,7 +556,7 @@
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/webgl-effects/milkyway</loc>
+  <loc>https://vault.hyperiux.com/effects/webgl-effects/milky-way</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.64</priority>
 </url>
@@ -908,22 +918,32 @@
   <priority>0.51</priority>
 </url>
 <url>
+  <loc>https://vault.hyperiux.com/demo/border-beam</loc>
+  <lastmod>2026-07-08T09:02:48+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://vault.hyperiux.com/demo/cards-runway</loc>
+  <lastmod>2026-07-08T09:02:48+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
   <loc>https://vault.hyperiux.com/demo/video-player</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/form</loc>
+  <loc>https://vault.hyperiux.com/demo/animated-form</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/modal</loc>
+  <loc>https://vault.hyperiux.com/demo/animated-modal</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/tabs</loc>
+  <loc>https://vault.hyperiux.com/demo/animated-tabs</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -933,7 +953,7 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/effects/text-animations/counter</loc>
+  <loc>https://vault.hyperiux.com/effects/text-animations/number-counter</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -1063,7 +1083,7 @@
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/milkyway</loc>
+  <loc>https://vault.hyperiux.com/demo/milky-way</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.51</priority>
 </url>
@@ -1159,7 +1179,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://vault.hyperiux.com/demo/counter</loc>
+  <loc>https://vault.hyperiux.com/demo/number-counter</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.41</priority>
 </url>

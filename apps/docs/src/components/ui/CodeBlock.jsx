@@ -66,8 +66,8 @@ export function CodeBlock({
                 )}
                 <div className="relative">
                     <pre
-                        className={`overflow-x-auto bg-[#272727] text-xs max-sm:pt-[7vw]  ${
-                            shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : "max-sm:text-sm"
+                        className={`overflow-x-auto bg-[#272727]  max-sm:pt-[7vw] tracking-tight! text-sm!  ${
+                            shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : ""
                         }`}
                     >
                         {highlighted ? (
