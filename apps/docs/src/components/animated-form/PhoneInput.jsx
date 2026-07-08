@@ -141,7 +141,7 @@ const PhoneInput = forwardRef(function PhoneInput(
             <div
               role="listbox"
               className={joinClasses(
-                "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 rounded-xl border border-gray-200 bg-white py-1 shadow-lg",
+                "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg",
                 dropdownClassName
               )}
             >

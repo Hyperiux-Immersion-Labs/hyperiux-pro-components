@@ -60,10 +60,10 @@ const legalLinks = [
 ];
 
 const socialLinks = [
-  { label: "Twitter / X", href: "https://x.com/hyperiux" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/hyperiux" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
-  { label: "Instagram", href: "https://instagram.com/hyperiux" },
+  { label: "Twitter / X", href: "https://x.com/_hyperiux_" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs" },
+  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 
 function FooterBlockLink({ href, children }) {

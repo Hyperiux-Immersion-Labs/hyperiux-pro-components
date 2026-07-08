@@ -241,18 +241,35 @@ function WorkWithHyperiuxModalInner() {
           />
 
           <motion.div
-            className="relative z-10 w-[80vw] overflow-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/[0.04] p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl max-md:h-[75vh] max-md:w-[95%] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            className="relative z-10 w-[80vw] max-md:w-[95%]"
+            initial={{ opacity: 0, scale: 0.97, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 10 }}
             transition={MODAL_TRANSITION}
           >
-            {/* Close button */}
+            {/* Mobile/tablet close button — floats above the box */}
             <button
               type="button"
               aria-label="Close"
               onClick={close}
-              className="group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white"
+              className="group md:hidden absolute -top-12 right-0 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-sm:right-[-5%]"
+            >
+              <div className="relative flex h-4 w-4 items-center justify-center transition-transform duration-500 ease-in-out group-hover:rotate-90">
+                <span className="h-px w-4 rotate-45 bg-white" />
+                <span className="absolute h-px w-4 -rotate-45 bg-white" />
+              </div>
+            </button>
+
+            <div
+              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl max-md:h-[75vh] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:h-[85vh] max-sm:rounded-[5vw]"
+              onWheelCapture={(e) => e.stopPropagation()}
+            >
+            {/* Desktop close button — inside the box */}
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={close}
+              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-[1px] w-4 rotate-45 bg-white" />
@@ -268,7 +285,7 @@ function WorkWithHyperiuxModalInner() {
                 {isSuccess ? "Enquiry sent." : "Work with Hyperiux"}
               </h3>
 
-              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-sm">
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-[4vw]!">
                 {isSuccess
                   ? "We received your message. A confirmation has been sent to your email. Closing now."
                   : "Tell us about your project - what you're building, the interaction or experience you have in mind, and your timeline. We'll get back to you within 1-2 business days."}
@@ -385,6 +402,7 @@ function WorkWithHyperiuxModalInner() {
                 </form>
               )}
             </div>
+          </div>
           </motion.div>
         </motion.div>
       )}

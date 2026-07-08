@@ -59,6 +59,7 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
+        {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
         <noscript>

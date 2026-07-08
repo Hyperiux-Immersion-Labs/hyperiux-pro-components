@@ -441,7 +441,7 @@ export default function Hero() {
             <UnlockIcon className="h-full w-full" />
           </span>
 
-          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw] max-sm:text-center tracking-tight">
+          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw] leading-[1.2]">
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-first code
           </ShimmerText>
         </p>
