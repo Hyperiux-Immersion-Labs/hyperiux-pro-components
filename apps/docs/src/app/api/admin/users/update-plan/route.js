@@ -34,6 +34,18 @@ export async function POST(request) {
 
     const newStatus = plan === "pro" ? "active" : "inactive";
 
+    // Downgrading to free must kill any existing CLI token outright, not
+    // just rely on verifyCliToken's plan check — otherwise a later
+    // re-upgrade without a fresh `npx hyperiux login` would silently
+    // reactivate the old token.
+    const revokeFields =
+      plan === "free"
+        ? {
+            cli_token_hash: null,
+            cli_token_revoked_at: new Date().toISOString(),
+          }
+        : {};
+
     // Update Supabase
     const { error: supabaseError } = await supabase
       .from("subscriptions")
@@ -43,6 +55,7 @@ export async function POST(request) {
           plan,
           status: newStatus,
           updated_at: new Date().toISOString(),
+          ...revokeFields,
         },
         { onConflict: "clerk_user_id" }
       );
