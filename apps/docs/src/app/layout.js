@@ -14,6 +14,7 @@ import {
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import AnnouncementBar from "@/components/WebsiteComps/AnnouncementBar";
 
 const layGrotesk = localFont({
@@ -40,6 +41,8 @@ export const metadata = createRootMetadata();
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
 
+const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
+
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
   var hasSession=document.cookie.indexOf('__session=')!==-1;
@@ -54,6 +57,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
@@ -97,6 +101,9 @@ export default function RootLayout({ children }) {
           {children}
           <Suspense>
             <CustomAnimationFormModal />
+          </Suspense>
+          <Suspense>
+            <WorkWithHyperiuxModal />
           </Suspense>
           <Analytics />
           <SpeedInsights />

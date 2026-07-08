@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
-
 import Link from "next/link";
 import FlowFieldHero from "../WebsiteComps/FlowFieldPlane";
 import RandomBlur from "../WebsiteComps/RandomBlur";

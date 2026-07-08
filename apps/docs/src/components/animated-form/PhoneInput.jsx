@@ -145,7 +145,7 @@ const PhoneInput = forwardRef(function PhoneInput(
                 dropdownClassName
               )}
             >
-              <div className="overflow-y-auto">
+              <div className="overflow-y-auto max-h-48" onWheelCapture={(e) => e.stopPropagation()}>
               {countries.map((country) => {
                 const isActive = selectedCountry.code === country.code;
 
