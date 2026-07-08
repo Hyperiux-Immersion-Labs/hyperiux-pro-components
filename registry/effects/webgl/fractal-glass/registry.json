@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "previewUrl": "/webgl/fractal-glass",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/fractal-glass",
   "target": "src/components/effects/fractal-glass",

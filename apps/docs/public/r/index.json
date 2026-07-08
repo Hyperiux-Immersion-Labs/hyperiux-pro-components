@@ -519,7 +519,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "PixelatedImageEffect",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "pixel-bloom",
@@ -1245,8 +1245,8 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "ImmersiveFullScreenNavigation",
-      "exportKind": "named"
+      "exportName": "ImmersiveFullscreenNav",
+      "exportKind": "default"
     },
     {
       "name": "lines-loader",

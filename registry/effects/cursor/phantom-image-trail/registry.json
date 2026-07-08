@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "previewUrl": "/phantom-image-trail",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/phantom-image-trail",
   "target": "src/components/effects/phantom-image-trail",
