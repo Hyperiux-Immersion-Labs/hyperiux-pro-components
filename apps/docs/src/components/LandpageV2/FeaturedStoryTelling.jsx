@@ -440,7 +440,7 @@ export default function FeaturedStoryTelling() {
             <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
                 Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
             </RandomBlur>
-            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 font-light leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
                 Hover it. Scroll it. Break it. Then copy it
             </SplitLine>
             <div
@@ -483,12 +483,12 @@ export default function FeaturedStoryTelling() {
 
                 {/* 2. Spiral Information Layer */}
                 <div className="absolute inset-0 flex items-center gap-[3.5vw] flex-col self-padd justify-center h-full z-10 pointer-events-none">
-                    <h2
+                    <p
                         ref={infoTextRef}
-                        className="text34 w-[45vw] mt-[5vw] leading-[1.6]! text-center pointer-events-auto"
+                        className="text34 w-[48vw] mt-[5vw] leading-[1.6]! text-center pointer-events-auto"
                     >
                        Vault is easiest to understand when you feel it. Every effect in the free tier is production-tested. No teaser previews. No locked exports. Copy the code and it&apos;s yours.
-                    </h2>
+                    </p>
                    
                 </div>
 

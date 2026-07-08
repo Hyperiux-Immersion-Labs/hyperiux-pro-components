@@ -17,10 +17,10 @@ export default function DeveloperCard({ group }) {
             </div>
 
             <div className="relative z-10 flex flex-col gap-[3vw] max-sm:gap-[4vw] w-full">
-                <p className="text34 card-title opacity-0 max-sm:font-normal font-medium tracking-tight max-md:text-[6vw] max-sm:text-[4.6vw]! max-sm:wrap-break-word">
+                <p className="text34 font-heading card-title opacity-0 max-sm:font-normal font-medium tracking-tight max-md:text-[6vw] max-sm:text-[4.6vw]! max-sm:wrap-break-word">
                     {group.title}
                 </p>
-                <p className="text34 card-text opacity-0 leading-[1.1]">
+                <p className="text-[1.5vw] max-sm:text-[4vw] max-md:text-[2.2vw] card-text opacity-0 leading-[1.4]">
                     {group.text}
                 </p>
             </div>

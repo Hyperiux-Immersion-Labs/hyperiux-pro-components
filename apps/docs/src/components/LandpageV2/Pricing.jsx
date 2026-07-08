@@ -169,7 +169,7 @@ export default function Pricing({ padding, content = true }) {
 
           <div className="h-fit max-md:flex hidden order-last rounded-md  max-sm:relative max-sm:right-0 max-md:justify-end right-0   items-center text24 text-background max-md:top-10 max-sm:top-10 top-[-2.8vw]  gap-[1vw] max-sm:gap-[4vw] z-0">
             <p
-              className={`cursor-pointer max-sm:font-medium transition-opacity duration-300`}
+              className={`cursor-pointer font-heading font-medium max-sm:font-medium transition-opacity duration-300`}
               onClick={() => setIsYearly(false)}
             >
               Monthly
@@ -184,7 +184,7 @@ export default function Pricing({ padding, content = true }) {
               />
             </button>
             <p
-              className={`cursor-pointer max-sm:font-medium transition-opacity duration-300 `}
+              className={`cursor-pointer font-heading font-medium max-sm:font-medium transition-opacity duration-300 `}
               onClick={() => setIsYearly(true)}
             >
               Yearly
@@ -193,9 +193,9 @@ export default function Pricing({ padding, content = true }) {
 
           <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
             <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
-              <p className="text80 font-medium!">Free</p>
+              <p className="text80 font-medium! font-heading">Free</p>
               <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
-                <p className="text110 max-sm:text-[13vw]! font-medium!">$0</p>
+                <p className="text110 max-sm:text-[13vw]! font-medium! font-heading">$0</p>
                 <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
               </div>
               <p className="text24 mt-[-1vw] max-md:mt-[-1vw] max-sm:mt-[-3.5vw]">
@@ -227,7 +227,7 @@ export default function Pricing({ padding, content = true }) {
           {/* TOGGLE for desktop */}
           <div className="h-fit max-md:hidden flex rounded-md absolute max-md:relative max-md:top-[4vw] max-md:right-0 max-md:justify-start right-0  items-center text24 text-background top-[-2.8vw]  gap-[1vw] max-md:gap-[4vw] z-0">
             <p
-              className={`cursor-pointer transition-opacity duration-300`}
+              className={`cursor-pointer font-heading font-medium transition-opacity duration-300`}
               onClick={() => setIsYearly(false)}
             >
               Monthly
@@ -242,7 +242,7 @@ export default function Pricing({ padding, content = true }) {
               />
             </button>
             <p
-              className={`cursor-pointer transition-opacity duration-300 `}
+              className={`cursor-pointer font-heading font-medium transition-opacity duration-300 `}
               onClick={() => setIsYearly(true)}
             >
               Yearly
@@ -251,10 +251,10 @@ export default function Pricing({ padding, content = true }) {
 
           <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
             <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
-              <p className="text80">Pro</p>
+              <p className="text80 font-heading">Pro</p>
 
               <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
-                <p className="text110 max-sm:text-[13vw]! flex items-center font-medium!">
+                <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
                   <span>$</span>
                   <PriceDigit digit="1" visible={isYearly} />
                   <PriceDigit digit={isYearly ? "7" : "2"} />
@@ -264,9 +264,9 @@ export default function Pricing({ padding, content = true }) {
                   {isYearly ? "Yearly" : "Monthly"}
                 </p>
                 <p
-                  className={`text34 max-sm:text-[4vw]! font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}
+                  className={`text34 max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}
                 >
-                  3 Months Free
+                  3 months free
                 </p>
               </div>
               <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">

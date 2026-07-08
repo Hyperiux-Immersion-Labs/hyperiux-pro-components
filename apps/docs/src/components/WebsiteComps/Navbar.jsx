@@ -107,7 +107,7 @@ export default function Navbar() {
                     <Button
                         text="Join Founding Access"
                         href="/waitlist"
-                        className="border-white/20! bg-[#0E0E0E]!"
+                        className="border-white/40! bg-[#0E0E0E]!"
                         variant="outline2"
                         scrollOffset={getUpgradeScrollOffset}
                     />

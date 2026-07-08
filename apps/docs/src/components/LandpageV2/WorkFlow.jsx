@@ -212,7 +212,7 @@ export default function Workflow() {
                                         {/* Number / Icon box */}
                                         <div className="wf-num-box h-[5vw] w-[5vw] max-sm:h-[12vw] max-sm:w-[12vw] max-md:h-[10vw] max-md:w-[10vw] aspect-square flex items-center justify-center rounded-sm bg-dark-card relative overflow-hidden shrink-0">
                                             <div className="wf-num absolute inset-0 flex items-center justify-center">
-                                                <p className="text34 pr-[.2vw]">{step.num}</p>
+                                                <p className="text34 pr-[.2vw] ">{step.num}</p>
                                             </div>
                                             <div className="wf-icon absolute inset-0 flex items-center justify-center">
                                                 <step.Icon className="w-[2.5vw] h-[2.5vw] max-sm:w-[5vw] max-sm:h-[5vw] max-md:w-[4vw] max-md:h-[4vw]" />
@@ -230,7 +230,7 @@ export default function Workflow() {
                                     {/* Right column: content box */}
                                     <div className="flex flex-col ml-[1vw] max-md:ml-[2vw] max-sm:ml-[4vw] flex-1 mb-[1.5vw] max-md:mb-[3vw] max-sm:mb-[6vw]">
                                         <div className="wf-content-box h-[5vw] max-md:h-[10vw] max-sm:h-[12vw] flex-col flex justify-between w-full text34 rounded-sm px-[2vw] py-[1.4vw] max-md:px-[3vw] max-md:py-[2.5vw] max-sm:px-[4vw] max-sm:py-[3.5vw] bg-dark-card overflow-hidden">
-                                            <p className="leading-none mt-[.25vw] max-sm:text-[5.5vw]">{step.title}</p>
+                                            <p className="leading-none mt-[.25vw] max-sm:text-[5.5vw] font-heading font-medium">{step.title}</p>
                                             <div className="wf-text w-[85%] max-sm:w-full overflow-hidden">
                                                 <p className="text24 max-sm:text-[4vw]! pt-[1.5vw] max-md:pt-[2vw] max-sm:pt-[3vw] leading-[1.3]">{step.text}</p>
                                             </div>
