@@ -3,7 +3,6 @@
 import useIsMobile from "@/hooks/useIsMobile";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
-import Loader from "@/components/WebsiteComps/Loader";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
 import Tension from "./Tension";
@@ -21,6 +20,7 @@ import Footer from "./Footer";
 import CTA from "./CTA";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
+import Loader from "./Loader";
 
 export default function LandingPageNew({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
@@ -31,7 +31,7 @@ export default function LandingPageNew({ faqItems }) {
       <VaultShell>
         <Loader />
         <Hero />
-        {/* <GlowingPlatesDeferred /> */}
+        <GlowingPlatesDeferred />
         <TrustStrip />
         <Problem />
         <GradientFill />
