@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import useIsMobile from "@/hooks/useIsMobile";
 
 import Link from "next/link";
 import FlowFieldHero from "../WebsiteComps/FlowFieldPlane";
@@ -10,6 +11,7 @@ import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
+import Image from "next/image";
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -79,6 +81,8 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
+  const { isMounted, isMobile } = useIsMobile();
+
 
   const handleSubscribe = async (event) => {
     event.preventDefault();
@@ -114,11 +118,14 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw]">
+    <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
 
-      <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
+      {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
         <FlowFieldHero texturePath="/assets/textures/orange.png" />
-      </div>
+      </div> :
+        <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
+          <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.png"} alt="footer-img" />
+        </div>}
       <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-3">
 
         <RandomBlur
@@ -302,7 +309,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]"/>
+      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]" />
 
     </footer>
   );
