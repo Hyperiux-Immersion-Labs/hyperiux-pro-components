@@ -318,7 +318,7 @@ export default function DepthCardStackComp({ cards }) {
  }, []);
 
  return (
- <section className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen pb-5 select-none bg-white">
+ <section className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen pb-5 select-none bg-white max-sm:h-full max-sm:min-h-screen">
 <p className="text-sm max-sm:text-sm max-md:text-lg font-medium text-blue-500 mb-1 max-md:mb-3">
   Hyperiux-UI Library
 </p>
@@ -380,7 +380,7 @@ export default function DepthCardStackComp({ cards }) {
  <ChevronRight size={20} strokeWidth={2} />
  </button>
  </div>
- <div className="hidden max-sm:flex items-center justify-center gap-8 mt-4">
+ <div className="hidden max-sm:flex max-sm:order-2 items-center justify-center gap-8 mt-4">
  <button
  onClick={() => {
  navigate(-1);
@@ -406,7 +406,7 @@ export default function DepthCardStackComp({ cards }) {
 
  <p
  key={claimedText}
- className="mt-4 max-md:mt-8 max-sm:mt-3 text-xs max-md:text-lg max-sm:text-base text-gray-400 h-5"
+ className="mt-4 max-md:mt-8 max-sm:mt-3 max-sm:order-1 text-xs max-md:text-lg max-sm:text-base text-gray-400 h-5"
  style={{ animation:"fadeUp 0.4s ease forwards" }}
  >
  {claimedText}

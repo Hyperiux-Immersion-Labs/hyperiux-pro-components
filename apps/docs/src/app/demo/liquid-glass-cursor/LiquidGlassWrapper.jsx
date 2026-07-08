@@ -40,7 +40,7 @@ export default function LiquidGlassWrapper() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-white rounded-full filter blur-[100px] opacity-60 pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4 space-y-8 max-md:space-y-20 max-sm:space-y-10 max-w-5xl mx-auto">
-        <div data-cursor="text" className="mb-[2vw] h-[5vw] w-[5vw] max-md:w-[8vw] max-md:h-[8vw] max-sm:w-[9vw] max-sm:h-[9vw] text-[#1D1D1F]">
+        <div data-cursor="text" className="mb-[2vw] h-[5vw] w-[5vw] max-md:w-[8vw] max-md:h-[8vw] max-sm:mt-4 max-sm:w-[9vw] max-sm:h-[9vw] text-[#1D1D1F]">
           <CustomIcon className="w-full h-full object-contain" />
         </div>
 
@@ -67,7 +67,7 @@ export default function LiquidGlassWrapper() {
         </div>
 
         {isMobile && (
-          <p className="max-sm:text-lg max-md:text-2xl text-[#86868B] w-[80%] mx-auto text-center mt-4 leading-[1.2]">
+          <p className="max-sm:text-base max-md:text-2xl text-[#86868B] w-[80%] mx-auto text-center mt-4 leading-[1.2]">
             This page has a secret
 life on desktop.<br />
 Best experienced where hover exists.
