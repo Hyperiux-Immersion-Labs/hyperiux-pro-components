@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "previewUrl": "/split-canvas",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/split-canvas",
   "target": "src/components/effects/split-canvas",

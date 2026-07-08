@@ -39,20 +39,31 @@ function detectExport(content, preferredName) {
   const namedExportRegex = /export\s+(?:function|const|class)\s+([A-Za-z_$][\w$]*)/g;
   const namedExports = [...content.matchAll(namedExportRegex)].map((match) => match[1]);
 
-  if (namedExports.length > 0) {
+  const defaultNamed = content.match(
+    /export\s+default\s+(?:function|class)\s+([A-Za-z_$][\w$]*)/
+  );
+
+  // A named export matching the effect's own name wins outright, even if a
+  // default export also exists elsewhere in the file (helper exports are
+  // common alongside the main component).
+  if (namedExports.includes(preferredName)) {
     return {
-      exportName: namedExports.includes(preferredName) ? preferredName : namedExports[0],
+      exportName: preferredName,
       exportKind: "named",
     };
   }
 
-  const defaultNamed = content.match(
-    /export\s+default\s+(?:function|class)\s+([A-Za-z_$][\w$]*)/
-  );
   if (defaultNamed) {
     return {
       exportName: defaultNamed[1],
       exportKind: "default",
+    };
+  }
+
+  if (namedExports.length > 0) {
+    return {
+      exportName: namedExports[0],
+      exportKind: "named",
     };
   }
 
@@ -199,6 +210,7 @@ async function buildRegistry() {
       const preferredExportName = registryJson.exportName || toPascalCase(registryJson.name);
       fileContents.sort((a, b) => {
         const score = (entry) => {
+          if (registryJson.main && entry.path === registryJson.main) return -100;
           if (registryJson.entry && entry.path === registryJson.entry) return -100;
           if (entry.path === `${entryBase}.jsx` || entry.path === `${entryBase}.js`) return -90;
           if (entry.path === `${effect}.jsx` || entry.path === `${effect}.js`) return -80;

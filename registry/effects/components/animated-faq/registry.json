@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "previewUrl": "/animated-faq",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/animated-faq",
   "target": "src/components/effects/animated-faq",

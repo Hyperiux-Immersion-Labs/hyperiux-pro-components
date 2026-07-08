@@ -13,6 +13,7 @@
   "coverImage": "chess-grid-transition",
   "videoUrl": "chess-grid-transition.mp4",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/chess-grid-transition",
   "target": "src/components/effects/chess-grid-transition",

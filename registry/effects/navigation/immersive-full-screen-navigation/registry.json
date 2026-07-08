@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "previewUrl": "/navigation/immersive-full-screen-nav",
   "tier": "free",
+  "subfolder": true,
   "main": "index.jsx",
   "importPath": "@/components/effects/immersive-full-screen-navigation",
   "target": "src/components/effects/immersive-full-screen-navigation",
