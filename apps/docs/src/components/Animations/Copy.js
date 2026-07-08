@@ -97,6 +97,7 @@ export default function Copy({
           mask: "lines",
           linesClass: "line++",
           lineThreshold: 0.1,
+          aria: "none",
         });
 
         splitRefs.current.push(split);
