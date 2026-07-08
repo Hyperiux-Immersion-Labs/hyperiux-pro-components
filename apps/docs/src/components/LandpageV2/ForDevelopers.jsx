@@ -1,23 +1,24 @@
 'use client'
 
-import { Suspense, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import gsap from 'gsap'
 import MaskTextReveal from '../mask-text-reveal'
 import DeveloperCard from './for-developers/DeveloperCard'
 import { groups, STRIP_GRADIENT } from './for-developers/groups'
 import { useDeveloperAccordion } from './for-developers/useDeveloperAccordion'
-import { useWorkWithHyperiuxModal } from '../WebsiteComps/modals/WorkWithHyperiuxModal'
-
-function AgencyCard({ group }) {
-    const { open } = useWorkWithHyperiuxModal()
-    return <DeveloperCard group={group} onCtaClick={open} />
-}
 
 export default function ForDevelopers() {
     const containerRef = useRef(null)
     const accordionRef = useRef(null)
     const headingRef = useRef(null)
     const stripContainerRef = useRef(null)
+    const router = useRouter()
+    const pathname = usePathname()
+
+    const openWorkWithHyperiux = () => {
+        router.push(`${pathname}?work-with-hyperiux=open`, { scroll: false })
+    }
 
     useDeveloperAccordion(containerRef, accordionRef, headingRef)
 
@@ -60,15 +61,13 @@ export default function ForDevelopers() {
                         </h2>
                     </MaskTextReveal>
                     <div className="relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-md:gap-[2vw] max-md:mt-[4vw] max-sm:gap-[5vw] max-sm:mt-[5vw]">
-                        {groups.map((group, idx) =>
-                            idx === 2 ? (
-                                <Suspense key={idx} fallback={<DeveloperCard group={group} />}>
-                                    <AgencyCard group={group} />
-                                </Suspense>
-                            ) : (
-                                <DeveloperCard key={idx} group={group} />
-                            )
-                        )}
+                        {groups.map((group, idx) => (
+                            <DeveloperCard
+                                key={idx}
+                                group={group}
+                                onCtaClick={idx === 2 ? openWorkWithHyperiux : undefined}
+                            />
+                        ))}
                     </div>
                 </div>
                 <section

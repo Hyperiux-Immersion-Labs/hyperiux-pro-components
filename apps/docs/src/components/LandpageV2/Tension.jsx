@@ -191,7 +191,7 @@ export default function Tension() {
           ))}
         </div>
 
-        <p className="mt-[8vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
+        <p className="mt-[5vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
             It&apos;s the interaction layer.
