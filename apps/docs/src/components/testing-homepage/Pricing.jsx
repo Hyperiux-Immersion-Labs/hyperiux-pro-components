@@ -8,6 +8,7 @@ import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
 import { useUser } from "@clerk/nextjs";
 import Scrolltrigger from "gsap/dist/ScrollTrigger";
+import ShimmerText from "../WebsiteComps/ShimmerText";
 gsap.registerPlugin(Scrolltrigger);
 
 const DIGITS = [...Array(10).keys()];
@@ -139,15 +140,15 @@ export default function Pricing({ padding, content = true }) {
     <div
       className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[920vw] max-md:h-[550vw]`}
     >
-      <div className=" w-full h-fit overflow-hidden flex flex-col gap-[10vw]  max-sm:gap-[15vw] items-center justify-center ">
+      <div className=" w-full h-fit overflow-hidden flex flex-col gap-[6vw]  max-sm:gap-[10vw] items-center justify-center ">
         {content && (
           <div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
             <RandomBlur
               start="top 50%"
               as="h2"
-              className="text110 w-[70vw] max-md:w-full"
+              className="text110 w-full"
             >
-              Start free today. Join Founding Access for Pro.
+              Start Free Today.<br/> Join Founding Access for Pro.
             </RandomBlur>
             <SplitLine
               start="top 60%"
@@ -249,8 +250,8 @@ export default function Pricing({ padding, content = true }) {
             </p>
           </div>
 
-          <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
-            <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
+          <div className="h-full rounded-md max-md:h-fit max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 max-md:w-full bg-background text-foreground">
+            <div className="space-y-[1.5vw] max-md:space-y-[6vw] w-full">
               <p className="text80 font-heading">Pro</p>
 
               <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
@@ -263,11 +264,18 @@ export default function Pricing({ padding, content = true }) {
                 <p className="text24 mb-[1vw] max-md:mb-2">
                   {isYearly ? "Yearly" : "Monthly"}
                 </p>
-                <p
-                  className={`text34 max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none max-sm:text-nowrap!"}`}
+                <ShimmerText
+                  as="div"
+                  shimmerColor="#fab389"
+                  baseColor="#ff5f00"
+                  className="inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]!"
                 >
-                  3 months free
-                </p>
+                  <p
+                    className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                  >
+                    3 months free
+                  </p>
+                </ShimmerText>
               </div>
               <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">
                 For developers, founders, and agencies shipping premium work.
@@ -324,7 +332,7 @@ export default function Pricing({ padding, content = true }) {
         </div>
         <SplitLine
           as="p"
-          className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[45vw] max-md:w-[85vw]"
+          className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[65vw] max-md:w-[85vw]"
         >
           Code you install stays in your repo. Free Core effects are available
           now. Pro downloads, Pro updates, and new Pro effect access require

@@ -31,29 +31,31 @@ export default function LandingPageNew({ faqItems }) {
 
       <VaultShell>
         <Loader />
-        <Hero />
-        <GlowingPlatesDeferred />
-        <TrustStrip />
-        <Problem />
-        <GradientFill />
-        <Tension />
-        <Solution />
-        {isMounted &&
-          (isMobile ? (
-            <>
-              <StorytellingMobile />
-              <VaultGridNewMobile />
-            </>
-          ) : (
-            <FeaturedStoryTelling />
-          ))}
-        <Workflow />
-        <UIKit /> 
-        <SmallMotion />
-        <ForDevelopers />
-        <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
-        <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
-        <CTA />
+        <main id="main-content">
+          <Hero />
+          <GlowingPlatesDeferred />
+          <TrustStrip />
+          <Problem />
+          <GradientFill />
+          <Tension />
+          <Solution />
+          {isMounted &&
+            (isMobile ? (
+              <>
+                <StorytellingMobile />
+                <VaultGridNewMobile />
+              </>
+            ) : (
+              <FeaturedStoryTelling />
+            ))}
+          <Workflow />
+          <UIKit />
+          <SmallMotion />
+          <ForDevelopers />
+          <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
+          <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
+          <CTA />
+        </main>
         <Footer />
       </VaultShell>
     </>
