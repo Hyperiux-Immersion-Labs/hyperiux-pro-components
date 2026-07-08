@@ -7,7 +7,7 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/border-beam",
-  "tier": "free",
+  "tier": "pro",
   "main": "index.jsx",
   "exportName": "BorderBeam",
   "exportKind": "default",

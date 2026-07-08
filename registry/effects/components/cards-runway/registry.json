@@ -9,7 +9,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/cards-runway",
-  "tier": "free",
+  "tier": "pro",
   "main": "index.jsx",
   "exportName": "CardsRunway",
   "exportKind": "default",
