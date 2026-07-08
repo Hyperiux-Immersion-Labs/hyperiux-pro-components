@@ -117,9 +117,9 @@ export default function Footer() {
   return (
     <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw]">
 
-      {/* <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
+      <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
         <FlowFieldHero texturePath="/assets/textures/orange.png" />
-      </div> */}
+      </div>
       <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-3">
 
         <RandomBlur
