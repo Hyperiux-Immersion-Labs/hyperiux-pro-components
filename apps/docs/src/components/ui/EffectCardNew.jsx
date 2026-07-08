@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useInView } from "motion/react";
 import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
-import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
+import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import { ArrowUpRight, Eye, Heart } from "lucide-react";
 
 function formatLabel(value = "") {
@@ -17,10 +17,29 @@ function formatLabel(value = "") {
     .join(" ");
 }
 
-// Default sizes reflects the main vault grid: 3 cols with ~288px sidebar, 80px container padding,
-// 48px grid gap, and 56px horizontal inset on the image container.
+// Media sits inside inset-x-7 (56px) on desktop / inset-x-4 (32px) on mobile.
+// 280px desktop slot matches ~264px measured display; avoids 400px overshoot in srcset.
 const VAULT_GRID_SIZES =
-  "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 400px";
+  "(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 40px), 280px";
+
+// 2x the largest slot (280px) for retina listing thumbnails (16:9).
+const LISTING_COVER_WIDTH = 560;
+const LISTING_COVER_HEIGHT = 315;
+
+function resolveEffectCoverImage(effect) {
+  const resolved =
+    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
+      defaultDirectory: "vault-listing-images",
+      defaultExtension: "png",
+    }) || "/assets/img/image01.webp";
+
+  if (resolved.startsWith("/")) return resolved;
+
+  return resizeR2ImageUrl(resolved, {
+    width: LISTING_COVER_WIDTH,
+    height: LISTING_COVER_HEIGHT,
+  });
+}
 
 export function EffectCard({
   effect,
@@ -94,11 +113,7 @@ export function EffectCard({
 
   const videoPreviewUrl = resolveEffectVideoUrl(effect);
 
-  const coverImage =
-    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) || "/assets/img/image01.webp";
+  const coverImage = resolveEffectCoverImage(effect);
 
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
@@ -182,7 +197,9 @@ export function EffectCard({
             alt={effect.title || effect.name}
             fill
             sizes={sizes}
+            quality={60}
             priority={priority}
+            loading={priority ? undefined : "lazy"}
             className={`object-cover transition-[opacity,transform] duration-500 ${
               showVideo ? "opacity-0" : "opacity-100"
             }`}

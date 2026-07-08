@@ -114,6 +114,7 @@ export default function HeadAnim({
           wordsClass: "word++",
           charsClass: "char++",
           reduceWhiteSpace: false,
+          aria: "none",
         });
 
         splitRefs.current.push(split);
