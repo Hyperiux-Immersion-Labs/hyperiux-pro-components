@@ -342,7 +342,7 @@ export function Sidebar({
         disableInitialTransition
           ? "transition-none"
           : "transition-[width] duration-300 ease-out"
-      } ${isExpanded ? "w-[288px]" : "w-22"}`}
+      } ${isExpanded ? "w-[20vw]" : "w-22"}`}
     >
       <button
         type="button"

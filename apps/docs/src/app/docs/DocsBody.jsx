@@ -37,6 +37,7 @@ function TableOfContents({ containerRef, watchKey }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [isFooterNearby, setIsFooterNearby] = useState(false);
 
   const lenis = useLenis();
   const activeLockRef = useRef({ id: "", targetTop: 0, timeoutId: null });
@@ -137,6 +138,25 @@ function TableOfContents({ containerRef, watchKey }) {
   }, [containerRef, watchKey]);
 
   useEffect(() => {
+    const footer = document.querySelector("footer");
+
+    if (!footer || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setIsFooterNearby(entries.some((entry) => entry.isIntersecting));
+      },
+      {
+        rootMargin: "0px 0px 0% 0px",
+      }
+    );
+
+    observer.observe(footer);
+
+    return () => observer.disconnect();
+  }, [watchKey]);
+
+  useEffect(() => {
     const root = containerRef?.current;
 
     if (!root) return;
@@ -216,7 +236,7 @@ function TableOfContents({ containerRef, watchKey }) {
     };
   }, []);
 
-  if (items.length === 0 || !isVisible) return null;
+  if (items.length === 0 || !isVisible || isFooterNearby) return null;
 
   return (
     <div className="group relative flex items-center gap-4 max-md:hidden">
