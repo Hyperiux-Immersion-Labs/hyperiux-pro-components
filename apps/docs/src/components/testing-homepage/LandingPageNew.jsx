@@ -1,7 +1,7 @@
 "use client";
 
 import useIsMobile from "@/hooks/useIsMobile";
-import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
+// import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
@@ -31,7 +31,7 @@ export default function LandingPageNew({ faqItems }) {
       <VaultShell>
         <Loader />
         <Hero />
-        <GlowingPlatesDeferred />
+        {/* <GlowingPlatesDeferred /> */}
         <TrustStrip />
         <Problem />
         <GradientFill />
