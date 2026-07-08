@@ -1,30 +1,31 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { TextFillAnimation } from '../WebsiteComps/TextFillAnimation'
 import CodeBlockWorkflow from './CodeBlockWorkFlow'
 import RandomBlur from '../WebsiteComps/RandomBlur'
-import ShimmerText from '../WebsiteComps/ShimmerText'
-import Link from 'next/link'
+// import ShimmerText from '../WebsiteComps/ShimmerText'
+// import Link from 'next/link'
+import LinkButton from '../WebsiteComps/LinkButton'
 
 const Solution = () => {
-    const underlineRef = useRef(null);
-    const isAnimating = useRef(false);
+    // const underlineRef = useRef(null);
+    // const isAnimating = useRef(false);
 
-    const handleLinkEnter = () => {
-        if (isAnimating.current) return;
-        isAnimating.current = true;
-        const el = underlineRef.current;
-        if (!el) return;
-        gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
-            .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
-            .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
-    };
-    const handleLinkClick = (e) => {
-        e.preventDefault();
-        const el = document.getElementById('Workflow');
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
+    // const handleLinkEnter = () => {
+    //     if (isAnimating.current) return;
+    //     isAnimating.current = true;
+    //     const el = underlineRef.current;
+    //     if (!el) return;
+    //     gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
+    //         .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
+    //         .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
+    // };
+    // const handleLinkClick = (e) => {
+    //     e.preventDefault();
+    //     const el = document.getElementById('Workflow');
+    //     if (el) {
+    //         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    //     }
+    // };
 
     return (
         <section className='w-full h-fit px-[3vw] py-[10%]' id='solution'>
@@ -58,7 +59,7 @@ const Solution = () => {
                 <div className='flex w-full justify-center max-md:justify-center mt-[2vw] max-md:mt-0'>
                     <div className="pl-[0.65vw] text24 max-sm:leading-[1.4] max-md:text-center leading-relaxed text-[#939393] max-md:pl-0 max-md:text-sm! ">
                         <span className="inline-block">That&apos;s the whole workflow. The files land in your project. You change anything you want.&nbsp;</span>
-                        <Link href={"#Workflow"} className="relative group w-fit inline-block" onMouseEnter={handleLinkEnter} onClick={handleLinkClick}>
+                        {/* <Link href={"#Workflow"} className="relative group w-fit inline-block" onMouseEnter={handleLinkEnter} onClick={handleLinkClick}>
                             <span className="flex text-[#939393] items-center gap-[.5vw] w-fit cursor-pointer">
                                 <span className="relative overflow-hidden inline-flex h-[1.3em]">
                                     <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="inline-block max-sm:text-[3.8vw] transition-transform duration-300 group-hover:-translate-y-full">
@@ -75,7 +76,8 @@ const Solution = () => {
                             </span>
 
                             <div ref={underlineRef} className="w-full absolute left-0 bottom-[-20%]  h-px bg-white bottom-underline" />
-                        </Link>
+                        </Link> */}
+                        <LinkButton href={"#Workflow"} shimmer tilted={false} showArrow  text={"See How it Works"}/>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+
 import Link from "next/link";
 import FlowFieldHero from "../WebsiteComps/FlowFieldPlane";
 import RandomBlur from "../WebsiteComps/RandomBlur";
@@ -8,7 +9,7 @@ import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import Input from "../animated-form/Input";
-import gsap from "gsap";
+import LinkButton from "../WebsiteComps/LinkButton";
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -78,11 +79,15 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
-   const underlineRef = useRef(null);
 
   const handleSubscribe = async (event) => {
     event.preventDefault();
-    if (!email.trim() || status === "loading") return;
+    if (status === "loading") return;
+    if (!email.trim()) {
+      setErrorMessage("Please enter your email address.");
+      setStatus("error");
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -107,15 +112,6 @@ export default function Footer() {
       setStatus("error");
     }
   };
-    const handleLinkEnter = () => {
-      if (isAnimating.current) return;
-      isAnimating.current = true;
-      const el = underlineRef.current;
-      if (!el) return;
-      gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
-        .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
-        .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
-    };
 
   return (
     <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw]">
@@ -138,7 +134,7 @@ export default function Footer() {
 
         <div className="flex max-sm:flex-col  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
           <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%] border-white/40' />
-          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="#pricing" variant="orange" />
+          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="/waitlist" variant="orange" />
           <p
             className="shimmer-text w-full flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
           >
@@ -289,16 +285,15 @@ export default function Footer() {
                     disabled={status === "loading"}
                     className="min-w-0 flex-1 rounded-none border border-grey bg-transparent! px-[1.2vw] py-[0.6vw] max-md:px-4 max-md:py-3 text18 outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50 text-white"
                   />
-                  <button
-                    type="submit"
-                    disabled={status === "loading"}
-                     onMouseEnter={handleLinkEnter}
-                    className=" relative shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white disabled:opacity-50"
-                  >
-                    {status === "loading" ? "Subscribing…" : "Subscribe"}
-          <div ref={underlineRef} className="absolute left-0 -bottom-0.5 w-full h-px bg-white" />
-
-                  </button>
+                  <LinkButton
+                    href="#"
+                    text={status === "loading" ? "Subscribing…" : "Subscribe"}
+                    showArrow={false}
+                    tilted={false}
+                    shimmer
+                    onClick={handleSubscribe}
+                    className={`text18 shrink-0${status === "loading" ? " pointer-events-none opacity-50" : ""}`}
+                  />
                 </div>
                 {status === "error" && (
                   <p className="text-sm text-red-400 px-[1.2vw] max-md:px-0">{errorMessage}</p>

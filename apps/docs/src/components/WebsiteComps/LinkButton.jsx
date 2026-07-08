@@ -29,8 +29,10 @@ export default function LinkButton({
   className = "",
   showArrow = false,
   shimmer = false,
-  shimmerBaseColor = "#ffffff",
-  shimmerColor = "#ff5f00",
+  shimmerBaseColor = "#979797",
+  shimmerColor = "#ffffff",
+  onClick,
+  ...props
 }) {
   const underlineRef = useRef(null);
   const isAnimating = useRef(false);
@@ -89,10 +91,12 @@ export default function LinkButton({
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    onClick?.(e);
   };
 
   return (
     <Link
+      {...props}
       href={href}
       target={resolvedTarget}
       rel={isExternal ? "noopener noreferrer" : undefined}
@@ -128,8 +132,8 @@ export default function LinkButton({
         {tilted && (
           <div className="size-2.5 overflow-hidden mt-0.5">
             <div className="size-2.5 relative transition-transform duration-300 group-hover:-translate-y-full group-hover:translate-x-full shrink-0">
-              <ArrowSVG className="-rotate-[135deg] w-full h-full" />
-              <ArrowSVG className="size-2.5 -rotate-[135deg] absolute bottom-[-100%] left-[-100%]" />
+              <ArrowSVG className="rotate-[-135deg] w-full h-full" />
+              <ArrowSVG className="size-2.5 rotate-[-135deg] absolute -bottom-full -left-full" />
             </div>
           </div>
         )}
