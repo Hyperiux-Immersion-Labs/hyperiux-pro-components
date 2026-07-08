@@ -107,7 +107,7 @@ export default function PricingCompareTable() {
       {/* Footer note */}
       <SplitLine
         as="p"
-        className="text24 max-md:text-sm text-white/35 text-center mt-[3vw] max-md:mt-[8vw]"
+        className="text24 max-md:text-sm text-center mt-[3vw] max-md:mt-[8vw]"
       >
         All plans include source code you own. No black boxes.
       </SplitLine>

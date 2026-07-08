@@ -1,10 +1,9 @@
 import React, { useRef } from 'react'
-import gsap from 'gsap'
 import { TextFillAnimation } from '../WebsiteComps/TextFillAnimation'
 import CodeBlockWorkflow from './CodeBlockWorkFlow'
-import Link from 'next/link'
 import RandomBlur from '../WebsiteComps/RandomBlur'
 import ShimmerText from '../WebsiteComps/ShimmerText'
+import Link from 'next/link'
 
 const Solution = () => {
     const underlineRef = useRef(null);

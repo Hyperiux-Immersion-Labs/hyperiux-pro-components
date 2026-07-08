@@ -39,6 +39,7 @@ export default function ForDevelopers() {
     return (
         <div ref={containerRef}>
             <section
+            id='for-developers'
                 ref={accordionRef}
                 className="h-[300vh] mt-[-20vh] max-md:mt-0 w-full relative"
             >

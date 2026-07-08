@@ -1,21 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import DeferredMount from "../WebsiteComps/DeferredMount";
 import FlowFieldHero from "../WebsiteComps/FlowFieldPlane";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import Input from "../animated-form/Input";
-// import Input from "../form-comp/Input";
-
-// Three.js footer scene — own chunk, mounted only when the footer nears the viewport.
-const ReflectiveRods = dynamic(() => import("@/Experience/ReflectiveRods"), {
-  ssr: false,
-});
+import gsap from "gsap";
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -85,6 +78,7 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
+   const underlineRef = useRef(null);
 
   const handleSubscribe = async (event) => {
     event.preventDefault();
@@ -113,6 +107,15 @@ export default function Footer() {
       setStatus("error");
     }
   };
+    const handleLinkEnter = () => {
+      if (isAnimating.current) return;
+      isAnimating.current = true;
+      const el = underlineRef.current;
+      if (!el) return;
+      gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
+        .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
+        .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
+    };
 
   return (
     <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw]">
@@ -289,9 +292,12 @@ export default function Footer() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white disabled:opacity-50"
+                     onMouseEnter={handleLinkEnter}
+                    className=" relative shrink-0 text18 text-foreground underline decoration-foreground underline-offset-[0.35vw] transition-colors hover:text-white disabled:opacity-50"
                   >
                     {status === "loading" ? "Subscribing…" : "Subscribe"}
+          <div ref={underlineRef} className="absolute left-0 -bottom-0.5 w-full h-px bg-white" />
+
                   </button>
                 </div>
                 {status === "error" && (
@@ -302,9 +308,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]">
+      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]"/>
 
-      </div>
     </footer>
   );
 }

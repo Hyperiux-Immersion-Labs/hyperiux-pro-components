@@ -148,7 +148,7 @@ export default function Pricing({ padding, content = true }) {
               as="h2"
               className="text110 w-[60vw] max-md:w-full"
             >
-              Start Free Today. Join Founding Access for Pro.
+              Start Free Today.<br/> Join Founding Access for Pro.
             </RandomBlur>
             <SplitLine
               start="top 60%"

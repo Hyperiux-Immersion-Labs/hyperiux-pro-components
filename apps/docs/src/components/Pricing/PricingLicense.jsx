@@ -54,7 +54,7 @@ export default function PricingLicense() {
       <SplitLine
         as="p"
         delay={0.15}
-        className="text24 text-white/50 text-center mt-[1.5vw] mb-[5vw] w-[48vw] max-md:w-[88vw] max-md:mt-4 max-md:mb-[10vw] mx-auto leading-relaxed"
+        className="text24 text-center mt-[1.5vw] mb-[5vw] w-[48vw] max-md:w-[88vw] max-md:mt-4 max-md:mb-[10vw] mx-auto leading-relaxed"
       >
         A summary of the terms that matter most before you buy - see the full license for the complete legal text.
       </SplitLine>
@@ -73,7 +73,7 @@ export default function PricingLicense() {
       </div>
 
       {/* Footer link */}
-      <div className="text24 max-md:text-sm text-white/40 text-center mt-[4vw] max-md:mt-[10vw]">
+      <div className="text24 max-md:text-sm text-white/60 text-center mt-[4vw] max-md:mt-[10vw]">
         Need the complete legal text?{" "}
         <Link
           href="/docs/license"

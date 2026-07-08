@@ -211,11 +211,11 @@ export default function StorytellingMobile() {
         >
             <RandomBlur
                 as="h2"
-                className="text110  w-[95vw] max-sm:w-[98vw] mb-[10vw] mx-auto text-center"
+                className="text110  w-[95vw] max-sm:w-[85vw]  mb-[10vw] mx-auto text-center"
             >
                 Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
             </RandomBlur>
-            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 font-light leading-[1.55] text-white max-md:mt-4 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-4 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
                             Hover it. Scroll it. Break it. Then copy it
                         </SplitLine>
            

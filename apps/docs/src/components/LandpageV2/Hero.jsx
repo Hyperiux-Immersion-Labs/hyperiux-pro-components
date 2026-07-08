@@ -400,7 +400,7 @@ export default function Hero() {
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
           <p  ref={paraRef} className="text20 font-medium text-[#cdcdcd]">React & Next.js Interaction Effects Library</p>
-          <h1 className=" relative text120 w-[70%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
+          <h1 className=" relative text120 w-[67%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
              The Interaction Layer Your React Site is Missing
             </span>
