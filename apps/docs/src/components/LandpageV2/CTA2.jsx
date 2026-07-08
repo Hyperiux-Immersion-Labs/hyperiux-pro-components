@@ -21,13 +21,13 @@ export default function CTA2({
                             as="h2"
                             className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! w-[70%] mx-auto text-center"
                         >
-                            Build the Interaction Layer Your Website is Missing.
+                            Build The Interaction Layer Your Website Is Missing.
                         </RandomBlur>
                     ) : (
                         <h2
                             className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! w-[70%] mx-auto text-center"
                         >
-                             Build the Interaction Layer Your Website is Missing.
+                             Build The Interaction Layer Your Website Is Missing.
                         </h2>
                     )
                 }

@@ -126,7 +126,7 @@ export default function Footer() {
           as="h2"
           className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! w-[70%]"
         >
-          Build the Interaction Layer Your Website is Missing.
+          Build The Interaction Layer Your Website Is Missing.
         </RandomBlur>
 
 

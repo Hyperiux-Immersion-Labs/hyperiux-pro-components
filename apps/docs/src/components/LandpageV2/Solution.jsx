@@ -23,7 +23,7 @@ const Solution = () => {
     return (
         <section className='w-full h-fit px-[3vw] py-[10%]' id='solution'>
             <RandomBlur as="h2" className="text110 w-full text-center">
-                Vault is That Layer - <span className='text-[#ff5f00]'>Installable</span>
+                Vault is That Layer, Ready to <span className='text-[#ff5f00]'> Install. </span>
             </RandomBlur>
 
             <div className='w-full h-fit flex justify-center items-center max-md:my-15 max-sm:my-[15vw]'>
