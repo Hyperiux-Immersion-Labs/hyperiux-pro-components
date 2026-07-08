@@ -105,7 +105,7 @@ export default function LinkButton({
       onClick={handleClick}
     >
       <div className="flex items-center gap-[0.5vw] max-md:gap-2 w-fit cursor-pointer">
-        <span className="relative overflow-hidden inline-flex h-[1.3em]">
+        <span className="relative overflow-hidden inline-flex h-[1.4em]">
           <span
             ref={labelRef}
             className="inline-block transition-transform duration-300 group-hover:-translate-y-full"

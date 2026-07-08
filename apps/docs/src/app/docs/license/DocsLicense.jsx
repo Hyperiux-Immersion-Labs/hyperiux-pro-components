@@ -7,6 +7,8 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
+import Link from "next/link";
+import LinkButton from "@/components/WebsiteComps/LinkButton";
 
 const licenseTiersCode = `Hyperiux Vault
 ├── Free Core
@@ -491,8 +493,10 @@ export default function DocsLicense() {
         For licensing questions, commercial use clarification, enterprise agreements, or
         unusual deployment environments, contact:
       </Para>
-
-      <Para>hello@hyperiux.com</Para>
+      
+     
+       <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"}/>
+       
 
       <Para>Useful details to include:</Para>
 
