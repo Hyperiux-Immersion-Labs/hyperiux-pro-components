@@ -250,7 +250,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-md:hidden"
+				className="w-screen h-[1000vh] max-sm:h-full bg-white text-[#1a1a1a] max-md:hidden"
 				id="ribbon-drift"
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">

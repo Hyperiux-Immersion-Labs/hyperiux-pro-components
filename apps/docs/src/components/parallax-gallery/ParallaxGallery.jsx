@@ -203,10 +203,10 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  <div
  className="absolute"
  style={{
- bottom: isMobile ? 20 : 36,
- right: isMobile ? 16 : 40,
+ bottom: isMobile ? 70 : 36,
+ right: isMobile ? 30 : 40,
  fontFamily:"'DM Sans', sans-serif",
- fontSize: isMobile ? 9 : 11,
+ fontSize: isMobile ? 15 : 11,
  letterSpacing:"0.22em",
  textTransform:"uppercase",
  }}
