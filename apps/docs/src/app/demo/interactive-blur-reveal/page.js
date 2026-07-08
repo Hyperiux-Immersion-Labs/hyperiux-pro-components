@@ -1,4 +1,4 @@
-import InteractiveBlurReveal from '@/components/interactive-blur-reveal'
+import InteractiveBlurReveal from '@/components/interactive-blur-reveal';
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
