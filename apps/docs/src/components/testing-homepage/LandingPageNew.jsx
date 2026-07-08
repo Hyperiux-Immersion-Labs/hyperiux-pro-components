@@ -21,6 +21,7 @@ import CTA from "./CTA";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
 import Loader from "./Loader";
+import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 
 export default function LandingPageNew({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
@@ -31,7 +32,7 @@ export default function LandingPageNew({ faqItems }) {
       <VaultShell>
         <Loader />
         <Hero />
-        {/* <GlowingPlatesDeferred /> */}
+        <GlowingPlatesDeferred />
         <TrustStrip />
         <Problem />
         <GradientFill />
