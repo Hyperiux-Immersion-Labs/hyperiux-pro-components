@@ -24,15 +24,17 @@ export default function PricingPage() {
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
       <VaultShell>
-        <Hero />
-        <GlowingPlatesDeferred waitForLoader={false} />
-        <div className=" relative z-20">
-          <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} />
-        </div>
-        <PricingCompareTable />
-        <PricingLicense />
-        <FAQs faqItems={faqItems} fixWidth={true} />
-        {/* <CTA2 /> */}
+        <main id="main-content">
+          <Hero />
+          <GlowingPlatesDeferred waitForLoader={false} />
+          <div className=" relative z-20">
+            <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} />
+          </div>
+          <PricingCompareTable />
+          <PricingLicense />
+          <FAQs faqItems={faqItems} fixWidth={true} />
+          {/* <CTA2 /> */}
+        </main>
         <Footer />
       </VaultShell>
     </>
