@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import gsap from "gsap";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
-import Link from "next/link";
+import LinkButton from "../WebsiteComps/LinkButton";
 
 const cards = [
   {
@@ -75,14 +75,14 @@ export default function PricingLicense() {
       {/* Footer link */}
       <div className="text24 max-md:text-sm text-white/60 text-center mt-[4vw] max-md:mt-[10vw]">
         Need the complete legal text?{" "}
-        <Link
-          href="/docs/license"
-          className="relative text-white inline-block"
-          onMouseEnter={handleLinkEnter}
-        >
-          Read the full license
-          <div ref={underlineRef} className="absolute left-0 -bottom-0.5 w-full h-px bg-white" />
-        </Link>
+        
+        <LinkButton
+          href="#"
+          text={"Read the full license"}
+          showArrow={false}
+          tilted={false}
+          shimmer
+        />
       </div>
     </section>
   );
