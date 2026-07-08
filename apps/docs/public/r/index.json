@@ -1544,26 +1544,6 @@
       ],
       "registryDependencies": [],
       "exportName": "MilkyWay",
-      "exportKind": "named"
-    },
-    {
-      "name": "milkyway",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "postprocessing",
-        "three",
-        "lucide-react",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "Milkyway",
       "exportKind": "default"
     },
     {
