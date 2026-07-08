@@ -1,6 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import createBundleAnalyzer from "@next/bundle-analyzer";
 import path from "path";
 import { fileURLToPath } from "url";
+
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -135,8 +140,10 @@ const nextConfig = {
   },
 };
 
+const analyzedConfig = withBundleAnalyzer(nextConfig);
+
 const sentryConfig = hasSentryBuildConfig
-  ? withSentryConfig(nextConfig, {
+  ? withSentryConfig(analyzedConfig, {
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
 
@@ -150,8 +157,8 @@ const sentryConfig = hasSentryBuildConfig
         },
       },
     })
-  : nextConfig;
+  : analyzedConfig;
 
 export default process.env.NODE_ENV === "development"
-  ? nextConfig
+  ? analyzedConfig
   : sentryConfig;

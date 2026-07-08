@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
+    "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "build:registry": "node scripts/build-registry.js"
@@ -51,6 +52,7 @@
     "three": "^0.182.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.10",
     "@tailwindcss/postcss": "^4.3.0",
     "critters": "^0.0.23",
     "eslint": "^9",
