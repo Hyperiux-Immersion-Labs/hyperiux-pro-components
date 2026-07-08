@@ -14,15 +14,15 @@ if (typeof window !== 'undefined') {
 }
 
 const IMAGES = [
-    "/img/spiral/1.png",
-    "/img/spiral/2.png",
-    "/img/spiral/3.png",
-    "/img/spiral/4.png",
-    "/img/spiral/5.png",
-    "/img/spiral/6.png",
-    "/img/spiral/7.png",
-    "/img/spiral/8.png",
-    "/img/spiral/9.png",
+    "/img/spiral/1.webp",
+    "/img/spiral/2.webp",
+    "/img/spiral/3.webp",
+    "/img/spiral/4.webp",
+    "/img/spiral/5.webp",
+    "/img/spiral/6.webp",
+    "/img/spiral/7.webp",
+    "/img/spiral/8.webp",
+    "/img/spiral/9.webp",
 ];
 
 const TOTAL = IMAGES.length;
