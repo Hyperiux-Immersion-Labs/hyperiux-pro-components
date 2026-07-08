@@ -143,7 +143,7 @@ const fragmentShader = `
 `;
 
 function FlowFieldPlane({
-  texturePath = "/assets/textures/mid-orange-texture.png",
+  texturePath = "/assets/textures/orange.png",
   imageResolution = [500, 500],
   mouseLerp = 0.05,
   timeSpeed = 0.0002,
@@ -311,4 +311,4 @@ export default function FlowFieldHero({
   );
 }
 
-useTexture.preload("/assets/textures/mid-orange-texture.png");
+useTexture.preload("/assets/textures/orange.png");

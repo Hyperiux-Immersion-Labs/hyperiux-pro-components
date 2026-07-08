@@ -197,7 +197,7 @@ export default function CodeBlockWorkflow() {
         if (!element) return;
         const chars = text.length;
         const state = { count: 0 };
-        const finalDuration = duration ?? Math.max(0.3, chars * 0.02);
+        const finalDuration = duration ?? Math.max(0.2, chars * 0.012);
 
         timeline.set(element, { textContent: "", opacity: 1 }, position);
         timeline.to(
@@ -257,7 +257,7 @@ export default function CodeBlockWorkflow() {
           return { color: t.color, text: t.text, start };
         });
         const state = { count: 0 };
-        const duration = Math.max(0.35, fullText.length * 0.022);
+        const duration = Math.max(0.25, fullText.length * 0.014);
 
         timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
         timeline.to(
@@ -285,7 +285,7 @@ export default function CodeBlockWorkflow() {
       const buildSequence = () => {
         resetState();
 
-        const tl = gsap.timeline({ paused: true, timeScale: 1 / 0.7 });
+        const tl = gsap.timeline({ paused: true, timeScale: 1.6 });
 
         // $ sign 1 fades in, then init command types
         tl.to(terminalRefs.current.dollar1, { opacity: 1, duration: 0.15 });

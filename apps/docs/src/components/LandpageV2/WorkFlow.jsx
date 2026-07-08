@@ -159,7 +159,7 @@ export default function Workflow() {
             /* ── Video reveal ── */
             gsap.fromTo(
                 videoRef.current,
-                { clipPath: 'inset(15% 15% 15% 15%)', 
+                { clipPath: 'inset(20% 20% 20% 20%)', 
                     backgroundColor: '#0A1B4B' 
                 },
                 {
