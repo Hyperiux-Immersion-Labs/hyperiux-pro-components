@@ -33,7 +33,7 @@ const categoryColumns = [
     { label: "Transitions", href: "/effects/page-transitions" },
     { label: "Loaders", href: "/effects/loaders" },
   ],
-  
+
 ];
 
 const docsLinks = [
@@ -145,9 +145,8 @@ export default function Footer() {
             <span className="inline-block size-[0.9vw] shrink-0 text-[#d2d2d2] max-md:size-3">
               <UnlockIcon className="h-full w-full" />
             </span>
-
-            <ShimmerText baseColor="#d2d2d2" shimmerColor="#ffffff" className='max-sm:text-sm max-sm:leading-[1.2]'>
-              30+ effects free, forever. No credit card.
+            <ShimmerText baseColor="#d2d2d2" shimmerColor="#ffffff" className="max-sm:text-sm max-sm:leading-[1.2] tracking-tight">
+              115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-first code
             </ShimmerText>
           </p>
         </div>

@@ -9,7 +9,7 @@ export const effectsOverviewContent = {
     description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
   },
   description: [
-    "Hyperiux Vault is a growing library of 115 interaction effects for React and Next.js — scroll systems, cursor trails, WebGL scenes, animated buttons, and page transitions, all shipped as editable source code you copy straight into your own repo. Browse by category below, preview any effect live, and install with the CLI or a single copy-paste.",
+    "Hyperiux Vault is a growing library of 115 interaction effects for React and Next.js - scroll systems, cursor trails, WebGL scenes, animated buttons, and page transitions, all shipped as editable source code you copy straight into your own repo. Browse by category below, preview any effect live, and install with the CLI or a single copy-paste.",
     "Use this page when you are looking for the right interaction before you know its category. Scan the catalog, compare patterns, and choose the effect that makes the page clearer, sharper, or harder to forget.",
   ],
   cta: {
@@ -49,10 +49,10 @@ export const freeEffectsContent = {
   ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/free.jpg",
   metadata: {
     title: "Free React & Next.js Effects | Hyperiux Vault",
-    description: "Browse 30+ free Hyperiux Vault effects for React and Next.js — real scroll, button, and text animations you can install, remix, and ship today.",
+    description: "Browse 30+ free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.",
   },
   description: [
-    "The Free tier includes 30+ production-ready Hyperiux Vault effects — text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro when you need cursor effects, WebGL scenes, or the full 115 effect library.",
+    "The Free tier includes 30+ production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro when you need cursor effects, WebGL scenes, or the full 115 effect library.",
   ],
   faqs: [
     {

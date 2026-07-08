@@ -51,7 +51,7 @@ function resolveTheme(theme, systemTheme) {
  * Theme: 'dark' (default) | 'light' | 'auto'
  *
  * Static layout on the wrapper/bloom is handled with Tailwind utilities below;
- * the animated gradient system is per-instance generated CSS (see styles.js) —
+ * the animated gradient system is per-instance generated CSS (see styles.js) -
  * that part cannot be expressed with Tailwind classes.
  *
  * @example
@@ -97,7 +97,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
 
   // Auto-detect child border radius when no explicit value is provided.
   // useLayoutEffect so the detected radius is applied before the browser paints
-  // the first frame — otherwise the beam paints square, then snaps to the child's
+  // the first frame - otherwise the beam paints square, then snaps to the child's
   // radius a frame later (a visible corner "glitch" on reload).
   useIsomorphicLayoutEffect(() => {
     if (customBorderRadius != null) return;
@@ -214,7 +214,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   const isPulse = size === 'pulse-inner' || size === 'pulse-outside';
 
   // Radius is driven solely by the wrapped child (its Tailwind `rounded-*`),
-  // detected at runtime — the beam no longer imposes its own preset radius.
+  // detected at runtime - the beam no longer imposes its own preset radius.
   // Falls back to 0 only for the pre-detection frame.
   const finalBorderRadius = customBorderRadius ?? detectedRadius ?? 0;
   const finalDuration = duration ?? (size === 'line' ? 3.1 : isPulse ? 2.3 : 1.96);

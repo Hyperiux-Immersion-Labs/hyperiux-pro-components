@@ -120,7 +120,7 @@ export default function SVGBrushTransition({
           />
         </svg>
 
-        {/* ── Mobile SVG (< 768 px) — same wave rhythm, portrait viewBox ── */}
+        {/* ── Mobile SVG (< 768 px) - same wave rhythm, portrait viewBox ── */}
         {/*
           The path mirrors the desktop wave pattern (3 peaks, 2 valleys) but
           is re-drawn for a 390 × 844 viewport so it fills the screen edge-to-

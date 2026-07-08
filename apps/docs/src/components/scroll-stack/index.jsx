@@ -52,7 +52,7 @@ export const defaultContent = [
  id: 5,
  title:"Future-Ready UI Patterns",
  description:
-"Designed with scalability in mind, this component aligns with evolving UI trends. It embraces modularity, clean architecture, and adaptability—making it easy to extend, customize, and reuse across different applications.",
+"Designed with scalability in mind, this component aligns with evolving UI trends. It embraces modularity, clean architecture, and adaptability-making it easy to extend, customize, and reuse across different applications.",
  bgColor:"#FFD786",
  textColor:"#9D7422",
  className:""

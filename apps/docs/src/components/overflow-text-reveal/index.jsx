@@ -64,7 +64,7 @@ export default function OverflowTextReveal({
 
         const initialProps = DIRECTION_INITIAL[direction] ?? DIRECTION_INITIAL.bottom;
 
-        // Reveal the container immediately — opacity-0 was only to prevent FOUC
+        // Reveal the container immediately - opacity-0 was only to prevent FOUC
         // GSAP will handle per-char opacity from here
         gsap.set(containerRef.current, { opacity: 1 });
 

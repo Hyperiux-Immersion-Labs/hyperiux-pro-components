@@ -48,7 +48,7 @@
   --grey: #272727;
   --light-grey: #939393;
   --font-avenier: 'AvenirNextCyr', system-ui, sans-serif;
-  /* Global announcement bar height — body top padding stays constant */
+  /* Global announcement bar height - body top padding stays constant */
   --announcement-h: 36px;
   /* Fixed navbars offset by this; flips to 0 when the bar hides on scroll */
   --announcement-offset: var(--announcement-h);

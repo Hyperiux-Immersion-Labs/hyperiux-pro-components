@@ -34,7 +34,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 
  float dotPixelSize = 0.0015;
  vec2 grainUV = floor(aspectUV * uScale / dotPixelSize) * dotPixelSize / uScale;
- // Use fract(time * prime) to keep hash seed in a small range — prevents precision loss over time
+ // Use fract(time * prime) to keep hash seed in a small range - prevents precision loss over time
  float n = hash21(grainUV + fract(uTime * 60.0));
 
  float g = (n - 0.5) * uAmount;
@@ -66,7 +66,7 @@ class FilmGrainEffectImpl extends Effect {
 
  update(renderer, _inputBuffer, deltaTime) {
  this._time += deltaTime;
- // Wrap time to prevent float precision loss — keeps grain as dots, not rain streaks
+ // Wrap time to prevent float precision loss - keeps grain as dots, not rain streaks
  if (this._time > 1000) this._time -= 1000;
  const uTime = this.uniforms.get("uTime");
  if (uTime) uTime.value = this._time;

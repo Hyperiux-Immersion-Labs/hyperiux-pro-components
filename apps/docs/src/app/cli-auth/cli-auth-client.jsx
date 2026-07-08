@@ -75,7 +75,7 @@ export function CliAuthClient({ isPro }) {
               <p className="font-medium text-white/80">How it works</p>
               <ol className="space-y-2 list-decimal list-inside">
                 <li>Click <span className="text-white">Generate Token</span> below</li>
-                <li>Copy the token — it is shown <span className="text-white">once only</span></li>
+                <li>Copy the token - it is shown <span className="text-white">once only</span></li>
                 <li>Run <code className="bg-white/10 px-1.5 py-0.5 rounded text-white/80">npx hyperiux login</code> in your project</li>
                 <li>Paste the token when prompted</li>
               </ol>

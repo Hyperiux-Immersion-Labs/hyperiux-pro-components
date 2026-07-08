@@ -1,6 +1,6 @@
 // Detects headless/audit agents (Lighthouse, PageSpeed Insights, WebPageTest).
 // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode, where
-// navigator.webdriver is true — the most reliable signal — plus a UA fallback.
+// navigator.webdriver is true - the most reliable signal - plus a UA fallback.
 // Used to skip work (WebGL render loops, tracking scripts) that keeps the main
 // thread or network busy and makes audits time out (RPC::DEADLINE_EXCEEDED).
 export function isLighthouseOrHeadless() {

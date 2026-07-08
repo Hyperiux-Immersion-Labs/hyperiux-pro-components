@@ -124,7 +124,7 @@ export function InteractiveListPreview({ items = [] }) {
       {/* Sliding highlight bar */}
       <div ref={highlightRef} style={{ position: "absolute", left: 0, right: 0, top: 0, zIndex: 10, pointerEvents: "none", background: "#ffffff" }} />
 
-      {/* Image layer — mix-blend-mode difference inverts on white highlight */}
+      {/* Image layer - mix-blend-mode difference inverts on white highlight */}
       <div ref={imageContainerRef} style={{ position: "absolute", inset: 0, zIndex: 20, pointerEvents: "none", mixBlendMode: "difference" }}>
         {items.map((item, i) => (
           <div

@@ -219,7 +219,7 @@ export default function CharacterTrailComp({ children }) {
 
  {trail.map((dot, index) => {
  const total = trail.length;
- // stagger delay — oldest cells (index 0) fade first
+ // stagger delay - oldest cells (index 0) fade first
  const staggerDelay = fading
  ? index * (FADE_DURATION / Math.max(total, 1))
  : 0;

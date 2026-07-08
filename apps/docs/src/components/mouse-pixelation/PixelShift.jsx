@@ -219,7 +219,7 @@ function resolveTextureSource(source) {
   try {
     const url = new URL(imageSource);
 
-    // external URL — return as-is (ensure your image host sends CORS headers)
+    // external URL - return as-is (ensure your image host sends CORS headers)
   } catch {
     return imageSource;
   }

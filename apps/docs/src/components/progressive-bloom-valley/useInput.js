@@ -64,7 +64,7 @@ export default function useInput({
  // update scroll
  scroll.current += velocity.current + autoSpeed;
 
- // Reset at loopPoint — the second valley copy fills the visual gap
+ // Reset at loopPoint - the second valley copy fills the visual gap
  if (scroll.current >= loopPoint) {
  scroll.current = 0;
  velocity.current = 0;

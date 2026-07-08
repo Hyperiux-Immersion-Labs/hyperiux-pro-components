@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Search, ArrowUpRight, ChevronDown } from "lucide-react";
 
 function formatDate(value) {
-  if (!value) return "—";
+  if (!value) return "-";
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",
@@ -200,7 +200,7 @@ export default function AdminPage() {
                         )}
                         <div className="min-w-0">
                           <p className="truncate font-medium text-white max-w-48">
-                            {user.name || "—"}
+                            {user.name || "-"}
                           </p>
                           <p className="truncate text-xs text-white/45 max-w-48">
                             {user.email || user.id}
@@ -218,7 +218,7 @@ export default function AdminPage() {
                       <StatusBadge status={user.status} />
                     </td>
                     <td className="px-4 py-3 text-white/60 whitespace-nowrap">
-                      {user.plan === "pro" ? formatDate(user.planValidUntil) : "—"}
+                      {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
                     </td>
                     <td className="px-4 py-3">
                       {user.stripeCustomerId ? (
@@ -226,7 +226,7 @@ export default function AdminPage() {
                           {user.stripeCustomerId.slice(0, 12)}…
                         </span>
                       ) : (
-                        <span className="text-xs text-white/25">—</span>
+                        <span className="text-xs text-white/25">-</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">

@@ -70,7 +70,7 @@ export const BookFlipp = ({ images = [],
 
     return (
         <PageProvider>
-            {/* Canvas and UI always at full opacity — overlay covers them during load */}
+            {/* Canvas and UI always at full opacity - overlay covers them during load */}
             {showUI && <UI images={images} />}
             <div style={{
                 width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0,
@@ -94,7 +94,7 @@ export const BookFlipp = ({ images = [],
                 </Canvas>
             </div>
 
-            {/* Single overlay that fades out once ready — one clean visual event */}
+            {/* Single overlay that fades out once ready - one clean visual event */}
             <div style={{
                 position: 'fixed',
                 inset: 0,

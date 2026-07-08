@@ -16,13 +16,13 @@ export default function FlipTransition({
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // EXIT overlay: hidden — folded off-screen to the left (-90deg from bottom-left)
+    // EXIT overlay: hidden - folded off-screen to the left (-90deg from bottom-left)
     gsap.set(exitOverlayRef.current, {
       rotation: -90,
       transformOrigin: 'bottom left',
     })
 
-    // ENTER overlay: hidden — folded off-screen (-90deg from bottom-right)
+    // ENTER overlay: hidden - folded off-screen (-90deg from bottom-right)
     gsap.set(enterOverlayRef.current, {
       rotation: -90,
       transformOrigin: 'bottom right',
@@ -111,7 +111,7 @@ export default function FlipTransition({
         return () => tl.kill()
       }}
     >
-      {/* EXIT overlay — bottom-left anchor */}
+      {/* EXIT overlay - bottom-left anchor */}
       <div
         ref={exitOverlayRef}
         className="fixed bottom-0 left-0 pointer-events-none"
@@ -126,7 +126,7 @@ export default function FlipTransition({
         }}
       />
 
-      {/* ENTER overlay — bottom-right anchor */}
+      {/* ENTER overlay - bottom-right anchor */}
       <div
         ref={enterOverlayRef}
         className="fixed bottom-0 right-0 pointer-events-none"
@@ -141,7 +141,7 @@ export default function FlipTransition({
         }}
       />
 
-      {/* Boxes — fixed to screen center, above both overlays */}
+      {/* Boxes - fixed to screen center, above both overlays */}
       <div
         className="fixed inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 10000 }}

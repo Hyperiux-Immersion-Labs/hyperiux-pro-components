@@ -86,7 +86,7 @@ export default function CircleTextReveal({
  </div>
  )}
 
- {/* ── Masked layer — desktop/mouse only, hidden until first mouse move ── */}
+ {/* ── Masked layer - desktop/mouse only, hidden until first mouse move ── */}
  {isPointerFine && smoothPos !== null && (
  <motion.div
  className="absolute inset-0 flex items-center justify-center z-10"

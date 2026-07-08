@@ -16,7 +16,7 @@ const rows = [
   { feature: "Commercial use", free: "Free core, where marked", pro: "Full commercial use", proHighlight: true },
   { feature: "Updates & fixes", free: "Community cadence", pro: "Priority", proHighlight: true },
   { feature: "Support", free: "GitHub / community", pro: "Email support", proHighlight: true },
-  { feature: "Team / agency use", free: "Individual use", pro: "Per seat — agency licensing available", proHighlight: true },
+  { feature: "Team / agency use", free: "Individual use", pro: "Per seat - agency licensing available", proHighlight: true },
   { feature: "Price", free: "$0 forever", pro: "$20/mo or $179/yr", proHighlight: true },
 ];
 
@@ -40,7 +40,7 @@ function Tick() {
 }
 
 function Dash() {
-  return <span className="text-white/25 text-[1.1vw] max-md:text-base">—</span>;
+  return <span className="text-white/25 text-[1.1vw] max-md:text-base">-</span>;
 }
 
 function Cell({ value, highlight = false }) {

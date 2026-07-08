@@ -33,7 +33,7 @@ function useIsPointerFine() {
 
 export function CircleTextReveal({
   text = "We craft emotionally intelligent user experiences that are adored globally!",
-  revealText = "A visual designer — with skills that haven't been replaced by A.I",
+  revealText = "A visual designer - with skills that haven't been replaced by A.I",
   textColor = "#111",
   revealTextColor = "#fefefe",
   circleColor = "#E76F2E",

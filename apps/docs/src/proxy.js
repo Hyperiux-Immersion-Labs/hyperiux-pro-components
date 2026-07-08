@@ -5,7 +5,7 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/api/dashboard(.*)",
   "/api/wishlist(.*)",
-  // Not /api/stripe/webhooks — Stripe's server sends these with no Clerk
+  // Not /api/stripe/webhooks - Stripe's server sends these with no Clerk
   // session. auth.protect() 404s unauthenticated non-browser requests, which
   // silently dropped every webhook delivery (Stripe emailed about 24 failed
   // attempts). The route already authenticates via the stripe-signature
@@ -25,7 +25,7 @@ const withClerk = clerkMiddleware(async (auth, request) => {
 // When the site ran with dev Clerk keys, browsers received a __client_uat
 // cookie issued by the dev instance. After switching to production keys,
 // Clerk middleware sees that UAT, can't match it to the production instance,
-// and injects a cross-instance handshake into the RSC payload — redirecting
+// and injects a cross-instance handshake into the RSC payload - redirecting
 // even non-authenticated visitors to adequate-shad-61.clerk.accounts.dev.
 // Removing the orphaned UAT from the request before Clerk runs prevents this.
 export default async function middleware(request) {

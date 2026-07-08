@@ -437,13 +437,13 @@ export const effectContent = defineType({
       name: 'coverImage',
       title: 'Cover Image Override',
       type: 'string',
-      description: 'Leave empty — derived from effect slug automatically',
+      description: 'Leave empty - derived from effect slug automatically',
     }),
     defineField({
       name: 'videoUrl',
       title: 'Video URL Override',
       type: 'string',
-      description: 'Leave empty — derived as {effectSlug}.mp4 automatically',
+      description: 'Leave empty - derived as {effectSlug}.mp4 automatically',
     }),
     defineField({
       name: 'previewUrl',

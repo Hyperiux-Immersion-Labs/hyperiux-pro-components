@@ -3,7 +3,7 @@ export const sections = [
     number: '01',
     title: 'Design that feels alive',
     description:
-      'Every component in Hyperiux Vault is built to react, transition, and guide attention naturally—making interfaces feel intentional instead of static.',
+      'Every component in Hyperiux Vault is built to react, transition, and guide attention naturally-making interfaces feel intentional instead of static.',
   },
 
   {
@@ -24,7 +24,7 @@ export const sections = [
     number: '04',
     title: 'Expressive by default',
     description:
-      'Create visual identity through layout, typography, transitions, and composition—without sacrificing usability or performance.',
+      'Create visual identity through layout, typography, transitions, and composition-without sacrificing usability or performance.',
   },
 
   {

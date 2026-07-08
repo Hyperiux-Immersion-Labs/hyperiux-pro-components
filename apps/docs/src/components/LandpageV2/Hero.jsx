@@ -400,7 +400,7 @@ export default function Hero() {
       >
         <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
           <p  ref={paraRef} className="text20 font-medium text-[#cdcdcd]">React & Next.js Interaction Effects Library</p>
-          <h1 className=" relative text120 w-[67%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
+          <h1 className=" relative text120 w-[73%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
              The Interaction Layer Your React Site is Missing
             </span>
@@ -441,7 +441,7 @@ export default function Hero() {
             <UnlockIcon className="h-full w-full" />
           </span>
 
-          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw] max-sm:text-center">
+          <ShimmerText baseColor="#939393" shimmerColor="#ffffff" className="max-sm:text-[3.5vw] max-sm:text-center tracking-tight">
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install · Source-first code
           </ShimmerText>
         </p>

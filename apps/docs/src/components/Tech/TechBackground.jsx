@@ -7,7 +7,7 @@
 export default function TechBackground({ children, className = "" }) {
   return (
     <div className={`min-h-screen text-foreground px-15 max-sm:px-6 relative ${className}`}>
-      {/* Orange radial glow — mirrors homepage hero */}
+      {/* Orange radial glow - mirrors homepage hero */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"

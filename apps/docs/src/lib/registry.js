@@ -132,7 +132,7 @@ function findPrivateRegistryPath(slug) {
 
 function attachPrivateFileContent(effect, effectDir) {
   // If files list is empty (source registry.json has no files key),
-  // discover them by scanning the effect directory — same logic as the build script.
+  // discover them by scanning the effect directory - same logic as the build script.
   const files =
     effect.files && effect.files.length > 0
       ? effect.files

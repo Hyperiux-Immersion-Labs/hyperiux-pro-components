@@ -1,11 +1,11 @@
 # npm Package Release Checklist
 
-> Run this checklist before every npm publish — patch, minor, or major.
+> Run this checklist before every npm publish - patch, minor, or major.
 > Version: 1.0.0 | Updated: June 2026
 
 ---
 
-## Stage 1 — Pre-Build Verification
+## Stage 1 - Pre-Build Verification
 
 Run locally before touching the build.
 
@@ -19,7 +19,7 @@ rm -rf node_modules
 npm ci
 
 # 3. Security audit
-npm audit --audit-level=high  # MUST pass — zero HIGH or CRITICAL issues
+npm audit --audit-level=high  # MUST pass - zero HIGH or CRITICAL issues
 
 # 4. Outdated check
 npm outdated                  # Review and decide on updates
@@ -32,19 +32,19 @@ npm outdated                  # Review and decide on updates
 
 ---
 
-## Stage 2 — Quality Gates
+## Stage 2 - Quality Gates
 
 ```bash
-# 5. Lint — zero warnings allowed
+# 5. Lint - zero warnings allowed
 npm run lint
 
-# 6. Type-check — zero errors allowed
+# 6. Type-check - zero errors allowed
 npm run type-check
 
-# 7. Tests — must pass 100%
+# 7. Tests - must pass 100%
 npm run test
 
-# 8. Coverage — must meet threshold
+# 8. Coverage - must meet threshold
 npm run test:coverage
 ```
 
@@ -57,7 +57,7 @@ npm run test:coverage
 
 ---
 
-## Stage 3 — Build Verification
+## Stage 3 - Build Verification
 
 ```bash
 # 9. Build from clean
@@ -85,7 +85,7 @@ git diff dist/               # Should be empty (no diff from same source)
 
 ---
 
-## Stage 4 — Tarball Inspection
+## Stage 4 - Tarball Inspection
 
 ```bash
 # 13. Inspect tarball contents
@@ -111,7 +111,7 @@ rm *.tgz   # clean up after inspection
 
 ---
 
-## Stage 5 — Consumer Import Test
+## Stage 5 - Consumer Import Test
 
 Create a temp directory and test a real install from the tarball.
 
@@ -151,7 +151,7 @@ cd ~ && rm -rf /tmp/pkg-test
 
 ---
 
-## Stage 6 — Version and Changelog
+## Stage 6 - Version and Changelog
 
 ```bash
 # 22. Bump version
@@ -175,7 +175,7 @@ npm version major
 
 ---
 
-## Stage 7 — Publish
+## Stage 7 - Publish
 
 ```bash
 # 24. Final publish (prepublishOnly will re-run all gates)
@@ -193,7 +193,7 @@ npm publish --provenance --access public
 
 ---
 
-## Stage 8 — Post-Publish Verification
+## Stage 8 - Post-Publish Verification
 
 ```bash
 # 25. Verify the published package resolves
@@ -224,7 +224,7 @@ If a broken version was published:
 ```bash
 # Deprecate the broken version immediately
 npm deprecate @your-scope/package-name@"1.0.1" \
-  "Broken release — do not use. Upgrade to 1.0.2."
+  "Broken release - do not use. Upgrade to 1.0.2."
 
 # Publish a fix as a new patch
 npm version patch
@@ -240,7 +240,7 @@ npm unpublish @your-scope/package-name@"1.0.1" --force
 
 ---
 
-## Quick Reference — Command Summary
+## Quick Reference - Command Summary
 
 ```bash
 git status && git pull origin main

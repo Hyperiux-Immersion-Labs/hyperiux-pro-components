@@ -77,14 +77,14 @@ export default function Tension() {
         })
       })
 
-      /* Set check icons — reverse draw (draw from end to start) */
+      /* Set check icons - reverse draw (draw from end to start) */
       checkIcons.forEach(icon => {
         const paths = icon.querySelectorAll('path, polyline, line')
         gsap.set(paths, { drawSVG: '100% 100%' })
         gsap.set(icon, { opacity: 1 })
       })
 
-      /* Set X icons — normal draw (draw from start to end) */
+      /* Set X icons - normal draw (draw from start to end) */
       xIcons.forEach(icon => {
         const paths = icon.querySelectorAll('path, polyline, line')
         gsap.set(paths, { drawSVG: '0% 0%' })

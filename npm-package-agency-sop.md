@@ -6,7 +6,7 @@
 
 ---
 
-## Part 1 — Acceptance Criteria (Pass/Fail)
+## Part 1 - Acceptance Criteria (Pass/Fail)
 
 A package is only accepted when ALL items below are PASS.
 Any single FAIL blocks milestone payment.
@@ -73,11 +73,11 @@ Any single FAIL blocks milestone payment.
 
 ---
 
-## Part 2 — Mandatory CI Checks
+## Part 2 - Mandatory CI Checks
 
 These jobs must run on every PR and every release branch.
 
-### `ci.yml` — Copy-paste ready
+### `ci.yml` - Copy-paste ready
 
 ```yaml
 name: CI
@@ -156,7 +156,7 @@ jobs:
           head: HEAD
 ```
 
-### `release.yml` — Copy-paste ready
+### `release.yml` - Copy-paste ready
 
 ```yaml
 name: Publish to npm
@@ -211,6 +211,6 @@ jobs:
 
 ---
 
-## Part 3 — Publish Checklist
+## Part 3 - Publish Checklist
 
 Print and sign off before every release.

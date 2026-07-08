@@ -8,11 +8,11 @@ A complete implementation plan for gating 115 effects behind a subscription payw
 
 1. [Overview](#overview)
 2. [Tech Stack & Requirements](#tech-stack--requirements)
-3. [Phase 1 — Tag Effects as Free or Pro](#phase-1--tag-effects-as-free-or-pro)
-4. [Phase 2 — Auth & Billing Infrastructure](#phase-2--auth--billing-infrastructure)
-5. [Phase 3 — Gate the Docs Site](#phase-3--gate-the-docs-site)
-6. [Phase 4 — Gate the CLI](#phase-4--gate-the-cli)
-7. [Phase 5 — Protect Pro Effect File Contents](#phase-5--protect-pro-effect-file-contents)
+3. [Phase 1 - Tag Effects as Free or Pro](#phase-1--tag-effects-as-free-or-pro)
+4. [Phase 2 - Auth & Billing Infrastructure](#phase-2--auth--billing-infrastructure)
+5. [Phase 3 - Gate the Docs Site](#phase-3--gate-the-docs-site)
+6. [Phase 4 - Gate the CLI](#phase-4--gate-the-cli)
+7. [Phase 5 - Protect Pro Effect File Contents](#phase-5--protect-pro-effect-file-contents)
 8. [Data Model](#data-model)
 9. [Environment Variables](#environment-variables)
 10. [Free Tier Strategy](#free-tier-strategy)
@@ -31,7 +31,7 @@ A complete implementation plan for gating 115 effects behind a subscription payw
 | `npx hyperiux add <effect>` | Installs free effects | Installs all effects with license key |
 
 ### What never gets gated
-- The `/effects` listing page itself (browsing is always free — discovery drives conversion)
+- The `/effects` listing page itself (browsing is always free - discovery drives conversion)
 - The CLI commands `init` and `list` (always free)
 - Free-tier effect source code
 
@@ -43,9 +43,9 @@ A complete implementation plan for gating 115 effects behind a subscription payw
 
 | Service | Purpose | Free tier available |
 |---|---|---|
-| [Clerk](https://clerk.com) | Authentication (login, sessions, user management) | Yes — generous free tier |
-| [Stripe](https://stripe.com) | Subscription billing | Yes — pay per transaction only |
-| [Supabase](https://supabase.com) | Database to store user subscription status | Yes — free tier |
+| [Clerk](https://clerk.com) | Authentication (login, sessions, user management) | Yes - generous free tier |
+| [Stripe](https://stripe.com) | Subscription billing | Yes - pay per transaction only |
+| [Supabase](https://supabase.com) | Database to store user subscription status | Yes - free tier |
 
 ### Packages to install in `apps/docs`
 
@@ -56,7 +56,7 @@ pnpm add @clerk/nextjs stripe @supabase/supabase-js
 ### Packages to install in `packages/cli`
 
 ```bash
-# No new npm packages needed — uses Node's built-in fetch
+# No new npm packages needed - uses Node's built-in fetch
 ```
 
 ### What you need to know before starting
@@ -68,11 +68,11 @@ pnpm add @clerk/nextjs stripe @supabase/supabase-js
 
 ---
 
-## Phase 1 — Tag Effects as Free or Pro
+## Phase 1 - Tag Effects as Free or Pro
 
 **Goal:** Mark each effect as `"tier": "free"` or `"tier": "pro"` in its `registry.json`. This is the source of truth for all gating decisions.
 
-### Step 1.1 — Update the registry.json schema
+### Step 1.1 - Update the registry.json schema
 
 Add a `tier` field to every effect's `registry.json`:
 
@@ -93,16 +93,16 @@ Add a `tier` field to every effect's `registry.json`:
 
 Valid values: `"free"` or `"pro"`. Default to `"pro"` if the field is missing (safe fallback).
 
-### Step 1.2 — Pick the free effects
+### Step 1.2 - Pick the free effects
 
 Choose 10–15 effects. Recommended criteria:
 - Visually impressive (drives sharing and discovery)
-- Cover multiple categories (text, scroll, cursor, webgl — show breadth)
+- Cover multiple categories (text, scroll, cursor, webgl - show breadth)
 - Not the most complex ones (leave depth behind the paywall)
 
 Set `"tier": "free"` on those. Set `"tier": "pro"` on everything else.
 
-### Step 1.3 — Rebuild the registry
+### Step 1.3 - Rebuild the registry
 
 ```bash
 pnpm build:registry
@@ -110,7 +110,7 @@ pnpm build:registry
 
 This re-runs `apps/docs/scripts/build-registry.js` and embeds `tier` into all compiled JSON files in `apps/docs/public/r/`. The `tier` field will now be present in both `index.json` and each individual `<name>.json`.
 
-### Step 1.4 — Update the build script to forward the tier field
+### Step 1.4 - Update the build script to forward the tier field
 
 Open `apps/docs/scripts/build-registry.js`. Find where the effect metadata object is assembled for output. Make sure `tier` is explicitly included:
 
@@ -120,7 +120,7 @@ const effectData = {
   title: meta.title,
   description: meta.description,
   category: meta.category,
-  tier: meta.tier ?? 'pro',  // add this line — default to pro if missing
+  tier: meta.tier ?? 'pro',  // add this line - default to pro if missing
   dependencies: meta.dependencies ?? [],
   // ... rest of fields
 }
@@ -128,11 +128,11 @@ const effectData = {
 
 ---
 
-## Phase 2 — Auth & Billing Infrastructure
+## Phase 2 - Auth & Billing Infrastructure
 
 **Goal:** Set up Clerk for login, Stripe for subscriptions, and Supabase to track who has an active subscription.
 
-### Step 2.1 — Set up Clerk
+### Step 2.1 - Set up Clerk
 
 1. Create an account at [clerk.com](https://clerk.com) and create a new application
 2. Choose "Email + Password" and optionally Google OAuth
@@ -183,11 +183,11 @@ export default function SignUpPage() {
 }
 ```
 
-### Step 2.2 — Set up Stripe
+### Step 2.2 - Set up Stripe
 
 1. Create a Stripe account at [stripe.com](https://stripe.com)
 2. Create a Product called "Hyperiux Pro" with a recurring Price (monthly and/or yearly)
-3. Copy the Price ID (looks like `price_1ABC...`) — you'll need it
+3. Copy the Price ID (looks like `price_1ABC...`) - you'll need it
 4. Add to `.env.local`:
 
 ```env
@@ -204,7 +204,7 @@ import Stripe from 'stripe'
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 ```
 
-### Step 2.3 — Set up Supabase
+### Step 2.3 - Set up Supabase
 
 1. Create a project at [supabase.com](https://supabase.com)
 2. In the SQL editor, create the subscriptions table:
@@ -265,7 +265,7 @@ export async function getUserPlan(clerkUserId) {
 }
 ```
 
-### Step 2.4 — Stripe Checkout API route
+### Step 2.4 - Stripe Checkout API route
 
 Create `apps/docs/src/app/api/checkout/route.js`:
 
@@ -306,7 +306,7 @@ export async function POST(req) {
 }
 ```
 
-### Step 2.5 — Stripe Webhook API route
+### Step 2.5 - Stripe Webhook API route
 
 This is what keeps your DB in sync when Stripe payments succeed, fail, or subscriptions cancel.
 
@@ -373,11 +373,11 @@ Listen for these events: `checkout.session.completed`, `customer.subscription.up
 
 ---
 
-## Phase 3 — Gate the Docs Site
+## Phase 3 - Gate the Docs Site
 
 **Goal:** On `/effects/[slug]`, check if the effect is pro and if the user has an active subscription. Show a blurred upgrade prompt if not.
 
-### Step 3.1 — Make the detail page server-aware
+### Step 3.1 - Make the detail page server-aware
 
 The detail page at `apps/docs/src/app/effects/[slug]/page.js` (or wherever `effect-detail.jsx` is rendered) is already a server component. Add auth + plan check at the top:
 
@@ -399,7 +399,7 @@ export default async function EffectDetailPage({ params }) {
 }
 ```
 
-### Step 3.2 — Build the locked state UI
+### Step 3.2 - Build the locked state UI
 
 In `effect-detail.jsx`, conditionally render either the full detail view or a locked overlay based on the `isLocked` prop:
 
@@ -429,7 +429,7 @@ export function EffectDetail({ effect, isLocked }) {
 }
 ```
 
-### Step 3.3 — Build the UpgradeCard component
+### Step 3.3 - Build the UpgradeCard component
 
 Create `apps/docs/src/components/UpgradeCard.jsx`:
 
@@ -448,28 +448,28 @@ export function UpgradeCard() {
       <h2>Pro Effect</h2>
       <p>Subscribe to Hyperiux Pro to access this effect and 90+ others.</p>
       <button onClick={handleUpgrade}>
-        Join Founding Access — $X/month
+        Join Founding Access - $X/month
       </button>
     </div>
   )
 }
 ```
 
-### Step 3.4 — Show lock icons on the listing page
+### Step 3.4 - Show lock icons on the listing page
 
 In the effects listing page, show a lock icon on pro effect cards. The `index.json` already contains `tier` (after Phase 1). In `EffectCardNew` or `vault-content.jsx`, check `effect.tier === 'pro'` and render a lock badge.
 
-### Step 3.5 — Gate the preview iframe route
+### Step 3.5 - Gate the preview iframe route
 
 The `/effects/[slug]/preview` route renders the fullscreen demo. Add the same auth check there so embedding a pro effect's iframe also requires a subscription.
 
 ---
 
-## Phase 4 — Gate the CLI
+## Phase 4 - Gate the CLI
 
 **Goal:** When a user runs `npx hyperiux add <pro-effect>`, require a license key that maps to an active subscription.
 
-### Step 4.1 — Add a `login` command to the CLI
+### Step 4.1 - Add a `login` command to the CLI
 
 Add a new command `npx hyperiux login` that:
 1. Opens the Hyperiux site in the browser at a `/cli-auth` page
@@ -531,7 +531,7 @@ program
   .action(login)
 ```
 
-### Step 4.2 — Create the CLI token API route
+### Step 4.2 - Create the CLI token API route
 
 When the user visits `/cli-auth` on the docs site (logged in via Clerk), generate a long-lived signed token for them. Store a hashed version in Supabase alongside their `clerk_user_id`.
 
@@ -564,7 +564,7 @@ Add `cli_token_hash text` column to your Supabase `subscriptions` table:
 alter table subscriptions add column cli_token_hash text;
 ```
 
-### Step 4.3 — Create the CLI validate API route
+### Step 4.3 - Create the CLI validate API route
 
 The CLI calls this before installing a pro effect. It checks the token is valid and the user has an active pro subscription.
 
@@ -599,7 +599,7 @@ export async function POST(req) {
 }
 ```
 
-### Step 4.4 — Gate the `add` command
+### Step 4.4 - Gate the `add` command
 
 In `packages/cli/src/commands/add.js`, after fetching the effect metadata, check the tier and validate before proceeding:
 
@@ -634,11 +634,11 @@ if (effect.tier === 'pro') {
 
 ---
 
-## Phase 5 — Protect Pro Effect File Contents
+## Phase 5 - Protect Pro Effect File Contents
 
-**Goal:** Right now, all effect file contents are embedded in the public `public/r/<name>.json`. Anyone can read those files directly — no auth needed. This phase removes pro effect code from the public registry and serves it only through an authenticated API.
+**Goal:** Right now, all effect file contents are embedded in the public `public/r/<name>.json`. Anyone can read those files directly - no auth needed. This phase removes pro effect code from the public registry and serves it only through an authenticated API.
 
-### Step 5.1 — Strip file contents from pro effects in the build script
+### Step 5.1 - Strip file contents from pro effects in the build script
 
 In `apps/docs/scripts/build-registry.js`, when writing a pro effect's JSON, omit the `files` array (which contains the actual source code):
 
@@ -653,7 +653,7 @@ const output = {
 
 The metadata (name, title, description, dependencies, tier) is still public. Only the `content` field inside each file entry is removed.
 
-### Step 5.2 — Create a protected file-serving API route
+### Step 5.2 - Create a protected file-serving API route
 
 Create `apps/docs/src/app/api/effects/[slug]/route.js`:
 
@@ -688,7 +688,7 @@ export async function GET(req, { params }) {
 }
 ```
 
-### Step 5.3 — Update the CLI to use the protected route for pro effects
+### Step 5.3 - Update the CLI to use the protected route for pro effects
 
 In `packages/cli/src/utils/registry.js`, update `fetchRemoteRegistry` to use the protected endpoint when fetching pro effects:
 
@@ -701,10 +701,10 @@ export async function fetchRegistry(name, options = {}) {
   const meta = await metaRes.json()
 
   if (meta.tier !== 'pro') {
-    return meta // free effect — already has file contents
+    return meta // free effect - already has file contents
   }
 
-  // Pro effect — fetch full data from protected endpoint
+  // Pro effect - fetch full data from protected endpoint
   const token = getAuthToken()
   const fullRes = await fetch(`https://vault.hyperiux.com/api/effects/${name}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -722,7 +722,7 @@ export async function fetchRegistry(name, options = {}) {
 
 ## Data Model
 
-### Supabase — `subscriptions` table
+### Supabase - `subscriptions` table
 
 | Column | Type | Description |
 |---|---|---|
@@ -765,14 +765,14 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 # App
 NEXT_PUBLIC_APP_URL=https://vault.hyperiux.com
 
-# GitHub — private pro effects repo
+# GitHub - private pro effects repo
 # Create a fine-grained personal access token with read-only Contents access to the private repo
 GITHUB_PRO_REPO_TOKEN=github_pat_...
 GITHUB_PRO_REPO_OWNER=hyperiux
 GITHUB_PRO_REPO_NAME=hyperiux-pro-effects
 GITHUB_PRO_REPO_BRANCH=main
 
-# Sanity CMS — for effect detail page content (add when Sanity is set up)
+# Sanity CMS - for effect detail page content (add when Sanity is set up)
 NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
 SANITY_API_TOKEN=
@@ -784,12 +784,12 @@ All of these are already in `turbo.json` under the `build` task's `env` array.
 
 ## Free Tier Strategy
 
-The free effects should be your **most shareable** ones — the ones that get posted on Twitter, LinkedIn, and dev communities. People need to see the quality ceiling before they'll pay for more.
+The free effects should be your **most shareable** ones - the ones that get posted on Twitter, LinkedIn, and dev communities. People need to see the quality ceiling before they'll pay for more.
 
 Suggested criteria for picking free effects:
 - One or two from each major category (text, scroll, cursor, webgl, backgrounds)
 - Prefer effects with broad appeal over niche/complex ones
-- Include at least one Three.js/WebGL effect — these are the most impressive and drive the most curiosity
+- Include at least one Three.js/WebGL effect - these are the most impressive and drive the most curiosity
 - Keep the most complex and versatile effects behind the paywall (they have the highest perceived value)
 
-The listing page (`/effects`) should always show all effects including pro ones — with a lock icon. This lets free users browse the full library and feel the pull of what they're missing.
+The listing page (`/effects`) should always show all effects including pro ones - with a lock icon. This lets free users browse the full library and feel the pull of what they're missing.

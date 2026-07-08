@@ -1,7 +1,7 @@
 "use client";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PlatesScene — 51 metallic discs arranged in a helix ring.
+// PlatesScene - 51 metallic discs arranged in a helix ring.
 // Hover: screen-space nearest-plate detection → Gaussian neighbourhood glow.
 // Rendering: MeshStandardMaterial + custom shader-based additive glow overlay.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ function isLoaderActive() {
 }
 
 // The plates run a continuous WebGL render loop, so the main thread never goes
-// idle — that's exactly what makes Lighthouse/PageSpeed time out
+// idle - that's exactly what makes Lighthouse/PageSpeed time out
 // (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
 // user prefers reduced motion, skip the Canvas entirely and show the static
 // dark backdrop instead. Real users still get the full animated scene.
@@ -55,7 +55,7 @@ function shouldSkipRealtime3D() {
   if (typeof window === "undefined") return false;
 
   // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode,
-  // where navigator.webdriver is true — the most reliable audit signal.
+  // where navigator.webdriver is true - the most reliable audit signal.
   if (navigator.webdriver === true) return true;
 
   const ua = navigator.userAgent || "";
@@ -584,7 +584,7 @@ export default function GlowingPlates({
 
   // Pause the render loop while the hero is scrolled out of view (or hidden on
   // mobile via max-md:hidden). Rotation is a function of absolute elapsed time,
-  // so resuming looks seamless — no visual change, just no wasted GPU work.
+  // so resuming looks seamless - no visual change, just no wasted GPU work.
   // Init true so the hero renders on first paint; the observer corrects it.
   const [inView, setInView] = useState(true);
 

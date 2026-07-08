@@ -16,7 +16,7 @@ const OverflowTextRevealWrapper = () => {
       <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
       <ScrollBottom textColor="#ffffff" />
 
-      {/* SECTION 1 — direction: bottom (default) */}
+      {/* SECTION 1 - direction: bottom (default) */}
       <section className="relative min-h-screen flex flex-col justify-end max-md:justify-center max-md:px-5 overflow-hidden bg-[#0a0a0a]">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"
@@ -38,7 +38,7 @@ const OverflowTextRevealWrapper = () => {
 
           <SplitLine>
             <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-smd:text-sm">
-              direction — bottom (default)
+              direction - bottom (default)
             </p>
           </SplitLine>
           <OverflowTextReveal direction="bottom" scrub={false}>
@@ -55,7 +55,7 @@ const OverflowTextRevealWrapper = () => {
         </div>
       </section>
 
-      {/* SECTION 2 — direction: top */}
+      {/* SECTION 2 - direction: top */}
       <section className="relative min-h-screen flex items-center bg-[#f5f0e8] overflow-hidden">
         <div className="absolute right-0 top-0 h-full w-1/2 overflow-hidden">
           <Image
@@ -70,7 +70,7 @@ const OverflowTextRevealWrapper = () => {
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
           <SplitLine>
             <p className="text-xs tracking-[0.35rem] text-[#8c7b6b] uppercase py-2 max-sm:text-sm max-md:text-base">
-              direction — top
+              direction - top
             </p>
           </SplitLine>
           <OverflowTextReveal direction="top" scrub={true}>
@@ -100,7 +100,7 @@ const OverflowTextRevealWrapper = () => {
         </div>
       </section>
 
-      {/* SECTION 3 — direction: left */}
+      {/* SECTION 3 - direction: left */}
       <section className="relative min-h-screen flex items-center bg-[#0d1b2a] overflow-hidden">
         <div className="absolute left-0 top-0 h-full w-1/2 overflow-hidden">
           <Image
@@ -116,7 +116,7 @@ const OverflowTextRevealWrapper = () => {
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full flex flex-col items-end text-right">
           <SplitLine>
             <p className="text-xs tracking-[0.35rem] text-[#4fc3f7]/50 uppercase py-2 max-sm:text-sm max-md:text-base">
-              direction — left
+              direction - left
             </p>
           </SplitLine>
           <OverflowTextReveal direction="left" scrub={true}>
@@ -146,7 +146,7 @@ const OverflowTextRevealWrapper = () => {
         </div>
       </section>
 
-      {/* SECTION 4 — direction: right */}
+      {/* SECTION 4 - direction: right */}
       <section className="relative min-h-screen flex items-center bg-[#1a1a1a] overflow-hidden">
         <div
           className="absolute right-0 top-0 h-full w-[55%] overflow-hidden"
@@ -164,7 +164,7 @@ const OverflowTextRevealWrapper = () => {
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
           <SplitLine>
             <p className="text-xs tracking-[0.35rem] text-[#d4af37]/60 uppercase py-2 max-sm:text-sm max-md:text-base">
-              direction — right
+              direction - right
             </p>
           </SplitLine>
           <OverflowTextReveal direction="right" scrub={true}>
@@ -192,12 +192,12 @@ const OverflowTextRevealWrapper = () => {
         </div>
       </section>
 
-      {/* SECTION 5 — All four side-by-side comparison */}
+      {/* SECTION 5 - All four side-by-side comparison */}
       <section className="relative bg-[#f7f4ef] overflow-hidden">
         <div className="max-w-6xl mx-auto px-10 py-24">
           <OverflowTextReveal direction="bottom" scrub={true}>
             <p className="text-xs max-md:text-base tracking-[0.35rem] text-[#9e9e9e] uppercase py-2 max-sm:text-sm">
-              All variants — side by side
+              All variants - side by side
             </p>
           </OverflowTextReveal>
           <OverflowTextReveal direction="bottom" scrub={true}>
@@ -238,7 +238,7 @@ const OverflowTextRevealWrapper = () => {
         </div>
       </section>
 
-      {/* SECTION 6 — closing */}
+      {/* SECTION 6 - closing */}
       <section className="relative min-h-[85vh] flex items-end max-sm:items-center bg-[#0a0a0a] overflow-hidden">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"

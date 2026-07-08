@@ -54,7 +54,7 @@ export default function StorytellingMobile() {
                 aria: "none",
             });
 
-            // Scrub-tied reveal + exit — same behaviour as the desktop
+            // Scrub-tied reveal + exit - same behaviour as the desktop
             // FeaturedStoryTelling text: the masked lines slide UP into view,
             // hold, then slide up and out (yPercent -130) as you scroll. This is
             // a controlled exit driven by scroll, NOT the paragraph naturally
@@ -85,7 +85,7 @@ export default function StorytellingMobile() {
                 );
             }
 
-            // Exit (out) — masked slide up, like desktop
+            // Exit (out) - masked slide up, like desktop
             masterTL.to(
                 split.lines,
                 { yPercent: -130, opacity: 0, ease: "power2.in", stagger: 0.02, duration: 1.0 },

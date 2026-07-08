@@ -26,7 +26,7 @@ export default function page() {
             Rope Cursor
           </p>
           <p className="opacity-90 text-lg leading-[1.2]  text-center">
-            Desktop only — that’s where the effect comes alive
+            Desktop only - that’s where the effect comes alive
           </p>
         </div>
       </div>

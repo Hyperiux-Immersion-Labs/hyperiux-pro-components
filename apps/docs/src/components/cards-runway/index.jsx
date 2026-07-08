@@ -10,7 +10,7 @@ const UI_CARDS = [
   {
     id: 2,
     title: "Recommendations that just fit",
-    text: "The songs you discover, the shows you binge, the products you didn't know you wanted — quietly ranked by models learning your taste. Personalization has become the default, not the feature.",
+    text: "The songs you discover, the shows you binge, the products you didn't know you wanted - quietly ranked by models learning your taste. Personalization has become the default, not the feature.",
   },
   {
     id: 3,

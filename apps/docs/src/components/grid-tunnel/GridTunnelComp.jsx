@@ -110,7 +110,7 @@ function ImageChunkContent({ images, slotIndex }) {
   const canvasWidth = size?.width ?? 0;
 
   const panels = useMemo(() => {
-    // Don't compute until the canvas has a real size — avoids
+    // Don't compute until the canvas has a real size - avoids
     // pxToWorld blowing up when canvasWidth is tiny on first paint.
     if (canvasWidth < 100) return [];
 
@@ -123,7 +123,7 @@ function ImageChunkContent({ images, slotIndex }) {
     const cellH = TUNNEL_HEIGHT / GRID_Y;
     const cellD = TUNNEL_DEPTH / GRID_Z;
 
-    // Fixed world-space padding — no pixel conversion needed for scene geometry.
+    // Fixed world-space padding - no pixel conversion needed for scene geometry.
     const paddingWorld = canvasWidth < 640 ? 0.04 : canvasWidth < 1024 ? 0.08 : 0.1;
 
     return Array.from({ length: IMAGE_COUNT_PER_CHUNK }).map((_, i) => {
