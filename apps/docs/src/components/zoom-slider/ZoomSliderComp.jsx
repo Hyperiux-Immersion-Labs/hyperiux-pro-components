@@ -51,6 +51,7 @@ export function ZoomSliderComp({
     raf: null,
     isDragging: false,
     lastX: 0,
+    lastY: 0,
     velocity: 0,
   });
 
@@ -151,32 +152,43 @@ export function ZoomSliderComp({
       state.target -= event.deltaY * SCROLL_PER_PX;
     };
 
-    const beginDrag = (clientX) => {
+    const beginDrag = (clientX, clientY) => {
       state.isDragging = true;
       state.lastX = clientX;
+      state.lastY = clientY;
       state.velocity = 0;
     };
 
-    const moveDrag = (clientX) => {
+    const moveDrag = (clientX, clientY) => {
       if (!state.isDragging) return;
 
-      const delta = -(clientX - state.lastX);
+      // Drive by whichever axis the gesture moved most, so a horizontal drag
+      // OR a vertical (scroll-like) swipe advances the slider — in both
+      // directions. Swiping left/up moves forward, right/down moves back.
+      const deltaX = clientX - state.lastX;
+      const deltaY = clientY - state.lastY;
+      const delta =
+        Math.abs(deltaX) >= Math.abs(deltaY) ? -deltaX : -deltaY;
+
       state.target += delta;
       // Smooth the recorded velocity so momentum isn't driven by one jumpy frame.
       state.velocity = lerp(state.velocity, delta, 0.5);
       state.lastX = clientX;
+      state.lastY = clientY;
     };
 
     const endDrag = () => {
       state.isDragging = false;
     };
 
-    const onMouseDown = (event) => beginDrag(event.clientX);
-    const onMouseMove = (event) => moveDrag(event.clientX);
+    const onMouseDown = (event) => beginDrag(event.clientX, event.clientY);
+    const onMouseMove = (event) => moveDrag(event.clientX, event.clientY);
     const onMouseUp = endDrag;
 
-    const onTouchStart = (event) => beginDrag(event.touches[0].clientX);
-    const onTouchMove = (event) => moveDrag(event.touches[0].clientX);
+    const onTouchStart = (event) =>
+      beginDrag(event.touches[0].clientX, event.touches[0].clientY);
+    const onTouchMove = (event) =>
+      moveDrag(event.touches[0].clientX, event.touches[0].clientY);
     const onTouchEnd = endDrag;
 
     window.addEventListener('wheel', onWheel, { passive: true });
