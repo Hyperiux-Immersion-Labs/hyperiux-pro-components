@@ -52,7 +52,7 @@ const InteractiveArrows = () => {
     <div className="min-h-screen w-full overflow-hidden bg-white text-black">
       <div className="flex min-h-screen flex-col px-8 py-8 max-sm:px-6 max-sm:py-6">
         <div className="mx-auto flex w-full max-w-350 justify-center">
-          <div className="inline-flex flex-wrap relative z-200 justify-center gap-2 rounded-full border p-2 backdrop-blur-sm border-black/10 bg-black/5">
+          <div className="inline-flex flex-wrap  relative z-400 justify-center gap-2 rounded-full border p-2 backdrop-blur-sm border-black/10 bg-black/5">
             {variations.map((variation) => (
               <button
                 key={variation.id}

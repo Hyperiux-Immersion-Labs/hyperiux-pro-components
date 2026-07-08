@@ -207,6 +207,7 @@ export default function InfiniteCarouselComp({
  const attemptsRef = useRef(0);
  const mobileCardRefs = useRef([]);
  const isAdjustingScrollRef = useRef(false);
+ const buttonScrollTimeoutRef = useRef(null);
 
  const [isMobile, setIsMobile] = useState(false);
 
@@ -311,11 +312,16 @@ export default function InfiniteCarouselComp({
  const handleScroll = () => {
  if (isAdjustingScrollRef.current) return;
 
- const oneSetWidth =
- wrapper.scrollWidth / 3;
+ const middleSetStart = mobileCardRefs.current[childArray.length];
+ const lastSetStart = mobileCardRefs.current[childArray.length * 2];
+ if (!middleSetStart || !lastSetStart) return;
 
- const leftBoundary = oneSetWidth * 0.5;
- const rightBoundary = oneSetWidth * 1.5;
+ const setStart = middleSetStart.offsetLeft;
+ const oneSetWidth = lastSetStart.offsetLeft - setStart;
+ if (oneSetWidth <= 0) return;
+
+ const leftBoundary = setStart - oneSetWidth * 0.5;
+ const rightBoundary = setStart + oneSetWidth * 0.5;
 
  if (wrapper.scrollLeft < leftBoundary) {
  isAdjustingScrollRef.current = true;
@@ -352,15 +358,40 @@ export default function InfiniteCarouselComp({
  };
 
  const scrollMobileByCard = (direction) => {
- if (!wrapperRef.current) return;
+ const wrapper = wrapperRef.current;
+ if (!wrapper) return;
 
  const amount = getMobileStepAmount();
  if (!amount) return;
 
- wrapperRef.current.scrollBy({
+ // Suppress the scroll-event reposition so the smooth animation isn't
+ // cancelled mid-flight (which would make the button feel non-infinite).
+ isAdjustingScrollRef.current = true;
+ wrapper.scrollBy({
  left: direction * amount,
  behavior:"smooth",
  });
+
+ clearTimeout(buttonScrollTimeoutRef.current);
+ buttonScrollTimeoutRef.current = setTimeout(() => {
+ const middleSetStart = mobileCardRefs.current[childArray.length];
+ const lastSetStart = mobileCardRefs.current[childArray.length * 2];
+
+ if (middleSetStart && lastSetStart) {
+ const setStart = middleSetStart.offsetLeft;
+ const oneSetWidth = lastSetStart.offsetLeft - setStart;
+
+ if (oneSetWidth > 0) {
+ if (wrapper.scrollLeft < setStart - oneSetWidth * 0.5) {
+ wrapper.scrollLeft += oneSetWidth;
+ } else if (wrapper.scrollLeft > setStart + oneSetWidth * 0.5) {
+ wrapper.scrollLeft -= oneSetWidth;
+ }
+ }
+ }
+
+ isAdjustingScrollRef.current = false;
+ }, 450);
  };
 
  const handleNext = () => {
@@ -414,7 +445,7 @@ export default function InfiniteCarouselComp({
 
  <div
  ref={wrapperRef}
- className={`relative flex min-h-25 max-md:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
+ className={`relative flex min-h-25 max-md:pt-14 max-sm:pt-4 w-full flex-nowrap items-stretch overflow-hidden ${
  isWrapMode
  ? "flex-wrap justify-center gap-4 overflow-visible max-md:gap-3.5 max-sm:gap-3"
  : ""

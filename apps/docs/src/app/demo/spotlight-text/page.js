@@ -10,8 +10,8 @@ const page = () => {
   return (
     <>
       <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
-      <div className="h-screen flex flex-col items-center mx-auto justify-center gap-25 bg-black">
-        <div className="space-y-5 w-[40%] max-md:w-[70%] max-sm:w-[70%] mx-auto">
+      <div className="h-screen max-sm:h-full max-sm:py-5 flex flex-col items-center mx-auto justify-center gap-25 max-sm:gap-10 bg-black">
+        <div className="space-y-5 w-[40%] max-sm:pt-17 max-md:w-[70%] max-sm:w-[70%] mx-auto">
           <HeadAnim>
             <h1 className="text-center text-[6vw] max-md:text-[7vw] max-sm:text-[8vw] opacity-90">
               Spotlight Text
@@ -23,7 +23,7 @@ const page = () => {
               Sweep your cursor across the words and let the spotlight find them
             </p>
 
-            <p className="hidden max-md:block leading-[1.2] text-center max-sm:text-lg max-md:text-xl">
+            <p className="hidden max-md:block leading-[1.2] text-center max-sm:text-base max-md:text-xl">
               This effect comes alive with a cursor. Try it on desktop.
             </p>
           </SplitLine>

@@ -14,12 +14,7 @@ const ColorfulCursorAura = () => {
         enableEntryAnimation={true}
       />
 
-      {/* Mobile only notice */}
-      <div className="hidden max-md:block absolute top-[60%] left-1/2 -translate-x-1/2 text-center">
-        <p className="text-zinc-700 max-md:text-[3vw] max-sm:text-[4vw] leading-[1.2] font-medium">
-           Open on desktop to experience the effect
-        </p>
-      </div>
+      
     </div>
   )
 }

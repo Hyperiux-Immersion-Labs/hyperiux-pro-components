@@ -534,9 +534,12 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
           {slides[currentSlide].name}
         </h2>
         
-        <div className="absolute right-[5%] max-sm:right-[5%] max-md:right-[10%] top-[50%] max-md:w-[40vw] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
+        <div className="absolute right-[5%] max-sm:right-[5%] max-md:right-[10%] top-[50%] max-md:w-[40vw] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-normal">
          
-            <p className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-light about-slider-text text-shadow-black">
+            <p
+              className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-light about-slider-text text-shadow-black"
+              style={{ textShadow: "0 1px 12px rgba(0, 0, 0, 0.55)" }}
+            >
                {slides[currentSlide].description}
             </p>
        
@@ -571,7 +574,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       </div>
 
       {clueText && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-sm leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-18 ">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full max-md:rounded-[4vw] border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-xs leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-18 max-sm:leading-[1.2]">
           {clueText}
         </p>
       )}

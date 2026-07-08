@@ -117,7 +117,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="medium"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[17vw] h-[9vw] absolute top-[5%] left-[5vw]"
+          className="w-[17vw] h-[9vw] max-sm:h-[35vw] max-sm:top-[30%] absolute top-[8%] left-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -131,7 +131,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra1"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[35vw] h-[19vw] absolute top-[5vh] right-[5vw]"
+          className="w-[35vw] h-[19vw] max-sm:h-[50vw] absolute top-[8vh] max-sm:top-[25vh] right-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -155,7 +155,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra3"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[25vw] h-[14vw] absolute bottom-[20%] right-[10vw]"
+          className="w-[25vw] h-[14vw] max-sm:h-[25vh] absolute bottom-[20%] right-[10vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -166,7 +166,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="small"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[22vw] h-[12vw] absolute bottom-[15vh] left-1/2 -translate-x-1/2"
+          className="w-[22vw] max-sm:w-[45vw] max-sm:h-[20vh] h-[12vw] absolute bottom-[15vh] max-sm:left-[40%] left-1/2 -translate-x-1/2"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}

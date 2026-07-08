@@ -10,7 +10,7 @@ const Page = () => {
       <DemoHeader />
       <div className="max-md:hidden">
         <InteractiveArrows/>
-        <div className="absolute bottom-[0.5vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 px-7 py-2 rounded-full text-[#545454] text-[1.1vw] max-md:hidden">
+        <div className="absolute bottom-[0.5vw] text-center backdrop-blur-sm bg-black/10 left-1/2 -translate-x-1/2 z-40  px-7 py-2 rounded-full text-[#545454] w-[40vw] text-[1.1vw] max-md:hidden">
          Drift your cursor inside the canvas - the arrows will skitter, point and follow across every version.
         </div>
       </div>
@@ -27,9 +27,7 @@ const Page = () => {
     <div className="mt-4 h-px w-full bg-black/30" />
   </div>
 
-    <div className="mb-5 flex h-12 w-12 absolute max-md:hidden max-sm:flex max-sm:bottom-17 bottom-15 right-28 items-center justify-center rounded-full text-black border border-black/50  text-xl ">
-        ↗
-      </div>
+ 
 
   {/* Bottom */}
   <div className="w-full">

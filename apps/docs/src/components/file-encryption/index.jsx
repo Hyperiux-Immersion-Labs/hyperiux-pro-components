@@ -59,20 +59,20 @@ const FileEncryption = () => {
       />
 
       {/* Header */}
-      <div className="relative z-10 flex flex-col items-center gap-3 max-sm:gap-3 max-md:gap-10 mb-16 text-center px-4">
+      <div className="relative z-10 flex flex-col items-center gap-3 max-sm:gap-3 max-md:gap-10 mb-16 max-sm:mb-10 text-center px-4">
         <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/30 bg-black/20">
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse"
             style={{ background: "#ff5f00" }}
           />
-          <span className="font-mono text-xs max-sm:text-sm max-md:text-base tracking-widest uppercase text-primary opacity-80">
+          <span className="font-mono text-xs max-sm:text-xs max-md:text-base tracking-widest uppercase text-primary opacity-80">
             256-bit AES Encryption Active
           </span>
         </div>
-        <h1 className="font-mono text-[#ff5f00]! font-black max-md:text-6xl max-sm:text-5xl text-6xl tracking-tight">
+        <h1 className="font-mono text-[#ff5f00]! font-black max-md:text-6xl max-sm:text-3xl text-6xl tracking-tight">
           CARD VAULT
         </h1>
-        <p className="font-mono text-sm max-sm:text-sm max-md:text-base max-w-sm text-[#ff5f00] opacity-60 leading-[1.2]">
+        <p className="font-mono text-sm max-sm:text-xs max-md:text-base max-w-sm text-[#ff5f00] opacity-60 leading-[1.2]">
           Every card is encrypted in real-time as it passes through the beam.
           Zero plaintext. Zero exposure.
         </p>
@@ -84,7 +84,7 @@ const FileEncryption = () => {
       </div>
 
       {/* Bottom label */}
-      <div className="relative z-10 mt-12 flex items-center gap-6 max-md:gap-8 max-sm:gap-2 font-mono text-xs max-md:text-base max-sm:text-sm text-white/20 tracking-widest uppercase max-sm:mt-8">
+      <div className="relative z-10 mt-12  flex items-center gap-6 max-md:gap-8 max-sm:gap-2 font-mono max-sm:max-w-[95vw] max-sm:mx-auto text-xs max-md:text-base max-sm:text-xs text-white/20 tracking-widest uppercase max-sm:mt-2">
         <span>AES-256-GCM</span>
         <span className="w-1 h-1 rounded-full bg-white/20" />
         <span>RSA-4096</span>
@@ -92,7 +92,7 @@ const FileEncryption = () => {
         <span>ChaCha20-Poly1305</span>
       </div>
 
-      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white/50 text-sm shadow-lg max-sm:bottom-[18vw] max-sm:w-[85vw] max-sm:px-8 max-sm:py-3">
+      <div className="absolute bottom-[2vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm max-md:text-center px-4 py-2 rounded-full text-white/50 text-sm shadow-lg max-sm:bottom-[10vw] max-sm:w-[85vw] max-sm:px-8 max-sm:py-3">
        Slide a card to either edge - watch it snap into place and spill its secret.
       </div>
 

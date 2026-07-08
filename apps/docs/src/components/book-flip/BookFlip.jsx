@@ -6,16 +6,6 @@ import { Experience } from "./Experience";
 import { UI } from "./UI";
 import { PageProvider } from "./PageContext";
 
-/**
- * BookFlipViewer - A reusable 3D book flip viewer component
- *  * Props:
- * - images: Array<string> - Array of image names/paths for book pages
- * - pathPattern: string - Base path for images (e.g.,"/assets/nature")
- * - bgColor: string - Background color of the canvas (default: black)
- * - cameraDistance: { mobile: number, desktop: number } - Camera Z position
- * - floatConfig: object - Float animation configuration
- * - showUI: boolean - Show page navigation UI
- */
 function useAssetsReady() {
     const { active } = useProgress();
     const [timerDone, setTimerDone] = useState(false);
@@ -70,7 +60,7 @@ export const BookFlipp = ({ images = [],
 
     return (
         <PageProvider>
-            {/* Canvas and UI always at full opacity - overlay covers them during load */}
+            
             {showUI && <UI images={images} />}
             <div style={{
                 width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0,
