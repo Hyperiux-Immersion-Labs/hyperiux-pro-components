@@ -180,11 +180,10 @@ export default function CustomNavbar({
     );
   }, [delay, isOpen]);
 
-  // Return
   return (
     <div
       style={{ backgroundColor: overlayBg }}
-      className="w-full h-screen flex flex-col justify-between px-28 py-10 pt-28 max-md:pt-36 max-sm:pt-30 max-md:px-6 max-md:py-10 text-white"
+      className="w-full h-screen flex flex-col justify-between px-28 max-sm:px-6 py-10 pt-28 max-md:pt-36 max-sm:pt-30 max-md:px-6 max-md:py-10 text-white"
     >
      
 

@@ -151,7 +151,7 @@ export default function FullscreenNav({
   return (
     <>
       <header
-        className={`fixed top-0 max-sm:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
+        className={`fixed top-6 max-sm:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 cursor-pointer">
@@ -195,17 +195,17 @@ export default function FullscreenNav({
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
+            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-700 ease-in-out delay-300 ${isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
               }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-500 delay-300 ${isOpen ? "scale-x-0 opacity-0" : "bg-black"
+            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-500 delay-300 ${isOpen ? "scale-x-0 opacity-0" : "bg-black"
               }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
+            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-700 ease-in-out delay-300 ${isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
               }`}
           />
         </button>
