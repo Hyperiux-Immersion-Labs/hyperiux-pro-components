@@ -159,12 +159,14 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 type: 'chars',
                 mask: 'chars',
                 charsClass: 'nav-dropdown-char',
+                aria: 'none',
             })
 
             hoverSplit = SplitText.create(hoverLabelRef.current, {
                 type: 'chars',
                 mask: 'chars',
                 charsClass: 'nav-dropdown-shadow-char',
+                aria: 'none',
             })
 
             splitRef.current = {

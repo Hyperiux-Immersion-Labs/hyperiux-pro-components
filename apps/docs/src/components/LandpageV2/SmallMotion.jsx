@@ -14,9 +14,11 @@ export default function SmallMotion() {
     useEffect(() => {
         const smallSplit = SplitText.create(textRef.current, {
             type: 'chars',
+            aria: 'none',
         })
         const bigSplit = SplitText.create(textRef2.current, {
             type: 'chars',
+            aria: 'none',
         })
 
         gsap.set([textRef.current, textRef2.current], { perspective: 1000 })

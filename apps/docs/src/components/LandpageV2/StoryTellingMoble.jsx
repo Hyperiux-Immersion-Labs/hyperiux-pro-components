@@ -51,6 +51,7 @@ export default function StorytellingMobile() {
             split = SplitText.create(stmInfoTextRef.current, {
                 type: "lines",
                 mask: "lines",
+                aria: "none",
             });
 
             // Scrub-tied reveal + exit — same behaviour as the desktop

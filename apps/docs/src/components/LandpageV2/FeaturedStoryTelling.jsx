@@ -242,6 +242,7 @@ export default function FeaturedStoryTelling() {
         const splittedParagraph = SplitText.create(infoTextRef.current, {
             type: "lines",
             mask: "lines",
+            aria: "none",
         });
 
         // --- 3. Master Scroll Sequence Timeline ---

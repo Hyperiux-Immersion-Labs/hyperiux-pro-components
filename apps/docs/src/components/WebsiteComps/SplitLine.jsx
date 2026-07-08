@@ -81,6 +81,7 @@ export default function SplitLine({
         split = SplitText.create(wrapper, {
           type: "lines",
           mask: "lines",
+          aria: "none",
         });
 
         if (reduceMotion) {

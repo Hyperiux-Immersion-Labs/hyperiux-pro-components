@@ -31,7 +31,7 @@ export default function LandingPageV2({ faqItems }) {
       <VaultShell>
         <Loader />
         <Hero />
-        {/* <GlowingPlatesDeferred /> */}
+        <GlowingPlatesDeferred />
         <TrustStrip />
         <Problem />
         <GradientFill />

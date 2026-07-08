@@ -410,11 +410,13 @@ export default function Loader() {
       const textOneSplit = SplitText.create(textOneRef.current, {
         type: "lines,chars",
         linesClass: "loader-text-line overflow-hidden",
+        aria: "none",
       });
 
       const textTwoSplit = SplitText.create(textTwoRef.current, {
         type: "lines,chars",
         linesClass: "loader-text-line overflow-hidden",
+        aria: "none",
       });
 
       splitRefs.current = [textOneSplit, textTwoSplit];
