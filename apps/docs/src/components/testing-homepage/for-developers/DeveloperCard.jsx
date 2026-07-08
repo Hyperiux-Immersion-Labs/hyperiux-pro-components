@@ -1,6 +1,8 @@
 'use client'
 
-import AnimatedLink from './AnimatedLink'
+import LinkButton from "@/components/WebsiteComps/LinkButton"
+
+// import LinkButton from '@/components/link-button'
 
 export default function DeveloperCard({ group }) {
     return (
@@ -24,12 +26,12 @@ export default function DeveloperCard({ group }) {
                     {group.text}
                 </p>
             </div>
-            <AnimatedLink
+            <LinkButton
                 href={group.link || '#'}
                 className="card-link z-10 text-sm opacity-0 font-medium max-md:text-lg max-sm:text-base max-sm:font-normal text-black"
             >
                 {group.cta}
-            </AnimatedLink>
+            </LinkButton>
         </div>
     )
 }

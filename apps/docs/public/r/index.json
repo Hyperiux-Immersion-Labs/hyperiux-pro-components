@@ -596,7 +596,7 @@
       ],
       "registryDependencies": [],
       "exportName": "BlockTransition",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "chess-grid-transition",
@@ -1544,7 +1544,7 @@
       ],
       "registryDependencies": [],
       "exportName": "MilkyWay",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "mouse-pixelation",

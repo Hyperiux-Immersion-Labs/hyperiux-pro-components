@@ -174,9 +174,9 @@ export default function Tension() {
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
-                  <p className="text34 capitalize whitespace-nowrap max-sm:text-lg">{items.title}</p>
+                  <p className="text24 capitalize whitespace-nowrap max-sm:text-[4vw]">{items.title}</p>
                 </div>
-                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0  max-sm:text-base! max-sm:leading-[1.2]">{items.description}</p>
+                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0  max-sm:text-[3.5vw]! max-sm:leading-[1.2]">{items.description}</p>
               </div>
               <div className="flex items-center gap-[1vw] w-[13vw] shrink-0 max-md:w-[30%] max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
                 <div className="size-[3vw] max-md:size-9 flex items-center justify-center shrink-0 max-sm:size-12">

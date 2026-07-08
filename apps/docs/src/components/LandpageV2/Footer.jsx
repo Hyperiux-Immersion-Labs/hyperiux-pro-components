@@ -46,17 +46,17 @@ const docsLinks = [
 ];
 
 const legalLinks = [
-  { label: "Licence", href: "/license" },
-  { label: "Terms", href: "/terms" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Refund", href: "/refund" },
+  { label: "Licence", href: "#" },
+  { label: "Terms", href: "#" },
+  { label: "Privacy", href: "#" },
+  { label: "Refund", href: "#" },
 ];
 
 const socialLinks = [
-  { label: "Twitter / X", href: "https://x.com/hyperiux" },
-  { label: "LinkedIn", href: "https://linkedin.com/company/hyperiux" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
-  { label: "Instagram", href: "https://instagram.com/hyperiux" },
+  { label: "Twitter / X", href: "https://x.com/_hyperiux_" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs" },
+  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 
 function FooterBlockLink({ href, children }) {
@@ -154,7 +154,7 @@ export default function Footer() {
         </div>
 
       </div>
-      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-[4%] text-light-grey z-4 max-md:w-[75vw] max-sm:left-[12%]">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
+      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[10vw] left-[4%] text-light-grey z-4 max-md:w-[80vw] max-sm:left-[11%] max-sm:text-[3.5vw]!">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-sm:mt-[25vw] ">
 
@@ -308,7 +308,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]" />
+      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210] max-sm:h-full" />
 
     </footer>
   );

@@ -155,6 +155,7 @@ function MobileDropdownItem({
     <Link
       href={href}
       onClick={onNavigate}
+      prefetch={false}
       className={`flex items-center gap-3 rounded-xl px-3 py-3 transition-colors duration-200 ${
         isActive
           ? "bg-primary/10 text-primary"
@@ -217,7 +218,7 @@ function MobileDropdown({
   }, [isOpen]);
 
   return (
-    <div className="border-b  border-white/5">
+    <div className="">
       <button
         type="button"
         onClick={onToggle}
@@ -569,7 +570,7 @@ export default function NavbarMobile() {
       >
         <div
           data-lenis-prevent
-          className="absolute inset-0 overflow-y-auto px-[8vw] pt-32 max-sm:pt-24 pb-8"
+          className="absolute inset-0 overflow-y-auto px-[8vw] pt-32 max-sm:pt-36 pb-8"
         >
           <div ref={linksRef} className="flex flex-1 flex-col">
             {vaultLinks.map(({ label, href, dropdown }) => {
@@ -600,10 +601,11 @@ export default function NavbarMobile() {
                 <Link
                   key={label}
                   href={href}
+                  prefetch={false}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
                   onClick={handleNavigate}
-                  className={`border-b border-white/5 py-5 max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
+                  className={` py-5 max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-primary"
                       : "text-white/90 hover:text-white"
