@@ -76,6 +76,7 @@ export default function RandomBlur({
       split = SplitText.create(container, {
         type: "words,chars",
         charsClass: "inline-block",
+        aria: "none",
       });
 
       gsap.set(container, {

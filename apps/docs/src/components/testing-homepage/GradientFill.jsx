@@ -128,7 +128,7 @@ export default function GradientFill() {
             })
 
             textRefs.current.forEach((el) => {
-                const split = new SplitText(el, { type: 'lines' })
+                const split = new SplitText(el, { type: 'lines', aria: 'none' })
                 splits.push(split)
 
                 gsap.set(el, { perspective: 2000, opacity: 1 })

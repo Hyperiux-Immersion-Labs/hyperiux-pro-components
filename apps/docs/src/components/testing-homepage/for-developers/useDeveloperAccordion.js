@@ -44,9 +44,11 @@ export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
                     const titleSplit = new SplitText(title, {
                         type: 'lines',
                         linesClass: 'overflow-hidden',
+                        aria: 'none',
                     })
                     const titleLines = new SplitText(titleSplit.lines, {
                         type: 'lines',
+                        aria: 'none',
                     })
 
                     let textSplit, textLines
@@ -54,9 +56,11 @@ export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
                         textSplit = new SplitText(text, {
                             type: 'lines',
                             linesClass: 'overflow-hidden',
+                            aria: 'none',
                         })
                         textLines = new SplitText(textSplit.lines, {
                             type: 'lines',
+                            aria: 'none',
                         })
                         splits.push(textSplit, textLines)
                     }

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import Image from "next/image";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -175,6 +176,7 @@ export default function Hero() {
           const headingSplit = SplitText.create(headingEl, {
             type: "words,chars",
             charsClass: "inline-block",
+            aria: "none",
           });
 
           splits.push(headingSplit);
@@ -210,6 +212,7 @@ export default function Hero() {
           const split = SplitText.create(el, {
             type: "chars",
             mask: "chars",
+            aria: "none",
           });
 
           splits.push(split);
@@ -236,6 +239,7 @@ export default function Hero() {
 
           const split = SplitText.create(pEl, {
             type: "lines",
+            aria: "none",
           });
 
           splits.push(split);
@@ -263,6 +267,7 @@ export default function Hero() {
 
           const split = SplitText.create(paraEl, {
             type: "lines",
+            aria: "none",
           });
 
           splits.push(split);
@@ -379,11 +384,15 @@ export default function Hero() {
 
   return (
     <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
-     <img
-        src="/landing-page/hero-bg.png"
-        alt="hero-bg"
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-md:block"
+      <Image
+        src="/landing-page/hero-bg.webp"
+        alt=""
+        aria-hidden
+        fill
+        priority
+        fetchPriority="high"
+        sizes="100vw"
+        className="pointer-events-none -z-10 hidden object-cover max-md:block"
       />
       <div
         ref={containerRef}

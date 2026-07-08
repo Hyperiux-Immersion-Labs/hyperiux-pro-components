@@ -43,6 +43,10 @@ export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
         return () => ctx.revert();
     }, [isHomePage]);
 
+    const visibleFaqItems = isExpanded
+        ? faqItems
+        : faqItems.slice(0, INITIAL_COUNT);
+
     return (
         <section ref={containerRef} className="h-full w-full pb-[10vw]! text-white relative">
             {isHomePage && (
@@ -60,17 +64,11 @@ export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
             </div>
             <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full   ${fixWidth ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
-                    {faqItems.map((item, index) => {
-                        const isHidden = !isExpanded && index >= INITIAL_COUNT;
-                        return (
-                            <div
-                                key={item.id}
-                                style={isHidden ? { height: 0, overflow: 'hidden', pointerEvents: 'none', marginTop: 0 } : undefined}
-                                aria-hidden={isHidden ? 'true' : undefined}
-                            >
+                    {visibleFaqItems.map((item) => (
                                 <FAQWrapper
+                                    key={item.id}
                                     itemId={item.id}
-                                    className={`rounded-md border border-white/20 px-6 py-5 fadeup ${isHidden ? 'mb-0' : 'mb-4'}`}
+                                    className="rounded-md border border-white/20 px-6 py-5 fadeup mb-4"
                                     titleClassName="text-[1.1rem] font-medium text-white"
                                     iconSize={16}
                                     iconStrokeWidth={2}
@@ -86,9 +84,7 @@ export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
                                         {item.answer}
                                     </FAQContent>
                                 </FAQWrapper>
-                            </div>
-                        );
-                    })}
+                    ))}
                 </FAQGroup>
                 {!isExpanded && faqItems.length > INITIAL_COUNT && (
                 <div className="w-full flex items-center justify-center mt-[4vw]">

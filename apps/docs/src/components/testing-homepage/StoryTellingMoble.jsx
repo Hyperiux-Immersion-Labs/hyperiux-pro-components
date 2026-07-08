@@ -13,15 +13,15 @@ import SplitLine from "./SplitLine";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const IMAGES = [
-    "/img/spiral/1.png",
-    "/img/spiral/2.png",
-    "/img/spiral/3.png",
-    "/img/spiral/4.png",
-    "/img/spiral/5.png",
-    "/img/spiral/6.png",
-    "/img/spiral/7.png",
-    "/img/spiral/8.png",
-    "/img/spiral/9.png",
+    "/img/spiral/1.webp",
+    "/img/spiral/2.webp",
+    "/img/spiral/3.webp",
+    "/img/spiral/4.webp",
+    "/img/spiral/5.webp",
+    "/img/spiral/6.webp",
+    "/img/spiral/7.webp",
+    "/img/spiral/8.webp",
+    "/img/spiral/9.webp",
 ];
 
 // For reproducible randomness
@@ -51,6 +51,7 @@ export default function StorytellingMobile() {
             split = SplitText.create(stmInfoTextRef.current, {
                 type: "lines",
                 mask: "lines",
+                aria: "none",
             });
 
             // Scrub-tied reveal + exit — same behaviour as the desktop
@@ -192,12 +193,10 @@ export default function StorytellingMobile() {
                     src={src}
                     alt="spiral-images"
                     fill
-                    style={{
-                        objectFit: "cover",
-                        borderRadius: "5px",
-                    }}
+                    className="object-cover rounded-md"
                     sizes={`${imageDiameterVW * 1.5}vw`}
-                    priority={i < 3}
+                    quality={60}
+                    loading="lazy"
                 />
             </div>
       

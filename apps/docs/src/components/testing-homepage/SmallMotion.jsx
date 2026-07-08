@@ -22,9 +22,11 @@ export default function SmallMotion() {
         const mount = () => {
         smallSplit = SplitText.create(textRef.current, {
             type: 'chars',
+            aria: 'none',
         })
         bigSplit = SplitText.create(textRef2.current, {
             type: 'chars',
+            aria: 'none',
         })
 
         gsap.set([textRef.current, textRef2.current], { perspective: 1000 })
