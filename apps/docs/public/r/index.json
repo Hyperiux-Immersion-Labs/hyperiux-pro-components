@@ -596,7 +596,7 @@
       ],
       "registryDependencies": [],
       "exportName": "BlockTransition",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "chess-grid-transition",

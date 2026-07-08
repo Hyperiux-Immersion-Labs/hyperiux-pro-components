@@ -4,6 +4,7 @@ import { TransitionRouter } from "next-transition-router";
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 
+
 const ROWS = 5;
 const COLOR = "#000000";
 
@@ -18,11 +19,19 @@ const SHIFT_BLUR = "4px";
 const SHIFT_DURATION_OUT = 0.7;
 const SHIFT_DURATION_IN = 0.8;
 
-export function BlockTransition({ children, enableContentShift = false }) {
+
+export default function BlockTransition({
+  children,
+  enableContentShift = false,
+  rows = ROWS,
+  color = COLOR,
+}) {
   const wrapperRef = useRef(null);
   const rowRefs    = useRef([]);
 
   const getRows = () => rowRefs.current.filter(Boolean);
+
+
 
   const buildRowsAnimation = (timeline, direction) => {
     const rows = getRows();
@@ -137,7 +146,7 @@ export function BlockTransition({ children, enableContentShift = false }) {
       }}
     >
       <div className="pointer-events-none fixed inset-0 z-999 overflow-hidden">
-        {Array.from({ length: ROWS }).map((_, index) => (
+        {Array.from({ length: rows }).map((_, index) => (
           <div
             key={index}
             ref={(node) => {
@@ -145,14 +154,14 @@ export function BlockTransition({ children, enableContentShift = false }) {
             }}
             className="absolute left-0 w-full overflow-hidden"
             style={{
-              top: `${(index * 100) / ROWS}%`,
-              height: `calc(${100 / ROWS}% + 2px)`,
+              top: `${(index * 100) / rows}%`,
+              height: `calc(${100 / rows}% + 2px)`,
             }}
           >
             <span
               className="absolute top-0 left-0 h-full w-[51%] will-change-transform"
               style={{
-                backgroundColor: COLOR,
+                backgroundColor: color,
                 opacity: 0,
                 visibility: "hidden",
               }}
@@ -161,7 +170,7 @@ export function BlockTransition({ children, enableContentShift = false }) {
             <span
               className="absolute top-0 right-0 h-full w-[51%] will-change-transform"
               style={{
-                backgroundColor: COLOR,
+                backgroundColor: color,
                 opacity: 0,
                 visibility: "hidden",
               }}
