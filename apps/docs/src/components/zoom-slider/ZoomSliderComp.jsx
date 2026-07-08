@@ -163,7 +163,7 @@ export function ZoomSliderComp({
       if (!state.isDragging) return;
 
       // Drive by whichever axis the gesture moved most, so a horizontal drag
-      // OR a vertical (scroll-like) swipe advances the slider — in both
+      // OR a vertical (scroll-like) swipe advances the slider - in both
       // directions. `direction` flips the sign so touch matches the natural
       // mobile scroll feel.
       const deltaX = clientX - state.lastX;

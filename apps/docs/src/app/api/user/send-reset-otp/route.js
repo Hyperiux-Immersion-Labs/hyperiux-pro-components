@@ -51,7 +51,7 @@ export async function POST() {
 
   const { success } = await sendEmail({
     to: email,
-    subject: "Your password reset code — Hyperiux Vault",
+    subject: "Your password reset code - Hyperiux Vault",
     react: PasswordResetOtpEmail({ otp, expiresInMinutes: 10 }),
     emailType: "password_reset_otp",
   });

@@ -79,7 +79,7 @@ export default function Experience() {
  }} />
  {/* Copy 1: flowers at original position */}
  <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
- {/* Copy 2: same flowers shifted forward — fills the gap at the end */}
+ {/* Copy 2: same flowers shifted forward - fills the gap at the end */}
  <group position={pathOffset}>
  <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
  </group>

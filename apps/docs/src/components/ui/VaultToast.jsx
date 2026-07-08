@@ -9,15 +9,15 @@ import { X } from "lucide-react";
  * Animated toast that slides up from the bottom-right.
  *
  * Props:
- *   show        — boolean controlling visibility
- *   onClose     — called when user dismisses or timer expires
- *   title       — bold line at the top
- *   description — secondary text below title (optional)
- *   ctaLabel    — text for the action button/link (optional)
- *   ctaHref     — if set, renders an <a>/<Link>; otherwise a <button>
- *   onCtaClick  — called when CTA is clicked (fires before navigation if ctaHref set)
- *   duration    — auto-dismiss in ms (default 5000, 0 = no auto-dismiss)
- *   variant     — "default" | "success" | "pro"
+ *   show        - boolean controlling visibility
+ *   onClose     - called when user dismisses or timer expires
+ *   title       - bold line at the top
+ *   description - secondary text below title (optional)
+ *   ctaLabel    - text for the action button/link (optional)
+ *   ctaHref     - if set, renders an <a>/<Link>; otherwise a <button>
+ *   onCtaClick  - called when CTA is clicked (fires before navigation if ctaHref set)
+ *   duration    - auto-dismiss in ms (default 5000, 0 = no auto-dismiss)
+ *   variant     - "default" | "success" | "pro"
  */
 export function VaultToast({
   show,

@@ -126,7 +126,7 @@ export default function Workflow() {
                 const segmentStart = i * SEGMENT
 
                 if (i === 0) {
-                    /* Step 0 is already open — just fill the first connecting line */
+                    /* Step 0 is already open - just fill the first connecting line */
                     if (lineFills[0]) {
                         tl.to(lineFills[0], { scaleY: 1, ease: 'none', duration: HOLD_DURATION }, segmentStart + STEP_DURATION)
                     }
@@ -136,14 +136,14 @@ export default function Workflow() {
 
                 const t = segmentStart
 
-                /* Close previous step — fade text out early to avoid squish glitch */
+                /* Close previous step - fade text out early to avoid squish glitch */
                 tl.to(texts[i - 1], { opacity: 0, duration: STEP_DURATION * 0.35, ease: 'power2.in' }, t)
                 tl.to(contentBoxes[i - 1], { height: CLOSED_HEIGHT, backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(numBoxes[i - 1], { backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(nums[i - 1], { opacity: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(icons[i - 1], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
 
-                /* Open current step — expand first, then fade text in late */
+                /* Open current step - expand first, then fade text in late */
                 tl.to(contentBoxes[i], { height: OPEN_HEIGHT, backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(numBoxes[i], { backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
                 tl.to(nums[i], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)

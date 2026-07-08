@@ -369,7 +369,7 @@ You can replace those strings by importing the files (depending on your bundler 
 
 ## “Different cursors” (how to achieve different cursor styles)
 
-In this system, the “cursor” is not a DOM icon — it’s the **pointer input → splat injection**.
+In this system, the “cursor” is not a DOM icon - it’s the **pointer input → splat injection**.
 So “different cursor effects” means: change **what you inject**, **how often you inject**, and **how the postprocess reads it**.
 
 ### A) Change the brush shape (splat shader)
@@ -600,7 +600,7 @@ Key rule:
 
 This is a recommended learning path to build a brand-new cursor effect.
 
-### Phase 1 — Make a tiny “field texture” system (no fluids yet)
+### Phase 1 - Make a tiny “field texture” system (no fluids yet)
 
 Goal: understand FBO ping‑pong + splat + dissipation.
 
@@ -614,7 +614,7 @@ Goal: understand FBO ping‑pong + splat + dissipation.
 
 Once this works, you already have a cursor trail texture.
 
-### Phase 2 — Turn it into postprocessing
+### Phase 2 - Turn it into postprocessing
 
 1. Create a `postprocessing.Effect` (like `effects/FluidEffect.jsx`)
 2. Pass your field texture as `tField`
@@ -624,7 +624,7 @@ Once this works, you already have a cursor trail texture.
 
 Now you have a reusable SSP cursor effect.
 
-### Phase 3 — Upgrade the field into real fluid
+### Phase 3 - Upgrade the field into real fluid
 
 1. Add velocity + pressure + divergence
 2. Add projection step (pressure solve + gradient subtract)
@@ -633,7 +633,7 @@ Now you have a reusable SSP cursor effect.
 
 At this point you’ll basically recreate what `Fluid.jsx` already does.
 
-### Phase 4 — Make it “production”
+### Phase 4 - Make it “production”
 
 - Add parameter controls (`force`, `radius`, `dissipation`, etc.)
 - Normalize dissipation by frame rate (`normalizeScreenHz`)

@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 
 // Inter is a variable font exposing a `wght` axis, which the cursor-driven
 // weight morph below animates. It's loaded here so the component is fully
-// self-contained — no font setup is required in layout.js, globals.css, or
+// self-contained - no font setup is required in layout.js, globals.css, or
 // the page that renders it.
 const cursorMoveFont = Inter({ subsets: ["latin"], display: "swap" });
 

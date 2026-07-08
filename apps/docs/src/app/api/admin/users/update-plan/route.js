@@ -35,7 +35,7 @@ export async function POST(request) {
     const newStatus = plan === "pro" ? "active" : "inactive";
 
     // Downgrading to free must kill any existing CLI token outright, not
-    // just rely on verifyCliToken's plan check — otherwise a later
+    // just rely on verifyCliToken's plan check - otherwise a later
     // re-upgrade without a fresh `npx hyperiux login` would silently
     // reactivate the old token.
     const revokeFields =

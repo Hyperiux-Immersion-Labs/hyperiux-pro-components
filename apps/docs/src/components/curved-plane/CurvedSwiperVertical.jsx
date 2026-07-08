@@ -249,7 +249,7 @@ const CurvedPlaneVertical = ({ routes }) => {
 
         mesh.position.set(xPos, yPos, 0);
 
-        // Always full opacity — no fading
+        // Always full opacity - no fading
         mesh.material.uniforms.uAlpha.value = 1.0;
 
         const deformDirection = direction;

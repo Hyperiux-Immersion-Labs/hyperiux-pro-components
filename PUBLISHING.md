@@ -3,15 +3,15 @@
 ## Pre-publish Checklist
 
 ### 1. Make sure the registry is live
-The CLI fetches from `vault.hyperiux.com/r` in production. Before publishing, confirm that domain resolves and effects are accessible — otherwise users will get fetch errors on `npx hyperiux add`.
+The CLI fetches from `vault.hyperiux.com/r` in production. Before publishing, confirm that domain resolves and effects are accessible - otherwise users will get fetch errors on `npx hyperiux add`.
 
 ### 2. Verify the CLI package metadata
 Check [`packages/cli/package.json`](packages/cli/package.json):
-- `"name": "hyperiux"` — the npm package name users run with `npx hyperiux`
-- `"version"` — bump this before each publish (semver: `1.0.0`, `1.0.1`, etc.)
+- `"name": "hyperiux"` - the npm package name users run with `npx hyperiux`
+- `"version"` - bump this before each publish (semver: `1.0.0`, `1.0.1`, etc.)
 - `"main"` points to `src/index.js`
 - `"bin"` maps `hyperiux` → the entry point
-- `"files"` whitelist includes only `src/` — not tests or dev scripts
+- `"files"` whitelist includes only `src/` - not tests or dev scripts
 
 ### 3. Login to npm
 ```bash
@@ -24,7 +24,7 @@ npm login
 cd packages/cli
 npm publish --dry-run
 ```
-Prints exactly which files will be included without publishing. You should see only `src/` files and `package.json` — not the monorepo root or docs app.
+Prints exactly which files will be included without publishing. You should see only `src/` files and `package.json` - not the monorepo root or docs app.
 
 ### 5. Publish
 ```bash
@@ -38,7 +38,7 @@ npm publish --access public
 npm view hyperiux
 ```
 
-Test end-to-end from **outside the monorepo** (important — inside the repo the CLI auto-detects the local registry and won't hit production):
+Test end-to-end from **outside the monorepo** (important - inside the repo the CLI auto-detects the local registry and won't hit production):
 ```bash
 npx hyperiux@latest list
 ```
@@ -53,7 +53,7 @@ npx hyperiux@latest list
 cd packages/cli && npm publish
 ```
 
-No build step needed — the CLI is plain Node.js with no transpilation.
+No build step needed - the CLI is plain Node.js with no transpilation.
 
 ---
 

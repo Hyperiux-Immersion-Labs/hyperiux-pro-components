@@ -153,13 +153,13 @@ export default function CodeBlockWorkflow() {
       const resetState = () => {
         clearTypedContent();
 
-        // Hide dollar signs — they animate in with their commands
+        // Hide dollar signs - they animate in with their commands
         gsap.set(
           [terminalRefs.current.dollar1, terminalRefs.current.dollar2].filter(Boolean),
           { opacity: 0 }
         );
 
-        // Hide folder rows — they appear during installation sequence
+        // Hide folder rows - they appear during installation sequence
         gsap.set(
           [fileRefs.current.effectsFolder, fileRefs.current.splitCanvasFolder].filter(Boolean),
           { opacity: 0, y: 8 }
@@ -348,7 +348,7 @@ export default function CodeBlockWorkflow() {
           ease: "none",
         }, ">");
 
-        // Code block reveals — typed with per-token syntax colours
+        // Code block reveals - typed with per-token syntax colours
         const W = "rgba(255,255,255,0.7)";
         typeColoredLine(tl, codeRefs.current.line1, [
           { text: "import",                            color: "#939393" },
@@ -418,7 +418,7 @@ export default function CodeBlockWorkflow() {
     >
       <div className="mx-auto w-full max-w-450">
         <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
-          {/* LEFT COLUMN — terminal + code */}
+          {/* LEFT COLUMN - terminal + code */}
           <div className="flex flex-col gap-[1.4vw] max-md:contents">
             <Panel title="amazing_project" className="fadeup min-h-[25vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
               <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
@@ -474,7 +474,7 @@ export default function CodeBlockWorkflow() {
             </Panel>
           </div>
 
-          {/* RIGHT COLUMN — file tree */}
+          {/* RIGHT COLUMN - file tree */}
           <div className="flex flex-col gap-[1.15vw]">
             <Panel title="amazing_project / Components" className="fadeup h-full max-md:min-h-[25vh] max-sm:min-h-[25vh]">
               <div className="space-y-[0.9vw] max-md:space-y-3">
@@ -498,14 +498,14 @@ export default function CodeBlockWorkflow() {
                 <div className="">
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
-                    {/* effects/ — hidden until animation */}
+                    {/* effects/ - hidden until animation */}
                     <div ref={setFileRef("effectsFolder")}>
                       <TreeFolder label="effects" depth={0} />
                     </div>
                     <div className=" pt-[0.45vw]  max-md:pt-1.5">
                       <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
-                        {/* split-canvas/ — hidden until animation */}
+                        {/* split-canvas/ - hidden until animation */}
                         <div ref={setFileRef("splitCanvasFolder")}>
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>

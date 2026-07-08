@@ -33,7 +33,7 @@ const RADIUS_Y = 400;
 // Config: how much the orbit radius expands in Phase 3 (e.g. 0.70 = 70% expansion)
 const EXPAND_RADIUS_FACTOR = 0.67;
 
-// Fraction of spiral phase (t) before card blur begins — keeps early fly-out sharp
+// Fraction of spiral phase (t) before card blur begins - keeps early fly-out sharp
 const SPIRAL_BLUR_DELAY = 0.35;
 
 // NO ease: linear mapping from 0 to 1

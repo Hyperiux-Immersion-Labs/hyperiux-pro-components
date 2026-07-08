@@ -173,7 +173,7 @@ const routeKey = `${pathname}${
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
 
-  // testing purpose — set to 0 in production, any positive ms to show skeleton
+  // testing purpose - set to 0 in production, any positive ms to show skeleton
   const TEST_SKELETON_DELAY = 0;
   const [hasPassedSkeletonDelay, setHasPassedSkeletonDelay] = useState(
     TEST_SKELETON_DELAY === 0
@@ -808,7 +808,7 @@ const routeKey = `${pathname}${
           className={`flex w-80 fixed bottom-6 right-6  max-sm:w-full flex-col gap-3 rounded-md border bg-[#0e0e0e] border-white/20 p-5 shadow-2xl transition-all duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
         >
           <div className="flex items-start justify-between gap-3">
-            <p className="text-sm ">You&apos;re now Pro — full vault unlocked.</p>
+            <p className="text-sm ">You&apos;re now Pro - full vault unlocked.</p>
             <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors">✕</button>
           </div>
           <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
@@ -837,7 +837,7 @@ const routeKey = `${pathname}${
 
 const BATCH_SIZE = 12;
 
-// Inner component — keyed by filteredEffectsKey so state resets automatically on filter change
+// Inner component - keyed by filteredEffectsKey so state resets automatically on filter change
 function EffectsGridInner({
   filteredEffects,
   wishlist,
@@ -913,7 +913,7 @@ function EffectsGridInner({
         ))}
       </div>
 
-      {/* Sentinel — 400px ahead of viewport triggers the next batch before user reaches bottom */}
+      {/* Sentinel - 400px ahead of viewport triggers the next batch before user reaches bottom */}
       {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
     </>
   );

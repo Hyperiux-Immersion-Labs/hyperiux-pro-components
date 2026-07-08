@@ -650,7 +650,7 @@ export default function HoverSliderComp({ items = [] }) {
         style={{ color: "rgba(30,28,24,0.6)" }}
       >
         A curated collection of futuristic UI experiments, motion systems, and
-        interactive components — crafted to push modern web experiences beyond
+        interactive components - crafted to push modern web experiences beyond
         the ordinary.
       </p>
 

@@ -6,7 +6,7 @@ Hi ${name},
 
 Welcome to Hyperiux Vault. Your account is now active.
 
-With your free account you get access to 30+ effects — scroll interactions, cursor effects, text animations, and more — all copy-paste ready for React and Next.js.
+With your free account you get access to 30+ effects - scroll interactions, cursor effects, text animations, and more - all copy-paste ready for React and Next.js.
 
 To access the full vault of 115 premium effects, upgrade to Pro from your dashboard.
 
@@ -34,7 +34,7 @@ Hyperiux Vault
           <div style="margin:28px 0;padding:20px;border:1px solid rgba(255,255,255,0.1);background:#0d0d0d;border-radius:20px;">
             <p style="margin:0 0 8px;color:rgba(255,255,255,0.5);font-size:13px;">Your free account includes</p>
             <ul style="margin:12px 0 0;padding:0;list-style:none;color:rgba(255,255,255,0.72);font-size:15px;line-height:2;">
-              <li>✓ 30+ free effects — scroll, cursor, text, and UI</li>
+              <li>✓ 30+ free effects - scroll, cursor, text, and UI</li>
               <li>✓ Copy-paste React &amp; Next.js components</li>
               <li>✓ Live previews and clean docs</li>
             </ul>

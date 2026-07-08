@@ -40,7 +40,7 @@ function refreshScrollTriggerSafely() {
 }
 
 /**
- * Scroll-triggered line reveal — text lines or a decorative horizontal line.
+ * Scroll-triggered line reveal - text lines or a decorative horizontal line.
  */
 export default function SplitLine({
   children,

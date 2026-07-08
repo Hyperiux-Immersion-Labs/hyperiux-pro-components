@@ -29,7 +29,7 @@ const images = {
 '/assets/nature/nature01.png', // index 0
 
 '/assets/img/image05.png',
-'/assets/nature/nature03.png', // index 2 — matches heroImg
+'/assets/nature/nature03.png', // index 2 - matches heroImg
 '/assets/nature/nature04.png', // index 3
 '/assets/nature/nature05.png', // index 4
 '/assets/nature/nature06.png', // index 5
@@ -51,7 +51,7 @@ const images = {
 '/assets/nature/nature10.png', // index 21
 '/assets/nature/nature11.png', // index 22
 '/assets/nature/nature12.png', // index 23
-'/assets/img/image06.png', // index 24 — LAST_INDEX, matches overlayImg
+'/assets/img/image06.png', // index 24 - LAST_INDEX, matches overlayImg
  ],
 }
 

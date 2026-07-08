@@ -1,8 +1,8 @@
 # Hyperiux Vault
 
-> Hyperiux Vault is a curated library of 115 creative interaction effects and UI components for React and Next.js — scroll systems, cursor effects, text reveals, page transitions, WebGL scenes, animated backgrounds, buttons, and loaders. Effects are previewed live on the site and installed into projects via the `hyperiux-components` CLI.
+> Hyperiux Vault is a curated library of 115 creative interaction effects and UI components for React and Next.js - scroll systems, cursor effects, text reveals, page transitions, WebGL scenes, animated backgrounds, buttons, and loaders. Effects are previewed live on the site and installed into projects via the `hyperiux-components` CLI.
 
-Hyperiux Vault is built by Hyperiux Immersion Labs. Free effects can be installed by anyone with a free account; Pro effects require a Hyperiux Pro subscription. Every effect ships as real source code (React components using GSAP, Motion, Three.js, or CSS) that developers own and customize — not a locked-in package import.
+Hyperiux Vault is built by Hyperiux Immersion Labs. Free effects can be installed by anyone with a free account; Pro effects require a Hyperiux Pro subscription. Every effect ships as real source code (React components using GSAP, Motion, Three.js, or CSS) that developers own and customize - not a locked-in package import.
 
 Key facts:
 - Website: https://vault.hyperiux.com
@@ -28,7 +28,7 @@ Key facts:
 - [Page transitions](https://vault.hyperiux.com/effects/page-transitions): Route and view transitions for Next.js apps
 - [WebGL effects](https://vault.hyperiux.com/effects/webgl-effects): Three.js and shader-based scenes, galleries, and hero visuals
 - [Backgrounds](https://vault.hyperiux.com/effects/backgrounds): Dotted grids, particle fields, and dithered canvas textures for SaaS and AI heroes
-- [Buttons](https://vault.hyperiux.com/effects/buttons): Accessible CTA microinteractions — staggered labels, arrow fills, scramble links
+- [Buttons](https://vault.hyperiux.com/effects/buttons): Accessible CTA microinteractions - staggered labels, arrow fills, scramble links
 - [Navigation](https://vault.hyperiux.com/effects/navigation): Menus, navbars, and navigation interactions
 - [Carousels](https://vault.hyperiux.com/effects/carousels): Clip-path reveals and zoom sliders with swipe and keyboard support
 - [Loaders](https://vault.hyperiux.com/effects/loaders): Page loaders and progress animations

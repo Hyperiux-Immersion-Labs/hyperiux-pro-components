@@ -16,7 +16,7 @@
   --font-ui:     'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-/* ── Wrapper — 100vh, no overflow ────────────── */
+/* ── Wrapper - 100vh, no overflow ────────────── */
 .is-root {
   position: relative;
   width: 100%;

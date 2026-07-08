@@ -1,4 +1,4 @@
-# Coding Standards — Hyperiux Components
+# Coding Standards - Hyperiux Components
 
 > **Who is this for?** Any dev (including AI agents) writing or reviewing code in this repo.
 > **Why does it exist?** So every component feels like the same person wrote it.
@@ -7,12 +7,12 @@
 
 ## Core Principles
 
-1. **Readable > Clever** — If you need 10 seconds to understand a line, rewrite it.
-2. **Name things clearly** — Variables describe *what* they are, not where they came from.
-3. **Comments explain *why*, not *what*** — Code shows what. Comments explain intent.
-4. **Dead code is noise** — Unused variables, attributes, and handlers must be removed before merging.
-5. **Don't repeat yourself** — Extract any logic that appears more than twice.
-6. **CSS via layout semantics** — Use `gap`, `flex-col`, `space-y` over `mb-*`/`mt-*` for spacing between siblings.
+1. **Readable > Clever** - If you need 10 seconds to understand a line, rewrite it.
+2. **Name things clearly** - Variables describe *what* they are, not where they came from.
+3. **Comments explain *why*, not *what*** - Code shows what. Comments explain intent.
+4. **Dead code is noise** - Unused variables, attributes, and handlers must be removed before merging.
+5. **Don't repeat yourself** - Extract any logic that appears more than twice.
+6. **CSS via layout semantics** - Use `gap`, `flex-col`, `space-y` over `mb-*`/`mt-*` for spacing between siblings.
 
 ---
 
@@ -145,7 +145,7 @@ for (let i = 0; i < count; i++) {
 
 ### Name all inline functions
 
-Event listeners especially — named functions can be properly removed in cleanup.
+Event listeners especially - named functions can be properly removed in cleanup.
 
 **Bad:**
 ```js
@@ -226,7 +226,7 @@ const mat = new THREE.ShaderMaterial({
 
 ### The `/* glsl */` tag
 
-Always add the `/* glsl */` comment before the template literal — editors and plugins use this for GLSL syntax highlighting.
+Always add the `/* glsl */` comment before the template literal - editors and plugins use this for GLSL syntax highlighting.
 
 ### GLSL formatting
 
@@ -349,7 +349,7 @@ className="px-[1.7vw] rounded-[1.3vw] gap-[0.8vw]"
 Use `<span>` for inline text nodes inside flex containers, not `<div>`:
 
 ```jsx
-// Bad — div inside flex, no block content
+// Bad - div inside flex, no block content
 <div className="text-sm text-white/50">{label}</div>
 
 // Good
@@ -395,13 +395,13 @@ import Link from 'next/link'
 
 ## 6. React Patterns
 
-### useEffect — keep lifecycle together
+### useEffect - keep lifecycle together
 
 For Three.js or canvas effects, **keep the entire setup inside one `useEffect`**. Do not split it across multiple effects.
 
 The sequential nature of WebGL setup (renderer → scene → geometry → material → add to scene → animate → cleanup) is a single lifecycle. Splitting it creates confusion about initialization order.
 
-### Cleanup — always remove what you added
+### Cleanup - always remove what you added
 
 Every `addEventListener` needs a corresponding `removeEventListener` in the cleanup function. Every Three.js object needs `.dispose()`.
 
@@ -432,7 +432,7 @@ return () => {
 | Values that drive React re-renders (active state, cursor position display) | `useState` |
 | Values only read inside `requestAnimationFrame` loop (alpha, smooth positions) | Plain `let` variables inside `useEffect` |
 
-Never put animation-tick values in `useState` — it causes unnecessary re-renders every frame.
+Never put animation-tick values in `useState` - it causes unnecessary re-renders every frame.
 
 ### Dependency arrays
 
@@ -445,7 +445,7 @@ Always list every prop/state used inside a `useEffect` in the dep array. If the 
 ### Keep comments that explain *why*
 
 ```js
-// instant snap — avoids lerp drift from previous position
+// instant snap - avoids lerp drift from previous position
 smoothMouse.copy(mouse);
 
 // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
@@ -455,11 +455,11 @@ mouseLineColors[si + 3] = _webColor.r * alpha;
 ### Remove comments that restate the code
 
 ```js
-// Bad — this is obvious from the code
+// Bad - this is obvious from the code
 // Set mouse present to true
 mousePresent = true;
 
-// Bad — leftover dev note
+// Bad - leftover dev note
 let mouseJustEntered = false; // <-- NEW: snap flag
 ```
 
@@ -473,7 +473,7 @@ Use short word-only section comments for sections longer than ~10 lines:
 
 ---
 
-## 8. Before You Commit — Checklist
+## 8. Before You Commit - Checklist
 
 - [ ] No unused variables, imports, or `console.log`
 - [ ] All magic numbers are named constants
@@ -486,7 +486,7 @@ Use short word-only section comments for sections longer than ~10 lines:
 - [ ] Comments explain *why*, not *what*
 - [ ] No HTML entities (`&nbsp;`) where Unicode works fine
 
-# Coding Standards — Hyperiux Components
+# Coding Standards - Hyperiux Components
 
 > **Who is this for?** Any dev (including AI agents) writing or reviewing code in this repo.
 > **Why does it exist?** So every component feels like the same person wrote it.
@@ -495,12 +495,12 @@ Use short word-only section comments for sections longer than ~10 lines:
 
 ## Core Principles
 
-1. **Readable > Clever** — If you need 10 seconds to understand a line, rewrite it.
-2. **Name things clearly** — Variables describe *what* they are, not where they came from.
-3. **Comments explain *why*, not *what*** — Code shows what. Comments explain intent.
-4. **Dead code is noise** — Unused variables, attributes, and handlers must be removed before merging.
-5. **Don't repeat yourself** — Extract any logic that appears more than twice.
-6. **CSS via layout semantics** — Use `gap`, `flex-col`, `space-y` over `mb-*`/`mt-*` for spacing between siblings.
+1. **Readable > Clever** - If you need 10 seconds to understand a line, rewrite it.
+2. **Name things clearly** - Variables describe *what* they are, not where they came from.
+3. **Comments explain *why*, not *what*** - Code shows what. Comments explain intent.
+4. **Dead code is noise** - Unused variables, attributes, and handlers must be removed before merging.
+5. **Don't repeat yourself** - Extract any logic that appears more than twice.
+6. **CSS via layout semantics** - Use `gap`, `flex-col`, `space-y` over `mb-*`/`mt-*` for spacing between siblings.
 
 ---
 
@@ -633,7 +633,7 @@ for (let i = 0; i < count; i++) {
 
 ### Name all inline functions
 
-Event listeners especially — named functions can be properly removed in cleanup.
+Event listeners especially - named functions can be properly removed in cleanup.
 
 **Bad:**
 ```js
@@ -714,7 +714,7 @@ const mat = new THREE.ShaderMaterial({
 
 ### The `/* glsl */` tag
 
-Always add the `/* glsl */` comment before the template literal — editors and plugins use this for GLSL syntax highlighting.
+Always add the `/* glsl */` comment before the template literal - editors and plugins use this for GLSL syntax highlighting.
 
 ### GLSL formatting
 
@@ -778,7 +778,7 @@ Only when the element is **not** inside a flex/grid parent, or when you need asy
 Use `<span>` for inline text nodes inside flex containers, not `<div>`:
 
 ```jsx
-// Bad — div inside flex, no block content
+// Bad - div inside flex, no block content
 <div className="text-sm text-white/50">{label}</div>
 
 // Good
@@ -803,13 +803,13 @@ JSX handles Unicode directly. Use real characters.
 
 ## 6. React Patterns
 
-### useEffect — keep lifecycle together
+### useEffect - keep lifecycle together
 
 For Three.js or canvas effects, **keep the entire setup inside one `useEffect`**. Do not split it across multiple effects.
 
 The sequential nature of WebGL setup (renderer → scene → geometry → material → add to scene → animate → cleanup) is a single lifecycle. Splitting it creates confusion about initialization order.
 
-### Cleanup — always remove what you added
+### Cleanup - always remove what you added
 
 Every `addEventListener` needs a corresponding `removeEventListener` in the cleanup function. Every Three.js object needs `.dispose()`.
 
@@ -840,7 +840,7 @@ return () => {
 | Values that drive React re-renders (active state, cursor position display) | `useState` |
 | Values only read inside `requestAnimationFrame` loop (alpha, smooth positions) | Plain `let` variables inside `useEffect` |
 
-Never put animation-tick values in `useState` — it causes unnecessary re-renders every frame.
+Never put animation-tick values in `useState` - it causes unnecessary re-renders every frame.
 
 ### Dependency arrays
 
@@ -853,7 +853,7 @@ Always list every prop/state used inside a `useEffect` in the dep array. If the 
 ### Keep comments that explain *why*
 
 ```js
-// instant snap — avoids lerp drift from previous position
+// instant snap - avoids lerp drift from previous position
 smoothMouse.copy(mouse);
 
 // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
@@ -863,11 +863,11 @@ mouseLineColors[si + 3] = _webColor.r * alpha;
 ### Remove comments that restate the code
 
 ```js
-// Bad — this is obvious from the code
+// Bad - this is obvious from the code
 // Set mouse present to true
 mousePresent = true;
 
-// Bad — leftover dev note
+// Bad - leftover dev note
 let mouseJustEntered = false; // <-- NEW: snap flag
 ```
 
@@ -904,7 +904,7 @@ const CARD_CLASS_NAME = "rounded-2xl border border-white/10 bg-black/20 p-6";
 
 ---
 
-## 8. Before You Commit — Checklist
+## 8. Before You Commit - Checklist
 
 - [ ] No unused variables, imports, or `console.log`
 - [ ] All magic numbers are named constants

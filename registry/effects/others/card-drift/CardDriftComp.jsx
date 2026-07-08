@@ -84,7 +84,7 @@ export default function CardDriftComp({
 
  Draggable.create(card, {
  type:"x,y",
- // No bounds — card can go freely outside during drag
+ // No bounds - card can go freely outside during drag
  onPress() {
  gsap.killTweensOf(card);
 
@@ -142,7 +142,7 @@ export default function CardDriftComp({
  const curX = gsap.getProperty(card,"x");
  const curY = gsap.getProperty(card,"y");
 
- // Throw target is always clamped inside bounds —
+ // Throw target is always clamped inside bounds -
  // if card is outside, it smoothly comes back in
  const targetX = Math.max(0, Math.min(curX + throwX, maxX));
  const targetY = Math.max(0, Math.min(curY + throwY, maxY));

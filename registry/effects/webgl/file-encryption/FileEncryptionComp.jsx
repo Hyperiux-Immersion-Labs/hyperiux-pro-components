@@ -63,7 +63,7 @@ void main() {
 }
 `;
 
-// Fragment shader — idle mode: tall laser glow; card mode: wider burst + particles
+// Fragment shader - idle mode: tall laser glow; card mode: wider burst + particles
 const BEAM_FRAG = `
 precision highp float;
 uniform vec2 u_res;
@@ -719,7 +719,7 @@ export function FileEncryptionComp({ cards = [] }) {
  style={{ height: CARD_H + 80, cursor:"grab", touchAction:"none" }}
  aria-label="Encrypted cards marquee"
  >
- {/* WebGL beam canvas — full section coverage, screen blend */}
+ {/* WebGL beam canvas - full section coverage, screen blend */}
  <canvas
  ref={beamCanvasRef}
  className="pointer-events-none absolute inset-0 z-40"

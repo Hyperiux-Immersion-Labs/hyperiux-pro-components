@@ -65,7 +65,7 @@ export function EffectCard({
   }, []);
 
   // Explicitly release the WebMediaPlayer when the video element unmounts.
-  // Just removing it from the DOM is not enough — Chrome keeps the player alive
+  // Just removing it from the DOM is not enough - Chrome keeps the player alive
   // until src is cleared and load() is called (crbug.com/1144736).
   useEffect(() => {
     if (!videoMounted) {
@@ -153,7 +153,7 @@ export function EffectCard({
     >
 
 
-      {/* Preview — square card with 16:9 media centered via absolute + translate */}
+      {/* Preview - square card with 16:9 media centered via absolute + translate */}
       <div className="pointer-events-none relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
 
         {/* Pills & tier badge */}

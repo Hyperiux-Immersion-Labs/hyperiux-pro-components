@@ -163,7 +163,7 @@ export function ExpandingNavbarMobile() {
                                     {item.sublinks && <ExpandToggle expanded={expandedMain === mainIndex} />}
                                 </div>
 
-                                {/* Sublinks — grid 0fr→1fr for smooth height */}
+                                {/* Sublinks - grid 0fr→1fr for smooth height */}
                                 {item.sublinks && (
                                     <div
                                         className={`grid transition-[grid-template-rows] duration-500 ${

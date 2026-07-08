@@ -11,7 +11,7 @@ const BACKDROP = (
   <div className="absolute inset-0 z-10 h-[140vh] max-md:hidden w-full bg-background" />
 );
 
-// Keep the three.js / @react-three bundle out of the initial page chunk — it
+// Keep the three.js / @react-three bundle out of the initial page chunk - it
 // only downloads/parses once DeferredMount mounts the scene (after load + idle).
 const GlowingPlates = dynamic(() => import("@/Experience/GlowingPlates"), {
   ssr: false,
@@ -25,7 +25,7 @@ export default function GlowingPlatesDeferred(props) {
 
   // The scene container is `max-md:hidden`, so it is never visible below the md
   // (1025px) breakpoint. Skipping the mount there means phones/tablets never
-  // download or parse the three.js bundle at all — visually identical (nothing
+  // download or parse the three.js bundle at all - visually identical (nothing
   // was ever shown), just without the wasted JS. Guard on isMounted so SSR and
   // the first client paint still emit the backdrop.
   if (isMounted && isMobile) return null;

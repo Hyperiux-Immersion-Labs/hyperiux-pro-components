@@ -78,7 +78,7 @@ function GridLiftDesktop() {
  const [maskSourceState, setMaskSourceState] = useState("Text");
  const [maskText, setMaskText] = useState("DESIGN");
 
- // Live ref — Leva's render() callbacks close over this, not stale state
+ // Live ref - Leva's render() callbacks close over this, not stale state
  const maskSourceRef = useRef("Text");
  const handleSetMask = (val) => {
  maskSourceRef.current = val;
@@ -197,7 +197,7 @@ function GridLiftDesktop() {
  event.target.value ="";
  };
 
-// Default SVG mask — only loads if a URL is provided
+// Default SVG mask - only loads if a URL is provided
 useEffect(() => {
   if (!DEFAULT_SVG_MASK_URL) return;
   const image = new Image();

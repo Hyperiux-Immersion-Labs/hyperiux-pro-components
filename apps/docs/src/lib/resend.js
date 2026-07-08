@@ -63,7 +63,7 @@ export async function sendEmail({ to, subject, html, text, react, emailType = "t
     console.error("RESEND_SEND_EXCEPTION:", errorMessage);
   }
 
-  // Log to Supabase asynchronously — never block the caller on this
+  // Log to Supabase asynchronously - never block the caller on this
   supabase
     .from("sent_emails")
     .insert({

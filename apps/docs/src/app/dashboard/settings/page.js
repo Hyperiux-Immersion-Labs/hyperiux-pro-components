@@ -33,7 +33,7 @@ export default function SettingsPage() {
     event.preventDefault();
     if (!user) return;
 
-    // capture before async — event.currentTarget becomes null after await
+    // capture before async - event.currentTarget becomes null after await
     const form = event.currentTarget;
     const formData = new FormData(form);
     const currentPassword = String(formData.get("currentPassword") || "");

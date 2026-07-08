@@ -17,7 +17,7 @@ const isInteractive = (target) =>
 // Drives drag-to-roll. The canvas is pointer-events:none (so it never blocks
 // the footer buttons), so instead of relying on R3F's DOM events we raycast
 // from the camera through the pointer on each drag and roll only the group the
-// pointer is actually over — keeping the two groups independent.
+// pointer is actually over - keeping the two groups independent.
 function DragController({ group1Ref, group2Ref, roll1Ref, roll2Ref, active }) {
     const camera = useThree((state) => state.camera)
     const raycaster = useThree((state) => state.raycaster)

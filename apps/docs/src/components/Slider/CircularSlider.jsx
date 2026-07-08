@@ -244,7 +244,7 @@ const targetRadius = Math.min(
 
  plane.position.x = x;
 
- // SMOOTH TEXTURE ZOOM — cosine easing for circular-path feel
+ // SMOOTH TEXTURE ZOOM - cosine easing for circular-path feel
  // Use wrapped position for zoom calculation to avoid glitches at high speeds
  const dist = Math.abs(x);
  const maxDist = frustumWidth;

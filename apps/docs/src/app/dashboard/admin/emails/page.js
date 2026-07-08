@@ -15,7 +15,7 @@ const EMAIL_TYPES = [
 ];
 
 function formatDate(value) {
-  if (!value) return "—";
+  if (!value) return "-";
   return new Intl.DateTimeFormat("en", {
     month: "short",
     day: "numeric",

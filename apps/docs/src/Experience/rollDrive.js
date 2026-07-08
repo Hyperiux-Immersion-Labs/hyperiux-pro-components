@@ -1,7 +1,7 @@
 // Shared drag-to-roll state for the rod groups.
 //
-// The rods only ever spin around their own local longitudinal (X) axis — the
-// same axis the ambient animation uses — so they stay perfectly in place and
+// The rods only ever spin around their own local longitudinal (X) axis - the
+// same axis the ambient animation uses - so they stay perfectly in place and
 // just roll. Dragging feeds extra roll into that same axis, with inertia after
 // release. Each group owns its own state object so they roll independently.
 

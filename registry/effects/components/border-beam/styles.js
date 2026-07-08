@@ -1,11 +1,11 @@
 /**
- * BorderBeam styles — presets, color palettes, and per-instance CSS generation.
+ * BorderBeam styles - presets, color palettes, and per-instance CSS generation.
  *
  * NOTE ON TAILWIND: the wrapper's static layout (position, isolation, overflow,
  * pointer-events) is applied with Tailwind utility classes inside BorderBeam.jsx.
- * Everything in this file is *runtime-generated, per-instance* CSS — dynamic
+ * Everything in this file is *runtime-generated, per-instance* CSS - dynamic
  * conic/radial gradients, `@property` registrations, per-id keyframes, and CSS
- * custom properties driven from JS — which Tailwind cannot express, so it must
+ * custom properties driven from JS - which Tailwind cannot express, so it must
  * remain as injected CSS.
  */
 
@@ -90,7 +90,7 @@ export const sizeThemePresets = {
       saturation: 1.95,
     },
   },
-  // Pulse Outside — outward-blooming breathe (ported from v5 "Breathe Outside Uncropped" / c6)
+  // Pulse Outside - outward-blooming breathe (ported from v5 "Breathe Outside Uncropped" / c6)
   'pulse-outside': {
     dark: {
       strokeOpacity: 0.94,
@@ -115,7 +115,7 @@ export const sizeThemePresets = {
       hairlineOpacity: 0,
     },
   },
-  // Pulse Inner — contained breathe (ported from v5 "Breathe" / c4)
+  // Pulse Inner - contained breathe (ported from v5 "Breathe" / c4)
   'pulse-inner': {
     dark: {
       strokeOpacity: 1.54,
@@ -138,7 +138,7 @@ export const sizeThemePresets = {
 
 /**
  * @deprecated Use `sizeThemePresets` for per-size theme values.
- * Retained for backward compatibility — maps to `md` size presets.
+ * Retained for backward compatibility - maps to `md` size presets.
  */
 export const themeColors = {
   dark: { ...sizeThemePresets.md.dark },
@@ -652,7 +652,7 @@ function getLineBloomGradients(colorVariant, isDark, id) {
   const thinH4 = isMono ? '32px'  : '60px';
   const thinLW = isMono ? '12px'  : '1px';
 
-  // Main glow: center dot + ambient — mono gets 50% lower opacity
+  // Main glow: center dot + ambient - mono gets 50% lower opacity
   const glowDotC   = isMono ? 'rgba(255, 255, 255, 0.5)'  : 'rgba(255, 255, 255, 1)';
   const glowDot20  = isMono ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.9)';
   const glowDot50  = isMono ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.5)';
@@ -685,7 +685,7 @@ function getLineBloomGradients(colorVariant, isDark, id) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
- * Pulse family (breathing glow, no rotation) — ported from the v5 prototype
+ * Pulse family (breathing glow, no rotation) - ported from the v5 prototype
  * Card 4 ("pulse-inner", contained) and Card 5 ("pulse-outside", outward bloom).
  *
  * Both effects animate three independent size/drift regions (g1/g2/g3) and four
@@ -709,12 +709,12 @@ const PULSE_RING_MAP = [
   { region: 3, quad: 'tr' },
 ];
 
-// Card 4 inner-perimeter (::before) gradient sizes — slightly smaller than the ring.
+// Card 4 inner-perimeter (::before) gradient sizes - slightly smaller than the ring.
 const PULSE_INNER_SIZES = [
   [65, 35], [55, 30], [35, 65], [15, 30], [173, 28], [80, 22], [69, 28], [22, 38], [47, 44],
 ];
 
-// Card 4 bloom — 7 of the 9 colors, expanded sizes (positions come from palette).
+// Card 4 bloom - 7 of the 9 colors, expanded sizes (positions come from palette).
 const PULSE_INNER_BLOOM = [
   { ci: 0, region: 1, quad: 'tl', w: 84, h: 48 },
   { ci: 1, region: 2, quad: 'tl', w: 72, h: 42 },
@@ -737,7 +737,7 @@ const PULSE_OUTER_CORE = [
   { ci: 3, region: 2, quad: 'tl', w: 13, h: 32, x: '-1%', y: '28%' },
 ];
 
-// Card 5 outward bloom — wider/blurred halo (7 gradients).
+// Card 5 outward bloom - wider/blurred halo (7 gradients).
 const PULSE_OUTER_BLOOM = [
   { ci: 0, region: 1, quad: 'tl', w: 110, h: 30, x: '27%', y: '3%' },
   { ci: 6, region: 2, quad: 'tr', w: 100, h: 20, x: '73%', y: '1%' },
@@ -770,7 +770,7 @@ function pulseGrad(color, w, h, region, quad, x, y, id) {
   return `radial-gradient(ellipse calc(${w}px * var(--bw${region}-${id}) * var(--pulse-glow-sx, 1) * var(--pulse-glow-boost, 1)) calc(${h}px * var(--bh${region}-${id}) * var(--bgh-${id}) * var(--pulse-glow-sy, 1) * var(--pulse-glow-boost, 1)) at calc(${x} + var(--bx${region}-${id})) calc(${y} + var(--by${region}-${id})), ${withAlphaVar(color, quad, id)}, transparent)`;
 }
 
-// The 9-gradient perimeter ring (Card 4 ::after / Card 5 stroke share this) —
+// The 9-gradient perimeter ring (Card 4 ::after / Card 5 stroke share this) -
 // positions + sizes come straight from the palette, region/quad from PULSE_RING_MAP.
 function pulseRingGradients(variant, id) {
   return colorPalettes[variant].border
@@ -823,7 +823,7 @@ function pulseTableGradients(table, variant, id) {
 // fixed per-blob alpha (the time-average of the breathing range) instead of the
 // live `var(--bw…/--bop…)` custom properties. Because the bloom's background no
 // longer changes per frame, its heavily-blurred bitmap is painted ONCE and cached
-// by the compositor rather than re-rasterized 60–120×/sec — the single biggest
+// by the compositor rather than re-rasterized 60–120×/sec - the single biggest
 // per-frame cost in the pulse effect.
 function pulseTableGradientsStatic(table, variant, frozenAlpha) {
   const palette = colorPalettes[variant].border;
@@ -898,7 +898,7 @@ function pulseParams(size, theme, duration) {
       bs: (isDark ? 1.9 : 2.6) * durScale,
       ss: (isDark ? 2.6 : 4.6) * durScale,
       ghs: (isDark ? 2.4 : 5.5) * durScale,
-      // Full hue revolution period (seconds) — colors continuously cycle.
+      // Full hue revolution period (seconds) - colors continuously cycle.
       huePeriod: 16,
     };
   }
@@ -910,7 +910,7 @@ function pulseParams(size, theme, duration) {
     bs: (isDark ? 2.3 : 3.7) * durScale,
     ss: (isDark ? 6.4 : 4.6) * durScale,
     ghs: (isDark ? 2.4 : 3.8) * durScale,
-    // Full hue revolution period (seconds) — colors continuously cycle.
+    // Full hue revolution period (seconds) - colors continuously cycle.
     huePeriod: 14,
   };
 }
@@ -1475,7 +1475,7 @@ ${pausedAnimationsRule(id)}
 }
 
 /**
- * Pulse Inner — contained breathing glow (port of v5 Card 4).
+ * Pulse Inner - contained breathing glow (port of v5 Card 4).
  * A full colorful perimeter ring (::after), an inner perimeter glow with corner
  * accents (::before), and a soft blurred bloom, all clipped inside the element.
  */
@@ -1624,7 +1624,7 @@ ${pausedAnimationsRule(id)}
 }
 
 /**
- * Pulse Outside — outward-blooming breathing glow (port of v5 Card 5).
+ * Pulse Outside - outward-blooming breathing glow (port of v5 Card 5).
  * A crisp 1px colored stroke hugs the outer edge (::after), while the colorful
  * core (::before) and soft halo (bloom) radiate OUTWARD behind the element
  * (z-index:-1), so the glow spills outside and is never cropped.
@@ -1675,7 +1675,7 @@ function generatePulseOuterVariantCSS(options) {
     : `filter: hue-rotate(calc(var(--beam-hue-base, 0deg) + var(--beam-hue-${id}))) brightness(${b}) saturate(${s});`;
   // Consumer hooks (--beam-core-blur / --beam-bloom-blur / --beam-glow-brightness /
   // --beam-glow-saturate) let integrators tune the glow WITHOUT overriding the whole
-  // `filter` — replacing it externally would drop the hue-rotate term and desync the
+  // `filter` - replacing it externally would drop the hue-rotate term and desync the
   // glow colors from the stroke ring.
   const glowBright = `brightness(var(--beam-glow-brightness, ${b})) saturate(var(--beam-glow-saturate, ${s}))`;
   const coreAnim = staticColors
@@ -1717,7 +1717,7 @@ ${pulseWrapperAnimation(id, 'beam-fade-in', 0.6)}
 ${pulseWrapperAnimation(id, 'beam-fade-out', 0.5)}
 }
 ${hairlineOpacity > 0 ? `
-/* Idle hairline — painted above the (opaque) child in the inner 1px edge ring so
+/* Idle hairline - painted above the (opaque) child in the inner 1px edge ring so
    it overlaps a standard inset component border exactly. */
 [data-beam="${id}"]::after {
   content: "";

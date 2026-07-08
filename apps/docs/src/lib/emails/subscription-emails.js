@@ -78,13 +78,13 @@ Hyperiux Vault
 
           <p style="margin:18px 0 0;color:rgba(255,255,255,0.68);font-size:16px;line-height:1.7;">
             Hi ${name}, your Hyperiux Vault Pro subscription has ended.
-            Your account has been moved to the free tier — you still have access to 30+ effects.
+            Your account has been moved to the free tier - you still have access to 30+ effects.
           </p>
 
           <div style="margin:28px 0;padding:20px;border:1px solid rgba(255,255,255,0.1);background:#0d0d0d;border-radius:20px;">
             <p style="margin:0 0 8px;color:rgba(255,255,255,0.5);font-size:13px;">What you still have</p>
             <ul style="margin:10px 0 0;padding:0;list-style:none;color:rgba(255,255,255,0.72);font-size:15px;line-height:2;">
-              <li>✓ 30+ free effects — scroll, cursor, text, and UI</li>
+              <li>✓ 30+ free effects - scroll, cursor, text, and UI</li>
               <li>✓ Copy-paste React &amp; Next.js components</li>
               <li>✓ Live previews and documentation</li>
             </ul>

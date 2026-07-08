@@ -362,7 +362,7 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
 }
 
 function SVGDashedBorder({ width, height, padding = 12, strokeWidth = 1 }) {
- // The mask path ref — this is the solid path we animate to reveal the dashes
+ // The mask path ref - this is the solid path we animate to reveal the dashes
  const maskPathRef = useRef(null);
  // Unique ID per instance to avoid clipPath conflicts
  const generatedClipId = useId();
@@ -384,7 +384,7 @@ function SVGDashedBorder({ width, height, padding = 12, strokeWidth = 1 }) {
  const pathLength = maskPath.getTotalLength();
 
  // The mask path starts fully"hidden" (dashoffset = full length)
- // and animates to 0, progressively revealing the clip region —
+ // and animates to 0, progressively revealing the clip region -
  // which in turn reveals the dashed path underneath.
  gsap.set(maskPath, {
  strokeDasharray: pathLength,

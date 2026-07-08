@@ -112,7 +112,7 @@ cd ~ && rm -rf /tmp/tarball-scan && rm /path/to/your-package-*.tgz
 - Any file with hardcoded credentials
 
 ```bash
-# Add to .npmignore (or control via "files" in package.json — preferred)
+# Add to .npmignore (or control via "files" in package.json - preferred)
 .env*
 *.pem
 *.key
@@ -255,7 +255,7 @@ npx license-checker --failOn "GPL;AGPL"
 | MIT, ISC, BSD-2, BSD-3 | ✅ Safe |
 | Apache-2.0 | ✅ Safe with notice |
 | LGPL | ⚠️ Review required |
-| GPL, AGPL | ❌ Incompatible — do not use |
+| GPL, AGPL | ❌ Incompatible - do not use |
 | UNLICENSED | ❌ Do not use |
 
 - [ ] Zero GPL or AGPL dependencies
@@ -292,7 +292,7 @@ Every CI pipeline for an npm package must enforce these checks automatically.
 
 ---
 
-## Quick Reference — Security Commands
+## Quick Reference - Security Commands
 
 ```bash
 npm audit --audit-level=high
