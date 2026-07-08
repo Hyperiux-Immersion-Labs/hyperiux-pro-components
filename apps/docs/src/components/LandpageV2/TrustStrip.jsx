@@ -33,7 +33,7 @@ const StatCard = ({
             <div className={contentClassName}>{children}</div>
 
             {label && (
-                <p className="text32 leading-none text-white/90 max-md:text-[2.4vw] max-sm:text-[4vw]">
+                <p className="text32 leading-none font-heading text-white/90 max-md:text-[2.4vw] max-sm:text-[4vw]">
                     {label}
                 </p>
             )}
@@ -68,7 +68,7 @@ export default function TrustStrip() {
         },"<")
     }, [])
     return (
-        <section className="relative w-full  z-10 px-[5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
+        <section className="relative w-full  z-10 px-[3.5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="trust-strip">
 
 
             <div className="relative flex max-md:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-md:gap-14 max-sm:gap-8">
@@ -90,7 +90,7 @@ export default function TrustStrip() {
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
+                            <span className="text140 font-normal font-heading leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 115
                             </span>
                         </StatCard>
@@ -100,7 +100,7 @@ export default function TrustStrip() {
                             className="-mt-px min-h-[24vw] max-md:min-h-[40vw] max-sm:min-h-[54vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
+                            <span className="text140 font-normal font-heading leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 New<sup>+</sup>
                             </span>
                         </StatCard>
@@ -121,7 +121,7 @@ export default function TrustStrip() {
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
                             contentClassName="flex h-full items-start"
                         >
-                            <span className="text140 font-normal leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
+                            <span className="text140 font-normal font-heading leading-none text-[#ff5f00] max-md:text-[12vw] max-sm:text-[16vw]!">
                                 32
                             </span>
                         </StatCard>

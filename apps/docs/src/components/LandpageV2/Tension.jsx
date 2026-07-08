@@ -154,7 +154,7 @@ export default function Tension() {
             <span className="text-[#ff5f00]">Harder</span> Than It Looks
           </RandomBlur>
 
-          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 font-light leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
+          <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it - timing, restraint, responsive behavior, reduced-motion support, performance discipline. Get it wrong and your &quot;wow moment&quot; janks on mobile or breaks for anyone who turned motion off. So most teams play it safe and look like everyone else!
           </SplitLine>
         </div>
@@ -191,7 +191,7 @@ export default function Tension() {
           ))}
         </div>
 
-        <p className="mt-[8vw] text-center text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
+        <p className="mt-[8vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
             It&apos;s the interaction layer.

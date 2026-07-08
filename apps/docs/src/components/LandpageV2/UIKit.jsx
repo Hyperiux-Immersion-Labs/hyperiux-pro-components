@@ -82,7 +82,7 @@ export default function UIKit() {
   }, []);
 
   return (
-    <section id="uikit-section" className="w-full h-[250vh] pt-[7%] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
+    <section id="uikit-section" className="w-full h-[250vh] pt-[15vw] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
             <RandomBlur as="h2" className="text110 w-[90vw] mx-auto text-center">
                Not <span className='text-[#ff5f00]'>Another</span> UI Kit. Not a Side Project.

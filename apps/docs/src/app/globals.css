@@ -3,6 +3,38 @@
 @import "tailwindcss";
 @import "./CustomCss.css";
 
+@font-face {
+  font-family: 'AvenirNextCyr';
+  src: url('/assets/fonts/AvenirNextCyr-Thin.woff2') format('woff2');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AvenirNextCyr';
+  src: url('/assets/fonts/AvenirNextCyr-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AvenirNextCyr';
+  src: url('/assets/fonts/AvenirNextCyr-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AvenirNextCyr';
+  src: url('/assets/fonts/AvenirNextCyr-Demi.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #0e0e0e;
   --foreground: #ffffff;
@@ -15,6 +47,7 @@
   --muted: #d2d2d2;
   --grey: #272727;
   --light-grey: #939393;
+  --font-avenier: 'AvenirNextCyr', system-ui, sans-serif;
   /* Global announcement bar height — body top padding stays constant */
   --announcement-h: 36px;
   /* Fixed navbars offset by this; flips to 0 when the bar hides on scroll */
@@ -42,6 +75,8 @@ body {
   --color-grey: var(--grey);
   --color-light-grey: var(--light-grey);
   --font-laygrotesk: var(--font-laygrotesk);
+  --font-avenier: var(--font-avenier);
+  --font-sans: var(--font-avenier);
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -65,10 +100,15 @@ html {
   scroll-behavior: auto;
 }
 
+.font-heading{
+  font-family: var(--font-laygrotesk), system-ui, sans-serif;
+  line-height: 1.2;
+}
+
 body {
   width: 100vw;
   overflow-x: hidden;
-  font-family: var(--font-laygrotesk), system-ui, sans-serif;
+  font-family: var(--font-avenier);
   line-height: 1.5;
   font-size: 16px;
   color-scheme: dark;
@@ -170,12 +210,12 @@ h4 {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ff5600 0%, #ff8800 100%);
+  background: linear-gradient(180deg, #ff5f00 0%, #E84002 100%);
   border-radius: 999px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff5600 0%, #ff8800 100%);
+  background: linear-gradient(180deg, #ff5f00 0%, #E84002 100%);
 }
 
 ::selection {

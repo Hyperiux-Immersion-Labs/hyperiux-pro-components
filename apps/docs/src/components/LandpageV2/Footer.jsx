@@ -134,7 +134,7 @@ export default function Footer() {
         </p>
 
         <div className="flex max-sm:flex-col  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
-          <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%]' />
+          <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%] border-white/40' />
           <Button text="Join Founding Access" className="max-sm:w-[88%]" href="#pricing" variant="orange" />
           <p
             className="shimmer-text w-full flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
@@ -157,14 +157,14 @@ export default function Footer() {
         {/* Platform label */}
         <div className="flex items-center gap-[0.5vw] max-md:gap-2 pb-[1vw] max-md:pb-[3vw]">
           <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
-          <span className="text18 text-[#B3B3B3]">Platform</span>
+          <span className="text18 text-[#B3B3B3] font-heading">Platform</span>
         </div>
 
         {/* Top 4-column grid: Vault | Categories | Documents | Legal */}
         <div className="grid grid-cols-[1fr_2.5fr_1fr_1fr]  gap-[2vw]  max-md:grid-cols-2 max-sm:grid-cols-1 ">
 
           {/* Vault */}
-          <div className="flex flex-col gap-[1.5vw] py-[2vw] max-sm:py-[6vw] border-t  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
+          <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-sm:py-[6vw] border-t  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
             <h3 className="text22 font-medium text-[#979797]">Vault</h3>
             <ul className="flex flex-col max-md:gap-1">
               {vaultFooterLinks.map(({ label, href }) => (
@@ -176,7 +176,7 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          <div className="flex flex-col gap-[1.5vw] py-[2vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-t max-sm:border-foreground/50">
+          <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-t max-sm:border-foreground/50">
             <h3 className="text22 font-medium text-[#979797]">Categories</h3>
             <div className="grid grid-cols-2 gap-x-[1vw] max-sm:grid-cols-2 max-sm:gap-x-4">
               {categoryColumns.map((col, ci) => (
@@ -192,7 +192,7 @@ export default function Footer() {
           </div>
 
           {/* Documents */}
-          <div className="flex flex-col gap-[1.5vw] py-[2vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0 max-md:border-t max-md:border-foreground/50 max-md:pt-[5vw] max-md:gap-[3vw] max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw]">
+          <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0 max-md:border-t max-md:border-foreground/50 max-md:pt-[5vw] max-md:gap-[3vw] max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw]">
             <h3 className="text22 font-medium text-[#979797]">Documents</h3>
             <ul className="flex flex-col max-md:gap-1">
               {docsLinks.map(({ label, href }) => (
@@ -204,7 +204,7 @@ export default function Footer() {
           </div>
 
           {/* Legal */}
-          <div className="flex flex-col gap-[1.5vw] py-[2vw] max-sm:py-[6vw]  border-t  border-foreground/50  max-md:border-foreground/50 max-md:border-t max-md:pt-[5vw] max-md:gap-[3vw] -0 max-sm:pl-0 max-sm:border-t max-sm:border-foreground/50 max-sm:pt-[6vw]">
+          <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-sm:py-[6vw]  border-t  border-foreground/50  max-md:border-foreground/50 max-md:border-t max-md:pt-[5vw] max-md:gap-[3vw] -0 max-sm:pl-0 max-sm:border-t max-sm:border-foreground/50 max-sm:pt-[6vw]">
             <h3 className="text22 font-medium text-[#979797]">Legal</h3>
             <ul className="flex flex-col max-md:gap-1">
               {legalLinks.map(({ label, href }) => (
@@ -223,10 +223,10 @@ export default function Footer() {
           <div className="flex flex-col gap-[1.1vw] pr-[2vw]  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
-              <span className="text18 text-[#B3B3B3]">Socials</span>
+              <span className="text18 text-[#B3B3B3] font-heading">Socials</span>
             </div>
             <div className="w-full h-px  border-t  border-foreground/50" />
-            {/* <p className="text18 text-[#B3B3B3]">Connect with us on</p> */}
+            {/* <p className="text18 text-[#B3B3B3] font-heading">Connect with us on</p> */}
             <ul className="flex flex-col max-md:gap-1">
               {socialLinks.map(({ label, href }) => (
                 <li key={label}>
@@ -240,7 +240,7 @@ export default function Footer() {
           <div className="flex flex-col gap-[1.1vw] px-[2vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00] " />
-              <span className="text18 text-[#B3B3B3]">Contact Us</span>
+              <span className="text18 text-[#B3B3B3] font-heading">Contact Us</span>
             </div>
             <div className="w-full h-px  border-t  border-foreground/50" />
             <ul className="flex flex-col max-md:gap-1">
@@ -258,13 +258,13 @@ export default function Footer() {
 
 
           {/* Newsletter */}
-          <div className="flex flex-col gap-[1vw] pl-[2vw]  border-foreground/50  max-md:border-foreground/50 max-md:pt-[5vw] max-md:col-span-2 max-md:pl-0 max-md:gap-[3vw] max-sm:py-[6vw] max-sm:pb-[20vw]">
+          <div className="flex flex-col gap-[1.15vw] pl-[2vw]  border-foreground/50  max-md:border-foreground/50 max-md:pt-[5vw] max-md:col-span-2 max-md:pl-0 max-md:gap-[3vw] max-sm:py-[6vw] max-sm:pb-[20vw]">
             <div className="flex items-center gap-[0.5vw] max-md:gap-2">
               <span className="size-[0.45vw] max-md:size-2 rounded-full bg-[#ff5f00]" />
-              <span className="text18 text-[#979797]">New effects, in your inbox.</span>
+              <span className="text18 text-[#B3B3B3] font-heading">New effects, in your inbox.</span>
             </div>
             <div className="w-full h-px border-t  border-foreground/50" />
-            <p className="text18 leading-[1.45] text-light-grey max-w-[25vw] max-md:max-w-full max-sm:mb-[6vw]">
+            <p className="text18 leading-[1.45] max-w-[25vw] mb-[1vw] max-md:max-w-full max-sm:mb-[6vw] text-[#979797]">
               Every new drop, plus the occasional behind-the-scenes build. No spam. Unsubscribe anytime.
             </p>
             {status === "success" ? (
@@ -284,7 +284,7 @@ export default function Footer() {
                     placeholder=""
                     aria-label="Email address"
                     disabled={status === "loading"}
-                    className="min-w-0 flex-1 rounded-none border border-grey bg-transparent! px-[1.2vw] py-[0.6vw] max-md:px-4 max-md:py-3 text18 text-foreground outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50"
+                    className="min-w-0 flex-1 rounded-none border border-grey bg-transparent! px-[1.2vw] py-[0.6vw] max-md:px-4 max-md:py-3 text18 outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50 text-white"
                   />
                   <button
                     type="submit"

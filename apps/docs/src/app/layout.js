@@ -52,7 +52,7 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${layGrotesk.className} antialiased`}>
+    <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
       </head>
