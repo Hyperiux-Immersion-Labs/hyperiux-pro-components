@@ -9,6 +9,7 @@ export default function Page() {
     <>
     <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
     <FileEncryption/>
+    
     </>
    
   );

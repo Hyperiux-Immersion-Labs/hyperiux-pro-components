@@ -55,7 +55,7 @@ function VersionNav({ activeVariant, onVariantChange }) {
             className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${
               isActive
                 ? "bg-black text-white"
-                : "text-black/65 hover:text-black"
+                : "text-neutral-600 hover:text-black"
             }`}
           >
             {variant.label}

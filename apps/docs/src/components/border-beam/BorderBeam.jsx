@@ -9,14 +9,14 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { sizePresets, sizeThemePresets, generateBeamCSS, getPulseDriverConfig } from './styles';
-import { registerPulseInstance } from './PulseDriver';
+import { dimensionPresets, themePresets, buildRimCSS, buildPulseConfig } from './styles';
+import { attachPulse } from './PulseDriver';
 
 // Runs synchronously before the browser paints on the client, but degrades to a
 // no-op-safe useEffect on the server (avoids the SSR useLayoutEffect warning).
-const useIsomorphicLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
+const useBrowserLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
 
-function useSystemTheme() {
+function usePreferredScheme() {
   const [theme, setTheme] = useState(() => {
     if (typeof window === 'undefined') return 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -37,12 +37,12 @@ function useSystemTheme() {
   return theme;
 }
 
-function resolveTheme(theme, systemTheme) {
-  return theme === 'auto' ? systemTheme : theme;
+function pickTheme(theme, schemeName) {
+  return theme === 'auto' ? schemeName : theme;
 }
 
 /**
- * BorderBeam component - Animated border beam effect for React (JSX + Tailwind)
+ * BeamBorder component - Animated border beam effect for React (JSX + Tailwind)
  *
  * Sizes:
  *   Rotate family: 'sm' | 'md' (default) | 'line'
@@ -56,9 +56,9 @@ function resolveTheme(theme, systemTheme) {
  *
  * @example
  * ```jsx
- * <BorderBeam>
+ * <BeamBorder>
  *   <Card>Content</Card>
- * </BorderBeam>
+ * </BeamBorder>
  * ```
  */
 export const BeamBorder = forwardRef(function BeamBorder(
@@ -84,24 +84,24 @@ export const BeamBorder = forwardRef(function BeamBorder(
   },
   ref
 ) {
-  const baseId = useId();
-  const id = baseId.replace(/:/g, '-');
-  const systemTheme = useSystemTheme();
-  const internalRef = useRef(null);
+  const rawId = useId();
+  const id = rawId.replace(/:/g, '-');
+  const schemeName = usePreferredScheme();
+  const hostRef = useRef(null);
 
-  const [isActive, setIsActive] = useState(active);
-  const [isFading, setIsFading] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [detectedRadius, setDetectedRadius] = useState(null);
-  const [pulseGlowScale, setPulseGlowScale] = useState({ x: 1, y: 1 });
+  const [isOn, setIsOn] = useState(active);
+  const [isClosing, setIsClosing] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
+  const [autoRadius, setAutoRadius] = useState(null);
+  const [glowScale, setGlowScale] = useState({ x: 1, y: 1 });
 
   // Auto-detect child border radius when no explicit value is provided.
   // useLayoutEffect so the detected radius is applied before the browser paints
   // the first frame - otherwise the beam paints square, then snaps to the child's
   // radius a frame later (a visible corner "glitch" on reload).
-  useIsomorphicLayoutEffect(() => {
+  useBrowserLayoutEffect(() => {
     if (customBorderRadius != null) return;
-    const el = internalRef.current;
+    const el = hostRef.current;
     if (!el) return;
 
     const detect = () => {
@@ -110,7 +110,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
       const computed = getComputedStyle(child);
       const raw = parseFloat(computed.borderTopLeftRadius);
       if (!isNaN(raw) && raw > 0) {
-        setDetectedRadius(raw);
+        setAutoRadius(raw);
       }
     };
 
@@ -123,23 +123,23 @@ export const BeamBorder = forwardRef(function BeamBorder(
   }, [customBorderRadius, children]);
 
   useEffect(() => {
-    if (active && !isActive && !isFading) {
-      setIsActive(true);
-    } else if (!active && isActive && !isFading) {
-      setIsFading(true);
+    if (active && !isOn && !isClosing) {
+      setIsOn(true);
+    } else if (!active && isOn && !isClosing) {
+      setIsClosing(true);
     }
-  }, [active, isActive, isFading]);
+  }, [active, isOn, isClosing]);
 
   // Pause the (paint-heavy) animations while the element is scrolled offscreen.
   // This stops per-frame painting entirely for hidden instances without changing
   // their logical active/fading state, so it never fires onActivate/onDeactivate.
   useEffect(() => {
-    const el = internalRef.current;
+    const el = hostRef.current;
     if (!el || typeof IntersectionObserver === 'undefined') return;
 
     const observer = new IntersectionObserver(
       entries => {
-        for (const entry of entries) setIsVisible(entry.isIntersecting);
+        for (const entry of entries) setOnScreen(entry.isIntersecting);
       },
       // Start animating slightly before the element scrolls into view.
       { rootMargin: '256px' }
@@ -154,11 +154,11 @@ export const BeamBorder = forwardRef(function BeamBorder(
   // per-axis so the halo grows/shrinks to fit any component it's applied to.
   useEffect(() => {
     if (size !== 'pulse-outside') {
-      setPulseGlowScale({ x: 1, y: 1 });
+      setGlowScale({ x: 1, y: 1 });
       return;
     }
 
-    const el = internalRef.current;
+    const el = hostRef.current;
     if (!el) return;
 
     const REF_WIDTH = 350;
@@ -176,7 +176,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
       if (!rect.width || !rect.height) return;
       const x = +clamp(rect.width / REF_WIDTH).toFixed(3);
       const y = +clamp(rect.height / REF_HEIGHT).toFixed(3);
-      setPulseGlowScale(prev => (prev.x === x && prev.y === y ? prev : { x, y }));
+      setGlowScale(prev => (prev.x === x && prev.y === y ? prev : { x, y }));
     };
 
     measure();
@@ -190,13 +190,13 @@ export const BeamBorder = forwardRef(function BeamBorder(
     return () => resizeObserver.disconnect();
   }, [size, children]);
 
-  const handleAnimationEnd = useCallback(
+  const onAnimEnd = useCallback(
     (e) => {
       const animationName = e.animationName;
 
       if (animationName.includes('fade-out')) {
-        setIsActive(false);
-        setIsFading(false);
+        setIsOn(false);
+        setIsClosing(false);
         onDeactivate?.();
       } else if (animationName.includes('fade-in')) {
         onActivate?.();
@@ -207,78 +207,78 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [onActivate, onDeactivate, consumerOnAnimationEnd]
   );
 
-  const resolvedTheme = resolveTheme(theme, systemTheme);
-  const themeConfig = sizeThemePresets[size][resolvedTheme];
-  const sizeConfig = sizePresets[size];
+  const activeTheme = pickTheme(theme, schemeName);
+  const finish = themePresets[size][activeTheme];
+  const dims = dimensionPresets[size];
 
-  const isPulse = size === 'pulse-inner' || size === 'pulse-outside';
+  const isBreathe = size === 'pulse-inner' || size === 'pulse-outside';
 
   // Radius is driven solely by the wrapped child (its Tailwind `rounded-*`),
   // detected at runtime - the beam no longer imposes its own preset radius.
   // Falls back to 0 only for the pre-detection frame.
-  const finalBorderRadius = customBorderRadius ?? detectedRadius ?? 0;
-  const finalDuration = duration ?? (size === 'line' ? 3.1 : isPulse ? 2.3 : 1.96);
-  const finalSaturation = saturation ?? themeConfig.saturation;
-  const finalBrightness = brightnessProp ?? themeConfig.brightness ?? 1.3;
-  const finalHueRange = size === 'line' ? Math.min(hueRange, 13) : hueRange;
-  const finalStaticColors = colorVariant === 'mono' ? true : staticColors;
+  const radius = customBorderRadius ?? autoRadius ?? 0;
+  const cycle = duration ?? (size === 'line' ? 3.1 : isBreathe ? 2.3 : 1.96);
+  const sat = saturation ?? finish.saturation;
+  const bright = brightnessProp ?? finish.brightness ?? 1.3;
+  const hueSpan = size === 'line' ? Math.min(hueRange, 13) : hueRange;
+  const frozen = colorVariant === 'mono' ? true : staticColors;
 
-  const cssStyles = useMemo(
+  const instanceCSS = useMemo(
     () =>
-      generateBeamCSS({
+      buildRimCSS({
         id,
-        borderRadius: finalBorderRadius,
-        borderWidth: sizeConfig.borderWidth,
-        duration: finalDuration,
-        strokeOpacity: themeConfig.strokeOpacity,
-        innerOpacity: themeConfig.innerOpacity,
-        bloomOpacity: themeConfig.bloomOpacity,
-        innerShadow: themeConfig.innerShadow,
+        borderRadius: radius,
+        borderWidth: dims.borderWidth,
+        duration: cycle,
+        strokeOpacity: finish.strokeOpacity,
+        innerOpacity: finish.innerOpacity,
+        bloomOpacity: finish.bloomOpacity,
+        innerShadow: finish.innerShadow,
         size,
         colorVariant,
-        staticColors: finalStaticColors,
-        brightness: finalBrightness,
-        saturation: finalSaturation,
-        hueRange: finalHueRange,
-        theme: resolvedTheme,
-        hairlineOpacity: themeConfig.hairlineOpacity,
+        staticColors: frozen,
+        brightness: bright,
+        saturation: sat,
+        hueRange: hueSpan,
+        theme: activeTheme,
+        hairlineOpacity: finish.hairlineOpacity,
       }),
     [
       id,
-      finalBorderRadius,
-      sizeConfig.borderWidth,
-      finalDuration,
-      themeConfig.strokeOpacity,
-      themeConfig.innerOpacity,
-      themeConfig.bloomOpacity,
-      themeConfig.innerShadow,
-      themeConfig.hairlineOpacity,
+      radius,
+      dims.borderWidth,
+      cycle,
+      finish.strokeOpacity,
+      finish.innerOpacity,
+      finish.bloomOpacity,
+      finish.innerShadow,
+      finish.hairlineOpacity,
       size,
       colorVariant,
-      finalStaticColors,
-      finalBrightness,
-      finalSaturation,
-      finalHueRange,
-      resolvedTheme,
+      frozen,
+      bright,
+      sat,
+      hueSpan,
+      activeTheme,
     ]
   );
 
   // Runtime config for the JS breathing driver (null for non-pulse sizes).
-  const driverConfig = useMemo(
+  const pulseConfig = useMemo(
     () =>
-      isPulse
-        ? getPulseDriverConfig(size, resolvedTheme, finalDuration, finalHueRange, finalStaticColors, id)
+      isBreathe
+        ? buildPulseConfig(size, activeTheme, cycle, hueSpan, frozen, id)
         : null,
-    [isPulse, size, resolvedTheme, finalDuration, finalHueRange, finalStaticColors, id]
+    [isBreathe, size, activeTheme, cycle, hueSpan, frozen, id]
   );
 
   // Drive the Pulse breathing from the shared, fps-capped rAF loop while the
   // instance is on, onscreen, and the user hasn't requested reduced motion.
   useEffect(() => {
-    if (!driverConfig) return;
-    if (!(isActive || isFading) || !isVisible) return;
+    if (!pulseConfig) return;
+    if (!(isOn || isClosing) || !onScreen) return;
 
-    const el = internalRef.current;
+    const el = hostRef.current;
     if (!el) return;
 
     if (
@@ -288,12 +288,12 @@ export const BeamBorder = forwardRef(function BeamBorder(
       return;
     }
 
-    return registerPulseInstance(el, driverConfig);
-  }, [driverConfig, isActive, isFading, isVisible]);
+    return attachPulse(el, pulseConfig);
+  }, [pulseConfig, isOn, isClosing, onScreen]);
 
-  const setRefs = useCallback(
+  const assignRef = useCallback(
     (node) => {
-      internalRef.current = node;
+      hostRef.current = node;
       if (typeof ref === 'function') {
         ref(node);
       } else if (ref) {
@@ -303,41 +303,41 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [ref]
   );
 
-  const mergedStyle = {
+  const rootStyle = {
     ...(style ?? {}),
-    '--beam-strength': Math.max(0, Math.min(1, strength)),
+    '--rim-strength': Math.max(0, Math.min(1, strength)),
     ...(size === 'pulse-outside'
-      ? { '--pulse-glow-sx': pulseGlowScale.x, '--pulse-glow-sy': pulseGlowScale.y }
+      ? { '--pulse-scale-x': glowScale.x, '--pulse-scale-y': glowScale.y }
       : {}),
   };
 
   // Static layout via Tailwind. The dynamic border-radius, gradients, masks, and
   // keyframes live in the generated <style> (they can't be Tailwind utilities).
-  const wrapperClasses =
+  const layoutClasses =
     size === 'pulse-outside'
       ? 'relative isolate overflow-visible'
-      : isPulse
+      : isBreathe
         ? 'relative isolate overflow-hidden'
         : 'relative overflow-hidden';
 
-  const mergedClassName = [wrapperClasses, className].filter(Boolean).join(' ');
+  const rootClassName = [layoutClasses, className].filter(Boolean).join(' ');
 
   return (
     <>
-      <style>{cssStyles}</style>
+      <style>{instanceCSS}</style>
       <div
         {...props}
-        ref={setRefs}
-        data-beam={id}
-        data-active={isActive && !isFading ? '' : undefined}
-        data-fading={isFading ? '' : undefined}
-        data-paused={isActive && !isFading && !isVisible ? '' : undefined}
-        className={mergedClassName}
-        style={mergedStyle}
-        onAnimationEnd={handleAnimationEnd}
+        ref={assignRef}
+        data-rim={id}
+        data-active={isOn && !isClosing ? '' : undefined}
+        data-fading={isClosing ? '' : undefined}
+        data-paused={isOn && !isClosing && !onScreen ? '' : undefined}
+        className={rootClassName}
+        style={rootStyle}
+        onAnimationEnd={onAnimEnd}
       >
         {children}
-        <div data-beam-bloom className="pointer-events-none" />
+        <div data-rim-glow className="pointer-events-none" />
       </div>
     </>
   );

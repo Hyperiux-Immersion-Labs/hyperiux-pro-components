@@ -40,6 +40,7 @@ function computeSlot(cardIdx, centerIdx, total) {
 
 
 export default function DepthCardStackComp({ cards }) {
+ const sectionRef = useRef(null);
  const cardRefs = useRef([]);
  const cardFaceRefs = useRef([]);
  const textureRefs = useRef([]);
@@ -66,6 +67,31 @@ export default function DepthCardStackComp({ cards }) {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  // On mobile, the cards' 3D/composited layers (perspective + preserve-3d +
+  // will-change) can leave the section's bottom strip unpainted, exposing the
+  // dark body background as a "black margin". A card move repaints it, so force
+  // that repaint proactively — on mount and whenever the viewport changes
+  // (e.g. the mobile URL bar collapsing, which is exactly when the strip shows).
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const forceRepaint = () => {
+      el.style.transform = "translateZ(0)";
+      requestAnimationFrame(() => {
+        if (sectionRef.current === el) el.style.transform = "";
+      });
+    };
+
+    forceRepaint();
+    window.addEventListener("resize", forceRepaint);
+    window.addEventListener("orientationchange", forceRepaint);
+    return () => {
+      window.removeEventListener("resize", forceRepaint);
+      window.removeEventListener("orientationchange", forceRepaint);
+    };
+  }, [isStackReady]);
+
  const cardWidth = isTablet ? TABLET_CARD_W : CARD_W;
  const cardHeight = isTablet ? TABLET_CARD_H : CARD_H;
 
@@ -80,9 +106,9 @@ export default function DepthCardStackComp({ cards }) {
  const slot = computeSlot(i, centerRef.current, total);
  const props = getSlotProps(slot);
  if (animate && slot !== null) {
- gsap.to(el, { ...props, duration: 0.55, ease:"power2.inOut" });
+ gsap.to(el, { ...props, duration: 0.55, ease:"power2.inOut", force3D: true });
  } else {
- gsap.set(el, props);
+ gsap.set(el, { ...props, force3D: true });
  }
  });
  }, [cards]);
@@ -145,7 +171,7 @@ export default function DepthCardStackComp({ cards }) {
  const oldProps = getSlotProps(oldSlot);
  const newProps = getSlotProps(newSlot);
 
- gsap.set(cardEl, oldProps);
+ gsap.set(cardEl, { ...oldProps, force3D: true });
 
  if (oldSlot === null && newSlot !== null) {
  gsap.set(cardEl, {
@@ -155,6 +181,7 @@ export default function DepthCardStackComp({ cards }) {
  scale: Math.max(newProps.scale - 0.04, 0.72),
  opacity: 0,
  zIndex: newProps.zIndex,
+ force3D: true,
  });
  }
 
@@ -172,12 +199,14 @@ export default function DepthCardStackComp({ cards }) {
  opacity: 1,
  ease:"cubic-bezier(.25, .46, .45, .94)",
  duration: 0.3,
+ force3D: true,
  }, 0);
  tl.to(cardEl, {
  ...newProps,
  rotateY: 0,
  duration: 0.18,
  ease:"cubic-bezier(.32, .72, 0, 1)",
+ force3D: true,
  }, 0.22);
  return;
  }
@@ -187,6 +216,7 @@ export default function DepthCardStackComp({ cards }) {
  ...newProps,
  duration: 0.54,
  ease:"power2.inOut",
+ force3D: true,
  }, 0.06);
  });
 
@@ -318,7 +348,7 @@ export default function DepthCardStackComp({ cards }) {
  }, []);
 
  return (
- <section className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen pb-5 select-none bg-white max-sm:h-full max-sm:min-h-screen">
+ <section ref={sectionRef} className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen max-sm:w-screen max-sm:overflow-x-hidden pb-5 select-none bg-white max-sm:h-full max-sm:min-h-dvh">
 <p className="text-sm max-sm:text-sm max-md:text-lg font-medium text-blue-500 mb-1 max-md:mb-3">
   Hyperiux-UI Library
 </p>

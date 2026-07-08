@@ -19,26 +19,20 @@ import {
 } from"three";
 import { degToRad } from"three/src/math/MathUtils.js";
 
-/**
- * CONFIG CONSTANTS - Adjust these to customize the book appearance and animation
- */
-const EASING_FACTOR = 0.5; // Controls the speed of page rotation easing (lower = slower)
-const EASING_FACTOR_FOLD = 0.3; // Controls the speed of page fold animation
-const INSIDE_CURVE_STRENGTH = 0.18; // How much the inside of the page curves when opened
-const OUTSIDE_CURVE_STRENGTH = 0.05; // How much the outside edges curve
+
+const EASING_FACTOR = 0.5; 
+const EASING_FACTOR_FOLD = 0.3; 
+const INSIDE_CURVE_STRENGTH = 0.18; 
+const OUTSIDE_CURVE_STRENGTH = 0.05; 
 const TURNING_CURVE_STRENGTH = 0.09; // Curve strength during page turning animation
 
 const PAGE_WIDTH = 1.28; // Width of a single page
 const PAGE_HEIGHT = 1.71; // Height of a single page (4:3 aspect ratio)
-const PAGE_DEPTH = 0.003; // Thickness of paper
-const PAGE_SEGMENTS = 30; // Number of bone segments (more = more flexible, but slower)
+const PAGE_DEPTH = 0.003; 
+const PAGE_SEGMENTS = 30;
 const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
 
-/**
- * GEOMETRY SETUP
- * Creates a segmented geometry that can be deformed by skeleton bones
- * Each segment is controlled by 2 bones for smooth deformation
- */
+
 const pageGeometry = new BoxGeometry(
  PAGE_WIDTH,
  PAGE_HEIGHT,
@@ -47,7 +41,7 @@ const pageGeometry = new BoxGeometry(
  2
 );
 
-// Translate geometry so rotation happens from the left edge
+
 pageGeometry.translate(PAGE_WIDTH / 2, 0, 0);
 
 // Setup skin weights and indices for skeletal animation
@@ -89,10 +83,7 @@ const pageMaterials = [
  new MeshStandardMaterial({ color: whiteColor }),
 ];
 
-/**
- * Helper function to generate page pairs from image array
- * Creates front/back pairs: [0,1], [2,3], [4,5], etc.
- */
+
 const generatePages = (imageArray) => {
  if (!imageArray || imageArray.length === 0) {
  return [];
@@ -132,15 +123,7 @@ const preloadTextures = (pages, pathPattern) => {
  });
 };
 
-/**
- * PAGE COMPONENT
- * Represents a single page in the book with skinned mesh deformation
- *  * ANIMATION LOGIC:
- * - Uses skeleton with 31 bones along the page width
- * - Each bone rotates based on whether the page is opened
- * - Inner bones curve more (3D effect), outer bones curve less
- * - During turning, bones follow a sine wave for smooth animation
- */
+
 const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  pathPattern,
  pages,

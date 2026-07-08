@@ -5,9 +5,9 @@ import InfiniteCarouselComp from "./InfiniteCarouselComp";
 
 function CarouselCard({ title, subtitle, description, themeClass, points }) {
     return (
-        <div className="w-lg px-3 max-md:w-md max-md:min-w-md max-md:max-w-[calc(100vw-5.5rem)] max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
+        <div className="w-lg px-3 max-md:w-md max-md:min-w-md max-md:max-w-[calc(100vw-5.5rem)] max-sm:h-full max-sm:w-[calc(100vw-1.5rem)] max-sm:min-w-[calc(100vw-1.5rem)] max-sm:max-w-[calc(100vw-1.5rem)] max-sm:px-0">
             <div
-                className={`flex flex-col gap-[1.2vw] border max-md:gap-[2vw] max-sm:w-full max-sm:gap-[4vw] p-[2vw] max-md:p-[3vw] max-sm:px-6 max-sm:py-10 min-h-120 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
+                className={`flex flex-col gap-[1.2vw] border max-md:gap-[2vw] max-sm:h-full max-sm:w-full max-sm:gap-[4vw] p-[2vw] max-md:p-[3vw] max-sm:px-6 max-sm:py-10 min-h-120 w-full overflow-hidden rounded-4xl max-md:min-h-128 max-sm:min-h-100 max-sm:rounded-2xl ${themeClass}`}
                 style={{ borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
             >
                 <div className="flex h-full flex-col gap-5">
@@ -30,7 +30,7 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 
 export default function InfiniteCarousel() {
     return (
-        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12 max-sm:min-h-0 max-sm:h-auto max-sm:pb-0">
+        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-md:pt-6 max-md:pb-12 max-sm:min-h-0 max-sm:h-auto max-sm:pb-10">
           
 
             <div className="w-full">
