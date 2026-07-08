@@ -36,12 +36,12 @@ const cards = [
   },
   {
     title: 'Dependency clarity',
-    description: 'Lightweight by default. Smooth under pressure',
-    label: 'Hidden Bundle',
+    description: 'Lightweight by default. Smooth under pressure.',
+    label: 'Hidden bundle cost',
   },
   {
     title: 'Mobile fallbacks',
-    description: 'No mystery bundles or hidden landmines',
+    description: 'Responsive fallbacks for touch devices and smaller screens.',
     label: 'CLS Spikes',
   },
   {
@@ -151,7 +151,7 @@ export default function Tension() {
         <div className="w-full max-sm:w-[95%] max-sm:mx-auto text-center">
           <RandomBlur as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
             Good Motion is{' '}
-            <span className="text-[#ff5f00]">Harder</span> Than it Looks
+            <span className="text-[#ff5f00]">Harder</span> Than It Looks
           </RandomBlur>
 
           <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 font-light leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">

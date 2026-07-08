@@ -167,7 +167,7 @@ export default function GradientFill() {
                 {[
                     'Most websites are not broken. They are forgettable.',
                     'The difference now lives in the interaction layer: how the page moves, responds, reveals, transitions, and guides attention.',
-                    // 'But building that layer from scratch is slow & hard. Good motion needs taste, timing, restraint, performance discipline, cleanup, responsive behavior, mobile fallbacks and reduced-motion support. Most teams either skip it, overdo it, or rebuild the same interaction from scratch for every project.',
+                    'Your site does not need more decoration. It needs motion that earns its place.',
                 ].map((text, i) => (
                     <p
                         key={i}

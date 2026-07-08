@@ -394,7 +394,7 @@ export default function Hero() {
           <p  ref={paraRef} className="text20 font-medium text-[#cdcdcd]">React & Next.js Interaction Effects Library</p>
           <h1 className=" relative text120 w-[65%] max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%]  max-md:indent-0!">
             <span ref={headingRef} className="inline-block">
-             The Interaction Layer your React Site is Missing
+             The Interaction Layer Your React Site is Missing
             </span>
           </h1>
         </div>
@@ -403,7 +403,7 @@ export default function Hero() {
           ref={pRef}
           className="text24 w-[50%] text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
         >
-         Source-first scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Start with 32 Free Core effects today. Join Founding Access for 83 Pro effects next week.
+         Source-first scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today. Join Founding Access for first access to 80+ Pro effects next week.
         </p>
 
         <div

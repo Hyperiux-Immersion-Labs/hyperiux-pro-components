@@ -17,7 +17,7 @@ const UI_CARDS = [
   {
     id: 2,
     title: "Source code you own",
-    text: "Vault is built for people that want control. Every effect lands in your repo as real, inspectable code. No runtime dependency on us. No lock-in. Change anything, keep everything.",
+    text: "Vault is built for people who want control. Every effect lands in your repo as real, inspectable code. No runtime dependency on us. No lock-in. Change anything, keep everything.",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const UI_CARDS = [
   {
     id: 4,
     title: "Agency-grade creative frontend",
-    text: "Vault is built from Hyperiux’s creative frontend discipline. These effects are refined on launches we actually shipped. Designed with reduced-motion, mobile, and cleanup considerations. Proven where it counts, not just in a sandbox",
+    text: "Vault is built from Hyperiux’s creative frontend discipline. These effects are refined on launches we actually shipped. Designed with reduced-motion, mobile, and cleanup considerations. Proven where it counts, not just in a sandbox.",
   },
   {
     id: 5,

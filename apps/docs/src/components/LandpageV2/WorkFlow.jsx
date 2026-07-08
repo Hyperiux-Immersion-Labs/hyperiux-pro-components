@@ -22,7 +22,7 @@ const STEPS = [
     {
         num: '02',
         title: 'Install',
-        text: 'Use the Hyperiux CLI to add only the effect you need. Vault adds only the files that effect needs, not a full interaction circus. You can inspect and own the implementation.',
+        text: 'Use the Hyperiux CLI to add only the effect you need. Vault adds only the files that effect needs, not an entire animation framework. You can inspect and own the implementation.',
         Icon: Download,
     },
     {

@@ -215,7 +215,7 @@ export default function DocsIntro() {
 
       <Para>
         Use the CLI to add the selected effect. Vault adds the files needed for that
-        pattern, not a full interaction circus.
+        pattern, not an entire animation framework.
       </Para>
 <Heading3>Tune</Heading3>
      

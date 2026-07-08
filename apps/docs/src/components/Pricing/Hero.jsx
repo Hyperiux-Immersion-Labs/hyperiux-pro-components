@@ -24,7 +24,7 @@ const Hero = () => {
                         className="text120 max-sm:text-left max-sm:indent-0! relative w-[45vw] max-md:w-[75vw]  max-sm:w-full"
                     >
                         <span className="inline-block">
-                           Start free. Join Founding Access for Pro.
+                           Start free today. Join Founding Access for Pro.
                         </span>
                     </RandomBlur>
                 </div>

@@ -18,7 +18,7 @@ const ReflectiveRods = dynamic(() => import("@/Experience/ReflectiveRods"), {
 });
 
 const vaultFooterLinks = [
-  { label: "Documentations", href: "/docs" },
+  { label: "Documentation", href: "/docs" },
   { label: "Pricing", href: "/pricing" },
   { label: "Github", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
 ];
@@ -126,7 +126,7 @@ export default function Footer() {
           as="h2"
           className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! w-[70%]"
         >
-          Build the Interaction Layer your Website is Missing.
+          Build the Interaction Layer Your Website is Missing.
         </RandomBlur>
 
 
