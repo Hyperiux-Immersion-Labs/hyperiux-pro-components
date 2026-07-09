@@ -66,15 +66,28 @@ export default function SplitLine({
 
     if (!target) return;
 
-    const reduceMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    // Reduced motion: skip the split and the scroll animation entirely -
+    // just show the content. Also avoids the SplitText forced-layout cost
+    // (production's reduce path still splits before bailing).
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+      if (children) {
+        gsap.set(wrapper, { autoAlpha: 1 });
+      } else {
+        gsap.set(decorativeLine, {
+          opacity: 1,
+          scaleX: 1,
+          transformOrigin: origin,
+        });
+      }
+      return;
+    }
 
     let ctx;
     let split;
     let poll;
     let bootCheck;
     let hasCreatedAnimation = false;
+    let handleLoaderComplete;
     let teardownMount;
 
     const mount = () => {
@@ -86,19 +99,6 @@ export default function SplitLine({
           aria: "none",
         });
 
-        if (reduceMotion) {
-          gsap.set(wrapper, {
-            autoAlpha: 1,
-          });
-
-          gsap.set(split.lines, {
-            opacity: 1,
-            yPercent: 0,
-          });
-
-          return;
-        }
-
         gsap.set(wrapper, {
           autoAlpha: 1,
         });
@@ -108,16 +108,6 @@ export default function SplitLine({
           yPercent: 100,
         });
       } else {
-        if (reduceMotion) {
-          gsap.set(decorativeLine, {
-            opacity: 1,
-            scaleX: 1,
-            transformOrigin: origin,
-          });
-
-          return;
-        }
-
         gsap.set(decorativeLine, {
           opacity: 0,
           scaleX: 0,
@@ -125,14 +115,6 @@ export default function SplitLine({
         });
       }
     }, target);
-
-    if (reduceMotion) {
-      teardownMount = () => {
-        if (ctx) ctx.revert();
-        split?.revert();
-      };
-      return;
-    }
 
     const createAnimation = () => {
       if (hasCreatedAnimation) return;
@@ -208,7 +190,7 @@ export default function SplitLine({
       });
     };
 
-    const handleLoaderComplete = () => {
+    handleLoaderComplete = () => {
       createAnimation();
     };
 

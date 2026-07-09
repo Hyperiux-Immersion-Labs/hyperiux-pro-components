@@ -2,8 +2,28 @@
 
 import "highlight.js/styles/night-owl.css";
 import { useMemo, useState } from "react";
-import hljs from "highlight.js";
+// lib/core + explicit registrations instead of the full "highlight.js" build,
+// which bundles all 150+ grammars (~300KB of Mathematica/ISBL/GML/... nobody
+// renders). Every language= value used across the site maps to one of these.
+import hljs from "highlight.js/lib/core";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import xml from "highlight.js/lib/languages/xml";
+import css from "highlight.js/lib/languages/css";
+import bash from "highlight.js/lib/languages/bash";
+import json from "highlight.js/lib/languages/json";
+import plaintext from "highlight.js/lib/languages/plaintext";
+import glsl from "highlight.js/lib/languages/glsl";
 import { Copy } from "lucide-react";
+
+hljs.registerLanguage("javascript", javascript); // aliases: js, jsx
+hljs.registerLanguage("typescript", typescript); // aliases: ts, tsx
+hljs.registerLanguage("xml", xml); // embedded markup in js template strings
+hljs.registerLanguage("css", css);
+hljs.registerLanguage("bash", bash); // alias: sh
+hljs.registerLanguage("json", json);
+hljs.registerLanguage("plaintext", plaintext); // aliases: text, txt
+hljs.registerLanguage("glsl", glsl); // /tech/webgl shader example
 
 export function CodeBlock({
     code,

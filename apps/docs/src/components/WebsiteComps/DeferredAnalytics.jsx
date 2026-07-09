@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
-import { GoogleTagManager } from "@next/third-parties/google";
 import { isLighthouseOrHeadless } from "@/lib/audit";
 
 // Tracking / session-recording scripts (GTM, Microsoft Clarity, OpenPanel,
@@ -26,7 +25,9 @@ export default function DeferredAnalytics() {
 
   return (
     <>
-      <GoogleTagManager gtmId="GTM-NCDH9PHF" />
+      {/* GTM intentionally NOT loaded here - the container is bootstrapped by
+          the synchronous script in layout.js <head>; a second GoogleTagManager
+          mount double-initialized the container. */}
       <Script
         id="microsoft-clarity"
         strategy="afterInteractive"

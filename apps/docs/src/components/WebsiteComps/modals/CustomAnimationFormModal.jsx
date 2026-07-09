@@ -241,9 +241,15 @@ function CustomAnimationFormModalInner() {
 
       if (!response.ok) {
         setStatus("idle");
-        setServerError(
-          data?.error || "Something went wrong. Please try again."
-        );
+        // Field-level errors (e.g. the server-side blocked-domain check) land
+        // on their inputs; the banner is only for non-field failures.
+        if (data?.errors && Object.keys(data.errors).length > 0) {
+          setErrors((prev) => ({ ...prev, ...data.errors }));
+        } else {
+          setServerError(
+            data?.error || "Something went wrong. Please try again."
+          );
+        }
         return;
       }
 

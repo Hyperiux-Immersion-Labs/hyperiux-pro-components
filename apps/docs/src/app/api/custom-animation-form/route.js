@@ -1,5 +1,6 @@
 import { CustomAnimationFormEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormEmail";
 import { sendEmail } from "@/lib/resend";
+import { isBlockedEmailDomain } from "@/lib/blocked-email-domains";
 
 function validatePayload(body) {
   const errors = {};
@@ -15,6 +16,8 @@ function validatePayload(body) {
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.email = "A valid email is required.";
+  } else if (isBlockedEmailDomain(email)) {
+    errors.email = "Please use a work or personal email address.";
   }
 
   if (!number || !/^[+()\-.\s0-9]{7,24}$/.test(number)) {

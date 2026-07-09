@@ -25,6 +25,16 @@ export default function GradientFill() {
         const container = containerRef.current
         if (!container) return
 
+        // Reduced motion: the three paragraphs are absolutely stacked and
+        // only readable because the scrub animation shows one at a time.
+        // Statically show the first and hide the rest; the glow stays put.
+        if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+            textRefs.current.forEach((el, i) => {
+                if (i > 0) el.style.visibility = 'hidden'
+            })
+            return
+        }
+
         const splits = []
         let ctx
 

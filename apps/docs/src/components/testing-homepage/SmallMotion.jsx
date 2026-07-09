@@ -15,6 +15,14 @@ export default function SmallMotion() {
         const section = sectionRef.current
         if (!section) return
 
+        // Reduced motion: both headings are absolutely stacked and only
+        // readable because the scrub shows one at a time. Show the first
+        // statically and hide the second; skip the split and animation.
+        if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+            if (textRef2.current) textRef2.current.style.visibility = 'hidden'
+            return
+        }
+
         let smallSplit, bigSplit, tl
 
         // ponytail: defer the SplitText calls until this below-fold section

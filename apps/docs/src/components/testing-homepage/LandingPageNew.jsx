@@ -1,34 +1,40 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
-// import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
 import Tension from "./Tension";
 import Solution from "./Solution";
-import FeaturedStoryTelling from "./FeaturedStoryTelling";
 import Hero from "./Hero";
 import Workflow from "./WorkFlow";
 import FAQs from "./FAQs";
 import UIKit from "./UIKit";
 import SmallMotion from "./SmallMotion";
 import ForDevelopers from "./ForDevelopers";
+// import StripTransition from "./StripTransition";
 import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
-import Footer from "./Footer";
 import CTA from "./CTA";
-import StorytellingMobile from "./StoryTellingMoble";
-import VaultGridNewMobile from "./VaultGridMobile";
+// import CTA2 from "./CTA2";
+
+// Heaviest and conditional components
+const GlowingPlatesDeferred = dynamic(() => import("@/Experience/GlowingPlatesDeferred"), { ssr: false });
+const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"));
+const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
+const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
 import Loader from "./Loader";
-import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
+
+const Footer = dynamic(() => import("./Footer"), {
+  loading: () => null,
+});
 
 export default function LandingPageNew({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
 
   return (
     <>
-
       <VaultShell>
         <Loader />
         <main id="main-content">

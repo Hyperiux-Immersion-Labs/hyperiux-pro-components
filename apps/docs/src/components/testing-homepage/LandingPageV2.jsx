@@ -15,12 +15,10 @@ import FAQs from "./FAQs";
 import UIKit from "./UIKit";
 import SmallMotion from "./SmallMotion";
 import ForDevelopers from "./ForDevelopers";
-import StripTransition from "./StripTransition";
 import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
 import Footer from "./Footer";
 import CTA from "./CTA";
-import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
 
@@ -29,34 +27,35 @@ export default function LandingPageV2({ faqItems }) {
 
   return (
     <>
-
       <VaultShell>
         <Loader />
-        <Hero />
-        {/* <GlowingPlatesDeferred /> */}
-        <TrustStrip />
-        <Problem />
-        <GradientFill />
-        <Tension />
-        <Solution />
-        {isMounted &&
-          (isMobile ? (
-            <>
-              <StorytellingMobile />
-              <VaultGridNewMobile />
-            </>
-          ) : (
-            <FeaturedStoryTelling />
-          ))}
-        <Workflow />
-        <UIKit /> 
-        <SmallMotion />
-        <ForDevelopers />
-        {/* <StripTransition /> */}
-        <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
-        <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
-        <CTA />
-        {/* <CTA2 href="#pricing-cards" isHomePage /> */}
+        <main id="main-content">
+          <Hero />
+          <GlowingPlatesDeferred />
+          <TrustStrip />
+          <Problem />
+          <GradientFill />
+          <Tension />
+          <Solution />
+          {isMounted &&
+            (isMobile ? (
+              <>
+                <StorytellingMobile />
+                <VaultGridNewMobile />
+              </>
+            ) : (
+              <FeaturedStoryTelling />
+            ))}
+          <Workflow />
+          <UIKit />
+          <SmallMotion />
+          <ForDevelopers />
+          {/* <StripTransition /> */}
+          <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
+          <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
+          <CTA />
+          {/* <CTA2 href="#pricing-cards" isHomePage /> */}
+        </main>
         <Footer />
       </VaultShell>
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useMemo, useRef } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -15,7 +15,7 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
-  precision highp float;
+  precision mediump float;
   precision highp int;
 
   uniform vec2 uResolution;
@@ -83,7 +83,7 @@ const fragmentShader = `
     );
 
     float sprd = (0.1580 + 0.01) / ((aspectRatio + 1.0) / 2.0);
-    float amt = (1.0000 * 3.0) * 0.012 * dist;
+    float amt = (1.0000 * 3.0) * 0.015 * dist;
 
     vec2 invPos = vec2(0.5);
     float freq = 5.0 * sprd;
@@ -143,7 +143,7 @@ const fragmentShader = `
 `;
 
 function FlowFieldPlane({
-  texturePath = "/assets/textures/orange-1.png",
+  texturePath = "/assets/textures/orange.png",
   imageResolution = [500, 500],
   mouseLerp = 0.05,
   timeSpeed = 0.0002,
@@ -155,6 +155,7 @@ function FlowFieldPlane({
 
   const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
   const targetMouseRef = useRef(new THREE.Vector2(0.5, 0.5));
+  const elapsedRef = useRef(0);
 
   const uniforms = useMemo(
     () => ({
@@ -243,13 +244,21 @@ function FlowFieldPlane({
     };
   }, []);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     const material = materialRef.current;
     if (!material) return;
 
     mouseRef.current.lerp(targetMouseRef.current, mouseLerp);
 
-    material.uniforms.uTime.value = performance.now() * timeSpeed;
+    /*
+      Accumulate from a clamped delta rather than reading performance.now().
+      The clock only advances while the canvas is in view, so the flow field
+      picks up where it left off instead of jumping ahead by the time spent
+      scrolled away.
+    */
+    elapsedRef.current += Math.min(delta, 0.1) * 1000 * timeSpeed;
+
+    material.uniforms.uTime.value = elapsedRef.current;
     material.uniforms.uMousePos.value.copy(mouseRef.current);
   });
 
@@ -271,12 +280,41 @@ function FlowFieldPlane({
 }
 
 export default function FlowFieldHero({
-  texturePath = "/assets/textures/orange-1.png",
-  imageResolution = [256, 256],
+  texturePath = "/assets/textures/orange-1.webp",
+  imageResolution = [32, 32],
 }) {
+  const sectionRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <section className="absolute inset-0 h-[65vw] w-screen overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="absolute inset-0 h-[65vw] w-screen overflow-hidden"
+    >
       <Canvas
+        /*
+          "demand" still paints one static frame so the image is visible
+          before the section scrolls in, then the loop stops again on exit.
+        */
+        frameloop={isInView ? "always" : "demand"}
         dpr={[0.5, 0.5]}
         camera={{
           position: [0, 0, 1],
@@ -310,3 +348,7 @@ export default function FlowFieldHero({
     </section>
   );
 }
+
+// ponytail: preload must match what the footer actually renders - the old
+// hardcoded orange.png pulled a 1.6MB texture nobody displays (webp is 16KB).
+useTexture.preload("/assets/textures/orange-1.webp");

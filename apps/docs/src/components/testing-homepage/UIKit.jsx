@@ -36,7 +36,7 @@ const UI_CARDS = [
   },
 ];
 
-export default function UIKit() {
+export default function wUIKit() {
   useEffect(() => {
     let ctx = gsap.context(() => {
       if (globalThis.innerWidth > 1024) {

@@ -57,6 +57,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
+        {/* GTM's script src is non-CORS, so no crossorigin attr here */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}

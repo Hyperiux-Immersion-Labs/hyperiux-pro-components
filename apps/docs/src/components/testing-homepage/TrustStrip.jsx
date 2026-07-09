@@ -74,11 +74,10 @@ export default function TrustStrip() {
             <div className="relative flex max-md:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-md:gap-14 max-sm:gap-8">
                 <div className="sticky h-fit top-[12vh] max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 ref={paragraphText} className="max-w-[39vw] max-sm:text64 text-[4vw] font-normal text-white max-md:max-w-[95vw] max-md:w-[95vw] max-md:text-[5vw] max-sm:max-w-full max-sm:text-[5.8vw] ">
+                        <h2 ref={paragraphText} className="max-w-[39vw]  text-[3.5vw] font-normal text-white max-md:max-w-[95vw] max-md:w-[95vw] max-md:text-[5vw] max-sm:max-w-full max-sm:text-[6vw] ">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>
-
                     </MaskTextReveal>
 
                 </div>

@@ -14,7 +14,7 @@ export const groups = [
     {
         title: "Agencies & Freelancers",
         text: "Move faster on client websites while keeping the work custom. Use Vault as a starting point for high-end interaction systems, then adapt the code for each brand while saving hours of custom motion work on each project.",
-        cta: "See agency licensing (coming soon)",
+        cta: "See Agency Licensing (Coming Soon)",
         link: "#",
     },
     {

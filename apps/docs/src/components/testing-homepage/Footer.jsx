@@ -6,6 +6,12 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import DeferredMount from "../WebsiteComps/DeferredMount";
 import RandomBlur from "./RandomBlur";
+
+// Three.js footer background plane - own chunk, mounted only when the footer
+// nears the viewport (an eager import forces three.js onto the main bundle).
+const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
+  ssr: false,
+});
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
@@ -13,16 +19,10 @@ import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
 
-// Three.js footer background plane - own chunk, mounted only when the footer nears the viewport
-// (was previously imported eagerly, forcing three.js onto every page site-wide via the shared Footer).
-const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
-  ssr: false,
-});
-
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Github", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
+  { label: "NPM", href: "https://www.npmjs.com/package/hyperiux" },
 ];
 
 const categoryColumns = [
@@ -47,16 +47,17 @@ const categoryColumns = [
 
 const docsLinks = [
   { label: "Introduction", href: "/docs" },
+  { label: "Installation", href: "/docs/installation" },
   { label: "CLI", href: "/docs/cli" },
   { label: "Dependencies", href: "/docs/dependencies" },
   { label: "Licence", href: "/docs/license" },
 ];
 
 const legalLinks = [
-  { label: "Licence", href: "/license" },
-  { label: "Terms", href: "/terms" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Refund", href: "/refund" },
+  { label: "Licence Agreement", href: "/legal/license-agreement" },
+  { label: "Terms of Service", href: "/legal/terms-of-service" },
+  { label: "Privacy Policy", href: "/legal/privacy-policy" },
+  { label: "Refund Policy", href: "/legal/refund-policy" },
 ];
 
 const socialLinks = [
@@ -128,7 +129,7 @@ export default function Footer() {
 
       {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
         <DeferredMount strategy="visible">
-          <FlowFieldHero texturePath="/assets/textures/orange-1.png" />
+          <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />
         </DeferredMount>
       </div> :
         <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
@@ -163,7 +164,7 @@ export default function Footer() {
         </div>
 
       </div>
-      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[7vw] left-[4%] text-light-grey z-4 max-md:w-[75vw] max-sm:left-[12%]">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
+      <p className="text-center text18 absolute bottom-[2vw] max-sm:bottom-[10vw] left-[4%] text-light-grey z-4 max-md:w-[80vw] max-sm:left-[11%] max-sm:text-[3.5vw]!">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-sm:mt-[25vw] ">
 
@@ -317,7 +318,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210]" />
+      <div className="absolute  bottom-0 left-0 z-2 h-[70%] w-full bg-linear-to-b from-transparent via-[#111210] to-[#111210] max-sm:h-full" />
 
     </footer>
   );

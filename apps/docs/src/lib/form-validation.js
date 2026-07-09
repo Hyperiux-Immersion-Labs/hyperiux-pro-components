@@ -1,14 +1,8 @@
 import { z } from "zod";
-import BLOCKED_DOMAINS from "./blocked-email-domains.json";
 
-let BLOCKED_SET;
-try {
-  BLOCKED_SET = new Set(
-    BLOCKED_DOMAINS.map((entry) => Object.values(entry)[0])
-  );
-} catch {
-  BLOCKED_SET = new Set();
-}
+// Blocked-domain checking deliberately lives server-side only (see
+// lib/blocked-email-domains.js) - importing the 200KB JSON here shipped the
+// whole blacklist in the landing-page bundle via the RootLayout modals.
 
 function getNumberPart(val) {
   const spaceIndex = val.indexOf(" ");
@@ -26,11 +20,7 @@ export const formSchema = z.object({
   email: z
     .string()
     .min(1, "Please enter your email.")
-    .email("Please enter a valid email address (e.g. you@company.com).")
-    .refine(
-      (val) => !BLOCKED_SET.has(val.split("@")[1]?.toLowerCase()),
-      "Please use a work or personal email address."
-    ),
+    .email("Please enter a valid email address (e.g. you@company.com)."),
 
   number: z
     .string()

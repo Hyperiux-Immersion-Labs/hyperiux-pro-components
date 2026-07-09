@@ -5,7 +5,6 @@ import { useLenis } from 'lenis/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
-import { sendGTMEvent } from '@next/third-parties/google'
 
 import { HyperiuxLogo } from '@/utils/Icons'
 import { vaultLinks } from '@/utils/Links'
@@ -116,7 +115,7 @@ export default function Navbar() {
                     text="Install CLI"
                     href="/docs/installation"
                     onClick={() =>
-                        sendGTMEvent({
+                        window.dataLayer?.push({
                             event: 'install_cli_click',
                             location: 'homepage_navbar',
                         })

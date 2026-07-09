@@ -52,7 +52,7 @@ export default function RandomBlur({
   duration = 1,
   staggerAmount = 0.5,
   ease = "power3.out",
-  blur = "10px",
+  blur = "5px",
 }) {
   const containerRef = useRef(null);
 
@@ -60,6 +60,13 @@ export default function RandomBlur({
     const container = containerRef.current;
 
     if (!container) return;
+
+    // Reduced motion: skip the split and the scroll animation entirely -
+    // just reveal the text. Also avoids the SplitText forced-layout cost.
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+      gsap.set(container, { autoAlpha: 1 });
+      return;
+    }
 
     let ctx;
     let split;
@@ -85,7 +92,7 @@ export default function RandomBlur({
 
       gsap.set(split.chars, {
         opacity: 0,
-        filter: `blur(${blur})`,
+        filter: `blur(5px)`,
         force3D: true,
       });
     }, container);
@@ -115,7 +122,7 @@ export default function RandomBlur({
             split.chars,
             {
               opacity: 0,
-              filter: `blur(${blur})`,
+              filter: `blur(5px)`,
               force3D: true,
             },
             {

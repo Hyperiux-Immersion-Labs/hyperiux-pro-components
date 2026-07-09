@@ -174,9 +174,9 @@ export default function Tension() {
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </div>
-                  <p className="text34 capitalize whitespace-nowrap max-sm:text-lg">{items.title}</p>
+                  <p className="text24 capitalize whitespace-nowrap max-sm:text-[4vw]">{items.title}</p>
                 </div>
-                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0  max-sm:text-base! max-sm:leading-[1.2]">{items.description}</p>
+                <p className="text-light-grey flex-1 min-w-0 text-left px-[2vw] text18 max-sm:flex-none max-sm:w-full max-sm:px-0  max-sm:text-[3.5vw]! max-sm:leading-[1.2]">{items.description}</p>
               </div>
               <div className="flex items-center gap-[1vw] w-[13vw] shrink-0 max-md:w-[30%] max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
                 <div className="size-[3vw] max-md:size-9 flex items-center justify-center shrink-0 max-sm:size-12">
@@ -191,7 +191,7 @@ export default function Tension() {
           ))}
         </div>
 
-        <p className="mt-[8vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
+        <p className="mt-[5vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
           That difference has a name.{' '}
           <span className="italic text-[#ff5f00]">
             It&apos;s the interaction layer.
