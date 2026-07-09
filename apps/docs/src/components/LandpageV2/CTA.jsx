@@ -10,7 +10,7 @@ function CTAButtons() {
     const { open } = useWorkWithHyperiuxModal()
     return (
         <div className='w-fit flex max-md:gap-[2vw] max-sm:gap-[7vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-[88%] gap-[1.5vw]'>
-            <Button variant='outline2' className='max-md:w-full border-white/40' text='See Our Work' href='/hyperiux-creds-2026.pdf' target_blank />
+            <Button variant='outline2' className='max-md:w-full border-white/40' text='See Our Work' href='https://www.hyperiux.com/hyperiux-creds-2026.pdf' target_blank />
             <Button variant='orange' className='max-md:w-full' text='Work with Hyperiux' href='#' preventDefault onClick={open} />
         </div>
     )

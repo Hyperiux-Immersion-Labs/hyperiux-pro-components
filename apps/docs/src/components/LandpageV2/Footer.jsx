@@ -15,7 +15,7 @@ import Image from "next/image";
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Github", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
+  { label: "NPM", href: "https://www.npmjs.com/package/hyperiux" },
 ];
 
 const categoryColumns = [
