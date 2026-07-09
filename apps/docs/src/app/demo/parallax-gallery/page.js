@@ -16,7 +16,7 @@ const page = () => {
 
    
  <div
- className="fixed left-1/2 min-w-[20vw] max-md:top-50 max-md:min-w-full z-50  -translate-x-1/2 top-20"
+ className="fixed left-1/2 min-w-[20vw] max-md:top-50 max-md:min-w-full z-50  -translate-x-1/2 top-25"
  >
   <HeadAnim>
 

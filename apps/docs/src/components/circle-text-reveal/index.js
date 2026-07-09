@@ -77,9 +77,9 @@ export default function CircleTextReveal({
  <section className="w-screen h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] bg-[#fefefe] relative overflow-hidden">
 
  {(!isPointerFine) && (
- <div className="absolute inset-0 z-20 top-[30%] flex items-center justify-center px-8 text-center pointer-events-none">
+ <div className="absolute hidden max-md:flex max-sm:flex inset-0 z-20 top-[30%]  items-center justify-center px-8 text-center pointer-events-none">
  <div className="flex max-w-sm flex-col items-center gap-3">
- <p className="text-[4vw] leading-relaxed" style={{ color: `${textColor}` }}>
+ <p className="text-[4vw] leading-[1.2]!" style={{ color: `${textColor}` }}>
  Open on desktop to reveal the text underneath.
  </p>
  </div>
