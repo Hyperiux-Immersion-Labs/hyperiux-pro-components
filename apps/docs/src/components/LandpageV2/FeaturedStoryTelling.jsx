@@ -324,7 +324,7 @@ export default function FeaturedStoryTelling() {
                             scaleSet[i](currentScale);
 
                             // Apply dynamic depth blur based on single-phase t
-                            const depthBlur = Math.max(0, -yVal * 4.5);
+                            const depthBlur = Math.max(0, -yVal * 2.5);
                             const currentBlur = finalBaseBlur + depthBlur * t * blurGate;
                             blurSet[i](currentBlur);
 

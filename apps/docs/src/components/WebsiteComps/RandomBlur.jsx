@@ -52,7 +52,7 @@ export default function RandomBlur({
   duration = 1,
   staggerAmount = 0.5,
   ease = "power3.out",
-  blur = "10px",
+  blur = "5px",
 }) {
   const containerRef = useRef(null);
 
@@ -82,7 +82,7 @@ export default function RandomBlur({
 
       gsap.set(split.chars, {
         opacity: 0,
-        filter: `blur(${blur})`,
+        filter: `blur(5px)`,
         force3D: true,
       });
     }, container);
@@ -112,7 +112,7 @@ export default function RandomBlur({
             split.chars,
             {
               opacity: 0,
-              filter: `blur(${blur})`,
+              filter: `blur(5px)`,
               force3D: true,
             },
             {

@@ -78,7 +78,6 @@ export default function TrustStrip() {
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>
-
                     </MaskTextReveal>
 
                 </div>

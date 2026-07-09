@@ -132,7 +132,7 @@ export default function Hero() {
       gsap.set(buttonWrapEl, {
         opacity: 0,
         y: 18,
-        filter: "blur(8px)",
+        
       });
     }
 
@@ -140,7 +140,7 @@ export default function Hero() {
       gsap.set(shimmerTextWrapEl, {
         opacity: 0,
         y: 14,
-        filter: "blur(8px)",
+        
       });
     }
 
@@ -183,7 +183,7 @@ export default function Hero() {
 
           gsap.set(headingSplit.chars, {
             opacity: 0,
-            filter: "blur(10px)",
+            filter: "blur(4px)",
             force3D: true,
           });
 
