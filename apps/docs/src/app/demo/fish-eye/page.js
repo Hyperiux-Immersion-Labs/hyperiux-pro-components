@@ -45,7 +45,7 @@ export default function Page() {
             </div>
 
             <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">
-                Pssst... Float your cursor over an image - watch the scene bulge, wobble and come alive.
+               Float your cursor over an image - watch the scene bulge, wobble and come alive.
             </div>
         </div>
            </>
