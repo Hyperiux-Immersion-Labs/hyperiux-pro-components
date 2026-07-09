@@ -62,7 +62,7 @@ const legalLinks = [
 const socialLinks = [
   { label: "Twitter / X", href: "https://x.com/_hyperiux_" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 
