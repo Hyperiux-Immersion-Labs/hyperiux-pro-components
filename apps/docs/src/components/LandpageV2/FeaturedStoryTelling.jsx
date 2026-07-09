@@ -55,20 +55,25 @@ const CARD_META = IMAGES.map((_, i) => {
     let blur = 0;
 
     if (category === 0) {
-        // Small (0.3 size)
         scale = seededRand(i + 45, 0.3, 0.35);
         blur = 0;
     } else if (category === 1) {
-        // Middle (0.5 size)
         scale = seededRand(i + 45, 0.45, 0.55);
-        blur = 2.5;
+        blur = 1.0;
     } else {
-        // Big (randomized size range, slightly lesser bigger)
         scale = seededRand(i + 45, 1.1, 1.35);
-        blur = 8.0;
+        blur = 2.5;
     }
 
     return { scale, blur };
+});
+
+// Pre-computed per-card stagger fractions — these are pure constants of i and TOTAL,
+// computing them inside the onUpdate loop was wasting CPU every scroll tick.
+const CARD_STAGGER_FRAC = IMAGES.map((_, i) => {
+    const staggerFrac = 0.82;
+    const reverseIdx = TOTAL - 1 - i;
+    return (reverseIdx / TOTAL) * staggerFrac;
 });
 
 
@@ -153,7 +158,6 @@ export default function FeaturedStoryTelling() {
 
     // Refs from SpiralInformation
     const infoTextRef = useRef(null);
-    const infoButtonWrapperRef = useRef(null);
 
     // Refs from VaultGrid
     const vaultSecondLayoutRef = useRef(null);
@@ -179,13 +183,6 @@ export default function FeaturedStoryTelling() {
             zIndex: (i) => i,
             opacity: 1,
         });
-
-        if (infoButtonWrapperRef.current) {
-            gsap.set(infoButtonWrapperRef.current, {
-                opacity: 0,
-                yPercent: 30,
-            });
-        }
 
         const TOP_LAYER = [
             { id: "block-top-layer-1", xPercent: 300 },
@@ -223,7 +220,7 @@ export default function FeaturedStoryTelling() {
         const blurSet = cards.map(
             (c) => (v) => {
                 if (!c) return;
-                c.style.filter = `blur(${v}px)`;
+                c.style.filter = v > 0.05 ? `blur(${v.toFixed(2)}px)` : "none";
             },
         );
         const scaleSet = cards.map((c) => {
@@ -283,9 +280,7 @@ export default function FeaturedStoryTelling() {
                         if (!card) return;
 
                         const nextZ = p1 >= i / TOTAL ? TOTAL + i : i;
-                        const staggerFrac = 0.82;
-                        const reverseIdx = TOTAL - 1 - i;
-                        const startFrac = (reverseIdx / TOTAL) * staggerFrac;
+                        const startFrac = CARD_STAGGER_FRAC[i];
 
                         // flyout progress staggered within flyProgress
                         const cardP2 = linear(
@@ -358,14 +353,6 @@ export default function FeaturedStoryTelling() {
                 { yPercent: 0, ease: "power2.out", stagger: 0.04, duration: 1.5 },
                 3.85
             );
-            if (infoButtonWrapperRef.current) {
-                masterTL.fromTo(
-                    infoButtonWrapperRef.current,
-                    { opacity: 0, yPercent: 30 },
-                    { opacity: 1, ease: "power2.out", yPercent: 0, duration: 1.2 },
-                    3.95
-                );
-            }
 
             // 3c. Spiral Information Exit (Duration: 6.0 to 7.2)
             masterTL.to(
@@ -373,13 +360,6 @@ export default function FeaturedStoryTelling() {
                 { yPercent: -130, opacity: 0, ease: "power2.in", stagger: 0.02, duration: 1.0 },
                 6.0
             );
-            if (infoButtonWrapperRef.current) {
-                masterTL.to(
-                    infoButtonWrapperRef.current,
-                    { opacity: 0, ease: "power2.in", duration: 0.8 },
-                    6.0
-                );
-            }
 
             // Cards Fade Out
             masterTL.to(
@@ -465,7 +445,7 @@ export default function FeaturedStoryTelling() {
                                     width: "18vw",
                                     height:"11vw",
                                     zIndex: i,
-                                    willChange: "transform, width, filter",
+                                    willChange: "transform, filter",
                                     backfaceVisibility: "hidden",
                                 }}
                             >

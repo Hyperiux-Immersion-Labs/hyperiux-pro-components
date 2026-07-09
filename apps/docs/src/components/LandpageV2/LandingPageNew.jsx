@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
@@ -18,11 +19,14 @@ import ForDevelopers from "./ForDevelopers";
 // import StripTransition from "./StripTransition";
 import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
-import Footer from "./Footer";
 import CTA from "./CTA";
 // import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
+
+const Footer = dynamic(() => import("./Footer"), {
+  loading: () => null,
+});
 
 export default function LandingPageNew({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
