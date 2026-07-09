@@ -111,6 +111,26 @@
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://vault.hyperiux.com/legal/license-agreement</loc>
+  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://vault.hyperiux.com/legal/privacy-policy</loc>
+  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://vault.hyperiux.com/legal/refund-policy</loc>
+  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://vault.hyperiux.com/legal/terms-of-service</loc>
+  <lastmod>2026-07-03T06:08:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://vault.hyperiux.com/effects/free</loc>
   <lastmod>2026-07-03T06:08:34+00:00</lastmod>
   <priority>0.80</priority>

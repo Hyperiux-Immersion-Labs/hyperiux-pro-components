@@ -13,7 +13,7 @@ import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
 
-// Three.js footer background plane — own chunk, mounted only when the footer nears the viewport
+// Three.js footer background plane - own chunk, mounted only when the footer nears the viewport
 // (was previously imported eagerly, forcing three.js onto every page site-wide via the shared Footer).
 const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
   ssr: false,
@@ -62,7 +62,7 @@ const legalLinks = [
 const socialLinks = [
   { label: "Twitter / X", href: "https://x.com/_hyperiux_" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 

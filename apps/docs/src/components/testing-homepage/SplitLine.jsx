@@ -40,7 +40,7 @@ function refreshScrollTriggerSafely() {
 }
 
 /**
- * Scroll-triggered line reveal — text lines or a decorative horizontal line.
+ * Scroll-triggered line reveal - text lines or a decorative horizontal line.
  */
 export default function SplitLine({
   children,
@@ -257,7 +257,7 @@ export default function SplitLine({
     };
     };
 
-    // ponytail: same fix as RandomBlur — defer the forced-layout SplitText
+    // ponytail: same fix as RandomBlur - defer the forced-layout SplitText
     // split until the section is nearly on screen instead of on mount.
     const io = new IntersectionObserver(
       (entries) => {

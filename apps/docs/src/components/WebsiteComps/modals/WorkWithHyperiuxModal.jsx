@@ -247,7 +247,7 @@ function WorkWithHyperiuxModalInner() {
             exit={{ opacity: 0, scale: 0.97, y: 10 }}
             transition={MODAL_TRANSITION}
           >
-            {/* Mobile/tablet close button — floats above the box */}
+            {/* Mobile/tablet close button - floats above the box */}
             <button
               type="button"
               aria-label="Close"
@@ -266,7 +266,7 @@ function WorkWithHyperiuxModalInner() {
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
             >
-            {/* Desktop close button — inside the box */}
+            {/* Desktop close button - inside the box */}
             <button
               type="button"
               aria-label="Close"

@@ -132,7 +132,7 @@ export default function Hero() {
       gsap.set(buttonWrapEl, {
         opacity: 0,
         y: 18,
-        filter: "blur(8px)",
+        
       });
     }
 
@@ -140,7 +140,7 @@ export default function Hero() {
       gsap.set(shimmerTextWrapEl, {
         opacity: 0,
         y: 14,
-        filter: "blur(8px)",
+        
       });
     }
 
@@ -183,7 +183,7 @@ export default function Hero() {
 
           gsap.set(headingSplit.chars, {
             opacity: 0,
-            filter: "blur(10px)",
+            filter: "blur(4px)",
             force3D: true,
           });
 
@@ -382,7 +382,14 @@ export default function Hero() {
     };
   }, []);
 
+  useEffect(()=>{
+    gsap.to(".hero-overlay",{
+      opacity:0,
+    })
+  })
+
   return (
+    <>
     <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
@@ -446,6 +453,10 @@ export default function Hero() {
           </ShimmerText>
         </p>
       </div>
+
     </section>
+    <div className="w-screen h-screen absolute inset-0 z-9999 hero-overlay pointer-events-none bg-[#0e0e0e]"/>
+    
+    </>
   );
 }

@@ -28,9 +28,17 @@ const NAVBAR_INTRO_DELAY = 0.15;
 
 const categoryLinks = navCategoryColumns.flat();
 
+const navLegalItems = [
+  { href: "/legal/license-agreement", label: "License Agreement" },
+  { href: "/legal/privacy-policy", label: "Privacy Policy" },
+  { href: "/legal/refund-policy", label: "Refund Policy" },
+  { href: "/legal/terms-of-service", label: "Terms of Service" },
+];
+
 const DROPDOWN_DATA = {
   categories: categoryLinks,
   docs: navDocsItems,
+  legal: navLegalItems,
 };
 
 function cleanPath(path = "") {
@@ -69,7 +77,11 @@ function isEffectsCategoryRoute(pathname) {
 function isDocsRoute(pathname) {
   const path = cleanPath(pathname);
 
-  return path === "/docs" || path.startsWith("/docs/");
+  return (path === "/docs" || path.startsWith("/docs/")) && !isLegalRoute(path);
+}
+
+function isLegalRoute(pathname) {
+  return navLegalItems.some((item) => isLegalItemActive(pathname, item.href));
 }
 
 function isCategoryItemActive(pathname, href) {
@@ -92,6 +104,15 @@ function isDocsItemActive(pathname, href) {
   if (itemPath === "/docs") {
     return path === "/docs";
   }
+
+  return path === itemPath || path.startsWith(`${itemPath}/`);
+}
+
+function isLegalItemActive(pathname, href) {
+  if (!href || href === "#" || isExternalHref(href)) return false;
+
+  const path = cleanPath(pathname);
+  const itemPath = cleanPath(href);
 
   return path === itemPath || path.startsWith(`${itemPath}/`);
 }
@@ -128,6 +149,10 @@ function isTopNavItemActive(pathname, item) {
     return isDocsRoute(path);
   }
 
+  if (item.dropdown === "legal") {
+    return isLegalRoute(path);
+  }
+
   if (item.href === "/effects") {
     return path === "/effects";
   }
@@ -149,7 +174,9 @@ function MobileDropdownItem({
       ? isCategoryItemActive(pathname, href)
       : dropdownType === "docs"
         ? isDocsItemActive(pathname, href)
-        : isPlainLinkActive(pathname, href);
+        : dropdownType === "legal"
+          ? isLegalItemActive(pathname, href)
+          : isPlainLinkActive(pathname, href);
 
   return (
     <Link
@@ -583,7 +610,7 @@ export default function NavbarMobile() {
               });
 
               if (dropdown) {
-                return (
+                const dropdownElement = (
                   <MobileDropdown
                     key={label}
                     label={label}
@@ -595,6 +622,24 @@ export default function NavbarMobile() {
                     onNavigate={handleNavigate}
                   />
                 );
+
+                if (dropdown === "docs") {
+                  return [
+                    dropdownElement,
+                    <MobileDropdown
+                      key="Legal"
+                      label="Legal"
+                      dropdownType="legal"
+                      items={DROPDOWN_DATA.legal}
+                      isOpen={openDropdown === "legal"}
+                      isActive={isLegalRoute(pathname)}
+                      onToggle={() => toggleDropdown("legal")}
+                      onNavigate={handleNavigate}
+                    />,
+                  ];
+                }
+
+                return dropdownElement;
               }
 
               return (

@@ -46,16 +46,16 @@ const docsLinks = [
 ];
 
 const legalLinks = [
-  { label: "Licence", href: "#" },
-  { label: "Terms", href: "#" },
-  { label: "Privacy", href: "#" },
-  { label: "Refund", href: "#" },
+  { label: "Licence Agreement", href: "/legal/license-agreement" },
+  { label: "Terms of Service", href: "/legal/terms-of-service" },
+  { label: "Privacy Policy", href: "/legal/privacy-policy" },
+  { label: "Refund Policy", href: "/legal/refund-policy" },
 ];
 
 const socialLinks = [
   { label: "Twitter / X", href: "https://x.com/_hyperiux_" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 
