@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
-import { Overview, Documentation, Category } from "../WebsiteComps/Icons";
+import { Overview, Documentation, Category, Legal } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -16,6 +16,13 @@ const DEFAULT_DOCS_TOP_LINKS = [
   { href: "/docs/cli", label: "CLI" },
   { href: "/docs/dependencies", label: "Dependencies" },
   { href: "/docs/license", label: "License" },
+];
+
+const DEFAULT_LEGAL_LINKS = [
+  { href: "/legal/license-agreement", label: "License Agreement" },
+  { href: "/legal/privacy-policy", label: "Privacy Policy" },
+  { href: "/legal/refund-policy", label: "Refund Policy" },
+  { href: "/legal/terms-of-service", label: "Terms of Service" },
 ];
 
 function categoryLabel(category) {
@@ -106,6 +113,7 @@ export function Sidebar({
   onToggle,
   activeCategory,
   topLinks = DEFAULT_DOCS_TOP_LINKS,
+  legalLinks = DEFAULT_LEGAL_LINKS,
   disableInitialTransition = false,
   onOverviewNavigate,
   onCategoryNavigate,
@@ -116,6 +124,9 @@ export function Sidebar({
   const searchParams = useSearchParams();
 
   const resolvedTopLinks = topLinks?.length ? topLinks : DEFAULT_DOCS_TOP_LINKS;
+  const resolvedLegalLinks = legalLinks?.length
+    ? legalLinks
+    : DEFAULT_LEGAL_LINKS;
 
   const lastPathSegment = getLastPathSegment(pathname);
 
@@ -130,11 +141,19 @@ export function Sidebar({
   const isCategoryRoute =
     Boolean(lastPathSegment) && categoryRouteSlugs.includes(lastPathSegment);
 
-  const initialOpenSection = pathname.startsWith("/docs")
-    ? "docs"
-    : isCategoryRoute
-      ? "categories"
-      : "";
+  const isLegalRoute = resolvedLegalLinks.some((link) => {
+    const [basePath] = link.href.split("#");
+
+    return pathname === basePath;
+  });
+
+  const initialOpenSection = isLegalRoute
+    ? "legal"
+    : pathname.startsWith("/docs")
+      ? "docs"
+      : isCategoryRoute
+        ? "categories"
+        : "";
 
   const [activeHash, setActiveHash] = useState("");
   const [fetchedEffects, setFetchedEffects] = useState([]);
@@ -143,15 +162,22 @@ export function Sidebar({
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
 
+  const isLegalActive = resolvedLegalLinks.some((link) => {
+    const [basePath, hash] = link.href.split("#");
+
+    return pathname === basePath && (!hash || activeHash === `#${hash}`);
+  });
+
   const isDocsActive =
-    pathname.startsWith("/docs") ||
-    resolvedTopLinks.some((link) => {
-      const [basePath, hash] = link.href.split("#");
+    !isLegalActive &&
+    (pathname.startsWith("/docs") ||
+      resolvedTopLinks.some((link) => {
+        const [basePath, hash] = link.href.split("#");
 
-      return pathname === basePath && (!hash || activeHash === `#${hash}`);
-    });
+        return pathname === basePath && (!hash || activeHash === `#${hash}`);
+      }));
 
-  const currentCategory = isDocsActive
+  const currentCategory = isDocsActive || isLegalActive
     ? ""
     : activeCategory || searchParams.get("category") || "";
 
@@ -160,6 +186,7 @@ export function Sidebar({
 
   const isCategoriesActive =
     !isDocsActive &&
+    !isLegalActive &&
     (isCategoryRoute ||
       (pathname === "/effects" &&
         Boolean(currentCategory) &&
@@ -167,11 +194,13 @@ export function Sidebar({
 
   const isDocumentationActive = isDocsActive;
 
-  const routeOpenSection = isDocumentationActive
-    ? "docs"
-    : isCategoriesActive
-      ? "categories"
-      : "";
+  const routeOpenSection = isLegalActive
+    ? "legal"
+    : isDocumentationActive
+      ? "docs"
+      : isCategoriesActive
+        ? "categories"
+        : "";
 
   useEffect(() => {
     const onHash = () => setActiveHash(window.location.hash || "");
@@ -210,10 +239,14 @@ export function Sidebar({
       router.prefetch?.(link.href);
     }
 
+    for (const link of resolvedLegalLinks) {
+      router.prefetch?.(link.href);
+    }
+
     for (const category of effectCategories) {
       router.prefetch?.(getEffectCategoryHref(category.id));
     }
-  }, [router, resolvedTopLinks]);
+  }, [router, resolvedTopLinks, resolvedLegalLinks]);
 
   /*
     Important:
@@ -302,6 +335,19 @@ export function Sidebar({
 
     if (wasHandledByDocsBody) return;
   }
+
+  const wasHandled = onDocumentationNavigate?.(href);
+
+  if (wasHandled === true) return;
+
+  router.push(href, { scroll: false });
+};
+
+const navigateLegal = (event, href) => {
+  event?.preventDefault();
+
+  categoryNavigationInProgressRef.current = false;
+  setOpenSection("legal");
 
   const wasHandled = onDocumentationNavigate?.(href);
 
@@ -487,6 +533,57 @@ export function Sidebar({
                       onClick={(event) =>
                         navigateDocumentation(event, link.href)
                       }
+                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/42 hover:text-white/75"
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                      )}
+
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+
+          <SectionButton
+            label="Legal"
+            icon={Legal}
+            isExpanded={isExpanded}
+            isOpen={openSection === "legal"}
+            isActive={isLegalActive}
+            onClick={() => toggleSection("legal")}
+          />
+
+          <AnimatePresence initial={false}>
+            {isExpanded && openSection === "legal" && (
+              <motion.div
+                key="legal"
+                initial={{ height: 0, opacity: 0, y: -6 }}
+                animate={{ height: "auto", opacity: 1, y: 0 }}
+                exit={{ height: 0, opacity: 0, y: -6 }}
+                transition={{ duration: 0.24, ease: "easeOut" }}
+                className="ml-[19px] space-y-1 overflow-hidden border-l border-white/12 pl-7"
+              >
+                {resolvedLegalLinks.map((link) => {
+                  const [basePath, hash] = link.href.split("#");
+
+                  const isActive =
+                    pathname === basePath &&
+                    (!hash || activeHash === `#${hash}`);
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      scroll={false}
+                      onClick={(event) => navigateLegal(event, link.href)}
                       className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
                         isActive
                           ? "text-white"

@@ -39,7 +39,7 @@ export function WorkWithHyperiuxConfirmationEmail({ name, message }) {
           </Text>
 
           <Text style={footer}>
-            — The Hyperiux Team · hello@hyperiux.com
+            - The Hyperiux Team · hello@hyperiux.com
           </Text>
         </Container>
       </Body>

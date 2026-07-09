@@ -13,7 +13,7 @@ import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
 
-// Three.js footer background plane — own chunk, mounted only when the footer nears the viewport
+// Three.js footer background plane - own chunk, mounted only when the footer nears the viewport
 // (was previously imported eagerly, forcing three.js onto every page site-wide via the shared Footer).
 const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
   ssr: false,

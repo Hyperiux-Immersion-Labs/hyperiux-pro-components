@@ -5,7 +5,6 @@ import DocsBody from "./DocsBody";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import Footer from "@/components/LandpageV2/Footer";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
-import CTA2 from "@/components/LandpageV2/CTA2";
 
 function VaultLayoutFallback() {
   return (

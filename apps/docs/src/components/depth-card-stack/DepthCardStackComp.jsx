@@ -70,7 +70,7 @@ export default function DepthCardStackComp({ cards }) {
   // On mobile, the cards' 3D/composited layers (perspective + preserve-3d +
   // will-change) can leave the section's bottom strip unpainted, exposing the
   // dark body background as a "black margin". A card move repaints it, so force
-  // that repaint proactively — on mount and whenever the viewport changes
+  // that repaint proactively - on mount and whenever the viewport changes
   // (e.g. the mobile URL bar collapsing, which is exactly when the strip shows).
   useEffect(() => {
     const el = sectionRef.current;

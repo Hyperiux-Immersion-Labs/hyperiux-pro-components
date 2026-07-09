@@ -46,10 +46,10 @@ const docsLinks = [
 ];
 
 const legalLinks = [
-  { label: "Licence", href: "#" },
-  { label: "Terms", href: "#" },
-  { label: "Privacy", href: "#" },
-  { label: "Refund", href: "#" },
+  { label: "Licence Agreement", href: "/legal/license-agreement" },
+  { label: "Terms of Service", href: "/legal/terms-of-service" },
+  { label: "Privacy Policy", href: "/legal/privacy-policy" },
+  { label: "Refund Policy", href: "/legal/refund-policy" },
 ];
 
 const socialLinks = [
