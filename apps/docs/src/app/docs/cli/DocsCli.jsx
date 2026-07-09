@@ -7,23 +7,28 @@ import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import {CodeBlock} from "@/components/ui/CodeBlock";
-import Heading3 from "@/components/DocsContent/Heading3New";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 const cliHelpCommand = `npx hyperiux --help`;
 
 const initCommand = `npx hyperiux init`;
 
-const addScrollStackCommand = `npx hyperiux add scroll-stack`;
+const addCommand = `npx hyperiux add [effect-name]`;
 
-const devCommand = `npm run dev`;
+const listCommand = `npx hyperiux list`;
 
-const doctorCommand = `npx hyperiux doctor`;
+const loginCommand = `npx hyperiux login`;
+
+const logoutCommand = `npx hyperiux logout`;
+
+const whoamiCommand = `npx hyperiux whoami`;
 
 const helpCommands = `npx hyperiux --help
 npx hyperiux add --help
-npx hyperiux doctor --help
-npx hyperiux upgrade --help`;
+npx hyperiux list --help
+npx hyperiux login --help
+npx hyperiux logout --help
+npx hyperiux whoami --help`;
 
 const initConfig = `{
   "style": "default",
@@ -42,116 +47,18 @@ const initConfig = `{
   }
 }`;
 
-const addEffectCommand = `npx hyperiux add [effect-name]`;
-
-const upgradeEffectCommand = `npx hyperiux upgrade [effect-name]`;
-
-const upgradeScrollStackCommand = `npx hyperiux upgrade scroll-stack`;
-
-const upgradeFlow = `git status
-npx hyperiux upgrade scroll-stack --check
-npx hyperiux upgrade scroll-stack --diff
-npx hyperiux upgrade scroll-stack
-git diff`;
-
-const uninstallEffectCommand = `npx hyperiux uninstall [effect-name]`;
-
-const uninstallScrollStackCommand = `npx hyperiux uninstall scroll-stack`;
-
-const listCommand = `npx hyperiux list`;
-
 const listOutput = `Installed Vault effects
 
-scroll-stack
+phantom-image-trail
   version: 1.0.0
-  path: components/hyperiux/scroll-stack.tsx
-  dependencies: gsap
-
-kinetic-header
-  version: 1.2.0
-  path: components/hyperiux/kinetic-header.tsx
-  dependencies: motion`;
-
-const doctorOutput = `Hyperiux Doctor
-Project detected: Next.js
-Tailwind config found
-Components alias resolved
-Missing dependency: gsap
-scroll-stack uses browser APIs and should be rendered inside a client boundary
-Next steps:
-npm install gsap
-Add "use client" to the component entry file.`;
-
-const envCommand = `npx hyperiux env`;
-
-const envOutput = `Hyperiux environment
-CLI: 1.0.0
-Node: 20.11.0
-Package manager: pnpm
-Framework: Next.js 15
-React: 18.3.1
-Tailwind: 4.0.0
-OS: macOS
-Project root: /site`;
-
-const authLoginCommand = `npx hyperiux auth login`;
-
-const authTokenCommand = `npx hyperiux auth hvlt_************************`;
-
-const ciTokenCommand = `HYPERIUX_TOKEN = hvlt_xxx npx hyperiux add pro-effect`;
-
-const upgradeDryRunCommand = `npx hyperiux upgrade scroll-stack --dry-run`;
-
-const upgradeDiffCommand = `npx hyperiux upgrade scroll-stack --diff`;
-
-const globalInstallCommand = `npm install -g hyperiux`;
-
-const globalHelpCommand = `hyperiux --help`;
-
-const npxLatestCommand = `npx hyperiux@latest add scroll-stack`;
-
-const packageScripts = `{
-  "scripts": {
-    "vault:add": "hyperiux add",
-    "vault:doctor": "hyperiux doctor"
-  }
-}`;
-
-const versionCommand = `npx hyperiux --version`;
-
-const versionShortCommand = `npx hyperiux -v`;
-
-const npmInstallGlobalCommand = `npm install -g hyperiux`;
-
-const npmInstallGsapCommand = `npm install gsap`;
-
-const tailwindConfig = `export default {
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./components/hyperiux/**/*.{ts,tsx}"
-  ],
-  theme: {
-    extend: {}
-  },
-  plugins: []
-};`;
-
-const useClientCode = `"use client";`;
-
-const dynamicImportCode = `import dynamic from "next/dynamic";
-const WebGLBackground = dynamic(
-  () => import("@/components/hyperiux/webgl-background"),
-  { ssr: false }
-);`;
-
-const gitStatusCommand = `git status`;
+  path: components/hyperiux/phantom-image-trail/index.jsx
+  dependencies: gsap`;
 
 const recommendedWorkflowCommands = `npx hyperiux init
-npx hyperiux add scroll-stack
-npm run dev
-npx hyperiux doctor`;
+npx hyperiux add [effect-name]
+npx hyperiux list
+npx hyperiux login
+npx hyperiux whoami`;
 
 export default function DocsCli() {
   useFadeUp()
@@ -201,19 +108,18 @@ export default function DocsCli() {
 
       <Para>Add an effect.</Para>
 
-      <CodeBlock code={addScrollStackCommand}  />
+      <CodeBlock code={addCommand}  />
 
-      <Para>Run your app.</Para>
+      <Para>List what is installed.</Para>
 
-      <CodeBlock code={devCommand}  />
+      <CodeBlock code={listCommand}  />
 
-      <Para>Check your setup.</Para>
+      <Para>Connect your account.</Para>
 
-      <CodeBlock code={doctorCommand}  />
+      <CodeBlock code={loginCommand}  />
 
       <Para>
-        Then inspect the generated files, tune the motion, test the page, and commit the
-        result.
+        Then verify your identity and continue with the effect you need.
       </Para>
 
       <Heading2 id="requirements">Requirements</Heading2>
@@ -271,28 +177,20 @@ export default function DocsCli() {
             purpose: "Adds an effect to the workspace",
           },
           {
-            command: "upgrade",
-            purpose: "Updates an installed effect",
-          },
-          {
-            command: "uninstall",
-            purpose: "Removes an installed effect",
-          },
-          {
             command: "list",
             purpose: "Lists installed Vault effects",
           },
           {
-            command: "doctor",
-            purpose: "Diagnoses setup and integration issues",
+            command: "login",
+            purpose: "Connects your account to the CLI",
           },
           {
-            command: "env",
-            purpose: "Prints environment details for debugging",
+            command: "logout",
+            purpose: "Disconnects your account from the CLI",
           },
           {
-            command: "auth",
-            purpose: "Connects Pro or private registry access",
+            command: "whoami",
+            purpose: "Shows the currently connected account",
           },
         ]}
       />
@@ -402,11 +300,11 @@ export default function DocsCli() {
 
       <Para>Adds an effect to your workspace.</Para>
 
-      <CodeBlock code={addEffectCommand} />
+      <CodeBlock code={addCommand} />
 
       <Para>Example:</Para>
 
-      <CodeBlock code={addScrollStackCommand} />
+      <CodeBlock code={addCommand} />
 
       <Para>
         Each effect includes a manifest. The CLI reads that manifest and adds only the
@@ -435,103 +333,9 @@ export default function DocsCli() {
 
       <Para>No drive-by Three.js.</Para>
 
-      <Heading2 id="upgrade" className="text-[#addb67]!">upgrade</Heading2>
-
-      <Para>Updates an installed Vault effect.</Para>
-
-      <CodeBlock code={upgradeEffectCommand} />
-
-      <Para>Example:</Para>
-
-      <CodeBlock code={upgradeScrollStackCommand} />
-
-      <Para>
-        Vault effects are editable source files. That makes upgrades more sensitive than
-        normal package updates.
-      </Para>
-
-      <Para>
-        The upgrade command checks the installed effect against the latest registry version
-        and protects local changes before replacing files.
-      </Para>
-
-      <Para>Recommended upgrade flow:</Para>
-
-      <CodeBlock code={upgradeFlow} />
-
-      <Heading2 id="upgrade-safety-options">Upgrade Safety Options</Heading2>
-
-      <DocsTable
-        columns={[
-          { key: "option", header: "Option" },
-          { key: "description", header: "Description" },
-        ]}
-        rows={[
-          {
-            option: "--check",
-            description: "Checks whether an update is available without changing files",
-          },
-          {
-            option: "--diff",
-            description:
-              "Shows the difference between the installed version and available update",
-          },
-          {
-            option: "--dry-run",
-            description: "Prints planned changes without writing files",
-          },
-          {
-            option: "--force",
-            description: "Replaces effect files even if local changes exist",
-          },
-        ]}
-      />
-
-      <Para>
-        By default, upgrades should not silently overwrite modified local files. If an
-        effect file has been edited, the CLI warns before replacing it.
-      </Para>
-
-      <Para>Source ownership is useful only if updates respect the source.</Para>
-
-      <Heading2 id="uninstall" className="text-[#addb67]!">uninstall</Heading2>
-
-      <Para>Removes an installed effect.</Para>
-
-      <CodeBlock code={uninstallEffectCommand} />
-
-      <Para>Example:</Para>
-
-      <CodeBlock code={uninstallScrollStackCommand} />
-
-      <Para>The command removes effect-owned files listed in the effect manifest.</Para>
-
-      <Para>Shared files are preserved when they are used by other installed effects.</Para>
-
-      <Para>Typical removals include:</Para>
-
-      <DocsList>
-        <DocsListItem>effect component files</DocsListItem>
-        <DocsListItem>effect-specific hooks</DocsListItem>
-        <DocsListItem>effect-specific styles</DocsListItem>
-        <DocsListItem>effect-specific shader files</DocsListItem>
-        <DocsListItem>generated usage examples</DocsListItem>
-      </DocsList>
-
-      <Para>
-        The command does not remove dependencies automatically if those dependencies may
-        still be used elsewhere in your project.
-      </Para>
-
-      <Para>Dependency removal should be deliberate.</Para>
-
-      <Para>
-        No one wants an uninstall command that behaves like a raccoon in a server room.
-      </Para>
-
       <Heading2 id="list" className="text-[#addb67]!">list</Heading2>
 
-      <Para>Lists installed Vault effects.</Para>
+      <Para>List the effects installed in the project.</Para>
 
       <CodeBlock code={listCommand} />
 
@@ -539,298 +343,42 @@ export default function DocsCli() {
 
       <CodeBlock code={listOutput} language="text" />
 
-      <Para>Use this when you need to see what Vault has added to the project.</Para>
+      <Para>Use this when you want to confirm what the CLI has already added.</Para>
 
-      <Para>It is especially useful before upgrades, audits, and cleanup.</Para>
+      <Heading2 id="login" className="text-[#addb67]!">login</Heading2>
 
-      <Heading2 id="doctor" className="text-[#addb67]!">doctor</Heading2>
+      <Para>Connect your account to the CLI.</Para>
 
-      <Para>Diagnoses Vault setup issues.</Para>
-
-      <CodeBlock code={doctorCommand} />
-
-      <Para>The doctor command checks common integration problems.</Para>
-
-      <Para>It can report:</Para>
-
-      <DocsList>
-        <DocsListItem>missing dependencies</DocsListItem>
-        <DocsListItem>broken import aliases</DocsListItem>
-        <DocsListItem>missing Tailwind content paths</DocsListItem>
-        <DocsListItem>missing CSS entry files</DocsListItem>
-        <DocsListItem>missing &quot;use client&quot; boundaries</DocsListItem>
-        <DocsListItem>browser-only code used in server components</DocsListItem>
-        <DocsListItem>duplicate effect files</DocsListItem>
-        <DocsListItem>unsupported project structure</DocsListItem>
-        <DocsListItem>registry access issues</DocsListItem>
-        <DocsListItem>Pro authentication problems</DocsListItem>
-        <DocsListItem>WebGL or canvas setup warnings</DocsListItem>
-      </DocsList>
-
-      <Para>Example output:</Para>
-
-      <CodeBlock code={doctorOutput} language="text" />
-
-      <Para>Run doctor after installing effects, upgrading effects, or moving files manually.</Para>
+      <CodeBlock code={loginCommand} />
 
       <Para>
-        It will not fix your taste. It will fix a surprising number of setup issues.
+        Use this when you need access to authenticated features or private registry
+        resources.
       </Para>
 
-      <Heading2 id="env" className="text-[#addb67]!">env</Heading2>
+      <Para>Interactive login keeps tokens out of shell history.</Para>
 
-      <Para>Prints environment details.</Para>
+      <Heading2 id="logout" className="text-[#addb67]!">logout</Heading2>
 
-      <CodeBlock code={envCommand} />
+      <Para>Disconnect your account from the CLI.</Para>
 
-      <Para>Use this when debugging or reporting an issue.</Para>
-
-      <Para>Example output:</Para>
-
-      <CodeBlock code={envOutput} language="text" />
+      <CodeBlock code={logoutCommand} />
 
       <Para>
-        The env command helps identify version mismatches, package manager issues, and
-        framework-specific behavior.
+        Use this when you need to clear the local authenticated session from the current
+        project or machine.
       </Para>
 
-      <Para>A repo with three package managers is not a tech stack. It is a cry for help.</Para>
+      <Heading2 id="whoami" className="text-[#addb67]!">whoami</Heading2>
 
-      <Heading2 id="auth" className="text-[#addb67]!">auth</Heading2>
+      <Para>Show the currently connected account.</Para>
 
-      <Para>Connects Pro or private registry access.</Para>
-
-      <Para>Use interactive login when possible.</Para>
-
-      <CodeBlock code={authLoginCommand} />
+      <CodeBlock code={whoamiCommand} />
 
       <Para>
-        The CLI prompts for your access token and stores it according to your local
-        configuration.
+        This is useful when you want to confirm which account the CLI is using before
+        pulling private resources or making account-specific changes.
       </Para>
-
-      <Para>
-        Avoid passing tokens directly in terminal commands unless your team accepts shell
-        history exposure.
-      </Para>
-
-      <Para>Prefer this:</Para>
-
-      <CodeBlock code={authLoginCommand} />
-
-      <Para>Instead of this:</Para>
-
-      <CodeBlock code={authTokenCommand} />
-
-      <Para>For CI, use an environment variable.</Para>
-
-      <CodeBlock code={ciTokenCommand} />
-
-      <Para>
-        Do not commit access tokens. Do not place tokens inside public config files. Do not
-        paste tokens into issue threads.
-      </Para>
-
-      <Para>The internet has enough haunted secrets.</Para>
-
-      <Heading2 id="dependency-behavior">Dependency Behavior</Heading2>
-
-      <Para>Vault resolves dependencies per effect.</Para>
-
-      <Para>
-        That means the CLI does not install every possible animation and rendering package
-        up front.
-      </Para>
-
-      <Para>
-        Some effects need only React and CSS. Some need GSAP. Some need Motion. Some need
-        Three.js, React Three Fiber, shaders, canvas utilities, or browser APIs.
-      </Para>
-
-      <Para>
-        The effect manifest declares the required dependencies. The CLI reads that manifest
-        and reports what the selected effect needs.
-      </Para>
-
-      <Para>This keeps your project cleaner and reduces unused creative machinery.</Para>
-
-      <Para>Motion should earn its place in the bundle.</Para>
-
-      <Heading2 id="upgrade-safety">Upgrade Safety</Heading2>
-
-      <Para>
-        Because Vault writes source files into your project, upgrades should be handled
-        with care.
-      </Para>
-
-      <Para>Before upgrading:</Para>
-
-      <CodeBlock code={gitStatusCommand} />
-
-      <Para>Check what will change:</Para>
-
-      <CodeBlock code={upgradeDryRunCommand} />
-
-      <Para>Preview the diff:</Para>
-
-      <CodeBlock code={upgradeDiffCommand} />
-
-      <Para>Then upgrade:</Para>
-
-      <CodeBlock code={upgradeScrollStackCommand} />
-
-      <Para>After upgrading:</Para>
-
-      <CodeBlock code={`git diff`} />
-
-      <Para>
-        If you heavily customized an effect, review the update manually before accepting
-        changes.
-      </Para>
-
-      <Para>The CLI can help you move faster.</Para>
-
-      <Para>
-        It should not make decisions for your codebase while you are looking away.
-      </Para>
-
-      <Heading2 id="global-installation">Global Installation</Heading2>
-
-      <Para>You can install the CLI globally if your team prefers.</Para>
-
-      <CodeBlock code={globalInstallCommand} />
-
-      <Para>Then run:</Para>
-
-      <CodeBlock code={globalHelpCommand} />
-
-      <Para>
-        Global installation can be useful for frequent usage, but it can create version
-        drift between team members.
-      </Para>
-
-      <Para>For shared projects, prefer npx or pin the CLI version in project scripts.</Para>
-
-      <CodeBlock code={npxLatestCommand} />
-
-      <Para>Or:</Para>
-
-      <CodeBlock code={packageScripts} language="json" />
-
-      <Heading2 id="version-check">Version Check</Heading2>
-
-      <Para>Print the current CLI version.</Para>
-
-      <CodeBlock code={versionCommand} />
-
-      <Para>Or:</Para>
-
-      <CodeBlock code={versionShortCommand} />
-
-      <Para>
-        Use this when debugging registry behavior, command output, or compatibility issues.
-      </Para>
-
-      <Heading2 id="troubleshooting">Troubleshooting</Heading2>
-      <Heading3>Command Not Found</Heading3>
-      
-
-      <Para>Use npx.</Para>
-
-      <CodeBlock code={cliHelpCommand} />
-
-      <Para>If using a global install, reinstall the CLI.</Para>
-
-      <CodeBlock code={npmInstallGlobalCommand} />
-<Heading3>Effect Not Found</Heading3>
-     
-      <Para>Check the effect name.</Para>
-
-      <CodeBlock code={listCommand} />
-
-      <Para>For registry effects, confirm the registry configuration and network access.</Para>
-<Heading3>Missing Dependency</Heading3>
-      
-      <Para>Install the dependency reported by the CLI.</Para>
-
-      <CodeBlock code={npmInstallGsapCommand} />
-
-      <Para>Then run:</Para>
-
-      <CodeBlock code={doctorCommand} />
-<Heading3>Import Alias Does Not Resolve</Heading3>
-     
-      <Para>Check your project aliases.</Para>
-
-      <Para>Common aliases include:</Para>
-
-      <DocsList>
-        <DocsListItem>@/components</DocsListItem>
-        <DocsListItem>@/lib/utils</DocsListItem>
-        <DocsListItem>@/hooks</DocsListItem>
-      </DocsList>
-
-      <Para>Update the generated imports or your TypeScript path mapping.</Para>
-<Heading3>Tailwind Styles Do Not Apply</Heading3>
-
-      <Para>Check that Tailwind scans the folder where Vault files were added.</Para>
-
-      <Para>Example:</Para>
-
-      <CodeBlock code={tailwindConfig} language="ts" />
-
-      <Para>
-        If the classes are not compiling, Tailwind probably does not know the files exist.
-      </Para>
-<Heading3>Hydration Warning</Heading3>
-     
-
-      <Para>Check whether the effect uses browser-only APIs.</Para>
-
-      <Para>
-        If it uses window, document, pointer movement, scroll position, layout measurements,
-        canvas, or WebGL, it probably needs a client boundary.
-      </Para>
-
-      <CodeBlock code={useClientCode} language="tsx" />
-
-      <Para>For heavier effects, use dynamic imports.</Para>
-
-      <CodeBlock code={dynamicImportCode} language="tsx" />
-
-      <Para>Servers are many things.</Para>
-
-      <Para>They are not GPU theatres.</Para>
-<Heading3>Upgrade Conflict</Heading3>
-      
-      <Para>Check local changes.</Para>
-
-      <CodeBlock code={gitStatusCommand} />
-
-      <Para>Preview the upgrade.</Para>
-
-      <CodeBlock code={upgradeDiffCommand} />
-
-      <Para>
-        If your local version is heavily customized, copy the updated effect into a
-        temporary branch and merge by hand.
-      </Para>
-
-      <Para>Taste is local.</Para>
-
-      <Para>So are merge conflicts.</Para>
-<Heading3>Pro Effect Fails to Install</Heading3>
-      
-
-      <Para>Check authentication.</Para>
-
-      <CodeBlock code={authLoginCommand} />
-
-      <Para>Then run:</Para>
-
-      <CodeBlock code={doctorCommand} />
-
-      <Para>In CI, confirm that HYPERIUX_TOKEN is available to the command.</Para>
 
       <Heading2 id="recommended-workflow">Recommended Workflow</Heading2>
 
@@ -866,10 +414,6 @@ export default function DocsCli() {
             command: "npx hyperiux --help",
           },
           {
-            task: "Print version",
-            command: "npx hyperiux --version",
-          },
-          {
             task: "Initialize Vault",
             command: "npx hyperiux init",
           },
@@ -878,36 +422,20 @@ export default function DocsCli() {
             command: "npx hyperiux add [effect-name]",
           },
           {
-            task: "Check for updates",
-            command: "npx hyperiux upgrade [effect-name] --check",
-          },
-          {
-            task: "Preview upgrade diff",
-            command: "npx hyperiux upgrade [effect-name] --diff",
-          },
-          {
-            task: "Upgrade an effect",
-            command: "npx hyperiux upgrade [effect-name]",
-          },
-          {
-            task: "Remove an effect",
-            command: "npx hyperiux uninstall [effect-name]",
-          },
-          {
             task: "List installed effects",
             command: "npx hyperiux list",
           },
           {
-            task: "Diagnose setup",
-            command: "npx hyperiux doctor",
+            task: "Login",
+            command: "npx hyperiux login",
           },
           {
-            task: "Print environment",
-            command: "npx hyperiux env",
+            task: "Logout",
+            command: "npx hyperiux logout",
           },
           {
-            task: "Login for Pro access",
-            command: "npx hyperiux auth login",
+            task: "Who am I",
+            command: "npx hyperiux whoami",
           },
         ]}
       />

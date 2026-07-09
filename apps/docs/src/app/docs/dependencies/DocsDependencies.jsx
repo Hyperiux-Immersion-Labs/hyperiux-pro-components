@@ -12,7 +12,7 @@ import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 const useClientCode = `"use client";`;
 
-const addScrollStackCommand = `npx hyperiux add scroll-stack`;
+const addPhantomImageTrailCommand = `npx hyperiux add phantom-image-trail`;
 
 const npmInstallGsapCommand = `npm install gsap`;
 
@@ -36,12 +36,12 @@ const recommendedVersionsCode = `{
   }
 }`;
 
-const directImportCode = `import ScrollStack from "@/components/hyperiux/scroll-stack";`;
+const directImportCode = `import PhantomImageTrail from "@/components/phantom-image-trail";`;
 
 const dynamicImportCode = `import dynamic from "next/dynamic";
 
-const WebGLBackground = dynamic(
-  () => import("@/components/hyperiux/webgl-background"),
+const PhantomImageTrail = dynamic(
+  () => import("@/components/phantom-image-trail"),
   { ssr: false }
 );`;
 
@@ -84,7 +84,7 @@ Project detected: Next.js
 Tailwind config found
 Components alias resolved
 Missing dependency: gsap
-scroll-stack uses browser APIs and should be rendered inside a client boundary
+phantom-image-trail uses browser APIs and should be rendered inside a client boundary
 
 Next steps:
 npm install gsap
@@ -301,7 +301,7 @@ export default function DocsDependencies() {
         When you add an effect with the Hyperiux CLI, the CLI reads the effect manifest.
       </Para>
 
-      <CodeBlock code={addScrollStackCommand} language="bash" />
+      <CodeBlock code={addPhantomImageTrailCommand} language="bash" />
 
       <Para>The manifest defines what the effect needs, including:</Para>
 

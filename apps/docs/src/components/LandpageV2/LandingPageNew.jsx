@@ -2,13 +2,11 @@
 
 import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
-import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
 import Tension from "./Tension";
 import Solution from "./Solution";
-import FeaturedStoryTelling from "./FeaturedStoryTelling";
 import Hero from "./Hero";
 import Workflow from "./WorkFlow";
 import FAQs from "./FAQs";
@@ -20,8 +18,12 @@ import Pricing from "./Pricing";
 import GradientFill from "./GradientFill";
 import CTA from "./CTA";
 // import CTA2 from "./CTA2";
-import StorytellingMobile from "./StoryTellingMoble";
-import VaultGridNewMobile from "./VaultGridMobile";
+
+// Heaviest and conditional components
+const GlowingPlatesDeferred = dynamic(() => import("@/Experience/GlowingPlatesDeferred"), { ssr: false });
+const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"));
+const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
+const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
 import Loader from "../testing-homepage/Loader";
 
 const Footer = dynamic(() => import("./Footer"), {
