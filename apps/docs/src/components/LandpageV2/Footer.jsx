@@ -40,7 +40,7 @@ const categoryColumns = [
 
 const docsLinks = [
   { label: "Introduction", href: "/docs" },
-  { label: "Introduction", href: "/docs/installation" },
+  { label: "Installation", href: "/docs/installation" },
   { label: "CLI", href: "/docs/cli" },
   { label: "Dependencies", href: "/docs/dependencies" },
   { label: "Licence", href: "/docs/license" },

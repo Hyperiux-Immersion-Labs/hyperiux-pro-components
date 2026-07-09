@@ -8,6 +8,7 @@ import WebsiteButton from "@/components/WebsiteComps/Button";
 import Input from "@/components/animated-form/Input";
 import PhoneInput from "@/components/animated-form/PhoneInput";
 import Textarea from "@/components/animated-form/Textarea";
+import { validateForm } from "@/lib/form-validation";
 
 const MODAL_QUERY_KEY = "work-with-hyperiux";
 const MODAL_QUERY_VALUE = "open";
@@ -50,27 +51,6 @@ function buildUrlWithout(pathname, searchParams) {
   return query ? `${pathname}?${query}` : pathname;
 }
 
-function validateForm(values) {
-  const errors = {};
-  const name = values.name.trim();
-  const email = values.email.trim();
-  const number = values.number.trim();
-  const message = values.message.trim();
-
-  if (!name) errors.name = "Please enter your name.";
-  else if (name.length < 2) errors.name = "Name must be at least 2 characters.";
-
-  if (!email) errors.email = "Please enter your email.";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid email address.";
-
-  if (!number) errors.number = "Please enter your phone number.";
-  else if (!/^[+()\-.\s0-9]{7,24}$/.test(number)) errors.number = "Please enter a valid phone number.";
-
-  if (!message) errors.message = "Please describe your project.";
-  else if (message.length < 10) errors.message = "Message must be at least 10 characters.";
-
-  return errors;
-}
 
 function FieldLabel({ htmlFor, children }) {
   return (
@@ -305,6 +285,7 @@ function WorkWithHyperiuxModalInner() {
               ) : (
                 <form
                   onSubmit={handleSubmit}
+                  noValidate
                   className="mt-[3vw] grid grid-cols-2 gap-x-[3vw] gap-y-[2vw] max-md:mt-8 max-md:grid-cols-1 max-md:gap-5"
                 >
                   <div className="space-y-[1vw] max-md:space-y-5">

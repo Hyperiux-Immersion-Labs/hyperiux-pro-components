@@ -49,7 +49,8 @@
     "swiper": "^12.2.0",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
-    "three": "^0.182.0"
+    "three": "^0.182.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.10",
