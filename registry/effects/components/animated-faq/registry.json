@@ -5,7 +5,8 @@
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
   "category": "components",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "previewUrl": "/animated-faq",

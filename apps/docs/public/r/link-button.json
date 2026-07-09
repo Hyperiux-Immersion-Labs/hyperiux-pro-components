@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Link Button",
   "description": "Minimal link button with animated underline and rotating arrow icon",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "exportName": "LinkButton",
   "exportKind": "default",

@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Scramble Link Button",
   "description": "Link button with text scramble effect on hover, optional underline and arrow",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "exportName": "ScrambleLinkButton",
   "exportKind": "named",

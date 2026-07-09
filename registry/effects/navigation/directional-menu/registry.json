@@ -5,7 +5,8 @@
   "description": "Mega menu with directional content transitions using GSAP",
   "category": "navigation",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "previewUrl": "/navigation/directional-menu",

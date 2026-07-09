@@ -22,7 +22,10 @@
       "categories": [
         "scroll"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "gsap",
+        "lenis"
+      ],
       "registryDependencies": [],
       "exportName": "CircularScrollShowcase",
       "exportKind": "default"
@@ -179,7 +182,8 @@
       ],
       "dependencies": [
         "gsap",
-        "next"
+        "next",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "RotationSlider",
@@ -578,7 +582,9 @@
       "categories": [
         "backgrounds"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "three"
+      ],
       "registryDependencies": [],
       "exportName": "SpiderParticles",
       "exportKind": "default"
@@ -912,7 +918,9 @@
       "categories": [
         "buttons"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "ArrowFillButton",
       "exportKind": "named"
@@ -962,7 +970,9 @@
       "categories": [
         "buttons"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "LinkButton",
       "exportKind": "default"
@@ -974,7 +984,9 @@
       "categories": [
         "buttons"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "ScrambleLinkButton",
       "exportKind": "named"
@@ -1060,7 +1072,8 @@
         "components"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "FAQGroup",
@@ -1196,7 +1209,8 @@
         "navigation"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lucide-react"
       ],
       "registryDependencies": [
         "chevron-bird"
@@ -1212,7 +1226,8 @@
         "navigation"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "ElevateNavbar",

@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Spider Particles",
   "description": "Canvas particle network background with connecting lines and mouse-driven repulsion — pure canvas, zero dependencies",
-  "dependencies": [],
+  "dependencies": [
+    "three"
+  ],
   "registryDependencies": [],
   "exportName": "SpiderParticles",
   "exportKind": "default",

@@ -5,7 +5,8 @@
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
   "category": "scroll",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
   "previewUrl": "/circular-split-roll",

@@ -4,7 +4,8 @@
   "title": "Circular Split Roll",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
   "exportName": "CircularSplitRoll",

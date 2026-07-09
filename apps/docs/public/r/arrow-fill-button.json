@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Arrow Fill Button",
   "description": "Button with expanding circle fill and animated arrow icon on hover",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "exportName": "ArrowFillButton",
   "exportKind": "named",
