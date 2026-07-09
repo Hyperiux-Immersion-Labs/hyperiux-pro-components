@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import useIsMobile from "@/hooks/useIsMobile";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
-import Loader from "@/components/WebsiteComps/Loader";
 import TrustStrip from "./TrustStrip";
 import Problem from "./Problem";
 import Tension from "./Tension";
@@ -23,6 +22,7 @@ import CTA from "./CTA";
 // import CTA2 from "./CTA2";
 import StorytellingMobile from "./StoryTellingMoble";
 import VaultGridNewMobile from "./VaultGridMobile";
+import Loader from "../testing-homepage/Loader";
 
 const Footer = dynamic(() => import("./Footer"), {
   loading: () => null,

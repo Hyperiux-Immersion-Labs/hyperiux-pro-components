@@ -120,7 +120,7 @@ export default function Footer() {
     <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
 
       {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
-        <FlowFieldHero texturePath="/assets/textures/orange.png" />
+        <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />
       </div> :
         <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
           <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.png"} alt="footer-img" />
