@@ -1,307 +1,375 @@
-'use client'
+"use client";
 
-import { useRef, useLayoutEffect, useState, useCallback } from 'react'
-import gsap from 'gsap'
-import { SplitText } from 'gsap/SplitText'
+import Image from "next/image";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/dist/SplitText";
 
-gsap.registerPlugin(SplitText)
+gsap.registerPlugin(SplitText);
+
+const INTRO_EASE = "cubic-bezier(0.25,1,0.5,1)";
+const IMAGE_ENTRY_Y_PERCENT = 500;
+const TEXT_ROTATE_X_START = 90;
+const TEXT_TRANSFORM_PERSPECTIVE = 1000;
+const IMAGE_Z_INDEX_DURATION = 0.1;
+const IMAGE_Z_INDEX_STAGGER = 0.2;
+const TEXT_STAGGER = 0.08;
+const STACK_SCALE_STEP = 0.15;
+const STACK_Y_PERCENT_STEP = 20;
+const SPREAD_Y_PERCENT_STEP = 110;
+const IMAGE_FADE_STAGGER = 0.08;
 
 const DEFAULT_IMAGE_SOURCES = [
-  '/assets/img/image01.webp',
-  '/assets/img/image07.png',
-  '/assets/img/image04.png',
-  '/assets/img/image05.png',
-  '/assets/img/image10.jpg',
-  '/assets/img/distortion.jpg',
-  '/img/mobile.png',
-]
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+];
 
-const injectStyles = () => {
-  if (typeof document === 'undefined') return
-  if (document.getElementById('cappen-loader-styles')) return
-  const style = document.createElement('style')
-  style.id = 'cappen-loader-styles'
-  style.textContent = `
-    .cappen-loader {
-      position: absolute;
-      inset: 0;
-      background: #FCFCFC;
-      color: #000;
-      padding: 0 2.5vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      z-index: 9999;
-    }
-    .cappen-loader__row {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .cappen-loader__label {
-      font-size: clamp(1rem, 2vw, 2rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-    .cappen-loader__imgs {
-      position: relative;
-      width: 6.5vw;
-      height: 6.5vw;
-    }
-    .cappen-loader__img-slot {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-radius: 4px;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-    .cappen-loader__img-slot img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .cappen-loader__desc {
-      position: absolute;
-      bottom: 3vw;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #000;
-      width: 40vw;
-      text-align: center;
-      line-height: 1.1;
-      font-size: clamp(0.75rem, 1vw, 1rem);
-    }
-  `
-  document.head.appendChild(style)
-}
+const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
+  { images = DEFAULT_IMAGE_SOURCES, onComplete },
+  ref
+) {
+  const rootRef = useRef(null);
+  const imagesRef = useRef([]);
+  const text1Ref = useRef(null);
+  const text2Ref = useRef(null);
+  const descriptionTextRef = useRef(null);
+  const onCompleteRef = useRef(onComplete);
 
-export function Cappen({
-  label1 = 'HUMAN THINKERS',
-  label2 = 'DIGITAL MAKERS',
-  description = 'A multi-awarded interactive digital studio crafting immersive & interactive experiences for global brands since 2006.',
-  images = DEFAULT_IMAGE_SOURCES,
-  onComplete,
-}) {
-  const rootRef = useRef(null)
-  const imagesRef = useRef([])
-  const text1Ref = useRef(null)
-  const text2Ref = useRef(null)
-  const descriptionTextRef = useRef(null)
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useLayoutEffect(() => {
-    injectStyles()
-
     const ctx = gsap.context(() => {
-      const imgs = imagesRef.current.filter(Boolean)
+      const imageElements = imagesRef.current.filter(Boolean);
 
-      const text1 = SplitText.create(text1Ref.current, { type: 'words' })
-      const text2 = SplitText.create(text2Ref.current, { type: 'words' })
+      const text1 = SplitText.create(text1Ref.current, {
+        type: "words",
+      });
+
+      const text2 = SplitText.create(text2Ref.current, {
+        type: "words",
+      });
+
       const descriptionText = SplitText.create(descriptionTextRef.current, {
-        type: 'words lines',
-      })
+        type: "words,lines",
+      });
 
-      gsap.set([text1.words, text2.words, descriptionText.lines], {
-        rotateX: 90,
+      const animatedTextTargets = [
+        text1.words,
+        text2.words,
+        descriptionText.lines,
+      ];
+
+      gsap.set(animatedTextTargets, {
+        rotateX: TEXT_ROTATE_X_START,
         opacity: 0,
-        transformPerspective: 1000,
-        transformOrigin: '50% 100%',
-        willChange: 'transform',
-      })
-      gsap.set(imgs, { opacity: 0 })
+        transformPerspective: TEXT_TRANSFORM_PERSPECTIVE,
+        transformOrigin: "50% 100%",
+        willChange: "transform",
+      });
 
-      const tl = gsap.timeline()
+      gsap.set(imageElements, {
+        opacity: 0,
+      });
+
+      gsap.set(descriptionTextRef.current, {
+        opacity: 1,
+      });
+
+      const tl = gsap.timeline();
 
       tl.fromTo(
-        '#cappen-imgs-wrapper',
-        { yPercent: 500, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 0.5, ease: 'cubic-bezier(0.25,1,0.5,1)' }
-      )
+        "#imgs-wrapper",
+        {
+          yPercent: IMAGE_ENTRY_Y_PERCENT,
+          opacity: 0,
+        },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: INTRO_EASE,
+        }
+      );
 
-      tl.set([text1Ref.current, text2Ref.current], { opacity: 1 }, '<')
+      tl.set([text1Ref.current, text2Ref.current], { opacity: 1 }, "<");
 
       tl.to(
-        imgs,
-        { opacity: 1, duration: 0.5, ease: 'cubic-bezier(0.25,1,0.5,1)' },
-        '<'
-      )
+        imageElements,
+        {
+          opacity: 1,
+          duration: 0.5,
+          ease: INTRO_EASE,
+        },
+        "<"
+      );
 
       tl.to(
-        [text1.words, text2.words, descriptionText.lines],
-        { rotateX: 0, opacity: 1, stagger: 0.08, ease: 'cubic-bezier(0.25,1,0.5,1)' },
-        '<+0.5'
-      )
+        animatedTextTargets,
+        {
+          rotateX: 0,
+          opacity: 1,
+          stagger: TEXT_STAGGER,
+          ease: INTRO_EASE,
+        },
+        "<+0.5"
+      );
 
-      imgs.forEach((img, i) => {
-        tl.to(img, { zIndex: i, duration: 0.1, ease: 'cubic-bezier(0.25,1,0.5,1)' }, i * 0.2)
-      })
+      
+
+      imageElements.forEach((imageElement, index) => {
+        tl.to(
+          imageElement,
+          {
+            zIndex: index,
+            duration: IMAGE_Z_INDEX_DURATION,
+            ease: INTRO_EASE,
+          },
+          index * IMAGE_Z_INDEX_STAGGER
+        );
+      });
+
+      
+
+      tl.to(
+        imageElements,
+        {
+          scale: (index) => 1 + index * STACK_SCALE_STEP,
+          yPercent: (index) => -(index * STACK_Y_PERCENT_STEP),
+          duration: 1,
+          stagger: {
+            each: 0.01,
+            from: "end",
+          },
+          ease: "power3.inOut",
+        },
+        "<"
+      );
+
+      
+      tl.to(
+        imageElements,
+        {
+          scale: 1,
+          yPercent: (index, _, elements) => {
+            const totalImages = elements.length;
+
+            if (totalImages === 1) return 0;
+
+            const totalSpread = SPREAD_Y_PERCENT_STEP * (totalImages - 1);
+
+            return -totalSpread / 2 + index * SPREAD_Y_PERCENT_STEP;
+          },
+          duration: 1,
+          stagger: {
+            each: 0.01,
+            from: "end",
+          },
+          ease: "power3.inOut",
+        },
+        "+=0.2"
+      );
 
       tl.to(
         descriptionText.lines,
         {
-          rotateX: 90,
-          transformOrigin: 'top center',
+          rotateX: TEXT_ROTATE_X_START,
+          transformOrigin: "top center",
           opacity: 0,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: 'cubic-bezier(0.25,1,0.5,1)',
-        },
-        '<+0.2'
-      )
-
-      tl.to(
-        imgs,
-        {
-          scale: (i) => 1 + i * 0.15,
-          yPercent: (i) => -(i * 20),
           duration: 1,
-          stagger: { each: 0.01, from: 'end' },
-          ease: 'power3.inOut',
+          stagger: TEXT_STAGGER,
+          ease: INTRO_EASE,
         },
-        '<'
-      )
+        "<-0.1"
+      );
+
 
       tl.to(
-        imgs,
+        "#imgs-wrapper",
         {
-          scale: 1,
-          yPercent: (i, _, arr) => {
-            const n = arr.length
-            if (n === 1) return 0
-            const totalSpread = 110 * (n - 1)
-            return -totalSpread / 2 + i * 110
-          },
-          duration: 1,
-          stagger: { each: 0.01, from: 'end' },
-          ease: 'power3.inOut',
+          yPercent: 0,
+          ease: INTRO_EASE,
         },
-        '+=0.2'
-      )
+        "<"
+      );
 
-      tl.to('#cappen-imgs-wrapper', { yPercent: 0, ease: 'cubic-bezier(0.25,1,0.5,1)' }, '<')
-
-      tl.to(
-        [text1.words, text2.words],
-        {
-          opacity: 0,
-          duration: 0.5,
-          rotateX: 90,
-          transformOrigin: 'top center',
-          stagger: 0.08,
-          ease: 'cubic-bezier(0.25,1,0.5,1)',
-        }
-      )
+      tl.to([text1.words, text2.words], {
+        opacity: 0,
+        duration: 0.5,
+        rotateX: TEXT_ROTATE_X_START,
+        transformOrigin: "top center",
+        stagger: TEXT_STAGGER,
+        ease: INTRO_EASE,
+      });
 
       tl.to(
-        imgs,
+        imageElements,
         {
           opacity: 0,
           duration: 0.8,
-          stagger: { each: 0.08, from: 'end' },
+          stagger: {
+            each: IMAGE_FADE_STAGGER,
+            from: "end",
+          },
           onComplete: () => {
             gsap.to(rootRef.current, {
               opacity: 0,
               duration: 0.5,
-              ease: 'cubic-bezier(0.25,1,0.5,1)',
+              ease: INTRO_EASE,
               onComplete: () => {
-                gsap.set(rootRef.current, { display: 'none' })
-                onComplete?.()
+                gsap.set(rootRef.current, {
+                  display: "none",
+                });
+
+                onCompleteRef.current?.();
               },
-            })
+            });
           },
         },
-        '<+0.2'
-      )
+        "<+0.2"
+      );
 
       return () => {
-        text1.revert()
-        text2.revert()
-        descriptionText.revert()
-      }
-    }, rootRef)
+        text1.revert();
+        text2.revert();
+        descriptionText.revert();
+      };
+    }, rootRef);
 
-    return () => ctx.revert()
-  }, [onComplete])
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section ref={rootRef} className="cappen-loader">
-      <div className="cappen-loader__row">
-        <p ref={text1Ref} className="cappen-loader__label" style={{ opacity: 0 }}>{label1}</p>
+    <section
+      ref={(element) => {
+        rootRef.current = element;
 
-        <div id="cappen-imgs-wrapper" className="cappen-loader__imgs">
-          {images.map((src, i) => (
+        if (typeof ref === "function") {
+          ref(element);
+        } else if (ref) {
+          ref.current = element;
+        }
+      }}
+      id="loader-wrapper"
+      className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-lg:px-[5vw] max-md:px-[6vw]"
+    >
+      <div className="flex w-full items-center justify-between max-lg:flex-col max-lg:justify-center max-lg:gap-[33vh] max-md:gap-[70vw]">
+        <p
+          ref={text1Ref}
+          className="opacity-0 max-lg:text-[2.8vw] max-md:text-[5vw]"
+        >
+          HUMAN THINKERS
+        </p>
+
+        <div
+          id="imgs-wrapper"
+          className="relative size-[6.5vw] max-lg:z-99 max-lg:size-[13vw] max-md:size-[18vw]"
+        >
+          {images.map((src, index) => (
             <div
-              key={i}
-              ref={(el) => (imagesRef.current[i] = el)}
-              className="cappen-loader__img-slot"
-              style={{ opacity: 0 }}
+              key={`${src}-${index}`}
+              ref={(element) => {
+                imagesRef.current[index] = element;
+              }}
+              className="absolute top-0 left-0 size-full overflow-hidden rounded-sm opacity-0"
             >
-              <img src={src} alt="asset-image" />
+              <Image
+                src={src}
+                width={1000}
+                height={1000}
+                className="h-full w-full object-cover"
+                alt=""
+                priority={index === 0}
+              />
             </div>
           ))}
         </div>
 
-        <p ref={text2Ref} className="cappen-loader__label" style={{ opacity: 0 }}>{label2}</p>
+        <p
+          ref={text2Ref}
+          className="opacity-0 max-lg:text-[2.8vw] max-md:text-[4vw]"
+        >
+          DIGITAL MAKERS
+        </p>
       </div>
 
-      <p ref={descriptionTextRef} className="cappen-loader__desc">
-        {description}
+      <p
+        ref={descriptionTextRef}
+        className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-lg:bottom-[3vw] max-lg:w-[68vw] max-lg:text-[2.4vw] max-md:bottom-[6vw] max-md:w-[90%] max-md:text-[3.5vw]"
+      >
+        Hyperiux Vault
       </p>
     </section>
-  )
-}
+  );
+});
 
 export default function StackLoader({
   images = DEFAULT_IMAGE_SOURCES,
 }) {
-  const [isLoaderComplete, setIsLoaderComplete] = useState(false)
-  const [introInstance, setIntroInstance] = useState(0)
+  const [isLoaderComplete, setIsLoaderComplete] = useState(false);
+  const [introInstance, setIntroInstance] = useState(0);
+  const stackToSpreadIntroRef = useRef(null);
 
   const handleLoaderComplete = useCallback(() => {
-    setIsLoaderComplete(true)
-  }, [])
+    setIsLoaderComplete(true);
+  }, []);
 
   const handleReplay = useCallback(() => {
-    setIsLoaderComplete(false)
-    setIntroInstance((currentInstance) => currentInstance + 1)
-  }, [])
+    setIsLoaderComplete(false);
+    setIntroInstance((currentInstance) => currentInstance + 1);
+  }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-zinc-900">
-      <div
-        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${
-          isLoaderComplete
-            ? 'translate-y-0 opacity-100 pointer-events-auto'
-            : 'translate-y-4 opacity-0 pointer-events-none'
+    <div
+      id="DEMO UI"
+      className="relative h-screen w-screen overflow-hidden bg-zinc-900"
+    >
+      <p
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-neutral-300 transition-opacity duration-300 text-center ${
+          isLoaderComplete ? "opacity-100" : "opacity-0"
         }`}
       >
-        <p className="text-center text-4xl font-bold text-neutral-300">
-          HYPERIUX VAULT
-        </p>
-        <a
-          href="/effects"
-          className="inline-flex rounded-full bg-[#ff5f00] px-8 py-3 text-sm font-medium text-white transition-transform duration-300 hover:scale-105"
-        >
-          Explore All Effects
-        </a>
-        <button
-          type="button"
-          onClick={handleReplay}
-          className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-sm font-medium text-white backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/30 hover:bg-white/10 active:scale-95"
-        >
-          ↻ Replay
-        </button>
-      </div>
+        HYPERIUX VAULT
+      </p>
 
-      <Cappen
+     <button
+  type="button"
+  onClick={handleReplay}
+  className={`absolute top-[calc(50%+4.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
+    rounded-full border border-white/15 bg-white/5 px-5 py-2
+    text-sm font-medium text-white backdrop-blur-md
+    
+    transition-all duration-300 cursor-pointer
+    hover:scale-105 hover:border-white/30 hover:bg-white/10
+    active:scale-95
+    ${
+      isLoaderComplete
+        ? "opacity-100"
+        : "pointer-events-none opacity-0"
+    }`}
+>
+  ↻ Replay
+</button>
+
+      <StackToSpreadIntro
         key={introInstance}
+        ref={stackToSpreadIntroRef}
         images={images}
         onComplete={handleLoaderComplete}
       />
     </div>
-  )
+  );
 }

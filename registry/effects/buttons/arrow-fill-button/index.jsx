@@ -1,133 +1,53 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-const injectStyles = () => {
-  if (typeof document === "undefined") return;
-  if (document.getElementById("arrow-fill-button-styles")) return;
-
-  const style = document.createElement("style");
-  style.id = "arrow-fill-button-styles";
-  style.textContent = `
-    .arrow-fill-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 3rem;
-      padding-right: 3.5rem;
-      padding-left: 1.5rem;
-      position: relative;
-      width: fit-content;
-      border-radius: 1000px;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-rendering: geometricPrecision;
-      white-space: nowrap;
-      overflow: hidden;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-    }
-
-    .arrow-fill-btn__text {
-      position: relative;
-      z-index: 1;
-    }
-
-    .arrow-fill-btn__circle {
-      clip-path: inset(0.4rem 0.4rem 0.4rem calc(100% - 2.5rem) round 2rem);
-      position: absolute;
-      inset: -1px;
-      border-radius: 1000px;
-      display: flex;
-      align-items: center;
-      padding-right: 3.5rem;
-      padding-left: 1.5rem;
-      z-index: 2;
-      background-color: var(--btn-fill-bg);
-      color: var(--btn-fill-text);
-      transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
-    }
-
-    .arrow-fill-btn__circle-text {
-      padding: 0 1px 0 0;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      width: 100%;
-      white-space: nowrap;
-    }
-
-    .arrow-fill-btn__icon {
-      width: 0.75rem;
-      height: 0.75rem;
-      position: absolute;
-      right: 1rem;
-      overflow: hidden;
-      flex: 0 0 auto;
-      color: var(--btn-arrow);
-    }
-
-    .arrow-fill-btn:hover .arrow-fill-btn__icon {
-      color: var(--btn-arrow-hover);
-    }
-
-    .arrow-fill-btn__path {
-      transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
-      transform-origin: center center;
-      fill: currentColor;
-    }
-
-    .arrow-fill-btn__path:first-child {
-      transform: translateX(-120%) scale(0);
-    }
-
-    .arrow-fill-btn:hover .arrow-fill-btn__path:first-child {
-      transform: translateX(0) scale(1);
-    }
-
-    .arrow-fill-btn:hover .arrow-fill-btn__path:last-child {
-      transform: translateX(120%) scale(0);
-    }
-
-    .arrow-fill-btn:hover .arrow-fill-btn__circle {
-      clip-path: inset(0 round 2rem);
-      background-color: var(--btn-fill-bg-hover);
-      color: var(--btn-fill-text-hover);
-    }
-  `;
-  document.head.appendChild(style);
-};
+const DEFAULT_HREF = "#";
 
 export function ArrowFillButton({
-  children,
+  btnText,
+  href = DEFAULT_HREF,
   className = "",
-  bgColor = "#ff6b00",
+
+  bgColor = "#ff5f00",
   textColor = "#ffffff",
+
   fillBgColor = "#ffffff",
-  fillTextColor = "#ff6b00",
+  fillTextColor = "#ff5f00",
+
   hoverFillBgColor = "#ffffff",
-  hoverFillTextColor = "#ff6b00",
+  hoverFillTextColor = "#ff5f00",
+
   arrowColor,
   hoverArrowColor,
-  as: Component = "a",
+
   ...props
 }) {
-  const hasInjected = useRef(false);
+  const [isReady, setIsReady] = useState(false);
+
+  const usesUtilityBackground =
+    className.includes("bg-") ||
+    className.includes("from-") ||
+    className.includes("via-") ||
+    className.includes("to-");
 
   useEffect(() => {
-    if (!hasInjected.current) {
-      injectStyles();
-      hasInjected.current = true;
-    }
+    const frame = window.requestAnimationFrame(() => {
+      setIsReady(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   return (
-    <Component
+    <Link
+      href={href}
       {...props}
-      className={`arrow-fill-btn ${className}`}
+      className={`group relative inline-flex h-[4.2vw] w-fit min-w-fit max-w-none cursor-pointer items-center justify-center overflow-hidden rounded-full px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] whitespace-nowrap font-medium text-[1.1vw] leading-none [text-rendering:geometricPrecision] [--icon-circle:3.1vw] [--icon-right:0.55vw] [--circle-inset-y:calc((100%-var(--icon-circle))/2)] max-lg:h-[11vw] max-lg:px-[5vw] max-lg:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-lg:text-[3vw] max-lg:font-normal max-lg:[--icon-circle:8vw] max-lg:[--icon-right:1.5vw] max-md:h-[15vw] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] max-md:text-[4.2vw] max-md:[--icon-circle:11vw] max-md:[--icon-right:2vw] ${
+        usesUtilityBackground ? "" : "bg-(--btn-bg)"
+      } text-(--btn-text) ${className}`}
       style={{
         "--btn-bg": bgColor,
         "--btn-text": textColor,
@@ -137,36 +57,50 @@ export function ArrowFillButton({
         "--btn-fill-text-hover": hoverFillTextColor,
         "--btn-arrow": arrowColor || fillTextColor,
         "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
+        visibility: isReady ? "visible" : "hidden",
       }}
     >
-      <span className="arrow-fill-btn__text">{children}</span>
+      <span className="relative z-1 pb-px">{btnText}</span>
 
-      <div aria-hidden="true" className="arrow-fill-btn__circle">
-        <span>{children}</span>
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 z-2 flex items-center rounded-full bg-(--btn-fill-bg) px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] text-(--btn-fill-text) [clip-path:inset(var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle))_round_9999px)] max-lg:px-[5vw] max-lg:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] ${
+          isReady
+            ? "transition-all duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_0_0_0_round_9999px)]"
+            : ""
+        }`}
+      >
+        <span className="relative z-1 pb-px whitespace-nowrap">{btnText}</span>
 
-        <div className="arrow-fill-btn__circle-text">
-          <svg
-            viewBox="0 0 10 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="arrow-fill-btn__icon"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
-              className="arrow-fill-btn__path"
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
-              className="arrow-fill-btn__path"
-            />
-          </svg>
-        </div>
+        <span
+          className={`absolute right-[var(--icon-right)] top-1/2 z-2 inline-flex h-[var(--icon-circle)] w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow) ${
+            isReady
+              ? "transition-colors duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover)"
+              : ""
+          }`}
+          aria-hidden="true"
+        >
+          <ArrowRight
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-lg:size-[4vw] max-md:size-[5vw] -translate-x-[170%] -translate-y-1/2 origin-center scale-0 text-current ${
+              isReady
+                ? "transition-transform duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100"
+                : ""
+            }`}
+            strokeWidth={1.8}
+          />
+
+          <ArrowRight
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-lg:size-[4vw] max-md:size-[5vw] -translate-x-1/2 -translate-y-1/2 origin-center text-current ${
+              isReady
+                ? "transition-transform duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0"
+                : ""
+            }`}
+            strokeWidth={1.8}
+          />
+        </span>
       </div>
-    </Component>
+    </Link>
   );
 }
 
+export default ArrowFillButton;

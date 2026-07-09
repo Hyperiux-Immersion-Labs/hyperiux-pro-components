@@ -18,6 +18,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/interactive-list-preview/index.jsx"
+    },
+    {
+      "path": "ListHover.jsx",
+      "target": "src/components/effects/interactive-list-preview/ListHover.jsx"
     }
   ]
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useLenis } from "lenis/react";
@@ -267,13 +268,67 @@ export function StickyContentComp({
         height: containerHeight || `${items.length * 100}vh`,
       }}
     >
-      
+       <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center text-black items-center ">
+       <p className="text-lg text-black">
+        scroll
+       </p>
+                    
+                    <svg
+                        width="20"
+                        height="28"
+                        className="size-[1.5vw]"
+                        viewBox="0 0 20 28"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <style>{`
+                  .chev1 { animation: fadeDown 1.4s ease-in-out infinite; }
+                  .chev2 { animation: fadeDown 1.4s ease-in-out 0.22s infinite; }
+                  .chev3 { animation: fadeDown 1.4s ease-in-out 0.44s infinite; }
+                  @keyframes fadeDown {
+                    0%   { opacity: 0.08; transform: translateY(-3px); }
+                    50%  { opacity: 0.55; transform: translateY(2px); }
+                    100% { opacity: 0.08; transform: translateY(-3px); }
+                  }
+                `}</style>
+                        <polyline
+                            className="chev1 stroke-current"
+                            points="2,2 10,9 18,2"
+                            stroke="black"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <polyline
+                            className="chev2 stroke-current"
+                            points="2,10 10,17 18,10"
+                            stroke="black"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <polyline
+                            className="chev3 stroke-current"
+                            points="2,18 10,25 18,18"
+                            stroke="black"
+                            strokeWidth="1.4"
+                            fill="none"
+
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                </div>
       <div
         ref={stickyRef}
-        className="sticky top-0 flex h-screen w-full justify-between max-md:h-screen max-md:flex-col-reverse max-md:justify-start max-md:px-[5vw] max-sm:px-[6vw]"
+        className="sticky top-0 flex h-screen w-full justify-between max-lg:h-screen max-lg:flex-col-reverse max-lg:justify-start max-lg:px-[5vw] max-md:px-[6vw]"
       >
         <div
-          className={`relative h-full w-[42%] max-md:h-[55%] max-md:w-full ${leftClassName}`}
+          className={`relative h-full w-[42%] max-lg:h-[55%] max-lg:w-full ${leftClassName}`}
         >
           {items.map((item, index) => (
             <div
@@ -281,7 +336,7 @@ export function StickyContentComp({
               ref={(element) => {
                 contentRefsRef.current[index] = element;
               }}
-              className={`absolute inset-0 h-full w-full pl-[5vw] pt-[35%] opacity-0 [&_a]:mb-[1vw] [&_a]:text-[1.2vw] [&_h3]:mb-[2.5vw] [&_h3]:text-[4vw] [&_li]:mb-[0.5vw] [&_li]:text-[1.05vw] [&_p]:mb-[1vw] [&_p]:text-[1.2vw] [&_ul]:mb-[1vw] max-md:pl-0 max-md:pt-[7%] max-md:[&_a]:mb-[3vw] max-md:[&_a]:text-[2.8vw] max-md:[&_h3]:mb-[4vw] max-md:[&_h3]:text-[5.5vw] max-md:[&_li]:mb-[1vw] max-md:[&_li]:text-[2.5vw] max-md:[&_p]:mb-[3vw] max-md:[&_p]:text-[2.8vw] max-md:[&_ul]:mb-[4vw] max-sm:pt-[10%] max-sm:[&_a]:text-[4.5vw] max-sm:[&_h3]:text-[7.5vw] max-sm:[&_li]:text-[4vw] max-sm:[&_p]:text-[4.5vw] ${contentClassName}`}
+              className={`absolute inset-0 h-full w-full pl-[5vw] pt-[35%] opacity-0 [&_a]:mb-[1vw] [&_a]:text-[1.2vw] [&_h3]:mb-[2.5vw] [&_h3]:text-[4vw] [&_li]:mb-[0.5vw] [&_li]:text-[1.05vw] [&_p]:mb-[1vw] [&_p]:text-[1.2vw] [&_ul]:mb-[1vw] max-lg:pl-0 max-lg:pt-[7%] max-lg:[&_a]:mb-[3vw] max-lg:[&_a]:text-[2.8vw] max-lg:[&_h3]:mb-[4vw] max-lg:[&_h3]:text-[5.5vw] max-lg:[&_li]:mb-[1vw] max-lg:[&_li]:text-[2.5vw] max-lg:[&_p]:mb-[3vw] max-lg:[&_p]:text-[2.8vw] max-lg:[&_ul]:mb-[4vw] max-md:pt-[10%] max-md:[&_a]:text-[4.5vw] max-md:[&_h3]:text-[7.5vw] max-md:[&_li]:text-[4vw] max-md:[&_p]:text-[4.5vw] ${contentClassName}`}
             >
               {renderStickyContent(item)}
             </div>
@@ -289,7 +344,7 @@ export function StickyContentComp({
         </div>
 
         <div
-          className={`relative h-full w-1/2 overflow-hidden max-md:mt-[7vh] max-md:h-[37%] max-md:w-full max-md:rounded-[3.5vw] ${rightClassName}`}
+          className={`relative h-full w-1/2 overflow-hidden max-lg:mt-[7vh] max-lg:h-[37%] max-lg:w-full max-lg:rounded-[3.5vw] ${rightClassName}`}
         >
           {items.map((item, index) => (
             <div
@@ -299,7 +354,7 @@ export function StickyContentComp({
               }}
               className={`absolute inset-0 h-full w-full opacity-0 ${imageClassName}`}
             >
-              <img
+              <Image
                 src={item.image}
                 alt={item.alt || item.imageAlt || `sticky-image-${index + 1}`}
                 className="h-full w-full object-cover"

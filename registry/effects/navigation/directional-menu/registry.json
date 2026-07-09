@@ -18,6 +18,26 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/directional-menu/index.jsx"
+    },
+    {
+      "path": "DirectionalMegaMenu.jsx",
+      "target": "src/components/effects/directional-menu/DirectionalMegaMenu.jsx"
+    },
+    {
+      "path": "Menu1.jsx",
+      "target": "src/components/effects/directional-menu/Menu1.jsx"
+    },
+    {
+      "path": "Menu2.jsx",
+      "target": "src/components/effects/directional-menu/Menu2.jsx"
+    },
+    {
+      "path": "Menu3.jsx",
+      "target": "src/components/effects/directional-menu/Menu3.jsx"
+    },
+    {
+      "path": "MobileDirectionalMenu.jsx",
+      "target": "src/components/effects/directional-menu/MobileDirectionalMenu.jsx"
     }
   ]
 }

@@ -18,9 +18,10 @@ const DEFAULT_OVERLAY_ENTER_DURATION = 0.24;
 const DEFAULT_OVERLAY_EXIT_DURATION = 0.28;
 const DEFAULT_INSET_X = "0.08em";
 const DEFAULT_INSET_Y = "0.08em";
-const DEFAULT_TRIGGER_START = "top 85%";
+const DEFAULT_TRIGGER_START = "top bottom";
 const DEFAULT_DIRECTION = "left";
 const DEFAULT_DELAY = 0;
+const DEFAULT_TOGGLE_ACTIONS = "play none none reset";
 const REVEAL_EASE = "hyperEase";
 const SCALE_X_ZERO = "scaleX(0)";
 const SCALE_Y_ZERO = "scaleY(0)";
@@ -84,7 +85,7 @@ function createRevealRect({
   return rect;
 }
 
-export function RectangularTextReveal({
+export default function RectangularTextReveal({
   children,
   as: Tag = DEFAULT_TAG,
   className = "",
@@ -99,9 +100,10 @@ export function RectangularTextReveal({
   insetX = DEFAULT_INSET_X,
   insetY = DEFAULT_INSET_Y,
   triggerStart = DEFAULT_TRIGGER_START,
-  once = true,
+  once = false,
   direction = DEFAULT_DIRECTION,
   delay = DEFAULT_DELAY,
+  toggleActions = DEFAULT_TOGGLE_ACTIONS,
 }) {
   const elementRef = useRef(null);
 
@@ -178,7 +180,7 @@ export function RectangularTextReveal({
     });
 
     // Timeline
-    const timeline = gsap.timeline({ paused: true });
+    const timeline = gsap.timeline({ paused: true, delay });
 
     lines.forEach((line, index) => {
       const baseRect = baseRects[index];
@@ -249,9 +251,8 @@ export function RectangularTextReveal({
       trigger: elementRef.current,
       start: triggerStart,
       once,
-      onEnter: () => {
-        gsap.delayedCall(delay, () => timeline.play());
-      },
+      animation: timeline,
+      toggleActions: once ? "play none none none" : toggleActions,
       ...(once
         ? {}
         : {
@@ -314,6 +315,7 @@ export function RectangularTextReveal({
     overlayExitDuration,
     revealDuration,
     stagger,
+    toggleActions,
     triggerStart,
     useOverlay,
   ]);

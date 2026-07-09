@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
+import Image from 'next/image';
 
 gsap.registerPlugin(SplitText);
 
@@ -14,8 +15,13 @@ const SLIDER_BOTTOM_OFFSET = 0;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
-export default function ZoomSliderComp({ images = [] }) {
-  // State & refs
+export function ZoomSliderComp({
+  sliderData,
+  title,
+  subheading,
+}) {
+  const images = sliderData;
+
   const stripRef = useRef(null);
   const cardRefs = useRef([]);
   const imageWrapRefs = useRef([]);
@@ -24,7 +30,6 @@ export default function ZoomSliderComp({ images = [] }) {
   const [viewportWidth, setViewportWidth] = useState(1440);
   const [viewportHeight, setViewportHeight] = useState(900);
 
-  // Derived values
   const isMobile = viewportWidth < MOBILE_BREAKPOINT;
   const isTablet =
     viewportWidth >= MOBILE_BREAKPOINT && viewportWidth < TABLET_BREAKPOINT;
@@ -45,7 +50,6 @@ export default function ZoomSliderComp({ images = [] }) {
     lastX: 0,
   });
 
-  // Effects
   useEffect(() => {
     const onResize = () => {
       setViewportWidth(window.innerWidth);
@@ -64,6 +68,7 @@ export default function ZoomSliderComp({ images = [] }) {
 
       const cards = Array.from(stripRef.current.children);
       const count = images.length;
+
       if (!count) return;
 
       const loopWidth = count * cardStep;
@@ -94,9 +99,12 @@ export default function ZoomSliderComp({ images = [] }) {
           cardHeightMin + scale * (cardHeightMax - cardHeightMin);
         const y = bottom - cardHeight;
 
+        if (!cards[cardIndex]) continue;
+
         cards[cardIndex].style.transform = `translate(${currentX}px, ${y}px)`;
 
         const imageWrap = imageWrapRefs.current[cardIndex];
+
         if (!imageWrap) continue;
 
         imageWrap.style.width = `${visualWidth}px`;
@@ -191,11 +199,13 @@ export default function ZoomSliderComp({ images = [] }) {
     cardRefs.current.forEach((card, index) => {
       const textElement = textRefs.current[index];
       const imageWrap = imageWrapRefs.current[index];
+
       if (!card || !textElement || !imageWrap) return;
 
       const numberElement = textElement.querySelector('[data-number]');
       const titleElement = textElement.querySelector('[data-title]');
       const descElement = textElement.querySelector('[data-desc]');
+
       if (!numberElement || !titleElement || !descElement) return;
 
       const split = SplitText.create(
@@ -210,6 +220,7 @@ export default function ZoomSliderComp({ images = [] }) {
       gsap.set(textElement, { autoAlpha: 0 });
 
       const imageElement = imageWrap.querySelector('img');
+
       if (imageElement) {
         gsap.set(imageElement, { opacity: 1 });
       }
@@ -270,6 +281,19 @@ export default function ZoomSliderComp({ images = [] }) {
       className="relative w-screen overflow-hidden bg-black"
       style={{ height: '100svh' }}
     >
+      {title ? (
+        <div className="pointer-events-none absolute left-1/2 top-10 z-20 -translate-x-1/2 px-4 text-center">
+          <h2 className="text-4xl text-white max-sm:text-2xl">
+            {title}
+          </h2>
+          {subheading ? (
+            <p className="mt-3 text-sm tracking-[0.08em] text-white/65 max-sm:text-xs">
+              {subheading}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       <div ref={stripRef} className="absolute inset-0">
         {images.map((item, index) => (
           <div
@@ -294,19 +318,21 @@ export default function ZoomSliderComp({ images = [] }) {
             >
               <p
                 data-number
-                className="overflow-hidden text-[10px] font-bold uppercase leading-none tracking-[0.18em] text-white/50"
+                className="overflow-hidden select-none text-[10px] font-bold uppercase leading-none tracking-[0.18em] text-white/50"
               >
                 {item.number}
               </p>
+
               <p
                 data-title
-                className="overflow-hidden text-[13px] font-extrabold uppercase leading-[1.15] tracking-[0.08em] text-white"
+                className="overflow-hidden select-none text-[13px] font-extrabold uppercase leading-[1.15] tracking-[0.08em] text-white"
               >
                 {item.title}
               </p>
+
               <p
                 data-desc
-                className="overflow-hidden text-[10px] font-normal leading-normal tracking-[0.04em] text-white/60"
+                className="overflow-hidden text-[10px] select-none font-normal leading-normal tracking-[0.04em] text-white/60"
               >
                 {item.desc}
               </p>
@@ -316,24 +342,27 @@ export default function ZoomSliderComp({ images = [] }) {
               ref={(element) => {
                 imageWrapRefs.current[index] = element;
               }}
-              className="relative cursor-pointer overflow-hidden"
+              className="relative overflow-hidden"
               style={{
                 width: cardWidthMin,
                 height: cardHeightMax,
                 willChange: 'width, height',
               }}
             >
-              <img
+              <Image
                 src={item.src}
                 alt={item.title}
+                fill
                 draggable={false}
-                className="pointer-events-none select-none object-cover opacity-0 absolute inset-0"
+                priority={index < 3}
+                className="pointer-events-none select-none object-cover opacity-0"
                 style={{
                   transform: 'none',
                   objectPosition: 'center bottom',
                   transition: 'none',
                   willChange: 'auto',
                 }}
+                sizes="(max-width: 640px) 260px, (max-width: 1024px) 500px, 680px"
               />
             </div>
           </div>
@@ -342,3 +371,5 @@ export default function ZoomSliderComp({ images = [] }) {
     </div>
   );
 }
+
+export default ZoomSliderComp;

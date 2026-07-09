@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
-// ─── Constants 
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
@@ -11,7 +11,7 @@ const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 const LERP_SPEED = 0.1;
 const FADE_SPEED = 0.04;
 
-// ─── GLSL Shaders 
+// ─── GLSL Shaders ─────────────────────────────────────────────────────────────
 
 const PARTICLE_VERT = /* glsl */ `
   uniform float uSize;
@@ -65,9 +65,9 @@ const POINT_FRAG = /* glsl */ `
   }
 `;
 
-// ─── Component 
+// ─── Component ────────────────────────────────────────────────────────────────
 
-export function SpiderParticles({
+export default function SpiderParticles({
   particleCount = 180,
   gridGap = 0,
   particleSize = 20.0,
@@ -278,7 +278,7 @@ export function SpiderParticles({
     const mouseLines = new THREE.LineSegments(mouseLineGeo, mouseLineMat);
     scene.add(mouseLines);
 
-    // ─── Resize 
+    // ─── Resize ────────────────────────────────────────────────────────────────
 
     const onResize = () => {
       width  = mount.clientWidth;
@@ -305,7 +305,7 @@ export function SpiderParticles({
       // Snap smoothMouse on the first frame, lerp every frame after
       if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
         if (mouseJustEntered) {
-          smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
+          smoothMouse.copy(mouse); // instant snap — avoids lerp drift from previous position
           mouseJustEntered = false;
         } else {
           smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
@@ -328,7 +328,7 @@ export function SpiderParticles({
         cursorPoint.visible = false;
       }
 
-      // Build web lines - one segment per nearby particle
+      // Build web lines — one segment per nearby particle
       let mIdx = 0;
 
       if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
@@ -411,7 +411,7 @@ export function SpiderParticles({
     centerColor,
   ]);
 
-  // ─── UI ───────
+  // ─── UI ───────────────────────────────────────────────────────────────────────
 
   const stats = [
     { label: "Particles", value: particleCount },
@@ -465,7 +465,7 @@ export function SpiderParticles({
           </div>
         </div>
 
-        {/* Mobile overlay - desktop-only effect notice */}
+        {/* Mobile overlay — desktop-only effect notice */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 pointer-events-none select-none z-20 hidden max-sm:flex w-full px-14 text-center">
           <p className="text-white text-3xl font-light tracking-tight">
             Open on desktop
@@ -480,7 +480,7 @@ export function SpiderParticles({
           <div
             className={`transition-opacity duration-700 ${active ? "opacity-0" : "opacity-40"}`}
           >
-            <p className="text-sm text-white/60 tracking-widest uppercase">
+            <p className="text-sm text-white tracking-widest uppercase">
               Move your cursor to explore
             </p>
             <div className="mt-1.5 w-8 h-px bg-white/20" />

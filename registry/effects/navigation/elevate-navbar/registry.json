@@ -20,6 +20,14 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/elevate-navbar/index.jsx"
+    },
+    {
+      "path": "ElevateMobileNav.jsx",
+      "target": "src/components/effects/elevate-navbar/ElevateMobileNav.jsx"
+    },
+    {
+      "path": "ElevateDesktopNav.jsx",
+      "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx"
     }
   ]
 }

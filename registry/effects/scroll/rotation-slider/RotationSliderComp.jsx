@@ -3,6 +3,7 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { Mouse } from "lucide-react";
 
 const MOBILE_BREAKPOINT = 640;
@@ -157,12 +158,10 @@ export function RotationSliderComp({ images }) {
 
     return (
         <div ref={outerRef} className="relative bg-white">
-            
             <div
                 className="sticky top-0 flex h-screen items-center overflow-hidden"
                 style={{ perspective: "1200px" }}
             >
-              
                 <div
                     ref={trackRef}
                     className="
@@ -223,10 +222,12 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                     transformStyle: "preserve-3d",
                 }}
             >
-                <img
+                <Image
                     src={src}
                     alt="slider"
-                    className="object-cover absolute inset-0"
+                    fill
+                    className="object-cover"
+                    priority
                 />
             </div>
 

@@ -95,7 +95,7 @@
       ],
       "registryDependencies": [],
       "exportName": "InfinitePerspectiveSlider",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "parallax-footer",
@@ -183,7 +183,7 @@
       ],
       "registryDependencies": [],
       "exportName": "RotationSlider",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "scroll-distortion",
@@ -242,7 +242,7 @@
       ],
       "registryDependencies": [],
       "exportName": "SplitCanvas",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "square-translate",
@@ -285,7 +285,7 @@
       ],
       "registryDependencies": [],
       "exportName": "StickyContentWrapper",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "svg-path",
@@ -327,7 +327,7 @@
       ],
       "registryDependencies": [],
       "exportName": "TextConvergence",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "butterfly-trail-cursor",
@@ -569,7 +569,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "DottedGrid",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "spider-particles",
@@ -581,7 +581,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "SpiderParticles",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "block-transition",
@@ -755,7 +755,7 @@
       ],
       "registryDependencies": [],
       "exportName": "OverflowStaggerText",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "overflow-text-reveal",
@@ -797,7 +797,7 @@
       ],
       "registryDependencies": [],
       "exportName": "RectangularTextReveal",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "scramble-text",
@@ -965,7 +965,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "LinkButton",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "scramble-link-button",
@@ -1050,7 +1050,7 @@
       ],
       "registryDependencies": [],
       "exportName": "ZoomSlider",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "animated-faq",
@@ -1142,7 +1142,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "HoverStack",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "animated-modal",
@@ -1202,7 +1202,7 @@
         "chevron-bird"
       ],
       "exportName": "DirectionalMenu",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "elevate-navbar",
@@ -1216,7 +1216,7 @@
       ],
       "registryDependencies": [],
       "exportName": "ElevateNavbar",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "expanding-navbar",
@@ -1277,7 +1277,7 @@
       ],
       "registryDependencies": [],
       "exportName": "NumericTunnel",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "stack-loader",
@@ -1290,8 +1290,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "Cappen",
-      "exportKind": "named"
+      "exportName": "StackLoader",
+      "exportKind": "default"
     },
     {
       "name": "3d-portfolio-slider",
@@ -1417,7 +1417,7 @@
       ],
       "registryDependencies": [],
       "exportName": "FractalGlass",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "grid-lift",
@@ -1603,7 +1603,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "GooeyCounter",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "interactive-list-preview",
@@ -1617,7 +1617,7 @@
       ],
       "registryDependencies": [],
       "exportName": "InteractiveListPreview",
-      "exportKind": "named"
+      "exportKind": "default"
     },
     {
       "name": "ribbon-drift",
