@@ -11,15 +11,36 @@ import Heading3 from "@/components/DocsContent/Heading3New";
 
 
 const cliCommands = `npx hyperiux init
-npx hyperiux add scroll-stack`;
+npx hyperiux add phantom-image-trail`;
 
-const usageCode = `import ScrollStack from "@/components/hyperiux/scroll-stack";
+const usageCode = `import PhantomImageTrail from "@/components/phantom-image-trail";
 
 export default function Page() {
+  const images = [
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", alt: "Gradient 1" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg", alt: "Gradient 2" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", alt: "Gradient 3" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg", alt: "Gradient 4" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg", alt: "Gradient 5" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", alt: "Gradient 6" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", alt: "Gradient 7" },
+  ];
   return (
-    <main>
-      <ScrollStack />
-    </main>
+    <div className="relative h-screen w-screen bg-[#f8fdfe]">
+      <PhantomImageTrail
+        images={images}
+        enableRotation={true}
+        idleSpawn={false}
+        idleDelay={300}
+        cursorOffsetX={-12}
+        cursorOffsetY={-12}
+        popOutDuration={0.8}
+        fadeOutDuration={0.5}
+        idlePopOutMultiplier={2.2}
+        idleFadeMultiplier={1.8}
+        imageMultiplier={3}
+      />
+    </div>
   );
 }`;
 

@@ -11,7 +11,7 @@ import Heading3 from "@/components/DocsContent/Heading3New";
 
 const initCommand = `npx hyperiux init`;
 
-const addScrollStackCommand = `npx hyperiux add scroll-stack`;
+const addPhantomImageTrailCommand = `npx hyperiux add phantom-image-trail`;
 
 const addEffectCommand = `npx hyperiux add [effect-name]`;
 
@@ -38,20 +38,23 @@ const npmInstallGsapMotionCommand = `npm install gsap motion`;
 
 const pnpmAddGsapMotionCommand = `pnpm add gsap motion`;
 
-const npmInstallThreeCommand = `npm install three @react-three/fiber`;
+const npmInstallGsapCommand = `npm install gsap`;
 
-const kineticHeaderPath = `components/hyperiux/kinetic-header.tsx`;
+const phantomImageTrailPath = `components/phantom-image-trail`;
 
-const usageCode = `import { KineticHeader } from "@/components/hyperiux/kinetic-header";
+const usageCode = `import PhantomImageTrail from "@/components/phantom-image-trail";
+
+const images = [
+   { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", alt: "Gradient 1" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg", alt: "Gradient 2" },
+    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", alt: "Gradient 3" }
+];
 
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white">
       <section className="mx-auto flex min-h-screen max-w-6xl items-center px-6">
-        <KineticHeader
-          text="Make the web feel authored."
-          className="text-5xl font-bold tracking-tight md:text-8xl"
-        />
+        <PhantomImageTrail images={images} />
       </section>
     </main>
   );
@@ -61,8 +64,8 @@ const useClientCode = `"use client";`;
 
 const dynamicImportCode = `import dynamic from "next/dynamic";
 
-const WebGLBackground = dynamic(
-  () => import("@/components/hyperiux/webgl-background"),
+const PhantomImageTrail = dynamic(
+  () => import("@/components/phantom-image-trail"),
   { ssr: false }
 );`;
 
@@ -111,7 +114,7 @@ export default function DocsInstallation() {
 
       <Para>Then add an effect.</Para>
 
-      <CodeBlock code={addScrollStackCommand} language="bash" />
+      <CodeBlock code={addPhantomImageTrailCommand} language="bash" />
 
       <Para>
         The CLI adds the files required for the selected effect. Not the whole Vault. Just
@@ -226,7 +229,7 @@ export default function DocsInstallation() {
 
       <Para>Example:</Para>
 
-      <CodeBlock code={addScrollStackCommand} language="bash" />
+      <CodeBlock code={addPhantomImageTrailCommand} language="bash" />
 
       <Para>Vault adds the selected effect to your project files.</Para>
 
@@ -426,9 +429,9 @@ export default function DocsInstallation() {
 
       <CodeBlock code={pnpmAddGsapMotionCommand} language="bash" />
 
-      <Para>For WebGL or 3D effects, you may need packages such as:</Para>
+      <Para>For a GSAP-based effect, you may need packages such as:</Para>
 
-      <CodeBlock code={npmInstallThreeCommand} language="bash" />
+      <CodeBlock code={npmInstallGsapCommand} language="bash" />
 
       <Para>
         Use the exact dependency list from the effect page. Do not install the entire
@@ -441,7 +444,7 @@ export default function DocsInstallation() {
 
       <Para>Example path:</Para>
 
-      <CodeBlock code={kineticHeaderPath} language="tsx" />
+      <CodeBlock code={phantomImageTrailPath} language="tsx" />
 
       <Para>Some effects may also include:</Para>
 
