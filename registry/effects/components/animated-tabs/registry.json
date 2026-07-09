@@ -1,5 +1,5 @@
 {
-  "name": "tabs",
+  "name": "animated-tabs",
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",
@@ -8,19 +8,19 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/tabs",
+  "previewUrl": "/demo/animated-tabs",
   "tier": "pro",
   "main": "index.jsx",
-  "importPath": "@/components/effects/tabs",
-  "target": "src/components/effects/tabs",
+  "importPath": "@/components/effects/animated-tabs",
+  "target": "src/components/effects/animated-tabs",
   "files": [
     {
       "path": "index.jsx",
-      "target": "src/components/effects/tabs/index.jsx"
+      "target": "src/components/effects/animated-tabs/index.jsx"
     },
     {
       "path": "TabsComp.jsx",
-      "target": "src/components/effects/tabs/TabsComp.jsx"
+      "target": "src/components/effects/animated-tabs/TabsComp.jsx"
     }
   ]
 }

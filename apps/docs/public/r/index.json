@@ -659,7 +659,7 @@
       "exportKind": "named"
     },
     {
-      "name": "svg-draw-page-transition",
+      "name": "svg-brush-transition",
       "type": "registry:component",
       "category": "transitions",
       "categories": [
@@ -670,8 +670,8 @@
         "next-transition-router"
       ],
       "registryDependencies": [],
-      "exportName": "SvgDrawPageTransition",
-      "exportKind": "named"
+      "exportName": "SVGBrushTransition",
+      "exportKind": "default"
     },
     {
       "name": "blur-text",
@@ -1169,7 +1169,7 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "AnimatedTabs",
+      "exportName": "Tabs",
       "exportKind": "default"
     },
     {
@@ -1234,15 +1234,14 @@
       "exportKind": "default"
     },
     {
-      "name": "immersive-full-screen-navigation",
+      "name": "immersive-full-screen-nav",
       "type": "registry:component",
       "category": "navigation",
       "categories": [
         "navigation"
       ],
       "dependencies": [
-        "gsap",
-        "lucide-react"
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "ImmersiveFullscreenNav",
@@ -1628,12 +1627,11 @@
       ],
       "dependencies": [
         "gsap",
-        "next",
         "lenis"
       ],
       "registryDependencies": [],
-      "exportName": "PortfolioConcept",
-      "exportKind": "named"
+      "exportName": "RibbonDrift",
+      "exportKind": "default"
     }
   ]
 }

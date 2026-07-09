@@ -435,16 +435,6 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/others/portfolio-concept/registry.json",
-    "importPath": "@/components/effects/ribbon-drift",
-    "target": "src/components/effects/ribbon-drift"
-  },
-  {
-    "name": "ribbon-drift",
-    "title": "Ribbon Drift",
-    "category": "components",
-    "type": "registry:component",
-    "tier": "pro",
     "registryPath": "registry/effects/components/ribbon-drift/registry.json",
     "importPath": "@/components/effects/ribbon-drift",
     "target": "src/components/effects/ribbon-drift"
