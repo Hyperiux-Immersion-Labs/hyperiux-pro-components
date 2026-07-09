@@ -81,8 +81,8 @@ export default function RefundPolicy() {
       </DocsList>
 
       <Para>
-        To request a refund under one of these exceptions, contact us at support@hyperiux.com
-        within 30 days of the charge, with your order/transaction details. We may ask for
+        To request a refund under one of these exceptions, contact us at <a href="mailto:support@hyperiux.com" className="text-primary underline"> support@hyperiux.com </a>
+          within 30 days of the charge, with your order/transaction details. We may ask for
         reasonable information to verify the issue.
       </Para>
 
@@ -159,7 +159,7 @@ export default function RefundPolicy() {
       </Para>
 
       <Para>
-        We encourage you to contact support@hyperiux.com first - most billing issues can be
+        We encourage you to contact <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a> first - most billing issues can be
         resolved faster this way than through a chargeback. This section does not limit any
         right you have to dispute a charge with your payment provider.
       </Para>
@@ -169,7 +169,7 @@ export default function RefundPolicy() {
       </Heading2>
 
       <Para>
-        Email support@hyperiux.com with your billing email address, the date of the charge,
+        Email <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a> with your billing email address, the date of the charge,
         and a description of the issue.
       </Para>
 
@@ -240,16 +240,10 @@ export default function RefundPolicy() {
       </Para>
 
       <Heading2 id="contact">12. Contact</Heading2>
+<a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>
+      
 
-      <LinkButton
-        href="mailto:support@hyperiux.com"
-        shimmer={false}
-        tilted={false}
-        showArrow={false}
-        text="support@hyperiux.com"
-      />
-
-      <Para>Phone: +91 81780 26136</Para>
+      <Para>Phone: <a href="telto:+91 81780 26136" className="text-primary underline">+91 81780 26136 </a> </Para>
 
       <Para>
         Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh,

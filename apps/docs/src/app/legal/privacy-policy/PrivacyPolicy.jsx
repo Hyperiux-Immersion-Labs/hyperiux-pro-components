@@ -343,7 +343,7 @@ export default function PrivacyPolicy() {
       </DocsList>
 
       <Para>
-        To exercise any of these rights, contact us at support@hyperiux.com. We will respond
+        To exercise any of these rights, contact us at <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>. We will respond
         within a reasonable time and in accordance with applicable law.
       </Para>
 
@@ -358,7 +358,7 @@ export default function PrivacyPolicy() {
       <Para>
         If we become aware that we&apos;ve collected personal data from a child without
         appropriate consent, we will take steps to delete it. If you believe a child has
-        provided us personal data, contact us at support@hyperiux.com.
+        provided us personal data, contact us at <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>.
       </Para>
 
       <Heading2 id="data-breach-notification">9. Data Breach Notification</Heading2>
@@ -433,15 +433,9 @@ export default function PrivacyPolicy() {
 
       <Heading2 id="contact-us">13. Contact Us</Heading2>
 
-      <LinkButton
-        href="mailto:support@hyperiux.com"
-        shimmer={false}
-        tilted={false}
-        showArrow={false}
-        text="support@hyperiux.com"
-      />
+      <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>
 
-      <Para>Phone: +91 81780 26136</Para>
+      <Para>Phone: <a href="telto:+91 81780 26136" className="text-primary underline">+91 81780 26136</a></Para>
 
       <Para>
         Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh,
