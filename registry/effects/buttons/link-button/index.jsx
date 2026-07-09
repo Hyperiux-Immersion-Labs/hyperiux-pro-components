@@ -67,7 +67,7 @@ export default function LinkButton({
   };
   const iconClassNames = `${isIconRotated ? "-rotate-45" : ""} ${
     !isCompactViewport ? "group-hover:-rotate-45" : ""
-  } size-[1.1vw] max-lg:size-[3vw] max-md:size-[5vw] transition-transform duration-300 ${iconClassName}`;
+  } size-[1.1vw] max-xl:size-[3vw] max-md:size-[5vw] transition-transform duration-300 ${iconClassName}`;
 
   return (
     <>
@@ -76,7 +76,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-lg:text-[4vw] max-md:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-xl:text-[4vw] max-md:text-[5.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

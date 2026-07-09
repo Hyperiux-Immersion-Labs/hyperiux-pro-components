@@ -143,7 +143,7 @@ function EffectDetailMainSkeleton() {
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`related-effect-skeleton-${index}`}
-                className="min-w-[31vw] max-lg:min-w-[44vw] max-md:min-w-[55vw] max-sm:min-w-full"
+                className="min-w-[31vw] max-xl:min-w-[44vw] max-md:min-w-[55vw] max-sm:min-w-full"
               >
                 <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-md:p-5 max-sm:p-5">
                   <div className="flex h-full w-full items-center justify-center">
@@ -650,7 +650,7 @@ export function EffectDetailContent({
                           onClick={(event) =>
                             handleRelatedCardClick(event, relatedEffect)
                           }
-                          className="min-w-[31vw] cursor-pointer max-sm:px-[7vw] max-md:px-[6vw] snap-start max-lg:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
+                          className="min-w-[31vw] cursor-pointer max-sm:px-[7vw] max-md:px-[6vw] snap-start max-xl:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
                         >
                           <EffectCard
                             effect={relatedEffect}

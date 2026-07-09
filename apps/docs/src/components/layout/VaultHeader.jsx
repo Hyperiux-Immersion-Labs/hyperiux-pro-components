@@ -168,7 +168,7 @@ export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
                   <span className="text-sm max-md:hidden">Search</span>
                 </div>
 
-                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-lg:hidden">
+                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-xl:hidden">
                   ⌘K
                 </kbd>
               </button>

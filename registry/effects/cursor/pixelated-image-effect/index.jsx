@@ -155,11 +155,11 @@ export default function PixelatedImageEffect({
  return (
  <div className="relative flex h-dvh w-dvw pt-6 flex-col gap-15 items-center justify-center">
 
-<h2 className="text-5xl text-center max-lg:hidden w-[45%] mt-10">
+<h2 className="text-5xl text-center max-xl:hidden w-[45%] mt-10">
   Move cursor left in the image block for a clear image, right for more pixelation.
 </h2>
 
- <h2 className="hidden max-lg:block  w-[60%] text-center mx-auto text-2xl">
+ <h2 className="hidden max-xl:block  w-[60%] text-center mx-auto text-2xl">
    Click left in image block for clear image, right for more pixelated
 
  </h2>
@@ -172,7 +172,7 @@ export default function PixelatedImageEffect({
 
  <div
  ref={imageRef}
- className="relative h-[55vh] w-full max-sm:max-w-[90%] overflow-hidden max-lg:max-w-[90%] max-w-lg touch-none"
+ className="relative h-[55vh] w-full max-sm:max-w-[90%] overflow-hidden max-xl:max-w-[90%] max-w-lg touch-none"
  style={{ filter:"url(#pixelate-filter)" }}
  onPointerDown={handlePointerDown}
  onPointerMove={handlePointerMove}

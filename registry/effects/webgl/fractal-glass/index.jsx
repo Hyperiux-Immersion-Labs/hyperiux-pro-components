@@ -152,10 +152,10 @@ export default function FractalGlass({
   imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", // ← new prop: path/URL to image file
   videoSrc = null,
   mediaType = "image",
-  stripesFrequency = 40,
-  glassStrength = 2.0,
-  glassSmoothness = 0.014,
-  parallaxStrength = 0.15,
+  stripesFrequency = 8.0,
+  glassStrength = 0.8,
+  glassSmoothness = 0.5,
+  parallaxStrength = 0.6,
   distortionMultiplier = 8.0,
   edgePadding = 0.12,
 }) {
@@ -322,7 +322,7 @@ export default function FractalGlass({
       <div
         className="
         hidden
-        max-md:flex
+        max-xl:flex
         fixed
         bottom-6
         left-1/2
@@ -338,7 +338,7 @@ export default function FractalGlass({
         text-sm
         leading-tight
         pointer-events-none
-        max-sm:px-[7vw] max-sm:py-[4vw]
+        max-md:px-[7vw] max-md:py-[4vw]
       "
       >
         Works best on desktop
