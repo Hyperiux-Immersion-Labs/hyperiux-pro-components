@@ -104,7 +104,7 @@ export default function TermsOfService() {
       </DocsList>
 
       <Para>
-        Notify us immediately at support@hyperiux.com if you suspect unauthorized use of
+        Notify us immediately at <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a> if you suspect unauthorized use of
         your account or tokens.
       </Para>
 
@@ -135,7 +135,7 @@ export default function TermsOfService() {
 
       <Para>
         4.4 Cancellation. You may cancel your Vault Pro subscription at any time via your
-        account, or by emailing support@hyperiux.com. Cancellation stops future renewal
+        account, or by emailing <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>. Cancellation stops future renewal
         charges. It does not entitle you to a refund of the current billing period already
         paid - see our Refund Policy.
       </Para>
@@ -274,8 +274,8 @@ export default function TermsOfService() {
       </Para>
 
       <Para>
-        You can unsubscribe at any time using the link in any email or by contacting
-        support@hyperiux.com.
+        You can unsubscribe at any time using the link in any email or by contacting 
+        <a href="mailto:support@hyperiux.com" className="text-primary underline"> support@hyperiux.com</a>.
       </Para>
 
       <Para>
@@ -479,16 +479,10 @@ export default function TermsOfService() {
       </Para>
 
       <Heading2 id="contact">21. Contact</Heading2>
+<a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>
+      
 
-      <LinkButton
-        href="mailto:hello@hyperiux.com"
-        shimmer={false}
-        tilted={false}
-        showArrow={false}
-        text="hello@hyperiux.com"
-      />
-
-      <Para>Phone: +91 81780 26136</Para>
+      <Para>Phone: <a href="telto:+91 81780 26136" className="text-primary underline"> +91 81780 26136 </a></Para>
     </DocsContent>
   );
 }

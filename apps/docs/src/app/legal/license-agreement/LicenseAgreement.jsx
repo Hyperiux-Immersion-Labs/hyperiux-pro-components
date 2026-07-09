@@ -126,7 +126,7 @@ export default function LicenseAgreement() {
         Where no such notice is present, the Free Core terms in this Section 2 apply
         instead. Hyperiux is responsible for marking MIT-licensed files clearly; if you are
         unsure whether a specific file is MIT-licensed, treat it as standard Free Core
-        unless a notice states otherwise, or confirm with us at hello@hyperiux.com.
+        unless a notice states otherwise, or confirm with us at <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>.
       </Para>
 
       <Para>
@@ -395,7 +395,7 @@ export default function LicenseAgreement() {
         boilerplate, no-code builder block, or any other downloadable, resellable, or
         freely-redistributable design/engineering pack, you need a license that explicitly
         authorizes that use. A standard Project license does not cover this by default -
-        contact us at hello@hyperiux.com before doing so.
+        contact us at <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a> before doing so.
       </Para>
 
       <Heading2 id="seats-and-team-usage">7. Seats and Team Usage</Heading2>
@@ -637,18 +637,10 @@ export default function LicenseAgreement() {
 
       <Para>
         Questions about licensing, commercial use, enterprise agreements, or unusual
-        deployment scenarios:
+        deployment scenarios: <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com </a>
       </Para>
 
-      <LinkButton
-        href="mailto:hello@hyperiux.com"
-        shimmer={false}
-        tilted={false}
-        showArrow={false}
-        text="hello@hyperiux.com"
-      />
-
-      <Para>Phone: +91 81780 26136</Para>
+      <Para>Phone: <a href="telto:+918178026136" className="text-primary underline">+91 81780 26136 </a></Para>
 
       <Para>When writing in, it helps to include:</Para>
 
