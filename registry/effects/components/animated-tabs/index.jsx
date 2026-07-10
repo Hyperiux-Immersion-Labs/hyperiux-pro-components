@@ -1,4 +1,4 @@
-import AnimatedTabsComp from "./AnimatedTabsComp";
+import AnimatedTabsComp from "./TabsComp";
 
 const tabsData = [
   {

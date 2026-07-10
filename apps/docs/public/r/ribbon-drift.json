@@ -14,12 +14,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/ribbon-drift/index.jsx"
     },
     {
       "path": "RibbonDriftComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/RibbonDriftComp.jsx"
+      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
     }
   ]
 }

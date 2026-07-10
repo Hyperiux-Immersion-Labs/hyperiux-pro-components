@@ -2,9 +2,9 @@
   "name": "@hyperiux/radial-slice-transition",
   "version": "0.0.1",
   "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
-  "main": "radial-slice-transition.jsx",
+  "main": "index.jsx",
   "files": [
-    "radial-slice-transition.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [
