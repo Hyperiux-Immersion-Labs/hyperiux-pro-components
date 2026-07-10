@@ -647,7 +647,7 @@ export default function InfiniteGridGallery() {
  .infinite-grid-gallery-images .item-image {
    overflow: hidden;
    border: 1px solid rgba(0, 0, 0, 0.12);
-   background: #ffffff;
+   background: rgba(0, 0, 0, 0.04);
    transform-origin: 50% 50%;
    transition:
      box-shadow 350ms cubic-bezier(0.785, 0.135, 0.15, 0.86),
@@ -669,6 +669,12 @@ export default function InfiniteGridGallery() {
    overflow: hidden;
    object-fit: cover;
    will-change: transform;
+   opacity: 0;
+   transition: opacity 300ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+ }
+
+ .infinite-grid-gallery-images .item-image img.is-loaded {
+   opacity: 1;
  }
 
  .infinite-grid-gallery-images .caption {

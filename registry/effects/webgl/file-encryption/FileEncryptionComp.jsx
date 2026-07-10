@@ -188,6 +188,10 @@ function buildProgram(gl, vert, frag) {
 function useWebGLBeam(canvasRef, primaryColor) {
  // expose a setter so the animation loop can push state each frame
  const stateRef = useRef({
+ // `ready` flips once the marquee loop has measured real card geometry. Until
+ // then the defaults below describe no card, and drawing them would show the
+ // full-height idle beam over a card that is already on the beam.
+ ready: false,
  hasCard: false,
  splitNorm: 0.5,
  cardTop: 0.5,
@@ -227,6 +231,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const [r, g, b] = hexToRgb(primaryColor);
 
  let raf;
+ let seeded = false;
  const smoothed = {
  card: 0,
  top: stateRef.current.cardTop,
@@ -235,15 +240,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
  };
 
  const tick = (ts) => {
- const { hasCard, splitNorm, cardTop, cardBottom } = stateRef.current;
- const frameDelta = smoothed.lastTs ? Math.min(ts - smoothed.lastTs, 50) : 16;
- smoothed.lastTs = ts;
- const targetCard = hasCard ? 1 : 0;
- const blend = 1 - Math.exp(-frameDelta * (hasCard ? 0.012 : 0.006));
-
- smoothed.card += (targetCard - smoothed.card) * blend;
- smoothed.top += (cardTop - smoothed.top) * blend;
- smoothed.bottom += (cardBottom - smoothed.bottom) * blend;
+ const { ready, hasCard, splitNorm, cardTop, cardBottom } = stateRef.current;
 
  const w = canvas.offsetWidth;
  const h = canvas.offsetHeight;
@@ -252,6 +249,34 @@ function useWebGLBeam(canvasRef, primaryColor) {
  canvas.height = h;
  gl.viewport(0, 0, w, h);
  }
+
+ // Hold the beam off until the first measurement lands, then jump straight to
+ // the measured state. Easing up from the defaults would render the idle beam
+ // (a full-height, near-white core) across a card already sitting on it.
+ if (!ready) {
+ gl.clear(gl.COLOR_BUFFER_BIT);
+ raf = requestAnimationFrame(tick);
+ return;
+ }
+
+ const targetCard = hasCard ? 1 : 0;
+
+ if (!seeded) {
+ seeded = true;
+ smoothed.card = targetCard;
+ smoothed.top = cardTop;
+ smoothed.bottom = cardBottom;
+ smoothed.lastTs = ts;
+ } else {
+ const frameDelta = smoothed.lastTs ? Math.min(ts - smoothed.lastTs, 50) : 16;
+ smoothed.lastTs = ts;
+ const blend = 1 - Math.exp(-frameDelta * (hasCard ? 0.012 : 0.006));
+
+ smoothed.card += (targetCard - smoothed.card) * blend;
+ smoothed.top += (cardTop - smoothed.top) * blend;
+ smoothed.bottom += (cardBottom - smoothed.bottom) * blend;
+ }
+
  gl.clear(gl.COLOR_BUFFER_BIT);
  gl.uniform2f(uRes, w, h);
  gl.uniform1f(uTime, ts);
@@ -698,6 +723,7 @@ export function FileEncryptionComp({ cards = [] }) {
  } else {
  beamStateRef.current.cardProgress = 0;
  }
+ beamStateRef.current.ready = true;
  };
 
  gsap.ticker.add(update);
