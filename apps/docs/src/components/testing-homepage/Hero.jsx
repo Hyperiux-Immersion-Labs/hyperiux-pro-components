@@ -13,24 +13,10 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
-const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
-const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
-const HERO_ANIMATION_DELAY_WITHOUT_LOADER = 0.15;
-
-function hasLoaderRun() {
-  if (typeof window === "undefined") return false;
-
-  return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
-}
-
-function isLoaderActive() {
-  if (typeof window === "undefined") return false;
-
-  return (
-    document.body.classList.contains("loader-active") ||
-    window.__HYPERIUX_LOADER_RUNNING__ === true
-  );
-}
+// Decoupled from the site loader: the loader is a fixed z-9999 opaque
+// overlay, so Hero can build+animate hidden behind it instead of waiting for
+// loaderComplete - by the time the overlay lifts Hero is already revealed.
+const HERO_ANIMATION_DELAY = 0.15;
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -155,7 +141,6 @@ export default function Hero() {
     const splits = [];
     let ctx;
     let delayedCall;
-    let completionPoll;
     let navigationTween;
     let hasAnimated = false;
 
@@ -163,11 +148,6 @@ export default function Hero() {
       if (hasAnimated) return;
 
       hasAnimated = true;
-
-      if (completionPoll) {
-        window.clearInterval(completionPoll);
-        completionPoll = null;
-      }
 
       ctx = gsap.context(() => {
         const heroTimeline = gsap.timeline();
@@ -330,7 +310,7 @@ export default function Hero() {
       }
     };
 
-    const startAfterDelay = (delay = HERO_ANIMATION_DELAY_AFTER_LOADER) => {
+    const startAfterDelay = (delay = HERO_ANIMATION_DELAY) => {
       if (hasAnimated) return;
 
       delayedCall?.kill();
@@ -338,37 +318,9 @@ export default function Hero() {
       delayedCall = gsap.delayedCall(delay, runAnimation);
     };
 
-    const handleLoaderComplete = () => {
-      startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
-    };
-
-    const loaderAlreadyRan = hasLoaderRun();
-    const loaderCurrentlyActive = isLoaderActive();
-
-    if (loaderAlreadyRan && !loaderCurrentlyActive) {
-      startAfterDelay(HERO_ANIMATION_DELAY_WITHOUT_LOADER);
-    } else {
-      window.addEventListener("loaderComplete", handleLoaderComplete, {
-        once: true,
-      });
-
-      completionPoll = window.setInterval(() => {
-        if (hasLoaderRun() && !isLoaderActive()) {
-          window.clearInterval(completionPoll);
-          completionPoll = null;
-
-          startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
-        }
-      }, 80);
-    }
+    startAfterDelay();
 
     return () => {
-      window.removeEventListener("loaderComplete", handleLoaderComplete);
-
-      if (completionPoll) {
-        window.clearInterval(completionPoll);
-      }
-
       delayedCall?.kill();
       navigationTween?.kill();
 

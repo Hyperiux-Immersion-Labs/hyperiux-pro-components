@@ -20,7 +20,7 @@ import CTA from "./CTA";
 // import CTA2 from "./CTA2";
 
 // Heaviest and conditional components
-const GlowingPlatesDeferred = dynamic(() => import("@/Experience/GlowingPlatesDeferred"), { ssr: false });
+const GlowingPlatesDeferred = dynamic(() => import("./GlowingPlatesDeferred"), { ssr: false });
 const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"));
 const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
 const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));

@@ -9,28 +9,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
-const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
-
-function hasLoaderRun() {
-  if (typeof window === "undefined") return false;
-
-  // Loader.jsx writes sessionStorage (not localStorage) and sets the window
-  // flag when it completes or is skipped.
-  return (
-    window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true" ||
-    window.__HYPERIUX_LOADER_COMPLETE__ === true
-  );
-}
-
-function isLoaderActive() {
-  if (typeof window === "undefined") return false;
-
-  return (
-    document.body.classList.contains("loader-active") ||
-    window.__HYPERIUX_LOADER_RUNNING__ === true
-  );
-}
-
 function refreshScrollTriggerSafely() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -84,57 +62,45 @@ export default function SplitLine({
 
     let ctx;
     let split;
-    let poll;
-    let bootCheck;
-    let hasCreatedAnimation = false;
-    let handleLoaderComplete;
-    let teardownMount;
+    let raf1 = null;
+    let raf2 = null;
 
+    // Decoupled from the site loader: the loader is a fixed z-9999 opaque
+    // overlay with scroll locked while it plays, so nothing below-fold can
+    // scroll into view (and thus this IO can't fire) until it's already
+    // gone. Above-fold instances build+animate hidden behind the overlay,
+    // which is strictly better than serializing after it - by the time the
+    // overlay lifts the content is already in its revealed end state.
     const mount = () => {
-    ctx = gsap.context(() => {
-      if (children) {
-        split = SplitText.create(wrapper, {
-          type: "lines",
-          mask: "lines",
-          aria: "none",
-        });
+      ctx = gsap.context(() => {
+        if (children) {
+          split = SplitText.create(wrapper, {
+            type: "lines",
+            mask: "lines",
+            aria: "none",
+          });
 
-        gsap.set(wrapper, {
-          autoAlpha: 1,
-        });
+          gsap.set(wrapper, {
+            autoAlpha: 1,
+          });
 
-        gsap.set(split.lines, {
-          opacity: 0,
-          yPercent: 100,
-        });
-      } else {
-        gsap.set(decorativeLine, {
-          opacity: 0,
-          scaleX: 0,
-          transformOrigin: origin,
-        });
-      }
-    }, target);
-
-    const createAnimation = () => {
-      if (hasCreatedAnimation) return;
-
-      hasCreatedAnimation = true;
-
-      if (poll) {
-        window.clearInterval(poll);
-        poll = null;
-      }
-
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-        bootCheck = null;
-      }
+          gsap.set(split.lines, {
+            opacity: 0,
+            yPercent: 100,
+          });
+        } else {
+          gsap.set(decorativeLine, {
+            opacity: 0,
+            scaleX: 0,
+            transformOrigin: origin,
+          });
+        }
+      }, target);
 
       refreshScrollTriggerSafely();
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
           if (children && split?.lines?.length) {
             gsap.fromTo(
               split.lines,
@@ -190,55 +156,6 @@ export default function SplitLine({
       });
     };
 
-    handleLoaderComplete = () => {
-      createAnimation();
-    };
-
-    if (hasLoaderRun() && !isLoaderActive()) {
-      createAnimation();
-    } else {
-      window.addEventListener("loaderComplete", handleLoaderComplete, {
-        once: true,
-      });
-
-      poll = window.setInterval(() => {
-        if (hasLoaderRun() && !isLoaderActive()) {
-          createAnimation();
-        }
-      }, 60);
-
-      bootCheck = window.setTimeout(() => {
-        if (!isLoaderActive()) {
-          createAnimation();
-        }
-      }, 700);
-    }
-
-    teardownMount = () => {
-      window.removeEventListener("loaderComplete", handleLoaderComplete);
-
-      if (poll) {
-        window.clearInterval(poll);
-      }
-
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-      }
-
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === wrapper || trigger.trigger === decorativeLine) {
-          trigger.kill();
-        }
-      });
-
-      if (ctx) {
-        ctx.revert();
-      }
-
-      split?.revert();
-    };
-    };
-
     // ponytail: same fix as RandomBlur - defer the forced-layout SplitText
     // split until the section is nearly on screen instead of on mount.
     const io = new IntersectionObserver(
@@ -254,7 +171,21 @@ export default function SplitLine({
 
     return () => {
       io.disconnect();
-      teardownMount?.();
+
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === wrapper || trigger.trigger === decorativeLine) {
+          trigger.kill();
+        }
+      });
+
+      if (ctx) {
+        ctx.revert();
+      }
+
+      split?.revert();
     };
   }, [children, start, once, duration, ease, origin, delay, stagger]);
 

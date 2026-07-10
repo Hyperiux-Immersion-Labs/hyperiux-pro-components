@@ -9,19 +9,38 @@ import { HyperiuxLogoIcon } from "../WebsiteComps/Icons";
 export const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
 const PIXEL_COLOR = "#ffffff";
-const LOGO_REVEAL_DURATION = 1;
-const LOGO_HIDE_DURATION = 1;
-const LOGO_DELAY = 0.3;
-const PIXEL_DISSOLVE_DURATION = 1;
-const PIXEL_DISSOLVE_DELAY = 0.5;
+// Halved from the original 1/1/0.3/1/0.5 (measured full timeline: 5.57s) to
+// cut ~2.6s off the loader while preserving its relative pacing/shape.
+const LOGO_REVEAL_DURATION = 0.5;
+const LOGO_HIDE_DURATION = 0.5;
+const LOGO_DELAY = 0.15;
+const PIXEL_DISSOLVE_DURATION = 0.5;
+const PIXEL_DISSOLVE_DELAY = 0.25;
+
+// Test-protocol fix: whether the loader plays depends on sessionStorage,
+// which silently differs between manual DevTools test runs (warm session =
+// skipped, fast metrics) vs a true first-time visitor (cold = full ~5s
+// timeline runs, gating everything below it). That produced two non-
+// comparable "before/after" traces on the same build. ?loader=cold forces a
+// full run every time (what real PageSpeed Insights always measures);
+// ?loader=skip forces a skip every time. No param = real default behavior.
+function getLoaderOverride() {
+  if (typeof window === "undefined") return null;
+  const v = new URLSearchParams(window.location.search).get("loader");
+  return v === "cold" || v === "skip" ? v : null;
+}
 
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
+  const override = getLoaderOverride();
+  if (override) return override === "skip";
   return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
 }
 
 function shouldSkipLoader() {
   if (typeof window === "undefined") return false;
+  const override = getLoaderOverride();
+  if (override) return override === "skip";
   return window.innerWidth < 1025;
 }
 

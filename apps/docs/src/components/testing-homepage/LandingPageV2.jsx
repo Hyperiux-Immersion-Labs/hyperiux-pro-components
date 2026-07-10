@@ -1,7 +1,7 @@
 "use client";
 
 import useIsMobile from "@/hooks/useIsMobile";
-import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
+import GlowingPlatesDeferred from "./GlowingPlatesDeferred";
 import VaultShell from "@/Layouts/VaultShell";
 import Loader from "@/components/WebsiteComps/Loader";
 import TrustStrip from "./TrustStrip";

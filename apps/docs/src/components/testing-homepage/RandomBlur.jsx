@@ -9,28 +9,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
-const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
-
-function hasLoaderRun() {
-  if (typeof window === "undefined") return false;
-
-  // Loader.jsx writes sessionStorage (not localStorage) and sets the window
-  // flag when it completes or is skipped.
-  return (
-    window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true" ||
-    window.__HYPERIUX_LOADER_COMPLETE__ === true
-  );
-}
-
-function isLoaderActive() {
-  if (typeof window === "undefined") return false;
-
-  return (
-    document.body.classList.contains("loader-active") ||
-    window.__HYPERIUX_LOADER_RUNNING__ === true
-  );
-}
-
 function refreshScrollTriggerSafely() {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -70,48 +48,33 @@ export default function RandomBlur({
 
     let ctx;
     let split;
-    let poll;
-    let bootCheck;
     let raf1 = null;
     let raf2 = null;
-    let hasCreatedAnimation = false;
-    let handleLoaderComplete;
-    let teardownMount;
 
+    // Decoupled from the site loader: the loader is a fixed z-9999 opaque
+    // overlay with scroll locked while it plays, so nothing below-fold can
+    // scroll into view (and thus this IO can't fire) until it's already
+    // gone. Above-fold instances build+animate hidden behind the overlay,
+    // which is strictly better than serializing after it - by the time the
+    // overlay lifts the content is already in its revealed end state.
     const mount = () => {
-    ctx = gsap.context(() => {
-      split = SplitText.create(container, {
-        type: "words,chars",
-        charsClass: "inline-block",
-        aria: "none",
-      });
+      ctx = gsap.context(() => {
+        split = SplitText.create(container, {
+          type: "words,chars",
+          charsClass: "inline-block",
+          aria: "none",
+        });
 
-      gsap.set(container, {
-        autoAlpha: 1,
-      });
+        gsap.set(container, {
+          autoAlpha: 1,
+        });
 
-      gsap.set(split.chars, {
-        opacity: 0,
-        filter: `blur(5px)`,
-        force3D: true,
-      });
-    }, container);
-
-    const createAnimation = () => {
-      if (hasCreatedAnimation) return;
-      if (!split?.chars?.length) return;
-
-      hasCreatedAnimation = true;
-
-      if (poll) {
-        window.clearInterval(poll);
-        poll = null;
-      }
-
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-        bootCheck = null;
-      }
+        gsap.set(split.chars, {
+          opacity: 0,
+          filter: `blur(5px)`,
+          force3D: true,
+        });
+      }, container);
 
       refreshScrollTriggerSafely();
 
@@ -151,58 +114,6 @@ export default function RandomBlur({
       });
     };
 
-    handleLoaderComplete = () => {
-      createAnimation();
-    };
-
-    if (hasLoaderRun() && !isLoaderActive()) {
-      createAnimation();
-    } else {
-      window.addEventListener("loaderComplete", handleLoaderComplete, {
-        once: true,
-      });
-
-      poll = window.setInterval(() => {
-        if (hasLoaderRun() && !isLoaderActive()) {
-          createAnimation();
-        }
-      }, 60);
-
-      bootCheck = window.setTimeout(() => {
-        if (!isLoaderActive()) {
-          createAnimation();
-        }
-      }, 700);
-    }
-
-    teardownMount = () => {
-      window.removeEventListener("loaderComplete", handleLoaderComplete);
-
-      if (raf1) cancelAnimationFrame(raf1);
-      if (raf2) cancelAnimationFrame(raf2);
-
-      if (poll) {
-        window.clearInterval(poll);
-      }
-
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-      }
-
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === container) {
-          trigger.kill();
-        }
-      });
-
-      if (ctx) {
-        ctx.revert();
-      }
-
-      split?.revert();
-    };
-    };
-
     // ponytail: splitting text is a forced-layout DOM mutation; doing it for
     // every RandomBlur instance on mount (25+ on this page) is what caused
     // the style-recalc/layout storm. Defer the split itself until the
@@ -220,7 +131,21 @@ export default function RandomBlur({
 
     return () => {
       io.disconnect();
-      teardownMount?.();
+
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === container) {
+          trigger.kill();
+        }
+      });
+
+      if (ctx) {
+        ctx.revert();
+      }
+
+      split?.revert();
     };
   }, [start, once, duration, staggerAmount, ease, delay, blur]);
 
