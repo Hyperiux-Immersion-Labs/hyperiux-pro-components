@@ -3,20 +3,17 @@ import DraggableMarqueeComp from "./DraggableMarqueeComp";
 
 
 const DraggableMarquee = () => {
-  return (
-        <section className="w-screen h-screen bg-black text-white flex flex-col justify-center items-center">
-				<DraggableMarqueeComp
-					items={marqueeImages}
-					speed={7.2}
-					gapClassName="gap-[2vw] max-md:gap-[4vw]"
-					className="py-10"
-					itemClassName="select-none"
-				/>
-				<div className="absolute bottom-[3vw] max-md:bottom-[8vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:text-[2.5vw] max-sm:text-[3.5vw] text-center max-md:rounded-[2vw] shadow-lg">
-					Drag the strip left or right to reveal the scenes.
-				</div>
-			</section>
-    );
+	return (
+		<section className="w-screen h-screen bg-black text-white flex flex-col justify-center items-center">
+			<DraggableMarqueeComp
+				items={marqueeImages}
+				speed={7.2}
+			/>
+			<div className="absolute bottom-[3vw] max-md:bottom-[8vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-md:text-[2.5vw] max-sm:text-[3.5vw] text-center max-md:rounded-[2vw] shadow-lg">
+				Drag the strip left or right to reveal the scenes.
+			</div>
+		</section>
+	);
 };
 
 const marqueeImages = [
@@ -27,7 +24,6 @@ const marqueeImages = [
 		title: "image 1",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-md:w-[40vw] max-md:h-[60vw]    object-cover",
 	},
 	{
 		id: 2,
@@ -36,7 +32,6 @@ const marqueeImages = [
 		title: "image 2",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-md:w-[40vw] max-md:h-[60vw]    object-cover",
 	},
 	{
 		id: 3,
@@ -45,7 +40,6 @@ const marqueeImages = [
 		title: "image 3",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-md:w-[40vw] max-md:h-[60vw]    object-cover",
 	},
 	{
 		id: 4,
@@ -54,7 +48,6 @@ const marqueeImages = [
 		title: "image 4",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-md:w-[40vw] max-md:h-[60vw]    object-cover",
 	},
 ]
 export default DraggableMarquee;
