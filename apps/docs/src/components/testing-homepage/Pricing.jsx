@@ -312,9 +312,7 @@ export default function Pricing({ padding, content = true }) {
                 ) : userPlan === "free" ? (
                   <Button
                     variant="orange"
-                    text={
-                      checkoutLoading ? "Loading..." : "Join Founding Access"
-                    }
+                    text="Join Founding Access"
                     href="/sign-up"
                     className="max-md:w-full max-sm:text-[4vw]"
                   />
