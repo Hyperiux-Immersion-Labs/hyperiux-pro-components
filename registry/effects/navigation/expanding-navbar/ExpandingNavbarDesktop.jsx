@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { HoverFillLink } from "./HoverFillLink";
 import { navigationData } from "./data";
+import Link from "next/link";
 
 gsap.registerPlugin(CustomEase);
 
@@ -246,7 +247,7 @@ export function ExpandingNavbarDesktop() {
     };
 
     return (
-        <div className="max-md:hidden">
+        <div className="max-xl:hidden">
             <div
                 onClick={() => { menuTimeline.current.reverse(); setIsMenuOpen(false); }}
                 ref={backgroundOverlayRef}
@@ -273,7 +274,7 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full flex flex-col relative">
                             <div
                                 ref={mainSquareRef}
-                                className="absolute top-0 left-[-1vw] w-[0.8vw] h-[0.8vw] bg-primary scale-0 opacity-0 pointer-events-none z-10"
+                                className="absolute top-0 left-[-1vw] w-[0.8vw] h-[0.8vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10"
                             />
                             {navigationData.map((item, index) => (
                                 <div
@@ -306,7 +307,7 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full relative">
                             {activeMainIndex !== null && navigationData[activeMainIndex].sublinks && (
                                 <div ref={col2Ref} className="p-[2vw] h-fit rounded-md flex flex-col relative">
-                                    <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-primary scale-0 opacity-0 pointer-events-none z-10" />
+                                    <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10" />
                                     {navigationData[activeMainIndex].sublinks.map((subItem, subIndex) => (
                                         <div key={subIndex} className="opacity-0">
                                             <HoverFillLink
@@ -337,7 +338,7 @@ export function ExpandingNavbarDesktop() {
                                 activeSubIndex !== null &&
                                 navigationData[activeMainIndex].sublinks[activeSubIndex]?.nestedLinks && (
                                     <div ref={col3Ref} className="p-[2vw] w-full h-fit rounded-md flex flex-col relative">
-                                        <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-primary scale-0 opacity-0 pointer-events-none z-10" />
+                                        <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10" />
                                         {navigationData[activeMainIndex].sublinks[activeSubIndex].nestedLinks.map((nestedItem, nestedIndex) => (
                                             <div key={nestedIndex} className="opacity-0">
                                                 <HoverFillLink
@@ -373,7 +374,7 @@ export function ExpandingNavbarDesktop() {
                                     autoPlay
                                     loop
                                     muted
-                                    src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                    src="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
                                 />
                             </div>
                             <p>Show Reel</p>
@@ -397,7 +398,7 @@ export function ExpandingNavbarDesktop() {
                         ref={seprationLineRef}
                         className="block w-full h-0.5 absolute top-[-.5vw] left-1/2 -translate-x-1/2 bg-[#1A1A1A] transition-all duration-300 opacity-0"
                     />
-                    <a target="_blank" className="flex items-center gap-2">
+                    <Link prefetch={false} href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
                         <svg className="w-[8vw] h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
                             <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
                             <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>
@@ -416,7 +417,7 @@ export function ExpandingNavbarDesktop() {
                             <rect x="35.5166" width="6.62183" height="42.1389" fill="white"/>
                             <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
                         </svg>
-                    </a>
+                    </Link>
 
                     <div
                         onClick={toggleMenu}

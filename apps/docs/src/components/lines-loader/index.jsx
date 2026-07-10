@@ -95,7 +95,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
     >
         <Link
           href="/effects"
-          className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors hover:bg-orange-600"
+          className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors"
         >
           Explore all effects
           <ArrowUpRight className="size-4" />

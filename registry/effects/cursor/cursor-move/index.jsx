@@ -1,5 +1,10 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
+import { Inter } from "next/font/google";
+
+// Inter is a variable font exposing a `wght` axis, which the cursor-driven
+// weight morph below animates. It's loaded here so the component is fully
+const cursorMoveFont = Inter({ subsets: ["latin"], display: "swap" });
 
 const DESKTOP_CURSOR_MOVE_QUERY = "(min-width: 1025px) and (pointer: fine)";
 
@@ -87,7 +92,7 @@ function VariableFontAndCursor({
   },
   className = "",
   as: Tag = "span",
-  transition = "font-variation-settings 0.05s linear, transform 0.05s linear",
+  transition = "transform 0.05s linear",
   transformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
 }) {
@@ -140,14 +145,14 @@ export default function CursorMove({
   showCursorDot = true,
   cursorDotClassName = "w-3 h-3 bg-orange-500 rounded-sm",
   cursorDotStyle = {},
-  text = "fancy!",
+  text = "hello!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
   textClassName = "text-9xl max-md:text-6xl max-sm:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",
   fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
   },
-  variableTextTransition = "font-variation-settings 0.05s linear, transform 0.05s linear",
+  variableTextTransition = "transform 0.05s linear",
   variableTextTransformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
   showCoordinates = true,
@@ -220,7 +225,7 @@ export default function CursorMove({
         <VariableFontAndCursor
           containerRef={containerRef}
           fontVariationMapping={fontVariationMapping}
-          className={textClassName}
+          className={`${cursorMoveFont.className} ${textClassName}`}
           as={textAs}
           transition={variableTextTransition}
           transformOrigin={variableTextTransformOrigin}
@@ -230,7 +235,7 @@ export default function CursorMove({
         </VariableFontAndCursor>
       </div>
 
-      {showCoordinates ? (
+      {showCoordinates && isDesktop ? (
         <div className={coordinatesClassName}>
           <span className={coordinatesTextClassName}>x: {Math.round(x)}</span>
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>

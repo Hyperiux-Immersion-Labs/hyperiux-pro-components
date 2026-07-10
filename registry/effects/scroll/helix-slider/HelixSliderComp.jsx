@@ -7,12 +7,12 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const DEFAULT_ITEMS = [
-  { id: 1, image: "https://picsum.photos/seed/1/800/600", title: "Card 1" },
-  { id: 2, image: "https://picsum.photos/seed/2/800/600", title: "Card 2" },
-  { id: 3, image: "https://picsum.photos/seed/3/800/600", title: "Card 3" },
-  { id: 4, image: "https://picsum.photos/seed/4/800/600", title: "Card 4" },
-  { id: 5, image: "https://picsum.photos/seed/5/800/600", title: "Card 5" },
-  { id: 6, image: "https://picsum.photos/seed/6/800/600", title: "Card 6" },
+  { id: 1, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", title: "Card 1" },
+  { id: 2, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", title: "Card 2" },
+  { id: 3, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg", title: "Card 3" },
+  { id: 4, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg", title: "Card 4" },
+  { id: 5, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg", title: "Card 5" },
+  { id: 6, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", title: "Card 6" },
 ];
 
 function clamp(value, min, max) {
@@ -166,7 +166,7 @@ export function HelixSliderComp({
                                     <img
                                         src={item.image}
                                         alt={item.title || `Card ${index + 1}`}
-                                        className="object-cover absolute inset-0"
+                                        className="object-cover h-full w-full absolute inset-0"
                                     />
                                 </div>
 
@@ -174,7 +174,7 @@ export function HelixSliderComp({
                                     <img
                                         src={item.image}
                                         alt={`${item.title || `Card ${index + 1}`} back`}
-                                        className="object-cover absolute inset-0"
+                                        className="object-cover h-full w-full absolute inset-0"
                                     />
                                 </div>
                             </div>

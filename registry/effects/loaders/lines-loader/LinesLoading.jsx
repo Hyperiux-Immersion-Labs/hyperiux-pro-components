@@ -8,8 +8,14 @@ gsap.registerPlugin(CustomEase);
 CustomEase.create("linesLoadingEase", "0.75,-0.01,0.16,1");
 
 const LINE_COUNT = 17;
+const MOBILE_LINE_REDUCTION = 2;
 const NAV_H = 55;
 const ROW_H = 24;
+
+const getLineCount = () => {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  return isMobile ? LINE_COUNT - MOBILE_LINE_REDUCTION : LINE_COUNT;
+};
 
 const MORPH_STAGGER = 34;
 const MORPH_DUR = 720;
@@ -28,6 +34,7 @@ function DemoContent({
   navRefs,
   rowRefs,
   rowHeight = ROW_H,
+  lineCount = LINE_COUNT,
 } = {}) {
   const isDark = theme === "dark";
 
@@ -114,7 +121,7 @@ function DemoContent({
       ["", "", "Frontend Engineering", "WebGL", ""],
       ["", "Twitter", "", "", ""],
       ["", "GitHub", "", "", ""],
-      ...Array.from({ length: Math.max(0, LINE_COUNT - 1 - 14) }, () => [
+      ...Array.from({ length: Math.max(0, lineCount - 1 - 14) }, () => [
         "",
         "",
         "",
@@ -122,10 +129,10 @@ function DemoContent({
         "",
       ]),
     ],
-    [],
+    [lineCount],
   );
 
-  const rowCount = LINE_COUNT - 1;
+  const rowCount = lineCount - 1;
 
   const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-md:flex max-md:justify-between";
 
@@ -241,6 +248,8 @@ export default function LinesLoading({ onComplete } = {}) {
 
   const [done, setDone] = useState(false);
   const [rowHeight, setRowHeight] = useState(ROW_H);
+  const [lineCount, setLineCount] = useState(getLineCount);
+  const lineCountRef = useRef(lineCount);
 
   const recomputeLayout = useCallback(() => {
     const el = containerRef.current;
@@ -257,11 +266,15 @@ export default function LinesLoading({ onComplete } = {}) {
     const flatTop = NAV_H;
 
     const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-    const rH = isMobile ? 32 : ROW_H;
+    const rH = isMobile ? 28 : ROW_H;
     setRowHeight(rH);
 
-    for (let i = 0; i < LINE_COUNT; i++) {
-      const t = LINE_COUNT === 1 ? 0 : i / (LINE_COUNT - 1);
+    const lc = getLineCount();
+    lineCountRef.current = lc;
+    setLineCount(lc);
+
+    for (let i = 0; i < lc; i++) {
+      const t = lc === 1 ? 0 : i / (lc - 1);
 
       const yCone = lerp(coneTop, h - coneBottomPad, Math.pow(t, 1.55));
       const wPctCone = lerp(0.66, 0.035, Math.pow(t, 1.12));
@@ -356,7 +369,8 @@ export default function LinesLoading({ onComplete } = {}) {
     );
 
     // One continuous tween per line (prevents the"stop" between phase 1 and phase 2).
-    for (let i = 0; i < LINE_COUNT; i++) {
+    const activeLineCount = lineCountRef.current;
+    for (let i = 0; i < activeLineCount; i++) {
       const startAt = i * staggerS;
       const setScaleX = scaleSetters[i];
       if (!setScaleX) continue;
@@ -381,7 +395,7 @@ export default function LinesLoading({ onComplete } = {}) {
       );
     }
 
-    const lastStart = (LINE_COUNT - 1) * staggerS;
+    const lastStart = (activeLineCount - 1) * staggerS;
     const allLinesEnd = lastStart + totalS;
     const contentAt = CONTENT_FADE_AT;
     const wipeAt = Math.max(
@@ -470,10 +484,11 @@ export default function LinesLoading({ onComplete } = {}) {
             navRefs={darkNavTextRefs}
             rowRefs={darkRowTextRefs}
             rowHeight={rowHeight}
+            lineCount={lineCount}
           />
         </div>
         <div className="pointer-events-none absolute inset-0">
-          {Array.from({ length: LINE_COUNT }, (_, i) => (
+          {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
               ref={(el) => (darkLineRefs.current[i] = el)}
@@ -493,9 +508,10 @@ export default function LinesLoading({ onComplete } = {}) {
           navRefs={lightNavTextRefs}
           rowRefs={lightRowTextRefs}
           rowHeight={rowHeight}
+          lineCount={lineCount}
         />
         <div className="pointer-events-none absolute inset-0">
-          {Array.from({ length: LINE_COUNT }, (_, i) => (
+          {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
               ref={(el) => (lightLineRefs.current[i] = el)}
@@ -508,7 +524,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-md:bottom-10 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900"
+          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>
