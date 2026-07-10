@@ -143,7 +143,7 @@ const fragmentShader = `
 `;
 
 function FlowFieldPlane({
-  texturePath = "/assets/textures/orange.png",
+  texturePath = "/assets/textures/orange-1.webp",
   imageResolution = [500, 500],
   mouseLerp = 0.05,
   timeSpeed = 0.0002,
