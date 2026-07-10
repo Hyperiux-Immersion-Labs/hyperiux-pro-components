@@ -8,15 +8,13 @@ import NavDropdown from './NavDropdown'
 
 export default function NavLinks({
     activeItem,
-    isLoaded,
-    user,
     onNavEnter,
     onNavLeave,
     isHighlighted,
 }) {
     return (
         <div
-            className={`relative ${isLoaded && user?.publicMetadata?.plan !== 'pro' ? 'ml-[13.5vw]' : ''}`}
+            className="relative ml-[13.5vw]"
             onMouseLeave={onNavLeave}
         >
             <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">

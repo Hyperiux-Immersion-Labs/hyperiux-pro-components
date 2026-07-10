@@ -6,7 +6,6 @@ import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
-import { useUser } from "@clerk/nextjs";
 import Scrolltrigger from "gsap/dist/ScrollTrigger";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 gsap.registerPlugin(Scrolltrigger);
@@ -71,8 +70,6 @@ const ProFeatures = [
 export default function Pricing({ padding, content = true }) {
   const [isYearly, setIsYearly] = useState(true);
 
-  const { isLoaded, isSignedIn, user } = useUser();
-  const userPlan = isSignedIn ? user?.publicMetadata?.plan || "free" : null;
 
   useEffect(() => {
     if (globalThis.innerWidth < 542) {
@@ -295,37 +292,15 @@ export default function Pricing({ padding, content = true }) {
             </div>
             <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
               <div className="w-fit max-sm:w-full">
-                {!isLoaded ? (
-                  <Button
-                    variant="orange"
-                    text="···"
-                    className="max-md:w-full max-sm:text-[4vw]"
-                    disabled
-                  />
-                ) : userPlan === "pro" ? (
-                  <Button
-                    variant="orange"
-                    text="Current Plan"
-                    className="max-md:w-full max-sm:text-[4vw]"
-                    disabled
-                  />
-                ) : userPlan === "free" ? (
-                  <Button
-                    variant="orange"
-                    text={
-                      checkoutLoading ? "Loading..." : "Join Founding Access"
-                    }
-                    href="/sign-up"
-                    className="max-md:w-full max-sm:text-[4vw]"
-                  />
-                ) : (
-                  <Button
-                    variant="orange"
-                    text="Join Founding Access"
-                    href="/waitlist"
-                    className="max-md:w-full max-sm:text-[4vw]"
-                  />
-                )}
+                {/* Clerk-free by design: the landing page renders without
+                    ClerkProvider, so this CTA is always the anonymous
+                    variant. Plan-aware pricing lives on /pricing. */}
+                <Button
+                  variant="orange"
+                  text="Join Founding Access"
+                  href="/waitlist"
+                  className="max-md:w-full max-sm:text-[4vw]"
+                />
               </div>
             </div>
           </div>

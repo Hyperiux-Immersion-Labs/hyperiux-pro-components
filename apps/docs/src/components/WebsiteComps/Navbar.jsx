@@ -4,7 +4,6 @@ import { useCallback, useRef, useState } from 'react'
 import { useLenis } from 'lenis/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useUser } from '@clerk/nextjs'
 
 import { HyperiuxLogo } from '@/utils/Icons'
 import { vaultLinks } from '@/utils/Links'
@@ -17,7 +16,6 @@ export default function Navbar() {
     const navbarRef = useRef(null)
     const [activeItem, setActiveItem] = useState(null)
 
-    const { isLoaded, user } = useUser()
     const pathname = usePathname()
 
     const { hasRevealedRef, toggleNavbar } = useNavbarLoader(
@@ -94,23 +92,22 @@ export default function Navbar() {
 
             <NavLinks
                 activeItem={activeItem}
-                isLoaded={isLoaded}
-                user={user}
                 onNavEnter={handleNavEnter}
                 onNavLeave={handleNavLeave}
                 isHighlighted={isHighlighted}
             />
 
             <div className="flex items-center justify-center gap-[1vw]">
-                {isLoaded && user?.publicMetadata?.plan !== 'pro' && (
-                    <Button
-                        text="Join Founding Access"
-                        href="/waitlist"
-                        className="border-white/40! bg-[#0E0E0E]!"
-                        variant="outline2"
-                        scrollOffset={getUpgradeScrollOffset}
-                    />
-                )}
+                {/* Clerk-free by design: marketing routes render without
+                    ClerkProvider, so this navbar always shows the anonymous
+                    state. Plan-aware UI lives in the (app) group. */}
+                <Button
+                    text="Join Founding Access"
+                    href="/waitlist"
+                    className="border-white/40! bg-[#0E0E0E]!"
+                    variant="outline2"
+                    scrollOffset={getUpgradeScrollOffset}
+                />
                 <Button
                     text="Install CLI"
                     href="/docs/installation"

@@ -14,7 +14,6 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, X } from "lucide-react";
 import gsap from "gsap";
 
-import { useUser } from "@clerk/nextjs";
 
 import { HyperiuxLogo } from "@/utils/Icons";
 import Button from "./Button";
@@ -283,7 +282,6 @@ function MobileDropdown({
 }
 
 export default function NavbarMobile() {
-  const { isLoaded, user } = useUser();
   const navbarRef = useRef(null);
   const menuRef = useRef(null);
   const linksRef = useRef(null);
@@ -663,16 +661,17 @@ export default function NavbarMobile() {
           </div>
 
           <div className="mt-8 border-t border-white/10 pt-8 flex max-sm:flex-col gap-4 max-sm:gap-6">
-            {isLoaded && user?.publicMetadata?.plan !== "pro" && (
-              <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
-                <Button
-                  text="Join Founding Access"
-                  href="/waitlist"
-                  className="border-white/50! w-full"
-                  variant="outline2"
-                />
-              </div>
-            )}
+            {/* Clerk-free by design: marketing routes render without
+                ClerkProvider, so the mobile nav always shows the anonymous
+                state. */}
+            <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
+              <Button
+                text="Join Founding Access"
+                href="/waitlist"
+                className="border-white/50! w-full"
+                variant="outline2"
+              />
+            </div>
             <div className="flex w-fit  max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
               <Button text="Install CLI" href="/docs/installation" className="w-fit max-sm:w-full" />
             </div>
