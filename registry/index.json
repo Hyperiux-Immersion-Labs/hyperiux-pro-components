@@ -217,7 +217,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/others/card-drift/registry.json",
+    "registryPath": "registry/effects/components/card-drift/registry.json",
     "importPath": "@/components/effects/card-drift",
     "target": "src/components/effects/card-drift",
     "files": [
@@ -381,7 +381,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/others/gooey-counter/registry.json",
+    "registryPath": "registry/effects/components/gooey-counter/registry.json",
     "importPath": "@/components/effects/gooey-counter",
     "target": "src/components/effects/gooey-counter"
   },
@@ -401,7 +401,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/others/interactive-list-preview/registry.json",
+    "registryPath": "registry/effects/components/interactive-list-preview/registry.json",
     "importPath": "@/components/effects/interactive-list-preview",
     "target": "src/components/effects/interactive-list-preview"
   },
