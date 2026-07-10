@@ -43,11 +43,11 @@ const docsLinks = [
   { label: "Installation", href: "/docs/installation" },
   { label: "CLI", href: "/docs/cli" },
   { label: "Dependencies", href: "/docs/dependencies" },
-  { label: "Licence", href: "/docs/license" },
+  { label: "License", href: "/docs/license" },
 ];
 
 const legalLinks = [
-  { label: "Licence Agreement", href: "/legal/license-agreement" },
+  { label: "License Agreement", href: "/legal/license-agreement" },
   { label: "Terms of Service", href: "/legal/terms-of-service" },
   { label: "Privacy Policy", href: "/legal/privacy-policy" },
   { label: "Refund Policy", href: "/legal/refund-policy" },
