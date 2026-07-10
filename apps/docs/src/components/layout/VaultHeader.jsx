@@ -2,11 +2,16 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { GlobalSearch } from "./SearchBar";
 import { useEffect, useState } from "react";
-import ProfileDropdown from "./ProfileDropDown";
-import { useUser } from "@clerk/nextjs";
 import Button from "@/components/WebsiteComps/Button";
+
+// Dynamic so ProfileDropDown's Clerk imports never load on marketing routes -
+// it only renders when isSignedIn, which is always false there.
+const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
+  ssr: false,
+});
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
@@ -23,9 +28,17 @@ function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
 }
 
-export function VaultHeader({ effectName, showSearch = false, effects = [] }) {
-  const { isLoaded, isSignedIn, user } = useUser();
-
+// Clerk-free by design: auth state arrives via props (anonymous defaults) so
+// marketing routes (docs/legal/tech) render this without ClerkProvider. App
+// routes use AppVaultHeader, which supplies live useUser() state.
+export function VaultHeader({
+  effectName,
+  showSearch = false,
+  effects = [],
+  isLoaded = true,
+  isSignedIn = false,
+  user = null,
+}) {
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

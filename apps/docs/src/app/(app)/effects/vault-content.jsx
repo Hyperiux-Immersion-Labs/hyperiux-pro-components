@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { VaultLayout } from "@/components/layout/VaultLayout";
-import { VaultHeader } from "@/components/layout/VaultHeader";
+import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import {

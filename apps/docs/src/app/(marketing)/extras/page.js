@@ -15,7 +15,7 @@ export const metadata = createPageMetadata({
 });
 
 async function getExtraFolderNames() {
-  const extrasDir = path.join(process.cwd(), "src/app/extras");
+  const extrasDir = path.join(process.cwd(), "src/app/(marketing)/extras");
   const entries = await fs.readdir(extrasDir, { withFileTypes: true });
 
   return entries

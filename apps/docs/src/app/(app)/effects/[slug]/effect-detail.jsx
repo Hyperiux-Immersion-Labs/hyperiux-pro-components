@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { VaultLayout } from "@/components/layout/VaultLayout";
-import { VaultHeader } from "@/components/layout/VaultHeader";
+import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import {
