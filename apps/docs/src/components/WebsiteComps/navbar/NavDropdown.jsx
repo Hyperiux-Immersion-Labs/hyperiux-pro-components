@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-import { MENU_ANIM } from './constants'
+import { prefersReducedMotion } from '@/lib/motion'
+import { MENU_ANIM, REDUCED_MENU_ANIM } from './constants'
 import { getPaneHeight, useIsomorphicLayoutEffect } from './utils'
 import { PANELS } from './NavDropdownPanels'
 
@@ -225,7 +226,7 @@ export default function NavDropdown({ panel }) {
             heightEase,
             widthDuration,
             widthEase,
-        } = MENU_ANIM
+        } = prefersReducedMotion() ? REDUCED_MENU_ANIM : MENU_ANIM
 
         animRef.current.isAnimating = true
 

@@ -65,9 +65,10 @@ export default function Workflow() {
                 isMobile: '(max-width: 640px)',
                 isTablet: '(min-width: 641px) and (max-width: 1025px)',
                 isDesktop: '(min-width: 1025px)',
+                reduceMotion: '(prefers-reduced-motion: reduce)'
             },
             (context) => {
-                const { isMobile, isTablet } = context.conditions
+                const { isMobile, isTablet, reduceMotion } = context.conditions
 
                 /* ── Responsive accordion heights (desktop values unchanged) ── */
                 const OPEN_HEIGHT = isMobile ? '60vw' : isTablet ? '40vw' : '16vw'
@@ -109,7 +110,7 @@ export default function Workflow() {
                     trigger: accordionRef.current,
                     start: 'top 30%',
                     end: 'bottom bottom',
-                    scrub: isMobile ? true : 2,
+                    scrub: reduceMotion ? true : (isMobile ? true : 2),
                     invalidateOnRefresh: true,
                     // markers: true,
                 },
@@ -157,23 +158,28 @@ export default function Workflow() {
             })
 
             /* ── Video reveal ── */
-            gsap.fromTo(
-                videoRef.current,
-                { clipPath: 'inset(20% 20% 20% 20%)', 
-                    backgroundColor: '#0A1B4B' 
-                },
-                {
-                    clipPath: 'inset(0% 0% 0% 0%)',
-                    // backgroundColor: '#ffffff',
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: videoSectionRef.current,
-                        start: 'top 80%',
-                        end: '50% 50%',
-                        scrub: true,
+            if (!reduceMotion) {
+                gsap.fromTo(
+                    videoRef.current,
+                    { clipPath: 'inset(20% 20% 20% 20%)', 
+                        backgroundColor: '#0A1B4B' 
                     },
-                }
-            )
+                    {
+                        clipPath: 'inset(0% 0% 0% 0%)',
+                        // backgroundColor: '#ffffff',
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: videoSectionRef.current,
+                            start: 'top 80%',
+                            end: '50% 50%',
+                            scrub: true,
+                        },
+                    }
+                )
+            } else {
+                gsap.set(videoRef.current, { clipPath: 'inset(0% 0% 0% 0%)', backgroundColor: '#0A1B4B' })
+            }
+
             }
         )
 

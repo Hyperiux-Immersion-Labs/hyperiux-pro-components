@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { prefersReducedMotion } from "@/lib/motion";
 import { useFadeUp } from "../Animations/gsapAnimations";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
@@ -102,6 +103,35 @@ export default function Hero() {
       !shimmerTextWrapEl &&
       !navigationEls.length
     ) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      const heroEls = [
+        headingEl,
+        ...vaultEls,
+        pEl,
+        paraEl,
+        buttonWrapEl,
+        shimmerTextWrapEl,
+      ].filter(Boolean);
+
+      if (heroEls.length) {
+        gsap.set(heroEls, {
+          opacity: 1,
+          y: 0,
+          filter: "none",
+        });
+      }
+
+      if (navigationEls.length) {
+        gsap.set(navigationEls, {
+          opacity: 1,
+          y: 0,
+          yPercent: 0,
+        });
+      }
+
       return;
     }
 
@@ -383,6 +413,13 @@ export default function Hero() {
   }, []);
 
   useEffect(()=>{
+    if (prefersReducedMotion()) {
+      gsap.set(".hero-overlay",{
+        opacity:0,
+      })
+      return;
+    }
+
     gsap.to(".hero-overlay",{
       opacity:0,
     })

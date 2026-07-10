@@ -22,17 +22,24 @@ export default function CTA() {
     useEffect(() => {
         let mm = gsap.matchMedia();
 
-        mm.add("(min-width: 768px)", () => {
-            gsap.to('.cta-line', {
-                opacity: 0,
-                duration: 1.2,
-                ease: 'sine.inOut',
-                stagger: {
-                    each: 0.04,
-                    repeat: -1,
-                    yoyo: true
-                }
-            })
+        mm.add({
+            isDesktop: "(min-width: 768px)",
+            reduceMotion: "(prefers-reduced-motion: reduce)"
+        }, (context) => {
+            const { isDesktop, reduceMotion } = context.conditions;
+            
+            if (isDesktop) {
+                gsap.to('.cta-line', {
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: 'sine.inOut',
+                    stagger: {
+                        each: 0.04,
+                        repeat: reduceMotion ? 0 : -1,
+                        yoyo: !reduceMotion
+                    }
+                })
+            }
         }, ctaRef)
 
         return () => mm.revert()

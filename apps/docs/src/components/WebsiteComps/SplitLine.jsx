@@ -11,6 +11,9 @@ if (typeof window !== "undefined") {
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
+const REDUCED_MOTION_DURATION = 0.4;
+const REDUCED_MOTION_EASE = "power1.out";
+
 function hasLoaderRun() {
   if (typeof window === "undefined") return false;
 
@@ -41,6 +44,9 @@ function refreshScrollTriggerSafely() {
 
 /**
  * Scroll-triggered line reveal - text lines or a decorative horizontal line.
+ *
+ * Under `prefers-reduced-motion: reduce` both variants still fade in, but
+ * without the masked line-by-line rise or the horizontal scale-out.
  */
 export default function SplitLine({
   children,
@@ -66,192 +72,180 @@ export default function SplitLine({
 
     if (!target) return;
 
-    const reduceMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const mm = gsap.matchMedia();
 
-    let ctx;
-    let split;
-    let poll;
-    let bootCheck;
-    let hasCreatedAnimation = false;
+    mm.add(
+      {
+        reduceMotion: "(prefers-reduced-motion: reduce)",
+        fullMotion: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        const { reduceMotion } = context.conditions;
 
-    ctx = gsap.context(() => {
-      if (children) {
-        split = SplitText.create(wrapper, {
-          type: "lines",
-          mask: "lines",
-          aria: "none",
-        });
+        let split;
+        let poll;
+        let bootCheck;
+        let raf1 = null;
+        let raf2 = null;
+        let hasCreatedAnimation = false;
 
-        if (reduceMotion) {
-          gsap.set(wrapper, {
-            autoAlpha: 1,
-          });
+        if (children) {
+          if (reduceMotion) {
+            gsap.set(wrapper, { autoAlpha: 0 });
+          } else {
+            split = SplitText.create(wrapper, {
+              type: "lines",
+              mask: "lines",
+              aria: "none",
+            });
 
-          gsap.set(split.lines, {
-            opacity: 1,
-            yPercent: 0,
-          });
+            gsap.set(wrapper, { autoAlpha: 1 });
 
-          return;
-        }
-
-        gsap.set(wrapper, {
-          autoAlpha: 1,
-        });
-
-        gsap.set(split.lines, {
-          opacity: 0,
-          yPercent: 100,
-        });
-      } else {
-        if (reduceMotion) {
+            gsap.set(split.lines, {
+              opacity: 0,
+              yPercent: 100,
+            });
+          }
+        } else {
           gsap.set(decorativeLine, {
-            opacity: 1,
-            scaleX: 1,
+            opacity: 0,
+            scaleX: reduceMotion ? 1 : 0,
             transformOrigin: origin,
           });
-
-          return;
         }
 
-        gsap.set(decorativeLine, {
-          opacity: 0,
-          scaleX: 0,
-          transformOrigin: origin,
-        });
-      }
-    }, target);
+        const createAnimation = () => {
+          if (hasCreatedAnimation) return;
 
-    if (reduceMotion) {
-      return () => {
-        if (ctx) ctx.revert();
-        split?.revert();
-      };
-    }
+          hasCreatedAnimation = true;
 
-    const createAnimation = () => {
-      if (hasCreatedAnimation) return;
-
-      hasCreatedAnimation = true;
-
-      if (poll) {
-        window.clearInterval(poll);
-        poll = null;
-      }
-
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-        bootCheck = null;
-      }
-
-      refreshScrollTriggerSafely();
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (children && split?.lines?.length) {
-            gsap.fromTo(
-              split.lines,
-              {
-                opacity: 0,
-                yPercent: 100,
-              },
-              {
-                opacity: 1,
-                yPercent: 0,
-                delay,
-                duration,
-                ease,
-                stagger,
-                scrollTrigger: {
-                  trigger: wrapper,
-                  start,
-                  once,
-                  invalidateOnRefresh: true,
-                  markers: false,
-                },
-              }
-            );
+          if (poll) {
+            window.clearInterval(poll);
+            poll = null;
           }
 
-          if (!children && decorativeLine) {
-            gsap.fromTo(
-              decorativeLine,
-              {
-                opacity: 0,
-                scaleX: 0,
-                transformOrigin: origin,
-              },
-              {
-                opacity: 1,
-                scaleX: 1,
-                delay,
-                duration,
-                ease,
-                scrollTrigger: {
-                  trigger: decorativeLine,
-                  start,
-                  once,
-                  invalidateOnRefresh: true,
-                  markers: false,
-                },
-              }
-            );
+          if (bootCheck) {
+            window.clearTimeout(bootCheck);
+            bootCheck = null;
           }
 
-          ScrollTrigger.refresh(true);
-        });
-      });
-    };
+          refreshScrollTriggerSafely();
 
-    const handleLoaderComplete = () => {
-      createAnimation();
-    };
+          raf1 = requestAnimationFrame(() => {
+            raf2 = requestAnimationFrame(() => {
+              if (!document.contains(target)) return;
 
-    if (hasLoaderRun() && !isLoaderActive()) {
-      createAnimation();
-    } else {
-      window.addEventListener("loaderComplete", handleLoaderComplete, {
-        once: true,
-      });
+              const scrollTrigger = {
+                trigger: target,
+                start,
+                once,
+                invalidateOnRefresh: true,
+                markers: false,
+              };
 
-      poll = window.setInterval(() => {
+              // The tween is born two frames after the matchMedia callback
+              // returned, so it has to be re-parented onto the context by hand
+              // for mm.revert() to clean up its ScrollTrigger.
+              context.add(() => {
+                if (reduceMotion) {
+                  gsap.fromTo(
+                    target,
+                    children ? { autoAlpha: 0 } : { opacity: 0 },
+                    {
+                      ...(children ? { autoAlpha: 1 } : { opacity: 1 }),
+                      delay,
+                      duration: REDUCED_MOTION_DURATION,
+                      ease: REDUCED_MOTION_EASE,
+                      scrollTrigger,
+                    }
+                  );
+                } else if (children && split?.lines?.length) {
+                  gsap.fromTo(
+                    split.lines,
+                    {
+                      opacity: 0,
+                      yPercent: 100,
+                    },
+                    {
+                      opacity: 1,
+                      yPercent: 0,
+                      delay,
+                      duration,
+                      ease,
+                      stagger,
+                      scrollTrigger,
+                    }
+                  );
+                } else if (!children) {
+                  gsap.fromTo(
+                    decorativeLine,
+                    {
+                      opacity: 0,
+                      scaleX: 0,
+                      transformOrigin: origin,
+                    },
+                    {
+                      opacity: 1,
+                      scaleX: 1,
+                      delay,
+                      duration,
+                      ease,
+                      scrollTrigger,
+                    }
+                  );
+                }
+              });
+
+              ScrollTrigger.refresh(true);
+            });
+          });
+        };
+
+        const handleLoaderComplete = () => {
+          createAnimation();
+        };
+
         if (hasLoaderRun() && !isLoaderActive()) {
           createAnimation();
+        } else {
+          window.addEventListener("loaderComplete", handleLoaderComplete, {
+            once: true,
+          });
+
+          poll = window.setInterval(() => {
+            if (hasLoaderRun() && !isLoaderActive()) {
+              createAnimation();
+            }
+          }, 60);
+
+          bootCheck = window.setTimeout(() => {
+            if (!isLoaderActive()) {
+              createAnimation();
+            }
+          }, 700);
         }
-      }, 60);
 
-      bootCheck = window.setTimeout(() => {
-        if (!isLoaderActive()) {
-          createAnimation();
-        }
-      }, 700);
-    }
+        return () => {
+          window.removeEventListener("loaderComplete", handleLoaderComplete);
 
-    return () => {
-      window.removeEventListener("loaderComplete", handleLoaderComplete);
+          if (raf1) cancelAnimationFrame(raf1);
+          if (raf2) cancelAnimationFrame(raf2);
 
-      if (poll) {
-        window.clearInterval(poll);
-      }
+          if (poll) {
+            window.clearInterval(poll);
+          }
 
-      if (bootCheck) {
-        window.clearTimeout(bootCheck);
-      }
+          if (bootCheck) {
+            window.clearTimeout(bootCheck);
+          }
 
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === wrapper || trigger.trigger === decorativeLine) {
-          trigger.kill();
-        }
-      });
+          split?.revert();
+        };
+      },
+      target
+    );
 
-      if (ctx) {
-        ctx.revert();
-      }
-
-      split?.revert();
-    };
+    return () => mm.revert();
   }, [children, start, once, duration, ease, origin, delay, stagger]);
 
   if (children) {

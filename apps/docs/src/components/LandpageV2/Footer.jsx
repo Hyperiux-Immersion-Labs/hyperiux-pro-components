@@ -43,7 +43,7 @@ const docsLinks = [
   { label: "Installation", href: "/docs/installation" },
   { label: "CLI", href: "/docs/cli" },
   { label: "Dependencies", href: "/docs/dependencies" },
-  { label: "Licence", href: "/docs/license" },
+  { label: "License", href: "/docs/license" },
 ];
 
 const legalLinks = [
@@ -68,9 +68,9 @@ function FooterBlockLink({ href, children }) {
       prefetch={false}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-[#ff5f00]"
+      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-[#ff5f00] motion-reduce:transition-none"
     >
-      <span className="block py-[0.15vw] max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0">
+      <span className="block py-[0.15vw] max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 motion-reduce:group-hover:translate-x-0 group-hover:duration-0 motion-reduce:transition-none">
         {children}
       </span>
     </Link>
