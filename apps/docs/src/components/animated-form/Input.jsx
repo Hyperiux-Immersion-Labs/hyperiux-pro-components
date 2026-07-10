@@ -1,5 +1,4 @@
-
-import React, { forwardRef } from"react";
+import React, { forwardRef, useId } from "react";
 
 /**
  * Floating-label Input
@@ -12,12 +11,24 @@ import React, { forwardRef } from"react";
  * - All standard <input> props (name, value, onChange, onBlur, autoComplete, …)
  */
 const Input = forwardRef(function Input(
- { id, label, placeholder, type ="text", error,labelBg="", className ="", ...rest },
- ref
+  {
+    id,
+    label,
+    placeholder,
+    type = "text",
+    error,
+    labelBg = "",
+    className = "",
+    ...rest
+  },
+  ref,
 ) {
- return (
- <div className="w-full">
- <style>{`
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+
+  return (
+    <div className="w-full">
+      <style>{`
  input:-webkit-autofill,
  input:-webkit-autofill:hover,
  input:-webkit-autofill:focus,
@@ -28,11 +39,11 @@ const Input = forwardRef(function Input(
    transition: background-color 9999s ease-in-out 0s;
  }
  `}</style>
- <div className="group relative w-full">
- {label && (
- <label
- htmlFor={id}
- className="
+      <div className="group relative w-full">
+        {label && (
+          <label
+            htmlFor={inputId}
+            className="
  origin-start text-gray-400
  group-focus-within:text-gray-700
  has-[+input:not(:placeholder-shown)]:text-gray-700
@@ -52,34 +63,34 @@ const Input = forwardRef(function Input(
  has-[+input:not(:placeholder-shown)]:font-medium
  ml-4
 "
- >
- <span className={`bg-white text-gray-700 inline-flex px-1 text-sm ${labelBg?labelBg:"bg-white"}`}>
- {label}
- </span>
- </label>
- )}
- <input
- ref={ref}
- id={id}
- type={type}
- placeholder={placeholder ?? " "}
- className={`
+          >
+            <span
+              className={`bg-white text-gray-700 inline-flex px-1 text-sm ${labelBg ? labelBg : "bg-white"}`}
+            >
+              {label}
+            </span>
+          </label>
+        )}
+        <input
+          ref={ref}
+          id={inputId}
+          type={type}
+          placeholder={placeholder ?? " "}
+          className={`
  w-full border rounded-full bg-white
  h-14 pl-5 pr-4 text-sm text-gray-800
  outline-none transition-all
  border-gray-200
  focus:border-gray-400
- ${error ?"border-red-400 focus:border-red-400" :""}
+ ${error ? "border-red-400 focus:border-red-400" : ""}
  ${className}
  `}
- {...rest}
- />
- </div>
- {error && (
- <p className="mt-1 ml-4 text-xs text-red-500">{error}</p>
- )}
- </div>
- );
+          {...rest}
+        />
+      </div>
+      {error && <p className="mt-1 ml-4 text-xs text-red-500">{error}</p>}
+    </div>
+  );
 });
 
 export default Input;

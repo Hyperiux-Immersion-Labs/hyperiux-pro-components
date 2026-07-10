@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { SplitText } from 'gsap/dist/SplitText'
+import { prefersReducedMotion } from '@/lib/motion'
 
 // Only register on client
 if (typeof window !== "undefined") {
@@ -107,7 +108,9 @@ export default function GradientFill() {
                 }
             )
 
-            // ---- Text Animations (unchanged) ----
+            // ---- Text Animations ----
+            const reducedMotion = prefersReducedMotion()
+
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: containerRef.current,
@@ -119,6 +122,20 @@ export default function GradientFill() {
             })
 
             textRefs.current.forEach((el) => {
+                // The paragraphs are stacked on top of each other, so even with
+                // reduced motion they still have to cross-fade in sequence.
+                if (reducedMotion) {
+                    gsap.set(el, { willChange: 'opacity' })
+
+                    tl.fromTo(
+                        el,
+                        { opacity: 0 },
+                        { opacity: 1, duration: 1, ease: 'power2.out' }
+                    )
+                    tl.to(el, { opacity: 0, duration: 1, ease: 'power2.in' })
+                    return
+                }
+
                 const split = new SplitText(el, { type: 'lines', aria: 'none' })
                 splits.push(split)
 

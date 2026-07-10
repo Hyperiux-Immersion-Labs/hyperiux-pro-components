@@ -24,7 +24,7 @@ const GlowingPlatesDeferred = dynamic(() => import("@/Experience/GlowingPlatesDe
 const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"));
 const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
 const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
-import Loader from "./Loader";
+import Loader from "../testing-homepage/Loader";
 
 const Footer = dynamic(() => import("./Footer"), {
   loading: () => null,

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
+import { prefersReducedMotion } from '@/lib/motion'
 import {
     LOADER_COMPLETE_EVENT,
     HYPERIUX_LOADER_COMPLETE_EVENT,
@@ -27,11 +28,22 @@ export function useNavbarLoader(navbarRef, pathname, setActiveItem) {
         gsap.killTweensOf(navbar)
 
         if (animate) {
+            const reduceMotion = prefersReducedMotion()
+
+            // Reduced motion drops the slide but keeps a fade, so the navbar
+            // still eases in rather than popping once the loader clears.
+            if (reduceMotion) {
+                gsap.set(navbar, {
+                    y: 0,
+                    yPercent: 0,
+                })
+            }
+
             gsap.to(navbar, {
                 autoAlpha: 1,
                 y: 0,
                 yPercent: 0,
-                duration: 0.45,
+                duration: reduceMotion ? 0.3 : 0.45,
                 ease: 'power2.out',
                 overwrite: true,
                 onComplete: () => {
