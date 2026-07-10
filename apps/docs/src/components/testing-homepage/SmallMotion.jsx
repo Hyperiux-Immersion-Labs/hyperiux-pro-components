@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import SplitText from 'gsap/dist/SplitText'
 import React, { useEffect, useRef } from 'react'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -15,32 +16,25 @@ export default function SmallMotion() {
         const section = sectionRef.current
         if (!section) return
 
-        // Reduced motion: both headings are absolutely stacked and only
-        // readable because the scrub shows one at a time. Show the first
-        // statically and hide the second; skip the split and animation.
-        if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
-            if (textRef2.current) textRef2.current.style.visibility = 'hidden'
-            return
-        }
-
         let smallSplit, bigSplit, tl
 
         // ponytail: defer the SplitText calls until this below-fold section
         // nears the viewport instead of splitting on page mount.
         const mount = () => {
-        smallSplit = SplitText.create(textRef.current, {
-            type: 'chars',
-            aria: 'none',
-        })
-        bigSplit = SplitText.create(textRef2.current, {
-            type: 'chars',
-            aria: 'none',
-        })
+        const reduceMotion = prefersReducedMotion()
+
+        smallSplit = SplitText.create(textRef.current, { type: 'chars', aria: 'none' })
+        bigSplit = SplitText.create(textRef2.current, { type: 'chars', aria: 'none' })
 
         gsap.set([textRef.current, textRef2.current], { perspective: 1000 })
 
-        gsap.set(smallSplit.chars, { yPercent: 100, rotationX: -90, opacity: 0, transformOrigin: '50% 50% -50', filter: 'blur(10px)' })
-        gsap.set(bigSplit.chars, { yPercent: 100, rotationX: -90, opacity: 0, transformOrigin: '50% 50% -50', filter: 'blur(10px)' })
+        if (!reduceMotion) {
+            gsap.set(smallSplit.chars, { yPercent: 100, rotationX: -90, opacity: 0, transformOrigin: '50% 50% -50', filter: 'blur(10px)' })
+            gsap.set(bigSplit.chars, { yPercent: 100, rotationX: -90, opacity: 0, transformOrigin: '50% 50% -50', filter: 'blur(10px)' })
+        } else {
+            gsap.set(smallSplit.chars, { opacity: 0 })
+            gsap.set(bigSplit.chars, { opacity: 0 })
+        }
 
         tl = gsap.timeline({
             scrollTrigger: {
@@ -51,42 +45,29 @@ export default function SmallMotion() {
             },
         })
 
-        tl.to(smallSplit.chars, {
-            yPercent: 0,
-            rotationX: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-            stagger: 0.04,
-            ease: 'power2.out',
-            duration: 1,
-        })
-        .to(smallSplit.chars, {
-            yPercent: -100,
-            rotationX: 90,
-            opacity: 0,
-            filter: 'blur(10px)',
-            stagger: 0.04,
-            ease: 'power2.in',
-            duration: 1,
-        })
-        .to(bigSplit.chars, {
-            yPercent: 0,
-            rotationX: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-            stagger: 0.04,
-            ease: 'power2.out',
-            duration: 1,
-        }, "<0.5")
-        .to(bigSplit.chars, {
-            yPercent: -100,
-            rotationX: 90,
-            opacity: 0,
-            filter: 'blur(10px)',
-            stagger: 0.04,
-            ease: 'power2.in',
-            duration: 1,
-        })
+        if (!reduceMotion) {
+            tl.to(smallSplit.chars, {
+                yPercent: 0, rotationX: 0, opacity: 1, filter: 'blur(0px)',
+                stagger: 0.04, ease: 'power2.out', duration: 1,
+            })
+            .to(smallSplit.chars, {
+                yPercent: -100, rotationX: 90, opacity: 0, filter: 'blur(10px)',
+                stagger: 0.04, ease: 'power2.in', duration: 1,
+            })
+            .to(bigSplit.chars, {
+                yPercent: 0, rotationX: 0, opacity: 1, filter: 'blur(0px)',
+                stagger: 0.04, ease: 'power2.out', duration: 1,
+            }, "<0.5")
+            .to(bigSplit.chars, {
+                yPercent: -100, rotationX: 90, opacity: 0, filter: 'blur(10px)',
+                stagger: 0.04, ease: 'power2.in', duration: 1,
+            })
+        } else {
+            tl.to(smallSplit.chars, { opacity: 1, ease: 'power2.out', duration: 1 })
+            .to(smallSplit.chars, { opacity: 0, ease: 'power2.in', duration: 1 })
+            .to(bigSplit.chars, { opacity: 1, ease: 'power2.out', duration: 1 })
+            .to(bigSplit.chars, { opacity: 0, ease: 'power2.in', duration: 1 })
+        }
 
         }
 

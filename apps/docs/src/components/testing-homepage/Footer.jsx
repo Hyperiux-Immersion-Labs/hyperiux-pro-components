@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import DeferredMount from "../WebsiteComps/DeferredMount";
 import RandomBlur from "./RandomBlur";
-
 // Three.js footer background plane - own chunk, mounted only when the footer
 // nears the viewport (an eager import forces three.js onto the main bundle).
 const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
@@ -50,11 +48,11 @@ const docsLinks = [
   { label: "Installation", href: "/docs/installation" },
   { label: "CLI", href: "/docs/cli" },
   { label: "Dependencies", href: "/docs/dependencies" },
-  { label: "Licence", href: "/docs/license" },
+  { label: "License", href: "/docs/license" },
 ];
 
 const legalLinks = [
-  { label: "Licence Agreement", href: "/legal/license-agreement" },
+  { label: "License Agreement", href: "/legal/license-agreement" },
   { label: "Terms of Service", href: "/legal/terms-of-service" },
   { label: "Privacy Policy", href: "/legal/privacy-policy" },
   { label: "Refund Policy", href: "/legal/refund-policy" },
@@ -75,9 +73,9 @@ function FooterBlockLink({ href, children }) {
       prefetch={false}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-[#ff5f00]"
+      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-[#ff5f00] motion-reduce:transition-none"
     >
-      <span className="block py-[0.15vw] max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0">
+      <span className="block py-[0.15vw] max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 motion-reduce:group-hover:translate-x-0 motion-reduce:transition-none">
         {children}
       </span>
     </Link>
@@ -88,7 +86,20 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
+  const [webglMounted, setWebglMounted] = useState(false);
   const { isMounted, isMobile } = useIsMobile();
+
+  useEffect(() => {
+    if (isMobile) return;
+    const id = "requestIdleCallback" in window
+      ? window.requestIdleCallback(() => setWebglMounted(true), { timeout: 2000 })
+      : window.setTimeout(() => setWebglMounted(true), 300);
+    return () => {
+      "cancelIdleCallback" in window
+        ? window.cancelIdleCallback(id)
+        : window.clearTimeout(id);
+    };
+  }, [isMobile]);
 
 
   const handleSubscribe = async (event) => {
@@ -128,9 +139,7 @@ export default function Footer() {
     <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
 
       {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
-        <DeferredMount strategy="visible">
-          <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />
-        </DeferredMount>
+        {webglMounted && <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />}
       </div> :
         <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
           <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.png"} alt="footer-img" />

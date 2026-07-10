@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import RandomBlur from './RandomBlur'
+import { prefersReducedMotion } from '@/lib/motion'
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger)
@@ -39,8 +40,11 @@ const UI_CARDS = [
 export default function wUIKit() {
   useEffect(() => {
     let ctx = gsap.context(() => {
+      const reduceMotion = prefersReducedMotion();
+
       if (globalThis.innerWidth > 1024) {
-        gsap.set(".use-case", { y: "37vw" });
+        gsap.set(".use-case", { y: reduceMotion ? "0vw" : "37vw" });
+
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: "#uikit-section",
@@ -50,31 +54,43 @@ export default function wUIKit() {
             // markers:true,
           },
         });
-        tl.to(".use-case", {
-          y: "0vw",
-          stagger: 0.2,
-          duration: 0.4,
-          ease: "power1.out",
-        }).to(".use-case-container", {
-          translateX: "-38%",
-          duration: 1.2,
-          delay: -1,
-          ease: "power1.inOut",
-        });
+
+        if (!reduceMotion) {
+          tl.to(".use-case", {
+            y: "0vw",
+            stagger: 0.2,
+            duration: 0.4,
+            ease: "power1.out",
+          }).to(".use-case-container", {
+            translateX: "-38%",
+            duration: 1.2,
+            delay: -1,
+            ease: "power1.inOut",
+          });
+        } else {
+          tl.fromTo(".use-case-container",
+            { translateX: "100vw" },
+            { translateX: "-38%", duration: 1.2, ease: "power1.inOut" }
+          );
+        }
       } else {
-        gsap.set(".use-case", { opacity: 0, y: 50 });
-        gsap.to(".use-case", {
-          scrollTrigger: {
-            trigger: ".use-case-container",
-            start: "top 90%",
-            once: true,
-          },
-          opacity: 1,
-          y: 0,
-          stagger: 0.15,
-          duration: 1,
-          ease: "power3.out",
-        });
+        if (!reduceMotion) {
+          gsap.set(".use-case", { opacity: 0, y: 50 });
+          gsap.to(".use-case", {
+            scrollTrigger: {
+              trigger: ".use-case-container",
+              start: "top 90%",
+              once: true,
+            },
+            opacity: 1,
+            y: 0,
+            stagger: 0.15,
+            duration: 1,
+            ease: "power3.out",
+          });
+        } else {
+          gsap.set(".use-case", { opacity: 1, y: 0 });
+        }
       }
     });
 

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { SplitText } from 'gsap/dist/SplitText'
+import { prefersReducedMotion } from '@/lib/motion'
 
 // Only register on client
 if (typeof window !== "undefined") {
@@ -24,16 +25,6 @@ export default function GradientFill() {
     useEffect(() => {
         const container = containerRef.current
         if (!container) return
-
-        // Reduced motion: the three paragraphs are absolutely stacked and
-        // only readable because the scrub animation shows one at a time.
-        // Statically show the first and hide the rest; the glow stays put.
-        if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
-            textRefs.current.forEach((el, i) => {
-                if (i > 0) el.style.visibility = 'hidden'
-            })
-            return
-        }
 
         const splits = []
         let ctx
@@ -126,7 +117,9 @@ export default function GradientFill() {
                 }
             )
 
-            // ---- Text Animations (unchanged) ----
+            // ---- Text Animations ----
+            const reducedMotion = prefersReducedMotion()
+
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: containerRef.current,
@@ -138,6 +131,15 @@ export default function GradientFill() {
             })
 
             textRefs.current.forEach((el) => {
+                // Paragraphs are stacked; even with reduced motion they must
+                // cross-fade in sequence so all three are readable.
+                if (reducedMotion) {
+                    gsap.set(el, { willChange: 'opacity' })
+                    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'power2.out' })
+                    tl.to(el, { opacity: 0, duration: 1, ease: 'power2.in' })
+                    return
+                }
+
                 const split = new SplitText(el, { type: 'lines', aria: 'none' })
                 splits.push(split)
 

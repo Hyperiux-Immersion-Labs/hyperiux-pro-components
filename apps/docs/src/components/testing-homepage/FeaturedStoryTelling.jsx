@@ -8,6 +8,7 @@ import { SplitText } from "gsap/SplitText";
 import VaultBox from "../WebsiteComps/VaultBoxes";
 import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
+import { prefersReducedMotion } from "@/lib/motion";
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -167,8 +168,169 @@ export default function FeaturedStoryTelling() {
     useEffect(() => {
         const section = sectionRef.current;
         const cards = cardRefs.current;
+        const reduceMotion = prefersReducedMotion();
 
         animationActiveRef.current = true;
+
+        const TOP_LAYER = [
+            { id: "block-top-layer-1", xPercent: 300 },
+            { id: "block-top-layer-2", xPercent: 450 },
+            { id: "block-top-layer-3", xPercent: 600 },
+        ];
+        const BOTTOM_LAYER = [
+            { id: "block-bottom-layer-1", xPercent: 550 },
+            { id: "block-bottom-layer-2", xPercent: 450 },
+            { id: "block-bottom-layer-3", xPercent: 600 },
+        ];
+
+        const finalAngles = cards.map(
+            (_, i) => -(i / TOTAL) * 2 * Math.PI - Math.PI / 6,
+        );
+
+        const ALL_LAYER_IDS = [...TOP_LAYER, ...BOTTOM_LAYER].map((l) => `#${l.id}`);
+
+        // --- Reduced motion ---
+        // The spiral never travels: it is laid out at rest on mount. What still
+        // animates is opacity and blur, which carry the same beats as the full
+        // version (cards settle in, copy reads, cards clear, grid arrives)
+        // without moving anything across the screen.
+        if (reduceMotion) {
+            section.style.height = '300vh';
+
+            // Per-card resting geometry, independent of radius.
+            const restGeometry = finalAngles.map((angle, i) => {
+                const ux = Math.cos(angle);
+                const uy = Math.sin(angle);
+                const { scale, blur } = CARD_META[i];
+                const depthScale = scale + uy * 0.25 * scale;
+                const depthBlur = blur + Math.max(0, -uy * 2.5);
+                return { ux, uy, depthScale, depthBlur };
+            });
+
+            // Always a blur() endpoint, never "none": GSAP interpolates
+            // blur(14px) -> blur(0px) numerically, but blur(14px) -> none is a
+            // string swap that snaps at the end of the tween.
+            const restFilter = (i) =>
+                `blur(${Math.max(restGeometry[i].depthBlur, 0).toFixed(2)}px)`;
+
+            // The full-motion spiral is allowed to overflow because the cards are
+            // mid-flight and fade out before they settle. Here they *do* settle, so
+            // the orbit has to be shrunk until every card — at its own depth scale,
+            // plus the bleed its blur adds — fits inside the clipping container.
+            const fitRadii = () => {
+                const host = cardsContainerRef.current;
+                if (!host) return { rx: RADIUS_X, ry: RADIUS_Y };
+
+                const { width, height } = host.getBoundingClientRect();
+                const cardW = window.innerWidth * 0.18;
+                const cardH = window.innerWidth * 0.11;
+                const EDGE_PAD = 16;
+
+                let rx = RADIUS_X;
+                let ry = RADIUS_Y;
+
+                restGeometry.forEach(({ ux, uy, depthScale, depthBlur }) => {
+                    const bleed = depthBlur * 2;
+                    const halfW = (cardW * depthScale) / 2 + bleed;
+                    const halfH = (cardH * depthScale) / 2 + bleed;
+
+                    const availX = width / 2 - EDGE_PAD - halfW;
+                    const availY = height / 2 - EDGE_PAD - halfH;
+
+                    if (Math.abs(ux) > 0.01) rx = Math.min(rx, availX / Math.abs(ux));
+                    if (Math.abs(uy) > 0.01) ry = Math.min(ry, availY / Math.abs(uy));
+                });
+
+                return { rx: Math.max(rx, 0), ry: Math.max(ry, 0) };
+            };
+
+            let tl;
+
+            const placeCards = () => {
+                const { rx, ry } = fitRadii();
+
+                cards.forEach((card, i) => {
+                    if (!card) return;
+                    const { ux, uy, depthScale } = restGeometry[i];
+
+                    gsap.set(card, {
+                        xPercent: -50,
+                        yPercent: -50,
+                        x: ux * rx,
+                        y: uy * ry,
+                        rotation: 0,
+                        scale: depthScale,
+                        zIndex: TOTAL + Math.round((uy + 1) * TOTAL),
+                    });
+                });
+            };
+
+            const rmCtx = gsap.context(() => {
+                placeCards();
+
+                gsap.set(ALL_LAYER_IDS, { xPercent: 0, opacity: 0 });
+                gsap.set(infoTextRef.current, { opacity: 0, filter: "blur(6px)" });
+
+                tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "-5% top",
+                        end: "bottom bottom",
+                        // Numeric scrub lets the tween catch up to the scroll
+                        // position over ~0.6s instead of snapping to it, which
+                        // is what smooths out wheel and trackpad stepping.
+                        scrub: 0.6,
+                    },
+                });
+
+                // Cards resolve out of blur, one after another. One staggered
+                // tween rather than nine overlapping ones, so GSAP renders a
+                // single interpolation per card per tick.
+                const liveCards = cards.filter(Boolean);
+                tl.fromTo(
+                    liveCards,
+                    { opacity: 0, filter: "blur(14px)" },
+                    {
+                        opacity: 1,
+                        filter: (_, target) => restFilter(cards.indexOf(target)),
+                        duration: 1.4,
+                        ease: "power2.out",
+                        stagger: 0.16,
+                    },
+                    0
+                );
+
+                // The last card lands at 1.28 + 1.4 = 2.68. Text starts while
+                // that tail is still resolving so the two beats read as one
+                // move; previously it waited until 3.85 and the section sat dead.
+                tl.to(infoTextRef.current, { opacity: 1, filter: "blur(0px)", duration: 1.4, ease: "power2.out" }, 2.2);
+                tl.to(infoTextRef.current, { opacity: 0, filter: "blur(6px)", duration: 1.0, ease: "power2.in" }, 6.0);
+                tl.to(cardsContainerRef.current, { opacity: 0, duration: 1.2, ease: "power2.inOut" }, 7.0);
+                tl.set(cardsContainerRef.current, { pointerEvents: "none" }, 8.2);
+                tl.to(ALL_LAYER_IDS, { opacity: 1, duration: 1.4, stagger: 0.12, ease: "power2.out" }, 7.5);
+            }, section);
+
+            const rmRefresh = () => ScrollTrigger.refresh();
+            const rmRafId = requestAnimationFrame(rmRefresh);
+            window.addEventListener("load", rmRefresh);
+
+            // Radii are pixel values derived from the viewport, so a resize has to
+            // re-fit them; invalidate lets the blur tweens re-read restFilter().
+            const onResize = () => {
+                placeCards();
+                tl?.invalidate();
+                ScrollTrigger.refresh();
+            };
+            window.addEventListener("resize", onResize);
+
+            return () => {
+                animationActiveRef.current = false;
+                cancelAnimationFrame(rmRafId);
+                window.removeEventListener("load", rmRefresh);
+                window.removeEventListener("resize", onResize);
+                rmCtx.revert();
+            };
+        }
 
         gsap.ticker.lagSmoothing(500, 33);
 
@@ -184,17 +346,6 @@ export default function FeaturedStoryTelling() {
             opacity: 1,
         });
 
-        const TOP_LAYER = [
-            { id: "block-top-layer-1", xPercent: 300 },
-            { id: "block-top-layer-2", xPercent: 450 },
-            { id: "block-top-layer-3", xPercent: 600 },
-        ];
-        const BOTTOM_LAYER = [
-            { id: "block-bottom-layer-1", xPercent: 550 },
-            { id: "block-bottom-layer-2", xPercent: 450 },
-            { id: "block-bottom-layer-3", xPercent: 600 },
-        ];
-
         TOP_LAYER.forEach(layer =>
             gsap.set(`#${layer.id}`, {
                 xPercent: layer.xPercent,
@@ -205,11 +356,6 @@ export default function FeaturedStoryTelling() {
                 xPercent: layer.xPercent,
             })
         );
-
-        const finalAngles = cards.map(
-            (_, i) => -(i / TOTAL) * 2 * Math.PI - Math.PI / 6,
-        );
-
 
         const xSet = cards.map((c) =>
             c ? gsap.quickSetter(c, "x", "px") : () => {},
@@ -422,7 +568,7 @@ export default function FeaturedStoryTelling() {
                 Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
             </RandomBlur>
             <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
-                Hover it. Scroll it. Break it. Then copy it
+                Hover it. Scroll it. Break it. Then copy it!
             </SplitLine>
             <div
                 ref={stickyContainerRef}

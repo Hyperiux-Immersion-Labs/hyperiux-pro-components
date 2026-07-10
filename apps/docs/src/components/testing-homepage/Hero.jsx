@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { prefersReducedMotion } from "@/lib/motion";
 import { useFadeUp } from "../Animations/gsapAnimations";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
@@ -13,10 +14,22 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
-// Decoupled from the site loader: the loader is a fixed z-9999 opaque
-// overlay, so Hero can build+animate hidden behind it instead of waiting for
-// loaderComplete - by the time the overlay lifts Hero is already revealed.
-const HERO_ANIMATION_DELAY = 0.15;
+const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
+const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
+const HERO_ANIMATION_DELAY_WITHOUT_LOADER = 0.15;
+
+function hasLoaderRun() {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
+}
+
+function isLoaderActive() {
+  if (typeof window === "undefined") return false;
+  return (
+    document.body.classList.contains("loader-active") ||
+    window.__HYPERIUX_LOADER_RUNNING__ === true
+  );
+}
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -91,6 +104,13 @@ export default function Hero() {
       return;
     }
 
+    if (prefersReducedMotion()) {
+      const heroEls = [headingEl, ...vaultEls, pEl, paraEl, buttonWrapEl, shimmerTextWrapEl].filter(Boolean);
+      if (heroEls.length) gsap.set(heroEls, { opacity: 1, y: 0, filter: "none" });
+      if (navigationEls.length) gsap.set(navigationEls, { opacity: 1, y: 0, yPercent: 0 });
+      return;
+    }
+
     if (headingEl) {
       gsap.set(headingEl, {
         opacity: 0,
@@ -141,6 +161,7 @@ export default function Hero() {
     const splits = [];
     let ctx;
     let delayedCall;
+    let completionPoll;
     let navigationTween;
     let hasAnimated = false;
 
@@ -148,6 +169,11 @@ export default function Hero() {
       if (hasAnimated) return;
 
       hasAnimated = true;
+
+      if (completionPoll) {
+        window.clearInterval(completionPoll);
+        completionPoll = null;
+      }
 
       ctx = gsap.context(() => {
         const heroTimeline = gsap.timeline();
@@ -310,17 +336,33 @@ export default function Hero() {
       }
     };
 
-    const startAfterDelay = (delay = HERO_ANIMATION_DELAY) => {
+    const startAfterDelay = (delay = HERO_ANIMATION_DELAY_AFTER_LOADER) => {
       if (hasAnimated) return;
-
       delayedCall?.kill();
-
       delayedCall = gsap.delayedCall(delay, runAnimation);
     };
 
-    startAfterDelay();
+    const handleLoaderComplete = () => {
+      startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
+    };
+
+    if (hasLoaderRun() && !isLoaderActive()) {
+      startAfterDelay(HERO_ANIMATION_DELAY_WITHOUT_LOADER);
+    } else {
+      window.addEventListener("loaderComplete", handleLoaderComplete, { once: true });
+
+      completionPoll = window.setInterval(() => {
+        if (hasLoaderRun() && !isLoaderActive()) {
+          window.clearInterval(completionPoll);
+          completionPoll = null;
+          startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
+        }
+      }, 80);
+    }
 
     return () => {
+      window.removeEventListener("loaderComplete", handleLoaderComplete);
+      if (completionPoll) window.clearInterval(completionPoll);
       delayedCall?.kill();
       navigationTween?.kill();
 
@@ -335,6 +377,10 @@ export default function Hero() {
   }, []);
 
   useEffect(()=>{
+    if (prefersReducedMotion()) {
+      gsap.set(".hero-overlay", { opacity: 0 });
+      return;
+    }
     gsap.to(".hero-overlay",{
       opacity:0,
     })
