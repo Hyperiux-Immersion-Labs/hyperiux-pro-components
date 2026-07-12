@@ -1,5 +1,4 @@
 import React from'react'
-import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import StripSliderComp from './StripSliderComp';
 
 const items = [
@@ -29,7 +28,6 @@ const items = [
 const StripSlider = () => {
  return (
  <div className="w-full h-screen bg-black">
- <LenisSmoothScroll />
  <StripSliderComp items={items} />
  </div>
  )

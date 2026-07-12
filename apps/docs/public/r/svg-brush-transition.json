@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "SVGBrushTransition",
   "exportKind": "default",
+  "tier": "pro",
   "files": [
     {
       "path": "index.jsx",
