@@ -1,12 +1,8 @@
-'use client'
+"use client";
 
-import { useEffect, useRef } from 'react'
-import * as THREE from 'three'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ReactLenis } from 'lenis/react'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import * as THREE from "three";
 
 const ImageDistortionVertex = `
   varying vec2 vUv;
@@ -15,7 +11,7 @@ const ImageDistortionVertex = `
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
-`
+`;
 
 const ImageDistortionFragment = `
   uniform sampler2D u_texture0;
@@ -39,7 +35,12 @@ const ImageDistortionFragment = `
 
   void main() {
     float disp = texture2D(u_displacement, vUv).r;
-    disp = mix(disp, disp * (sin(vUv.y * 10.0 + u_progress * 6.28) * 0.5 + 0.5), 0.3);
+
+    disp = mix(
+      disp,
+      disp * (sin(vUv.y * 10.0 + u_progress * 6.28) * 0.5 + 0.5),
+      0.3
+    );
 
     vec2 uv0 = coverUV(vUv, u_resolution, u_textureResolution0);
     vec2 uv1 = coverUV(vUv, u_resolution, u_textureResolution1);
@@ -47,8 +48,15 @@ const ImageDistortionFragment = `
     float scaleEffect = 1.0 + u_progress * (1.0 - u_progress) * u_scale;
     vec2 center = vec2(0.5);
 
-    vec2 distortedUV0 = (uv0 - center) / scaleEffect + center + u_progress * disp * u_strength * vec2(1.0, 0.5);
-    vec2 distortedUV1 = (uv1 - center) * scaleEffect + center - (1.0 - u_progress) * disp * u_strength * vec2(1.0, 0.5);
+    vec2 distortedUV0 =
+      (uv0 - center) / scaleEffect +
+      center +
+      u_progress * disp * u_strength * vec2(1.0, 0.5);
+
+    vec2 distortedUV1 =
+      (uv1 - center) * scaleEffect +
+      center -
+      (1.0 - u_progress) * disp * u_strength * vec2(1.0, 0.5);
 
     float rgbOffset = u_progress * (1.0 - u_progress) * u_rgbShift;
 
@@ -68,205 +76,661 @@ const ImageDistortionFragment = `
 
     gl_FragColor = mix(tex0, tex1, smoothstep(0.0, 1.0, u_progress));
   }
-`
+`;
 
-const defaultSections = [
-  { text: 'SHADOW', src: '/assets/img/image01.webp' },
-  { text: 'FLOWER', src: '/assets/img/image02.webp' },
-  { text: 'RUN!!', src: '/assets/img/image03.webp' },
-]
+const DEFAULT_SECTIONS = [
+  {
+    text: "SHADOW",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  },
+  {
+    text: "FLOWER",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  },
+  {
+    text: "RUN",
+    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+  },
+];
 
-const defaultShaderConfig = {
+const DEFAULT_SHADER_CONFIG = {
   strength: 0.8,
   rgbShift: 0.05,
   scale: 0.15,
-  transitionDuration: 1.5,
-  transitionEase: 'power3.inOut',
+  transitionDuration: 1.25,
+  transitionEase: "power3.inOut",
+};
+
+const MAX_PIXEL_RATIO = 2;
+const WHEEL_THRESHOLD = 75;
+const TOUCH_THRESHOLD = 45;
+const TEXT_STAGGER = 0.035;
+const TEXT_DURATION = 0.7;
+
+function resolveImageSource(source) {
+  if (typeof source === "string") return source;
+  if (source?.src) return source.src;
+
+  return source;
 }
 
-export function ScrollDistortion({
-  sections = defaultSections,
-  shaderConfig = {},
-  displacementSrc = '/assets/img/distortion.jpg',
-}) {
-  const containerRef = useRef(null)
-  const wrapperRef = useRef(null)
-  const imageRefs = useRef([])
-  const texturesRef = useRef([])
-  const hasInit = useRef(false)
+function loadCorsObjectUrl(source) {
+  const imageSource = resolveImageSource(source);
 
-  const config = { ...defaultShaderConfig, ...shaderConfig }
+  if (!imageSource) {
+    return Promise.reject(new Error("A valid image URL is required."));
+  }
+
+  return fetch(imageSource, {
+    mode: "cors",
+    credentials: "omit",
+    cache: "no-store",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Image request failed with ${response.status}`);
+      }
+
+      return response.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch((error) => {
+      throw new Error(
+        `Unable to load scroll distortion texture: ${imageSource}. Current origin is ${window.location.origin}. Make sure R2 allows this exact origin. ${error?.message || ""}`
+      );
+    });
+}
+
+function createTextureFromImage(imageElement) {
+  const texture = new THREE.Texture(imageElement);
+
+  texture.needsUpdate = true;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
+  return texture;
+}
+
+export default function ScrollDistortion({
+  sections = DEFAULT_SECTIONS,
+  shaderConfig = {},
+  displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
+}) {
+  const containerRef = useRef(null);
+  const imageRefs = useRef([]);
+  const textRefs = useRef([]);
+  const textTimelineRef = useRef(null);
+
+  const [objectUrls, setObjectUrls] = useState(null);
+  const [decodedUrls, setDecodedUrls] = useState(() => new Set());
+  const [isSceneReady, setIsSceneReady] = useState(false);
+
+  const currentIndexRef = useRef(0);
+  const targetIndexRef = useRef(0);
+  const isTransitioningRef = useRef(false);
+  const wheelDeltaRef = useRef(0);
+  const touchStartYRef = useRef(null);
+
+  const splitSections = useMemo(() => {
+    return sections.map((section) => ({
+      ...section,
+      chars: section.text.split(""),
+    }));
+  }, [sections]);
 
   useEffect(() => {
-    if (!containerRef.current || !wrapperRef.current || hasInit.current) return
-    hasInit.current = true
+    let isCancelled = false;
+    let nextObjectUrls = [];
 
-    let renderer
-    let scene
-    let camera
-    let mesh
-    let animationFrameId = 0
-    let currentIndex = 0
-    let targetIndex = 0
-    let isTransitioning = false
+    currentIndexRef.current = 0;
+    targetIndexRef.current = 0;
+    isTransitioningRef.current = false;
+    wheelDeltaRef.current = 0;
+    touchStartYRef.current = null;
+    textRefs.current = [];
+    imageRefs.current = [];
 
-    const init = () => {
-      const { clientWidth: width, clientHeight: height } = containerRef.current
+    Promise.all([
+      ...sections.map((section) => loadCorsObjectUrl(section.src)),
+      loadCorsObjectUrl(displacementSrc),
+    ])
+      .then((urls) => {
+        nextObjectUrls = urls;
 
-      texturesRef.current = imageRefs.current.slice(0, sections.length).map((image) => {
-        const texture = new THREE.Texture(image)
-        texture.needsUpdate = true
-        texture.wrapS = THREE.RepeatWrapping
-        texture.wrapT = THREE.RepeatWrapping
-        texture.minFilter = THREE.LinearFilter
-        return texture
-      })
-
-      const displacement = new THREE.Texture(imageRefs.current[sections.length])
-      displacement.needsUpdate = true
-
-      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
-      renderer.setSize(width, height)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-      containerRef.current.innerHTML = ''
-      containerRef.current.appendChild(renderer.domElement)
-
-      scene = new THREE.Scene()
-      camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, -1, 1)
-
-      const geometry = new THREE.PlaneGeometry(width, height)
-      const material = new THREE.ShaderMaterial({
-        uniforms: {
-          u_texture0: { value: texturesRef.current[0] },
-          u_texture1: { value: texturesRef.current[0] },
-          u_displacement: { value: displacement },
-          u_progress: { value: 0 },
-          u_resolution: { value: new THREE.Vector2(width, height) },
-          u_textureResolution0: { value: new THREE.Vector2(1, 1) },
-          u_textureResolution1: { value: new THREE.Vector2(1, 1) },
-          u_strength: { value: config.strength },
-          u_rgbShift: { value: config.rgbShift },
-          u_scale: { value: config.scale },
-        },
-        vertexShader: ImageDistortionVertex,
-        fragmentShader: ImageDistortionFragment,
-        transparent: true,
-      })
-
-      const setResolution = (index, texture) => {
-        if (!texture?.image) return
-        material.uniforms[`u_textureResolution${index}`].value.set(
-          texture.image.width,
-          texture.image.height
-        )
-      }
-
-      setResolution(0, texturesRef.current[0])
-      setResolution(1, texturesRef.current[0])
-
-      mesh = new THREE.Mesh(geometry, material)
-      scene.add(mesh)
-
-      const transitionTo = (index) => {
-        if (
-          index < 0 ||
-          index >= texturesRef.current.length ||
-          index === currentIndex ||
-          isTransitioning
-        ) {
-          targetIndex = index
-          return
+        if (!isCancelled) {
+          setDecodedUrls(new Set());
+          setIsSceneReady(false);
+          setObjectUrls(urls);
         }
-
-        targetIndex = index
-        isTransitioning = true
-        material.uniforms.u_texture1.value = texturesRef.current[index]
-        setResolution(1, texturesRef.current[index])
-
-        gsap.to(material.uniforms.u_progress, {
-          value: 1,
-          duration: config.transitionDuration,
-          ease: config.transitionEase,
-          onComplete: () => {
-            material.uniforms.u_texture0.value = texturesRef.current[index]
-            setResolution(0, texturesRef.current[index])
-            material.uniforms.u_progress.value = 0
-            currentIndex = index
-            isTransitioning = false
-
-            if (targetIndex !== currentIndex) transitionTo(targetIndex)
-          },
-        })
-      }
-
-      ScrollTrigger.create({
-        trigger: wrapperRef.current,
-        start: 'top top',
-        end: `+=${(sections.length - 1) * 100}%`,
-        scrub: true,
-        onUpdate: (self) => {
-          const index = Math.round(self.progress * (sections.length - 1))
-          transitionTo(index)
-        },
       })
-
-      const render = () => {
-        renderer.render(scene, camera)
-        animationFrameId = requestAnimationFrame(render)
-      }
-
-      render()
-    }
-
-    init()
+      .catch((error) => {
+        if (!isCancelled) {
+          console.warn(error?.message || error);
+        }
+      });
 
     return () => {
-      cancelAnimationFrame(animationFrameId)
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === wrapperRef.current) trigger.kill()
-      })
-      texturesRef.current.forEach((texture) => texture?.dispose?.())
-      mesh?.geometry?.dispose?.()
-      mesh?.material?.dispose?.()
-      renderer?.dispose?.()
-      hasInit.current = false
+      isCancelled = true;
+      nextObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [displacementSrc, sections]);
+
+  const areImagesDecoded =
+    objectUrls?.length === sections.length + 1 &&
+    objectUrls.every((url) => decodedUrls.has(url));
+
+  const markImageDecoded = (url) => {
+    if (!url) return;
+
+    setDecodedUrls((currentUrls) => {
+      if (currentUrls.has(url)) return currentUrls;
+
+      const nextUrls = new Set(currentUrls);
+      nextUrls.add(url);
+
+      return nextUrls;
+    });
+  };
+
+  useEffect(() => {
+    const containerElement = containerRef.current;
+
+    if (!containerElement || sections.length === 0 || !areImagesDecoded) {
+      return undefined;
     }
-  }, [config, displacementSrc, sections])
+
+    const config = {
+      ...DEFAULT_SHADER_CONFIG,
+      ...shaderConfig,
+    };
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const scene = new THREE.Scene();
+
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: true,
+    });
+
+    const camera = new THREE.OrthographicCamera(
+      -width / 2,
+      width / 2,
+      height / 2,
+      -height / 2,
+      -1,
+      1
+    );
+
+    const geometry = new THREE.PlaneGeometry(width, height);
+
+    const textures = imageRefs.current
+      .slice(0, sections.length)
+      .filter(Boolean)
+      .map(createTextureFromImage);
+
+    const displacementImage = imageRefs.current[sections.length];
+
+    if (textures.length === 0 || !displacementImage) {
+      geometry.dispose();
+      renderer.dispose();
+      return undefined;
+    }
+
+    const displacementTexture = createTextureFromImage(displacementImage);
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+
+    containerElement.replaceChildren(renderer.domElement);
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        u_texture0: {
+          value: textures[0],
+        },
+        u_texture1: {
+          value: textures[0],
+        },
+        u_displacement: {
+          value: displacementTexture,
+        },
+        u_progress: {
+          value: 0,
+        },
+        u_resolution: {
+          value: new THREE.Vector2(width, height),
+        },
+        u_textureResolution0: {
+          value: new THREE.Vector2(1, 1),
+        },
+        u_textureResolution1: {
+          value: new THREE.Vector2(1, 1),
+        },
+        u_strength: {
+          value: config.strength,
+        },
+        u_rgbShift: {
+          value: config.rgbShift,
+        },
+        u_scale: {
+          value: config.scale,
+        },
+      },
+      vertexShader: ImageDistortionVertex,
+      fragmentShader: ImageDistortionFragment,
+      transparent: true,
+    });
+
+    const setTextureResolution = (uniformIndex, texture) => {
+      if (!texture?.image) return;
+
+      material.uniforms[`u_textureResolution${uniformIndex}`].value.set(
+        texture.image.width,
+        texture.image.height
+      );
+    };
+
+    setTextureResolution(0, textures[0]);
+    setTextureResolution(1, textures[0]);
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    const getTextChars = (index) => {
+      return (textRefs.current[index] || []).filter(Boolean);
+    };
+
+    const getAllTextChars = () => {
+      return textRefs.current.flat().filter(Boolean);
+    };
+
+    const resetTextState = () => {
+      const allChars = getAllTextChars();
+      const firstChars = getTextChars(0);
+
+      textTimelineRef.current?.kill();
+      textTimelineRef.current = null;
+
+      gsap.killTweensOf(allChars);
+      gsap.set(".text-container", { opacity: 1 });
+
+      gsap.set(allChars, {
+        yPercent: 100,
+        autoAlpha: 0,
+        visibility: "hidden",
+        force3D: true,
+      });
+
+      gsap.set(firstChars, {
+        yPercent: 0,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
+      });
+    };
+
+    resetTextState();
+
+    const animateTextTransition = (fromIndex, toIndex, direction) => {
+      const fromChars = getTextChars(fromIndex);
+      const toChars = getTextChars(toIndex);
+      const allChars = getAllTextChars();
+
+      if (!fromChars.length || !toChars.length) return null;
+
+      const outgoingY = direction > 0 ? -105 : 105;
+      const incomingY = direction > 0 ? 105 : -105;
+
+      textTimelineRef.current?.kill();
+      gsap.killTweensOf(allChars);
+
+      const fromSet = new Set(fromChars);
+      const toSet = new Set(toChars);
+
+      const otherChars = allChars.filter((char) => {
+        return !fromSet.has(char) && !toSet.has(char);
+      });
+
+      gsap.set(otherChars, {
+        yPercent: 100,
+        autoAlpha: 0,
+        visibility: "hidden",
+        force3D: true,
+      });
+
+      gsap.set(fromChars, {
+        yPercent: 0,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
+      });
+
+      gsap.set(toChars, {
+        yPercent: incomingY,
+        autoAlpha: 1,
+        visibility: "visible",
+        force3D: true,
+      });
+
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power3.inOut",
+        },
+        onComplete: () => {
+          gsap.set(fromChars, {
+            autoAlpha: 0,
+            visibility: "hidden",
+          });
+
+          gsap.set(toChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            visibility: "visible",
+          });
+
+          textTimelineRef.current = null;
+        },
+      });
+
+      timeline.to(
+        fromChars,
+        {
+          yPercent: outgoingY,
+          autoAlpha: 0,
+          duration: TEXT_DURATION,
+          stagger: {
+            each: TEXT_STAGGER,
+            from: "start",
+          },
+        },
+        0
+      );
+
+      timeline.to(
+        toChars,
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          duration: TEXT_DURATION,
+          stagger: {
+            each: TEXT_STAGGER,
+            from: "start",
+          },
+        },
+        0.06
+      );
+
+      textTimelineRef.current = timeline;
+
+      return timeline;
+    };
+
+    const transitionTo = (nextIndex) => {
+      if (nextIndex < 0 || nextIndex >= textures.length) {
+        return;
+      }
+
+      const currentIndex = currentIndexRef.current;
+
+      if (nextIndex === currentIndex) {
+        return;
+      }
+
+      targetIndexRef.current = nextIndex;
+
+      if (isTransitioningRef.current) {
+        return;
+      }
+
+      isTransitioningRef.current = true;
+
+      const direction = nextIndex > currentIndex ? 1 : -1;
+
+      material.uniforms.u_texture0.value = textures[currentIndex];
+      material.uniforms.u_texture1.value = textures[nextIndex];
+
+      setTextureResolution(0, textures[currentIndex]);
+      setTextureResolution(1, textures[nextIndex]);
+
+      material.uniforms.u_progress.value = 0;
+
+      animateTextTransition(currentIndex, nextIndex, direction);
+
+      gsap.to(material.uniforms.u_progress, {
+        value: 1,
+        duration: config.transitionDuration,
+        ease: config.transitionEase,
+        overwrite: true,
+        onComplete: () => {
+          material.uniforms.u_texture0.value = textures[nextIndex];
+          setTextureResolution(0, textures[nextIndex]);
+          material.uniforms.u_progress.value = 0;
+
+          currentIndexRef.current = nextIndex;
+          isTransitioningRef.current = false;
+
+          const finalChars = getTextChars(nextIndex);
+
+          gsap.set(finalChars, {
+            yPercent: 0,
+            autoAlpha: 1,
+            visibility: "visible",
+          });
+
+          if (targetIndexRef.current !== currentIndexRef.current) {
+            transitionTo(targetIndexRef.current);
+          }
+        },
+      });
+    };
+
+    const goNext = () => {
+      const nextIndex = Math.min(
+        currentIndexRef.current + 1,
+        sections.length - 1
+      );
+
+      transitionTo(nextIndex);
+    };
+
+    const goPrev = () => {
+      const nextIndex = Math.max(currentIndexRef.current - 1, 0);
+
+      transitionTo(nextIndex);
+    };
+
+    const onWheel = (event) => {
+      event.preventDefault();
+
+      wheelDeltaRef.current += event.deltaY;
+
+      if (Math.abs(wheelDeltaRef.current) < WHEEL_THRESHOLD) {
+        return;
+      }
+
+      if (wheelDeltaRef.current > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+
+      wheelDeltaRef.current = 0;
+    };
+
+    const onTouchStart = (event) => {
+      touchStartYRef.current = event.touches[0].clientY;
+    };
+
+    const onTouchMove = (event) => {
+      if (touchStartYRef.current === null) return;
+
+      const currentY = event.touches[0].clientY;
+      const delta = touchStartYRef.current - currentY;
+
+      if (Math.abs(delta) < TOUCH_THRESHOLD) return;
+
+      if (delta > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+
+      touchStartYRef.current = currentY;
+    };
+
+    let animationFrameId = 0;
+
+    const renderScene = () => {
+      renderer.render(scene, camera);
+      animationFrameId = window.requestAnimationFrame(renderScene);
+    };
+
+    renderScene();
+    setIsSceneReady(true);
+
+    const onResize = () => {
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+
+      renderer.setSize(nextWidth, nextHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+
+      camera.left = -nextWidth / 2;
+      camera.right = nextWidth / 2;
+      camera.top = nextHeight / 2;
+      camera.bottom = -nextHeight / 2;
+      camera.updateProjectionMatrix();
+
+      mesh.geometry.dispose();
+      mesh.geometry = new THREE.PlaneGeometry(nextWidth, nextHeight);
+
+      material.uniforms.u_resolution.value.set(nextWidth, nextHeight);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    const textRefGroups = textRefs.current;
+
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("resize", onResize);
+
+      window.cancelAnimationFrame(animationFrameId);
+
+      textTimelineRef.current?.kill();
+      textTimelineRef.current = null;
+
+      gsap.killTweensOf(material.uniforms.u_progress);
+
+      textRefGroups.forEach((chars) => {
+        gsap.killTweensOf(chars);
+      });
+
+      scene.remove(mesh);
+      mesh.geometry.dispose();
+      material.dispose();
+      displacementTexture.dispose();
+      textures.forEach((texture) => texture.dispose());
+      renderer.dispose();
+      containerElement.replaceChildren();
+    };
+  }, [areImagesDecoded, sections, shaderConfig]);
 
   return (
-    <ReactLenis root options={{ autoRaf: true, duration: 2 }}>
-      <div ref={wrapperRef} className="relative" style={{ height: `${sections.length * 100}vh` }}>
-        <div className="hidden">
-          {sections.map((section, index) => (
+    <section className="fixed inset-0 h-screen w-screen overflow-hidden bg-black">
+      <div className="hidden">
+        {objectUrls?.slice(0, sections.length).map((url, index) => (
+          <div key={`${resolveImageSource(sections[index]?.src)}-${index}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              key={index}
               ref={(element) => {
-                imageRefs.current[index] = element
+                imageRefs.current[index] = element;
+
+                if (element?.complete && element.naturalWidth > 0) {
+                  markImageDecoded(url);
+                }
               }}
-              src={section.src}
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              src={url}
+              onLoad={() => markImageDecoded(url)}
               alt="asset-image"
             />
-          ))}
+          </div>
+        ))}
+
+        {objectUrls?.[sections.length] && (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             ref={(element) => {
-              imageRefs.current[sections.length] = element
+              imageRefs.current[sections.length] = element;
+
+              if (element?.complete && element.naturalWidth > 0) {
+                markImageDecoded(objectUrls[sections.length]);
+              }
             }}
-            src={displacementSrc}
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+            src={objectUrls[sections.length]}
+            onLoad={() => markImageDecoded(objectUrls[sections.length])}
             alt="asset-image"
           />
-        </div>
-
-        <div ref={containerRef} className="sticky top-0 h-screen w-full bg-black" />
-
-        <div className="pointer-events-none absolute inset-0 z-10">
-          {sections.map((section, index) => (
-            <div key={index} className="flex h-screen items-center justify-center">
-              <h1 className="text-[10vw] text-white">{section.text}</h1>
-            </div>
-          ))}
-        </div>
+        )}
       </div>
-    </ReactLenis>
-  )
+
+      {(objectUrls?.[0] || sections[0]?.src) && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            isSceneReady ? "opacity-0" : "opacity-100"
+          }`}
+          src={objectUrls?.[0] || resolveImageSource(sections[0].src)}
+          alt="asset-image"
+          decoding="async"
+        />
+      )}
+
+      <div ref={containerRef} className="absolute inset-0 h-full w-full" />
+
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden text-container opacity-0">
+        {splitSections.map((section, sectionIndex) => (
+          <h1
+            key={`${section.text}-${sectionIndex}`}
+            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 text-[10vw] leading-none text-white"
+            aria-label={section.text}
+          >
+            {section.chars.map((char, charIndex) => (
+              <span
+                key={`${section.text}-${charIndex}`}
+                className="inline-block overflow-hidden leading-none"
+                aria-hidden="true"
+              >
+                <span
+                  ref={(element) => {
+                    if (!textRefs.current[sectionIndex]) {
+                      textRefs.current[sectionIndex] = [];
+                    }
+
+                    textRefs.current[sectionIndex][charIndex] = element;
+                  }}
+                  className="inline-block will-change-transform"
+                >
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              </span>
+            ))}
+          </h1>
+        ))}
+      </div>
+    </section>
+  );
 }
