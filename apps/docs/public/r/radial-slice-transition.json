@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "RadialSliceTransition",
   "exportKind": "named",
+  "tier": "pro",
   "files": [
     {
       "path": "index.jsx",
