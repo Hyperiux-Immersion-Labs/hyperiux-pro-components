@@ -254,7 +254,7 @@ export default function DashboardPage() {
 
           {data.plan === "pro" && (
             <div className="flex flex-col items-end gap-2">
-              <div className="flex gap-3">
+              <div className="flex gap-3 max-sm:flex-col">
                 <button
                   onClick={handleManageSubscription}
                   disabled={openingPortal}

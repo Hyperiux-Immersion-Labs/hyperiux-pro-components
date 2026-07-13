@@ -12,6 +12,7 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import AnnouncementBar from "@/components/WebsiteComps/AnnouncementBar";
@@ -85,13 +86,15 @@ export default function RootLayout({ children }) {
         <ImageObjectJsonLd />
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
-        {children}
-        <Suspense>
-          <CustomAnimationFormModal />
-        </Suspense>
-        <Suspense>
-          <WorkWithHyperiuxModal />
-        </Suspense>
+        <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
+          {children}
+          <Suspense>
+            <CustomAnimationFormModal />
+          </Suspense>
+          <Suspense>
+            <WorkWithHyperiuxModal />
+          </Suspense>
+        </ReCaptchaProvider>
         <Analytics />
         <SpeedInsights />
         <DeferredAnalytics />

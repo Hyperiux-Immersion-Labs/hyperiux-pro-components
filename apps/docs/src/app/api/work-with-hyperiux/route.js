@@ -2,6 +2,7 @@ import { WorkWithHyperiuxEmail } from "@/components/WebsiteComps/emailTemplate/W
 import { WorkWithHyperiuxConfirmationEmail } from "@/components/WebsiteComps/emailTemplate/WorkWithHyperiuxConfirmationEmail";
 import { sendEmail } from "@/lib/resend";
 import { isBlockedEmailDomain } from "@/lib/blocked-email-domains";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 function validatePayload(body) {
   const errors = {};
@@ -27,6 +28,18 @@ export async function POST(request) {
 
     if (Object.keys(errors).length > 0) {
       return Response.json({ error: "Please check the form fields.", errors }, { status: 400 });
+    }
+
+    const { success: recaptchaOk } = await verifyRecaptcha(
+      body?.recaptchaToken,
+      "work_with_hyperiux"
+    );
+
+    if (!recaptchaOk) {
+      return Response.json(
+        { error: "Verification failed. Please try again." },
+        { status: 400 }
+      );
     }
 
     const teamEmail = await sendEmail({
