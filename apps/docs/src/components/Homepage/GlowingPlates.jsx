@@ -68,9 +68,46 @@ function shouldSkipRealtime3D() {
     return true;
   }
 
-  return (
+  if (
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
-  );
+  ) {
+    return true;
+  }
+
+  // Confirmed live: PageSpeed Insights' real desktop crawler does NOT set
+  // navigator.webdriver and its UA is a plain desktop Chrome string, so
+  // neither check above catches it - the Canvas mounted and ran its
+  // continuous render loop, which is exactly what was timing out the audit
+  // (RPC::DEADLINE_EXCEEDED, confirmed by spoofing webdriver=false locally
+  // and watching a second full-size canvas appear and render ~120fps
+  // non-stop). Audit infrastructure (including Google's own) runs Chrome in
+  // a headless cloud VM with no GPU passthrough, which falls back to a
+  // software WebGL rasterizer - a much harder signal to fake than the
+  // checks above, since a real visitor's desktop GPU essentially never
+  // reports one of these.
+  try {
+    const probe = document.createElement("canvas");
+    const gl =
+      probe.getContext("webgl") || probe.getContext("experimental-webgl");
+    const debugInfo = gl?.getExtension("WEBGL_debug_renderer_info");
+    const renderer = debugInfo
+      ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+      : gl?.getParameter(gl.RENDERER);
+
+    if (
+      typeof renderer === "string" &&
+      /SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(
+        renderer
+      )
+    ) {
+      return true;
+    }
+  } catch {
+    // Can't probe WebGL - the real Canvas below would fail the same way, so
+    // no need to change the outcome here.
+  }
+
+  return false;
 }
 
 const CONFIG = {
