@@ -1,4 +1,4 @@
-import LandingPageNew from "@/components/LandpageV2/LandingPageNew";
+import Homepage from "@/components/Homepage/Homepage";
 import React from "react";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -172,7 +172,7 @@ export default function page() {
       />
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <LandingPageNew faqItems={faqItems} />
+      <Homepage faqItems={faqItems} />
     </>
   );
 }

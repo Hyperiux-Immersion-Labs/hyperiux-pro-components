@@ -1,12 +1,12 @@
 import VaultShell from "@/Layouts/VaultShell";
 import Hero from "@/components/Pricing/Hero";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
-import Footer from "@/components/LandpageV2/Footer";
-import CTA2 from "@/components/LandpageV2/CTA2";
+import Footer from "@/components/Homepage/Footer";
+import CTA2 from "@/components/Homepage/CTA2";
 import PricingCompareTable from "@/components/Pricing/PricingCompareTable";
 import PricingLicense from "@/components/Pricing/PricingLicense";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
-import FAQs from "@/components/LandpageV2/FAQs";
+import FAQs from "@/components/Homepage/FAQs";
 import Pricing from "@/components/Pricing/Pricing";
 import { createPageMetadata } from "@/lib/seo-metadata";
 

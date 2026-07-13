@@ -17,8 +17,14 @@ function refreshScrollTriggerSafely() {
   });
 }
 
+const REDUCED_MOTION_DURATION = 0.4;
+const REDUCED_MOTION_EASE = "power1.out";
+
 /**
  * Scroll-triggered random character blur reveal.
+ *
+ * Under `prefers-reduced-motion: reduce` the text still fades in on scroll,
+ * just as a single block: no per-character split, no blur, no random stagger.
  */
 export default function RandomBlur({
   children,
@@ -39,11 +45,32 @@ export default function RandomBlur({
 
     if (!container) return;
 
-    // Reduced motion: skip the split and the scroll animation entirely -
-    // just reveal the text. Also avoids the SplitText forced-layout cost.
+    // Reduced motion: skip the split (avoids the SplitText forced-layout
+    // cost) but still fade the block in on scroll, matching the full-motion
+    // reveal's scroll-triggered feel instead of popping in instantly.
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
-      gsap.set(container, { autoAlpha: 1 });
-      return;
+      const tween = gsap.fromTo(
+        container,
+        { autoAlpha: 0 },
+        {
+          autoAlpha: 1,
+          delay,
+          duration: REDUCED_MOTION_DURATION,
+          ease: REDUCED_MOTION_EASE,
+          scrollTrigger: {
+            trigger: container,
+            start,
+            once,
+            markers: false,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
     }
 
     let ctx;

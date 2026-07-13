@@ -27,7 +27,7 @@ import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
-import FAQs from "@/components/LandpageV2/FAQs";
+import FAQs from "@/components/Homepage/FAQs";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
