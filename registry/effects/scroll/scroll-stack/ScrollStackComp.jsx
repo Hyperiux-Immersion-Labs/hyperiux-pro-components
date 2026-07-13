@@ -132,7 +132,7 @@ const Card = ({ title, description, bgColor, textColor, cardRef }) => {
  return (
  <div
  ref={cardRef}
- className="fadeUp mx-auto flex min-h-[32vw] max-xl:h-[38vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-xl:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-xl:flex-col max-md:rounded-[9vw] "
+ className="fadeUp mx-auto flex min-h-[32vw] max-xl:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-xl:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-xl:flex-col max-md:rounded-[9vw] "
  style={{ backgroundColor: bgColor }}
  >
  <div className="w-[48%] tablet:w-full max-md:w-full max-xl:w-[80%] max-xl:mx-auto">
