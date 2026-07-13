@@ -14,22 +14,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
-const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
-const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
-const HERO_ANIMATION_DELAY_WITHOUT_LOADER = 0.15;
-
-function hasLoaderRun() {
-  if (typeof window === "undefined") return false;
-  return window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true";
-}
-
-function isLoaderActive() {
-  if (typeof window === "undefined") return false;
-  return (
-    document.body.classList.contains("loader-active") ||
-    window.__HYPERIUX_LOADER_RUNNING__ === true
-  );
-}
+const HERO_ANIMATION_DELAY = 0.15;
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -161,7 +146,6 @@ export default function Hero() {
     const splits = [];
     let ctx;
     let delayedCall;
-    let completionPoll;
     let navigationTween;
     let hasAnimated = false;
 
@@ -169,11 +153,6 @@ export default function Hero() {
       if (hasAnimated) return;
 
       hasAnimated = true;
-
-      if (completionPoll) {
-        window.clearInterval(completionPoll);
-        completionPoll = null;
-      }
 
       ctx = gsap.context(() => {
         const heroTimeline = gsap.timeline();
@@ -336,33 +315,16 @@ export default function Hero() {
       }
     };
 
-    const startAfterDelay = (delay = HERO_ANIMATION_DELAY_AFTER_LOADER) => {
-      if (hasAnimated) return;
-      delayedCall?.kill();
-      delayedCall = gsap.delayedCall(delay, runAnimation);
-    };
-
-    const handleLoaderComplete = () => {
-      startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
-    };
-
-    if (hasLoaderRun() && !isLoaderActive()) {
-      startAfterDelay(HERO_ANIMATION_DELAY_WITHOUT_LOADER);
-    } else {
-      window.addEventListener("loaderComplete", handleLoaderComplete, { once: true });
-
-      completionPoll = window.setInterval(() => {
-        if (hasLoaderRun() && !isLoaderActive()) {
-          window.clearInterval(completionPoll);
-          completionPoll = null;
-          startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
-        }
-      }, 80);
-    }
+    // Decoupled from the site loader: the loader is a fixed z-9999 opaque
+    // overlay with scroll locked while it plays, so the hero is hidden behind
+    // it regardless of when this animation runs - starting immediately means
+    // it plays out during the overlay instead of after, so by the time the
+    // overlay lifts the hero is already in its revealed end state. This was
+    // the LCP element per Lighthouse (elementRenderDelay ~9.6s waiting on the
+    // old loader-gated start).
+    delayedCall = gsap.delayedCall(HERO_ANIMATION_DELAY, runAnimation);
 
     return () => {
-      window.removeEventListener("loaderComplete", handleLoaderComplete);
-      if (completionPoll) window.clearInterval(completionPoll);
       delayedCall?.kill();
       navigationTween?.kill();
 
