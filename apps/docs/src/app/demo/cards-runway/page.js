@@ -2,6 +2,7 @@ import CardsRunway from '@/components/cards-runway'
 import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import { getDemoPageMetadata } from '@/lib/demo-metadata'
 import React from 'react'
 
 const Page = () => {
@@ -23,3 +24,7 @@ const Page = () => {
 }
 
 export default Page
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("cards-runway");
+}
