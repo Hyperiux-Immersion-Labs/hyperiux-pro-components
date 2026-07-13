@@ -367,15 +367,15 @@ h4 {
   font-weight: 500 !important;
   line-height: 1.25rem !important;
   box-shadow: none !important;
-  transition:
-    background-color 0.25s ease,
-    opacity 0.25s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .hyperiux-clerk .cl-formButtonPrimary:hover,
 .hyperiux-clerk .cl-formButtonPrimary:focus {
-  background: #ff9253 !important;
+  background: #ffffff !important;
+  color: #0e0e0e !important;
   box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
 }
 
 .hyperiux-clerk .cl-formButtonPrimary:disabled {
@@ -489,6 +489,18 @@ h4 {
 .cl-formFieldErrorText{
   display: flex;
   align-items: center;
+}
+.cl-internal-1u45tiz:hover{
+  background: #ffffff !important;
+  color: #0e0e0e !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
+}
+.cl-internal-1u45tiz:hover{
+  background: #ffffff !important;
+  color: #0e0e0e !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
 }
 /* Autofill */
 
