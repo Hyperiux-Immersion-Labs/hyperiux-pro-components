@@ -2,8 +2,6 @@ import InteractiveArrows from "@/components/interactive-arrows";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
-
-
 const Page = () => {
   return (
     <>
