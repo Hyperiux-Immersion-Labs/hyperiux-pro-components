@@ -605,9 +605,15 @@ export default function GlowingPlates({
   // lazy initializer can read navigator/matchMedia with no hydration mismatch.
   const [skip3D] = useState(() => shouldSkipRealtime3D());
 
-  // See WARMUP_MS comment above CONFIG. False for the first WARMUP_MS after
-  // mount, then true for the rest of the page's life.
-  const [warmupDone, setWarmupDone] = useState(false);
+  // See WARMUP_MS comment above CONFIG. Starts true when the site loader has
+  // already run this session (repeat visit, loader skipped) - there's no
+  // opaque overlay hiding the throttle in that case, so warming up would just
+  // be visible 15fps stutter with nothing masking it. On a fresh loader play,
+  // it flips true the moment the loader actually completes (see effect
+  // below), not a fixed guess at how long that takes.
+  const [warmupDone, setWarmupDone] = useState(
+    () => typeof window !== "undefined" && hasLoaderRun() && !isLoaderActive()
+  );
 
   useEffect(() => {
     const el = containerRef.current;
@@ -632,11 +638,37 @@ export default function GlowingPlates({
   }, []);
 
   useEffect(() => {
-    if (skip3D) return;
+    if (skip3D || warmupDone) return;
 
+    const handleLoaderComplete = () => setWarmupDone(true);
+
+    window.addEventListener("loaderComplete", handleLoaderComplete, {
+      once: true,
+    });
+    window.addEventListener(
+      "hyperiux:loader-complete",
+      handleLoaderComplete,
+      { once: true }
+    );
+
+    const poll = window.setInterval(() => {
+      if (hasLoaderRun() && !isLoaderActive()) setWarmupDone(true);
+    }, 80);
+
+    // Safety net: end the throttle after WARMUP_MS regardless, in case the
+    // loader never signals completion for some reason.
     const timeout = window.setTimeout(() => setWarmupDone(true), WARMUP_MS);
-    return () => window.clearTimeout(timeout);
-  }, [skip3D]);
+
+    return () => {
+      window.removeEventListener("loaderComplete", handleLoaderComplete);
+      window.removeEventListener(
+        "hyperiux:loader-complete",
+        handleLoaderComplete
+      );
+      window.clearInterval(poll);
+      window.clearTimeout(timeout);
+    };
+  }, [skip3D, warmupDone]);
 
   // frameloop="demand" renders nothing on its own - during warmup we drive it
   // at a throttled rate ourselves instead of the native 60fps rAF loop.
