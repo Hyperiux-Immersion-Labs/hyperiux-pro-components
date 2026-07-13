@@ -107,7 +107,7 @@ export default function SVGBrushTransition({
           viewBox="0 0 1316 664"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full scale-130 h-full hidden md:block"
+          className="w-full scale-130 h-full max-xl:hidden block"
           preserveAspectRatio="xMidYMid slice"
         >
           <path
@@ -132,7 +132,7 @@ export default function SVGBrushTransition({
           viewBox="0 0 390 844"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full scale-120 block md:hidden"
+          className="w-full h-full scale-120 max-xl:block hidden"
           preserveAspectRatio="xMidYMid slice"
         >
           <path
