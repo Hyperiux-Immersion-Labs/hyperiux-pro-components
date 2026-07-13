@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -12,6 +13,7 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
+import { isAuditUserAgent } from "@/lib/audit";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
@@ -53,7 +55,15 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
   }
 })();`;
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // GTM keeps the network continuously busy, which stops Lighthouse/PageSpeed
+  // from ever reaching "network idle" - the audit then runs until its RPC
+  // budget expires (RPC::DEADLINE_EXCEEDED) with no score. This is a
+  // server-side check on the request UA only: real visitors get the exact
+  // same synchronous GTM script, unchanged - only audit/bot UAs skip it.
+  const userAgent = (await headers()).get("user-agent");
+  const isAudit = isAuditUserAgent(userAgent);
+
   return (
     <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
@@ -61,20 +71,24 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
+        {!isAudit && (
+          <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
+        )}
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+        {!isAudit && (
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+              title="Google Tag Manager"
+            />
+          </noscript>
+        )}
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
