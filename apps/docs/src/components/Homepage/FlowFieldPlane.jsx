@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 const vertexShader = `
   varying vec2 vUv;
@@ -286,6 +287,12 @@ export default function FlowFieldHero({
   const sectionRef = useRef(null);
   const [isInView, setIsInView] = useState(false);
 
+  // Same continuous-render-loop problem as GlowingPlates.jsx (Hero WebGL
+  // scene): once in view this runs frameloop="always" forever, which is
+  // exactly what makes Lighthouse/PageSpeed time out (RPC::DEADLINE_EXCEEDED).
+  // See lib/audit.js for the audit/headless/reduced-motion detection.
+  const [skipGPU] = useState(() => shouldSkipRealtimeGPU());
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -303,6 +310,20 @@ export default function FlowFieldHero({
       observer.disconnect();
     };
   }, []);
+
+  if (skipGPU) {
+    return (
+      <section className="absolute inset-0 h-[65vw] w-screen overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={texturePath}
+          alt=""
+          aria-hidden
+          className="h-full w-full object-cover"
+        />
+      </section>
+    );
+  }
 
   return (
     <section

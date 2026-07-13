@@ -20,6 +20,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
 import gsap from "gsap";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
@@ -48,68 +49,10 @@ function isLoaderActive() {
 
 // The plates run a continuous WebGL render loop, so the main thread never goes
 // idle - that's exactly what makes Lighthouse/PageSpeed time out
-// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
-// user prefers reduced motion, skip the Canvas entirely and show the static
-// dark backdrop instead. Real users still get the full animated scene.
-function shouldSkipRealtime3D() {
-  if (typeof window === "undefined") return false;
-
-  // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode,
-  // where navigator.webdriver is true - the most reliable audit signal.
-  if (navigator.webdriver === true) return true;
-
-  const ua = navigator.userAgent || "";
-
-  if (
-    /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i.test(
-      ua
-    )
-  ) {
-    return true;
-  }
-
-  if (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
-  ) {
-    return true;
-  }
-
-  // Confirmed live: PageSpeed Insights' real desktop crawler does NOT set
-  // navigator.webdriver and its UA is a plain desktop Chrome string, so
-  // neither check above catches it - the Canvas mounted and ran its
-  // continuous render loop, which is exactly what was timing out the audit
-  // (RPC::DEADLINE_EXCEEDED, confirmed by spoofing webdriver=false locally
-  // and watching a second full-size canvas appear and render ~120fps
-  // non-stop). Audit infrastructure (including Google's own) runs Chrome in
-  // a headless cloud VM with no GPU passthrough, which falls back to a
-  // software WebGL rasterizer - a much harder signal to fake than the
-  // checks above, since a real visitor's desktop GPU essentially never
-  // reports one of these.
-  try {
-    const probe = document.createElement("canvas");
-    const gl =
-      probe.getContext("webgl") || probe.getContext("experimental-webgl");
-    const debugInfo = gl?.getExtension("WEBGL_debug_renderer_info");
-    const renderer = debugInfo
-      ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-      : gl?.getParameter(gl.RENDERER);
-
-    if (
-      typeof renderer === "string" &&
-      /SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(
-        renderer
-      )
-    ) {
-      return true;
-    }
-  } catch {
-    // Can't probe WebGL - the real Canvas below would fail the same way, so
-    // no need to change the outcome here.
-  }
-
-  return false;
-}
-
+// (RPC::DEADLINE_EXCEEDED). shouldSkipRealtimeGPU (lib/audit.js) covers
+// audit/headless traffic and prefers-reduced-motion; skip the Canvas
+// entirely and show the static dark backdrop instead. Real users still get
+// the full animated scene.
 const CONFIG = {
   count: 51,
   radius: 4.5,
@@ -640,7 +583,7 @@ export default function GlowingPlates({
 
   // ssr:false (dynamic import) means this only ever renders client-side, so the
   // lazy initializer can read navigator/matchMedia with no hydration mismatch.
-  const [skip3D] = useState(() => shouldSkipRealtime3D());
+  const [skip3D] = useState(() => shouldSkipRealtimeGPU());
 
   // See WARMUP_MS comment above CONFIG. Starts true when the site loader has
   // already run this session (repeat visit, loader skipped) - there's no
