@@ -199,7 +199,7 @@ export default function InfiniteCarouselComp({
  itemClassName ="",
 
  mobileBreakpoint = 640,
- mobileMode ="swiper",
+ mobileMode ="gsap",
 }) {
  const wrapperRef = useRef(null);
  const itemRefs = useRef([]);
@@ -248,7 +248,6 @@ export default function InfiniteCarouselComp({
  loopRef.current = null;
 
  if (!childArray.length) return;
- if (isMobile) return;
 
  attemptsRef.current = 0;
 

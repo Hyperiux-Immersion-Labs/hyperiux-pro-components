@@ -654,7 +654,7 @@ export default function HoverSliderComp({ items = [] }) {
         the ordinary.
       </p>
 
-      <p className="absolute top-15 h-15 my-5 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-md:block max-sm:bottom-2 max-sm:w-[80vw] max-sm:text-sm">
+      <p className="absolute  h-fit right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-md:block  bottom-2 max-sm:w-[80vw] max-sm:text-sm">
         Click on an item to see the animation. Hover effects available on
         desktop.
       </p>

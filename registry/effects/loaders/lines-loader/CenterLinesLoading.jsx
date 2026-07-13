@@ -242,7 +242,7 @@ export default function CenterLinesLoading(
             />
             <div className="absolute inset-0 z-50 flex items-center justify-center">
                 <div className="px-6 text-center">
-                    <h1 className="select-none font-mono text-[3.5vw] max-md:text-[5vw] max-sm:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
+                    <h1 className="select-none font-mono text-[3.5vw] max-xl:text-[5vw] max-md:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
                         {words.map((word, wordIdx) => (
                             <span key={`${word}-${wordIdx}`}>
                                 <span className="inline-block whitespace-nowrap">
@@ -285,7 +285,7 @@ export default function CenterLinesLoading(
             {done && (
                 <button
                     onClick={run}
-                    className="absolute bottom-7 max-md:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-md:text-base max-sm:text-sm tracking-widest text-black/70 backdrop-blur max-sm:bottom-20"
+                    className="absolute bottom-7 max-xl:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-xl:text-base max-md:text-sm tracking-widest text-black/70 backdrop-blur max-md:bottom-20"
                 >
                     Replay
                 </button>

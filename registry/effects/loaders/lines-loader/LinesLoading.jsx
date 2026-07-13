@@ -40,7 +40,7 @@ function DemoContent({
 
   const navItems = useMemo(
     () => [
-      { left: <span className="font-bold tracking-tighter max-md:text-2xl max-sm:text-2xl">Hyperiux Vault</span> },
+      { left: <span className="font-bold tracking-tighter max-xl:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
@@ -134,7 +134,7 @@ function DemoContent({
 
   const rowCount = lineCount - 1;
 
-  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-md:flex max-md:justify-between";
+  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-xl:flex max-xl:justify-between";
 
   return (
     <div
@@ -147,7 +147,7 @@ function DemoContent({
         <>
           <div
             className={[
-              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-sm:text-[3.5vw]",
+              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-md:text-[3.5vw]",
               GRID_CLASS,
               isDark ? "text-white/55" : "text-black/55",
             ].join(" ")}
@@ -174,7 +174,7 @@ function DemoContent({
                     : isDark
                       ? "text-white/55"
                       : "text-black/55",
-                  idx > 0 && idx < 6 ? "max-md:hidden" : "",
+                  idx > 0 && idx < 6 ? "max-xl:hidden" : "",
                 ].join(" ")}
               >
                 {item.left || item.center || item.right}
@@ -191,7 +191,7 @@ function DemoContent({
                   rowRefs.current[idx] = el;
                 }}
                 className={[
-                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-sm:text-[4vw]",
+                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-md:text-[4vw]",
                   GRID_CLASS,
                   "will-change-[filter,transform,opacity]",
                   idx < 9
@@ -206,19 +206,19 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[1.5vw] max-sm:text-[4vw]",
+                    "col-span-2 max-xl:w-full max-xl:whitespace-nowrap max-xl:text-[1.5vw] max-md:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >
                   {cells[0]}
                 </div>
-                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-md:hidden"].join(" ")}>
+                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-xl:hidden"].join(" ")}>
                   {cells[1]}
                 </div>
-                <div className="max-md:hidden">{cells[2]}</div>
-                <div className="max-md:hidden">{cells[3]}</div>
-                <div className="justify-self-start max-md:hidden">{cells[4]}</div>
-                <div className="max-md:hidden"></div>
+                <div className="max-xl:hidden">{cells[2]}</div>
+                <div className="max-xl:hidden">{cells[3]}</div>
+                <div className="justify-self-start max-xl:hidden">{cells[4]}</div>
+                <div className="max-xl:hidden"></div>
               </div>
             ))}
           </div>
@@ -524,7 +524,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
+          className="absolute bottom-7 max-xl:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-xl:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>
