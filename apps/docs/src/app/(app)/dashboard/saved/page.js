@@ -134,10 +134,10 @@ export default function SavedPage() {
                 type="button"
                 onClick={() => setActiveCategory(category.id)}
                 className={`
-                  px-5 py-2.5 rounded-full border transition
+                  px-7 py-[.8vw] rounded-full border transition
                   ${active
                     ? "bg-white text-black border-white"
-                    : "border-white/10 text-white/70 hover:bg-white hover:text-black"}
+                    : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
                 `}
               >
                 {category.name}
@@ -149,8 +149,8 @@ export default function SavedPage() {
 
       {/* Empty State */}
       {savedEffects.length === 0 ? (
-        <div className="border border-white/10 rounded-lg p-12 text-center bg-white/5 backdrop-blur-lg ">
-          <h3 className="text-xl text-white mb-2">
+        <div className="rounded-md p-12 bg-[#272727] text-center">
+          <h3 className="text-2xl text-white mb-2">
             No saved effects yet
           </h3>
 
