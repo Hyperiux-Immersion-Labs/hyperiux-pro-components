@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
+import Button from "../WebsiteComps/Button";
 
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
@@ -59,7 +60,7 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-6 py-1.5 rounded-full
+                    px-7 py-[.8vw] rounded-full
                     transition-all duration-300
                     border shrink-0
                     ${active
@@ -73,12 +74,12 @@ export function DashboardShell({ children }) {
             })}
           </div>
 
-          <Link
+          <Button
             href="/effects"
-            className="shrink-0 px-6 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
-          >
-            Browse Effects
-          </Link>
+            text={"Browse Effects"}
+            className=""
+         />
+            
         </div>
 
         {children}

@@ -63,14 +63,14 @@ export default function CliTokenManager({ plan }) {
   }
 
   return (
-    <div className="rounded-lg border border-white/10 bg-white/5 p-6 backdrop-blur-lg">
+    <div className="rounded-md bg-[#272727] p-6 backdrop-blur-lg">
       <div className="flex items-start justify-between gap-6 max-md:flex-col">
         <div>
           <h2 className="text-2xl font-semibold text-white">
             CLI Token
           </h2>
 
-          <p className="mt-2 max-w-2xl text-white/60">
+          <p className="mt-6 max-w-2xl">
             Generate a private token to install Pro effects through the
             Hyperiux CLI. Keep it secret. Anyone with this token can access Pro
             downloads from your account.
@@ -86,31 +86,32 @@ export default function CliTokenManager({ plan }) {
         <div className="flex shrink-0 gap-3">
           <button
             type="button"
+            onClick={revokeToken}
+            disabled={!isPro || isLoading}
+            className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 duration-300"
+          >
+            Revoke
+          </button>
+          <button
+            type="button"
             onClick={generateToken}
             disabled={!isPro || isLoading}
-            className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#ff5f00] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-[#ff5f00] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 duration-300"
           >
             {isLoading ? "Working..." : "Generate Token"}
           </button>
 
-          <button
-            type="button"
-            onClick={revokeToken}
-            disabled={!isPro || isLoading}
-            className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Revoke
-          </button>
+          
         </div>
       </div>
 
       {token && (
-        <div className="mt-6 rounded-xl border border-[#ff5f00]/30 bg-black/50 p-4">
+        <div className="mt-6 rounded-md bg-[#0E0E0E] p-4">
           <p className="mb-2 text-sm text-white/50">
             Copy this token now. It will not be shown again.
           </p>
 
-          <code className="block overflow-x-auto whitespace-nowrap rounded-lg bg-black px-4 py-3 text-sm text-[#ff5f00]">
+          <code className="block overflow-x-auto whitespace-nowrap px-4 py-3 text-sm text-[#ff5f00]">
             {token}
           </code>
         </div>
@@ -122,12 +123,12 @@ export default function CliTokenManager({ plan }) {
         </p>
       )}
 
-      <div className="mt-6 rounded-xl bg-black/40 p-4">
-        <p className="mb-2 text-sm text-white/50">
+      <div className="mt-6 rounded-md bg-[#0E0E0E] p-4">
+        <p className="mb-4 text-sm text-white/50">
           Use it like this:
         </p>
 
-        <code className="block overflow-x-auto whitespace-nowrap text-sm text-white/75">
+        <code className="block overflow-x-auto whitespace-nowrap text-sm text-white">
           HYPERIUX_TOKEN=hpx_your_token npx hyperiux add helix-slider
         </code>
       </div>
