@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
 import { vaultLinks } from '@/utils/Links'
@@ -70,7 +71,14 @@ export default function NavLinks({
                                 onMouseEnter={() => onNavEnter(index, dropdown)}
                                 className={itemClassName}
                             >
-                                {label}
+                                <span className="inline-flex items-center gap-[0.3vw]">
+                                    {label}
+                                    <ChevronDown
+                                        className={`size-[0.9vw] transition-transform duration-300 motion-reduce:transition-none ${
+                                            highlighted ? 'rotate-180' : ''
+                                        }`}
+                                    />
+                                </span>
                                 {pill}
                             </button>
                         )
