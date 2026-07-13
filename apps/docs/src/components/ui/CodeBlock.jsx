@@ -1,7 +1,7 @@
 "use client";
 
 import "highlight.js/styles/night-owl.css";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 // lib/core + explicit registrations instead of the full "highlight.js" build,
 // which bundles all 150+ grammars (~300KB of Mathematica/ISBL/GML/... nobody
 // renders). Every language= value used across the site maps to one of these.
@@ -14,7 +14,7 @@ import bash from "highlight.js/lib/languages/bash";
 import json from "highlight.js/lib/languages/json";
 import plaintext from "highlight.js/lib/languages/plaintext";
 import glsl from "highlight.js/lib/languages/glsl";
-import { Copy } from "lucide-react";
+import CopyBtn from "@/components/ui/CopyBtn";
 
 hljs.registerLanguage("javascript", javascript); // aliases: js, jsx
 hljs.registerLanguage("typescript", typescript); // aliases: ts, tsx
@@ -32,7 +32,6 @@ export function CodeBlock({
     className = "",
     hideHeaderWhenNoFilename = false,
 }) {
-    const [copied, setCopied] = useState(false);
     const highlighted = useMemo(() => {
         try {
             if (!code) return "";
@@ -45,17 +44,10 @@ export function CodeBlock({
         }
     }, [code, language]);
 
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
     const shouldShowHeader = !hideHeaderWhenNoFilename || Boolean(filename);
 
     return (
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
-            
             <div
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
@@ -67,22 +59,20 @@ export function CodeBlock({
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
                         <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
-                        <button
-                            onClick={handleCopy}
+                        <CopyBtn
+                            value={code}
+                            color="white"
+                            className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
                             aria-label="Copy code to clipboard"
-                            className="cursor-pointer rounded-sm bg-transparent px-3 py-1.5 text-xs text-foreground transition-colors hover:text-foreground  max-sm:text-xl"
-                        >
-                            {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
-                        </button>
+                        />
                     </div>
                 ) : (
-                    <button
-                        onClick={handleCopy}
+                    <CopyBtn
+                        value={code}
+                        color="white"
+                        className="absolute top-5 right-5 z-10 max-sm:top-3.5 max-sm:right-6"
                         aria-label="Copy code to clipboard"
-                        className="absolute top-5 right-5 max-sm:top-3.5 max-sm:right-6  z-10 cursor-pointer rounded-sm bg-transparent p-0 text-foreground transition-colors hover:text-foreground"
-                    >
-                        {copied ? "Copied" : <Copy className="size-4 max-md:size-6 max-sm:size-4" />}
-                    </button>
+                    />
                 )}
                 <div className="relative">
                     <pre
@@ -106,25 +96,19 @@ export function CodeBlock({
 }
 
 export function InstallCommand({ effect }) {
-    const [copied, setCopied] = useState(false);
     const command = `npx hyperiux add ${effect}`;
-
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(command);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
 
     return (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 ">
             <span className="text-green-500">$</span>
             <code className="flex-1 text-sm text-neutral-300 max-sm:text-lg! max-sm:pt-[7vw]">{command}</code>
-            <button
-                onClick={handleCopy}
-                className="text-xs px-3 py-1.5 rounded baxc bg-white text-black hover:bg-neutral-200 transition-colors font-medium max-sm:text-[11px]"
-            >
-                {copied ? "Copied!" : "Copy"}
-            </button>
+            <CopyBtn
+                value={command}
+                color="white"
+                size="sm"
+                className="rounded bg-white/10 p-2 hover:bg-white/20"
+                aria-label="Copy install command"
+            />
         </div>
     );
 }
