@@ -754,7 +754,7 @@ function EffectCtaSection({ cta, sectionRef }) {
 
         <div className="w-fit max-sm:mt-[8vw] mt-6">
           <CustomAnimationFormTrigger>
-            {cta.buttonText && (  
+            {cta.buttonText && (
 
               <Button
                 preventDefault={false}
@@ -1006,7 +1006,7 @@ function LockedCodePlaceholder({ filename }) {
         className="absolute inset-0 "
       />
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-        
+
         <div className="absolute left-2 top-0 max-md:top-3 max-md:left-3 max-sm:top-5 max-sm:left-0 px-6 py-5 text-[11px] leading-6 text-white max-sm:text-[10px]">
           {teaserLines.map((line, index) => (
             <p
@@ -1033,7 +1033,7 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-col items-center gap-0">
           <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
-           This is a Pro effect.
+            This is a Pro effect.
           </h3>
 
           <p className="max-w-sm text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">
@@ -1051,7 +1051,7 @@ function LockedCodePlaceholder({ filename }) {
           />
         </div>
 
-        
+
       </div>
     </section>
   );
@@ -1447,20 +1447,35 @@ function TableOfContents({ containerRef, stopRef, watchKey }) {
 
       <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
         <ul className="space-y-1 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc">
-          {items.map((item) => (
+          {items.map((item) => {
+            const isActive = activeId === item.id;
+
+            return (
             <li key={item.id}>
               <a
                 href={`#${item.id}`}
                 className={[
-                  "block rounded-sm px-3 py-2 text20 font-medium leading-none text-white transition-colors duration-300 ease-out",
-                  activeId === item.id ? "bg-black" : "hover:bg-black/55",
+                  "group block overflow-hidden transition-colors duration-300 ease-in-out hover:duration-0 motion-reduce:transition-none",
+                  isActive
+                    ? "bg-[#ff5f00]"
+                    : "bg-transparent hover:bg-[#ff5f00]",
                 ].join(" ")}
                 onClick={(event) => onTocClick(event, item.id)}
               >
-                {item.text}
+                <span
+                  className={[
+                    "block px-3 py-2 text20 font-medium leading-none text-white transition-transform duration-200 ease-out group-hover:duration-0  ",
+                    isActive && "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  {item.text}
+                </span>
               </a>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
 
