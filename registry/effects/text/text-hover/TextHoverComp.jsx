@@ -333,16 +333,16 @@ export default function TextHoverComp({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-dvh overflow-hidden py-12 max-md:py-20 max-sm:py-16"
+      className="relative min-h-dvh overflow-hidden py-12 max-xl:py-20 max-md:py-16"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden max-md:hidden">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden max-xl:hidden">
         <div className="absolute left-1/2 top-1/2 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-900/10 blur-[120px]" />
       </div>
 
       <div
         ref={contentRef}
-        className="container relative mx-auto px-4 max-md:px-8 max-sm:px-5"
+        className="container relative mx-auto px-4 max-xl:px-8 max-md:px-5"
         style={{ opacity: 0, transform: "translateY(80px)" }}
       >
         <div className="relative">
@@ -361,11 +361,11 @@ export default function TextHoverComp({
                   }}
                   className={[
                     "group grid w-full text-center",
-                    "px-10 max-md:px-6 max-sm:px-2",
+                    "px-10 max-xl:px-6 max-md:px-2",
                     "transition-[padding,grid-template-rows] duration-500",
                     isActive
-                      ? "grid-rows-[auto_1fr] py-5 max-md:py-7 max-sm:py-8"
-                      : "grid-rows-[auto_0fr] py-5 max-md:py-7 max-sm:py-8",
+                      ? "grid-rows-[auto_1fr] py-5 max-xl:py-7 max-md:py-8"
+                      : "grid-rows-[auto_0fr] py-5 max-xl:py-7 max-md:py-8",
                   ].join(" ")}
                   onMouseEnter={() => handleDesktopHover(i)}
                   onMouseLeave={handleDesktopLeave}
@@ -393,7 +393,7 @@ export default function TextHoverComp({
                       <h3
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
-                          "text-2xl max-md:text-[4vw] max-sm:text-[4.5vw]",
+                          "text-2xl max-xl:text-[4vw] max-md:text-[4.5vw]",
                           "text-neutral-400",
                           "transition-transform duration-500",
                           isActive ? "-translate-y-full" : "translate-y-0",
@@ -406,7 +406,7 @@ export default function TextHoverComp({
                         aria-hidden="true"
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
-                          "text-3xl max-md:text-[4.8vw] max-sm:text-[6vw]",
+                          "text-3xl max-xl:text-[4.8vw] max-md:text-[6vw]",
                           "transition-transform duration-500",
                           isActive ? "translate-y-0" : "translate-y-full",
                         ].join(" ")}
@@ -419,13 +419,13 @@ export default function TextHoverComp({
 
                   <div
                     id={`industry-content-${i}`}
-                    className="mx-auto flex w-[70%] justify-center overflow-hidden max-md:w-[82%] max-sm:w-full"
+                    className="mx-auto flex w-[70%] justify-center overflow-hidden max-xl:w-[82%] max-md:w-full"
                   >
                     <p
                       ref={(el) => {
                         descriptionRefs.current[i] = el;
                       }}
-                      className="max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide text-neutral-400 max-md:max-w-[64vw] max-md:text-[2.5vw] max-sm:max-w-[72vw] max-sm:pt-4 max-sm:text-[4vw]"
+                      className="max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide text-neutral-400 max-xl:max-w-[64vw] max-xl:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]"
                     >
                       {item.description}
                     </p>
@@ -437,22 +437,22 @@ export default function TextHoverComp({
 
           <div
             ref={highlightRef}
-            className="pointer-events-none absolute left-[-1%] top-0 max-md:left-[-5%]"
+            className="pointer-events-none absolute left-[-1%] top-0 max-xl:left-[-5%]"
           >
             <CornerSVG
-              className="absolute left-0 top-0 size-8 opacity-70 max-md:size-7 max-sm:size-5"
+              className="absolute left-0 top-0 size-8 opacity-70 max-xl:size-7 max-md:size-5"
               style={{ color: textColor }}
             />
             <CornerSVG
-              className="absolute right-0 top-0 size-8 rotate-90 opacity-70 max-md:size-7 max-sm:size-5"
+              className="absolute right-0 top-0 size-8 rotate-90 opacity-70 max-xl:size-7 max-md:size-5"
               style={{ color: textColor }}
             />
             <CornerSVG
-              className="absolute bottom-3 left-0 size-8 -rotate-90 opacity-70 max-md:size-7 max-md:bottom-2 max-sm:size-5"
+              className="absolute bottom-3 left-0 size-8 -rotate-90 opacity-70 max-xl:size-7 max-xl:bottom-2 max-md:size-5"
               style={{ color: textColor }}
             />
             <CornerSVG
-              className="absolute bottom-3 right-0 size-8 rotate-180 opacity-70 max-md:size-7 max-md:bottom-2 max-sm:size-5"
+              className="absolute bottom-3 right-0 size-8 rotate-180 opacity-70 max-xl:size-7 max-xl:bottom-2 max-md:size-5"
               style={{ color: textColor }}
             />
           </div>

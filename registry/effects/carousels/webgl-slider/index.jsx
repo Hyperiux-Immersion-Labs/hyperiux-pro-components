@@ -1,5 +1,5 @@
+"use client"
 import React, { useEffect, useState } from'react'
-import { ReactLenis } from'lenis/react'
 import WebGLSliderComp from './WebGLSliderComp';
 
 const images = [
@@ -41,9 +41,7 @@ const WebGLSlider = () => {
  }
 
  return (
- <ReactLenis root options={{  infinite: true,  autoRaf: true,  duration: 1.5,  lerp: 0.075  }}>
  <WebGLSliderComp images={images} />
- </ReactLenis>
  )
 }
 
