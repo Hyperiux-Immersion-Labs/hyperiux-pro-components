@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DraggableMarquee",
   "exportKind": "default",
+  "tier": "pro",
   "files": [
     {
       "path": "index.jsx",
