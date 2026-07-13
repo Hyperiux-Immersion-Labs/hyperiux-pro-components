@@ -10,7 +10,9 @@
     "@react-three/postprocessing",
     "postprocessing",
     "gsap",
-    "three"
+    "three",
+    "motion",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "previewUrl": "/hero-banner-animated",
