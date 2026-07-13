@@ -62,7 +62,7 @@ export default function CardsRunway({
   return (
     <section
       ref={root}
-      className="w-full h-[350vh] text-white max-xl:overflow-hidden max-xl:h-fit max-md:py-[25%] max-xl:py-[12%] relative z-20"
+      className="w-full h-[350vh] text-white bg-black max-xl:overflow-hidden max-xl:h-screen max-md:py-[25%] max-xl:py-[12%] relative z-20"
     >
       {/* Cards Runway */}
       <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-xl:h-fit max-xl:static pb-5  max-xl:mt-[40vw] max-xl:pb-[4vw] max-xl:overflow-x-scroll mobile-scrollbar max-xl:pr-[7vw] z-15">
