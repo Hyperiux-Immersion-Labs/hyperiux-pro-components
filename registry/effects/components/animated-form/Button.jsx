@@ -31,7 +31,7 @@ const Button = forwardRef(function Button(
  className={`
  relative inline-flex items-center justify-center
  rounded-full cursor-pointer
- bg-primary text-white text-sm font-medium
+ bg-black text-white text-sm font-medium
  px-8 py-4 min-w-45
  transition-all duration-300
  hover:scale-[0.97] active:scale-95

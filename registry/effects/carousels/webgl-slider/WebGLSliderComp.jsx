@@ -95,25 +95,36 @@ function WebGLSliderComp({ images = [] }) {
     return () => window.removeEventListener("resize", updateViewport);
   }, []);
 
-  useLenis((lenis) => {
-    if (isSnapping.current) return;
+  // Optional: if a Lenis instance exists somewhere in the tree, use it to
+  // pause/resume smooth scrolling during the snap animation below. The
+  // slider's own scroll position is always driven off native scrollY (see
+  // the tick() loop), so it works the same with or without Lenis present.
+  const lenis = useLenis();
 
-    scrollRef.current = lenis.scroll;
+  useEffect(() => {
+    const readScroll = () =>
+      window.scrollY || document.documentElement.scrollTop || 0;
 
-    if (Math.abs(lenis.scroll - lastScroll.current) > 0.1) {
-      lastScroll.current = lenis.scroll;
+    const handleScroll = () => {
+      if (isSnapping.current) return;
 
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      const current = readScroll();
 
-      scrollTimeout.current = setTimeout(() => {
-        if (!isSnapping.current) {
-          const currentScroll = lenis.scroll;
+      if (Math.abs(current - lastScroll.current) > 0.1) {
+        lastScroll.current = current;
+
+        if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+
+        scrollTimeout.current = setTimeout(() => {
+          if (isSnapping.current) return;
+
+          const currentScroll = readScroll();
           const vh = window.innerHeight;
           const targetScroll = Math.round(currentScroll / vh) * vh;
 
           if (Math.abs(currentScroll - targetScroll) > 2) {
             isSnapping.current = true;
-            lenis.stop();
+            lenis?.stop?.();
 
             const obj = { y: currentScroll };
 
@@ -123,13 +134,11 @@ function WebGLSliderComp({ images = [] }) {
               ease: "power2.inOut",
               onUpdate: () => {
                 window.scrollTo(0, obj.y);
-                scrollRef.current = obj.y;
               },
               onComplete: () => {
                 window.scrollTo(0, targetScroll);
                 lastScroll.current = targetScroll;
-                scrollRef.current = targetScroll;
-                lenis.scrollTo(targetScroll, { immediate: true, force: true });
+                lenis?.scrollTo?.(targetScroll, { immediate: true, force: true });
 
                 if (lenisResumeTimeout.current) {
                   clearTimeout(lenisResumeTimeout.current);
@@ -137,8 +146,7 @@ function WebGLSliderComp({ images = [] }) {
 
                 lenisResumeTimeout.current = setTimeout(() => {
                   lastScroll.current = targetScroll;
-                  scrollRef.current = targetScroll;
-                  lenis.start();
+                  lenis?.start?.();
                   requestAnimationFrame(() => {
                     isSnapping.current = false;
                   });
@@ -147,10 +155,19 @@ function WebGLSliderComp({ images = [] }) {
               },
             });
           }
-        }
-      }, 30);
-    }
-  });
+        }, 150);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      if (lenisResumeTimeout.current) clearTimeout(lenisResumeTimeout.current);
+    };
+  }, [lenis]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -305,8 +322,18 @@ function WebGLSliderComp({ images = [] }) {
 
     const mouseWorldPos = new THREE.Vector3();
 
+    // Native scroll arrives in coarse per-wheel-tick jumps (unlike Lenis,
+    // which interpolates internally), so we smooth it ourselves here to
+    // keep the fold motion fluid regardless of how choppy the raw input is.
+    let smoothScroll = window.scrollY || document.documentElement.scrollTop || 0;
+    const SCROLL_LERP = 0.12;
+
     const tick = () => {
       rafId = requestAnimationFrame(tick);
+
+      const rawScroll = window.scrollY || document.documentElement.scrollTop || 0;
+      smoothScroll += (rawScroll - smoothScroll) * SCROLL_LERP;
+      scrollRef.current = smoothScroll;
 
       mouseWorldDir
         .set(mouse.x, mouse.y, 0.5)
