@@ -11,7 +11,17 @@ if (typeof window !== 'undefined') {
 
 export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
     useEffect(() => {
-        const mm = gsap.matchMedia(containerRef)
+        const container = containerRef.current
+        if (!container) return
+
+        let mm
+
+        // ponytail: SplitText mutates the DOM for every card, then (on mobile/tablet)
+        // immediately reads offsetHeight/getComputedStyle back off it - a forced-layout
+        // reflow on mount. This section is below the fold, so defer setup until it
+        // nears the viewport instead of paying that cost on every page load.
+        const mount = () => {
+        mm = gsap.matchMedia(containerRef)
 
         mm.add(
             {
@@ -330,7 +340,22 @@ export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
                 }
             }
         )
+        }
 
-        return () => mm.revert()
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    observer.disconnect()
+                    mount()
+                }
+            },
+            { rootMargin: "500px 0px" }
+        )
+        observer.observe(container)
+
+        return () => {
+            observer.disconnect()
+            mm?.revert()
+        }
     }, [])
 }
