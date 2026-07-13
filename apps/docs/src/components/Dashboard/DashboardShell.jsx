@@ -59,12 +59,12 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-6 py-3 rounded-full
+                    px-6 py-1.5 rounded-full
                     transition-all duration-300
                     border shrink-0
                     ${active
                       ? "bg-white text-black border-white"
-                      : "border-white/10 text-white hover:bg-white hover:text-black"}
+                      : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
                   `}
                 >
                   {tab.label}
