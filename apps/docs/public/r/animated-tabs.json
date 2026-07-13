@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "Tabs",
   "exportKind": "default",
+  "tier": "pro",
   "files": [
     {
       "path": "index.jsx",

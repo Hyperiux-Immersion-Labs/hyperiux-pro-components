@@ -1183,7 +1183,8 @@
       ],
       "registryDependencies": [],
       "exportName": "Tabs",
-      "exportKind": "default"
+      "exportKind": "default",
+      "tier": "pro"
     },
     {
       "name": "testimonial-swiper",
