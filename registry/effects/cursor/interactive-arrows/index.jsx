@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Arrows from "./Arrows";
+import Arrows from "./arrows";
 import ArrowsOpacity from "./ArrowsOpacity";
 import ArrowsLimit from "./ArrowsLimit";
 import ArrowsPlay from "./ArrowsPlay";
-import Lines from "./Lines";
+import Lines from "./lines";
 
 
 const variations = [

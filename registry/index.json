@@ -217,7 +217,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/others/card-drift/registry.json",
+    "registryPath": "registry/effects/components/card-drift/registry.json",
     "importPath": "@/components/effects/card-drift",
     "target": "src/components/effects/card-drift",
     "files": [
@@ -381,7 +381,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/others/gooey-counter/registry.json",
+    "registryPath": "registry/effects/components/gooey-counter/registry.json",
     "importPath": "@/components/effects/gooey-counter",
     "target": "src/components/effects/gooey-counter"
   },
@@ -401,7 +401,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "registryPath": "registry/effects/others/interactive-list-preview/registry.json",
+    "registryPath": "registry/effects/components/interactive-list-preview/registry.json",
     "importPath": "@/components/effects/interactive-list-preview",
     "target": "src/components/effects/interactive-list-preview"
   },
@@ -440,22 +440,22 @@
     "target": "src/components/effects/ribbon-drift"
   },
   {
-    "name": "tabs",
+    "name": "animated-tabs",
     "title": "Tabs",
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/components/tabs/registry.json",
-    "importPath": "@/components/effects/tabs",
-    "target": "src/components/effects/tabs",
+    "registryPath": "registry/effects/components/animated-tabs/registry.json",
+    "importPath": "@/components/effects/animated-tabs",
+    "target": "src/components/effects/animated-tabs",
     "files": [
       {
         "path": "index.jsx",
-        "target": "src/components/effects/tabs/index.jsx"
+        "target": "src/components/effects/animated-tabs/index.jsx"
       },
       {
         "path": "TabsComp.jsx",
-        "target": "src/components/effects/tabs/TabsComp.jsx"
+        "target": "src/components/effects/animated-tabs/TabsComp.jsx"
       }
     ]
   },
@@ -614,8 +614,8 @@
         "target": "src/components/effects/interactive-arrows/index.jsx"
       },
       {
-        "path": "Arrows.jsx",
-        "target": "src/components/effects/interactive-arrows/Arrows.jsx"
+        "path": "arrows.jsx",
+        "target": "src/components/effects/interactive-arrows/arrows.jsx"
       },
       {
         "path": "ArrowsLimit.jsx",
@@ -630,12 +630,12 @@
         "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
       },
       {
-        "path": "Lines.jsx",
-        "target": "src/components/effects/interactive-arrows/Lines.jsx"
+        "path": "lines.jsx",
+        "target": "src/components/effects/interactive-arrows/lines.jsx"
       },
       {
-        "path": "Points.jsx",
-        "target": "src/components/effects/interactive-arrows/Points.jsx"
+        "path": "points.jsx",
+        "target": "src/components/effects/interactive-arrows/points.jsx"
       },
       {
         "path": "utils.js",

@@ -114,7 +114,7 @@ export default function SpotlightText({
  }
  >
  {/* Dim text (mobile becomes fully visible) */}
- <p className="text-neutral-600 max-md:text-white max-md:opacity-90 leading-tight whitespace-pre-wrap">
+ <p className="text-neutral-600 max-xl:text-white max-xl:opacity-90 leading-tight whitespace-pre-wrap">
  {text}
  </p>
 

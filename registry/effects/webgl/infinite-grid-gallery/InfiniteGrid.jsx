@@ -28,6 +28,7 @@ export default class InfiniteGrid {
         this.activePointerId = null;
         this.drag = { startX: 0, startY: 0, scrollX: 0, scrollY: 0 };
         this.dragMoved = false;
+        this.pressedItem = null;
 
         this.mouse = {
             x: { t: 0.5, c: 0.5 },
@@ -146,11 +147,20 @@ export default class InfiniteGrid {
                     wrapper.appendChild(itemImage);
 
                     const img = new Image();
-                    img.loading = 'lazy';
                     img.decoding = 'async';
                     img.referrerPolicy = 'no-referrer';
                     img.src = base.src;
                     img.alt = base.caption;
+                    // Tiles wrap in from offscreen, so a deferred load would expose the
+                    // card background until the image decodes. Load eagerly and reveal
+                    // once decoded; cached sources resolve synchronously via `complete`.
+                    if (img.complete) {
+                        img.classList.add('is-loaded');
+                    } else {
+                        const reveal = () => img.classList.add('is-loaded');
+                        img.addEventListener('load', reveal, { once: true });
+                        img.addEventListener('error', reveal, { once: true });
+                    }
                     itemImage.appendChild(img);
 
                     const caption = document.createElement('small');
@@ -160,23 +170,9 @@ export default class InfiniteGrid {
 
                     if (typeof this.onItemClick === 'function') {
                         el.style.cursor = 'pointer';
-                        el.addEventListener('click', (event) => {
-                            // Ignore clicks when the user was dragging.
-                            if (this.isDragging || this.dragMoved) return;
-                            event.stopPropagation();
-                            const rect = itemImage.getBoundingClientRect();
-                            this.onItemClick({
-                                index: base.sourceIndex,
-                                src: base.src,
-                                caption: base.caption,
-                                rect: {
-                                    left: rect.left,
-                                    top: rect.top,
-                                    width: rect.width,
-                                    height: rect.height,
-                                },
-                            });
-                        });
+                        // Activation is driven from pointerup (see onPointerUp) rather than
+                        // a click listener: pointer capture retargets click to $container.
+                        el.__gridItem = { base, itemImage };
                     }
 
                     this.$container.appendChild(el);
@@ -223,6 +219,7 @@ export default class InfiniteGrid {
         this.isDragging = true;
         this.activePointerId = e.pointerId;
         this.dragMoved = false;
+        this.pressedItem = e.target instanceof Element ? e.target.closest('.item') : null;
         document.documentElement.classList.add('dragging');
         this.mouse.press.t = 1;
         this.drag.startX = e.clientX;
@@ -234,13 +231,44 @@ export default class InfiniteGrid {
 
     onPointerUp(e) {
         if (e && this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
+        const wasDragging = this.isDragging;
+        const dragMoved = this.dragMoved;
+        const pressedItem = this.pressedItem;
+
         this.isDragging = false;
         if (e && this.activePointerId !== null) {
             this.$container.releasePointerCapture?.(this.activePointerId);
         }
         this.activePointerId = null;
+        this.pressedItem = null;
         document.documentElement.classList.remove('dragging');
         this.mouse.press.t = 0;
+
+        if (!e || e.type !== 'pointerup') return;
+        if (!wasDragging || dragMoved || !pressedItem || !this.enabled) return;
+        if (typeof this.onItemClick !== 'function') return;
+
+        // Pointer capture retargets the synthesized click, so resolve the tile under
+        // the release point ourselves and require it to match the pressed one.
+        const released = document.elementFromPoint(e.clientX, e.clientY);
+        const releasedItem = released instanceof Element ? released.closest('.item') : null;
+        if (releasedItem !== pressedItem) return;
+
+        const meta = pressedItem.__gridItem;
+        if (!meta) return;
+
+        const rect = meta.itemImage.getBoundingClientRect();
+        this.onItemClick({
+            index: meta.base.sourceIndex,
+            src: meta.base.src,
+            caption: meta.base.caption,
+            rect: {
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
+            },
+        });
     }
 
     onPointerMove(e) {
@@ -323,6 +351,7 @@ export default class InfiniteGrid {
         if (!this.enabled) {
             this.isDragging = false;
             this.dragMoved = false;
+            this.pressedItem = null;
             this.mouse.press.t = 0;
             document.documentElement.classList.remove('dragging');
         }

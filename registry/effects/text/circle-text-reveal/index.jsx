@@ -14,24 +14,13 @@ function useMousePosition() {
     return () => window.removeEventListener("mousemove", updateMousePosition);
   }, []);
 
-  return mousePosition;
+  return mousePosition; 
 }
 
-function useIsPointerFine() {
-  const [isPointerFine, setIsPointerFine] = useState(false);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(pointer: fine)");
-    setIsPointerFine(mq.matches);
-    const handler = (e) => setIsPointerFine(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
 
-  return isPointerFine;
-}
 
-export function CircleTextReveal({
+export default function CircleTextReveal({
   text = "We craft emotionally intelligent user experiences that are adored globally!",
   revealText = "A visual designer - with skills that haven't been replaced by A.I",
   textColor = "#111",
@@ -42,11 +31,22 @@ export function CircleTextReveal({
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const { x, y } = useMousePosition();
-  const isPointerFine = useIsPointerFine();
 
   const [smoothPos, setSmoothPos] = useState(null);
 
   const size = isHovered ? 500 : 40;
+  const [isPointerFine, setIsPointerFine] = useState(false);
+
+  useEffect(() => {
+   if(globalThis.innerWidth>1024){
+      setIsPointerFine(true)
+   }
+   else{
+      setIsPointerFine(false)
+
+   }
+  }, []);
+  console.log(isPointerFine)
 
   useEffect(() => {
     if (!isPointerFine) return;
@@ -78,21 +78,26 @@ export function CircleTextReveal({
       className={`w-full h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] relative overflow-hidden ${className}`}
       style={{ backgroundColor }}
     >
-      {!isPointerFine && (
+      {!isPointerFine ? (
         <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
           <div className="flex max-w-sm flex-col items-center gap-3">
             <p className="text-[11vw] font-light leading-none tracking-tight uppercase" style={{ color: textColor }}>
               Open on desktop
             </p>
-            <p className="text-sm uppercase tracking-[0.3em]" style={{ color: `${textColor}80` }}>
+            <p className="text-sm uppercase tracking-[0.3em] text-[#111111]" style={{ color: `${textColor}80` }}>
               Circle Text Reveal
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: `${textColor}99` }}>
-              Open on desktop to reveal the text underneath.
-            </p>
+            
           </div>
         </div>
-      )}
+      ):(<>
+      <div className="relative z-0">
+        <h2 className="leading-tight select-none" style={{ color: textColor }}>
+          {text}
+        </h2>
+      </div>
+      
+      </>)}
 
       {isPointerFine && smoothPos !== null && (
         <motion.div
@@ -124,11 +129,7 @@ export function CircleTextReveal({
         </motion.div>
       )}
 
-      <div className="relative z-0">
-        <h2 className="leading-tight select-none" style={{ color: textColor }}>
-          {text}
-        </h2>
-      </div>
+      
     </section>
   );
 }

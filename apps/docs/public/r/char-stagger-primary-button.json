@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Character Stagger Primary Button",
   "description": "Primary button with staggered character animation on hover",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "exportName": "CharStaggerPrimaryButton",
   "exportKind": "named",

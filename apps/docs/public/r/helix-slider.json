@@ -4,7 +4,8 @@
   "title": "Helix Slider",
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
   "exportName": "HelixSlider",

@@ -5,7 +5,8 @@
   "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",
   "dependencies": [
     "gsap",
-    "three"
+    "three",
+    "lenis"
   ],
   "registryDependencies": [],
   "exportName": "SplitCanvas",

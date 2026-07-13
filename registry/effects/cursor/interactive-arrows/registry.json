@@ -19,8 +19,8 @@
       "target": "src/components/effects/interactive-arrows/index.jsx"
     },
     {
-      "path": "Arrows.jsx",
-      "target": "src/components/effects/interactive-arrows/Arrows.jsx"
+      "path": "arrows.jsx",
+      "target": "src/components/effects/interactive-arrows/arrows.jsx"
     },
     {
       "path": "ArrowsLimit.jsx",
@@ -35,12 +35,12 @@
       "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
     },
     {
-      "path": "Lines.jsx",
-      "target": "src/components/effects/interactive-arrows/Lines.jsx"
+      "path": "lines.jsx",
+      "target": "src/components/effects/interactive-arrows/lines.jsx"
     },
     {
-      "path": "Points.jsx",
-      "target": "src/components/effects/interactive-arrows/Points.jsx"
+      "path": "points.jsx",
+      "target": "src/components/effects/interactive-arrows/points.jsx"
     },
     {
       "path": "utils.js",

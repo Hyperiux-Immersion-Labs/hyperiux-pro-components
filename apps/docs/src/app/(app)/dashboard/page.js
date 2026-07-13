@@ -27,12 +27,12 @@ function getBillingLabel(value) {
 
 function StatCard({ label, value, detail, href }) {
   const content = (
-    <div className="h-full border border-white/10 rounded-lg p-6 bg-white/5 backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
-      <p className="text-white/75 mb-3">{label}</p>
+    <div className="h-full flex flex-col justify-between rounded-md p-6 bg-[#272727] backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
+      <p className="text-white mb-3">{label}</p>
 
-      <p className="text-2xl font-medium leading-none">{value}</p>
+      <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
 
-      {detail && <p className="text-white/75 mt-4">{detail}</p>}
+      {detail && <p className="text-[#838383] mt-4">{detail}</p>}
     </div>
   );
 
@@ -202,14 +202,15 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="border border-white/10 rounded-lg p-6 bg-white/5 backdrop-blur-lg">
-        <div className="flex items-center justify-between gap-6 max-md:flex-col max-md:items-start">
+      <div className=" rounded-md p-6 bg-[#272727]">
+        <div className="flex items-start justify-between gap-6 max-md:flex-col max-md:items-start">
           <div>
+            
             <h2 className="text-2xl font-semibold">Vault access</h2>
 
             {data.plan === "pro" ? (
-              <div className="mt-2 space-y-2 text-white/75">
-                <p>
+              <div className="mt-6 space-y-4 text-white/50">
+                <p className="text-white">
                   Your Pro access is active. You have full access to the
                   Hyperiux Vault.
                 </p>
@@ -239,8 +240,7 @@ export default function DashboardPage() {
               </p>
             )}
           </div>
-
-          {data.plan === "free" && (
+           {data.plan === "free" && (
             <>
               <Link
                 href="/waitlist"
@@ -258,13 +258,13 @@ export default function DashboardPage() {
                 <button
                   onClick={handleManageSubscription}
                   disabled={openingPortal}
-                  className="inline-flex px-5 py-3 rounded-full border border-white/20 text-white transition duration-300 hover:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {openingPortal ? "Opening…" : "Manage Subscription"}
                 </button>
                 <Link
-                  href="/effects"
-                  className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
+                  href="/effects/pro"
+                  className="inline-flex px-7 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
                 >
                   Explore Pro Effects
                 </Link>
@@ -274,6 +274,8 @@ export default function DashboardPage() {
               )}
             </div>
           )}
+
+         
         </div>
       </div>
       <CliTokenManager plan={data.plan} />

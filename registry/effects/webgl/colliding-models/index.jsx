@@ -63,7 +63,7 @@ function Scene() {
       dpr={[1.0, 1.1]}
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
-      className="h-full w-full"
+      className="h-full w-full "
     >
       {showTitle && (
         <Text
@@ -317,14 +317,14 @@ export default function CollidingModels() {
   return (
 
     <>
-      <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
-        <div className="relative h-[90%] min-h-[30vw] w-full overflow-hidden rounded-2xl bg-black">
+      <div className="w-full h-screen flex items-center justify-center px-12 max-md:px-6 max-xl:px-10">
+        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
           <Scene />
-          <p className="pointer-events-none max-md:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-sm:bottom-4 max-sm:text-xs">
+          <p className="pointer-events-none max-xl:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>
 
-          <p className='hidden max-md:block absolute bottom-6 left-1/2 z-10 max-md:max-w-130 max-sm:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-md:text-lg max-sm:text-sm text-center '>
+          <p className='hidden max-xl:block absolute bottom-6 left-1/2 z-10 max-xl:max-w-130 max-md:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-xl:text-lg max-md:text-sm text-center '>
             Touch the field and let the models collide , tap to change their spark.
           </p>
         </div>

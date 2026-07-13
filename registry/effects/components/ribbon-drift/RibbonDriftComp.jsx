@@ -250,7 +250,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-md:hidden"
+				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-xl:hidden"
 				id="ribbon-drift"
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
@@ -390,35 +390,35 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 				</div>
 			</div>
 
-			<div className="hidden w-screen bg-white text-[#1a1a1a] max-md:block max-md:px-8 max-md:py-24 max-sm:px-5 max-md:pt-35 max-sm:pt-24 max-sm:py-10">
-				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-sm:gap-10">
-					<div className="flex flex-col gap-8 max-sm:gap-6">
-						<p className="text-[6vw] text-center font-medium leading-none max-sm:text-[10vw]">
+			<div className="hidden w-screen bg-white text-[#1a1a1a] max-xl:block max-xl:px-8 max-xl:py-24 max-md:px-5 max-xl:pt-35 max-md:pt-24 max-md:py-10">
+				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-10">
+					<div className="flex flex-col gap-8 max-md:gap-6">
+						<p className="text-[6vw] text-center font-medium leading-none max-md:text-[10vw]">
 							Gradient Ribbon Drift
 						</p>
-						<p className="max-w-2xl mx-auto text-center text-[2.8vw] font-medium leading-[1.45] text-black/70 max-sm:text-[4.5vw]">
+						<p className="max-w-2xl mx-auto text-center text-[2.8vw] font-medium leading-[1.45] text-black/70 max-md:text-[4.5vw]">
 							A scroll-led showcase where every project tile is a living gradient.
 							Hover to reveal names, then let the strips glide past each other for a
 							gallery that feels more like motion design than a grid.
 						</p>
 					</div>
 
-					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-sm:grid-cols-1 max-sm:gap-5">
+					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-md:grid-cols-1 max-md:gap-5">
 						{compactCards.map((item, index) => (
 							<Link
 								href={item.href}
 								key={`compact-${index}`}
-								className="overflow-hidden rounded-sm max-sm:mx-auto  w-full max-sm:w-[80%]"
+								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
 							>
-								<div className="relative max-md:aspect-4/5 max-sm:aspect-auto max-sm:h-[35vh]  ">
+								<div className="relative max-xl:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
 									<img
 										src={item.src}
 										alt={item.title}
-										className="object-cover absolute inset-0"
+										className="object-cover absolute inset-0 w-full h-full"
 									/>
 								</div>
-								<div className="px-4 py-4 max-sm:px-2 max-sm:py-5">
-									<p className="text-[2.8vw] font-medium leading-none max-sm:text-[4.8vw]">
+								<div className="px-4 py-4 max-md:px-2 max-md:py-5">
+									<p className="text-[2.8vw] font-medium leading-none max-md:text-[4.8vw]">
 										{item.title}
 									</p>
 								</div>
@@ -426,8 +426,8 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						))}
 					</div>
 
-					<div className="rounded-sm   px-6 py-8 text-center max-md:px-8 max-sm:px-5 max-sm:py-6">
-						<p className="text-[4vw] font-medium leading-[1.2] max-sm:text-[5vw]">
+					<div className="rounded-sm   px-6 py-8 text-center max-xl:px-8 max-md:px-5 max-md:py-6">
+						<p className="text-[4vw] font-medium leading-[1.2] max-md:text-[5vw]">
 							{sectionBreakText}
 						</p>
 					</div>

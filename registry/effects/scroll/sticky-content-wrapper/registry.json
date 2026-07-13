@@ -5,7 +5,8 @@
   "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
   "category": "scroll",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
   "previewUrl": "/sticky-content-wrapper",

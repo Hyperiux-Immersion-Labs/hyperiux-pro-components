@@ -84,7 +84,7 @@ export default function DraggableCanvas() {
     <div className="relative w-full h-screen overflow-hidden  bg-black">
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
-        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[75vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:bottom-6 max-sm:right-4 max-sm:text-sm z-99999">
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[85vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:text-sm z-99999 max-sm:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
       {/* Hidden video element - single source for all masks */}
@@ -117,7 +117,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="medium"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[17vw] h-[9vw] absolute top-[5%] left-[5vw]"
+          className="w-[17vw] h-[9vw] max-sm:h-[35vw] max-sm:top-[30%] absolute top-[8%] left-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -131,7 +131,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra1"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[35vw] h-[19vw] absolute top-[5vh] right-[5vw]"
+          className="w-[35vw] h-[19vw] max-sm:h-[50vw] absolute top-[8vh] max-sm:top-[25vh] right-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -155,7 +155,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra3"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[25vw] h-[14vw] absolute bottom-[20%] right-[10vw]"
+          className="w-[25vw] h-[14vw] max-sm:h-[25vh] absolute bottom-[20%] right-[10vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -166,7 +166,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="small"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[22vw] h-[12vw] absolute bottom-[15vh] left-1/2 -translate-x-1/2"
+          className="w-[22vw] max-sm:w-[45vw] max-sm:h-[20vh] h-[12vw] absolute bottom-[15vh] max-sm:left-[40%] left-1/2 -translate-x-1/2"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}

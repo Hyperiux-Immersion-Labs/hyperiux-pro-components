@@ -147,7 +147,7 @@ export default function CursorMove({
   showCursorDot = true,
   cursorDotClassName = "w-3 h-3 bg-orange-500 rounded-sm",
   cursorDotStyle = {},
-  text = "fancy!",
+  text = "hello!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
   textClassName = "text-9xl max-md:text-6xl max-sm:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",

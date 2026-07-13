@@ -135,30 +135,30 @@ const AnimatedTabsComp = ({
  if (!tabs.length) return null;
 
  return (
- <div className={`h-full w-full px-[7vw] py-[7vw] max-md:p-[6vw] max-sm:px-[5vw] max-sm:py-[8vw] ${className}`}>
+ <div className={`h-full w-full px-[7vw] py-[7vw] max-xl:p-[6vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}>
  <div className="relative border-b  border-b-black/10">
- <div className="flex gap-[2vw] overflow-x-auto max-md:gap-[3vw] max-sm:gap-[4vw]">
+ <div className="flex gap-[2vw] overflow-x-auto max-xl:gap-[3vw] max-md:gap-[4vw]">
  {tabs.map((tab, index) => (
  <button
  key={tab.id || index}
  ref={(el) => (labelRefs.current[index] = el)}
  onClick={() => handleTabClick(index)}
- className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-md:px-[2.5vw] max-md:py-[1.5vw] max-sm:px-[3vw] max-sm:py-[2.5vw] ${
+ className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-xl:px-[2.5vw] max-xl:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw] ${
  activeTab === index
  ?"text-[#ff6b00]"
  :"text-black/50"
  }`}
  type="button"
  >
- <span className="text-[1.2vw] font-medium max-md:text-[2.2vw] max-sm:text-[4vw]">{tab.label}</span>
+ <span className="text-[1.2vw] font-medium max-xl:text-[2.2vw] max-md:text-[4vw]">{tab.label}</span>
  </button>
  ))}
  </div>
 
- <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-sm:h-[0.4vw]" />
+ <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-md:h-[0.4vw]" />
  </div>
 
- <div className="relative min-h-[24vw] w-full max-sm:overflow-hidden pt-[2vw] max-md:min-h-[32vw] max-md:pt-[4vw] max-sm:min-h-[48vw] max-sm:pt-[5vw]">
+ <div className="relative min-h-[24vw] w-full max-md:overflow-hidden pt-[2vw] max-xl:min-h-[32vw] max-xl:pt-[4vw] max-md:min-h-[48vw] max-md:pt-[5vw]">
  {tabs.map((tab, index) => (
  <div
  key={tab.id || index}

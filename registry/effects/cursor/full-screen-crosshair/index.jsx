@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useMouse } from "./use-mouse";
+import { useMouse } from "./useMouse";
 
 const CrosshairCursor = ({
   color = "#ffffff",

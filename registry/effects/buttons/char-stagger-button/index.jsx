@@ -126,7 +126,7 @@ export default function CharStaggerButton({
     >
       <div className="mt-[0.3vw]">
         <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
-          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw] ${textClassName}`.trim()}>
+          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-xl:text-[3vw] ${textClassName}`.trim()}>
             {sourceText}
           </span>
 
