@@ -8,6 +8,7 @@ import WebsiteButton from "@/components/WebsiteComps/Button";
 import Input from "@/components/animated-form/Input";
 import PhoneInput from "@/components/animated-form/PhoneInput";
 import Textarea from "@/components/animated-form/Textarea";
+import CustomVerifyCheckbox from "@/components/WebsiteComps/Recaptcha/CustomVerifyCheckbox";
 import { validateForm } from "@/lib/form-validation";
 
 const MODAL_QUERY_KEY = "work-with-hyperiux";
@@ -110,6 +111,9 @@ function WorkWithHyperiuxModalInner() {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [status, setStatus] = useState("idle");
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaError, setCaptchaError] = useState("");
 
   const isSubmitting = status === "submitting";
   const isSuccess = status === "success";
@@ -147,6 +151,9 @@ function WorkWithHyperiuxModalInner() {
       setErrors({});
       setServerError("");
       setStatus("idle");
+      setCaptchaVerified(false);
+      setCaptchaToken(null);
+      setCaptchaError("");
     }, 500);
     return () => window.clearTimeout(id);
   }, [isOpen]);
@@ -169,6 +176,12 @@ function WorkWithHyperiuxModalInner() {
     setServerError("");
     if (Object.keys(nextErrors).length > 0) return;
 
+    if (!captchaToken) {
+      setCaptchaError("Please verify you're not a robot.");
+      return;
+    }
+
+    setCaptchaError("");
     setStatus("submitting");
 
     try {
@@ -180,6 +193,7 @@ function WorkWithHyperiuxModalInner() {
           email: values.email.trim(),
           number: values.number.trim(),
           message: values.message.trim(),
+          recaptchaToken: captchaToken,
         }),
       });
 
@@ -187,6 +201,8 @@ function WorkWithHyperiuxModalInner() {
 
       if (!response.ok) {
         setStatus("idle");
+        setCaptchaVerified(false);
+        setCaptchaToken(null);
         // Field-level errors (e.g. the server-side blocked-domain check) land
         // on their inputs; the banner is only for non-field failures.
         if (data?.errors && Object.keys(data.errors).length > 0) {
@@ -268,12 +284,12 @@ function WorkWithHyperiuxModalInner() {
             <div className="relative z-10">
               <h3
                 id="work-with-hyperiux-title"
-                className="text-[3vw] leading-none max-md:text-[8vw]"
+                className="text-[3vw] leading-none max-sm:text-[8vw] max-md:text-[5vw]"
               >
                 {isSuccess ? "Enquiry sent." : "Work with Hyperiux"}
               </h3>
 
-              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-[4vw]!">
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-sm:text-[4vw]! max-md:text-[2.2vw]!">
                 {isSuccess
                   ? "We received your message. A confirmation has been sent to your email. Closing now."
                   : "Tell us about your project - what you're building, the interaction or experience you have in mind, and your timeline. We'll get back to you within 1-2 business days."}
@@ -375,6 +391,21 @@ function WorkWithHyperiuxModalInner() {
                       {serverError}
                     </div>
                   )}
+
+                  <div className="col-span-2 max-md:col-span-1">
+                    <CustomVerifyCheckbox
+                      action="work_with_hyperiux"
+                      checked={captchaVerified}
+                      onChange={(verified, token) => {
+                        setCaptchaVerified(verified);
+                        setCaptchaToken(token);
+                        if (verified) setCaptchaError("");
+                      }}
+                    />
+                    {captchaError && (
+                      <p className="mt-2 text-sm text-red-300">{captchaError}</p>
+                    )}
+                  </div>
 
                   <div className="col-span-2 mt-4 flex items-center gap-4 max-md:col-span-1 max-md:flex-col max-md:items-start">
                     <WebsiteButton

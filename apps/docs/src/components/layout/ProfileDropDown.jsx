@@ -59,7 +59,7 @@ export default function ProfileDropdown({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-14 w-72 rounded-3xl border border-white/10 bg-black/95 backdrop-blur-xl overflow-hidden z-50">
+        <div className="absolute right-0 top-14 w-72 rounded-md bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
           <div className="p-5 border-b border-white/10">
             <p className="text-white font-medium">
               {user.fullName}
@@ -73,14 +73,14 @@ export default function ProfileDropdown({
           <div className="p-2">
             <Link
               href="/dashboard"
-              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
             >
               Dashboard
             </Link>
 
             <Link
               href="/dashboard/saved"
-              className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
             >
               <span>Saved Effects</span>
 
@@ -93,20 +93,20 @@ export default function ProfileDropdown({
 
             <Link
               href="/dashboard/settings"
-              className="block px-4 py-3 rounded-xl hover:bg-white/5 transition"
+              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
             >
               Settings
             </Link>
 
             
 
-            <div className="my-2 border-t border-white/10" />
+            <div className="my-2 border-t border-white/10 w-[110%] -translate-x-[5%]" />
 
             <button
               onClick={() => signOut(() => {
                 window.location.href = "/effects";
               })}
-              className="w-full text-left px-4 py-3 rounded-xl hover:bg-white/5 transition text-red-400"
+              className="w-full text-left px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition text-red-400"
             >
               Sign Out
             </button>

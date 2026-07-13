@@ -590,3 +590,11 @@ html.loader-first-visit body {
   animation: card-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--card-delay, 0s);
 }
+
+/* reCAPTCHA v3's required "protected by" badge - shrunk and raised above modals. */
+.grecaptcha-badge {
+  z-index: 9999 !important;
+  transform: scale(0.8) translateX(-18%);
+  
+  transform-origin: bottom right;
+}

@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { GlobalSearch } from "./SearchBar";
 import { useEffect, useState } from "react";
@@ -15,6 +16,7 @@ const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
 import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -45,6 +47,9 @@ export function VaultHeader({
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const hideFoundingAccess =
+    pathname?.startsWith("/docs") || pathname?.startsWith("/legal");
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -64,6 +69,22 @@ export function VaultHeader({
     }
 
     loadWishlistCount();
+  }, [isSignedIn]);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    const handleWishlistChanged = (e) => {
+      setWishlistCount((count) =>
+        e.detail?.saved ? count + 1 : Math.max(0, count - 1)
+      );
+    };
+
+    window.addEventListener(WISHLIST_CHANGED_EVENT, handleWishlistChanged);
+
+    return () => {
+      window.removeEventListener(WISHLIST_CHANGED_EVENT, handleWishlistChanged);
+    };
   }, [isSignedIn]);
 
   useEffect(() => {
@@ -187,7 +208,7 @@ export function VaultHeader({
               </button>
             )}
 
-           {isLoaded && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
+           {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
               <Button
                 text="Join Founding Access"
                 href="/waitlist"

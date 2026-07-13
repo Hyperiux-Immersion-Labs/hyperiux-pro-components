@@ -194,7 +194,7 @@ export default function SettingsPage() {
 
   return (
     <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-      <div className="border border-white/10 rounded-lg p-8 bg-white/5 backdrop-blur-lg  h-fit ">
+      <div className="rounded-md p-8 bg-[#272727]  h-fit ">
         <div className="relative w-32 h-32">
           <Image
             src={user.imageUrl}
@@ -236,7 +236,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div className="border border-white/10 rounded-lg p-8 bg-white/5 backdrop-blur-lg ">
+      <div className="rounded-md p-8 bg-[#272727] ">
         <div className="mb-8">
           <h2 className="text-3xl">
             Settings

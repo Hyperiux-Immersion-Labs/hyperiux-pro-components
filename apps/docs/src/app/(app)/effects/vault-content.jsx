@@ -10,6 +10,7 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
+import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import {
   effectsOverviewContent,
   effectCategories,
@@ -407,6 +408,8 @@ const routeKey = `${pathname}${
       } else {
         setWishlist((prev) => prev.filter((x) => x !== slug));
       }
+
+      emitWishlistChanged(data.saved);
     } catch (err) {
       console.error(err);
     }

@@ -1,6 +1,7 @@
 import { CustomAnimationFormEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormEmail";
 import { sendEmail } from "@/lib/resend";
 import { isBlockedEmailDomain } from "@/lib/blocked-email-domains";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 
 function validatePayload(body) {
   const errors = {};
@@ -51,6 +52,18 @@ export async function POST(request) {
           error: "Please check the form fields.",
           errors,
         },
+        { status: 400 }
+      );
+    }
+
+    const { success: recaptchaOk } = await verifyRecaptcha(
+      body?.recaptchaToken,
+      "custom_animation_form"
+    );
+
+    if (!recaptchaOk) {
+      return Response.json(
+        { error: "Verification failed. Please try again." },
         { status: 400 }
       );
     }
