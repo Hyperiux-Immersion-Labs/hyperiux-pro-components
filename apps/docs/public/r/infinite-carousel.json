@@ -4,7 +4,8 @@
   "title": "Infinite Carousel",
   "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "InfiniteCarousel",

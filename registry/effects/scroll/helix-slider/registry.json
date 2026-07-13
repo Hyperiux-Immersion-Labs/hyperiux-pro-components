@@ -5,7 +5,8 @@
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
   "category": "scroll",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
   "previewUrl": "/cylindrical-scroll",

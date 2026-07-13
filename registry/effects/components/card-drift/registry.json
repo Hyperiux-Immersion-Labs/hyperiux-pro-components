@@ -5,7 +5,8 @@
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
   "category": "components",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "previewUrl": "/card-drift",

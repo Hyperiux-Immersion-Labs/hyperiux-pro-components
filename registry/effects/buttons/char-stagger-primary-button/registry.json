@@ -4,7 +4,9 @@
   "title": "Character Stagger Primary Button",
   "description": "Primary button with staggered character animation on hover",
   "category": "buttons",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "previewUrl": "/buttons/char-stagger-primary-button",
   "tier": "pro",

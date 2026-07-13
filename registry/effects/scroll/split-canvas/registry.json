@@ -6,7 +6,8 @@
   "category": "scroll",
   "dependencies": [
     "gsap",
-    "three"
+    "three",
+    "lenis"
   ],
   "registryDependencies": [],
   "previewUrl": "/split-canvas",

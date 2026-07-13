@@ -4,7 +4,9 @@
   "title": "Parallax Footer",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
   "category": "scroll",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "previewUrl": "/parallax-footer",
   "tier": "pro",
