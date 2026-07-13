@@ -77,7 +77,7 @@ const CharStaggerPrimaryButton = ({
             {...linkProps}
             {...props}
             onClick={handleClick}
-            className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)]  max-md:h-[9vw] max-md:text-[3vw] max-md:font-normal max-sm:h-[15vw] max-sm:text-[4.2vw] bg-[#ff5f00]  w-fit rounded-full ${btnClassName}`}
+            className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)]  max-xl:h-[9vw] max-xl:text-[3vw] max-xl:font-normal max-md:h-[15vw] max-md:text-[4.2vw] bg-[#ff5f00]  w-fit rounded-full ${btnClassName}`}
 
         >
             <div className="relative z-2">
