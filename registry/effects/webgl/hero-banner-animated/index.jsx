@@ -10,8 +10,9 @@ import CustomGrainNoise from'./CustomGrainNoise'
 import { EffectComposer } from'@react-three/postprocessing'
 import VideoUI from'./VideoUI'
 import { Play } from'lucide-react'
-import { AnimatePresence, motion } from'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
+import Link from 'next/link'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -190,14 +191,14 @@ export default function HeroBannerAnimated() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-              className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
+              className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-md:py-[8vw] max-md:px-[5vw]'
             >
-              <div className='flex items-start pt-[5vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
+              <div className='flex items-start pt-[5vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                  className='text-[20vw] font-semibold leading-1 tracking-tight max-sm:text-[28vw]'
+                  className='text-[20vw] font-semibold leading-1 tracking-tight max-md:text-[28vw]'
                 >
                   HXR
                 </motion.p>
@@ -205,10 +206,10 @@ export default function HeroBannerAnimated() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                  className='uppercase w-[25vw] translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-md:w-[45vw] max-sm:w-[45vw] max-md:text-[2vw] max-sm:text-[2.8vw] max-sm:translate-y-[-8vw]'
+                  className='uppercase w-[25vw] translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-xl:w-[45vw] max-md:w-[45vw] max-xl:text-[2vw] max-md:text-[2.8vw] max-md:translate-y-[-8vw]'
                 >
                   Hyperiux immersion labs is an independent design agency in india.
-                  <span className='w-6 h-3 flex mt-[1.5vw] bg-[#ECE4B4] max-sm:hidden items-center justify-center mr-[3vw] max-sm:mt-[3vw]'>
+                  <span className='w-6 h-3 flex mt-[1.5vw] bg-[#ECE4B4] max-md:hidden items-center justify-center mr-[3vw] max-md:mt-[3vw]'>
                     <span className='w-1 h-1 bg-black rounded-full block'></span>
                   </span>
                 </motion.p>
@@ -217,39 +218,35 @@ export default function HeroBannerAnimated() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className='text-[20vw] font-semibold tracking-tight text-right w-full max-sm:text-[28vw]'
+                className='text-[20vw] font-semibold tracking-tight text-right w-full max-md:text-[28vw]'
               >
                 UI
               </motion.p>
 
              <motion.p
-  initial={{ opacity: 0 }}
+ initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-  className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-sm:text-[3vw] max-sm:bottom-[4vw]'
+  className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-xl:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <span className='max-md:hidden'>
-    Explore The Space
-  </span>
+  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
+    Explore All Effects
+  </Link>
 
-  <span className='hidden max-sm:text-sm max-md:text-lg max-md:block'>
-    Open on desktop for the full effect
-  </span>
-
-  <Play className='w-4 h-4 max-md:hidden' fill='#ECE4B4' />
+  <Play className='w-4 h-4 max-xl:hidden' fill='#ECE4B4' />
 </motion.p>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
-                className='flex absolute bottom-[6vw] left-[2vw] items-center gap-[2vw] max-sm:bottom-[10vw] max-sm:left-[3vw]'
+                className='flex absolute bottom-[6vw] left-[2vw] items-center gap-[2vw] max-md:bottom-[10vw] max-md:left-[3vw]'
               >
-                <div className='w-[.3vw] ml-[3vw] space-y-[.2vw] h-[5vw] max-sm:w-[.6vw] max-sm:ml-[4vw] max-sm:h-[9vw] max-sm:space-y-[.5vw]'>
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
+                <div className='w-[.3vw] ml-[3vw] space-y-[.2vw] h-[5vw] max-md:w-[.6vw] max-md:ml-[4vw] max-md:h-[9vw] max-md:space-y-[.5vw]'>
+                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-md:h-[1.4vw]' />
                   <div className='w-full h-full bg-[#ECE4B4]' />
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
+                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-md:h-[1.4vw]' />
+                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-md:h-[1.4vw]' />
                 </div>
               </motion.div>
             </motion.div>
@@ -288,12 +285,9 @@ export default function HeroBannerAnimated() {
         {isMobile && (
           <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
             <div className="flex max-w-sm flex-col items-center gap-3 text-[#ECE4B4]">
-              <p className="text-[11vw] font-light leading-none tracking-tight uppercase">
+              <p className="text-[8vw] font-light leading-none tracking-tight uppercase">
                 Open on desktop
-              </p>
-              <p className="text-sm uppercase tracking-[0.3em] text-[#ECE4B4]/40">
-                Hero Banner
-              </p>
+              </p>            
               <p className="text-sm leading-relaxed text-[#ECE4B4]/60">
                 For the full room, video, and immersive motion experience, view this scene on a larger screen.
               </p>
