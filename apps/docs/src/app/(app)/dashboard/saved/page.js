@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { effectCategories, getEffectCategory } from "@/lib/categories";
+import { emitWishlistChanged } from "@/lib/wishlistEvents";
 
 function getEffectCategories(effect) {
   return effect.categories?.length
@@ -57,6 +58,8 @@ export default function SavedPage() {
       } else {
         loadSavedEffects();
       }
+
+      emitWishlistChanged(data.saved);
     } catch (err) {
       console.error(err);
     }
@@ -118,7 +121,7 @@ export default function SavedPage() {
           Saved Effects
         </h1>
 
-        <p className="text-zinc-400 mt-2">
+        <p className="text-white mt-2">
           Your wishlist of saved effects.
         </p>
       </div>
@@ -134,7 +137,7 @@ export default function SavedPage() {
                 type="button"
                 onClick={() => setActiveCategory(category.id)}
                 className={`
-                  px-7 py-[.8vw] rounded-full border transition
+                  px-7 py-[.8vw] max-sm:py-[2vw] rounded-full border transition
                   ${active
                     ? "bg-white text-black border-white"
                     : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
@@ -170,7 +173,7 @@ export default function SavedPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-2 max-md:grid-cols-1">
+        <div className="grid grid-cols-3 gap-6 max-md:grid-cols-2 max-sm:grid-cols-1 max-sm:gap-12">
           {filteredEffects.map((effect) => (
             <EffectCard
               key={effect.id}

@@ -33,6 +33,8 @@ const allowedIframeSources = [
   "https://*.codepen.io",
   "https://*.codepen.dev",
   "https://challenges.cloudflare.com",
+  "https://www.google.com",
+  "https://recaptcha.google.com",
 ].join(" ");
 
 /** @type {import('next').NextConfig} */

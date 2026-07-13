@@ -8,6 +8,7 @@ import WebsiteButton from "@/components/WebsiteComps/Button";
 import Input from "@/components/animated-form/Input";
 import PhoneInput from "@/components/animated-form/PhoneInput";
 import Textarea from "@/components/animated-form/Textarea";
+import CustomVerifyCheckbox from "@/components/WebsiteComps/Recaptcha/CustomVerifyCheckbox";
 import { validateForm } from "@/lib/form-validation";
 
 
@@ -135,6 +136,9 @@ function CustomAnimationFormModalInner() {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [status, setStatus] = useState("idle");
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaError, setCaptchaError] = useState("");
 
   const isSubmitting = status === "submitting";
   const isSuccess = status === "success";
@@ -188,6 +192,9 @@ function CustomAnimationFormModalInner() {
       setErrors({});
       setServerError("");
       setStatus("idle");
+      setCaptchaVerified(false);
+      setCaptchaToken(null);
+      setCaptchaError("");
     }, 500);
 
     return () => window.clearTimeout(timeoutId);
@@ -221,6 +228,12 @@ function CustomAnimationFormModalInner() {
 
     if (Object.keys(nextErrors).length > 0) return;
 
+    if (!captchaToken) {
+      setCaptchaError("Please verify you're not a robot.");
+      return;
+    }
+
+    setCaptchaError("");
     setStatus("submitting");
 
     try {
@@ -234,6 +247,7 @@ function CustomAnimationFormModalInner() {
           email: values.email.trim(),
           number: values.number.trim(),
           message: values.message.trim(),
+          recaptchaToken: captchaToken,
         }),
       });
 
@@ -241,6 +255,8 @@ function CustomAnimationFormModalInner() {
 
       if (!response.ok) {
         setStatus("idle");
+        setCaptchaVerified(false);
+        setCaptchaToken(null);
         // Field-level errors (e.g. the server-side blocked-domain check) land
         // on their inputs; the banner is only for non-field failures.
         if (data?.errors && Object.keys(data.errors).length > 0) {
@@ -314,7 +330,7 @@ function CustomAnimationFormModalInner() {
             </button>
 
             <div
-              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl max-md:h-[75vh] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
+              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl h-[80vh] max-md:h-[75vh] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
               onWheelCapture={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
@@ -335,14 +351,14 @@ function CustomAnimationFormModalInner() {
             <div className="relative z-10">
               <h3
                 id="custom-animation-form-title"
-                className="text-[3vw] leading-none max-md:text-[8vw]"
+                className="text-[3vw] leading-none max-sm:text-[8vw] max-md:text-[5vw]"
               >
                 {isSuccess
                   ? "Request sent."
                   : "Request a Custom Animation"}
               </h3>
 
-              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-md:text-[4vw]!">
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-sm:text-[4vw]! max-md:text-[2.2vw]!">
                 {isSuccess
                   ? "We received your request. Closing this window now."
                   : "Tell us what interaction, loader, transition, cursor, or WebGL detail you want. We will review it and get back to you."}
@@ -454,6 +470,21 @@ function CustomAnimationFormModalInner() {
                       {serverError}
                     </div>
                   )}
+
+                  <div className="col-span-2 max-md:col-span-1">
+                    <CustomVerifyCheckbox
+                      action="custom_animation_form"
+                      checked={captchaVerified}
+                      onChange={(verified, token) => {
+                        setCaptchaVerified(verified);
+                        setCaptchaToken(token);
+                        if (verified) setCaptchaError("");
+                      }}
+                    />
+                    {captchaError && (
+                      <p className="mt-2 text-sm text-red-300">{captchaError}</p>
+                    )}
+                  </div>
 
                   <div className="col-span-2 mt-4 flex items-center gap-4 max-md:col-span-1 max-md:flex-col max-md:items-start">
                     <WebsiteButton

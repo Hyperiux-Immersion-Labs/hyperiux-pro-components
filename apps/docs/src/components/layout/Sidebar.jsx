@@ -293,6 +293,24 @@ export function Sidebar({
     [sidebarEffects]
   );
 
+  // Fallback for routes (e.g. /dashboard) that mount Sidebar without ever
+  // computing/passing `effectCounts` from the server.
+  const computedCategoryCounts = useMemo(() => {
+    const counts = {};
+
+    for (const effect of sidebarEffects) {
+      const cats = effect.categories?.length
+        ? effect.categories
+        : [effect.category].filter(Boolean);
+
+      for (const cat of cats) {
+        counts[cat] = (counts[cat] || 0) + 1;
+      }
+    }
+
+    return counts;
+  }, [sidebarEffects]);
+
   const navigateOverview = (event) => {
     event?.preventDefault();
 
@@ -460,6 +478,7 @@ const navigateLegal = (event, href) => {
                 {effectCategories.map((category) => {
                   const count =
                     effectCounts[category.id] ??
+                    computedCategoryCounts[category.id] ??
                     (category.id === "featured" ? featuredCount : 0);
 
                   const isActive = currentCategory === category.id;

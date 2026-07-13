@@ -3,9 +3,14 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 import { getEffectCategoryHref } from "@/lib/categories";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const SIDEBAR_EXPANDED_STORAGE_KEY = "hyperiux-sidebar-expanded";
 

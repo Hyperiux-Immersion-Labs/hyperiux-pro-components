@@ -10,6 +10,7 @@ export default function TextStreamComp({ items = [] }) {
   const trackRef = useRef(null);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
+  const touchStartYRef = useRef(null);
 
   const [copyCount, setCopyCount] = useState(2);
   const isMobile = useIsMobile();
@@ -122,6 +123,25 @@ export default function TextStreamComp({ items = [] }) {
         applyScrollMotion(delta);
       };
 
+      const handleTouchStart = (event) => {
+        touchStartYRef.current = event.touches[0]?.clientY ?? null;
+      };
+
+      const handleTouchMove = (event) => {
+        const nextTouchY = event.touches[0]?.clientY ?? null;
+
+        if (touchStartYRef.current == null || nextTouchY == null) {
+          return;
+        }
+
+        applyScrollMotion(touchStartYRef.current - nextTouchY);
+        touchStartYRef.current = nextTouchY;
+      };
+
+      const handleTouchEnd = () => {
+        touchStartYRef.current = null;
+      };
+
       startAnimation();
 
       gsap.ticker.add(tick);
@@ -140,12 +160,32 @@ export default function TextStreamComp({ items = [] }) {
         passive: true,
       });
 
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+
+      container.addEventListener("touchmove", handleTouchMove, {
+        passive: true,
+      });
+
+      container.addEventListener("touchend", handleTouchEnd, {
+        passive: true,
+      });
+
+      container.addEventListener("touchcancel", handleTouchEnd, {
+        passive: true,
+      });
+
       return () => {
         resizeObserver.disconnect();
 
         window.removeEventListener("resize", startAnimation);
         window.removeEventListener("wheel", handleWheel);
         window.removeEventListener("scroll", handleScroll);
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleTouchMove);
+        container.removeEventListener("touchend", handleTouchEnd);
+        container.removeEventListener("touchcancel", handleTouchEnd);
 
         window.clearTimeout(scrollTimeoutRef.current);
 
@@ -163,7 +203,7 @@ export default function TextStreamComp({ items = [] }) {
   if (!items.length) return null;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[100dvh] min-h-[100dvh]">
       <div className="w-[45%] flex max-md:w-[30%] max-xl:w-[35%] items-center justify-end pr-2">
         <p className="max-md:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
           Hyperiux
@@ -172,7 +212,7 @@ export default function TextStreamComp({ items = [] }) {
 
       <div
         ref={containerRef}
-        className="relative w-[55%] max-xl:w-[65%] max-md:w-[70%] h-full overflow-hidden "
+        className="relative w-[55%] max-xl:w-[65%] max-md:w-[70%] h-full overflow-hidden touch-pan-y"
         style={{
           maskImage: revealMask,
           WebkitMaskImage: revealMask,
@@ -191,17 +231,17 @@ export default function TextStreamComp({ items = [] }) {
             >
               {items.map((text, i) => (
                 <div
-  key={`${copyIndex}-${i}`}
-  className="
-    py-1
-    pl-2
-    whitespace-nowrap
-    max-xl:whitespace-normal
-    max-xl:wrap-break-word
-    max-md:pr-3
-    max-xl:max-w-full
-  "
->
+                  key={`${copyIndex}-${i}`}
+                  className="
+                    py-1
+                    pl-2
+                    whitespace-nowrap
+                    max-xl:whitespace-normal
+                    max-xl:break-words
+                    max-md:pr-3
+                    max-xl:max-w-full
+                  "
+                >
                   {text}
                 </div>
               ))}

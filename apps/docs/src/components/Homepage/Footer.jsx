@@ -142,7 +142,7 @@ export default function Footer() {
         {webglMounted && <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />}
       </div> :
         <div className="absolute inset-0 top-0 z-1 pointer-events-auto w-full h-[30%]">
-          <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.png"} alt="footer-img" />
+          <Image loading="lazy" className="w-full h-full object-cover" width={400} height={800} src={"/assets/homepage/footer-bg-img-mob.webp"} alt="footer-img" />
         </div>}
       <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-3">
 

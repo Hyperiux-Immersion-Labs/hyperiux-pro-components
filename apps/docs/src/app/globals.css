@@ -4,32 +4,32 @@
 @import "./CustomCss.css";
 
 @font-face {
-  font-family: 'AvenirNextCyr';
-  src: url('/assets/fonts/AvenirNextCyr-Thin.woff2') format('woff2');
+  font-family: "AvenirNextCyr";
+  src: url("/assets/fonts/AvenirNextCyr-Thin.woff2") format("woff2");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'AvenirNextCyr';
-  src: url('/assets/fonts/AvenirNextCyr-Regular.woff2') format('woff2');
+  font-family: "AvenirNextCyr";
+  src: url("/assets/fonts/AvenirNextCyr-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'AvenirNextCyr';
-  src: url('/assets/fonts/AvenirNextCyr-Medium.woff2') format('woff2');
+  font-family: "AvenirNextCyr";
+  src: url("/assets/fonts/AvenirNextCyr-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'AvenirNextCyr';
-  src: url('/assets/fonts/AvenirNextCyr-Demi.woff2') format('woff2');
+  font-family: "AvenirNextCyr";
+  src: url("/assets/fonts/AvenirNextCyr-Demi.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -47,7 +47,7 @@
   --muted: #d2d2d2;
   --grey: #272727;
   --light-grey: #939393;
-  --font-avenier: 'AvenirNextCyr', system-ui, sans-serif;
+  --font-avenier: "AvenirNextCyr", system-ui, sans-serif;
   --font-avenir-letter-spacing: -0.01em;
   /* Global announcement bar height - body top padding stays constant */
   --announcement-h: 36px;
@@ -101,7 +101,7 @@ html {
   scroll-behavior: auto;
 }
 
-.font-heading{
+.font-heading {
   font-family: var(--font-laygrotesk), system-ui, sans-serif;
   line-height: 1.2;
 }
@@ -110,7 +110,7 @@ body {
   width: 100vw;
   overflow-x: hidden;
   font-family: var(--font-avenier);
-   letter-spacing: var(--font-avenir-letter-spacing);
+  letter-spacing: var(--font-avenir-letter-spacing);
   line-height: 1.5;
   font-size: 16px;
   color-scheme: dark;
@@ -212,12 +212,12 @@ h4 {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ff5f00 0%, #E84002 100%);
+  background: linear-gradient(180deg, #ff5f00 0%, #e84002 100%);
   border-radius: 999px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff5f00 0%, #E84002 100%);
+  background: linear-gradient(180deg, #ff5f00 0%, #e84002 100%);
 }
 
 ::selection {
@@ -232,8 +232,6 @@ h4 {
 /* -------------------------------------------------------------------------- */
 /* Clerk Auth Shared Styling */
 /* -------------------------------------------------------------------------- */
-
-
 
 .hyperiux-clerk .cl-rootBox {
   width: 100%;
@@ -369,15 +367,15 @@ h4 {
   font-weight: 500 !important;
   line-height: 1.25rem !important;
   box-shadow: none !important;
-  transition:
-    background-color 0.25s ease,
-    opacity 0.25s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .hyperiux-clerk .cl-formButtonPrimary:hover,
 .hyperiux-clerk .cl-formButtonPrimary:focus {
-  background: #ff9253 !important;
+  background: #ffffff !important;
+  color: #0e0e0e !important;
   box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
 }
 
 .hyperiux-clerk .cl-formButtonPrimary:disabled {
@@ -457,7 +455,6 @@ h4 {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
-
 /* OTP / code fields */
 
 .hyperiux-clerk .cl-otpCodeFieldInput {
@@ -480,7 +477,31 @@ h4 {
 .hyperiux-clerk .cl-formFieldRow__signOutOfOtherSessions {
   display: none !important;
 }
-
+.cl-alternativeMethodsBlockButton {
+  padding: 1vw 0vw !important;
+}
+.cl-internal-arrfyj {
+  margin-top: 1vw;
+}
+.cl-internal-2l8bgd {
+  margin-bottom: 2vw;
+}
+.cl-formFieldErrorText{
+  display: flex;
+  align-items: center;
+}
+.cl-internal-1u45tiz:hover{
+  background: #ffffff !important;
+  color: #0e0e0e !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
+}
+.cl-internal-1u45tiz:hover{
+  background: #ffffff !important;
+  color: #0e0e0e !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
+}
 /* Autofill */
 
 .hyperiux-clerk input:-webkit-autofill,
@@ -502,10 +523,9 @@ h4 {
 .hyperiux-clerk input {
   color-scheme: dark;
 }
-.cl-internal-d4j0pk > :first-of-type{
+.cl-internal-d4j0pk > :first-of-type {
   padding: 0 !important;
 }
-
 
 /* -------------------------------------------------------------------------- */
 /* Responsive */
@@ -518,6 +538,15 @@ h4 {
 
   .hyperiux-clerk .cl-cardBox {
     border-radius: 1.5rem !important;
+  }
+  .cl-alternativeMethodsBlockButton {
+    padding: 2.5vw 5vw !important;
+  }
+  .cl-internal-arrfyj {
+    margin-top: 2vw;
+  }
+  .cl-internal-2l8bgd {
+    margin-bottom: 3vw;
   }
 }
 
@@ -543,8 +572,15 @@ h4 {
   .hyperiux-clerk .cl-card {
     padding: 1.5rem !important;
   }
-
-
+  .cl-alternativeMethodsBlockButton {
+    padding: 3vw 5vw !important;
+  }
+  .cl-internal-arrfyj {
+    margin-top: 4vw;
+  }
+  .cl-internal-2l8bgd {
+    margin-bottom: 4vw;
+  }
 }
 
 @media (max-width: 542px) {
@@ -589,4 +625,12 @@ html.loader-first-visit body {
 .effect-card-shell.card-entered {
   animation: card-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--card-delay, 0s);
+}
+
+/* reCAPTCHA v3's required "protected by" badge - shrunk and raised above modals. */
+.grecaptcha-badge {
+  z-index: 9999 !important;
+  transform: scale(0.8) translateX(-18%);
+
+  transform-origin: bottom right;
 }

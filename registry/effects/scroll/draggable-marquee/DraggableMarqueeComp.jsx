@@ -10,10 +10,10 @@ const DraggableMarqueeComp = ({
     items = [],
     speed = 1,
     repeatCount = 3,
-    gapClassName = "gap-6 max-xl:gap-[5vw]",
+    gapClassName = "gap-6",
     className = "",
     trackClassName = "",
-    itemClassName = "rounded-2xl max-xl:rounded-[6vw]",
+    itemClassName = "rounded-2xl",
     pauseOnHover = false,
     renderItem,
 
@@ -298,7 +298,7 @@ const DraggableMarqueeComp = ({
                 {duplicatedItems.map((item, index) => (
                     <div
                         key={`${item?.id || item?.src || "item"}-${index}`}
-                        className={`shrink-0 max-xl:rounded-[6vw] max-md:rounded-[10vw] overflow-hidden ${itemClassName}`}
+                        className={`shrink-0 ${itemClassName}`}
                     >
                         {renderItem ? (
                             renderItem(item, index % items.length)
@@ -308,7 +308,7 @@ const DraggableMarqueeComp = ({
                                 alt={item.alt || "marquee-item"}
                                 width={item.width || 400}
                                 height={item.height || 500}
-                                className={`w-[24vw] max-xl:w-[45vw] max-xl:h-[42vh] h-[30vw] max-md:w-[75vw] max-md:h-[100vw] object-cover`}
+                                className={`${item.imageClassName || "h-auto w-auto object-cover"} max-md:w-[320px] max-md:h-105`}
                             />
                         )}
                     </div>

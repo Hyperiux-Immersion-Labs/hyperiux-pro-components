@@ -177,7 +177,7 @@ export default function CardDriftComp({
  >
 
  <h1
- className={`absolute inset-0 flex items-center justify-center text-9xl max-md:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
+ className={`absolute inset-0 flex items-center justify-center text-9xl max-xl:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
  >
  Draggable <br /> Testimonial
  </h1>
@@ -200,7 +200,7 @@ export default function CardDriftComp({
 function Card({ item, cardBg, cardTextColor, barBg }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
- <div className={`w-96 max-sm:w-42 max-md:w-60 ${cardBg} ${cardTextColor}`}>
+ <div className={`w-96 max-sm:w-42 max-xl:w-60 ${cardBg} ${cardTextColor}`}>
  {/* Top bar */}
  <div
  className={`flex justify-between text-xs px-3 max-sm:px-2 py-1 ${barBg}`}
@@ -210,7 +210,7 @@ function Card({ item, cardBg, cardTextColor, barBg }) {
  </div>
 
  {/* Content */}
- <div className="p-6 max-md:p-3  text-lg max-md:text-lg max-sm:text-base leading-none font-light">
+ <div className="p-6 max-xl:p-3  text-lg max-xl:text-lg max-sm:text-base leading-none font-light">
  {item.text}
  </div>
  </div>
