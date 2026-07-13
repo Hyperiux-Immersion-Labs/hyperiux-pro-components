@@ -15,6 +15,17 @@ const isProtectedRoute = createRouteMatcher([
   "/api/stripe/sync-session(.*)",
 ]);
 
+// Marketing pages render with no ClerkProvider and no Clerk hooks (see the
+// (marketing) route group), so there is nothing on these routes for Clerk
+// middleware to protect or hydrate against. Skipping clerkMiddleware here
+// avoids its session-verification work (and the stale-UAT handshake risk
+// below) on every visit to the pages that actually need to be fast.
+const isMarketingRoute = createRouteMatcher([
+  "/",
+  "/docs(.*)",
+  "/legal(.*)",
+]);
+
 const withClerk = clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
@@ -34,6 +45,10 @@ export default async function middleware(request) {
     const url = new URL(request.url);
     url.host = host.replace(/^www\./, "");
     return NextResponse.redirect(url.toString(), 301);
+  }
+
+  if (isMarketingRoute(request)) {
+    return NextResponse.next();
   }
 
   const clientUat = request.cookies.get("__client_uat")?.value;
