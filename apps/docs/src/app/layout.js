@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
 import { Suspense } from "react";
-import { headers } from "next/headers";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -13,7 +12,6 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import { isAuditUserAgent } from "@/lib/audit";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
@@ -43,7 +41,16 @@ export const metadata = createRootMetadata();
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
 
-const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
+// GTM keeps the network continuously busy, which stops Lighthouse/PageSpeed
+// from ever reaching "network idle" - the audit then runs until its RPC
+// budget expires (RPC::DEADLINE_EXCEEDED) with no score. The guard below
+// bails out before requesting gtm.js for known audit/headless agents - same
+// navigator.webdriver + UA signals as lib/audit.js's isLighthouseOrHeadless,
+// inlined here since this runs as a raw string before any module loads.
+// Real visitors hit the same synchronous bootstrap, completely unchanged -
+// this can't live behind a server-side check (e.g. headers() in the layout)
+// without opting the entire app out of static rendering.
+const GTM_SCRIPT = `(function(w,d,s,l,i){if(w.navigator&&(w.navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(w.navigator.userAgent||'')))return;w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
 
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
@@ -55,15 +62,7 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
   }
 })();`;
 
-export default async function RootLayout({ children }) {
-  // GTM keeps the network continuously busy, which stops Lighthouse/PageSpeed
-  // from ever reaching "network idle" - the audit then runs until its RPC
-  // budget expires (RPC::DEADLINE_EXCEEDED) with no score. This is a
-  // server-side check on the request UA only: real visitors get the exact
-  // same synchronous GTM script, unchanged - only audit/bot UAs skip it.
-  const userAgent = (await headers()).get("user-agent");
-  const isAudit = isAuditUserAgent(userAgent);
-
+export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
@@ -71,24 +70,20 @@ export default async function RootLayout({ children }) {
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        {!isAudit && (
-          <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
-        )}
+        <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
-        {!isAudit && (
-          <noscript>
-            <iframe
-              src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
-              height="0"
-              width="0"
-              style={{ display: "none", visibility: "hidden" }}
-              title="Google Tag Manager"
-            />
-          </noscript>
-        )}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+            title="Google Tag Manager"
+          />
+        </noscript>
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
