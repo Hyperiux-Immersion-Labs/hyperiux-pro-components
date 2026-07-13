@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import RandomBlur from "./RandomBlur";
+import { useFadeUp } from "../Animations/gsapAnimations";
 // Three.js footer background plane - own chunk, mounted only when the footer
 // nears the viewport (an eager import forces three.js onto the main bundle).
 const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
@@ -83,11 +84,22 @@ function FooterBlockLink({ href, children }) {
 }
 
 export default function Footer() {
+  const footerRef = useRef(null);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
   const [webglMounted, setWebglMounted] = useState(false);
   const { isMounted, isMobile } = useIsMobile();
+
+  // Footer is a next/dynamic + Suspense boundary streamed in after the
+  // initial shell, so Hero's page-wide useFadeUp() (no containerRef, scans
+  // the whole document) can run before this .fadeup content even exists in
+  // the DOM - it silently never gets a fade-in, and if it races the other
+  // way, mutating a node an unrelated component's hydration hasn't reached
+  // yet trips a hydration-mismatch warning. Scoping the call here means it
+  // only runs once Footer itself has actually mounted, which is timing-safe
+  // either way.
+  useFadeUp(footerRef);
 
   useEffect(() => {
     if (isMobile) return;
@@ -136,7 +148,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
+    <footer ref={footerRef} className="relative z-200 py-[7vw]  w-full overflow-hidden max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]">
 
       {!isMobile ? <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
         {webglMounted && <FlowFieldHero texturePath="/assets/textures/orange-1.webp" />}
