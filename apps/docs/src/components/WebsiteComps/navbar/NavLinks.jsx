@@ -1,29 +1,30 @@
 'use client'
 
 import Link from 'next/link'
-import { AnimatePresence, motion } from 'motion/react'
+import { ChevronDown } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
 import { vaultLinks } from '@/utils/Links'
 import NavDropdown from './NavDropdown'
 
 export default function NavLinks({
     activeItem,
-    isLoaded,
-    user,
     onNavEnter,
     onNavLeave,
     isHighlighted,
 }) {
+    const reduceMotion = useReducedMotion()
+
     return (
         <div
-            className={`relative ${isLoaded && user?.publicMetadata?.plan !== 'pro' ? 'ml-[13.5vw]' : ''}`}
+            className="relative ml-[13.5vw]"
             onMouseLeave={onNavLeave}
         >
             <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
                 {vaultLinks.map(({ label, href, dropdown }, index) => {
                     const highlighted = isHighlighted(index, dropdown)
                     const isExternal = href.startsWith('http')
-                    const itemClassName = `relative z-10 rounded-full p-[0.4vw] px-[1.2vw] text-[1.15vw] font-medium tracking-wide transition-colors duration-300 ${
+                    const itemClassName = `relative z-10 rounded-full p-[0.4vw] px-[1.2vw] text-[1.15vw] font-medium tracking-wide transition-colors duration-300 motion-reduce:transition-none ${
                         highlighted ? 'text-foreground' : 'text-white/70'
                     }`
 
@@ -31,7 +32,11 @@ export default function NavLinks({
                         <AnimatePresence>
                             {highlighted && (
                                 <motion.span
-                                    layoutId="nav-pill"
+                                    // Without layoutId the pill cross-fades in
+                                    // place rather than sliding between items.
+                                    layoutId={
+                                        reduceMotion ? undefined : 'nav-pill'
+                                    }
                                     className="absolute inset-0 -z-10 rounded-full bg-primary"
                                     initial={{
                                         opacity: 0,
@@ -42,10 +47,17 @@ export default function NavLinks({
                                     exit={{
                                         opacity: 0,
                                     }}
-                                    transition={{
-                                        stiffness: 0,
-                                        damping: 20,
-                                    }}
+                                    transition={
+                                        reduceMotion
+                                            ? {
+                                                  duration: 0.2,
+                                                  ease: 'easeOut',
+                                              }
+                                            : {
+                                                  stiffness: 0,
+                                                  damping: 20,
+                                              }
+                                    }
                                 />
                             )}
                         </AnimatePresence>
@@ -59,7 +71,14 @@ export default function NavLinks({
                                 onMouseEnter={() => onNavEnter(index, dropdown)}
                                 className={itemClassName}
                             >
-                                {label}
+                                <span className="inline-flex items-center gap-[0.3vw]">
+                                    {label}
+                                    <ChevronDown
+                                        className={`size-[0.9vw] transition-transform duration-300 motion-reduce:transition-none ${
+                                            highlighted ? 'rotate-180' : ''
+                                        }`}
+                                    />
+                                </span>
                                 {pill}
                             </button>
                         )

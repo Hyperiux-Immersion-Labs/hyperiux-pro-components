@@ -19,6 +19,7 @@ import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
+import { prefersReducedMotion } from "@/lib/motion";
 import gsap from "gsap";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
@@ -48,10 +49,10 @@ function isLoaderActive() {
 
 // The plates run a continuous WebGL render loop, so the main thread never goes
 // idle - that's exactly what makes Lighthouse/PageSpeed time out
-// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
-// user prefers reduced motion, skip the Canvas entirely and show the static
-// dark backdrop instead. Real users still get the full animated scene.
-function shouldSkipRealtime3D() {
+// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, skip the
+// Canvas entirely and show the static dark backdrop instead. Real users always
+// get the scene; reduced-motion users get it as a single still frame.
+function isAuditEnvironment() {
   if (typeof window === "undefined") return false;
 
   // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode,
@@ -60,16 +61,8 @@ function shouldSkipRealtime3D() {
 
   const ua = navigator.userAgent || "";
 
-  if (
-    /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i.test(
-      ua
-    )
-  ) {
-    return true;
-  }
-
-  return (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  return /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i.test(
+    ua
   );
 }
 
@@ -206,7 +199,7 @@ function makeGlowShaderMaterial(leftColorRGB, rightColorRGB) {
   });
 }
 
-function ParametricPlates({ isMobile }) {
+function ParametricPlates({ isMobile, isStatic = false }) {
   const count = CONFIG.count;
   const radius = CONFIG.radius;
 
@@ -395,15 +388,18 @@ function ParametricPlates({ isMobile }) {
       accumulator.current -= interval;
     }
 
+    // isStatic renders exactly one frame, so it has to be the settled pose:
+    // rotation frozen at t=0 and the hover lerps snapped straight to target.
     const time = clock.getElapsedTime();
-    const rotation = time * rotationSpeed;
+    const rotation = isStatic ? 0 : time * rotationSpeed;
+    const settle = isStatic ? 1 : hoverSpeed;
 
     if (main.parent) {
       main.parent.updateWorldMatrix(true, false);
       parentMatrix.copy(main.parent.matrixWorld);
     }
 
-    const mouseActive = pointer.x > -2;
+    const mouseActive = !isStatic && pointer.x > -2;
     let hovId = -1;
 
     if (mouseActive) {
@@ -448,8 +444,12 @@ function ParametricPlates({ isMobile }) {
       }
     }
 
+    // The instance matrices are only ever written here, so the one static frame
+    // must upload them even though nothing has "changed" since init.
     let matrixDirty =
-      hovId !== -1 || Math.abs(rotation - prevRotation.current) > 0.00001;
+      isStatic ||
+      hovId !== -1 ||
+      Math.abs(rotation - prevRotation.current) > 0.00001;
 
     prevRotation.current = rotation;
 
@@ -464,16 +464,12 @@ function ParametricPlates({ isMobile }) {
       const influence =
         hovId === -1 ? 0 : Math.exp(-(dist ** 2) / (2 * hoverSigma ** 2));
 
-      glowArr[i] = lerp(glowArr[i], influence, hoverSpeed);
+      glowArr[i] = lerp(glowArr[i], influence, settle);
 
-      scaleArr[i] = lerp(
-        scaleArr[i],
-        1 + (hoverScale - 1) * influence,
-        hoverSpeed
-      );
+      scaleArr[i] = lerp(scaleArr[i], 1 + (hoverScale - 1) * influence, settle);
 
-      tiltXArr[i] = lerp(tiltXArr[i], localTiltX * (1 - influence), hoverSpeed);
-      tiltYArr[i] = lerp(tiltYArr[i], localTiltY * (1 - influence), hoverSpeed);
+      tiltXArr[i] = lerp(tiltXArr[i], localTiltX * (1 - influence), settle);
+      tiltYArr[i] = lerp(tiltYArr[i], localTiltY * (1 - influence), settle);
 
       const scaleDelta = Math.abs(scaleArr[i] - prevScaleArr[i]);
 
@@ -589,8 +585,13 @@ export default function GlowingPlates({
   const [inView, setInView] = useState(true);
 
   // ssr:false (dynamic import) means this only ever renders client-side, so the
-  // lazy initializer can read navigator/matchMedia with no hydration mismatch.
-  const [skip3D] = useState(() => shouldSkipRealtime3D());
+  // lazy initializers can read navigator/matchMedia with no hydration mismatch.
+  const [skip3D] = useState(() => isAuditEnvironment());
+
+  // Reduced motion still gets the scene - just frozen. frameloop="demand" draws
+  // one frame and then leaves the GPU alone, so there is no render loop and
+  // nothing on screen moves.
+  const [staticFrame] = useState(() => prefersReducedMotion());
 
   useEffect(() => {
     const el = containerRef.current;
@@ -625,6 +626,11 @@ export default function GlowingPlates({
     fadePlayedRef.current = true;
 
     gsap.killTweensOf(el);
+
+    if (staticFrame) {
+      gsap.set(el, { opacity: 1 });
+      return;
+    }
 
     fadeTweenRef.current = gsap.fromTo(
       el,
@@ -755,13 +761,16 @@ export default function GlowingPlates({
         {skip3D ? null : (
         <Canvas
           className="h-full w-full"
-          frameloop={inView ? "always" : "never"}
+          frameloop={staticFrame ? "demand" : inView ? "always" : "never"}
           dpr={CONFIG.canvasDpr}
           shadows={!isMobile ? { type: THREE.PCFShadowMap } : false}
-          onCreated={() => {
+          onCreated={({ invalidate }) => {
             requestAnimationFrame(() => {
               requestAnimationFrame(() => {
                 canvasReadyRef.current = true;
+                // In demand mode the EXR environment resolves after mount; ask
+                // for the frame explicitly rather than trusting Suspense to.
+                if (staticFrame) invalidate();
                 playFadeIfReady();
               });
             });
@@ -806,6 +815,7 @@ export default function GlowingPlates({
                 <ParametricPlates
                   key={isMobile ? "mobile" : "desktop"}
                   isMobile={isMobile}
+                  isStatic={staticFrame}
                 />
               </group>
             </group>

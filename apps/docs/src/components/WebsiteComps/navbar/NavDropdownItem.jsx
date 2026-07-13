@@ -6,6 +6,7 @@ import Image from 'next/image'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
 
+import { prefersReducedMotion } from '@/lib/motion'
 import { DROPDOWN_TEXT_ANIM } from './constants'
 import { useIsomorphicLayoutEffect } from './utils'
 
@@ -34,7 +35,37 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
         }
     }, [])
 
+    // Reduced motion skips SplitText entirely, so there are no chars to drive:
+    // the visible label is tinted in place and the hover copy stays hidden.
+    const tintLabel = useCallback((color) => {
+        const defaultEl = defaultLabelRef.current
+        if (!defaultEl) return
+
+        gsap.killTweensOf(defaultEl)
+
+        gsap.to(defaultEl, {
+            color,
+            duration: DROPDOWN_TEXT_ANIM.duration,
+            ease: DROPDOWN_TEXT_ANIM.ease,
+            overwrite: true,
+        })
+    }, [])
+
     const setIdleText = useCallback(() => {
+        if (prefersReducedMotion()) {
+            const defaultEl = defaultLabelRef.current
+            const hoverEl = hoverLabelRef.current
+
+            if (!defaultEl || !hoverEl) return
+
+            gsap.killTweensOf([defaultEl, hoverEl])
+
+            gsap.set(defaultEl, { color: DROPDOWN_TEXT_ANIM.idleColor })
+            gsap.set(hoverEl, { autoAlpha: 0 })
+
+            return
+        }
+
         const chars = getChars()
         if (!chars) return
 
@@ -58,6 +89,11 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
     }, [getChars])
 
     const playEnter = useCallback(() => {
+        if (prefersReducedMotion()) {
+            tintLabel(DROPDOWN_TEXT_ANIM.hoverColor)
+            return
+        }
+
         const chars = getChars()
         if (!chars) return
 
@@ -95,9 +131,14 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 overwrite: true,
             }
         )
-    }, [getChars])
+    }, [getChars, tintLabel])
 
     const playLeave = useCallback(() => {
+        if (prefersReducedMotion()) {
+            tintLabel(DROPDOWN_TEXT_ANIM.idleColor)
+            return
+        }
+
         const chars = getChars()
         if (!chars) return
 
@@ -128,13 +169,18 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
             ease: DROPDOWN_TEXT_ANIM.leaveEase,
             overwrite: true,
         })
-    }, [getChars])
+    }, [getChars, tintLabel])
 
     useIsomorphicLayoutEffect(() => {
         const defaultEl = defaultLabelRef.current
         const hoverEl = hoverLabelRef.current
 
         if (!defaultEl || !hoverEl) return
+
+        if (prefersReducedMotion()) {
+            setIdleText()
+            return
+        }
 
         let defaultSplit = null
         let hoverSplit = null

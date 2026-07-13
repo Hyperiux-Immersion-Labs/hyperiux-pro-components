@@ -1,5 +1,4 @@
 import localFont from "next/font/local";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -79,41 +78,23 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
         <AnnouncementBar />
-        <ClerkProvider
-          waitlistUrl="/waitlist"
-          appearance={{
-            cssLayerName: "clerk",
-            theme: "simple",
-            variables: {
-              colorPrimary: "#ff5f00",
-              colorPrimaryForeground: "#ffffff",
-              colorBackground: "transparent",
-              colorInputBackground: "rgba(255,255,255,0.08)",
-              colorInputText: "#ffffff",
-              colorText: "#ffffff",
-              colorTextSecondary: "rgba(255,255,255,0.55)",
-              colorDanger: "#fecaca",
-              borderRadius: "9999px",
-              fontFamily: "inherit",
-            },
-          }}
-        >
-          <OrganizationJsonLd />
-          <LocalBusiness />
-          <ImageObjectJsonLd />
-          <WebsiteJsonLd />
-          <SoftwareApplicationJsonLd />
-          {children}
-          <Suspense>
-            <CustomAnimationFormModal />
-          </Suspense>
-          <Suspense>
-            <WorkWithHyperiuxModal />
-          </Suspense>
-          <Analytics />
-          <SpeedInsights />
-          <DeferredAnalytics />
-        </ClerkProvider>
+        {/* ClerkProvider deliberately absent here - it lives in
+            (app)/layout.js so marketing routes ship zero Clerk scripts. */}
+        <OrganizationJsonLd />
+        <LocalBusiness />
+        <ImageObjectJsonLd />
+        <WebsiteJsonLd />
+        <SoftwareApplicationJsonLd />
+        {children}
+        <Suspense>
+          <CustomAnimationFormModal />
+        </Suspense>
+        <Suspense>
+          <WorkWithHyperiuxModal />
+        </Suspense>
+        <Analytics />
+        <SpeedInsights />
+        <DeferredAnalytics />
       </body>
     </html>
   );

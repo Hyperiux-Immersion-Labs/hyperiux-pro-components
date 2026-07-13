@@ -4,14 +4,25 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import SplitText from 'gsap/SplitText';
+import { prefersReducedMotion } from '@/lib/motion';
 
 const TEXT_REVEAL_STYLE_PREFIX = 'tfa-style-';
 const SPLIT_CHARACTER_SELECTOR = '.split-chars';
+
+const REDUCED_MOTION_DURATION = 0.4;
+const REDUCED_MOTION_EASE = 'power1.out';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+/**
+ * Scroll-scrubbed character fill - each character warms from `dimColor`
+ * through `primaryColor` to `textColor` as the section passes the viewport.
+ *
+ * Under `prefers-reduced-motion: reduce` the heading still fades in once, but
+ * in `textColor` from the start - no split, no scrubbed character stagger.
+ */
 export function TextFillAnimation({
   text = 'Go cashless, shop & sell virtually, access credit, insurance, and investment products seamlessly with Montra.',
   textColor = '#111111',
@@ -78,6 +89,29 @@ export function TextFillAnimation({
       const textElement = textRef.current;
 
       if (!textElement) {
+        return;
+      }
+
+      // A fade is not motion, so the heading still reveals itself - but in its
+      // final colour, with no split and no scrubbed character stagger.
+      if (prefersReducedMotion()) {
+        gsap.set(textElement, { color: textColor });
+
+        gsap.fromTo(
+          textElement,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: REDUCED_MOTION_DURATION,
+            ease: REDUCED_MOTION_EASE,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 70%',
+              once: true,
+            },
+          }
+        );
+
         return;
       }
 

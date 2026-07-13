@@ -143,7 +143,7 @@ const fragmentShader = `
 `;
 
 function FlowFieldPlane({
-  texturePath = "/assets/textures/orange.png",
+  texturePath = "/assets/textures/orange-1.webp",
   imageResolution = [500, 500],
   mouseLerp = 0.05,
   timeSpeed = 0.0002,
@@ -349,4 +349,7 @@ export default function FlowFieldHero({
   );
 }
 
-useTexture.preload("/assets/textures/orange.png");
+// Must match what the Footer actually renders - the old orange.png preload
+// fetched a 1.6MB texture at page load (module-level preloads fire on bundle
+// eval, not on mount) that nothing displayed. The webp is 16KB.
+useTexture.preload("/assets/textures/orange-1.webp");

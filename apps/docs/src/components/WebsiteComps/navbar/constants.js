@@ -10,6 +10,18 @@ export const MENU_ANIM = {
     widthEase: 'power2.out',
 }
 
+// Panes cross-fade in place instead of sliding: `distance: 0` removes the
+// travel, while the durations keep the swap and resize eased rather than
+// instant. Opacity and box size read as a state change, not as movement.
+export const REDUCED_MENU_ANIM = {
+    ...MENU_ANIM,
+    duration: 0.2,
+    distance: 0,
+    fade: true,
+    heightDuration: 0.2,
+    widthDuration: 0.2,
+}
+
 export const DROPDOWN_TEXT_ANIM = {
     duration: 0.3,
     leaveDuration: 0.3,
