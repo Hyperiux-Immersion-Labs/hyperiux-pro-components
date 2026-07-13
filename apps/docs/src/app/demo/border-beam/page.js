@@ -2,6 +2,7 @@ import HeadAnim from '@/components/Animations/HeadAnim'
 import BorderBeam from '@/components/border-beam'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
+import { getDemoPageMetadata } from '@/lib/demo-metadata'
 
 const propsData = [
   { label: 'size', value: '"md"' },
@@ -83,4 +84,8 @@ export default function Page() {
      
     </>
   )
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("border-beam");
 }
