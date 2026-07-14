@@ -498,6 +498,20 @@ export function EffectDetailContent({
                         }`}
                     />
                   )}
+
+
+                  {!showVideo && (
+                    <>
+                      <div aria-hidden="true" className="absolute inset-0 rounded-[inherit] bg-black/40" />
+                      <div className="absolute bottom-4 right-4 z-10">
+                        <div
+                          aria-label="Loading preview"
+                          role="status"
+                          className="h-8 w-8 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 

@@ -23,6 +23,25 @@ if (typeof window !== "undefined") {
 
 const HERO_ANIMATION_DELAY = 0.4;
 
+const HOMEPAGE_VISITED_KEY = "hyperiux-homepage-visited";
+const FIRST_VISIT_HERO_DELAY = 3;
+
+// First time this session someone lands on "/", give the loader/page more
+// room to settle before the hero intro starts. Every later visit this
+// session (back/forward, reload, revisiting "/") uses the short delay.
+function isFirstHomepageVisitThisSession() {
+  if (typeof window === "undefined") return false;
+
+  const isFirstVisit =
+    window.sessionStorage.getItem(HOMEPAGE_VISITED_KEY) !== "true";
+
+  if (isFirstVisit) {
+    window.sessionStorage.setItem(HOMEPAGE_VISITED_KEY, "true");
+  }
+
+  return isFirstVisit;
+}
+
 export default function Hero() {
   const containerRef = useRef(null);
   const headingRef = useRef(null);
@@ -36,6 +55,9 @@ export default function Hero() {
   useFadeUp();
 
   useEffect(() => {
+    gsap.set(".hero-overlay",{
+      opacity:0,
+    })
     if (typeof window === "undefined") return;
 
     const previousScrollRestoration = window.history.scrollRestoration;
@@ -335,7 +357,15 @@ export default function Hero() {
     // separate "skip waiting" branch needed. This was the LCP element per
     // Lighthouse (elementRenderDelay ~9.6s waiting on the old loader-gated
     // start).
-    delayedCall = gsap.delayedCall(HERO_ANIMATION_DELAY, runAnimation);
+    //
+    // First visit to "/" this session gets a longer delay instead - more
+    // breathing room for the rest of the page/loader to settle before the
+    // hero intro starts. Every later visit uses the short delay above.
+    const heroDelay = isFirstHomepageVisitThisSession()
+      ? FIRST_VISIT_HERO_DELAY
+      : HERO_ANIMATION_DELAY;
+
+    delayedCall = gsap.delayedCall(heroDelay, runAnimation);
 
     return () => {
       delayedCall?.kill();
@@ -352,6 +382,7 @@ export default function Hero() {
   }, []);
 
   return (
+    <>
     <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
@@ -415,8 +446,10 @@ export default function Hero() {
           </ShimmerText>
         </p>
       </div>
-      <div className="hero-overlay"/>
      
     </section>
+      <div className="hero-overlay fixed bg-[#0e0e0e] inset-0 z-99999 pointer-events-none "/>
+    
+    </>
   );
 }
