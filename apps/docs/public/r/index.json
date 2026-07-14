@@ -1476,6 +1476,8 @@
         "@react-three/drei",
         "@react-three/postprocessing",
         "postprocessing",
+        "lucide-react",
+        "motion",
         "gsap",
         "three"
       ],

@@ -527,19 +527,23 @@ useEffect(() => {
  style={{ display:"none" }}
  />
  {isDesktop && (
- <div className="grid-lift-right-controls max-sm:hidden fixed right-4 top-4 z-60 pointer-events-auto">
+ <div className="grid-lift-right-controls max-sm:hidden z-60 pointer-events-auto">
  <LevaPanel
  theme={levaTheme}
  collapsed={{ collapsed: isLevaCollapsed, onChange: setIsLevaCollapsed }}
  oneLineLabels={true}
  flat={false}
- hideCopyButton
+ hideCopyButton 
  />
  </div>
  )}
  </div>
  <style jsx global>{`
  @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+
+ #leva__root .leva-c-kWgxhW {
+  margin-top: 6vw;
+}
 
  .grid-lift-right-controls [class*="TitleBar"] {
    display: none !important;

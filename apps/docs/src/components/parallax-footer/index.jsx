@@ -24,12 +24,19 @@ const ParallaxFooter = () => {
  </p>
  </div>
 
- <div className="flex items-center justify-end w-fit">
+ <div className="flex items-center justify-end w-fit gap-3">
 <Link
   href="/effects"
   className="inline-flex items-center gap-1 rounded-full bg-white px-6 py-3 text-[#1a1a1a] transition-transform hover:scale-105"
 >
   Browse effects
+  <ArrowRight className="h-4 w-4" />
+</Link>
+<Link
+  href="/effects/scroll-effects/parallax-footer"
+  className="inline-flex items-center gap-1 rounded-full bg-white px-6 py-3 text-[#1a1a1a] transition-transform hover:scale-105"
+>
+  Read Article
   <ArrowRight className="h-4 w-4" />
 </Link>
  </div>

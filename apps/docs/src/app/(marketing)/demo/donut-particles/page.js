@@ -22,16 +22,25 @@ const index = () => {
       </div>
 
       <div className="absolute bottom-8 right-10 z-20 max-md:bottom-10 max-w-md max-md:right-4 space-y-2 text-right  max-md:w-[50vw]">
+        <p className="text-white max-md:text-[2.2vw] max-sm:text-[2.8vw] text-[0.8vw] uppercase tracking-[0.28em]">
+          Trace the orbit. The particles will follow.
+        </p>
         <Copy delay={0.5}>
           <p className="text-white max-md:text-xl max-sm:text-sm leading-[1.2] text-lg">
             From strategy to visuals, we craft branding that tells your story
             and leaves a lasting impression.
           </p>
         </Copy>
-        <button className="pr-4 py-1.5 ml-auto flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
+        <div className="ml-auto flex w-full items-center justify-end gap-1">
+        <button className="pr-4 py-1.5  flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
                            <Link href={"/effects"}>Explore Platform</Link>
                            <ArrowRight className='h-4 w-4' />
                         </button>
+                        <button className="pr-4 py-1.5 flex items-center gap-1 rounded-full hover:text-primary  cursor-pointer  transition-all duration-300 text-white/80">
+                           <Link href={"/effects/webgl-effects/donut-particles"}>Read Article</Link>
+                           <ArrowRight className='h-4 w-4' />
+                        </button>
+                        </div>
       </div>
       
 
