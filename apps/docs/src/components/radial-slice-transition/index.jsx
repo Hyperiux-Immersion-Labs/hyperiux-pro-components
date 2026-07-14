@@ -4,7 +4,7 @@ import React, { useRef } from 'react'
 import gsap from 'gsap'
 import { TransitionRouter } from 'next-transition-router'
 
-export function RadialSliceTransition({
+export default function RadialSliceTransition({
     children,
     config = { duration: 4, color: '#0F2854' },
 }) {

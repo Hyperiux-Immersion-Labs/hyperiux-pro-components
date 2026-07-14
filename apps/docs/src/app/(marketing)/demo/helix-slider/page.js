@@ -1,5 +1,5 @@
 
-import { HelixSlider } from '@/components/helix-slider'
+import HelixSlider  from '@/components/helix-slider'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";

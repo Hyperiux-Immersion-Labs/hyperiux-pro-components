@@ -8,23 +8,18 @@ const DEFAULT_HREF = "#";
 const COMPACT_LAYOUT_BREAKPOINT = 1025;
 const ANIMATION_DURATION_MS = 450;
 
-export function ArrowFillButton({
-  btnText,
+function ArrowFillButton({
+  btnText = "Hover Me",
   href = DEFAULT_HREF,
   className = "",
-
   bgColor = "#ff5f00",
   textColor = "#ffffff",
-
   fillBgColor = "#ffffff",
   fillTextColor = "#ff5f00",
-
   hoverFillBgColor = "#ffffff",
   hoverFillTextColor = "#ff5f00",
-
   arrowColor,
   hoverArrowColor,
-
   ...props
 }) {
   const [isReady, setIsReady] = useState(false);

@@ -1,5 +1,5 @@
 import React from "react";
-import { TextFillAnimation } from "@/components/text-fill-animation";
+import TextFillAnimation from "@/components/text-fill-animation";
 import { ReactLenis } from "lenis/react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";

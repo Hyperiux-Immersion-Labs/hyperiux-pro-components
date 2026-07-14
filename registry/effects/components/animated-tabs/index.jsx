@@ -1,4 +1,4 @@
-import AnimatedTabsComp from "./TabsComp";
+import AnimatedTabsComp from "./AnimatedTabsComp";
 
 const tabsData = [
   {
@@ -137,7 +137,7 @@ const tabsData = [
   },
 ];
 
-export default function Tabs() {
+export default function AnimatedTabs() {
   return (
     <section className="min-h-screen w-full bg-white">
       <AnimatedTabsComp tabs={tabsData} />

@@ -13,7 +13,7 @@ const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X ="5vw";
 
-function ParallaxImgSlider({ images = [], bgColor ="#0e0e0e" }) {
+function ParallaxSlider({ images = [], bgColor ="#0e0e0e" }) {
  const outerRef = useRef(null);
  const trackRef = useRef(null);
 
@@ -130,7 +130,7 @@ function ParallaxImgSlider({ images = [], bgColor ="#0e0e0e" }) {
 
  return (
  <div
- key={src}
+ key={i}
  className={`slide-wrapper relative shrink-0 overflow-hidden ${slideClass}`}
  style={{
  borderRadius: 0,
@@ -149,4 +149,4 @@ function ParallaxImgSlider({ images = [], bgColor ="#0e0e0e" }) {
  );
 }
 
-export default ParallaxImgSlider;
+export default ParallaxSlider;

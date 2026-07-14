@@ -1,5 +1,5 @@
+import AnimatedTabs from '@/components/animated-tabs';
 import HeadAnim from '@/components/Animations/HeadAnim'
-import Tabs from '@/components/animated-tabs'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import SplitLine from '@/components/WebsiteComps/SplitLine'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
@@ -24,7 +24,7 @@ const Page = () => {
          </div>
          <div className='max-md:mt-[-2vw]'>
 
-   <Tabs/>
+   <AnimatedTabs/>
          </div>
    </>
   )
