@@ -104,7 +104,7 @@ const Page = () => {
  });
  });
 
- return () => ScrollTrigger.getAll().forEach((t) => t.kill());
+//  return () => ScrollTrigger.getAll().forEach((t) => t.kill());
  }, []);
 
  return (
