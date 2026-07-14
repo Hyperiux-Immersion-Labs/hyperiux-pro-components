@@ -8,11 +8,11 @@ import { ArrowUpRight } from "lucide-react";
 export default function ExpandingNavbar() {
     return (
         <div className="h-screen w-full bg-primary relative overflow-hidden flex flex-col items-center justify-center">
-            <p className=" text-white max-md:text-[4vw] max-sm:text-[5vw] text-[2.5vw] tracking-tight text-center w-full">
+            <h1 className=" text-white max-md:text-[4vw] max-sm:text-[5vw] text-[2.5vw] tracking-tight text-center w-full">
                 Watch items spring, orbit and snap into place
                 <br />
                 <span className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[3.5vw] opacity-70">[Click the ☰ to reveal the motion]</span>
-                </p>
+                </h1>
 <div className="flex items-center gap-3">
                 <span className="block mt-6">
                     <Link

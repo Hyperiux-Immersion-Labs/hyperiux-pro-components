@@ -30,6 +30,10 @@ const menuItems = [
 export default function DirectionalMenu() {
   return (
     <div className="relative h-screen overflow-hidden text-white max-sm:h-full max-sm:overflow-visible max-sm:pb-10">
+
+      <h1 className="absolute top-[23%] -translate-x-1/2 left-1/2 text-[10vw] sm:text-[11vw] md:text-[7rem] leading-none  tracking-[-0.06em]">
+              Directional Menu
+            </h1>
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto max-md:hidden h-19 flex items-center justify-between">
@@ -78,12 +82,9 @@ export default function DirectionalMenu() {
       {/* Hero Section */}
       <section className="relative z-10 pt-25 flex items-center justify-center  px-6">
         <div className="max-w-5xl mx-auto text-center">
-          {/* Heading */}
-          <h1 className="text-[10vw] sm:text-[11vw] md:text-[7rem] leading-none  tracking-[-0.06em]">
-            Directional Menu
-          </h1>
+         
 
-          <p className="mt-8 max-w-200 mx-auto text-white/70 max-sm:text-sm text-2xl leading-[1.2]">
+          <p className="mt-8 max-w-200 pt-[20%] mx-auto text-white/70 max-sm:text-sm text-2xl leading-[1.2]">
             Interact with the navigation above to see smooth transitions,
             motion, and details crafted for a more immersive experience.
           </p>

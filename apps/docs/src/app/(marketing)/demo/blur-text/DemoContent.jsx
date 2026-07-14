@@ -133,6 +133,8 @@ const Page = () => {
  </div> */}
 
  <div className="max-w-4xl">
+   <h1>
+
  <BlurText
  once={false}
  variant="fade"
@@ -140,6 +142,7 @@ const Page = () => {
  >
  Blur should feel like a stage entrance, not a loading state.
  </BlurText>
+    </h1>
  </div>
 
  <p

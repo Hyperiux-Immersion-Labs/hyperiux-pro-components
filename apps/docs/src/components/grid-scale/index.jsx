@@ -208,11 +208,11 @@ tl.fromTo(
           <div
             className="clip-path flex items-center justify-center z-200 absolute top-0 left-0 w-full h-screen bg-white"
           >
-            <p ref={centeredTextRef} className='text-[#242424] opacity-0 w-[60vw] text-center leading-[1.1] text-[3.5vw] max-sm:text-[4.5vw]'>
+            <h1 ref={centeredTextRef} className='text-[#242424] opacity-0 w-[60vw] text-center leading-[1.1] text-[3.5vw] max-sm:text-[4.5vw]'>
               Building futuristic interfaces
               <br />
               with motion, interaction, and depth.
-            </p>
+            </h1>
             <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] max-sm:w-[45vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
           </div>
 

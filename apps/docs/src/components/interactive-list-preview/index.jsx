@@ -8,9 +8,9 @@ const InteractiveListPreview = () => {
       <div className='flex items-center flex-col gap-20 max-sm:gap-20 max-sm:py-[18%] max-md:py-[15%] justify-center h-screen max-md:h-full bg-neutral-900'>
 
         <div className='text-center space-y-[1vw] max-md:space-y-[4vw]'>
-          <h2 className='font-mono text-[4vw] max-md:text-center  max-sm:px-10  text-white max-md:text-5xl max-sm:text-4xl capitalize'>
+          <h1 className='font-mono text-[4vw] max-md:text-center  max-sm:px-10  text-white max-md:text-5xl max-sm:text-4xl capitalize'>
             Elevating interaction through motion
-          </h2>
+          </h1>
           <p className='max-md:hidden'>
             Hover on the list to see the effect
           </p>
