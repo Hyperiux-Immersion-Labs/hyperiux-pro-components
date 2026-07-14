@@ -65,11 +65,11 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
+  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
   const [isYearly, setIsYearly] = useState(true);
-
 
   useEffect(() => {
     if (globalThis.innerWidth < 542) {
@@ -135,7 +135,7 @@ export default function Pricing({ padding, content = true }) {
 
   return (
     <div
-      className={`h-[190vw] flex items-end text-background pricing  pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[920vw] max-md:h-[550vw]`}
+      className={`h-[190vw] flex items-end text-background pricing pb-[20vw]! min-h-screen  bg-foreground self-padd  w-full mt-[-100vh] max-md:mt-[-110vh] max-sm:mt-[-100vh] relative z-2 opacity-0 pointer-events-none max-sm:h-[920vw] max-md:h-[550vw]`}
     >
       <div className=" w-full h-fit overflow-hidden flex flex-col gap-[6vw]  max-sm:gap-[10vw] items-center justify-center ">
         {content && (
@@ -205,7 +205,7 @@ export default function Pricing({ padding, content = true }) {
                     <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
                       <CheckIcon className="w-[1.5vw] h-[1.5vw] rounded-full overflow-hidden max-md:w-[3.5vw] max-md:h-[3.5vw] max-sm:w-[4vw] max-sm:h-[4vw] shrink-0" />
                     </div>
-                    <p className="text24 leading-[1.4] max-md:text-[4.2vw] w-[90%]">
+                    <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
                       {feature}
                     </p>
                   </div>
@@ -283,7 +283,7 @@ export default function Pricing({ padding, content = true }) {
                     <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
                       <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-sm:w-[4vw] max-sm:h-[4vw] shrink-0 max-md:h-[3.5vw] max-md:w-[3.5vw]" />
                     </div>
-                    <p className="text24 leading-[1.4] max-md:text-[4.2vw] w-[90%]">
+                    <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
                       {feature}
                     </p>
                   </div>

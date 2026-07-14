@@ -57,6 +57,7 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
+  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
@@ -122,7 +123,7 @@ export default function Pricing({ padding, content = true }) {
                   <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
                     <CheckIcon className="w-[1.5vw] h-[1.5vw] rounded-full overflow-hidden max-md:w-[3.5vw] max-md:h-[3.5vw] max-sm:w-[4vw] max-sm:h-[4vw] shrink-0" />
                   </div>
-                  <p className="text24 leading-[1.4] max-md:text-[4.2vw] w-[90%]">
+                  <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
                     {feature}
                   </p>
                 </div>
@@ -200,7 +201,7 @@ export default function Pricing({ padding, content = true }) {
                   <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
                     <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-sm:w-[4vw] max-sm:h-[4vw] shrink-0 max-md:h-[3.5vw] max-md:w-[3.5vw]" />
                   </div>
-                  <p className="text24 leading-[1.4] max-md:text-[4.2vw] w-[90%]">
+                  <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
                     {feature}
                   </p>
                 </div>
