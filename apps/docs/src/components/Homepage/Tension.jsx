@@ -56,7 +56,17 @@ export default function Tension() {
   const cardsRef = useRef(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    let ctx
+
+    // ponytail: measuring rowHeight reads getBoundingClientRect() then immediately
+    // writes gsap.set() on every card - a forced-layout reflow on mount. This section
+    // is well below the fold, so defer setup until it nears the viewport instead of
+    // paying that cost on every page load.
+    const mount = () => {
+    ctx = gsap.context(() => {
       const cardEls = gsap.utils.toArray('.tension-card')
       const checkIcons = gsap.utils.toArray('.tension-check')
       const xIcons = gsap.utils.toArray('.tension-x')
@@ -141,8 +151,23 @@ export default function Tension() {
         }, t + 0.3)
       }
     }, sectionRef)
+    }
 
-    return () => ctx.revert()
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          io.disconnect()
+          mount()
+        }
+      },
+      { rootMargin: "500px 0px" }
+    )
+    io.observe(section)
+
+    return () => {
+      io.disconnect()
+      ctx?.revert()
+    }
   }, [])
 
   return (

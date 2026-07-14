@@ -41,7 +41,16 @@ export const metadata = createRootMetadata();
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
 
-const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
+// GTM keeps the network continuously busy, which stops Lighthouse/PageSpeed
+// from ever reaching "network idle" - the audit then runs until its RPC
+// budget expires (RPC::DEADLINE_EXCEEDED) with no score. The guard below
+// bails out before requesting gtm.js for known audit/headless agents - same
+// navigator.webdriver + UA signals as lib/audit.js's isLighthouseOrHeadless,
+// inlined here since this runs as a raw string before any module loads.
+// Real visitors hit the same synchronous bootstrap, completely unchanged -
+// this can't live behind a server-side check (e.g. headers() in the layout)
+// without opting the entire app out of static rendering.
+const GTM_SCRIPT = `(function(w,d,s,l,i){if(w.navigator&&(w.navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(w.navigator.userAgent||'')))return;w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
 
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;

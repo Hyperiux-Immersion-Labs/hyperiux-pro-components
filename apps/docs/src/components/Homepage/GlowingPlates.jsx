@@ -20,6 +20,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
 import gsap from "gsap";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
@@ -48,31 +49,10 @@ function isLoaderActive() {
 
 // The plates run a continuous WebGL render loop, so the main thread never goes
 // idle - that's exactly what makes Lighthouse/PageSpeed time out
-// (RPC::DEADLINE_EXCEEDED). Under an audit/headless environment, or when the
-// user prefers reduced motion, skip the Canvas entirely and show the static
-// dark backdrop instead. Real users still get the full animated scene.
-function shouldSkipRealtime3D() {
-  if (typeof window === "undefined") return false;
-
-  // Lighthouse/PSI drive Chrome over the DevTools protocol in headless mode,
-  // where navigator.webdriver is true - the most reliable audit signal.
-  if (navigator.webdriver === true) return true;
-
-  const ua = navigator.userAgent || "";
-
-  if (
-    /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i.test(
-      ua
-    )
-  ) {
-    return true;
-  }
-
-  return (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
-  );
-}
-
+// (RPC::DEADLINE_EXCEEDED). shouldSkipRealtimeGPU (lib/audit.js) covers
+// audit/headless traffic and prefers-reduced-motion; skip the Canvas
+// entirely and show the static dark backdrop instead. Real users still get
+// the full animated scene.
 const CONFIG = {
   count: 51,
   radius: 4.5,
@@ -603,7 +583,7 @@ export default function GlowingPlates({
 
   // ssr:false (dynamic import) means this only ever renders client-side, so the
   // lazy initializer can read navigator/matchMedia with no hydration mismatch.
-  const [skip3D] = useState(() => shouldSkipRealtime3D());
+  const [skip3D] = useState(() => shouldSkipRealtimeGPU());
 
   // See WARMUP_MS comment above CONFIG. Starts true when the site loader has
   // already run this session (repeat visit, loader skipped) - there's no
