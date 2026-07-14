@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useLenis } from "lenis/react";
 import ShimmerText from "@/components/WebsiteComps/ShimmerText";
 
 const MIN_VISIBLE_MS = 500;
@@ -129,6 +130,17 @@ function createNetworkIdleTracker() {
 function DemoSubpageOverlay({ pathname }) {
   const [visible, setVisible] = useState(true);
   const [fadingOut, setFadingOut] = useState(false);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (!visible) return;
+    lenis?.stop?.();
+
+    return () => {
+      lenis?.start?.();
+    };
+  }, [visible, lenis]);
+  
 
   useEffect(() => {
     const startedAt = Date.now();
