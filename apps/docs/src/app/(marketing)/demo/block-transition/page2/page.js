@@ -1,4 +1,4 @@
-import { ArrowFillButton } from "@/components/arrow-fill-button";
+import ArrowFillButton from "@/components/arrow-fill-button";
 import React from "react";
 
 export default function page() {

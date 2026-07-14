@@ -13,7 +13,7 @@ const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X ="5vw";
 
-function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
+function ParallaxSlider({ images = [], bgColor ="#000000" }) {
  const outerRef = useRef(null);
  const trackRef = useRef(null);
 
@@ -149,4 +149,4 @@ function ParallaxImgSlider({ images = [], bgColor ="#000000" }) {
  );
 }
 
-export default ParallaxImgSlider;
+export default ParallaxSlider;

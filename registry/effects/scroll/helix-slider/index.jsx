@@ -1,7 +1,7 @@
 import { ReactLenis } from "lenis/react";
-import { HelixSliderComp } from "./HelixSliderComp";
+import HelixSliderComp from "./HelixSliderComp";
 
-export function HelixSlider() {
+export default function HelixSlider() {
    return (
       <>
          <ReactLenis root options={{ infinite: true, syncTouch: true }}>

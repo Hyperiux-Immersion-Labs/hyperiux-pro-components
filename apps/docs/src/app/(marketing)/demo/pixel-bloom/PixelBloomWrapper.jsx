@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { PixelBloom } from "@/components/pixel-bloom";
+import PixelBloom from "@/components/pixel-bloom";
 
 
 gsap.registerPlugin(ScrollTrigger);

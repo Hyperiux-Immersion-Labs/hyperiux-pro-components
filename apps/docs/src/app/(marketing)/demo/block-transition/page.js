@@ -1,6 +1,6 @@
-import { ArrowFillButton } from "@/components/arrow-fill-button";
 import React from "react";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import ArrowFillButton from "@/components/arrow-fill-button";
 
 
 export default function page() {
