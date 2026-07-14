@@ -57,132 +57,288 @@ export default function Workflow() {
     const videoSectionRef = useRef(null)
 
     useEffect(() => {
-        const mm = gsap.matchMedia(containerRef)
+        const container = containerRef.current
+        if (!container) return
 
-        mm.add(
-            {
-                isMobile: '(max-width: 640px)',
-                isTablet: '(min-width: 641px) and (max-width: 1025px)',
-                isDesktop: '(min-width: 1025px)',
-                reduceMotion: '(prefers-reduced-motion: reduce)'
-            },
-            (context) => {
-                const { isMobile, isTablet, reduceMotion } = context.conditions
+        const ctx = gsap.context(() => {
+            const mm = gsap.matchMedia()
 
-                /* ── Responsive accordion heights (desktop values unchanged) ── */
-                const OPEN_HEIGHT = isMobile ? '60vw' : isTablet ? '40vw' : '16vw'
-                const CLOSED_HEIGHT = isMobile ? '12vw' : isTablet ? '10vw' : '5vw'
-
-            /* ── Query DOM groups ── */
-            const numBoxes = gsap.utils.toArray('.wf-num-box')
-            const contentBoxes = gsap.utils.toArray('.wf-content-box')
-            const nums = gsap.utils.toArray('.wf-num')
-            const icons = gsap.utils.toArray('.wf-icon')
-            const texts = gsap.utils.toArray('.wf-text')
-            const lineFills = gsap.utils.toArray('.wf-line-fill')
-
-            /* ── Helper: set a step to its closed state ── */
-            const setInactive = (i) => {
-                gsap.set(contentBoxes[i], { height: CLOSED_HEIGHT, backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR })
-                gsap.set(numBoxes[i], { backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR })
-                gsap.set(nums[i], { opacity: 1, scale: 1 })
-                gsap.set(icons[i], { opacity: 0, scale: 0.6 })
-                gsap.set(texts[i], { opacity: 0 })
-            }
-
-            /* ── Helper: set a step to its open state ── */
-            const setActive = (i) => {
-                gsap.set(contentBoxes[i], { height: OPEN_HEIGHT, backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR })
-                gsap.set(numBoxes[i], { backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR })
-                gsap.set(nums[i], { opacity: 0, scale: 0.6 })
-                gsap.set(icons[i], { opacity: 1, scale: 1 })
-                gsap.set(texts[i], { opacity: 1 })
-            }
-
-            /* ── Initial state: first open, rest closed ── */
-            STEPS.forEach((_, i) => (i === 0 ? setActive(i) : setInactive(i)))
-            gsap.set(lineFills, { scaleY: 0, transformOrigin: 'top center' })
-
-            /* ── Main scrub timeline ── */
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: accordionRef.current,
-                    start: 'top 30%',
-                    end: 'bottom bottom',
-                    scrub: reduceMotion ? true : (isMobile ? true : 2),
-                    invalidateOnRefresh: true,
-                    // markers: true,
+            mm.add(
+                {
+                    isMobile: '(max-width: 640px)',
+                    isTablet: '(min-width: 641px) and (max-width: 1025px)',
+                    isDesktop: '(min-width: 1025px)',
+                    reduceMotion: '(prefers-reduced-motion: reduce)',
                 },
-            })
+                (context) => {
+                    const { isMobile, isTablet, reduceMotion } = context.conditions
 
-            /* ── Radial glow (runs across the whole timeline) ── */
-            gsap.set('.radial-glow', { opacity: 0.2, scale: 0.8, transformOrigin: 'bottom center' })
-            tl.to('.radial-glow', { opacity: 0.8, scale: 1.5, ease: 'none', duration: STEPS.length * (STEP_DURATION + HOLD_DURATION) }, 0)
+                    /* ── Responsive accordion heights (desktop values unchanged) ── */
+                    const OPEN_HEIGHT = isMobile
+                        ? '60vw'
+                        : isTablet
+                          ? '40vw'
+                          : '16vw'
+                    const CLOSED_HEIGHT = isMobile
+                        ? '12vw'
+                        : isTablet
+                          ? '10vw'
+                          : '5vw'
 
-            /* ── Build the accordion sequence ── */
-            const SEGMENT = STEP_DURATION + HOLD_DURATION
+                    /* ── Query DOM groups (scoped by gsap.context) ── */
+                    const numBoxes = gsap.utils.toArray('.wf-num-box')
+                    const contentBoxes = gsap.utils.toArray('.wf-content-box')
+                    const nums = gsap.utils.toArray('.wf-num')
+                    const icons = gsap.utils.toArray('.wf-icon')
+                    const texts = gsap.utils.toArray('.wf-text')
+                    const lineFills = gsap.utils.toArray('.wf-line-fill')
 
-            STEPS.forEach((_, i) => {
-                const segmentStart = i * SEGMENT
-
-                if (i === 0) {
-                    /* Step 0 is already open - just fill the first connecting line */
-                    if (lineFills[0]) {
-                        tl.to(lineFills[0], { scaleY: 1, ease: 'none', duration: HOLD_DURATION }, segmentStart + STEP_DURATION)
+                    /* ── Helper: set a step to its closed state ── */
+                    const setInactive = (i) => {
+                        gsap.set(contentBoxes[i], {
+                            height: CLOSED_HEIGHT,
+                            backgroundColor: INACTIVE_BG,
+                            color: INACTIVE_COLOR,
+                        })
+                        gsap.set(numBoxes[i], {
+                            backgroundColor: INACTIVE_BG,
+                            color: INACTIVE_COLOR,
+                        })
+                        gsap.set(nums[i], { opacity: 1, scale: 1 })
+                        gsap.set(icons[i], { opacity: 0, scale: 0.6 })
+                        gsap.set(texts[i], { opacity: 0 })
                     }
-                    tl.to({}, { duration: SEGMENT }, segmentStart)
-                    return
-                }
 
-                const t = segmentStart
+                    /* ── Helper: set a step to its open state ── */
+                    const setActive = (i) => {
+                        gsap.set(contentBoxes[i], {
+                            height: OPEN_HEIGHT,
+                            backgroundColor: ACTIVE_BG,
+                            color: ACTIVE_COLOR,
+                        })
+                        gsap.set(numBoxes[i], {
+                            backgroundColor: ACTIVE_BG,
+                            color: ACTIVE_COLOR,
+                        })
+                        gsap.set(nums[i], { opacity: 0, scale: 0.6 })
+                        gsap.set(icons[i], { opacity: 1, scale: 1 })
+                        gsap.set(texts[i], { opacity: 1 })
+                    }
 
-                /* Close previous step - fade text out early to avoid squish glitch */
-                tl.to(texts[i - 1], { opacity: 0, duration: STEP_DURATION * 0.35, ease: 'power2.in' }, t)
-                tl.to(contentBoxes[i - 1], { height: CLOSED_HEIGHT, backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(numBoxes[i - 1], { backgroundColor: INACTIVE_BG, color: INACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(nums[i - 1], { opacity: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(icons[i - 1], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
+                    /* ── Initial state: first open, rest closed ── */
+                    STEPS.forEach((_, i) =>
+                        i === 0 ? setActive(i) : setInactive(i)
+                    )
+                    gsap.set(lineFills, {
+                        scaleY: 0,
+                        transformOrigin: 'top center',
+                    })
 
-                /* Open current step - expand first, then fade text in late */
-                tl.to(contentBoxes[i], { height: OPEN_HEIGHT, backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(numBoxes[i], { backgroundColor: ACTIVE_BG, color: ACTIVE_COLOR, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(nums[i], { opacity: 0, scale: 0.6, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(icons[i], { opacity: 1, scale: 1, duration: STEP_DURATION, ease: EASE }, t)
-                tl.to(texts[i], { opacity: 1, duration: STEP_DURATION * 0.5, ease: 'power2.out' }, t + STEP_DURATION * 0.5)
-
-                /* Hold & fill the connecting line to the next step */
-                if (lineFills[i]) {
-                    tl.to(lineFills[i], { scaleY: 1, ease: 'none', duration: HOLD_DURATION }, t + STEP_DURATION)
-                }
-            })
-
-            /* ── Video reveal ── */
-            if (!reduceMotion) {
-                gsap.fromTo(
-                    videoRef.current,
-                    { clipPath: 'inset(20% 20% 20% 20%)', 
-                        backgroundColor: '#0A1B4B' 
-                    },
-                    {
-                        clipPath: 'inset(0% 0% 0% 0%)',
-                        // backgroundColor: '#ffffff',
-                        ease: 'none',
+                    /* ── Main scrub timeline ── */
+                    const tl = gsap.timeline({
                         scrollTrigger: {
-                            trigger: videoSectionRef.current,
-                            start: 'top 80%',
-                            end: '50% 50%',
+                            trigger: accordionRef.current,
+                            start: 'top 30%',
+                            end: 'bottom bottom',
+                            // Instant scrub — lagged scrub (2) felt like a late-loading trigger
+                            // and fought Lenis when layout above (storytelling) settled.
                             scrub: true,
+                            invalidateOnRefresh: true,
                         },
+                    })
+
+                    /* ── Radial glow (runs across the whole timeline) ── */
+                    gsap.set('.radial-glow', {
+                        opacity: 0.2,
+                        scale: 0.8,
+                        transformOrigin: 'bottom center',
+                    })
+                    tl.to(
+                        '.radial-glow',
+                        {
+                            opacity: 0.8,
+                            scale: 1.5,
+                            ease: 'none',
+                            duration:
+                                STEPS.length * (STEP_DURATION + HOLD_DURATION),
+                        },
+                        0
+                    )
+
+                    /* ── Build the accordion sequence ── */
+                    const SEGMENT = STEP_DURATION + HOLD_DURATION
+
+                    STEPS.forEach((_, i) => {
+                        const segmentStart = i * SEGMENT
+
+                        if (i === 0) {
+                            /* Step 0 is already open - just fill the first connecting line */
+                            if (lineFills[0]) {
+                                tl.to(
+                                    lineFills[0],
+                                    {
+                                        scaleY: 1,
+                                        ease: 'none',
+                                        duration: HOLD_DURATION,
+                                    },
+                                    segmentStart + STEP_DURATION
+                                )
+                            }
+                            tl.to({}, { duration: SEGMENT }, segmentStart)
+                            return
+                        }
+
+                        const t = segmentStart
+
+                        /* Close previous step - fade text out early to avoid squish glitch */
+                        tl.to(
+                            texts[i - 1],
+                            {
+                                opacity: 0,
+                                duration: STEP_DURATION * 0.35,
+                                ease: 'power2.in',
+                            },
+                            t
+                        )
+                        tl.to(
+                            contentBoxes[i - 1],
+                            {
+                                height: CLOSED_HEIGHT,
+                                backgroundColor: INACTIVE_BG,
+                                color: INACTIVE_COLOR,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            numBoxes[i - 1],
+                            {
+                                backgroundColor: INACTIVE_BG,
+                                color: INACTIVE_COLOR,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            nums[i - 1],
+                            {
+                                opacity: 1,
+                                scale: 1,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            icons[i - 1],
+                            {
+                                opacity: 0,
+                                scale: 0.6,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+
+                        /* Open current step - expand first, then fade text in late */
+                        tl.to(
+                            contentBoxes[i],
+                            {
+                                height: OPEN_HEIGHT,
+                                backgroundColor: ACTIVE_BG,
+                                color: ACTIVE_COLOR,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            numBoxes[i],
+                            {
+                                backgroundColor: ACTIVE_BG,
+                                color: ACTIVE_COLOR,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            nums[i],
+                            {
+                                opacity: 0,
+                                scale: 0.6,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            icons[i],
+                            {
+                                opacity: 1,
+                                scale: 1,
+                                duration: STEP_DURATION,
+                                ease: EASE,
+                            },
+                            t
+                        )
+                        tl.to(
+                            texts[i],
+                            {
+                                opacity: 1,
+                                duration: STEP_DURATION * 0.5,
+                                ease: 'power2.out',
+                            },
+                            t + STEP_DURATION * 0.5
+                        )
+
+                        /* Hold & fill the connecting line to the next step */
+                        if (lineFills[i]) {
+                            tl.to(
+                                lineFills[i],
+                                {
+                                    scaleY: 1,
+                                    ease: 'none',
+                                    duration: HOLD_DURATION,
+                                },
+                                t + STEP_DURATION
+                            )
+                        }
+                    })
+
+                    /* ── Video reveal ── */
+                    if (!reduceMotion) {
+                        gsap.fromTo(
+                            videoRef.current,
+                            {
+                                clipPath: 'inset(20% 20% 20% 20%)',
+                                backgroundColor: '#0A1B4B',
+                            },
+                            {
+                                clipPath: 'inset(0% 0% 0% 0%)',
+                                ease: 'none',
+                                scrollTrigger: {
+                                    trigger: videoSectionRef.current,
+                                    start: 'top 80%',
+                                    end: '50% 50%',
+                                    scrub: true,
+                                    invalidateOnRefresh: true,
+                                },
+                            }
+                        )
+                    } else {
+                        gsap.set(videoRef.current, {
+                            clipPath: 'inset(0% 0% 0% 0%)',
+                            backgroundColor: '#0A1B4B',
+                        })
                     }
-                )
-            } else {
-                gsap.set(videoRef.current, { clipPath: 'inset(0% 0% 0% 0%)', backgroundColor: '#0A1B4B' })
-            }
+                }
+            )
+        }, container)
 
-            }
-        )
-
-        return () => mm.revert()
+        return () => ctx.revert()
     }, [])
 
     return (

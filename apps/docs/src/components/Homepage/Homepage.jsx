@@ -22,15 +22,39 @@ import CTA from "./CTA";
 // Heaviest and conditional components
 const GlowingPlatesDeferred = dynamic(() => import("./GlowingPlatesDeferred"), { ssr: false });
 const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"), {
-  loading: () => null,
+  // Keep layout height while the chunk loads — otherwise every ScrollTrigger
+  // below this section (Workflow, ForDevelopers, …) is created at the wrong
+  // offset and seeks to the end of its timeline until a late refresh.
+  loading: () => (
+    <div className="relative w-full h-[600vh] max-md:hidden" aria-hidden />
+  ),
 });
-const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
+const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"), {
+  loading: () => (
+    <div
+      className="relative hidden max-md:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
+      aria-hidden
+    />
+  ),
+});
 const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
 import Loader from "./Loader";
 
 const Footer = dynamic(() => import("./Footer"), {
   loading: () => null,
 });
+
+function StorytellingSpacer() {
+  return (
+    <>
+      <div className="relative w-full h-[600vh] max-md:hidden" aria-hidden />
+      <div
+        className="relative hidden max-md:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
+        aria-hidden
+      />
+    </>
+  );
+}
 
 export default function Homepage({ faqItems }) {
   const { isMounted, isMobile } = useIsMobile();
@@ -47,15 +71,16 @@ export default function Homepage({ faqItems }) {
           <GradientFill />
           <Tension />
           <Solution />
-          {isMounted &&
-            (isMobile ? (
-              <>
-                <StorytellingMobile />
-                <VaultGridNewMobile />
-              </>
-            ) : (
-              <FeaturedStoryTelling />
-            ))}
+          {!isMounted ? (
+            <StorytellingSpacer />
+          ) : isMobile ? (
+            <>
+              <StorytellingMobile />
+              <VaultGridNewMobile />
+            </>
+          ) : (
+            <FeaturedStoryTelling />
+          )}
           <Workflow />
           <UIKit />
           <SmallMotion />

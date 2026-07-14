@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
-import { useLenis } from "lenis/react";
 import Link from "next/link";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { TableOfContents } from "@/components/ui/TableOfContents";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -31,264 +31,6 @@ function RouteAnimationSync({ syncKey, containerRef }) {
   }, [syncKey]);
 
   return null;
-}
-
-function TableOfContents({ containerRef, watchKey }) {
-  const [items, setItems] = useState([]);
-  const [activeId, setActiveId] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
-  const [isFooterNearby, setIsFooterNearby] = useState(false);
-
-  const lenis = useLenis();
-  const activeLockRef = useRef({ id: "", targetTop: 0, timeoutId: null });
-  const scrollTweenRef = useRef(null);
-
-  const onTocClick = (e, id) => {
-    e.preventDefault();
-
-    const el = document.getElementById(id);
-
-    if (!el) return;
-
-    const topOffset = window.innerHeight * 0.2;
-    const targetTop =
-      el.getBoundingClientRect().top + window.scrollY - topOffset;
-
-    if (activeLockRef.current.timeoutId) {
-      window.clearTimeout(activeLockRef.current.timeoutId);
-    }
-
-    activeLockRef.current = { id, targetTop, timeoutId: null };
-    setActiveId(id);
-
-    scrollTweenRef.current?.kill();
-    scrollTweenRef.current = null;
-
-    window.history.pushState(null, "", `#${id}`);
-
-    const scrollDuration = 1.15;
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-    const releaseLock = () => {
-      if (activeLockRef.current.timeoutId) {
-        window.clearTimeout(activeLockRef.current.timeoutId);
-      }
-      activeLockRef.current = { id: "", targetTop: 0, timeoutId: null };
-    };
-
-    if (lenis) {
-      lenis.scrollTo(targetTop, {
-        duration: scrollDuration,
-        easing: easeOutCubic,
-        lock: true,
-        force: true,
-        onComplete: releaseLock,
-      });
-
-      // Safety net in case onComplete never fires (e.g. target clamped).
-      activeLockRef.current.timeoutId = window.setTimeout(
-        releaseLock,
-        scrollDuration * 1000 + 300
-      );
-
-      return;
-    }
-
-    const scrollState = {
-      y: window.scrollY,
-    };
-
-    scrollTweenRef.current = gsap.to(scrollState, {
-      y: targetTop,
-      duration: scrollDuration,
-      ease: "power3.out",
-      onUpdate: () => {
-        window.scrollTo(0, scrollState.y);
-      },
-      onComplete: () => {
-        scrollTweenRef.current = null;
-        releaseLock();
-      },
-    });
-  };
-
-  useEffect(() => {
-    const root = containerRef?.current;
-
-    if (!root) return;
-
-    const updateVisibility = () => {
-      const rect = root.getBoundingClientRect();
-
-      setIsVisible(
-        rect.top <= window.innerHeight * 0.45 &&
-          rect.bottom >= window.innerHeight * 0.25
-      );
-    };
-
-    updateVisibility();
-
-    window.addEventListener("scroll", updateVisibility, { passive: true });
-    window.addEventListener("resize", updateVisibility);
-
-    return () => {
-      window.removeEventListener("scroll", updateVisibility);
-      window.removeEventListener("resize", updateVisibility);
-    };
-  }, [containerRef, watchKey]);
-
-  useEffect(() => {
-    const footer = document.querySelector("footer");
-
-    if (!footer || typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        setIsFooterNearby(entries.some((entry) => entry.isIntersecting));
-      },
-      {
-        rootMargin: "0px 0px 0% 0px",
-      }
-    );
-
-    observer.observe(footer);
-
-    return () => observer.disconnect();
-  }, [watchKey]);
-
-  useEffect(() => {
-    const root = containerRef?.current;
-
-    if (!root) return;
-
-    const headings = Array.from(root.querySelectorAll("h2[id]")).map(
-      (el, index) => {
-        if (!el.id) {
-          el.id =
-            el.textContent
-              ?.toLowerCase()
-              .replaceAll(" ", "-")
-              .replace(/[^\w-]/g, "") || `section-${index}`;
-        }
-
-        return {
-          id: el.id,
-          text: el.textContent || "",
-          level: el.tagName.toLowerCase(),
-        };
-      }
-    );
-
-    setItems(headings);
-  }, [containerRef, watchKey]);
-
-  useEffect(() => {
-    const root = containerRef?.current;
-
-    if (!root) return;
-
-    const headings = Array.from(root.querySelectorAll("h2"));
-
-    headings.forEach((el, index) => {
-      if (!el.id) {
-        el.id =
-          el.textContent
-            ?.toLowerCase()
-            .replaceAll(" ", "-")
-            .replace(/[^\w-]/g, "") || `section-${index}`;
-      }
-    });
-
-    if (headings.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (activeLockRef.current.id) return;
-
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) =>
-            a.boundingClientRect.top > b.boundingClientRect.top ? 1 : -1
-          )[0];
-
-        const id = visible?.target?.id;
-
-        if (id) setActiveId(id);
-      },
-      {
-        rootMargin: "-20% 0px -70% 0px",
-        threshold: [0, 1],
-      }
-    );
-
-    headings.forEach((h) => observer.observe(h));
-
-    return () => observer.disconnect();
-  }, [containerRef, items.length]);
-
-  useEffect(() => {
-    return () => {
-      scrollTweenRef.current?.kill();
-
-      if (activeLockRef.current.timeoutId) {
-        window.clearTimeout(activeLockRef.current.timeoutId);
-      }
-    };
-  }, []);
-
-  if (items.length === 0 || !isVisible || isFooterNearby) return null;
-
-  return (
-    <div className="group relative flex items-center gap-4 max-md:hidden">
-      <span
-        aria-hidden="true"
-        className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
-      />
-
-      <div className="pointer-events-none absolute h-fit max-h-[60vh] overflow-y-auto overflow-hidden right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 toc">
-        <div className="w-full h-fit">
-          <ul className="space-y-1">
-            {items.map((it) => (
-              <li key={it.id}>
-                <a
-                  href={`#${it.id}`}
-                  className={[
-                    "block rounded-sm px-3 py-2 text20 font-medium leading-[1.2] text-white transition-colors duration-300 ease-out",
-                    activeId === it.id ? "bg-black" : "hover:bg-black/55",
-                  ].join(" ")}
-                  onClick={(e) => onTocClick(e, it.id)}
-                >
-                  {it.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <ul className="flex max-h-[70vh] w-12 flex-col items-end gap-5 overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        {items.map((it) => (
-          <li key={it.id}>
-            <a
-              href={`#${it.id}`}
-              aria-label={it.text}
-              className="block cursor-pointer py-1"
-              onClick={(e) => onTocClick(e, it.id)}
-            >
-              <span
-                className={[
-                  "block h-0.5 rounded-full transition-all duration-300 ease-out",
-                  activeId === it.id
-                    ? "w-8 bg-primary"
-                    : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
-                ].join(" ")}
-              />
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 function BreadcrumbNav({ onDocsNavigate }) {
@@ -405,34 +147,34 @@ export default function DocsBody({ children }) {
     };
   }, [navigateWithDocsFade]);
 
- useEffect(() => {
-  routeTweenRef.current?.kill();
+  useEffect(() => {
+    routeTweenRef.current?.kill();
 
-  const routeContent = routeContentRef.current;
+    const routeContent = routeContentRef.current;
 
-  if (routeContent) {
-    gsap.killTweensOf(routeContent);
+    if (routeContent) {
+      gsap.killTweensOf(routeContent);
 
-    gsap.set(routeContent, {
-      autoAlpha: 1,
-      y: 0,
-      clearProps: "transform",
-    });
-  }
+      gsap.set(routeContent, {
+        autoAlpha: 1,
+        y: 0,
+        clearProps: "transform",
+      });
+    }
 
-  const refreshCall = gsap.delayedCall(0.25, () => {
-    requestAnimationFrame(() => {
+    const refreshCall = gsap.delayedCall(0.25, () => {
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh(true);
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh(true);
+        });
       });
     });
-  });
 
-  return () => {
-    routeTweenRef.current?.kill();
-    refreshCall.kill();
-  };
-}, [pathname]);
+    return () => {
+      routeTweenRef.current?.kill();
+      refreshCall.kill();
+    };
+  }, [pathname]);
 
   return (
     <div className="mx-auto w-full pt-25">
@@ -453,12 +195,16 @@ export default function DocsBody({ children }) {
             >
               {children}
             </div>
-
           </div>
         </div>
-            <aside className="h-fit fixed right-4 top-1/2 -translate-y-1/2">
-                <TableOfContents containerRef={contentRef} watchKey={pathname} />
-            </aside>
+
+        <aside className="h-fit fixed right-4 top-1/2 -translate-y-1/2">
+          <TableOfContents
+            containerRef={contentRef}
+            watchKey={pathname}
+            hideNearFooter
+          />
+        </aside>
       </RouteFade>
     </div>
   );
