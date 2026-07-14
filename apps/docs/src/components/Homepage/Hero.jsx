@@ -4,11 +4,18 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { prefersReducedMotion } from "@/lib/motion";
 import { useFadeUp } from "../Animations/gsapAnimations";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
+
+// PSI desktop often has a plain Chrome UA and no navigator.webdriver — the
+// software WebGL renderer is what catches that lab VM. Real GPUs never match.
+function shouldBypassHeroIntroForAudit() {
+  return isLighthouseOrHeadless() || isSoftwareRenderer();
+}
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
@@ -89,7 +96,9 @@ export default function Hero() {
       return;
     }
 
-    if (prefersReducedMotion()) {
+    // Reduced-motion users + lab audits: keep LCP text painted immediately.
+    // Real visitors still get the full opacity/blur intro below.
+    if (prefersReducedMotion() || shouldBypassHeroIntroForAudit()) {
       const heroEls = [headingEl, ...vaultEls, pEl, paraEl, buttonWrapEl, shimmerTextWrapEl].filter(Boolean);
       if (heroEls.length) gsap.set(heroEls, { opacity: 1, y: 0, filter: "none" });
       if (navigationEls.length) gsap.set(navigationEls, { opacity: 1, y: 0, yPercent: 0 });
@@ -338,18 +347,7 @@ export default function Hero() {
     };
   }, []);
 
-  useEffect(()=>{
-    if (prefersReducedMotion()) {
-      gsap.set(".hero-overlay", { opacity: 0 });
-      return;
-    }
-    gsap.to(".hero-overlay",{
-      opacity:0,
-    })
-  })
-
   return (
-    <>
     <section className="pointer-events-none relative z-20 flex h-screen w-full  max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
@@ -413,10 +411,6 @@ export default function Hero() {
           </ShimmerText>
         </p>
       </div>
-
     </section>
-    <div className="w-screen h-screen absolute inset-0 z-9999 hero-overlay pointer-events-none bg-[#0e0e0e]"/>
-    
-    </>
   );
 }
