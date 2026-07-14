@@ -17,7 +17,7 @@
       "target": "src/components/effects/animated-tabs/index.jsx"
     },
     {
-      "path": "TabsComp.jsx",
+      "path": "AnimatedTabsComp.jsx",
       "type": "registry:component",
       "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
     }
