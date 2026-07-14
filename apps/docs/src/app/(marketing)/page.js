@@ -157,7 +157,8 @@ export const metadata = createPageMetadata({
   description:
     "Start with 30+ free source-first effects. Join Founding Access for 80+ Pro effects opening next week.",
   path: "/",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
+  image:
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
 });
 
 export default function page() {

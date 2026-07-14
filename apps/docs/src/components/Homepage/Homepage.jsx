@@ -21,11 +21,12 @@ import CTA from "./CTA";
 
 // Heaviest and conditional components
 const GlowingPlatesDeferred = dynamic(() => import("./GlowingPlatesDeferred"), { ssr: false });
-// const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"));
+const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"), {
+  loading: () => null,
+});
 const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"));
 const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
 import Loader from "./Loader";
-import FeaturedStoryTelling from "./FeaturedStoryTelling";
 
 const Footer = dynamic(() => import("./Footer"), {
   loading: () => null,

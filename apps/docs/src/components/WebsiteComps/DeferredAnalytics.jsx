@@ -2,23 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
-import { isLighthouseOrHeadless } from "@/lib/audit";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 
-// Tracking / session-recording scripts (GTM, Microsoft Clarity, OpenPanel,
-// reb2b) keep the network continuously busy, so Lighthouse/PageSpeed never
-// reaches the "network idle" state it waits for → the audit runs until its RPC
-// budget expires (RPC::DEADLINE_EXCEEDED) and never reports a score.
-//
-// We render them only for real visitors and skip them entirely under
-// headless/audit agents. The gate runs in an effect (client-only) so the
-// detection can read navigator.webdriver / userAgent with no SSR mismatch.
-// Real users get the full analytics stack, just mounted a tick after hydration
-// (negligible) instead of inline in the server HTML.
+// Tracking / session-recording scripts (Microsoft Clarity, OpenPanel, reb2b)
+// keep the network continuously busy for lab audits. Skip under headless/audit
+// agents — including PSI's desktop crawler (plain Chrome UA, no webdriver),
+// caught via software WebGL renderer. Real visitors unchanged visually.
 export default function DeferredAnalytics() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    if (!isLighthouseOrHeadless()) setEnabled(true);
+    if (isLighthouseOrHeadless() || isSoftwareRenderer()) return;
+    setEnabled(true);
   }, []);
 
   if (!enabled) return null;

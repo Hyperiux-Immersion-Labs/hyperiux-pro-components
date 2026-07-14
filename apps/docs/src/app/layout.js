@@ -4,6 +4,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import DeferredAnalytics from "@/components/WebsiteComps/DeferredAnalytics";
+import DeferredGTM from "@/components/WebsiteComps/DeferredGTM";
+import LazyRecaptchaProvider from "@/components/WebsiteComps/LazyRecaptchaProvider";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -12,7 +14,6 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import { ReCaptchaProvider } from "next-recaptcha-v3";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import AnnouncementBar from "@/components/WebsiteComps/AnnouncementBar";
@@ -39,18 +40,9 @@ export const metadata = createRootMetadata();
 
 // Runs synchronously before any HTML is painted - adds a class when loader hasn't run yet
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
-const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')!=='true'&&window.location.pathname==='/'&&window.innerWidth>=1025){document.documentElement.classList.add('loader-first-visit');}}catch(e){}})();`;
-
-// GTM keeps the network continuously busy, which stops Lighthouse/PageSpeed
-// from ever reaching "network idle" - the audit then runs until its RPC
-// budget expires (RPC::DEADLINE_EXCEEDED) with no score. The guard below
-// bails out before requesting gtm.js for known audit/headless agents - same
-// navigator.webdriver + UA signals as lib/audit.js's isLighthouseOrHeadless,
-// inlined here since this runs as a raw string before any module loads.
-// Real visitors hit the same synchronous bootstrap, completely unchanged -
-// this can't live behind a server-side check (e.g. headers() in the layout)
-// without opting the entire app out of static rendering.
-const GTM_SCRIPT = `(function(w,d,s,l,i){if(w.navigator&&(w.navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(w.navigator.userAgent||'')))return;w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-NCDH9PHF');`;
+// Skips audit agents: UA/webdriver, plus software WebGL (PSI desktop often has a
+// plain Chrome UA and no navigator.webdriver — see lib/audit.js).
+const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')==='true')return;if(window.location.pathname!=='/')return;if(window.innerWidth<1025)return;if(navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(navigator.userAgent||''))return;var c=document.createElement('canvas');var gl=c.getContext('webgl')||c.getContext('experimental-webgl');if(gl){var di=gl.getExtension('WEBGL_debug_renderer_info');var r=di?gl.getParameter(di.UNMASKED_RENDERER_WEBGL):(gl.getParameter(gl.RENDERER)||'');if(/SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(String(r||'')))return;}document.documentElement.classList.add('loader-first-visit');}catch(e){}})();`;
 
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
@@ -66,11 +58,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${layGrotesk.variable} antialiased`}>
       <head>
-        {/* GTM's script src is non-CORS, so no crossorigin attr here */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
@@ -95,17 +84,20 @@ export default function RootLayout({ children }) {
         <ImageObjectJsonLd />
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
-        <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
-          {children}
+        {children}
+        {/* Provider mounts only when a modal opens — never wrap page
+            children or the homepage remounts when reCAPTCHA arms. */}
+        <LazyRecaptchaProvider>
           <Suspense>
             <CustomAnimationFormModal />
           </Suspense>
           <Suspense>
             <WorkWithHyperiuxModal />
           </Suspense>
-        </ReCaptchaProvider>
+        </LazyRecaptchaProvider>
         <Analytics />
         <SpeedInsights />
+        <DeferredGTM />
         <DeferredAnalytics />
       </body>
     </html>

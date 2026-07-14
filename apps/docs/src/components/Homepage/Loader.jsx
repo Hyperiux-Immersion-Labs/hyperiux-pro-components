@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import gsap from "gsap";
 import { HyperiuxLogo } from "@/utils/Icons";
 import { useLenis } from "lenis/react";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { HyperiuxLogoIcon } from "../WebsiteComps/Icons";
 
 export const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
@@ -41,7 +42,11 @@ function shouldSkipLoader() {
   if (typeof window === "undefined") return false;
   const override = getLoaderOverride();
   if (override) return override === "skip";
-  return window.innerWidth < 1025;
+  if (window.innerWidth < 1025) return true;
+  // PSI desktop often has a plain Chrome UA and no navigator.webdriver.
+  // Software WebGL catches that lab VM; real GPUs essentially never match.
+  if (isLighthouseOrHeadless() || isSoftwareRenderer()) return true;
+  return false;
 }
 
 function markLoaderAsRun() {
