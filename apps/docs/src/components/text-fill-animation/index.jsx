@@ -184,12 +184,12 @@ export default function TextFillAnimation({
         </div>
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto text-center">
-          <h2
+          <h1
             ref={textRef}
             className={`tfa-heading opacity-0 font-display font-medium leading-[1.18] tracking-[-0.03em] ${className}`}
           >
             {text}
-          </h2>
+          </h1>
         </div>
       </div>
     </section>

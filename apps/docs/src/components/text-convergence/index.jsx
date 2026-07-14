@@ -139,12 +139,12 @@ export default function TextConvergence({
       className={`relative h-(--text-break-height) ${bgColor}`}
     >
       <div className="sticky top-0 flex h-screen items-center overflow-clip">
-        <h3
+        <h1
           ref={textRef}
           className={`flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] font-sans! text-4xl font-bold leading-[1.1] tracking-tighter sm:text-6xl lg:text-8xl xl:text-9xl ${textColor}`}
         >
           {text}
-        </h3>
+        </h1>
 
         <div
           ref={introRef}

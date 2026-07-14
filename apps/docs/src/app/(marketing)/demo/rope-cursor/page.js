@@ -16,7 +16,7 @@ export default function page() {
           segmentCount={8}
         />
         <div className="flex items-center max-md:hidden justify-center flex-col h-full pointer-events-none">
-          <p className="text-[bda985] text-[4vw] text-center">Rope Cursor</p>
+          <h1 className="text-[bda985] text-[4vw] text-center">Rope Cursor</h1>
           <p className="opacity-90 text-[2.5vw] text-center">
             (Move your cursor around to see the rope)
           </p>

@@ -27,7 +27,7 @@ const page = () => {
           tabletTextSize="6vw"
           tabletTextWidth="88%"
         />
-        <ScrollBottom textColor="text-black" />
+        <ScrollBottom as="h2" textColor="text-black" />
       </ReactLenis>
     </>
   );

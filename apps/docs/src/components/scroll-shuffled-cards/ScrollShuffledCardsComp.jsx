@@ -70,7 +70,7 @@ const ScrollShuffledCardsComp = ({
           x: `${randomizedCards[index].startX}vw`,
           y: `${randomizedCards[index].startY}vw`,
           rotation: randomizedCards[index].startRotate,
-          opacity: 1, 
+          opacity: 1,
         });
       });
 
@@ -119,6 +119,11 @@ const ScrollShuffledCardsComp = ({
       }}
     >
       <div className="sticky top-0 flex h-screen w-screen items-center justify-center overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
+          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-md:text-[7.5vw] max-sm:px-[4vw] max-sm:text-[10vw]">
+            {heading}
+          </h1>
+        </div>
         <div
           ref={containerRef}
           className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-md:gap-[4vw] max-sm:gap-[3vw]"
@@ -168,11 +173,7 @@ const ScrollShuffledCardsComp = ({
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-md:text-[7.5vw] max-sm:px-[4vw] max-sm:text-[10vw]">
-            {heading}
-          </h1>
-        </div>
+
       </div>
     </section>
   );

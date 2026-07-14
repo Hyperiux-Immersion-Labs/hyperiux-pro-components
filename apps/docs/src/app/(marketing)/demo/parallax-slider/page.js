@@ -11,6 +11,7 @@ const page = () => {
  <>
  <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
  <LenisSmoothScroll />
+ <h1 className="sr-only">Parallax Slider</h1>
  <ParallaxSlider images={[
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',

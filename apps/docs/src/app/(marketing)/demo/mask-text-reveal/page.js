@@ -9,11 +9,11 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <ReactLenis root>
-      <DemoHeader />
-      <ScrollBottom textColor='text-black' className="bottom-[3%] gap-[0.5vw] z-20"  />
-      <MaskTextWrapper />
-          </ReactLenis>
+      <ReactLenis root>
+        <DemoHeader />
+        <ScrollBottom textColor='text-black' className="bottom-[3%] gap-[0.5vw] z-20" />
+        <MaskTextWrapper />
+      </ReactLenis>
     </>
   )
 }

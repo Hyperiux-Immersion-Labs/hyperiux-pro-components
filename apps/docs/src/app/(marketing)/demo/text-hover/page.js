@@ -17,9 +17,9 @@ const page = () => {
     </HeadAnim>
     <div className='w-[50%] text-center max-md:hidden'>
     <SplitLine>
-    <p>
+    <h2>
       &quot;Text Hover&quot; is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
-    </p>
+    </h2>
     </SplitLine>
 
     </div>

@@ -60,8 +60,8 @@ export default function MousePixelation({
 function CursorMoveCue() {
   return (
     <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 max-md:hidden backdrop-blur-md max-sm:bottom-5 max-sm:text-xs">
-     
-      <span>Move your cursor to see the pixelated effects</span>
+
+      <p>Move your cursor to see the pixelated effects</p>
     </div>
   );
 }
@@ -79,11 +79,10 @@ function VersionNav({ activeVariant, onVariantChange }) {
             key={variant.value}
             type="button"
             onClick={() => onVariantChange(variant.value)}
-            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${
-              isActive
+            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${isActive
                 ? "bg-white text-black"
                 : "text-white/70 hover:text-white"
-            }`}
+              }`}
           >
             {variant.label}
           </button>

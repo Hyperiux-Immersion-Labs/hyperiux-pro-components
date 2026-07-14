@@ -255,12 +255,12 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
 					<div className="w-full flex justify-between">
-						<h2
+						<h1
 							ref={headingRef}
 							className="text-[4vw] font-medium w-fit leading-none"
 						>
 							Gradient Ribbon Drift
-						</h2>
+						</h1>
 
 						<p
 							ref={paragraphRef}

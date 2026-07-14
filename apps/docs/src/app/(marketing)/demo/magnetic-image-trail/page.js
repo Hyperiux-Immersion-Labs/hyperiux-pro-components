@@ -8,20 +8,16 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <div className='h-screen relative'>
+      <div className='h-screen relative'>
 
-      <DemoHeader />
-      <MagneticImageTrail />
-      <div className='absolute top-24 max-md:hidden right-10 backdrop-blur-md p-4 rounded-xl bg-black/5 max-w-45'>
-      <SplitLine>
+        <DemoHeader />
 
-        <p className='text-black text-lg text-center leading-[1.2]'>
+
+        <h1 className='text-black sr-only text-lg text-center leading-[1.2]'>
           Glide around to reveal the magic
-        </p>
-      </SplitLine>
-
-      </div>
-    </div>
+        </h1>
+        <MagneticImageTrail />
+      </div >
     </>
   )
 }
