@@ -227,13 +227,17 @@ export default function HeroBannerAnimated() {
  initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-  className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-md:text-[2.5vw] max-sm:text-[3vw] max-sm:bottom-[40%] pointer-events-auto'
+  className='absolute flex items-center justify-center gap-5 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-md:text-[2.5vw] max-sm:text-[3vw] max-sm:bottom-[40%] pointer-events-auto'
 >
   <Link prefetch={false} href="/effects" className='pointer-events-auto'>
     Explore All Effects
   </Link>
-
   <Play className='w-4 h-4 max-md:hidden' fill='#ECE4B4' />
+  <Link prefetch={false} href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
+    Read Article
+  </Link>
+
+  
 </motion.p>
 
               <motion.div

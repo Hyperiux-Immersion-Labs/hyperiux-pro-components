@@ -348,8 +348,9 @@ export default function StackLoader({
         <p className="text-center text-4xl font-bold text-neutral-300">
           HYPERIUX VAULT
         </p>
-        <div>
+        <div className="space-y-3">
           <Button text="Explore All Effects" href="/effects" variant="orange" />
+          <Button text=" Read Article" href="/effects/loaders/stack-loader" variant="outline2"/>
         </div>
         <button
           type="button"

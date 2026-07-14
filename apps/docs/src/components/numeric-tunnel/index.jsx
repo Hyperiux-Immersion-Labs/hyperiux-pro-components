@@ -21,7 +21,8 @@ export default function NumericTunnel() {
  <div className="h-screen w-full bg-white">
   <div className="h-full w-full flex flex-col items-center justify-center gap-6">
  <h2 className=" text-black text-[4vw] font-bold max-sm:text-[8vw]">HYPERIUX VAULT</h2>
-  <Button text=" Explore All Effects" href="/effects" variant="orange" />
+  <Button text=" Explore All Effects" href="/effects" variant="orange" className=' border border-primary!' />
+  <Button text=" Read Article" href="/effects/loaders/numeric-tunnel" variant="outline2" className='bg-black! border-black!' />
 <button
   type="button"
   onClick={handleReplay}

@@ -1,10 +1,12 @@
 
 'use client'
 import { useLenis } from "lenis/react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LinkButton from "../link-button";
 import Button from "./Button";
+import { getEffectRouteSlug } from "@/lib/effect-slugs";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
@@ -14,7 +16,10 @@ export default function DemoHeader({
   showText = true,
 }) {
   const [isHidden, setIsHidden] = useState(false);
+  const [readArticleHref, setReadArticleHref] = useState(href);
   const lastScrollRef = useRef(0);
+  const pathname = usePathname()?.replace(/\/$/, "") || "";
+  const demoSlug = pathname.startsWith("/demo/") ? pathname.slice(6) : "";
 
   useLenis((lenis) => {
     const currentScroll = lenis.scroll;
@@ -27,11 +32,58 @@ export default function DemoHeader({
     setIsHidden(delta > 0 && currentScroll > 24);
     lastScrollRef.current = currentScroll;
   });
+
+  useEffect(() => {
+    if (!demoSlug) {
+      setReadArticleHref(href);
+      return;
+    }
+
+    let isActive = true;
+
+    async function resolveArticleHref() {
+      try {
+        const response = await fetch("/api/effects/search-index");
+
+        if (!response.ok) {
+          throw new Error(`Failed to load effect index: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const canonicalSlug = getEffectRouteSlug(demoSlug);
+        const effect = data.effects?.find(
+          (entry) =>
+            entry.effectSlug === canonicalSlug ||
+            entry.slug === canonicalSlug ||
+            entry.name === canonicalSlug
+        );
+
+        if (!isActive) return;
+
+        setReadArticleHref(
+          effect?.categorySlug && effect?.effectSlug
+            ? `/effects/${effect.categorySlug}/${effect.effectSlug}`
+            : href
+        );
+      } catch {
+        if (isActive) {
+          setReadArticleHref(href);
+        }
+      }
+    }
+
+    resolveArticleHref();
+
+    return () => {
+      isActive = false;
+    };
+  }, [demoSlug, href]);
+
   const resolvedTextColor = textColor;
 
   return (
     <>
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-3 transition-transform duration-500 ease-out pt-10 max-sm:pt-10 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out pt-10 max-sm:pt-10 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -89,7 +141,7 @@ export default function DemoHeader({
             </Link>
           </div>
 
-          <div className="min-w-0 text-right">
+          <div className="min-w-0 text-right flex items-center justify-center gap-3">
             {showText ? (
               <>
                 {/* <ArrowFillButton
@@ -102,10 +154,16 @@ export default function DemoHeader({
                   className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
                 /> */}
                 <Button
+                                text="Read Article"
+                                href={readArticleHref}
+                                className="border-white/50! bg-[#0e0e0e]! max-md:hidden"
+                                variant="outline2"
+                              />
+                <Button
                   text={text}
                   href={href}
                   variant="orange"
-                  className=" max-md:hidden text-[1.2vw]  "
+                  className=" max-md:hidden text-[1.2vw] border border-primary "
                 />
                 <LinkButton
                   href={href}
