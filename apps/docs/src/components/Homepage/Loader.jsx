@@ -16,7 +16,6 @@ const LOGO_REVEAL_DURATION = 0.5;
 const LOGO_HIDE_DURATION = 0.5;
 const LOGO_DELAY = 0.15;
 const PIXEL_DISSOLVE_DURATION = 0.5;
-const PIXEL_DISSOLVE_DELAY = 0.25;
 
 // Test-protocol fix: whether the loader plays depends on sessionStorage,
 // which silently differs between manual DevTools test runs (warm session =
@@ -500,6 +499,7 @@ export default function Loader() {
         "<="
       );
 
+      // 1) Hide logo (+ strip + dark behind logo) fully first
       tl.to(frontLogoRef.current, {
         clipPath: "inset(0% 0% 0% 100%)",
         duration: LOGO_HIDE_DURATION,
@@ -514,17 +514,23 @@ export default function Loader() {
           duration: LOGO_HIDE_DURATION,
           ease: "power4.inOut",
         },
-        "<="
+        "<"
       );
 
-      // Removed all text animation here
-
+      tl.to(
+        behindLogoRef.current,
+        {
+          opacity: 0,
+          duration: 1,
+          ease: "power2.inOut",
+        },
+        "<"
+      );
       tl.to(
         canvasStateRef.current,
         {
           progress: 1,
           duration: PIXEL_DISSOLVE_DURATION,
-          delay: PIXEL_DISSOLVE_DELAY,
           ease: "none",
           onUpdate: () => {
             drawWhitePixels(canvasRef.current, canvasStateRef.current.progress);
@@ -533,7 +539,7 @@ export default function Loader() {
             drawWhitePixels(canvasRef.current, 1);
           },
         },
-        "loader-exit"
+        ">"
       );
     }, rootRef);
 
@@ -619,7 +625,6 @@ export default function Loader() {
         ref={bgOverlayRef}
         className="bg-overlay absolute inset-0 h-screen w-screen bg-white"
       />
-      {/* Removed all text elements */}
     </div>
   );
 }
