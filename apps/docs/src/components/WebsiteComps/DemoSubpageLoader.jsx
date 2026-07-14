@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import ShimmerText from "@/components/WebsiteComps/ShimmerText";
 
 const MIN_VISIBLE_MS = 500;
-const MAX_WAIT_MS = 4000;
+const MAX_WAIT_MS = 8000;
 const POLL_INTERVAL_MS = 100;
+const QUIET_MS = 250;
 const FADE_MS = 500;
 
 function formatLabel(pathname) {
@@ -18,10 +19,109 @@ function formatLabel(pathname) {
     .join(" ");
 }
 
-function isPageReady() {
+function isDomReady() {
   if (document.fonts && document.fonts.status !== "loaded") return false;
 
   return Array.from(document.images || []).every((img) => img.complete);
+}
+
+/**
+ * Textures/models loaded by three.js don't show up in `document.images` or
+ * fire any React-visible event - TextureLoader creates off-DOM `Image()`
+ * objects, GLTFLoader/FileLoader fetch via XHR. Patching these while the
+ * loader is mounted lets it track real in-flight requests for whatever a
+ * given demo happens to load, without every demo page needing to opt in.
+ */
+function createNetworkIdleTracker() {
+  const originalFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
+  const OriginalXHR = window.XMLHttpRequest;
+  const OriginalImage = window.Image;
+
+  let pending = 0;
+  let lastActivityAt = Date.now();
+  const bump = () => {
+    lastActivityAt = Date.now();
+  };
+
+  if (originalFetch) {
+    window.fetch = (...args) => {
+      pending += 1;
+      bump();
+
+      return originalFetch(...args).finally(() => {
+        pending -= 1;
+        bump();
+      });
+    };
+  }
+
+  if (OriginalXHR) {
+    function PatchedXHR(...args) {
+      const xhr = new OriginalXHR(...args);
+      let counted = false;
+
+      const onStart = () => {
+        if (counted) return;
+        counted = true;
+        pending += 1;
+        bump();
+      };
+
+      const onDone = () => {
+        if (!counted) return;
+        counted = false;
+        pending -= 1;
+        bump();
+      };
+
+      xhr.addEventListener("loadstart", onStart);
+      xhr.addEventListener("loadend", onDone);
+
+      return xhr;
+    }
+
+    PatchedXHR.prototype = OriginalXHR.prototype;
+    window.XMLHttpRequest = PatchedXHR;
+  }
+
+  if (OriginalImage) {
+    window.Image = new Proxy(OriginalImage, {
+      construct(target, args) {
+        const img = new target(...args);
+        let counted = true;
+        pending += 1;
+        bump();
+
+        const settle = () => {
+          if (!counted) return;
+          counted = false;
+          pending -= 1;
+          bump();
+          img.removeEventListener("load", settle);
+          img.removeEventListener("error", settle);
+        };
+
+        img.addEventListener("load", settle);
+        img.addEventListener("error", settle);
+
+        return img;
+      },
+    });
+  }
+
+  let restored = false;
+
+  return {
+    isIdle: () => pending <= 0 && Date.now() - lastActivityAt >= QUIET_MS,
+    restore: () => {
+      if (restored) return;
+      restored = true;
+
+      if (originalFetch) window.fetch = originalFetch;
+      if (OriginalXHR) window.XMLHttpRequest = OriginalXHR;
+      if (OriginalImage) window.Image = OriginalImage;
+    },
+  };
 }
 
 // Keyed by pathname in the parent so each navigation remounts this (and
@@ -32,11 +132,14 @@ function DemoSubpageOverlay({ pathname }) {
 
   useEffect(() => {
     const startedAt = Date.now();
+    const tracker = createNetworkIdleTracker();
     let cancelled = false;
     let pollId;
 
     const finish = () => {
       if (cancelled) return;
+
+      tracker.restore();
 
       const remaining = Math.max(MIN_VISIBLE_MS - (Date.now() - startedAt), 0);
 
@@ -54,7 +157,9 @@ function DemoSubpageOverlay({ pathname }) {
     const check = () => {
       if (cancelled) return;
 
-      if (isPageReady() || Date.now() - startedAt > MAX_WAIT_MS) {
+      const ready = isDomReady() && tracker.isIdle();
+
+      if (ready || Date.now() - startedAt > MAX_WAIT_MS) {
         finish();
         return;
       }
@@ -62,12 +167,14 @@ function DemoSubpageOverlay({ pathname }) {
       pollId = window.setTimeout(check, POLL_INTERVAL_MS);
     };
 
-    // Two rAFs so the new page has actually painted before we start checking.
+    // Two rAFs so the new page has actually painted (and kicked off its
+    // loaders) before we start checking.
     requestAnimationFrame(() => requestAnimationFrame(check));
 
     return () => {
       cancelled = true;
       window.clearTimeout(pollId);
+      tracker.restore();
     };
   }, []);
 

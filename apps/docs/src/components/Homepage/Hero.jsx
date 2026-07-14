@@ -21,7 +21,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
 }
 
-const HERO_ANIMATION_DELAY = 0.15;
+const HERO_ANIMATION_DELAY = 0.4;
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -328,9 +328,13 @@ export default function Hero() {
     // overlay with scroll locked while it plays, so the hero is hidden behind
     // it regardless of when this animation runs - starting immediately means
     // it plays out during the overlay instead of after, so by the time the
-    // overlay lifts the hero is already in its revealed end state. This was
-    // the LCP element per Lighthouse (elementRenderDelay ~9.6s waiting on the
-    // old loader-gated start).
+    // overlay lifts the hero is already in its revealed end state. When the
+    // loader doesn't run at all (already played this session, or skipped for
+    // mobile/tablet/audits - see shouldSkipLoader), nothing covers the hero,
+    // so this same fixed delay just plays out immediately and visibly - no
+    // separate "skip waiting" branch needed. This was the LCP element per
+    // Lighthouse (elementRenderDelay ~9.6s waiting on the old loader-gated
+    // start).
     delayedCall = gsap.delayedCall(HERO_ANIMATION_DELAY, runAnimation);
 
     return () => {
@@ -411,6 +415,8 @@ export default function Hero() {
           </ShimmerText>
         </p>
       </div>
+      <div className="hero-overlay"/>
+     
     </section>
   );
 }

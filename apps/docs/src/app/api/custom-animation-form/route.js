@@ -1,4 +1,5 @@
 import { CustomAnimationFormEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormEmail";
+import { CustomAnimationFormConfirmationEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormConfirmationEmail";
 import { sendEmail } from "@/lib/resend";
 import { isBlockedEmailDomain } from "@/lib/blocked-email-domains";
 import { verifyRecaptcha } from "@/lib/recaptcha";
@@ -71,7 +72,7 @@ export async function POST(request) {
     const to = process.env.RESEND_FROM_EMAIL;
     const subject = `New custom animation request from ${values.name}`;
 
-    const { success } = await sendEmail({
+    const teamEmail = await sendEmail({
       to,
       subject,
       react: CustomAnimationFormEmail(values),
@@ -79,7 +80,17 @@ export async function POST(request) {
       emailType: "custom_animation_request",
     });
 
-    if (!success) {
+    const confirmationEmail = await sendEmail({
+      to: values.email,
+      subject: "We received your request - Hyperiux",
+      react: CustomAnimationFormConfirmationEmail({
+        name: values.name,
+        message: values.message,
+      }),
+      emailType: "custom_animation_request_confirmation",
+    });
+
+    if (!teamEmail.success) {
       return Response.json({ error: "Failed to send request." }, { status: 500 });
     }
 
