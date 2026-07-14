@@ -158,12 +158,12 @@ export default function RandomBlur({
                   split.chars,
                   {
                     opacity: 0,
-                    filter: `blur(${blur})`,
+                    // filter: `blur(${blur})`,
                     force3D: true,
                   },
                   {
                     opacity: 1,
-                    filter: "blur(0px)",
+                    // filter: "blur(0px)",
                     force3D: true,
                     delay,
                     duration,

@@ -153,12 +153,12 @@ export default function GradientFill() {
 
                 tl.fromTo(
                     split.lines,
-                    { rotationX: -30, yPercent: 200, opacity: 0 },
-                    { rotationX: 0, yPercent: 0, opacity: 1, stagger: 0.1, duration: 1, ease: 'power2.out' }
+                    { opacity: 0 , filter: 'blur(10px)'},
+                    { opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power2.out' }
                 )
                 tl.to(
                     split.lines,
-                    { rotationX: 30, yPercent: -200, opacity: 0, stagger: 0.1, duration: 1, ease: 'power2.in' }
+                    { opacity: 0, filter: 'blur(10px)', duration: 1, ease: 'power2.in' }
                 )
             })
 
