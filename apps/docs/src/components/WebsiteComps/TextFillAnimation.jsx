@@ -50,8 +50,26 @@ export function TextFillAnimation({
 
     styleElement.id = styleId;
     styleElement.textContent = `
+      @keyframes color-transition-${id} {
+        0% { color: ${dimColor}; }
+        30% { color: ${primaryColor}; }
+        100% { color: ${textColor}; }
+      }
+
       #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR} {
+        transition: color .4s;
         color: ${dimColor};
+      }
+
+      #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
+        animation: color-transition-${id} .5s;
+        color: ${textColor};
+      }
+
+      #${id}.tfa-preload .split__wrapper ${SPLIT_CHARACTER_SELECTOR},
+      #${id}.tfa-preload .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
+        transition: none;
+        animation: none;
       }
 
       #${id} .tfa-text-wrapper {
@@ -115,6 +133,12 @@ export function TextFillAnimation({
         return;
       }
 
+      // Mute the CSS transition/animation while the timeline is wired up, so
+      // reloading mid-scroll doesn't replay the colour keyframe on every
+      // already-revealed character at once (the one-off "blink").
+      const section = sectionRef.current;
+      section?.classList.add('tfa-preload');
+
       const split = SplitText.create(textElement, {
         type: 'words chars',
         aria: false,
@@ -130,32 +154,43 @@ export function TextFillAnimation({
         textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
       );
 
-      gsap.set(characters, { color: dimColor });
-
       gsap
         .timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 70%',
-            end: 'bottom 70%',
+            start: 'top top',
+            end: 'bottom bottom',
             scrub: 0.25,
-            // markers:true
           },
         })
         .to(
           characters,
           {
-            keyframes: {
-              color: [dimColor, primaryColor, textColor],
-              easeEach: 'power2.inOut',
-            },
+            className: 'split-chars show',
             duration: 0.4,
             stagger: 0.05,
+            ease: 'power2.inOut',
           },
           0
         );
 
+      // Once ScrollTrigger has applied the scrubbed starting state, pin the
+      // already-revealed characters to their final look (no entry animation)
+      // and lift the mute. Characters scrolled into afterwards still pop.
+      const raf = requestAnimationFrame(() => {
+        characters.forEach((char) => {
+          if (char.classList.contains('show')) {
+            char.style.animation = 'none';
+            char.style.transition = 'none';
+          }
+        });
+
+        section?.classList.remove('tfa-preload');
+      });
+
       return () => {
+        cancelAnimationFrame(raf);
+        section?.classList.remove('tfa-preload');
         split.revert();
       };
     });
@@ -182,10 +217,10 @@ export function TextFillAnimation({
     <section
       id={id}
       ref={sectionRef}
-      className={`relative h-fit w-full ${containerClassName}`}
+      className={`relative h-[250vh] w-full ${containerClassName}`}
       style={{ backgroundColor }}
     >
-      <div className="flex h-screen items-center justify-center overflow-x-hidden max-md:h-fit">
+      <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto">
           <h2

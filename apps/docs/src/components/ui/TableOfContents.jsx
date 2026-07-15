@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 function ensureHeadingId(el, index) {
   if (!el.id) {
@@ -26,7 +28,9 @@ export function TableOfContents({
   const [activeId, setActiveId] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [isFooterNearby, setIsFooterNearby] = useState(false);
+  const [hoveredId, setHoveredId] = useState(null);
 
+  const reduceMotion = useReducedMotion();
   const lenis = useLenis();
   const activeLockRef = useRef({
     id: "",
@@ -261,26 +265,47 @@ export function TableOfContents({
       />
 
       <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
-        <ul className="space-y-1 pb-4 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc">
+        <ul
+          className=" pb-4 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc"
+          onMouseLeave={() => setHoveredId(null)}
+        >
           {items.map((item) => {
-            const isActive = activeId === item.id;
+            // Hover takes precedence; falls back to the active section so the
+            // pill still rests somewhere when nothing is hovered.
+            const highlighted = hoveredId
+              ? hoveredId === item.id
+              : activeId === item.id;
 
             return (
               <li key={item.id}>
-                <a
+                <Link
                   href={`#${item.id}`}
-                  className={[
-                    "group block overflow-hidden transition-colors duration-300 ease-in-out hover:duration-0 motion-reduce:transition-none",
-                    isActive
-                      ? "bg-[#ff5f00]"
-                      : "bg-transparent hover:bg-[#ff5f00]",
-                  ].join(" ")}
+                  onMouseEnter={() => setHoveredId(item.id)}
+                  className="relative block rounded-md"
                   onClick={(event) => onTocClick(event, item.id)}
                 >
-                  <span className="block px-3 py-2 text20 font-medium leading-[1.25] text-white transition-transform duration-200 ease-out group-hover:duration-0">
+                  <AnimatePresence>
+                    {highlighted && (
+                      <motion.span
+                        // Shared layoutId lets the pill slide between items
+                        // instead of cross-fading in place.
+                        layoutId={reduceMotion ? undefined : "toc-pill"}
+                        className="absolute inset-0 -z-10 rounded-md bg-[#ff5f00]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={
+                          reduceMotion
+                            ? { duration: 0.2, ease: "easeOut" }
+                            : { stiffness: 0, damping: 20 }
+                        }
+                      />
+                    )}
+                  </AnimatePresence>
+                  <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
                     {item.text}
                   </span>
-                </a>
+                </Link>
               </li>
             );
           })}
@@ -290,7 +315,7 @@ export function TableOfContents({
       <ul className="flex w-12 flex-col items-end gap-5">
         {items.map((item) => (
           <li key={item.id}>
-            <a
+            <Link
               href={`#${item.id}`}
               aria-label={item.text}
               className="block cursor-pointer py-1"
@@ -304,7 +329,7 @@ export function TableOfContents({
                     : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
                 ].join(" ")}
               />
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

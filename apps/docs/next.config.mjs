@@ -35,6 +35,8 @@ const allowedIframeSources = [
   "https://challenges.cloudflare.com",
   "https://www.google.com",
   "https://recaptcha.google.com",
+  "https://api.razorpay.com",
+  "https://checkout.razorpay.com",
 ].join(" ");
 
 /** @type {import('next').NextConfig} */

@@ -4,8 +4,7 @@
   "title": "Stacking Cards",
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
   "dependencies": [
-    "gsap",
-    "next"
+    "gsap"
   ],
   "registryDependencies": [],
   "exportName": "StackingCards",

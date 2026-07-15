@@ -140,7 +140,7 @@ export default function RefundPolicy() {
         Approved refunds are issued to the original payment method used for the purchase,
         and are processed within a reasonable time in line with applicable payment-network
         and Reserve Bank of India guidelines - typically within 7 business days of approval
-        via Stripe, though your bank or card issuer may take additional time to reflect the
+        via Razorpay, though your bank or card issuer may take additional time to reflect the
         refund.
       </Para>
 

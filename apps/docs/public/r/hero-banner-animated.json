@@ -9,9 +9,7 @@
     "@react-three/postprocessing",
     "postprocessing",
     "gsap",
-    "three",
-    "motion",
-    "lucide-react"
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "HeroBannerAnimated",

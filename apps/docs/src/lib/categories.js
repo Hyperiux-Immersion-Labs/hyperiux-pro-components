@@ -5,8 +5,8 @@ export const effectsOverviewContent = {
   name: "Hyperiux Vault Effects",
   ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects.jpg",
   metadata: {
-    title: "The Vault by Hyperiux UI | Modern UI Effects & Components",
-    description: "Explore The Vault by Hyperiux UI, a curated library of modern UI effects and components built to inspire faster, cleaner, and more engaging digital experiences.",
+    title: "React & Next.js Effects Library | Hyperiux Vault",
+    description: "Explore 115 editable interaction effects for React and Next.js, including scroll, cursor, WebGL, buttons and transitions. Preview live and install fast.",
   },
   description: [
     "Hyperiux Vault is a growing library of 115 interaction effects for React and Next.js - scroll systems, cursor trails, WebGL scenes, animated buttons, and page transitions, all shipped as editable source code you copy straight into your own repo. Browse by category below, preview any effect live, and install with the CLI or a single copy-paste.",

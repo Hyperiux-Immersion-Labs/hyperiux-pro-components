@@ -8,6 +8,8 @@ import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import { useUser } from "@clerk/nextjs";
 import ShimmerText from "../WebsiteComps/ShimmerText";
+import RazorpayCheckoutButton from "../Payments/RazorpayCheckoutButton";
+import LineReveal from "../Animations/LineReveal";
 
 const DIGITS = [...Array(10).keys()];
 
@@ -57,7 +59,6 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
-  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
@@ -69,9 +70,9 @@ export default function Pricing({ padding, content = true }) {
   return (
     <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[6vw]  max-md:gap-[10vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding ? padding : "pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
       {content && <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
-        <RandomBlur as="h2" className="text110 w-[70vw] max-md:w-full">
+        <LineReveal as="h2" className="text110 w-[70vw] max-md:w-full">
           Start free.<br /> Upgrade when you’re ready.
-        </RandomBlur>
+        </LineReveal>
         <SplitLine as="p" className="text24 max-md:w-[90vw] mx-auto">
           The free core stays free, forever. Pro unlocks everything and every
           new drop.
@@ -169,6 +170,9 @@ export default function Pricing({ padding, content = true }) {
           <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
             <p className="text80 font-heading">Pro</p>
 
+            {/* Always shows $179/yr. First 100 paid users are silently
+                switched to the $149 plan_id server-side (create-subscription
+                route) - no visible indication, no separate tier on this card. */}
             <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
               <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
                 <span>$</span>
@@ -210,7 +214,7 @@ export default function Pricing({ padding, content = true }) {
           </div>
           <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
             <div className="w-fit max-sm:w-full">
-              {!isLoaded ? (
+              {!isLoaded ? (  
                 <Button
                   variant="orange"
                   text="···"
@@ -225,12 +229,15 @@ export default function Pricing({ padding, content = true }) {
                   disabled
                 />
               ) : userPlan === "free" ? (
-                <Button
-                  variant="orange"
-                  text="Join Founding Access"
-                  href="/sign-up"
-                  className="max-md:w-full max-sm:text-[4vw]"
-                />
+                <RazorpayCheckoutButton
+                  plan={isYearly ? "yearly" : "monthly"}
+                  className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full max-sm:text-[4vw]"
+                  onSuccess={() => {
+                    window.location.href = "/dashboard?upgraded=true";
+                  }}
+                >
+                  {isYearly ? "Join Founding Access" : "Go Pro Monthly"}
+                </RazorpayCheckoutButton>
               ) : (
                 <Button
                   variant="orange"

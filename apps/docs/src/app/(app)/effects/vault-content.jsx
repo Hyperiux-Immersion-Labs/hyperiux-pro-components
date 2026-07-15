@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
@@ -205,6 +206,52 @@ const routeKey = `${pathname}${
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const filterMenuRef = useRef(null);
+  const filterButtonRef = useRef(null);
+  const filterMenuPanelRef = useRef(null);
+  // On mobile/tablet the category row is a horizontal scroll container, which
+  // clips an absolutely-positioned dropdown. When set, the menu is portaled to
+  // <body> with these fixed viewport coords so it renders on top instead.
+  const [filterMenuPos, setFilterMenuPos] = useState(null);
+  const [gridColumns, setGridColumns] = useState(3);
+
+  // featured/free/pro are filters (not real categories); they live behind the
+  // filter icon dropdown. Everything else renders inline as category chips.
+  const FILTER_OPTIONS = ["featured", "free", "pro"];
+
+  useEffect(() => {
+    if (!filterMenuOpen) return;
+
+    const handlePointerDown = (event) => {
+      if (
+        !filterMenuRef.current?.contains(event.target) &&
+        !filterMenuPanelRef.current?.contains(event.target)
+      ) {
+        setFilterMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setFilterMenuOpen(false);
+    };
+
+    // The mobile/tablet panel is portaled with fixed coords, so close it on
+    // scroll/resize rather than let it float detached from its button.
+    const handleReposition = () => setFilterMenuOpen(false);
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("scroll", handleReposition, true);
+    window.addEventListener("resize", handleReposition);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("scroll", handleReposition, true);
+      window.removeEventListener("resize", handleReposition);
+    };
+  }, [filterMenuOpen]);
 
   const featuredEffects = useMemo(
     () => getFeaturedEffects(safeEffects),
@@ -356,6 +403,23 @@ const routeKey = `${pathname}${
 
     return ["featured", "free", "pro", ...knownCategories, ...extraCategories];
   }, [safeEffectCounts]);
+
+  const categoryChips = useMemo(
+    () => quickCategories.filter((cat) => !FILTER_OPTIONS.includes(cat)),
+    [quickCategories]
+  );
+
+  const activeFilter = FILTER_OPTIONS.includes(categoryFilter)
+    ? categoryFilter
+    : null;
+
+  const getQuickCategoryLabel = useCallback((cat) => {
+    if (cat === "free") return "Free";
+    if (cat === "pro") return "Pro";
+    if (cat === "featured") return "Featured";
+    if (cat === "webgl") return "WebGL";
+    return cat.charAt(0).toUpperCase() + cat.slice(1);
+  }, []);
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -571,7 +635,8 @@ const routeKey = `${pathname}${
           </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-sm:px-0 max-md:pt-10">
-            <div className="relative max-md:w-full fadeup">
+            <div className="relative max-md:w-full fadeup flex items-end gap-4">
+              <div className="relative min-w-0 flex-1">
               <div
                 className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-md:block"
                 style={{
@@ -580,7 +645,7 @@ const routeKey = `${pathname}${
                 }}
               />
 
-             
+
                 <div
                   className={[
                     "category-fadeup fadeup flex items-center gap-2.5",
@@ -593,19 +658,134 @@ const routeKey = `${pathname}${
                     "max-md:pb-3",
                   ].join(" ")}
                 >
-                  {quickCategories.map((cat) => {
-                    const isSelected = categoryFilter === cat;
+                  {/* Filter dropdown: featured / free / pro */}
+                  <div ref={filterMenuRef} className="relative shrink-0">
+                    <button
+                      ref={filterButtonRef}
+                      type="button"
+                      onClick={() =>
+                        setFilterMenuOpen((open) => {
+                          const next = !open;
 
-                    const label =
-                      cat === "free"
-                        ? "Free"
-                        : cat === "pro"
-                          ? "Pro"
-                          : cat === "featured"
-                            ? "Featured"
-                            : cat === "webgl"
-                              ? "WebGL"
-                              : cat.charAt(0).toUpperCase() + cat.slice(1);
+                          if (
+                            next &&
+                            typeof window !== "undefined" &&
+                            window.innerWidth < 768
+                          ) {
+                            const rect =
+                              filterButtonRef.current?.getBoundingClientRect();
+
+                            if (rect) {
+                              setFilterMenuPos({
+                                top: rect.bottom + 8,
+                                left: rect.left,
+                              });
+                            }
+                          } else {
+                            setFilterMenuPos(null);
+                          }
+
+                          return next;
+                        })
+                      }
+                      aria-haspopup="menu"
+                      aria-expanded={filterMenuOpen}
+                      aria-label="Filter effects"
+                      className={`
+                        px-6 py-2.5 text-md relative rounded-full max-sm:px-5 max-sm:py-2
+                        backdrop-blur-[6px] font-sans flex items-center gap-2 cursor-pointer
+                        transition-colors duration-300 max-sm:text-lg text20
+                        ${activeFilter
+                          ? "bg-white text-[#111111] hover:bg-white"
+                          : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
+                        }
+                      `}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="shrink-0"
+                      >
+                        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
+                      </svg>
+                      <span className="leading-none">
+                        {activeFilter ? getQuickCategoryLabel(activeFilter) : ""}
+                      </span>
+                    </button>
+
+                    {filterMenuOpen &&
+                      (() => {
+                        const panel = (
+                          <div
+                            ref={filterMenuPanelRef}
+                            role="menu"
+                            style={
+                              filterMenuPos
+                                ? {
+                                    top: filterMenuPos.top,
+                                    left: filterMenuPos.left,
+                                  }
+                                : undefined
+                            }
+                            className={[
+                              "space-y-1.5 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5",
+                              filterMenuPos
+                                ? "fixed z-[9999]"
+                                : "absolute left-0 top-full mt-2 z-30",
+                            ].join(" ")}
+                          >
+                            {FILTER_OPTIONS.map((cat) => {
+                              const isSelected = categoryFilter === cat;
+
+                              return (
+                                <button
+                                  key={cat}
+                                  type="button"
+                                  role="menuitem"
+                                  onClick={() => {
+                                    handleCategoryLinkClick(cat);
+                                    setFilterMenuOpen(false);
+                                  }}
+                                  className={`
+                                flex w-full items-center rounded-full px-4 py-2.5 hover:bg-white text-left text20
+                                 duration-300! transition-colors cursor-pointer
+                                ${isSelected
+                                      ? "bg-white text-[#111111]"
+                                      : "text-foreground hover:bg-white hover:text-black"
+                                    }
+                              `}
+                                >
+                                  <span className="leading-none">
+                                    {getQuickCategoryLabel(cat)}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+
+                        return filterMenuPos && mounted
+                          ? createPortal(panel, document.body)
+                          : panel;
+                      })()}
+                  </div>
+
+                  {/* Divider between filters and categories */}
+                  <span
+                    aria-hidden="true"
+                    className="mx-1 h-7 w-px shrink-0 self-center bg-white/15 max-sm:h-6"
+                  />
+
+                  {categoryChips.map((cat) => {
+                    const isSelected = categoryFilter === cat;
+                    const label = getQuickCategoryLabel(cat);
 
                     return (
                       <Link
@@ -631,7 +811,34 @@ const routeKey = `${pathname}${
                     );
                   })}
                 </div>
-              
+              </div>
+
+              {/* Grid density viewer: 2 or 3 cards per row */}
+              <div className="shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+                {[2, 3].map((cols) => {
+                  const isActive = gridColumns === cols;
+
+                  return (
+                    <button
+                      key={cols}
+                      type="button"
+                      onClick={() => setGridColumns(cols)}
+                      aria-label={`Show ${cols} cards per row`}
+                      aria-pressed={isActive}
+                      className={`
+                        flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
+                        transition-colors duration-300 cursor-pointer
+                        ${isActive
+                          ? "bg-white text-[#111111]"
+                          : "text-foreground hover:text-white"
+                        }
+                      `}
+                    >
+                      {cols}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -699,6 +906,7 @@ const routeKey = `${pathname}${
                 isProUser={isProUser}
                 isSidebarOpen={isSidebarOpen}
                 animationKey={routeKey}
+                columns={gridColumns}
               />
             )}
 
@@ -799,6 +1007,7 @@ function EffectsGridInner({
   toggleWishlist,
   isProUser,
   animationKey,
+  columns = 3,
 }) {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
 
@@ -849,22 +1058,38 @@ function EffectsGridInner({
     return () => cancelAnimationFrame(raf);
   }, [visibleEffects.length, animationKey]);
 
+  // Only the desktop (lg+) column count is user-controlled; the md/sm grids
+  // stay fixed. `layout` FLIP-animates the resize/reflow when the count
+  // changes so it reads as a smooth transition instead of a snap.
+  //
+  // The FLIP transform lives on the OUTER motion.div, while the entrance
+  // animation (which also drives `transform`, with animation-fill-mode `both`)
+  // stays on the inner `.effect-card-shell`. Keeping them on separate elements
+  // stops the finished entrance animation from clobbering Framer's transform.
+  const baseColsClass = columns === 2 ? "grid-cols-2" : "grid-cols-3";
+
   return (
     <>
       <div
         ref={gridRef}
-        className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16"
+        className={`grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 ${baseColsClass} max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16`}
       >
         {visibleEffects.map((effect, i) => (
-          <div key={effect.name} className="effect-card-shell">
-            <EffectCard
-              effect={effect}
-              priority={i < 4}
-              isWishlisted={wishlist.includes(effect.name)}
-              toggleWishlist={toggleWishlist}
-              isProUser={isProUser}
-            />
-          </div>
+          <motion.div
+            key={effect.name}
+            layout
+            transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+          >
+            <div className="effect-card-shell">
+              <EffectCard
+                effect={effect}
+                priority={i < 4}
+                isWishlisted={wishlist.includes(effect.name)}
+                toggleWishlist={toggleWishlist}
+                isProUser={isProUser}
+              />
+            </div>
+          </motion.div>
         ))}
       </div>
 
@@ -881,6 +1106,7 @@ function EffectsGrid({
   isProUser = false,
   isSidebarOpen = false,
   animationKey,
+  columns = 3,
 }) {
   const filteredEffectsKey = filteredEffects
     .map((effect) => effect.name)
@@ -894,6 +1120,7 @@ function EffectsGrid({
       toggleWishlist={toggleWishlist}
       isProUser={isProUser}
       animationKey={animationKey}
+      columns={columns}
     />
   );
 }
