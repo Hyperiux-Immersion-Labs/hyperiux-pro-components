@@ -32,7 +32,7 @@ export async function GET(request) {
     // Fetch subscriptions from Supabase
     let query = supabase
       .from("subscriptions")
-      .select("clerk_user_id, plan, status, billing_interval, current_period_end, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
+      .select("clerk_user_id, plan, status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id, created_at, updated_at")
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -74,8 +74,8 @@ export async function GET(request) {
         status: sub.status || "inactive",
         billingInterval: sub.billing_interval || null,
         planValidUntil: sub.current_period_end || null,
-        stripeCustomerId: sub.stripe_customer_id || null,
-        stripeSubscriptionId: sub.stripe_subscription_id || null,
+        razorpayCustomerId: sub.razorpay_customer_id || null,
+        razorpaySubscriptionId: sub.razorpay_subscription_id || null,
       };
     });
 

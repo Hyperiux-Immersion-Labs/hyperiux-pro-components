@@ -159,7 +159,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Status</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Stripe</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -221,9 +221,9 @@ export default function AdminPage() {
                       {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
                     </td>
                     <td className="px-4 py-3">
-                      {user.stripeCustomerId ? (
-                        <span className="font-mono text-xs text-white/40" title={user.stripeCustomerId}>
-                          {user.stripeCustomerId.slice(0, 12)}…
+                      {user.razorpayCustomerId ? (
+                        <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
+                          {user.razorpayCustomerId.slice(0, 12)}…
                         </span>
                       ) : (
                         <span className="text-xs text-white/25">-</span>
