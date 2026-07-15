@@ -51,6 +51,13 @@ export function VaultHeader({
   const hideFoundingAccess =
     pathname?.startsWith("/docs") || pathname?.startsWith("/legal");
 
+  // Hide the "Browse Free Effects" button on the effect category page
+  // (/effects/[slug]) only. Still show it on the individual effect page
+  // (/effects/[slug]/[effectSlug]) and everywhere else.
+  const effectsSegments = pathname?.split("/").filter(Boolean) ?? [];
+  const isEffectCategoryPage =
+    effectsSegments[0] === "effects" && effectsSegments.length === 2;
+
   useEffect(() => {
     if (!isSignedIn) return;
 
@@ -100,7 +107,7 @@ export function VaultHeader({
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.pageYOffset > 150);
+      setIsScrolled(window.pageYOffset > 40);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -220,13 +227,15 @@ export function VaultHeader({
            }
 
             {isLoaded && (!isSignedIn ? (
-              <div className="block max-md:hidden">
-                <Button
-                  text="Browse Free Effects"
-                  href="/effects/free"
-                  variant="orange"
-                />
-              </div>
+              !isEffectCategoryPage && (
+                <div className="block max-md:hidden">
+                  <Button
+                    text="Browse Free Effects"
+                    href="/effects/free"
+                    variant="orange"
+                  />
+                </div>
+              )
             ) : (
               <div className="max-md:hidden">
                 <ProfileDropdown savedCount={wishlistCount} plan={user?.publicMetadata?.plan || "free"} />

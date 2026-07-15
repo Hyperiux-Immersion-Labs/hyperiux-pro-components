@@ -208,6 +208,12 @@ const routeKey = `${pathname}${
   const [wishlist, setWishlist] = useState([]);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const filterMenuRef = useRef(null);
+  const filterButtonRef = useRef(null);
+  const filterMenuPanelRef = useRef(null);
+  // On mobile/tablet the category row is a horizontal scroll container, which
+  // clips an absolutely-positioned dropdown. When set, the menu is portaled to
+  // <body> with these fixed viewport coords so it renders on top instead.
+  const [filterMenuPos, setFilterMenuPos] = useState(null);
   const [gridColumns, setGridColumns] = useState(3);
 
   // featured/free/pro are filters (not real categories); they live behind the
@@ -218,7 +224,10 @@ const routeKey = `${pathname}${
     if (!filterMenuOpen) return;
 
     const handlePointerDown = (event) => {
-      if (!filterMenuRef.current?.contains(event.target)) {
+      if (
+        !filterMenuRef.current?.contains(event.target) &&
+        !filterMenuPanelRef.current?.contains(event.target)
+      ) {
         setFilterMenuOpen(false);
       }
     };
@@ -227,12 +236,20 @@ const routeKey = `${pathname}${
       if (event.key === "Escape") setFilterMenuOpen(false);
     };
 
+    // The mobile/tablet panel is portaled with fixed coords, so close it on
+    // scroll/resize rather than let it float detached from its button.
+    const handleReposition = () => setFilterMenuOpen(false);
+
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("scroll", handleReposition, true);
+    window.addEventListener("resize", handleReposition);
 
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("scroll", handleReposition, true);
+      window.removeEventListener("resize", handleReposition);
     };
   }, [filterMenuOpen]);
 
@@ -644,8 +661,33 @@ const routeKey = `${pathname}${
                   {/* Filter dropdown: featured / free / pro */}
                   <div ref={filterMenuRef} className="relative shrink-0">
                     <button
+                      ref={filterButtonRef}
                       type="button"
-                      onClick={() => setFilterMenuOpen((open) => !open)}
+                      onClick={() =>
+                        setFilterMenuOpen((open) => {
+                          const next = !open;
+
+                          if (
+                            next &&
+                            typeof window !== "undefined" &&
+                            window.innerWidth < 768
+                          ) {
+                            const rect =
+                              filterButtonRef.current?.getBoundingClientRect();
+
+                            if (rect) {
+                              setFilterMenuPos({
+                                top: rect.bottom + 8,
+                                left: rect.left,
+                              });
+                            }
+                          } else {
+                            setFilterMenuPos(null);
+                          }
+
+                          return next;
+                        })
+                      }
                       aria-haspopup="menu"
                       aria-expanded={filterMenuOpen}
                       aria-label="Filter effects"
@@ -678,40 +720,61 @@ const routeKey = `${pathname}${
                       </span>
                     </button>
 
-                    {filterMenuOpen && (
-                      <div
-                        role="menu"
-                        className="absolute left-0 space-y-1.5  top-full z-30 mt-2 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5"
-                      >
-                        {FILTER_OPTIONS.map((cat) => {
-                          const isSelected = categoryFilter === cat;
+                    {filterMenuOpen &&
+                      (() => {
+                        const panel = (
+                          <div
+                            ref={filterMenuPanelRef}
+                            role="menu"
+                            style={
+                              filterMenuPos
+                                ? {
+                                    top: filterMenuPos.top,
+                                    left: filterMenuPos.left,
+                                  }
+                                : undefined
+                            }
+                            className={[
+                              "space-y-1.5 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5",
+                              filterMenuPos
+                                ? "fixed z-[9999]"
+                                : "absolute left-0 top-full mt-2 z-30",
+                            ].join(" ")}
+                          >
+                            {FILTER_OPTIONS.map((cat) => {
+                              const isSelected = categoryFilter === cat;
 
-                          return (
-                            <button
-                              key={cat}
-                              type="button"
-                              role="menuitem"
-                              onClick={() => {
-                                handleCategoryLinkClick(cat);
-                                setFilterMenuOpen(false);
-                              }}
-                              className={`
-                                flex w-full items-center rounded-full px-4 py-2.5 hover:bg-white text-left text20 
+                              return (
+                                <button
+                                  key={cat}
+                                  type="button"
+                                  role="menuitem"
+                                  onClick={() => {
+                                    handleCategoryLinkClick(cat);
+                                    setFilterMenuOpen(false);
+                                  }}
+                                  className={`
+                                flex w-full items-center rounded-full px-4 py-2.5 hover:bg-white text-left text20
                                  duration-300! transition-colors cursor-pointer
                                 ${isSelected
-                                  ? "bg-white text-[#111111]"
-                                  : "text-foreground hover:bg-white hover:text-black"
-                                }
+                                      ? "bg-white text-[#111111]"
+                                      : "text-foreground hover:bg-white hover:text-black"
+                                    }
                               `}
-                            >
-                              <span className="leading-none">
-                                {getQuickCategoryLabel(cat)}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                                >
+                                  <span className="leading-none">
+                                    {getQuickCategoryLabel(cat)}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+
+                        return filterMenuPos && mounted
+                          ? createPortal(panel, document.body)
+                          : panel;
+                      })()}
                   </div>
 
                   {/* Divider between filters and categories */}

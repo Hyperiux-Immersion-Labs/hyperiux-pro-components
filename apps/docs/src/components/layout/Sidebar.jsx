@@ -448,7 +448,10 @@ const navigateLegal = (event, href) => {
           </Link>
         </div>
 
-        <nav data-lenis-prevent className="space-y-4">
+        <nav
+          data-lenis-prevent
+          className="w-full flex-1 min-h-0 space-y-4 overflow-y-auto overflow-x-hidden pb-4 pr-1 sidebar-link-content"
+        >
           <NavIconLink
             label="Overview"
             href="/effects"
