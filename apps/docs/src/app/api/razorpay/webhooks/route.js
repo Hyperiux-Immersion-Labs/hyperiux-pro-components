@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { markUserProFromSubscription, markUserFree } from "@/lib/pro-access";
+import { markUserProFromSubscription, markUserFree, sendInvoiceEmail } from "@/lib/pro-access";
 
 // Razorpay's server calls this — authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -53,6 +53,7 @@ export async function POST(req) {
   }
 
   const subscription = event?.payload?.subscription?.entity;
+  const payment = event?.payload?.payment?.entity;
   const clerkUserId = subscription?.notes?.clerk_user_id;
 
   if (!subscription || !clerkUserId) {
@@ -63,6 +64,13 @@ export async function POST(req) {
   try {
     if (PRO_EVENTS.has(event.event)) {
       await markUserProFromSubscription({ clerkUserId, subscription });
+
+      // Only "charged" corresponds 1:1 with an actual payment - "activated"
+      // and "charged" can both fire for the first cycle, so gating the email
+      // on "charged" alone avoids sending two receipts for one charge.
+      if (event.event === "subscription.charged" && payment) {
+        await sendInvoiceEmail({ clerkUserId, subscription, payment });
+      }
     } else if (event.event in FREE_EVENTS) {
       await markUserFree({ clerkUserId, status: FREE_EVENTS[event.event] });
     }

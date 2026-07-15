@@ -1,6 +1,8 @@
 import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
+import { sendEmail } from "@/lib/resend";
+import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
 
 // Razorpay subscription statuses that count as "paying customer".
 // "authenticated" = mandate approved, first charge pending (trial-like window).
@@ -105,6 +107,40 @@ export async function markUserFree({ clerkUserId, status = "inactive" }) {
     razorpayPlanId: null,
     currentPeriodEnd: null,
   });
+}
+
+// Fires once per real charge - called only from the subscription.charged
+// webhook (see api/razorpay/webhooks/route.js), never from verify-payment,
+// so a renewal never sends two receipts for the same charge.
+export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
+  try {
+    const client = await clerkClient();
+    const user = await client.users.getUser(clerkUserId);
+    const email = user?.emailAddresses?.[0]?.emailAddress;
+
+    if (!email) return;
+
+    const emailContent = createSubscriptionInvoiceEmail({
+      name: user?.firstName || user?.fullName || "there",
+      billingInterval: getBillingInterval(subscription.plan_id),
+      amount: payment?.amount,
+      currency: payment?.currency,
+      paymentId: payment?.id,
+      periodEnd: getPeriodEnd(subscription),
+      invoiceUrl: subscription?.short_url,
+      isFirstPayment: subscription?.paid_count === 1,
+    });
+
+    await sendEmail({
+      to: email,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
+      emailType: "subscription_invoice",
+    });
+  } catch (error) {
+    console.error("SEND_INVOICE_EMAIL_ERROR:", error);
+  }
 }
 
 export async function countPaidUsers() {
