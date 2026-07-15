@@ -29,7 +29,7 @@ export default function SignUpPage() {
             routing="path"
             signInUrl="/sign-in"
             waitlistUrl="/waitlist"
-            fallbackRedirectUrl="/effects"
+            fallbackRedirectUrl="/pricing"
           />
         </div>
       </AuthShell>
