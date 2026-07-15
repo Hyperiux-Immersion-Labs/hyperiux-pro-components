@@ -17,6 +17,7 @@ import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
 import LineReveal from "../Animations/LineReveal";
+import SplitLine from "./SplitLine";
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -165,9 +166,8 @@ export default function Footer() {
           Build The Interaction Layer Your Website Is Missing.
         </LineReveal>
 
-
-        <p className="text24 py-[2vw] max-sm:py-[6vw]">Start with Free Core today. Join Founding Access for Pro next week.
-        </p>
+        <SplitLine as="p" className="text24 py-[2vw] max-sm:py-[6vw]">Start with Free Core today. Join Founding Access for Pro next week.
+        </SplitLine>
 
         <div className="flex max-sm:flex-col  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
           <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%] border-white/40' />

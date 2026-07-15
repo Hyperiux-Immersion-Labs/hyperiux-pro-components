@@ -9,6 +9,7 @@ import { SplitText } from "gsap/SplitText";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
+import LineReveal from "../Animations/LineReveal";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -199,7 +200,7 @@ export default function StorytellingMobile() {
                     loading="lazy"
                 />
             </div>
-      
+
         );
     });
 
@@ -209,26 +210,26 @@ export default function StorytellingMobile() {
             id="stm-storytelling-mobile"
             className="stm-storytelling-section relative hidden max-md:block w-full h-[250vh] z-500 mt-[10vw] mb-[20vw]"
         >
-            <RandomBlur
+            <LineReveal
                 as="h2"
                 className="text110  w-[95vw] max-sm:w-[85vw]  mb-[10vw] mx-auto text-center"
             >
                 Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
-            </RandomBlur>
+            </LineReveal>
             <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-4 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
-                            Hover it. Scroll it. Break it. Then copy it
-                        </SplitLine>
-           
+                Hover it. Scroll it. Break it. Then copy it
+            </SplitLine>
+
             <div
                 className="sticky top-0 max-sm:top-10 flex items-center justify-center w-full h-screen overflow-hidden"
             >
-                
+
                 {/* 1. Scattered Images Layer */}
                 <div
                     style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
                     className="z-10"
                 >
-                    <div 
+                    <div
                         className="relative w-full h-full"
                         style={{
                             width: "100vw",
@@ -255,7 +256,7 @@ export default function StorytellingMobile() {
                     >
                         Vault is easiest to understand when you feel it. Every effect in the free tier is production-tested. No teaser previews. No locked exports. Copy the code and it&apos;s yours.
                     </h2>
-                    
+
                 </div>
             </div>
         </section>

@@ -10,13 +10,35 @@ import { useFadeUp } from "../Animations/gsapAnimations";
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
+import { LOADER_STORAGE_KEY } from "./Loader";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, useGSAP);
 }
 
+const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
+const HERO_ANIMATION_DELAY_WITHOUT_LOADER = 0.15;
+
 function shouldBypassHeroIntroForAudit() {
   return isLighthouseOrHeadless() || isSoftwareRenderer();
+}
+
+function hasLoaderRun() {
+  if (typeof window === "undefined") return false;
+
+  return (
+    window.sessionStorage.getItem(LOADER_STORAGE_KEY) === "true" ||
+    window.__HYPERIUX_LOADER_COMPLETE__ === true
+  );
+}
+
+function isLoaderActive() {
+  if (typeof window === "undefined") return false;
+
+  return (
+    document.body.classList.contains("loader-active") ||
+    window.__HYPERIUX_LOADER_RUNNING__ === true
+  );
 }
 
 export default function Hero() {
@@ -31,7 +53,7 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      // if (shouldBypassHeroIntroForAudit()) return;
+      if (shouldBypassHeroIntroForAudit()) return;
 
       const label = labelRef.current;
       const heading = headingRef.current;
@@ -64,61 +86,104 @@ export default function Hero() {
       gsap.set(buttons, { yPercent: 100, opacity: 0 });
       gsap.set(shimmer, { yPercent: 100, opacity: 0 });
 
-      const tl = gsap.timeline({ delay: 0.4 });
+      let hasAnimated = false;
+      let delayedCall;
+      let completionPoll;
 
-      tl.to(labelSplit.lines, {
-        yPercent: 0,
-        opacity: 1,
-        duration: 0.9,
-        ease: "power3.out",
-      });
+      const runAnimation = () => {
+        if (hasAnimated) return;
+        hasAnimated = true;
 
-      tl.to(
-        headingSplit.lines,
-        {
-          yPercent: 0,
-          duration: 0.85,
-          ease: "power2.out",
-          stagger: 0.15,
-        },
-        "-=0.6"
-      );
+        if (completionPoll) {
+          window.clearInterval(completionPoll);
+          completionPoll = null;
+        }
 
-      tl.to(
-        descSplit.lines,
-        {
+        const tl = gsap.timeline({ delay: 0.4 });
+
+        tl.to(labelSplit.lines, {
           yPercent: 0,
           opacity: 1,
-          duration: 0.95,
+          duration: 0.9,
           ease: "power3.out",
-          stagger: 0.08,
-        },
-        "-=0.7"
-      );
+        });
 
-      tl.to(
-        buttons,
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        "-=0.5"
-      );
+        tl.to(
+          headingSplit.lines,
+          {
+            yPercent: 0,
+            duration: 0.85,
+            ease: "power2.out",
+            stagger: 0.15,
+          },
+          "-=0.6"
+        );
 
-      tl.to(
-        shimmer,
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        "-=0.55"
-      );
+        tl.to(
+          descSplit.lines,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.95,
+            ease: "power3.out",
+            stagger: 0.08,
+          },
+          "-=0.7"
+        );
+
+        tl.to(
+          buttons,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.75,
+            ease: "power3.out",
+          },
+          "-=0.5"
+        );
+
+        tl.to(
+          shimmer,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.75,
+            ease: "power3.out",
+          },
+          "-=0.55"
+        );
+      };
+
+      const startAfterDelay = (delay = HERO_ANIMATION_DELAY_AFTER_LOADER) => {
+        if (hasAnimated) return;
+        delayedCall?.kill();
+        delayedCall = gsap.delayedCall(delay, runAnimation);
+      };
+
+      const handleLoaderComplete = () => {
+        startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
+      };
+
+      if (hasLoaderRun() && !isLoaderActive()) {
+        startAfterDelay(HERO_ANIMATION_DELAY_WITHOUT_LOADER);
+      } else {
+        window.addEventListener("loaderComplete", handleLoaderComplete, {
+          once: true,
+        });
+
+        completionPoll = window.setInterval(() => {
+          if (hasLoaderRun() && !isLoaderActive()) {
+            window.clearInterval(completionPoll);
+            completionPoll = null;
+            startAfterDelay(HERO_ANIMATION_DELAY_AFTER_LOADER);
+          }
+        }, 80);
+      }
 
       return () => {
+        window.removeEventListener("loaderComplete", handleLoaderComplete);
+        if (completionPoll) window.clearInterval(completionPoll);
+        delayedCall?.kill();
         labelSplit.revert();
         headingSplit.revert();
         descSplit.revert();

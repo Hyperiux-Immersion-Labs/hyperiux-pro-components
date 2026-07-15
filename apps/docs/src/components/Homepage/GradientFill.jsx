@@ -140,11 +140,11 @@ export default function GradientFill() {
                         return
                     }
 
-                    const split = new SplitText(el, { type: 'lines', aria: 'none' })
+                    const split = new SplitText(el, { type: 'words,lines', aria: 'none' })
                     splits.push(split)
 
-                    gsap.set(el, { perspective: 2000, opacity: 1 })
-                    gsap.set(split.lines, {
+                    gsap.set(el, { opacity: 1 })
+                    gsap.set(split.words, {
                         willChange: 'transform, opacity',
                         transformOrigin: '50% 50%',
                         backfaceVisibility: 'hidden',
@@ -152,13 +152,13 @@ export default function GradientFill() {
                     })
 
                     tl.fromTo(
-                        split.lines,
-                        { opacity: 0, xPercent: 10, filter: 'blur(10px)' },
-                        { opacity: 1, xPercent:0,filter: 'blur(0px)', duration: 1, ease: 'power2.out' }
+                        split.words,
+                        { opacity: 0, stagger: 0.8, filter: 'blur(10px)' },
+                        { opacity: 1, stagger: 0.08,  filter: 'blur(0px)', duration: 1, ease: 'power2.out' }
                     )
                     tl.to(
-                        split.lines,
-                        { opacity: 0, xPercent: -10, filter: 'blur(10px)', duration: 1, ease: 'power2.in' }
+                        split.words,
+                        { opacity: 0, stagger: 0.08,  filter: 'blur(10px)', duration: 1, ease: 'power2.in' }
                     )
                 })
 
