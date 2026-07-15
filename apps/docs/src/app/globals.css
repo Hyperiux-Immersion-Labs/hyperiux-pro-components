@@ -49,14 +49,10 @@
   --light-grey: #939393;
   --font-avenier: "AvenirNextCyr", system-ui, sans-serif;
   --font-avenir-letter-spacing: -0.01em;
-  /* Global announcement bar height - body top padding stays constant */
-  --announcement-h: 36px;
-  /* Fixed navbars offset by this; flips to 0 when the bar hides on scroll */
+  /* Announcement bar removed - kept at 0 so fixed navbars (which read this
+     for their `top`) and body's top padding don't need per-file changes. */
+  --announcement-h: 0px;
   --announcement-offset: var(--announcement-h);
-}
-
-html.announcement-hidden {
-  --announcement-offset: 0px;
 }
 
 body {

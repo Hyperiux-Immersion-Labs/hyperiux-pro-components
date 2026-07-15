@@ -171,7 +171,7 @@ export default function Footer() {
 
         <div className="flex max-sm:flex-col  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
           <Button variant='outline2' text="Browse the Effects" href="/effects" className='max-sm:w-[88%] border-white/40' />
-          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="/waitlist" variant="orange" />
+          <Button text="Join Founding Access" className="max-sm:w-[88%]" href="/sign-up" variant="orange" />
           <p
             className="shimmer-text w-full flex items-center gap-[0.5vw] text-[#939393] leading-none max-md:gap-2 absolute max-sm:bottom-[-12vw] max-md:bottom-[-5vw] bottom-[-.8vw] left-1/2 -translate-x-1/2"
           >

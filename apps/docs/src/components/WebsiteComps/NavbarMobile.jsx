@@ -667,7 +667,7 @@ export default function NavbarMobile() {
             <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
               <Button
                 text="Join Founding Access"
-                href="/waitlist"
+                href="/sign-up"
                 className="border-white/50! w-full"
                 variant="outline2"
               />

@@ -12,6 +12,9 @@ const PLAN_INTERVALS = {
   [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
   [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "yearly",
   [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "yearly",
+  [process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID]: "monthly",
+  [process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID]: "yearly",
+  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_INR_PLAN_ID]: "yearly",
 };
 
 export function getBillingInterval(planId) {
@@ -52,6 +55,7 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
       razorpay_customer_id: subscription.customer_id || null,
       razorpay_subscription_id: subscription.id,
       razorpay_plan_id: subscription.plan_id,
+      razorpay_short_url: subscription.short_url || null,
       billing_interval: billingInterval,
       plan: "pro",
       status,

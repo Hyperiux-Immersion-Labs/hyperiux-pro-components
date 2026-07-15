@@ -66,7 +66,6 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
-  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
@@ -298,7 +297,7 @@ export default function Pricing({ padding, content = true }) {
                 <Button
                   variant="orange"
                   text="Join Founding Access"
-                  href="/waitlist"
+                  href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />
               </div>

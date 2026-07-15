@@ -32,7 +32,7 @@ export async function GET() {
       supabase
         .from("subscriptions")
         .select(
-          "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id"
+          "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id,razorpay_short_url"
         )
         .eq("clerk_user_id", userId)
         .maybeSingle(),
@@ -86,5 +86,6 @@ export async function GET() {
     planValidUntil: subscription?.current_period_end || null,
     razorpaySubscriptionId: subscription?.razorpay_subscription_id || null,
     razorpayPlanId: subscription?.razorpay_plan_id || null,
+    manageSubscriptionUrl: subscription?.razorpay_short_url || null,
   });
 }

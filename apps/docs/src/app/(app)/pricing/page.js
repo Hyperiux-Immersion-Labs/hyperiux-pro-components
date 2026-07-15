@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import VaultShell from "@/Layouts/VaultShell";
 import Hero from "@/components/Pricing/Hero";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
@@ -18,7 +19,14 @@ export const metadata = createPageMetadata({
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
 });
 
-export default function PricingPage() {
+// Reads Vercel's edge-injected geo header - makes this route dynamic
+// (acceptable here: it's the checkout page, already personalized via
+// Clerk client hooks; unlike the homepage teaser, static rendering isn't
+// the priority for a page whose whole job is a live purchase flow).
+export default async function PricingPage() {
+  const headersList = await headers();
+  const isIndia = headersList.get("x-vercel-ip-country") === "IN";
+
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
@@ -28,7 +36,7 @@ export default function PricingPage() {
           <Hero />
           <GlowingPlatesDeferred waitForLoader={false} />
           <div className=" relative z-20">
-            <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} />
+            <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} isIndia={isIndia} />
           </div>
           <PricingCompareTable />
           <PricingLicense />

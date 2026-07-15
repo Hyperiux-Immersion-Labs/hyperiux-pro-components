@@ -103,7 +103,7 @@ export default function Navbar() {
                     state. Plan-aware UI lives in the (app) group. */}
                 <Button
                     text="Join Founding Access"
-                    href="/waitlist"
+                    href="/sign-up"
                     className="border-white/40! bg-[#0E0E0E]!"
                     variant="outline2"
                     scrollOffset={getUpgradeScrollOffset}

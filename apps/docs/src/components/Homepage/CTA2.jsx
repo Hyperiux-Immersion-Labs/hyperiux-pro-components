@@ -6,7 +6,7 @@ import { UnlockIcon } from 'lucide-react';
 
 export default function CTA2({
     animations = true,
-    href = "/waitlist",
+    href = "/sign-up",
     isHomePage = false,
     isHomepage = false,
 }) {

@@ -47,7 +47,7 @@ export function CliAuthClient({ isPro }) {
             </p>
           </div>
           <Link
-            href="/waitlist"
+            href="/pricing"
             className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors"
           >
             Join Founding Access

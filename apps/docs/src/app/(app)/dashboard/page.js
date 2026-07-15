@@ -185,7 +185,7 @@ export default function DashboardPage() {
            {data.plan === "free" && (
             <>
               <Link
-                href="/waitlist"
+                href="/pricing"
                 className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
               >
                Join Founding Access
@@ -197,6 +197,16 @@ export default function DashboardPage() {
           {data.plan === "pro" && (
             <div className="flex flex-col items-end gap-2">
               <div className="flex gap-3 max-sm:flex-col">
+                {data.manageSubscriptionUrl && (
+                  <a
+                    href={data.manageSubscriptionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex px-7 py-3 rounded-full border border-white/20 text-white transition duration-300 hover:bg-white hover:text-black"
+                  >
+                    Manage Subscription
+                  </a>
+                )}
                 <Link
                   href="/effects/pro"
                   className="inline-flex px-7 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"

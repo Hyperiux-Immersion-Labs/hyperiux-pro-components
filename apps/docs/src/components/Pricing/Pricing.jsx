@@ -46,6 +46,35 @@ const PriceDigit = memo(({ digit, visible = true }) => {
 
 PriceDigit.displayName = "PriceDigit";
 
+// Renders a price as individual animated digit slots. The yearly amount
+// always has more digits than monthly (e.g. "20"->"179", "1999"->"17990") -
+// the extra leading digits fade in/out via `visible`, the shared trailing
+// slots flip their value between the monthly and yearly figure.
+function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
+  const monthlyDigits = String(monthlyAmount).split("");
+  const yearlyDigits = String(yearlyAmount).split("");
+  const leadCount = yearlyDigits.length - monthlyDigits.length;
+
+  return (
+    <>
+      {yearlyDigits.slice(0, leadCount).map((d, i) => (
+        <PriceDigit key={`lead-${i}`} digit={d} visible={isYearly} />
+      ))}
+      {monthlyDigits.map((d, i) => (
+        <PriceDigit
+          key={`trail-${i}`}
+          digit={isYearly ? yearlyDigits[leadCount + i] : d}
+        />
+      ))}
+    </>
+  );
+}
+
+const PRICING = {
+  USD: { symbol: "$", monthly: 20, yearly: 179 },
+  INR: { symbol: "₹", monthly: 1999, yearly: 17990 },
+};
+
 const freeFeatures = [
   "30+ production-ready effects",
   "Copy-paste + CLI install",
@@ -61,11 +90,13 @@ const ProFeatures = [
   "Code you own, commercial-friendly",
 ];
 
-export default function Pricing({ padding, content = true }) {
+export default function Pricing({ padding, content = true, isIndia = false }) {
   const [isYearly, setIsYearly] = useState(true);
 
   const { isLoaded, isSignedIn, user } = useUser();
   const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
+  const currency = isIndia ? "INR" : "USD";
+  const { symbol, monthly: monthlyAmount, yearly: yearlyAmount } = PRICING[currency];
 
   return (
     <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[6vw]  max-md:gap-[10vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding ? padding : "pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
@@ -170,15 +201,18 @@ export default function Pricing({ padding, content = true }) {
           <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
             <p className="text80 font-heading">Pro</p>
 
-            {/* Always shows $179/yr. First 100 paid users are silently
-                switched to the $149 plan_id server-side (create-subscription
-                route) - no visible indication, no separate tier on this card. */}
+            {/* Always shows the full yearly price. First 100 paid users
+                (shared pool across USD and INR) are silently switched to the
+                founding plan_id server-side (create-subscription route) -
+                no visible indication, no separate tier on this card. */}
             <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
               <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
-                <span>$</span>
-                <PriceDigit digit="1" visible={isYearly} />
-                <PriceDigit digit={isYearly ? "7" : "2"} />
-                <PriceDigit digit={isYearly ? "9" : "0"} />
+                <span>{symbol}</span>
+                <PriceDigits
+                  monthlyAmount={monthlyAmount}
+                  yearlyAmount={yearlyAmount}
+                  isYearly={isYearly}
+                />
               </p>
               <p className="text24 mb-[1vw] max-md:mb-2">
                 {isYearly ? "Yearly" : "Monthly"}
@@ -231,6 +265,7 @@ export default function Pricing({ padding, content = true }) {
               ) : userPlan === "free" ? (
                 <RazorpayCheckoutButton
                   plan={isYearly ? "yearly" : "monthly"}
+                  currency={currency}
                   className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full max-sm:text-[4vw]"
                   onSuccess={() => {
                     window.location.href = "/dashboard?upgraded=true";
@@ -242,7 +277,7 @@ export default function Pricing({ padding, content = true }) {
                 <Button
                   variant="orange"
                   text="Join Founding Access"
-                  href="/waitlist"
+                  href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />
               )}

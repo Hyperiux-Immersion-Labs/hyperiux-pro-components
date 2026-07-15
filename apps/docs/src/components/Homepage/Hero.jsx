@@ -247,7 +247,7 @@ export default function Hero() {
 
           <Button
             text="Join Founding Access"
-            href="/waitlist"
+            href="/sign-up"
             variant="orange"
             scrollOffset={-1000}
           />
