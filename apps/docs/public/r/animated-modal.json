@@ -9,22 +9,24 @@
   "registryDependencies": [],
   "exportName": "AnimatedModal",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-modal/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "AnimatedModalContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-modal/AnimatedModalContent.jsx"
+      "target": "components/hyperiux/AnimatedModalContent.jsx"
     },
     {
       "path": "ScrollablePopupContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-modal/ScrollablePopupContent.jsx"
+      "target": "components/hyperiux/ScrollablePopupContent.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

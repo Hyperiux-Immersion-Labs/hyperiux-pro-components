@@ -7,47 +7,49 @@
   "registryDependencies": [],
   "exportName": "AnimatedForm",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "Button.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/Button.jsx"
+      "target": "components/hyperiux/Button.jsx"
     },
     {
       "path": "Checkbox.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/Checkbox.jsx"
+      "target": "components/hyperiux/Checkbox.jsx"
     },
     {
       "path": "ContactForm.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/ContactForm.jsx"
+      "target": "components/hyperiux/ContactForm.jsx"
     },
     {
       "path": "Input.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/Input.jsx"
+      "target": "components/hyperiux/Input.jsx"
     },
     {
       "path": "PhoneInput.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/PhoneInput.jsx"
+      "target": "components/hyperiux/PhoneInput.jsx"
     },
     {
       "path": "Select.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/Select.jsx"
+      "target": "components/hyperiux/Select.jsx"
     },
     {
       "path": "Textarea.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-form/Textarea.jsx"
+      "target": "components/hyperiux/Textarea.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

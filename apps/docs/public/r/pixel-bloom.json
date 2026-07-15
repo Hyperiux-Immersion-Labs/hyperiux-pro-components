@@ -6,13 +6,20 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "PixelBloom",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "pixel-bloom.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/pixel-bloom.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "2dcanvasTracker.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/2dcanvasTracker.js"
     }
-  ],
-  "tier": "pro"
+  ]
 }

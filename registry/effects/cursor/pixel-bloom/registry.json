@@ -1,5 +1,6 @@
 {
   "name": "pixel-bloom",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Pixel Bloom",
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
@@ -14,7 +15,13 @@
   "importPath": "@/components/effects/pixel-bloom",
   "target": "src/components/effects/pixel-bloom",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/pixel-bloom/index.jsx" },
-    { "path": "2dcanvasTracker.js", "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/pixel-bloom/index.jsx"
+    },
+    {
+      "path": "2dcanvasTracker.js",
+      "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
+    }
   ]
 }

@@ -1,5 +1,9 @@
 {
   "name": "fractal-glass",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-15", "summary": "Removed a stray character left after a JSX comment (cosmetic, no functional change)", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Fractal Glass",
   "description": "WebGL glass-strip refraction effect with fractal distortion, edge blending, and pointer-reactive parallax.",

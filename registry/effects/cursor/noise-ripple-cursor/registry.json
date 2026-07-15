@@ -1,10 +1,13 @@
 {
   "name": "noise-ripple-cursor",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Noise Ripple Cursor",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
   "category": "cursor",
-  "dependencies": ["three"],
+  "dependencies": [
+    "three"
+  ],
   "registryDependencies": [],
   "previewUrl": "/cursors/noiseripple",
   "coverImage": "noise-ripple-cursor",
@@ -14,7 +17,13 @@
   "importPath": "@/components/effects/noise-ripple-cursor",
   "target": "src/components/effects/noise-ripple-cursor",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/noise-ripple-cursor/index.jsx" },
-    { "path": "2dCanvasTracker.js", "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/noise-ripple-cursor/index.jsx"
+    },
+    {
+      "path": "2dCanvasTracker.js",
+      "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
+    }
   ]
 }

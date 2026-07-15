@@ -1,5 +1,6 @@
 {
   "name": "hover-slider",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Hover Slider",
   "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",

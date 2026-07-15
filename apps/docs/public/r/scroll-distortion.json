@@ -10,37 +10,15 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrollDistortion",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "scroll-distortion.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/scroll-distortion.jsx"
-    },
-    {
-      "path": "assets/img/image01.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image01.webp",
-      "source": "/assets/img/image01.webp"
-    },
-    {
-      "path": "assets/img/image02.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image02.webp",
-      "source": "/assets/img/image02.webp"
-    },
-    {
-      "path": "assets/img/image03.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image03.webp",
-      "source": "/assets/img/image03.webp"
-    },
-    {
-      "path": "assets/img/distortion.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/distortion.jpg",
-      "source": "/assets/img/distortion.jpg"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

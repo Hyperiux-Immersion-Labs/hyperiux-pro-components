@@ -1,10 +1,14 @@
 {
   "name": "svg-brush-transition",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "SVG Brush Transition",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
   "category": "transitions",
-  "dependencies": ["gsap", "next-transition-router"],
+  "dependencies": [
+    "gsap",
+    "next-transition-router"
+  ],
   "registryDependencies": [],
   "previewUrl": "/page-transitions/brush-strokes",
   "coverImage": "svg-brush-transition",
@@ -14,6 +18,9 @@
   "importPath": "@/components/effects/svg-brush-transition",
   "target": "src/components/effects/svg-brush-transition",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/svg-brush-transition/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/svg-brush-transition/index.jsx"
+    }
   ]
 }

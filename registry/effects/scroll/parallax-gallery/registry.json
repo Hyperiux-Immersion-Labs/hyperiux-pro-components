@@ -1,5 +1,6 @@
 {
   "name": "parallax-gallery",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Parallax Gallery",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",

@@ -1,5 +1,6 @@
 {
   "name": "dither-canvas",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Dither Canvas",
   "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",

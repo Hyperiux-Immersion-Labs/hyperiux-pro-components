@@ -1,5 +1,6 @@
 {
   "name": "parallax-slider",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Parallax Slider",
   "description": "Pinned horizontal gallery with clip-path reveals and image parallax",

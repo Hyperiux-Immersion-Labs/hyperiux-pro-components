@@ -9,13 +9,15 @@
   ],
   "registryDependencies": [],
   "exportName": "DonutParticles",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "donut-particles.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/donut-particles.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

@@ -1,5 +1,6 @@
 {
   "name": "cursor-move",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Cursor Move",
   "description": "Fullscreen cursor-follow crosshair + cursor dot with variable font axis mapping and coordinate readout.",
@@ -14,6 +15,9 @@
   "importPath": "@/components/effects/cursor-move",
   "target": "src/components/effects/cursor-move",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/cursor-move/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/cursor-move/index.jsx"
+    }
   ]
 }

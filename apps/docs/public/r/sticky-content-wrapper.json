@@ -10,6 +10,9 @@
   "registryDependencies": [],
   "exportName": "StickyContentWrapper",
   "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",

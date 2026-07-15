@@ -1,5 +1,6 @@
 {
   "name": "ring-carousel",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Ring Carousel",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",

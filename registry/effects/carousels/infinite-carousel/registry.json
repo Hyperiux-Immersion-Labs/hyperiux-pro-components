@@ -1,5 +1,6 @@
 {
   "name": "infinite-carousel",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Infinite Carousel",
   "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",

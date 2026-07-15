@@ -8,13 +8,20 @@
   ],
   "registryDependencies": [],
   "exportName": "SquareTranslate",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "square-translate.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/square-translate.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "SquareTranslateComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/SquareTranslateComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

@@ -1,5 +1,6 @@
 {
   "name": "mask-text-reveal",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Mask Text Reveal",
   "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",

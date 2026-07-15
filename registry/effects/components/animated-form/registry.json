@@ -1,5 +1,6 @@
 {
   "name": "animated-form",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Animated Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",

@@ -6,18 +6,20 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CharacterTrail",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/character-trail/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "CharacterTrailComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/character-trail/CharacterTrailComp.jsx"
+      "target": "components/hyperiux/CharacterTrailComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

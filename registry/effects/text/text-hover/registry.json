@@ -1,5 +1,6 @@
 {
   "name": "text-hover",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Text Hover",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",

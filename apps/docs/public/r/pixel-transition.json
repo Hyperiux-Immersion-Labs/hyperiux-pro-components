@@ -9,13 +9,15 @@
   ],
   "registryDependencies": [],
   "exportName": "PixelTransition",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "pixel-transition.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/pixel-transition.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

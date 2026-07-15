@@ -8,23 +8,25 @@
   ],
   "registryDependencies": [],
   "exportName": "DepthCardStack",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "DepthCardStackComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/DepthCardStackComp.jsx"
+      "target": "components/hyperiux/DepthCardStackComp.jsx"
     },
     {
       "path": "SliderCard.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/SliderCard.jsx"
+      "target": "components/hyperiux/SliderCard.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

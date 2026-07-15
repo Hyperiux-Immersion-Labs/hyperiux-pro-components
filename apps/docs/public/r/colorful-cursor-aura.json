@@ -8,18 +8,20 @@
   ],
   "registryDependencies": [],
   "exportName": "ColorfulCursorAura",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/colorful-cursor-aura/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "ColorfulCursorAuraComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
+      "target": "components/hyperiux/ColorfulCursorAuraComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

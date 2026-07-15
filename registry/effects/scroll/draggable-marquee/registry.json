@@ -1,5 +1,6 @@
 {
   "name": "draggable-marquee",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Draggable Marquee",
   "description": "Infinite horizontal marquee with drag interaction and momentum physics",

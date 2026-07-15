@@ -8,60 +8,42 @@
     "@react-three/drei",
     "@react-three/postprocessing",
     "postprocessing",
-    "lucide-react",
-    "motion",
     "gsap",
     "three",
     "motion",
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "HeroBanner",
-  "exportKind": "named",
+  "exportName": "HeroBannerAnimated",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "hero-banner.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hero-banner.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "custom-grain-noise.jsx",
+      "path": "CustomGrainNoise.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/custom-grain-noise.jsx"
+      "target": "components/hyperiux/CustomGrainNoise.jsx"
     },
     {
-      "path": "edge-blur-effect.jsx",
+      "path": "EdgeBlurEffect.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/edge-blur-effect.jsx"
+      "target": "components/hyperiux/EdgeBlurEffect.jsx"
     },
     {
-      "path": "room-model.jsx",
+      "path": "RoomModel.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/room-model.jsx"
+      "target": "components/hyperiux/RoomModel.jsx"
     },
     {
-      "path": "video-ui.jsx",
+      "path": "VideoUI.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/video-ui.jsx"
-    },
-    {
-      "path": "601/finall.glb",
-      "type": "registry:asset",
-      "target": "public/601/finall.glb",
-      "source": "/601/finall.glb"
-    },
-    {
-      "path": "601/tvtexture.png",
-      "type": "registry:asset",
-      "target": "public/601/tvtexture.png",
-      "source": "/601/tvtexture.png"
-    },
-    {
-      "path": "601/normal.webp",
-      "type": "registry:asset",
-      "target": "public/601/normal.webp",
-      "source": "/601/normal.webp"
+      "target": "components/hyperiux/VideoUI.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

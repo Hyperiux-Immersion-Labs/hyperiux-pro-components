@@ -52,6 +52,8 @@ export async function GET(request, { params }) {
     category: effect.category,
     categories: effect.categories || [effect.category || "components"],
     tier: effectTier,
+    version: effect.version || "1.0.0",
+    changelog: effect.changelog || [],
     dependencies: effect.dependencies || [],
     registryDependencies: effect.registryDependencies || [],
     exportName: effect.exportName,

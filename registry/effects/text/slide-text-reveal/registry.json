@@ -1,5 +1,6 @@
 {
   "name": "slide-text-reveal",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Slide Text Reveal",
   "description": "Characters slide in from the right with staggered fade animation on scroll",

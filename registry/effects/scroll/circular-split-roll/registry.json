@@ -1,5 +1,6 @@
 {
   "name": "circular-split-roll",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Circular Split Roll",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",

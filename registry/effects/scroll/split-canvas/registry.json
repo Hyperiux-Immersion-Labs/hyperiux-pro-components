@@ -1,5 +1,6 @@
 {
   "name": "split-canvas",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Split Canvas",
   "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",

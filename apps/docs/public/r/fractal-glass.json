@@ -9,6 +9,16 @@
   "registryDependencies": [],
   "exportName": "FractalGlass",
   "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-15",
+      "summary": "Removed a stray character left after a JSX comment (cosmetic, no functional change)",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
