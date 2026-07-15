@@ -87,7 +87,7 @@ const ProFeatures = [
   "New effects added regularly.",
   "Priority access to upcoming packs",
   "Hyperiux CLI install + auth",
-  "Dependency, performance & reduced-motion notes per effect",
+  "Dependency, performance & reduced-motion notes",
   "Code you own, commercial-friendly",
 ];
 
