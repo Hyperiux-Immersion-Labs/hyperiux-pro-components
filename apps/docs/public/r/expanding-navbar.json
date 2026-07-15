@@ -5,7 +5,6 @@
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
   "dependencies": [
     "gsap",
-    "next",
     "lucide-react"
   ],
   "registryDependencies": [],

@@ -391,7 +391,9 @@ export function EffectDetailContent({
     categorySlug,
   });
 
-  const dependencies = safeEffect.dependencies || [];
+  const dependencies = Array.isArray(content?.tags) && content.tags.length > 0
+    ? content.tags
+    : safeEffect.dependencies || [];
 
   const coverImage =
     resolveMediaUrl(content?.coverImage || safeEffect.coverImage || slug, {
@@ -1210,4 +1212,3 @@ function buildMarkedChildren(block) {
     return <span key={child._key || index}>{node}</span>;
   });
 }
-

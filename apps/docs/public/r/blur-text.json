@@ -4,7 +4,7 @@
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",
   "dependencies": [
-    "framer-motion"
+    "motion"
   ],
   "registryDependencies": [],
   "exportName": "BlurText",

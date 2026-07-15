@@ -4,7 +4,7 @@
   "title": "Circle Text Reveal",
   "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
   "dependencies": [
-    "framer-motion"
+    "motion"
   ],
   "registryDependencies": [],
   "exportName": "CircleTextReveal",
