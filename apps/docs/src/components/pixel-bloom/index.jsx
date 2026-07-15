@@ -11,7 +11,7 @@ const GRID_IMAGE_BASE_URL =
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/FeddleAsciCursor";
 const getCanvasSafeMediaUrl = (source) => source;
 
-export function PixelBloom({
+export default function PixelBloom({
   src,
   type = "video",
   className = "h-[30vw] w-auto aspect-video",

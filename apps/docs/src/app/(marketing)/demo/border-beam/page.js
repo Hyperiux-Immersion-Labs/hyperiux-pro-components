@@ -25,15 +25,15 @@ export default function Page() {
 
           <div className="relative z-10 mx-auto grid w-full max-w-[88vw] grid-cols-[0.9fr_1.1fr] items-center gap-[5vw] max-md:max-w-full max-md:grid-cols-1 max-md:gap-[10vw]">
             <div className="max-w-[30vw] max-md:max-w-full">
-              <p className="text-[0.8vw] uppercase tracking-[0.32em] text-black/45 max-md:text-[1.8vw] max-sm:text-[3vw]">
+              <h1 className="text-[0.8vw] uppercase tracking-[0.32em] text-black/45 max-md:text-[1.8vw] max-sm:text-[3vw]">
                 Border Beam
-              </p>
+              </h1>
 
               <div className="mt-[1.2vw] max-sm:w-full max-md:w-[90%] max-md:mt-[2.8vw] max-sm:mt-[4vw]">
                 <HeadAnim>
-                  <h1 className="text-[4.5vw] font-semibold leading-none tracking-[-0.02em] text-black max-md:text-[7vw] max-sm:text-[10vw]">
+                  <h2 className="text-[4.5vw] font-semibold leading-none tracking-[-0.02em] text-black max-md:text-[7vw] max-sm:text-[10vw]">
                     One card. One beam. Clearer showcase.
-                  </h1>
+                  </h2>
                 </HeadAnim>
               </div>
 

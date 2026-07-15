@@ -10,6 +10,7 @@ import { VaultLayout } from "@/components/layout/VaultLayout";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import {
   effectsOverviewContent,
@@ -496,22 +497,6 @@ const routeKey = `${pathname}${
     ? activeCategoryDescription
     : [activeCategoryDescription];
 
-  const breadcrumbItems = useMemo(() => {
-    const items = [
-      { label: "Home", href: "/" },
-      { label: "Effects", href: "/effects" },
-    ];
-
-    if (categoryFilter !== "all") {
-      items.push({
-        label: activeCategoryName,
-        href: getEffectCategoryHref(categoryFilter),
-      });
-    }
-
-    return items;
-  }, [activeCategoryName, categoryFilter]);
-
   const activeCategoryFaqItems = useMemo(
     () =>
       (activeCategoryContent?.faqs || []).map((item, index) => ({
@@ -558,40 +543,7 @@ const routeKey = `${pathname}${
               key={`category-intro-${categoryFilter}`}
               className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-sm:px-7 max-sm:pt-32 max-sm:pb-16"
             >
-              <nav
-                aria-label="Breadcrumb"
-                className="fadeup mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 text20 text-muted max-sm:text-xs"
-              >
-                {breadcrumbItems.map((item, index) => {
-                  const isLast = index === breadcrumbItems.length - 1;
-
-                  return (
-                    <span key={item.href} className="flex items-center gap-2">
-                      {index > 0 && <span className="text-white/25">/</span>}
-
-                      {isLast ? (
-                        <span className="capitalize text-primary">
-                          {item.label}
-                        </span>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          scroll={false}
-                          onClick={(event) => {
-                            if (item.href === "/effects") {
-                              event.preventDefault();
-                              showAllEffects();
-                            }
-                          }}
-                          className="capitalize transition-colors hover:text-primary"
-                        >
-                          {item.label}
-                        </Link>
-                      )}
-                    </span>
-                  );
-                })}
-              </nav>
+              <Breadcrumb className="fadeup mx-auto" />
 
               <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
                 <h1

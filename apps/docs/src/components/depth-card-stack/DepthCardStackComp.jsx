@@ -353,9 +353,9 @@ export default function DepthCardStackComp({ cards }) {
   Hyperiux-UI Library
 </p>
 
-<h3 className="text-5xl max-md:text-4xl max-sm:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-900">
+<h1 className="text-5xl max-md:text-4xl max-sm:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-900">
   Build futuristic interfaces.
-</h3>
+</h1>
 
 <p className="text-5xl text-center max-md:text-4xl max-sm:text-2xl text-gray-400 leading-none tracking-tight mb-4 max-md:mb-10">
   Crafted for modern web experiences.

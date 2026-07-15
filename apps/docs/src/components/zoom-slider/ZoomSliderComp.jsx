@@ -309,9 +309,9 @@ export function ZoomSliderComp({
     >
       {title ? (
         <div className="pointer-events-none absolute left-1/2 top-20 max-md:top-25 z-20 -translate-x-1/2 px-4 text-center">
-          <h2 className="text-4xl text-white max-sm:text-2xl">
+          <h1 className="text-4xl text-white max-sm:text-2xl">
             {title}
-          </h2>
+          </h1>
           {subheading ? (
             <p className="mt-3 text-sm tracking-[0.08em] text-white/65 max-sm:text-xs">
               {subheading}

@@ -115,12 +115,12 @@ export default function CircleTextReveal({
 
 
  <div className="relative z-0">
- <h2
+ <h1
  className="leading-tight select-none"
  style={{ color: textColor }}
  >
  {Text}
- </h2>
+ </h1>
  </div>
  </section>
  );

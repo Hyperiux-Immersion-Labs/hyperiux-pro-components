@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
@@ -37,6 +38,12 @@ export function WorkWithHyperiuxConfirmationEmail({ name, message }) {
             In the meantime, feel free to browse the Vault or follow us on
             social media for updates on new effects and releases.
           </Text>
+
+          <Section style={buttonSection}>
+            <Button href="https://vault.hyperiux.com/effects" style={button}>
+              Browse the Vault
+            </Button>
+          </Section>
 
           <Text style={footer}>
             - The Hyperiux Team · hello@hyperiux.com
@@ -116,6 +123,19 @@ const bodyText = {
   color: "rgba(255,255,255,0.62)",
   fontSize: "15px",
   lineHeight: "1.6",
+};
+
+const buttonSection = { margin: "28px 0 0" };
+
+const button = {
+  display: "inline-block",
+  padding: "14px 28px",
+  borderRadius: "9999px",
+  backgroundColor: "#ff5f00",
+  color: "#ffffff",
+  fontSize: "15px",
+  fontWeight: 600,
+  textDecoration: "none",
 };
 
 const footer = {

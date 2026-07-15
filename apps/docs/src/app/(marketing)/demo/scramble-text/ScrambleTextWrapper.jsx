@@ -18,9 +18,9 @@ const ScrambleTextWrapper = () => {
         <section className=" px-8 py-8 pt-22 max-md:pt-25 max-sm:pt-20 max-sm:px-4 max-sm:py-4">
           <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 max-md:gap-6 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-md:min-h-fit max-sm:p-4">
             <div>
-              <p className="mb-6 text-xs font-bold uppercase tracking-[0.24em] text-black/45 max-sm:tracking-[0.16em]">
+              <h1 className="mb-6 text-xs font-bold uppercase tracking-[0.24em] text-black/45 max-sm:tracking-[0.16em]">
                 Scramble Text
-              </p>
+              </h1>
               <ScrambleText
                 text="Signal appears when the noise decides to leave."
                 textSize="text-[6vw] max-sm:text-[8vw] max-md:text-[5vw]"

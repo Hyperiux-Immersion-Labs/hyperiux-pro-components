@@ -138,7 +138,7 @@ const OverflowStaggerWrapper = () => {
 
               <div className="space-y-5">
                 {notes.map((note, index) => (
-                  <p
+                  <div
                     key={note}
                     className="border-t border-white/20 pt-5 text-lg leading-8 text-white/70 max-sm:text-base max-md:text-xl max-sm:leading-7"
                   >
@@ -149,7 +149,7 @@ const OverflowStaggerWrapper = () => {
                     </span>
                     {note}
                     </SplitLine>
-                  </p>
+                  </div>
                 ))}
               </div>
             </div>

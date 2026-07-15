@@ -482,7 +482,7 @@ export default function TermsOfService() {
 <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>
       
 
-      <Para>Phone: <a href="telto:+91 81780 26136" className="text-primary underline"> +91 81780 26136 </a></Para>
+      <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline"> +91 81780 26136 </a></Para>
     </DocsContent>
   );
 }

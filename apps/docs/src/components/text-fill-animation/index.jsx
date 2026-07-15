@@ -12,8 +12,8 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
-export function TextFillAnimation({
-  text = 'Go cashless, shop & sell virtually, access credit, insurance, and investment products seamlessly with Montra.',
+export default function TextFillAnimation({
+  text = "Design systems should feel effortless, not like you're fighting your own components every time you build.",
   textColor = '#111111',
   primaryColor = '#ff6b00',
   dimColor = '#dddddd',
@@ -184,12 +184,12 @@ export function TextFillAnimation({
         </div>
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto text-center">
-          <h2
+          <h1
             ref={textRef}
             className={`tfa-heading opacity-0 font-display font-medium leading-[1.18] tracking-[-0.03em] ${className}`}
           >
             {text}
-          </h2>
+          </h1>
         </div>
       </div>
     </section>

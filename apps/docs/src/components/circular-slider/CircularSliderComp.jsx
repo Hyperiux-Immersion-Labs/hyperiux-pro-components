@@ -71,9 +71,9 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
  >
  <div className="w-full flex justify-center pt-[6%] ">
- <h2 className="text-[2.5vw] uppercase tracking-widest text-center">
+ <h1 className="text-[2.5vw] uppercase tracking-widest text-center">
  {heading}
- </h2>
+ </h1>
  </div>
 
  {/* Wheel */}

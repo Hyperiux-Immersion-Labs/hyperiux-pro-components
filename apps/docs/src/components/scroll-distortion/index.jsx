@@ -690,9 +690,8 @@ export default function ScrollDistortion({
       {(objectUrls?.[0] || sections[0]?.src) && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-            isSceneReady ? "opacity-0" : "opacity-100"
-          }`}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${isSceneReady ? "opacity-0" : "opacity-100"
+            }`}
           src={objectUrls?.[0] || resolveImageSource(sections[0].src)}
           alt="asset-image"
           decoding="async"
@@ -700,10 +699,10 @@ export default function ScrollDistortion({
       )}
 
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
-
+      <h1 className="sr-only">Scroll Distortion</h1>
       <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden text-container opacity-0">
         {splitSections.map((section, sectionIndex) => (
-          <h1
+          <h2
             key={`${section.text}-${sectionIndex}`}
             className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 text-[10vw] leading-none text-white"
             aria-label={section.text}
@@ -728,7 +727,7 @@ export default function ScrollDistortion({
                 </span>
               </span>
             ))}
-          </h1>
+          </h2>
         ))}
       </div>
     </section>

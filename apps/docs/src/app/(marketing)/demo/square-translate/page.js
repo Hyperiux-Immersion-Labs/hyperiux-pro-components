@@ -17,10 +17,10 @@ const page = () => {
           <h1 className="text-[5vw]  font-medium max-md:text-[7vw] max-sm:text-[9vw]" >
              Square Translate
           </h1>
-          <h1>
+          <p>
             A scroll-driven list with a rotating square indicator that follows
             your scroll position.
-          </h1>
+          </p>
         </div>
         <h2 className="mb-[2vw] max-md:mb-4">
           <span className="text-[3.5vw] max-md:text-2xl font-medium text-black">

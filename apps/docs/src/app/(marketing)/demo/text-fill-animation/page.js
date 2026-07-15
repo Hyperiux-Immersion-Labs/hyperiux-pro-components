@@ -1,5 +1,5 @@
 import React from "react";
-import { TextFillAnimation } from "@/components/text-fill-animation";
+import TextFillAnimation from "@/components/text-fill-animation";
 import { ReactLenis } from "lenis/react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
@@ -27,7 +27,7 @@ const page = () => {
           tabletTextSize="6vw"
           tabletTextWidth="88%"
         />
-        <ScrollBottom textColor="text-black" />
+        <ScrollBottom as="h2" textColor="text-black" />
       </ReactLenis>
     </>
   );

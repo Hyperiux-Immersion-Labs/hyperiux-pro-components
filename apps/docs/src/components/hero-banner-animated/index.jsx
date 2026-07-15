@@ -194,14 +194,14 @@ export default function HeroBannerAnimated() {
               className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
             >
               <div className='flex items-start pt-[5vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
-                <motion.p
+                <motion.h1
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
                   className='text-[20vw] font-semibold leading-1 tracking-tight max-sm:text-[28vw]'
                 >
                   HXR
-                </motion.p>
+                </motion.h1>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}

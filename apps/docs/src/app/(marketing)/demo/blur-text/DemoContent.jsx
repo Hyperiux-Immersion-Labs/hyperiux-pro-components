@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from"react";
-import { BlurText } from "@/components/blur-text";
+import BlurText from "@/components/blur-text";
 import ParallaxAnim from"@/components/parallax-image-animation";
 import { ReactLenis } from"lenis/react";
 import { gsap } from"gsap";
@@ -104,7 +104,7 @@ const Page = () => {
  });
  });
 
- return () => ScrollTrigger.getAll().forEach((t) => t.kill());
+//  return () => ScrollTrigger.getAll().forEach((t) => t.kill());
  }, []);
 
  return (
@@ -133,6 +133,8 @@ const Page = () => {
  </div> */}
 
  <div className="max-w-4xl">
+   <h1>
+
  <BlurText
  once={false}
  variant="fade"
@@ -140,6 +142,7 @@ const Page = () => {
  >
  Blur should feel like a stage entrance, not a loading state.
  </BlurText>
+    </h1>
  </div>
 
  <p

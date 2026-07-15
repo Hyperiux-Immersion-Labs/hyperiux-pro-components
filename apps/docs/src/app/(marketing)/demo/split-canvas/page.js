@@ -8,9 +8,11 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <DemoHeader />
-    <ScrollBottom textColor={'text-black'} className='bottom-[3%] gap-[1vw]' />
-    <SplitCanvas />
+      <DemoHeader />
+      <ScrollBottom textColor={'text-black'} className='bottom-[3%] gap-[1vw]' />
+      <h1 clasName="aboslute sr-only text-white text-4xl font-bold">SplitCanvas</h1>
+      <SplitCanvas />
+
     </>
   )
 }

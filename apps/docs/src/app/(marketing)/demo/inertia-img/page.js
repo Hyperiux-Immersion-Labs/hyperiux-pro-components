@@ -10,9 +10,9 @@ const Page = () => {
         <main className="h-screen overflow-hidden max-sm:min-h-screen max-sm:h-full max-sm:overflow-visible w-full bg-black px-10 py-12 text-white max-md:px-6">
             <div className="mx-auto flex w-full flex-col gap-10 max-sm:gap-14">
                 <div className="max-w-2xl mx-auto text-center pt-10">
-                    <p className="text-xl max-md:text-3xl max-sm:text-2xl uppercase tracking-[0.35em] text-white/75">
+                    <h1 className="text-xl max-md:text-3xl max-sm:text-2xl uppercase tracking-[0.35em] text-white/75">
                         Inertia Image
-                    </p>
+                    </h1>
                     <p className="text-white/50 mt-0 max-md:mt-8 max-sm:mt-2 hidden max-md:block max-md:text-xl  max-sm:text-base max-sm:pt-2 max-sm:mx-6 max-sm:leading-[1.2] ">
                         Tap on the image try it.
                        <span className="block mt-2 max-md:w-60 max-sm:w-50 mx-auto text-center">

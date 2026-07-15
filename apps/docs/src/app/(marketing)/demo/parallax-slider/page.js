@@ -1,9 +1,9 @@
 import React from'react'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ParallaxImgSlider from '@/components/parallax-slider'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom';
+import ParallaxSlider from '@/components/parallax-slider';
 
 
 const page = () => {
@@ -11,7 +11,8 @@ const page = () => {
  <>
  <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
  <LenisSmoothScroll />
- <ParallaxImgSlider images={[
+ <h1 className="sr-only">Parallax Slider</h1>
+ <ParallaxSlider images={[
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',
 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',

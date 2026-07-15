@@ -9,17 +9,17 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
-    <WebGLSlider/>
-    <div className='w-fit fixed left-[3%] top-1/2 -translate-y-1/2  max-md:top-[30%] max-md:left-1/2 max-md:-translate-x-1/2  max-md:w-full max-md:text-center'>
-    <HeadAnim>
-      <h1 className='max-md:text-[6vw] max-sm:text-[9vw] text-[4vw]'>
-        WebGL Slider
-      </h1>
-    </HeadAnim>
-    </div>
-    <ScrollBottom className="max-md:hidden! bottom-[3%]"/>
-    
+      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <WebGLSlider />
+      <div className='w-fit fixed left-[3%] top-1/2 -translate-y-1/2  max-md:top-[30%] max-md:left-1/2 max-md:-translate-x-1/2  max-md:w-full max-md:text-center'>
+        <HeadAnim>
+          <h1 className='max-md:text-[6vw] max-sm:text-[9vw] text-[4vw]'>
+            WebGL Slider
+          </h1>
+        </HeadAnim>
+      </div>
+      <ScrollBottom className="max-md:hidden! bottom-[3%]" />
+
     </>
   )
 }

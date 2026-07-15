@@ -8,7 +8,6 @@ import {
   Suspense,
   forwardRef,
 } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { VaultLayout } from "@/components/layout/VaultLayout";
@@ -16,6 +15,7 @@ import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeade
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { TableOfContents } from "@/components/ui/TableOfContents";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
   FAQContent,
   FAQGroup,
@@ -264,9 +264,6 @@ export function EffectDetailContent({
     ? safeContent.summary?.trim()
     : safeEffect.description;
 
-  const categoryLabel = categorySlug?.replaceAll("-", " ");
-  const categoryHref = categorySlug ? `/effects/${categorySlug}` : "/effects";
-
   const hasCtaSection = Boolean(
     safeContent?.ctaBanner?.heading || safeContent?.ctaBanner?.buttonText
   );
@@ -424,47 +421,7 @@ export function EffectDetailContent({
             <section className="space-y-7">
               <div className="flex items-start max-sm:px-[7vw] max-md:px-[6vw] justify-between gap-5">
                 <div className="w-full space-y-5">
-                  <nav
-                    aria-label="Breadcrumb"
-                    className="mb-6 flex w-fit max-w-full flex-wrap items-center gap-2 text-sm text-muted max-md:mx-auto max-md:justify-center max-sm:text-xs fadeup max-sm:mb-8"
-                  >
-                    <Link
-                      href="/"
-                      className="transition-colors hover:text-primary"
-                    >
-                      Home
-                    </Link>
-
-                    <span className="text-white/25">/</span>
-
-                    <Link
-                      href="/effects"
-                      className="transition-colors hover:text-primary"
-                    >
-                      Effects
-                    </Link>
-
-                    {categorySlug && (
-                      <>
-                        <span className="text-white/25">/</span>
-                        <Link
-                          href={categoryHref}
-                          className="capitalize transition-colors hover:text-primary"
-                        >
-                          {categoryLabel}
-                        </Link>
-                      </>
-                    )}
-
-                    {pageTitle && (
-                      <>
-                        <span className="text-white/25">/</span>
-                        <span className="max-w-[32vw] truncate text-primary max-md:max-w-[72vw]">
-                          {pageTitle}
-                        </span>
-                      </>
-                    )}
-                  </nav>
+                  <Breadcrumb />
 
                   {pageTitle && (
                     <HeadAnim>
@@ -540,6 +497,20 @@ export function EffectDetailContent({
                       className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
                         }`}
                     />
+                  )}
+
+
+                  {!showVideo && (
+                    <>
+                      <div aria-hidden="true" className="absolute inset-0 rounded-[inherit] bg-black/40" />
+                      <div className="absolute bottom-4 right-4 z-10">
+                        <div
+                          aria-label="Loading preview"
+                          role="status"
+                          className="h-8 w-8 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
               </div>

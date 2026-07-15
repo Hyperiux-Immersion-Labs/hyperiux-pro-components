@@ -10,6 +10,7 @@ export default function page() {
  <>
  <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
 <ProgressiveBloomValley/>
+<h1 className="sr-only">Progressive Bloom Valley</h1>
  <ScrollBottom/>
  </>
 

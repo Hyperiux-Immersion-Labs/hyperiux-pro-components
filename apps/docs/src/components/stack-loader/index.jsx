@@ -129,7 +129,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         "<+0.5"
       );
 
-      
+
 
       imageElements.forEach((imageElement, index) => {
         tl.to(
@@ -143,7 +143,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         );
       });
 
-      
+
 
       tl.to(
         imageElements,
@@ -160,7 +160,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         "<"
       );
 
-      
+
       tl.to(
         imageElements,
         {
@@ -268,12 +268,12 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-md:px-[5vw] max-sm:px-[6vw]"
     >
       <div className="flex w-full items-center justify-between max-md:flex-col max-md:justify-center max-md:gap-[33vh] max-sm:gap-[70vw]">
-        <p
+        <h1
           ref={text1Ref}
           className="opacity-0 max-md:text-[2.8vw] max-sm:text-[5vw]"
         >
           HUMAN THINKERS
-        </p>
+        </h1>
 
         <div
           id="imgs-wrapper"
@@ -339,18 +339,17 @@ export default function StackLoader({
       className="relative h-screen w-screen overflow-hidden bg-zinc-900"
     >
       <div
-        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${
-          isLoaderComplete
-            ? "translate-y-0 opacity-100 pointer-events-auto"
-            : "translate-y-4 opacity-0 pointer-events-none"
-        }`}
+        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${isLoaderComplete
+          ? "translate-y-0 opacity-100 pointer-events-auto"
+          : "translate-y-4 opacity-0 pointer-events-none"
+          }`}
       >
         <p className="text-center text-4xl font-bold text-neutral-300">
           HYPERIUX VAULT
         </p>
         <div className="space-y-3">
           <Button text="Explore All Effects" href="/effects" variant="orange" />
-          <Button text=" Read Article" href="/effects/loaders/stack-loader" variant="outline2"/>
+          <Button text=" Read Article" href="/effects/loaders/stack-loader" variant="outline2" />
         </div>
         <button
           type="button"
