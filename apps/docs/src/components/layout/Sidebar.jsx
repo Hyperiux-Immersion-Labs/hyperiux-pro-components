@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
-import { Overview, Documentation, Category, Legal } from "../WebsiteComps/Icons";
+import { Overview, Documentation, Category, Legal, Github, Pricing } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -38,13 +38,15 @@ function getLastPathSegment(pathname = "") {
   return segments[segments.length - 1] || "";
 }
 
-function NavIconLink({ label, href, icon: Icon, isExpanded, isActive, onClick }) {
+function NavIconLink({ label, href, icon: Icon, isExpanded, isActive, onClick, external }) {
   return (
     <Link
       href={href}
       scroll={false}
       title={label}
       onClick={onClick}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       className={`relative flex h-10 w-[18vw] items-center gap-3 rounded-full px-4 py-1 text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
         isExpanded
           ? `hover:bg-[#272727] ${isActive ? "bg-[#272727] text-white" : ""}`
@@ -620,6 +622,22 @@ const navigateLegal = (event, href) => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <NavIconLink
+            label="Pricing"
+            href="/pricing"
+            icon={Pricing}
+            isExpanded={isExpanded}
+            isActive={pathname === "/pricing"}
+          />
+
+          <NavIconLink
+            label="Github"
+            href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
+            icon={Github}
+            isExpanded={isExpanded}
+            external
+          />
         </nav>
       </div>
     </aside>

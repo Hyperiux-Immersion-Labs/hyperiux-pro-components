@@ -39,6 +39,14 @@ export default function NavDropdown({ panel }) {
             currentPaneRef.current,
             nextPaneRef.current,
         ])
+
+        // Stop the per-link open stagger if a close/switch interrupts it.
+        ;[currentPaneRef.current, nextPaneRef.current].forEach((pane) => {
+            if (!pane) return
+            gsap.killTweensOf(
+                pane.querySelectorAll('[data-nav-dropdown-link]')
+            )
+        })
     }
 
     const reset = () => {
@@ -74,8 +82,13 @@ export default function NavDropdown({ panel }) {
 
         killTweens()
 
+        const { openY } = prefersReducedMotion()
+            ? REDUCED_MENU_ANIM
+            : MENU_ANIM
+
         gsap.to(shellRef.current, {
             opacity: 0,
+            y: openY,
             duration: MENU_ANIM.fadeDuration,
             ease: 'power2.out',
             onComplete: () => {
@@ -162,22 +175,58 @@ export default function NavDropdown({ panel }) {
         }
 
         if (!anim.hasOpenedOnce) {
+            const {
+                openY,
+                openDuration,
+                openEase,
+                itemY,
+                itemDuration,
+                itemStagger,
+                itemDelay,
+                itemEase,
+            } = prefersReducedMotion() ? REDUCED_MENU_ANIM : MENU_ANIM
+
             gsap.set(viewportRef.current, {
                 height: contentHeight,
             })
 
             gsap.set(shellRef.current, {
                 opacity: 0,
+                y: openY,
             })
 
             gsap.to(shellRef.current, {
                 opacity: 1,
-                duration: MENU_ANIM.fadeDuration,
-                ease: 'power2.out',
+                y: 0,
+                duration: openDuration,
+                ease: openEase,
                 onComplete: () => {
                     animRef.current.hasOpenedOnce = true
                 },
             })
+
+            const links = currentPaneRef.current.querySelectorAll(
+                '[data-nav-dropdown-link]'
+            )
+
+            if (links.length) {
+                gsap.fromTo(
+                    links,
+                    {
+                        opacity: 0,
+                        y: itemY,
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: itemDuration,
+                        ease: itemEase,
+                        stagger: itemStagger,
+                        delay: itemDelay,
+                        clearProps: 'opacity,transform',
+                    }
+                )
+            }
 
             return
         }
