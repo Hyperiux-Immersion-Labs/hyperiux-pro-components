@@ -33,138 +33,138 @@ export default function GradientFill() {
         // below were firing on page mount along with every other section's,
         // contributing to the layout-thrash storm. Defer until near viewport.
         const mount = () => {
-        ctx = gsap.context(() => {
-            const glow = containerRef.current.querySelector('.radial-glow-fill')
+            ctx = gsap.context(() => {
+                const glow = containerRef.current.querySelector('.radial-glow-fill')
 
-            // Use matchMedia for mobile/desktop selective animation
-            const mm = gsap.matchMedia()
-            mm.add(
-                {
-                    isMobile: "(max-width: 767px)",
-                    isDesktop: "(min-width: 768px)",
-                },
-                (context) => {
-                    // Mobile styles: translate more
-                    if (context.conditions.isMobile) {
-                        gsap.set(glow, {
-                            opacity: 0.3,
-                            scaleX: 1,
-                            yPercent: 220,
-                            scaleY: 1,
-                            transformOrigin: "bottom center",
-                            willChange: "transform, opacity"
-                        })
+                // Use matchMedia for mobile/desktop selective animation
+                const mm = gsap.matchMedia()
+                mm.add(
+                    {
+                        isMobile: "(max-width: 767px)",
+                        isDesktop: "(min-width: 768px)",
+                    },
+                    (context) => {
+                        // Mobile styles: translate more
+                        if (context.conditions.isMobile) {
+                            gsap.set(glow, {
+                                opacity: 0.3,
+                                scaleX: 1,
+                                yPercent: 220,
+                                scaleY: 1,
+                                transformOrigin: "bottom center",
+                                willChange: "transform, opacity"
+                            })
 
-                        const tl2 = gsap.timeline({
-                            scrollTrigger: {
-                                trigger: containerRef.current,
-                                start: "top 50%",
-                                end: "bottom 50%",
-                                scrub: true,
-                                markers: false,
-                            },
-                            ease: 'none',
-                        })
-                        tl2.to(glow, {
-                            scale: 2,
-                            yPercent: 100,
-                            opacity: .5,
-                            duration: 2,
-                        })
-                        
-                        tl2.to(glow, {
-                            scale: 3.2,
-                            yPercent: 0,
-                            duration: 2,
-                            opacity: 1.0,
-                        })
+                            const tl2 = gsap.timeline({
+                                scrollTrigger: {
+                                    trigger: containerRef.current,
+                                    start: "top 50%",
+                                    end: "bottom 50%",
+                                    scrub: true,
+                                    markers: false,
+                                },
+                                ease: 'none',
+                            })
+                            tl2.to(glow, {
+                                scale: 2,
+                                yPercent: 100,
+                                opacity: .5,
+                                duration: 2,
+                            })
+
+                            tl2.to(glow, {
+                                scale: 3.2,
+                                yPercent: 0,
+                                duration: 2,
+                                opacity: 1.0,
+                            })
+                        }
+                        // Desktop styles: original
+                        if (context.conditions.isDesktop) {
+                            gsap.set(glow, {
+                                opacity: 0.3,
+                                scaleX: 1,
+                                yPercent: 120,
+                                scaleY: 1,
+                                transformOrigin: "bottom center",
+                                willChange: "transform, opacity"
+                            })
+
+                            const tl2 = gsap.timeline({
+                                scrollTrigger: {
+                                    trigger: containerRef.current,
+                                    start: "top center",
+                                    end: "bottom center",
+                                    scrub: true,
+                                    // markers: true,
+                                },
+                                ease: 'none',
+                            })
+                            tl2.to(glow, {
+                                scale: 1.5,
+                                yPercent: 70,
+                                opacity: .5,
+                                duration: 2,
+                            })
+
+                            tl2.to(glow, {
+                                scale: 2.5,
+                                yPercent: 30,
+                                duration: 2,
+                                opacity: 1.0,
+                            })
+                        }
                     }
-                    // Desktop styles: original
-                    if (context.conditions.isDesktop) {
-                        gsap.set(glow, {
-                            opacity: 0.3,
-                            scaleX: 1,
-                            yPercent: 120,
-                            scaleY: 1,
-                            transformOrigin: "bottom center",
-                            willChange: "transform, opacity"
-                        })
+                )
 
-                        const tl2 = gsap.timeline({
-                            scrollTrigger: {
-                                trigger: containerRef.current,
-                                start: "top center",
-                                end: "bottom center",
-                                scrub: true,
-                                // markers: true,
-                            },
-                            ease: 'none',
-                        })
-                        tl2.to(glow, {
-                            scale: 1.5,
-                            yPercent: 70,
-                            opacity: .5,
-                            duration: 2,
-                        })
-                       
-                        tl2.to(glow, {
-                            scale: 2.5,
-                            yPercent: 30,
-                            duration: 2,
-                            opacity: 1.0,
-                        })
+                // ---- Text Animations ----
+                const reducedMotion = prefersReducedMotion()
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "10% center",
+                        end: "95% center",
+                        scrub: 1,
+                        markers: false
                     }
-                }
-            )
-
-            // ---- Text Animations ----
-            const reducedMotion = prefersReducedMotion()
-
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: "10% center",
-                    end: "95% center",
-                    scrub: 1,
-                    markers: false
-                }
-            })
-
-            textRefs.current.forEach((el) => {
-                // Paragraphs are stacked; even with reduced motion they must
-                // cross-fade in sequence so all three are readable.
-                if (reducedMotion) {
-                    gsap.set(el, { willChange: 'opacity' })
-                    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'power2.out' })
-                    tl.to(el, { opacity: 0, duration: 1, ease: 'power2.in' })
-                    return
-                }
-
-                const split = new SplitText(el, { type: 'lines', aria: 'none' })
-                splits.push(split)
-
-                gsap.set(el, { perspective: 2000, opacity: 1 })
-                gsap.set(split.lines, {
-                    willChange: 'transform, opacity',
-                    transformOrigin: '50% 50%',
-                    backfaceVisibility: 'hidden',
-                    force3D: true
                 })
 
-                tl.fromTo(
-                    split.lines,
-                    { opacity: 0 , filter: 'blur(10px)'},
-                    { opacity: 1, filter: 'blur(0px)', duration: 1, ease: 'power2.out' }
-                )
-                tl.to(
-                    split.lines,
-                    { opacity: 0, filter: 'blur(10px)', duration: 1, ease: 'power2.in' }
-                )
-            })
+                textRefs.current.forEach((el) => {
+                    // Paragraphs are stacked; even with reduced motion they must
+                    // cross-fade in sequence so all three are readable.
+                    if (reducedMotion) {
+                        gsap.set(el, { willChange: 'opacity' })
+                        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'power2.out' })
+                        tl.to(el, { opacity: 0, duration: 1, ease: 'power2.in' })
+                        return
+                    }
 
-            // Clean up GSAP matchMedia on destroy
-            return () => mm.revert()
-        }, containerRef)
+                    const split = new SplitText(el, { type: 'lines', aria: 'none' })
+                    splits.push(split)
+
+                    gsap.set(el, { perspective: 2000, opacity: 1 })
+                    gsap.set(split.lines, {
+                        willChange: 'transform, opacity',
+                        transformOrigin: '50% 50%',
+                        backfaceVisibility: 'hidden',
+                        force3D: true
+                    })
+
+                    tl.fromTo(
+                        split.lines,
+                        { opacity: 0, xPercent: 10, filter: 'blur(10px)' },
+                        { opacity: 1, xPercent:0,filter: 'blur(0px)', duration: 1, ease: 'power2.out' }
+                    )
+                    tl.to(
+                        split.lines,
+                        { opacity: 0, xPercent: -10, filter: 'blur(10px)', duration: 1, ease: 'power2.in' }
+                    )
+                })
+
+                // Clean up GSAP matchMedia on destroy
+                return () => mm.revert()
+            }, containerRef)
         }
 
         const io = new IntersectionObserver(

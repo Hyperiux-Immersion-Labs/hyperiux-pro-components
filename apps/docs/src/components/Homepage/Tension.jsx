@@ -6,8 +6,9 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 
 // Import WebsiteComps
-import RandomBlur from './RandomBlur'
+import LineReveal from '../Animations/LineReveal'
 import SplitLine from './SplitLine'
+import SplitLineNoMask from './SplitLineNoMask'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
@@ -174,10 +175,10 @@ export default function Tension() {
     <section ref={sectionRef} className="relative w-full overflow-hidden z-200 px-[5vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20">
       <div className="mx-auto flex w-full max-w-[90vw] flex-col items-center">
         <div className="w-full max-sm:w-[95%] max-sm:mx-auto text-center">
-          <RandomBlur as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
+          <LineReveal as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
             Good Motion is{' '}
             <span className="text-[#ff5f00]">Harder</span> Than It Looks
-          </RandomBlur>
+          </LineReveal>
 
           <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
             Anyone can add a fade. The hard part is everything around it - timing, restraint, responsive behavior, reduced-motion support, performance discipline. Get it wrong and your &quot;wow moment&quot; janks on mobile or breaks for anyone who turned motion off. So most teams play it safe and look like everyone else!
@@ -216,12 +217,19 @@ export default function Tension() {
           ))}
         </div>
 
-        <p className="mt-[5vw] text-center  text-[1.45vw] leading-[1.4] max-sm:w-[85%] max-sm:mx-auto text-white/80 max-md:mt-14 max-md:text-xl max-sm:text-base fadeup">
-          That difference has a name.{' '}
-          <span className="italic text-[#ff5f00]">
-            It&apos;s the interaction layer.
-          </span>
-        </p>
+        <div className="mt-[5vw] text-center max-sm:w-[85%] max-sm:mx-auto max-md:mt-14">
+          <SplitLineNoMask
+            as="p"
+            className="text-[1.45vw] leading-[1.4] text-white/80 max-md:text-xl max-sm:text-base"
+          >
+            That difference has a name.{` `}
+            <span className="italic text-[#ff5f00]">
+              It&apos;s the interaction layer.
+            </span>
+          </SplitLineNoMask>
+        </div>
+
+   
       </div>
     </section>
   )

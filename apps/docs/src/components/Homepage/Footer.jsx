@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import RandomBlur from "./RandomBlur";
 import { useFadeUp } from "../Animations/gsapAnimations";
 // Three.js footer background plane - own chunk, mounted only when the footer
 // nears the viewport (an eager import forces three.js onto the main bundle).
@@ -17,6 +16,7 @@ import ShimmerText from "../WebsiteComps/ShimmerText";
 import Input from "../animated-form/Input";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
+import LineReveal from "../Animations/LineReveal";
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -158,12 +158,12 @@ export default function Footer() {
         </div>}
       <div className="w-full max-md:space-y-[6vw] max-sm:space-y-[8vw] h-fit relative z-3">
 
-        <RandomBlur
+        <LineReveal
           as="h2"
           className="text110 pointer-events-auto max-sm:w-full max-sm:px-0! w-[70%]"
         >
           Build The Interaction Layer Your Website Is Missing.
-        </RandomBlur>
+        </LineReveal>
 
 
         <p className="text24 py-[2vw] max-sm:py-[6vw]">Start with Free Core today. Join Founding Access for Pro next week.

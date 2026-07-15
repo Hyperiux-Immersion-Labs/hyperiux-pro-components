@@ -6,9 +6,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import VaultBox from "../WebsiteComps/VaultBoxes";
-import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
 import { prefersReducedMotion } from "@/lib/motion";
+import LineReveal from "../Animations/LineReveal";
+import SplitLineNoMask from "./SplitLineNoMask";
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -519,14 +520,14 @@ export default function FeaturedStoryTelling() {
             TOP_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
-                    { xPercent: 0, duration: 1.5, ease: "power2.out" },
+                    { xPercent: 0, duration: 2, ease: "power1.out" },
                     7.5 + i * 0.15
                 );
             });
             BOTTOM_LAYER.forEach((layer, i) => {
                 masterTL.to(
                     `#${layer.id}`,
-                    { xPercent: 0, duration: 1.5, ease: "power2.out" },
+                    { xPercent: 0, duration: 2, ease: "power1.out" },
                     8 + i * 0.15
                 );
             });
@@ -564,13 +565,14 @@ export default function FeaturedStoryTelling() {
             className="relative w-full h-[600vh] max-md:hidden  z-50"
             
         >
-            <RandomBlur as="h2" className="text110 w-[80vw] mx-auto text-center">
+            <LineReveal as="h2" className="text110 w-[80vw] mx-auto text-center">
                 Explore the Moments your Website is  <span className='text-[#ff5f00]'>Missing.</span>
-            </RandomBlur>
-            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+            </LineReveal>
+            <SplitLineNoMask as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
                 Hover it. Scroll it. Break it. Then copy it!
-            </SplitLine>
+            </SplitLineNoMask>
             <div
+       
                 ref={stickyContainerRef}
                 className="sticky top-0 flex items-center justify-center w-full h-screen overflow-hidden"
             >

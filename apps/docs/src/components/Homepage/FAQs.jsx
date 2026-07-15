@@ -9,14 +9,14 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import RandomBlur from "./RandomBlur";
+import LineReveal from "@/components/Animations/LineReveal"; // Use LineReveal instead of RandomBlur
 import LinkButton from "../WebsiteComps/LinkButton";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
+export default function FAQs({ faqItems, isHomePage = false, fixWidth = false }) {
     const containerRef = useRef(null);
     const [isExpanded, setIsExpanded] = useState(false);
     const INITIAL_COUNT = 5;
@@ -59,39 +59,38 @@ export default function FAQs({ faqItems, isHomePage = false,fixWidth=false }) {
             {!isHomePage && <div className="h-[10vw]"></div>}
 
             <div className="mx-auto text-center text-white max-sm:mb-[14vw] mb-[6vw] relative z-10">
-                <RandomBlur as="h2" className='text110 w-full max-w-[70vw] max-sm:max-w-full text-center mx-auto'>
+                <LineReveal as="h2" className='text110 w-full max-w-[70vw] max-sm:max-w-full text-center mx-auto'>
                     Questions <span className='text-primary'>Answered.</span>
-                </RandomBlur>
+                </LineReveal>
             </div>
             <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full   ${fixWidth ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>
                 <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
                     {visibleFaqItems.map((item) => (
-                                <FAQWrapper
-                                    key={item.id}
-                                    itemId={item.id}
-                                    className="rounded-md border border-white/20 px-6 py-5 fadeup mb-4"
-                                    titleClassName="text-[1.1rem] font-medium text-white"
-                                    iconSize={16}
-                                    iconStrokeWidth={2}
-                                    duration={0.5}
-                                >
-                                    <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">
-                                        <h3>
-                                            {item.question}
-                                        </h3>
-                                    </FAQTitle>
+                        <FAQWrapper
+                            key={item.id}
+                            itemId={item.id}
+                            className="rounded-md border border-white/20 px-6 py-5 fadeup mb-4"
+                            titleClassName="text-[1.1rem] font-medium text-white"
+                            iconSize={16}
+                            iconStrokeWidth={2}
+                            duration={0.5}
+                        >
+                            <FAQTitle iconPosition="left" className="pb-0 text-[1.5vw] max-sm:text-[5vw] max-md:text-[3.2vw] max-md:leading-[1.3] max-sm:leading-[1.3]">
+                                <h3>
+                                    {item.question}
+                                </h3>
+                            </FAQTitle>
 
-                                    <FAQContent className="pt-4 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]! pl-10">
-                                        {item.answer}
-                                    </FAQContent>
-                                </FAQWrapper>
+                            <FAQContent className="pt-4 w-[80%] max-md:w-[95%] text22 max-sm:text-[4vw]! max-md:text-[2.5vw]! pl-10">
+                                {item.answer}
+                            </FAQContent>
+                        </FAQWrapper>
                     ))}
                 </FAQGroup>
                 {!isExpanded && faqItems.length > INITIAL_COUNT && (
-                <div className="w-full flex items-center justify-center mt-[4vw] max-sm:mt-[10vw]">
-                                            <LinkButton href={"#"} onClick={() => setIsExpanded(true)} shimmer tilted={false} showArrow  text={"View More"} className="max-sm:text34"/>
-                
-                </div>
+                    <div className="w-full flex items-center justify-center mt-[4vw] max-sm:mt-[10vw]">
+                        <LinkButton href={"#"} onClick={() => setIsExpanded(true)} shimmer tilted={false} showArrow text={"View More"} className="max-sm:text34" />
+                    </div>
                 )}
             </div>
         </section>
