@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
-import { Overview, Documentation, Category, Legal, Github, Pricing } from "../WebsiteComps/Icons";
+import { Overview, Documentation, Category, Legal, Github, Pricing, Npm } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -475,7 +475,7 @@ const navigateLegal = (event, href) => {
                 animate={{ height: "auto", opacity: 1, y: 0 }}
                 exit={{ height: 0, opacity: 0, y: -6 }}
                 transition={{ duration: 0.24, ease: "easeOut" }}
-                className="ml-[19px] mb-4 max-h-[45vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
+                className="ml-4.75 mb-4 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
               >
                 {effectCategories.map((category) => {
                   const count =
@@ -635,6 +635,14 @@ const navigateLegal = (event, href) => {
             label="Github"
             href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
             icon={Github}
+            isExpanded={isExpanded}
+            external
+          />
+
+          <NavIconLink
+            label="NPM"
+            href="https://www.npmjs.com/package/hyperiux"
+            icon={Npm}
             isExpanded={isExpanded}
             external
           />
