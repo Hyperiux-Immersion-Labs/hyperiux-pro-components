@@ -5,14 +5,13 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/api/dashboard(.*)",
   "/api/wishlist(.*)",
-  // Not /api/stripe/webhooks - Stripe's server sends these with no Clerk
-  // session. auth.protect() 404s unauthenticated non-browser requests, which
-  // silently dropped every webhook delivery (Stripe emailed about 24 failed
-  // attempts). The route already authenticates via the stripe-signature
-  // header, so it must never sit behind Clerk's auth wall.
-  "/api/stripe/checkout(.*)",
-  "/api/stripe/portal(.*)",
-  "/api/stripe/sync-session(.*)",
+  // Not /api/razorpay/webhooks - Razorpay's server sends those with no Clerk
+  // session (auth.protect() would silently drop every delivery, as happened
+  // with Stripe webhooks before). That route authenticates itself via the
+  // X-Razorpay-Signature header instead.
+  "/api/razorpay/create-order(.*)",
+  "/api/razorpay/create-subscription(.*)",
+  "/api/razorpay/verify-payment(.*)",
 ]);
 
 // Marketing pages render with no ClerkProvider and no Clerk hooks (see the

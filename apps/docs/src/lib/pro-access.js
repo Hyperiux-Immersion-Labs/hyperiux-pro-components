@@ -1,147 +1,64 @@
 import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
-import { stripe } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
-import { createProPurchaseEmail } from "@/lib/emails/pro-purchase-email";
+import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
+
+// Razorpay subscription statuses that count as "paying customer".
+// "authenticated" = mandate approved, first charge pending (trial-like window).
+export const PAID_STATUSES = ["authenticated", "active"];
+
+const PLAN_INTERVALS = {
+  [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
+  [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "yearly",
+  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "yearly",
+};
+
+export function getBillingInterval(planId) {
+  return PLAN_INTERVALS[planId] || null;
+}
 
 function getPeriodEnd(subscription) {
-  const periodEnd =
-    subscription?.items?.data?.[0]?.current_period_end ||
-    subscription?.current_period_end ||
-    null;
-
-  return periodEnd ? new Date(periodEnd * 1000).toISOString() : null;
+  return subscription?.current_end
+    ? new Date(subscription.current_end * 1000).toISOString()
+    : null;
 }
 
-async function getStripeCustomer(customerId) {
-  if (!customerId) return null;
-
-  const customer = await stripe.customers.retrieve(customerId);
-
-  if (!customer || customer.deleted) return null;
-
-  return customer;
-}
-
-export async function updateClerkUserToPro(clerkUserId, payload = {}) {
-  if (!clerkUserId) {
-    throw new Error("Missing Clerk user ID while updating Clerk metadata.");
-  }
-
+async function updateClerkPlan(clerkUserId, publicMetadataPatch) {
   const client = await clerkClient();
   const user = await client.users.getUser(clerkUserId);
 
   await client.users.updateUser(clerkUserId, {
-    publicMetadata: {
-      ...user.publicMetadata,
-      plan: "pro",
-      proAccess: true,
-      billingInterval: payload.billingInterval || null,
-      stripeSubscriptionStatus: payload.status || "active",
-      stripeSubscriptionId: payload.stripeSubscriptionId || null,
-      stripePriceId: payload.stripePriceId || null,
-      currentPeriodEnd: payload.currentPeriodEnd || null,
-    },
+    publicMetadata: { ...user.publicMetadata, ...publicMetadataPatch },
   });
 }
 
-export async function updateClerkUserToFree(clerkUserId, status = "inactive") {
-  if (!clerkUserId) {
-    throw new Error("Missing Clerk user ID while downgrading Clerk metadata.");
-  }
-
-  const client = await clerkClient();
-  const user = await client.users.getUser(clerkUserId);
-
-  await client.users.updateUser(clerkUserId, {
-    publicMetadata: {
-      ...user.publicMetadata,
-      plan: "free",
-      proAccess: false,
-      billingInterval: null,
-      stripeSubscriptionStatus: status,
-      stripeSubscriptionId: null,
-      stripePriceId: null,
-      currentPeriodEnd: null,
-    },
-  });
-}
-
-async function sendProAcknowledgementEmail({
-  email,
-  name,
-  billingInterval,
-  status,
-  validUntil,
-  stripeSubscriptionId,
-  invoiceUrl,
-  invoiceNumber,
-}) {
-  if (!email) return;
-
-  const emailContent = createProPurchaseEmail({
-    name,
-    billingInterval,
-    status,
-    validUntil,
-    stripeSubscriptionId,
-    invoiceUrl,
-    invoiceNumber,
-  });
-
-  await sendEmail({
-    to: email,
-    subject: emailContent.subject,
-    html: emailContent.html,
-    text: emailContent.text,
-    emailType: "pro_onboarding",
-  });
-}
-
-export async function markUserProFromSubscription({
-  clerkUserId,
-  stripeCustomerId,
-  subscription,
-  billingInterval,
-  invoiceUrl,
-  invoiceNumber,
-}) {
+export async function markUserProFromSubscription({ clerkUserId, subscription }) {
   if (!clerkUserId) {
     throw new Error("Missing clerkUserId in markUserProFromSubscription.");
   }
 
   if (!subscription?.id) {
-    throw new Error("Missing Stripe subscription in markUserProFromSubscription.");
+    throw new Error("Missing Razorpay subscription in markUserProFromSubscription.");
   }
 
-  const stripePriceId = subscription.items?.data?.[0]?.price?.id || null;
-  const status = subscription.status || "active";
+  const billingInterval = getBillingInterval(subscription.plan_id);
   const currentPeriodEnd = getPeriodEnd(subscription);
-  const resolvedBillingInterval =
-    billingInterval || subscription.metadata?.billing_interval || null;
-
-  const { data: existingSubscription } = await supabase
-    .from("subscriptions")
-    .select("stripe_subscription_id,pro_ack_email_sent_at")
-    .eq("clerk_user_id", clerkUserId)
-    .maybeSingle();
+  const status = subscription.status || "active";
 
   const { error } = await supabase.from("subscriptions").upsert(
     {
       clerk_user_id: clerkUserId,
-      stripe_customer_id: stripeCustomerId || subscription.customer,
-      stripe_subscription_id: subscription.id,
-      stripe_price_id: stripePriceId,
-      billing_interval: resolvedBillingInterval,
+      razorpay_customer_id: subscription.customer_id || null,
+      razorpay_subscription_id: subscription.id,
+      razorpay_plan_id: subscription.plan_id,
+      billing_interval: billingInterval,
       plan: "pro",
       status,
       current_period_end: currentPeriodEnd,
       updated_at: new Date().toISOString(),
     },
-    {
-      onConflict: "clerk_user_id",
-    }
+    { onConflict: "clerk_user_id" }
   );
 
   if (error) {
@@ -149,68 +66,17 @@ export async function markUserProFromSubscription({
     throw error;
   }
 
-  await updateClerkUserToPro(clerkUserId, {
-    billingInterval: resolvedBillingInterval,
-    status,
-    stripeSubscriptionId: subscription.id,
-    stripePriceId,
+  await updateClerkPlan(clerkUserId, {
+    plan: "pro",
+    proAccess: true,
+    billingInterval,
+    subscriptionStatus: status,
+    razorpaySubscriptionId: subscription.id,
+    razorpayPlanId: subscription.plan_id,
     currentPeriodEnd,
   });
 
-  const shouldSendAcknowledgementEmail =
-    !existingSubscription?.pro_ack_email_sent_at ||
-    existingSubscription?.stripe_subscription_id !== subscription.id;
-
-  if (shouldSendAcknowledgementEmail) {
-    try {
-      const client = await clerkClient();
-      const clerkUser = await client.users.getUser(clerkUserId);
-      const stripeCustomer = await getStripeCustomer(
-        stripeCustomerId || subscription.customer
-      );
-
-      const email =
-        stripeCustomer?.email ||
-        clerkUser?.emailAddresses?.[0]?.emailAddress ||
-        null;
-
-      const name =
-        stripeCustomer?.name ||
-        clerkUser?.firstName ||
-        clerkUser?.fullName ||
-        "there";
-
-      await sendProAcknowledgementEmail({
-        email,
-        name,
-        billingInterval: resolvedBillingInterval,
-        status,
-        validUntil: currentPeriodEnd,
-        stripeSubscriptionId: subscription.id,
-        invoiceUrl,
-        invoiceNumber,
-      });
-
-      await supabase
-        .from("subscriptions")
-        .update({
-          pro_ack_email_sent_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        })
-        .eq("clerk_user_id", clerkUserId);
-    } catch (emailError) {
-      console.error("PRO_ACK_EMAIL_ERROR:", emailError);
-    }
-  }
-
-  return {
-    plan: "pro",
-    status,
-    stripeSubscriptionId: subscription.id,
-    stripePriceId,
-    billingInterval: resolvedBillingInterval,
-    currentPeriodEnd,
-  };
+  return { plan: "pro", status, billingInterval, currentPeriodEnd };
 }
 
 export async function markUserFree({ clerkUserId, status = "inactive" }) {
@@ -232,69 +98,65 @@ export async function markUserFree({ clerkUserId, status = "inactive" }) {
     throw error;
   }
 
-  await updateClerkUserToFree(clerkUserId, status);
+  await updateClerkPlan(clerkUserId, {
+    plan: "free",
+    proAccess: false,
+    billingInterval: null,
+    subscriptionStatus: status,
+    razorpaySubscriptionId: null,
+    razorpayPlanId: null,
+    currentPeriodEnd: null,
+  });
 }
 
-export async function syncProAccessFromCheckoutSession(sessionId, expectedUserId) {
-  if (!sessionId) {
-    throw new Error("Missing Stripe checkout session ID.");
+// Fires once per real charge - called only from the subscription.charged
+// webhook (see api/razorpay/webhooks/route.js), never from verify-payment,
+// so a renewal never sends two receipts for the same charge.
+export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
+  try {
+    const client = await clerkClient();
+    const user = await client.users.getUser(clerkUserId);
+    const email = user?.emailAddresses?.[0]?.emailAddress;
+
+    if (!email) return;
+
+    const emailContent = createSubscriptionInvoiceEmail({
+      name: user?.firstName || user?.fullName || "there",
+      billingInterval: getBillingInterval(subscription.plan_id),
+      amount: payment?.amount,
+      currency: payment?.currency,
+      paymentId: payment?.id,
+      periodEnd: getPeriodEnd(subscription),
+      invoiceUrl: subscription?.short_url,
+      isFirstPayment: subscription?.paid_count === 1,
+    });
+
+    await sendEmail({
+      to: email,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
+      emailType: "subscription_invoice",
+    });
+  } catch (error) {
+    console.error("SEND_INVOICE_EMAIL_ERROR:", error);
+  }
+}
+
+export async function countPaidUsers() {
+  const { count, error } = await supabase
+    .from("subscriptions")
+    .select("id", { count: "exact", head: true })
+    .eq("plan", "pro")
+    .in("status", PAID_STATUSES)
+    // Excludes admin-comped/legacy rows with no real Razorpay subscription
+    // behind them - only actual paying customers count toward the 100 slots.
+    .not("razorpay_subscription_id", "is", null);
+
+  if (error) {
+    console.error("COUNT_PAID_USERS_ERROR:", error);
+    throw error;
   }
 
-  const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["subscription", "customer"],
-  });
-
-  if (!session) {
-    throw new Error("Stripe checkout session not found.");
-  }
-
-  if (session.payment_status !== "paid") {
-    throw new Error(
-      `Checkout session is not paid. Current status: ${session.payment_status}`
-    );
-  }
-
-  const subscription =
-    typeof session.subscription === "string"
-      ? await stripe.subscriptions.retrieve(session.subscription)
-      : session.subscription;
-
-  if (!subscription?.id) {
-    throw new Error("No Stripe subscription found on checkout session.");
-  }
-
-  const clerkUserId =
-    session.metadata?.clerk_user_id ||
-    subscription.metadata?.clerk_user_id ||
-    session.customer?.metadata?.clerk_user_id ||
-    null;
-
-  if (!clerkUserId) {
-    throw new Error(
-      "Missing clerk_user_id from Stripe session/subscription/customer metadata."
-    );
-  }
-
-  if (expectedUserId && clerkUserId !== expectedUserId) {
-    throw new Error(
-      "Authenticated Clerk user does not match Stripe checkout session user."
-    );
-  }
-
-  const billingInterval =
-    session.metadata?.billing_interval ||
-    subscription.metadata?.billing_interval ||
-    null;
-
-  const stripeCustomerId =
-    typeof session.customer === "string"
-      ? session.customer
-      : session.customer?.id;
-
-  return markUserProFromSubscription({
-    clerkUserId,
-    stripeCustomerId,
-    subscription,
-    billingInterval,
-  });
+  return count || 0;
 }

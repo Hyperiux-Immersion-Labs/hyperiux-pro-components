@@ -233,7 +233,7 @@ export default function PrivacyPolicy() {
 
       <DocsList>
         <DocsListItem>
-          Payment processor: Stripe - to process Vault Pro payments. They receive your
+          Payment processor: Razorpay - to process Vault Pro payments. They receive your
           billing and card details directly; we do not store your full card number.
         </DocsListItem>
         <DocsListItem>
