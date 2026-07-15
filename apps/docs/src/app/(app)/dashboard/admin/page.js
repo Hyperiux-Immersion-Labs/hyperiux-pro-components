@@ -107,13 +107,22 @@ export default function AdminPage() {
             {users.length} users · {proCount} Pro · {freeCount} Free
           </p>
         </div>
-        <Link
-          href="/dashboard/admin/emails"
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
-        >
-          Email Log
-          <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/dashboard/admin/waitlist"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Waitlist
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/dashboard/admin/emails"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Email Log
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

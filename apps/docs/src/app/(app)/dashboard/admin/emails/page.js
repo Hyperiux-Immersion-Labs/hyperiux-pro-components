@@ -7,7 +7,9 @@ import { ArrowLeft, ChevronDown, X } from "lucide-react";
 const EMAIL_TYPES = [
   "all",
   "welcome",
+  "waitlist_invite",
   "pro_onboarding",
+  "subscription_invoice",
   "subscription_renewal",
   "subscription_cancelled",
   "payment_failed",
@@ -42,7 +44,9 @@ function StatusBadge({ status }) {
 function TypeLabel({ type }) {
   const labels = {
     welcome: "Welcome",
+    waitlist_invite: "Waitlist Invite",
     pro_onboarding: "Pro Onboarding",
+    subscription_invoice: "Invoice",
     subscription_renewal: "Renewal",
     subscription_cancelled: "Cancelled",
     payment_failed: "Payment Failed",

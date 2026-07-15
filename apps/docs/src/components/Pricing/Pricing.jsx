@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, memo } from "react";
 import gsap from "gsap";
+import { useLenis } from "lenis/react";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "../WebsiteComps/RandomBlur";
@@ -98,6 +99,35 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
   const currency = isIndia ? "INR" : "USD";
   const { symbol, monthly: monthlyAmount, yearly: yearlyAmount } = PRICING[currency];
 
+  // Post-signup lands here via fallbackRedirectUrl="/pricing#pricing-cards".
+  // Lenis owns scroll and resets position on init, so the browser's native
+  // anchor-jump doesn't stick - scroll to the cards ourselves once Lenis is up.
+  const lenis = useLenis();
+  const hasScrolledToHash = useRef(false);
+
+  useEffect(() => {
+    if (hasScrolledToHash.current) return;
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#pricing-cards") return;
+
+    const target = document.getElementById("pricing-cards");
+    if (!target) return;
+
+    const timer = setTimeout(() => {
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
+      if (lenis) {
+        lenis.scrollTo(targetTop, { force: true });
+      } else {
+        window.scrollTo({ top: targetTop, left: 0, behavior: "smooth" });
+      }
+
+      hasScrolledToHash.current = true;
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [lenis]);
+
   return (
     <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[6vw]  max-md:gap-[10vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding ? padding : "pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
       {content && <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
@@ -111,7 +141,7 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
       </div>}
       <div
         id="pricing-cards"
-        className="h-[55vw] max-md:h-fit max-md:flex-col-reverse max-md:gap-[8vw] relative w-full flex gap-[1.5vw] max-sm:gap-[15vw] fadeup-cards "
+        className="h-[55vw] max-md:h-fit max-md:flex-col-reverse max-md:gap-[8vw] relative w-full flex justify-between max-sm:gap-[15vw] fadeup-cards"
       >
         {/* TOGGLE for mobile */}
 
@@ -139,11 +169,11 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
           </p>
         </div>
 
-        <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
+        <div className="h-full w-[49%] max-md:w-full px-[3.5vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between bg-[#F0F0F0] max-sm:rounded-sm">
           <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
             <p className="text80 font-medium! font-heading">Free</p>
             <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
-              <p className="text110 max-sm:text-[13vw]! font-medium! font-heading">$0</p>
+              <p className="text110 max-sm:text-[13vw]! font-medium! font-heading">{symbol}0</p>
               <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
             </div>
             <p className="text24 mt-[-1vw] max-md:mt-[-1vw] max-sm:mt-[-3.5vw]">
@@ -197,7 +227,7 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
           </p>
         </div>
 
-        <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+        <div className="h-full w-[49%] rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[3.5vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between bg-background text-foreground">
           <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
             <p className="text80 font-heading">Pro</p>
 
