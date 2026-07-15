@@ -9,6 +9,7 @@ import SplitLine from "../WebsiteComps/SplitLine";
 import { useUser } from "@clerk/nextjs";
 import ShimmerText from "../WebsiteComps/ShimmerText";
 import RazorpayCheckoutButton from "../Payments/RazorpayCheckoutButton";
+import LineReveal from "../Animations/LineReveal";
 
 const DIGITS = [...Array(10).keys()];
 
@@ -69,9 +70,9 @@ export default function Pricing({ padding, content = true }) {
   return (
     <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[6vw]  max-md:gap-[10vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding ? padding : "pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
       {content && <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
-        <RandomBlur as="h2" className="text110 w-[70vw] max-md:w-full">
+        <LineReveal as="h2" className="text110 w-[70vw] max-md:w-full">
           Start free.<br /> Upgrade when you’re ready.
-        </RandomBlur>
+        </LineReveal>
         <SplitLine as="p" className="text24 max-md:w-[90vw] mx-auto">
           The free core stays free, forever. Pro unlocks everything and every
           new drop.
