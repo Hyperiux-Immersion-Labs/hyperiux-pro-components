@@ -231,7 +231,7 @@ export default function Hero() {
           ref={descRef}
           className="text24 w-[40vw]  text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
         >
-          Source-first scroll systems, cursor effects, text reveals, page transitions, loaders backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today. Join Founding Access for first access to 80+ Pro effects next week.
+          Source-first scroll systems, cursor effects, text reveals, page transitions, loaders backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today.
         </p>
 
         <div
@@ -246,7 +246,7 @@ export default function Hero() {
           />
 
           <Button
-            text="Join Founding Access"
+            text="Upgrade to Pro"
             href="/sign-up"
             variant="orange"
             scrollOffset={-1000}

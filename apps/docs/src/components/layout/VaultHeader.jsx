@@ -217,7 +217,7 @@ export function VaultHeader({
 
            {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
               <Button
-                text="Join Founding Access"
+                text="Upgrade to Pro"
                 href="/pricing"
                 className="border-white/50!"
                 variant="outline2"

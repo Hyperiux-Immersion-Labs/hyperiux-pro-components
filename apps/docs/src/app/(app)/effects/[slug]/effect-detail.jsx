@@ -1016,7 +1016,7 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-wrap items-center pt-3 max-md:pt-6 justify-center gap-3">
           <Button
-            text="Join Founding Access"
+            text="Upgrade to Pro"
             href="/pricing"
             variant="orange"
             className="shrink-0"

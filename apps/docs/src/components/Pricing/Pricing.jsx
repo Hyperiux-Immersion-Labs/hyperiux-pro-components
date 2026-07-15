@@ -271,12 +271,12 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
                     window.location.href = "/dashboard?upgraded=true";
                   }}
                 >
-                  {isYearly ? "Join Founding Access" : "Go Pro Monthly"}
+                  {isYearly ? "Get Pro" : "Get Pro"}
                 </RazorpayCheckoutButton>
               ) : (
                 <Button
                   variant="orange"
-                  text="Join Founding Access"
+                  text="Get Pro"
                   href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />

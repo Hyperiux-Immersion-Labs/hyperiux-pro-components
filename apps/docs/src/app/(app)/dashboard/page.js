@@ -188,7 +188,7 @@ export default function DashboardPage() {
                 href="/pricing"
                 className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
               >
-               Join Founding Access
+               Upgrade to Pro
               </Link>
 
             </>

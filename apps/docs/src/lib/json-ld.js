@@ -18,7 +18,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Start with 30+ free source-first effects. Join Founding Access for 80+ Pro effects opening next week.",
+    description: "Start with 30+ free source-first effects. Join Pro for 80+ Pro effects.",
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -72,7 +72,7 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Start with 30+ free source-first effects. Join Founding Access for 80+ Pro effects opening next week.",
+      "Start with 30+ free source-first effects. Join Pro for 80+ Pro effects.",
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
