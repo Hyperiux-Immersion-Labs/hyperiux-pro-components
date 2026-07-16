@@ -82,16 +82,16 @@ const Loader2 = () => {
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
 
-    // if (hasLoaderRun() || shouldSkipLoader()) {
-    //   setVisible(false);
-    //   setShouldRun(false);
-    //   setLoaderRuntimeState({ running: false, complete: true });
-    //   document.body.classList.remove("loader-active");
-    //   requestAnimationFrame(() => {
-    //     dispatchLoaderComplete(true);
-    //   });
-    //   return;
-    // }
+    if (hasLoaderRun() || shouldSkipLoader()) {
+      setVisible(false);
+      setShouldRun(false);
+      setLoaderRuntimeState({ running: false, complete: true });
+      document.body.classList.remove("loader-active");
+      requestAnimationFrame(() => {
+        dispatchLoaderComplete(true);
+      });
+      return;
+    }
 
     setVisible(true);
     setShouldRun(true);
