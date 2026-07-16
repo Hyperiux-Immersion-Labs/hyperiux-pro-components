@@ -5,7 +5,6 @@
   "description": "Scroll-pinned horizontal slider with 3D card rotation, vertical drift, and SplitText caption reveals.",
   "dependencies": [
     "gsap",
-    "next",
     "lucide-react"
   ],
   "registryDependencies": [],

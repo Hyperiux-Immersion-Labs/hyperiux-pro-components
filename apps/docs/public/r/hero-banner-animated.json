@@ -11,9 +11,7 @@
     "lucide-react",
     "motion",
     "gsap",
-    "three",
-    "motion",
-    "lucide-react"
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "HeroBanner",

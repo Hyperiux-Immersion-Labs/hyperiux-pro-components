@@ -483,7 +483,7 @@ export default function LicenseAgreement() {
 
       <Para>
         Fees for Vault Pro are set out on our Pricing page and at checkout, and are
-        processed by our third-party payment processor, Stripe. Prices may be exclusive of
+        processed by our third-party payment processor, Razorpay. Prices may be exclusive of
         applicable taxes, including GST, which will be added at checkout where required by
         law. See our Terms of Service for billing, renewal, and cancellation mechanics, and
         our Refund Policy for refund eligibility.

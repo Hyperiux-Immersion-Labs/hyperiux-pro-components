@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+// import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -13,7 +13,7 @@ import ShimmerText from "../WebsiteComps/ShimmerText";
 import { LOADER_STORAGE_KEY } from "./Loader";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText, useGSAP);
+  gsap.registerPlugin(SplitText);
 }
 
 const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
@@ -51,7 +51,7 @@ export default function Hero() {
 
   useFadeUp();
 
-  useGSAP(
+  useEffect(
     () => {
       if (shouldBypassHeroIntroForAudit()) return;
 
@@ -231,7 +231,7 @@ export default function Hero() {
           ref={descRef}
           className="text24 w-[40vw]  text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
         >
-          Source-first scroll systems, cursor effects, text reveals, page transitions, loaders backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today. Join Founding Access for first access to 80+ Pro effects next week.
+          Source-first scroll systems, cursor effects, text reveals, page transitions, loaders backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today.
         </p>
 
         <div
@@ -246,8 +246,8 @@ export default function Hero() {
           />
 
           <Button
-            text="Join Founding Access"
-            href="/waitlist"
+            text="Upgrade to Pro"
+            href="/sign-up"
             variant="orange"
             scrollOffset={-1000}
           />

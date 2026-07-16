@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
+import { motion, useReducedMotion } from 'motion/react'
 
 import { prefersReducedMotion } from '@/lib/motion'
 import { DROPDOWN_TEXT_ANIM } from './constants'
@@ -13,6 +14,9 @@ import { useIsomorphicLayoutEffect } from './utils'
 gsap.registerPlugin(SplitText)
 
 export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
+    const reduceMotion = useReducedMotion()
+    const [hovered, setHovered] = useState(false)
+
     const defaultLabelRef = useRef(null)
     const hoverLabelRef = useRef(null)
 
@@ -254,7 +258,10 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
 
         const group = hoverGroupRef.current
 
-        group.resetters.set(label, playLeave)
+        group.resetters.set(label, () => {
+            setHovered(false)
+            playLeave()
+        })
 
         return () => {
             group.resetters.delete(label)
@@ -276,6 +283,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
             group.activeKey = label
         }
 
+        setHovered(true)
         playEnter()
     }, [hoverGroupRef, label, playEnter])
 
@@ -287,6 +295,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 related instanceof Element &&
                 related.closest('[data-nav-dropdown-link]')
 
+            setHovered(false)
             playLeave()
 
             if (!hoverGroupRef) return
@@ -304,11 +313,35 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
         <Link
             href={href}
             data-nav-dropdown-link
-            className="group flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw] transition-colors duration-300 hover:bg-black"
+            className="group relative isolate flex items-center gap-[0.75vw] rounded-[0.55vw] px-[0.7vw] py-[0.8vw]"
             onMouseEnter={handleTextEnter}
             onMouseLeave={handleTextLeave}
         >
-            <span className="relative flex size-[1.35vw] shrink-0 items-center justify-center">
+            {hovered && (
+                <motion.span
+                    // Shared layoutId lets the pill slide down between items
+                    // instead of fading in place on each one. Rendered without
+                    // AnimatePresence on purpose: an exiting pill would keep a
+                    // second element alive under the same layoutId during fast
+                    // hover sweeps, making the pill flicker out and back.
+                    layoutId={reduceMotion ? undefined : 'nav-dropdown-pill'}
+                    className="absolute inset-0 z-0 rounded-[0.55vw] bg-black"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={
+                        reduceMotion
+                            ? { duration: 0.2, ease: 'easeOut' }
+                            : {
+                                  type: 'spring',
+                                  stiffness: 500,
+                                  damping: 40,
+                                  opacity: { duration: 0.2 },
+                              }
+                    }
+                />
+            )}
+
+            <span className="relative z-10 flex size-[1.35vw] shrink-0 items-center justify-center">
                 <Image
                     src={icon}
                     alt=""
@@ -319,7 +352,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                 />
             </span>
 
-            <span className="relative block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap leading-[1.15]">
+            <span className="relative z-10 block overflow-hidden text-[1.05vw] font-medium whitespace-nowrap leading-[1.15]">
                 <span
                     ref={defaultLabelRef}
                     className="block"

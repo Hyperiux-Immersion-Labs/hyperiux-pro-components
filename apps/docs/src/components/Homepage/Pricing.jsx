@@ -66,7 +66,6 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
-  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
@@ -145,7 +144,7 @@ export default function Pricing({ padding, content = true }) {
               as="h2"
               className="text110 w-full"
             >
-              Start Free Today.<br /> Join Founding Access for Pro.
+              Start Free Today.<br /> Upgrade to Pro for Complete Access.
             </LineReveal>
             <SplitLine
               start="top 60%"
@@ -297,8 +296,8 @@ export default function Pricing({ padding, content = true }) {
                     variant. Plan-aware pricing lives on /pricing. */}
                 <Button
                   variant="orange"
-                  text="Join Founding Access"
-                  href="/waitlist"
+                  text="Upgrade to Pro"
+                  href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />
               </div>

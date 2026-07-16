@@ -5,6 +5,7 @@ import gsap from "gsap";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import LinkButton from "../WebsiteComps/LinkButton";
+import LineReveal from "../Animations/LineReveal";
 
 const cards = [
   {
@@ -43,12 +44,12 @@ export default function PricingLicense() {
     <section className="w-full bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[6vw] max-md:py-[16vw]">
 
       {/* Heading */}
-      <RandomBlur
+      <LineReveal
         as="h2"
         className="text110 text-center w-[70vw] max-md:w-full mx-auto"
       >
         What you can do with Vault, in plain language.
-      </RandomBlur>
+      </LineReveal>
 
       {/* Subtext */}
       <SplitLine

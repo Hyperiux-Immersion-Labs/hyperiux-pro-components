@@ -32,7 +32,7 @@ export async function GET() {
       supabase
         .from("subscriptions")
         .select(
-          "plan,status,billing_interval,current_period_end,stripe_subscription_id,stripe_price_id"
+          "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id,razorpay_short_url"
         )
         .eq("clerk_user_id", userId)
         .maybeSingle(),
@@ -84,7 +84,8 @@ export async function GET() {
     subscriptionStatus: subscription?.status || "inactive",
     billingInterval: subscription?.billing_interval || null,
     planValidUntil: subscription?.current_period_end || null,
-    stripeSubscriptionId: subscription?.stripe_subscription_id || null,
-    stripePriceId: subscription?.stripe_price_id || null,
+    razorpaySubscriptionId: subscription?.razorpay_subscription_id || null,
+    razorpayPlanId: subscription?.razorpay_plan_id || null,
+    manageSubscriptionUrl: subscription?.razorpay_short_url || null,
   });
 }

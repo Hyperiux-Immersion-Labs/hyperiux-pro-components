@@ -391,7 +391,9 @@ export function EffectDetailContent({
     categorySlug,
   });
 
-  const dependencies = safeEffect.dependencies || [];
+  const dependencies = Array.isArray(content?.tags) && content.tags.length > 0
+    ? content.tags
+    : safeEffect.dependencies || [];
 
   const coverImage =
     resolveMediaUrl(content?.coverImage || safeEffect.coverImage || slug, {
@@ -1014,8 +1016,8 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-wrap items-center pt-3 max-md:pt-6 justify-center gap-3">
           <Button
-            text="Join Founding Access"
-            href="/waitlist"
+            text="Upgrade to Pro"
+            href="/pricing"
             variant="orange"
             className="shrink-0"
             hoverTextClassName="group-hover:text-black!"
@@ -1210,4 +1212,3 @@ function buildMarkedChildren(block) {
     return <span key={child._key || index}>{node}</span>;
   });
 }
-

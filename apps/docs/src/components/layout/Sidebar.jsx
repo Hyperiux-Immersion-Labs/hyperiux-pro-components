@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
-import { Overview, Documentation, Category, Legal } from "../WebsiteComps/Icons";
+import { Overview, Documentation, Category, Legal, Github, Pricing, Npm } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -38,13 +38,15 @@ function getLastPathSegment(pathname = "") {
   return segments[segments.length - 1] || "";
 }
 
-function NavIconLink({ label, href, icon: Icon, isExpanded, isActive, onClick }) {
+function NavIconLink({ label, href, icon: Icon, isExpanded, isActive, onClick, external }) {
   return (
     <Link
       href={href}
       scroll={false}
       title={label}
       onClick={onClick}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       className={`relative flex h-10 w-[18vw] items-center gap-3 rounded-full px-4 py-1 text22 font-medium text-white/90 transition-colors duration-300 ease-out hover:text-white ${
         isExpanded
           ? `hover:bg-[#272727] ${isActive ? "bg-[#272727] text-white" : ""}`
@@ -446,7 +448,10 @@ const navigateLegal = (event, href) => {
           </Link>
         </div>
 
-        <nav data-lenis-prevent className="space-y-4">
+        <nav
+          data-lenis-prevent
+          className="w-full flex-1 min-h-0 space-y-4 overflow-y-auto overflow-x-hidden pb-4 pr-1 sidebar-link-content"
+        >
           <NavIconLink
             label="Overview"
             href="/effects"
@@ -473,7 +478,7 @@ const navigateLegal = (event, href) => {
                 animate={{ height: "auto", opacity: 1, y: 0 }}
                 exit={{ height: 0, opacity: 0, y: -6 }}
                 transition={{ duration: 0.24, ease: "easeOut" }}
-                className="ml-[19px] mb-4 max-h-[45vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
+                className="ml-4.75 mb-4 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
               >
                 {effectCategories.map((category) => {
                   const count =
@@ -620,6 +625,30 @@ const navigateLegal = (event, href) => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <NavIconLink
+            label="Pricing"
+            href="/pricing"
+            icon={Pricing}
+            isExpanded={isExpanded}
+            isActive={pathname === "/pricing"}
+          />
+
+          <NavIconLink
+            label="Github"
+            href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
+            icon={Github}
+            isExpanded={isExpanded}
+            external
+          />
+
+          <NavIconLink
+            label="NPM"
+            href="https://www.npmjs.com/package/hyperiux"
+            icon={Npm}
+            isExpanded={isExpanded}
+            external
+          />
         </nav>
       </div>
     </aside>

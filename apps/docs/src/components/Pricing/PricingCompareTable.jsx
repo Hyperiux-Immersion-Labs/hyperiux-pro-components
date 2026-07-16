@@ -3,6 +3,7 @@
 import React from "react";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
+import LineReveal from "../Animations/LineReveal";
 
 const rows = [
   { feature: "Effects included", free: "30+ effects", pro: "Full library, all categories", proHighlight: true },
@@ -58,12 +59,12 @@ export default function PricingCompareTable() {
     <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[0vw] max-md:py-[16vw]">
 
       {/* Heading */}
-      <RandomBlur
+      <LineReveal
         as="h2"
         className="text110 text-center mb-[6vw] max-md:mb-[12vw] w-[75vw] max-md:w-full mx-auto"
       >
         Free vs. Pro, feature by feature.
-      </RandomBlur>
+      </LineReveal>
 
       {/* Table card */}
       <div className="w-full h-fit max-md:overflow-x-scroll max-md:pb-[7vw] max-md:px-[7vw] fadeup">

@@ -182,8 +182,8 @@ export default function TermsOfService() {
       <Heading2 id="payment-processing">5. Payment Processing</Heading2>
 
       <Para>
-        Payments are processed by our third-party payment processor, Stripe. We do not store
-        your full card number or payment credentials - these are handled directly by Stripe
+        Payments are processed by our third-party payment processor, Razorpay. We do not store
+        your full card number or payment credentials - these are handled directly by Razorpay
         in accordance with its own terms and applicable card-network security standards.
       </Para>
 
