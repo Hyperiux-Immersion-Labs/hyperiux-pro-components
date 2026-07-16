@@ -15,5 +15,5 @@ const page = () => {
 export default page
 
 export async function generateMetadata() {
-  return getDemoPageMetadata("milkyway");
+  return getDemoPageMetadata("milky way");
 }

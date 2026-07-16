@@ -7,9 +7,6 @@ import * as THREE from "three";
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 
-const LERP_SPEED = 0.1;
-const FADE_SPEED = 0.04;
-
 // GLSL Shaders 
 
 const PARTICLE_VERT = /* glsl */ `
@@ -71,6 +68,9 @@ export default function SpiderParticles({
   particleSize = 20.0,
   mouseConnectDist = 160,
   spotlightRadius = 300,
+  lerpSpeed = 0.1,
+  fadeSpeed = 0.04,
+  showWeb = true,
   particlesGlow = false,
   glowColor = 0xffffff,
   particleColor = 0xffffff,
@@ -176,14 +176,17 @@ export default function SpiderParticles({
 
     // Grid Layout 
 
-    let cols, rows, actualCount, spacingX, spacingY;
+    let cols, rows, actualCount, spacingX, spacingY, gridOriginX, gridOriginY;
 
     if (gridGap > 0) {
-      // Explicit grid: cells are gridGap pixels apart
-      cols        = Math.max(1, Math.floor(width  / gridGap));
-      rows        = Math.max(1, Math.floor(height / gridGap));
-      actualCount = cols * rows;
+      // Explicit spacing while keeping the lattice count-driven
+      actualCount = particleCount;
+      const aspect = width / height;
+      rows = Math.max(1, Math.round(Math.sqrt(actualCount / aspect)));
+      cols = Math.ceil(actualCount / rows);
       spacingX = spacingY = gridGap;
+      gridOriginX = ((cols - 1) * spacingX) / 2;
+      gridOriginY = ((rows - 1) * spacingY) / 2;
     } else {
       // Auto grid: fit particleCount evenly, respecting aspect ratio
       actualCount  = particleCount;
@@ -199,8 +202,13 @@ export default function SpiderParticles({
     for (let i = 0; i < actualCount; i++) {
       const c = i % cols;
       const r = Math.floor(i / cols);
-      positions[i * 3]     = (c + 0.5) * spacingX - width  / 2;
-      positions[i * 3 + 1] = (r + 0.5) * spacingY - height / 2;
+      if (gridGap > 0) {
+        positions[i * 3] = c * spacingX - gridOriginX;
+        positions[i * 3 + 1] = gridOriginY - r * spacingY;
+      } else {
+        positions[i * 3] = (c + 0.5) * spacingX - width / 2;
+        positions[i * 3 + 1] = (r + 0.5) * spacingY - height / 2;
+      }
       positions[i * 3 + 2] = 0;
     }
 
@@ -295,8 +303,8 @@ export default function SpiderParticles({
 
       // Fade the entire effect in/out as cursor enters or leaves
       mouseEntryAlpha = mousePresent
-        ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
-        : Math.max(0, mouseEntryAlpha - FADE_SPEED);
+        ? Math.min(1, mouseEntryAlpha + fadeSpeed)
+        : Math.max(0, mouseEntryAlpha - fadeSpeed);
 
       // Snap smoothMouse on the first frame, lerp every frame after
       if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
@@ -304,8 +312,8 @@ export default function SpiderParticles({
           smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
           mouseJustEntered = false;
         } else {
-          smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
-          smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
+          smoothMouse.x += (mouse.x - smoothMouse.x) * lerpSpeed;
+          smoothMouse.y += (mouse.y - smoothMouse.y) * lerpSpeed;
         }
       } else if (!mousePresent && mouseEntryAlpha <= 0) {
         smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
@@ -327,7 +335,7 @@ export default function SpiderParticles({
       // Build web lines - one segment per nearby particle
       let mIdx = 0;
 
-      if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
+      if (showWeb && smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
         for (let i = 0; i < actualCount; i++) {
           const px = positions[i * 3];
           const py = positions[i * 3 + 1];
@@ -400,20 +408,15 @@ export default function SpiderParticles({
     particleSize,
     mouseConnectDist,
     spotlightRadius,
+    lerpSpeed,
+    fadeSpeed,
+    showWeb,
     particlesGlow,
     glowColor,
     particleColor,
     webColor,
     centerColor,
   ]);
-
-  // UI 
-
-  const stats = [
-    { label: "Particles", value: particleCount },
-    { label: "Radius",    value: spotlightRadius },
-    { label: "Reach",     value: mouseConnectDist },
-  ];
 
   return (
     <div
@@ -447,18 +450,6 @@ export default function SpiderParticles({
             </p>
           </div>
 
-          <div className="flex gap-6 max-md:hidden">
-            {stats.map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-0.5 text-right">
-                <span className="text-sm uppercase tracking-widest text-white/25">
-                  {label}
-                </span>
-                <span className="text-lg font-light text-white/60 tabular-nums">
-                  {value}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Mobile overlay - desktop-only effect notice */}
