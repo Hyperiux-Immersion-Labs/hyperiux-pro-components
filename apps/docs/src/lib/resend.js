@@ -38,6 +38,7 @@ export async function sendEmail({ to, subject, html, text, react, emailType = "t
 
     if (react) {
       payload.react = react;
+      if (text) payload.text = text;
       // Render to HTML for logging if possible
       try {
         const { render } = await import("@react-email/render");
