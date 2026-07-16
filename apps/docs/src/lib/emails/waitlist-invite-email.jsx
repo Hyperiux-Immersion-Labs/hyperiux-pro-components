@@ -68,7 +68,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             fontStyle="normal"
           />
         </Head>
-        <Preview>Founding access before anyone else sees it.</Preview>
+        <Preview>Your Founding Access invite is ready. Just the first 100 get this.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
             className="mx-auto w-full max-w-[600px] px-4"
