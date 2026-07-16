@@ -22,10 +22,10 @@ import {
 const baseUrl = "https://vault.hyperiux.com";
 
 const socialLinks = [
-  { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/twitter.svg" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/", icon: "/emails/linkedIn.svg" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", icon: "/emails/github.svg" },
-  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/emails/instagram.svg" },
+  { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/x-icon-email-temp.png" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/", icon: "/emails/linkedin-icon-email-temp.png" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", icon: "/emails/github-icon-email-temp.png" },
+  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/emails/insta-icon-email-temp.png" },
 ];
 
 const fontFamily = "Aeonik, Arial, sans-serif";
