@@ -1,6 +1,5 @@
 import {
   Body,
-  Button,
   Column,
   Container,
   Font,
@@ -82,14 +81,14 @@ export function WelcomeEmail() {
             <Section className="mb-8 overflow-hidden rounded-[14px] bg-white">
               <Section className="p-4">
                 <Img
-                  src={`${baseUrl}/emails/welcome-email-img.jpg`}
+                  src={`${baseUrl}/emails/welcom-email-img.jpg`}
                   alt=""
                   width={560}
                   className="block h-auto w-full rounded-[9px]"
                 />
               </Section>
 
-              <Section className="px-8 pb-10 text-center">
+              <Section className="px-8 pb-10 text-center mt-4">
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400 }}
@@ -99,7 +98,7 @@ export function WelcomeEmail() {
                 </Heading>
 
                 <Text
-                  className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
                   Explore the collection, preview an effect, add the
@@ -118,13 +117,42 @@ export function WelcomeEmail() {
                 </Text>
 
                 <Section className="mt-8 text-center">
-                  <Button
-                    href={`${baseUrl}/effects`}
-                    style={{ fontFamily }}
-                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-semibold text-white"
-                  >
-                    Choose Your First Effect
-                  </Button>
+                  {/* Gmail's mobile apps don't render CSS background-image at
+                      all, so the gradient here comes from the legacy HTML
+                      `background` attribute (a real PNG), which Gmail mobile
+                      does honor. The inline gradient is layered on top as a
+                      progressive enhancement for clients that support it. */}
+                  <table role="presentation" cellPadding="0" cellSpacing="0" style={{ margin: "0 auto" }}>
+                    <tbody>
+                      <tr>
+                        <td
+                          align="center"
+                          bgcolor="#ff5f00"
+                          background={`${baseUrl}/emails/button-gradient.png`}
+                          style={{
+                            borderRadius: "9999px",
+                            backgroundImage: "linear-gradient(135deg, #F0690C, #E61915)",
+                            backgroundSize: "cover",
+                          }}
+                        >
+                          <a
+                            href={`${baseUrl}/effects`}
+                            style={{
+                              display: "inline-block",
+                              padding: "16px 32px",
+                              fontFamily,
+                              fontSize: "15px",
+                              fontWeight: 600,
+                              color: "#ffffff",
+                              textDecoration: "none",
+                            }}
+                          >
+                            Choose Your First Effect
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </Section>
 
                 <Text
@@ -153,7 +181,27 @@ export function WelcomeEmail() {
                   </Column>
                 </Row>
 
-                
+                <Text
+                  className="m-0 mt-6 text-[13px] text-[#8a8a8a]"
+                  style={{ fontFamily }}
+                >
+                  <Link href={`${baseUrl}/legal/privacy-policy`} className="text-[#8a8a8a]">
+                    Privacy Policy
+                  </Link>
+                  {" "}·{" "}
+                  <Link href={`${baseUrl}/legal/terms-of-service`} className="text-[#8a8a8a]">
+                    Terms of Service
+                  </Link>
+                </Text>
+
+                <Text
+                  className="m-0 mt-2 text-[13px]"
+                  style={{ fontFamily }}
+                >
+                  <Link href={`${baseUrl}`} className="text-[#ff5f00]">
+                    Unsubscribe
+                  </Link>
+                </Text>
               </Section>
             </Section>
           </Container>

@@ -1,6 +1,5 @@
 import {
   Body,
-  Button,
   Column,
   Container,
   Font,
@@ -93,7 +92,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                 />
               </Section>
 
-              <Section className="px-8 pb-10 text-center">
+              <Section className="px-8 pb-10 text-center mt-4">
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400 }}
@@ -138,13 +137,42 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                 </Text>
 
                 <Section className="mt-8 text-center">
-                  <Button
-                    href={inviteUrl}
-                    style={{ fontFamily }}
-                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-semibold text-white"
-                  >
-                    Accept Invite
-                  </Button>
+                  {/* Gmail's mobile apps don't render CSS background-image at
+                      all, so the gradient here comes from the legacy HTML
+                      `background` attribute (a real PNG), which Gmail mobile
+                      does honor. The inline gradient is layered on top as a
+                      progressive enhancement for clients that support it. */}
+                  <table role="presentation" cellPadding="0" cellSpacing="0" style={{ margin: "0 auto" }}>
+                    <tbody>
+                      <tr>
+                        <td
+                          align="center"
+                          bgcolor="#ff5f00"
+                          background={`${baseUrl}/emails/button-gradient.png`}
+                          style={{
+                            borderRadius: "9999px",
+                            backgroundImage: "linear-gradient(135deg, #F0690C, #E61915)",
+                            backgroundSize: "cover",
+                          }}
+                        >
+                          <a
+                            href={inviteUrl}
+                            style={{
+                              display: "inline-block",
+                              padding: "16px 32px",
+                              fontFamily,
+                              fontSize: "18px",
+                              fontWeight: 600,
+                              color: "#ffffff",
+                              textDecoration: "none",
+                            }}
+                          >
+                            Accept Invite
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </Section>
 
                 <Text
@@ -179,7 +207,27 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                   </Column>
                 </Row>
 
-               
+                <Text
+                  className="m-0 mt-6 text-[13px] text-[#8a8a8a]"
+                  style={{ fontFamily }}
+                >
+                  <Link href={`${baseUrl}/legal/privacy-policy`} className="text-[#8a8a8a]">
+                    Privacy Policy
+                  </Link>
+                  {" "}·{" "}
+                  <Link href={`${baseUrl}/legal/terms-of-service`} className="text-[#8a8a8a]">
+                    Terms of Service
+                  </Link>
+                </Text>
+
+                <Text
+                  className="m-0 mt-2 text-[13px]"
+                  style={{ fontFamily }}
+                >
+                  <Link href={`${baseUrl}`} className="text-[#ff5f00]">
+                    Unsubscribe
+                  </Link>
+                </Text>
               </Section>
             </Section>
           </Container>

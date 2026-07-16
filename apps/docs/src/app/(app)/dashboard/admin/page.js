@@ -47,6 +47,8 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [sendingWelcomeTest, setSendingWelcomeTest] = useState(false);
   const [welcomeTestMessage, setWelcomeTestMessage] = useState(null);
+  const [sendingProUnlockedTest, setSendingProUnlockedTest] = useState(false);
+  const [proUnlockedTestMessage, setProUnlockedTestMessage] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -112,6 +114,21 @@ export default function AdminPage() {
     }
   }
 
+  async function handleSendProUnlockedTest() {
+    setSendingProUnlockedTest(true);
+    setProUnlockedTestMessage(null);
+    try {
+      const res = await fetch("/api/temp/send-pro-unlocked-test", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to send");
+      setProUnlockedTestMessage({ type: "success", text: "Pro-unlocked email sent to harsh@weareenigma.com" });
+    } catch (err) {
+      setProUnlockedTestMessage({ type: "error", text: err.message });
+    } finally {
+      setSendingProUnlockedTest(false);
+    }
+  }
+
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
 
@@ -154,6 +171,14 @@ export default function AdminPage() {
             <Mail className="h-3.5 w-3.5" />
             {sendingWelcomeTest ? "Sending…" : "Send Welcome Test"}
           </button>
+          <button
+            onClick={handleSendProUnlockedTest}
+            disabled={sendingProUnlockedTest}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Mail className="h-3.5 w-3.5" />
+            {sendingProUnlockedTest ? "Sending…" : "Send Pro Unlocked Test"}
+          </button>
         </div>
       </div>
 
@@ -166,6 +191,18 @@ export default function AdminPage() {
           }`}
         >
           {welcomeTestMessage.text}
+        </div>
+      )}
+
+      {proUnlockedTestMessage && (
+        <div
+          className={`rounded-lg border px-4 py-3 text-sm ${
+            proUnlockedTestMessage.type === "success"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-red-500/30 bg-red-500/10 text-red-400"
+          }`}
+        >
+          {proUnlockedTestMessage.text}
         </div>
       )}
 
