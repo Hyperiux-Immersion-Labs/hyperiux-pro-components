@@ -1,7 +1,11 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/resend";
-import { createWaitlistInviteEmail } from "@/lib/emails/waitlist-invite-email";
+import {
+  renderWaitlistInviteEmail,
+  waitlistInviteSubject,
+  waitlistInviteText,
+} from "@/lib/emails/waitlist-invite-email";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hitesh@weareenigma.com";
 
@@ -34,24 +38,26 @@ export async function POST(req) {
 
     // notify:false stops Clerk sending its own invite email - we send our
     // own branded one below using the invitation's accept URL.
+    //
+    // redirectUrl sends the accept link straight to /signup/continue (with
+    // __clerk_ticket appended) instead of the default sign-up page, so the
+    // invited user only has to set a password rather than the full sign-up flow.
     const invitation = await clerk.invitations.createInvitation({
       emailAddress: email,
       notify: false,
       ignoreExisting: true,
-      templateSlug: "waitlist_invitation",
+      redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/signup/continue`,
     });
 
     if (!invitation.url) {
       throw new Error("Clerk did not return an invitation URL");
     }
 
-    const emailContent = createWaitlistInviteEmail({ inviteUrl: invitation.url });
-
     await sendEmail({
       to: email,
-      subject: emailContent.subject,
-      html: emailContent.html,
-      text: emailContent.text,
+      subject: waitlistInviteSubject,
+      react: renderWaitlistInviteEmail({ inviteUrl: invitation.url }),
+      text: waitlistInviteText({ inviteUrl: invitation.url }),
       emailType: "waitlist_invite",
     });
 

@@ -116,6 +116,13 @@ export default function AdminPage() {
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
           <Link
+            href="/dashboard/admin/waitlist?tab=new"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Invite
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
             href="/dashboard/admin/emails"
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >

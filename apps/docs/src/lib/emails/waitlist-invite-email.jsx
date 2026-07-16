@@ -3,8 +3,10 @@ import {
   Button,
   Column,
   Container,
+  Font,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
@@ -15,7 +17,9 @@ import {
   Text,
 } from "@react-email/components";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vault.hyperiux.com";
+// NOTE: baseUrl and every asset path below (logo, hero image, social icons)
+// are placeholders - swap them once the final design assets are ready.
+const baseUrl = "https://vault.hyperiux.com";
 
 const socialLinks = [
   { label: "X", href: "https://x.com/_hyperiux_", icon: "/assets/social-icons/twitter.svg" },
@@ -23,6 +27,8 @@ const socialLinks = [
   { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", icon: "/icons/github.svg" },
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/assets/social-icons/instagram.svg" },
 ];
+
+const fontFamily = "AvenirNextCyr, Arial, sans-serif";
 
 export const waitlistInviteSubject = "You're in — Hyperiux Vault Pro is now open";
 
@@ -42,70 +48,104 @@ export function WaitlistInviteEmail({ inviteUrl }) {
   return (
     <Tailwind>
       <Html>
-        <Head />
+        <Head>
+          <Font
+            fontFamily="AvenirNextCyr"
+            fallbackFontFamily="Arial"
+            webFont={{
+              url: `${baseUrl}/assets/fonts/AvenirNextCyr-Regular.woff2`,
+              format: "woff2",
+            }}
+            fontWeight={400}
+            fontStyle="normal"
+          />
+          <Font
+            fontFamily="AvenirNextCyr"
+            fallbackFontFamily="Arial"
+            webFont={{
+              url: `${baseUrl}/assets/fonts/AvenirNextCyr-Medium.woff2`,
+              format: "woff2",
+            }}
+            fontWeight={500}
+            fontStyle="normal"
+          />
+        </Head>
         <Preview>Your Hyperiux Vault Pro spot is ready</Preview>
-        <Body className="m-0 bg-[#f4f4f5] font-sans">
-          <Container className="mx-auto my-8 w-full max-w-[560px]">
-            <Section className="overflow-hidden rounded-[10px] bg-white text-center">
-              <Section className="px-8 pt-6 pb-4 text-left">
-                <Img src={`${baseUrl}/hyperiux.png`} alt="Hyperiux" width={120} height={15} />
+        <Body className="m-0 bg-[#0a0a0a]" style={{ fontFamily }}>
+          <Container className="mx-auto w-full max-w-[600px]">
+            <Section className="px-8 pt-8 pb-6">
+              <Img src={`${baseUrl}/hyperiux.png`} alt="Hyperiux" width={140} height={17} />
+            </Section>
+
+            <Section className="mx-4 mb-8 overflow-hidden rounded-[24px] bg-white">
+              <Section className="p-4">
+                <Img
+                  src={`${baseUrl}/emails/invitation-email-img.png`}
+                  alt=""
+                  width={560}
+                  height={315}
+                  className="block w-full rounded-[16px]"
+                />
               </Section>
 
-              <Img
-                src={`${baseUrl}/emails/invitation-email-img.jpeg`}
-                alt=""
-                width={560}
-                height={315}
-                className="block w-full"
-              />
-
-              <Section className="px-8 py-10">
-                <Text className="m-0 mb-6 text-[13px] font-semibold tracking-[0.2em] text-[#ff5f00] uppercase">
-                  Founding Access
+              <Section className="px-10 pb-10 text-center">
+                <Text className="m-0 text-[14px] text-[#8a8a8a]" style={{ fontFamily }}>
+                  Thanks for joining us
                 </Text>
 
-                <Heading as="h1" className="m-0 mb-4 text-[28px] text-[#0a0a0a]">
+                <Heading
+                  as="h1"
+                  style={{ fontFamily, fontWeight: 500 }}
+                  className="m-0 mt-3 text-[48px] leading-[1.05] text-[#0a0a0a]"
+                >
                   You&apos;re in.
                 </Heading>
 
-                <Text className="m-0 mb-8 text-[15px] leading-6 text-[#525252]">
+                <Text
+                  className="m-0 mt-4 text-[15px] leading-6 text-[#666666]"
+                  style={{ fontFamily }}
+                >
                   Hyperiux Vault Pro is now open, and your Founding Access
                   spot is ready. Accept your invite to create your account
                   and unlock the full vault.
                 </Text>
 
-                <Button
-                  href={inviteUrl}
-                  className="inline-block rounded-full bg-[#ff5f00] px-7 py-3 text-[15px] font-semibold text-white"
+                <Section className="mt-8 text-center">
+                  <Button
+                    href={inviteUrl}
+                    style={{ fontFamily }}
+                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-medium text-white"
+                  >
+                    Accept Invite
+                  </Button>
+                </Section>
+
+                <Hr className="mx-0 mt-10 mb-8 border-[#e4e4e7]" />
+
+                <Row>
+                  <Column align="center">
+                    {socialLinks.map((social) => (
+                      <Link
+                        key={social.label}
+                        href={social.href}
+                        className="mx-2 inline-block align-middle"
+                      >
+                        <Img src={`${baseUrl}${social.icon}`} alt={social.label} width={18} />
+                      </Link>
+                    ))}
+                  </Column>
+                </Row>
+
+                <Text
+                  className="m-0 mt-6 text-[12px] leading-5 text-[#a1a1aa]"
+                  style={{ fontFamily }}
                 >
-                  Accept Invite
-                </Button>
+                  312, Tower A, Grandslam I-Thum,
+                  <br />
+                  Sector 62, Noida, Uttar Pradesh
+                </Text>
               </Section>
             </Section>
-
-            <Row className="mt-8">
-              <Column align="center">
-                {socialLinks.map((social) => (
-                  <Link
-                    key={social.label}
-                    href={social.href}
-                    className="mx-1.5 inline-block h-8 w-8 rounded-full bg-[#0a0a0a] text-center align-middle leading-8"
-                  >
-                    <Img
-                      src={`${baseUrl}${social.icon}`}
-                      alt={social.label}
-                      width={15}
-                      className="inline-block align-middle"
-                    />
-                  </Link>
-                ))}
-              </Column>
-            </Row>
-
-            <Text className="mt-6 text-center text-[12px] text-[#a1a1aa]">
-              You&apos;re receiving this because you joined the Hyperiux
-              Vault waitlist.
-            </Text>
           </Container>
         </Body>
       </Html>
