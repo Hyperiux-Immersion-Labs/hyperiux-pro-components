@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 import { PanelLeft } from "lucide-react";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RemixerPanel from "@/components/ui/RemixerPanel";
 import remixerStyles from "@/components/ui/remixer-panel.module.css";
 import SpiderParticles from "@/components/spider-particles";
+
+const panelTransition = { duration: 0.6, ease: [0.62, 0.05, 0.01, 0.99] };
 
 const defaultControls = {
   particleCount: 180,
@@ -188,33 +191,34 @@ export default function DemoContent() {
       />
 
       <div className="pointer-events-none absolute inset-0 z-40 hidden xl:block">
-        <button
+        <motion.button
           type="button"
           onClick={() => setIsPanelExpanded((current) => !current)}
-          className={`${remixerStyles.footerButton} pointer-events-auto z-50 w-auto flex-none px-4`}
+          animate={{ x: isPanelExpanded ? -140 : 0 }}
+          transition={panelTransition}
           style={{
-            position: "absolute",
-            right: "1rem",
-            top: "78px",
-            flex: "none",
-            background: "rgba(18, 18, 20, 0.96)",
-            borderColor: "rgba(255, 255, 255, 0.14)",
+            transition:
+              "background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease",
           }}
+          className={`${remixerStyles.footerButton} pointer-events-auto absolute! right-4! top-25 z-50 w-auto min-h-0! flex-none rounded-full! border! border-white/50! bg-[#0e0e0e]! px-[1.5vw]! py-[.8vw]! text-[1.15vw]! tracking-wide`}
         >
           <PanelLeft
             className={`${remixerStyles.actionIcon} transition-transform duration-300 ${
               isPanelExpanded ? "" : "scale-x-[-1]"
             }`}
           />
-          <span className={remixerStyles.footerButtonText}>Controls</span>
-        </button>
+          <span className={`${remixerStyles.footerButtonText} text-[1.1vw] tracking-wide`}>Controls</span>
+        </motion.button>
 
-        <div
-          className={`pointer-events-auto absolute right-0 top-[132px] h-[calc(100%-132px)] w-[344px] bg-[rgba(30,30,34,0.98)] shadow-[-24px_0_80px_rgba(0,0,0,0.45)] transition-all duration-300 ease-out ${
-            isPanelExpanded ? "translate-x-0 opacity-100" : "translate-x-full opacity-0 pointer-events-none"
+        <motion.div
+          initial={false}
+          animate={{ x: isPanelExpanded ? "0%" : "100%" }}
+          transition={panelTransition}
+          className={`absolute right-0  top-[132px] h-[calc(100%-132px)] w-[344px] bg-[#0e0e0e]/20! backdrop-blur-sm shadow-[-24px_0_80px_rgba(0,0,0,0.45)] ${
+            isPanelExpanded ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="h-full p-4">
+          <div className="h-full py-4">
             <RemixerPanel
               isExpanded={isPanelExpanded}
               groups={controlGroups}
@@ -225,7 +229,7 @@ export default function DemoContent() {
               defaultOpenGroupId="density"
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

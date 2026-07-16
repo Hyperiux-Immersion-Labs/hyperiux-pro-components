@@ -83,7 +83,7 @@ export default function DemoHeader({
 
   return (
     <>
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out pt-10 max-sm:pt-10 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out pt-6 max-sm:pt-10 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -144,15 +144,7 @@ export default function DemoHeader({
           <div className="min-w-0 text-right flex items-center justify-center gap-3">
             {showText ? (
               <>
-                {/* <ArrowFillButton
-                  href={href}
-                  btnText={text}
-                  textColor="#ffffff"
-                  hoverFillTextColor="#ff6b00"
-                  arrowColor="#ff6b00"
-                  hoverArrowColor="#ff6b00"
-                  className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
-                /> */}
+               
                 <Button
                                 text="Read Article"
                                 href={readArticleHref}

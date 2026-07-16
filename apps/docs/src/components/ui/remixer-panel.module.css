@@ -3,12 +3,12 @@
   --remixer-surface-strong: rgba(255, 255, 255, 0.1);
   --remixer-border: rgba(255, 255, 255, 0.12);
   --remixer-border-strong: rgba(255, 255, 255, 0.22);
-  --remixer-text: rgba(255, 255, 255, 0.96);
-  --remixer-text-muted: rgba(255, 255, 255, 0.72);
-  --remixer-text-soft: rgba(255, 255, 255, 0.52);
-  --remixer-text-dim: rgba(255, 255, 255, 0.3);
-  --remixer-accent: rgba(255, 255, 255, 0.94);
-  --remixer-accent-strong: #ffffff;
+  --remixer-text: var(--foreground);
+  --remixer-text-muted: color-mix(in srgb, var(--foreground) 72%, transparent);
+  --remixer-text-soft: color-mix(in srgb, var(--foreground) 52%, transparent);
+  --remixer-text-dim: color-mix(in srgb, var(--foreground) 30%, transparent);
+  --remixer-accent: color-mix(in srgb, var(--foreground) 94%, transparent);
+  --remixer-accent-strong: var(--foreground);
   --remixer-shadow: -24px 0 80px rgba(0, 0, 0, 0.45);
   display: flex;
   flex-direction: column;
@@ -148,7 +148,7 @@
 .buttonFeedback {
   border-color: rgba(255, 255, 255, 0.22);
   background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+  color: var(--foreground);
 }
 
 .body {
@@ -184,7 +184,7 @@
   flex-shrink: 0;
   margin-top: auto;
   margin-bottom:12%;
-  padding-top: 1rem;
+  padding: 1rem 1rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -226,6 +226,7 @@
 .footerButtonText {
   font-size: 11px;
   font-weight: 600;
+  width: 8vw;
   line-height: 1;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -236,19 +237,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: transparent;
   overflow: hidden;
-  opacity: 0;
-  transform: translateX(12px);
-  transition:
-    border-color 220ms ease,
-    background-color 220ms ease,
-    opacity 320ms ease,
-    transform 320ms ease;
-  transition-delay: var(--group-delay, 0ms);
-}
-
-.panelOpen .group {
-  opacity: 1;
-  transform: translateX(0);
+  transition: border-color 220ms ease, background-color 220ms ease;
 }
 
 .group:last-of-type {
@@ -265,7 +254,7 @@
   background: transparent;
   color: inherit;
   cursor: pointer;
-  padding: 0.95rem 0.1rem;
+  padding: 0.95rem 1rem;
   text-align: left;
   transition: background-color 180ms ease;
 }
@@ -300,7 +289,7 @@
   opacity: 0;
   transform: translateY(-6px);
   transition: grid-template-rows 300ms ease, opacity 280ms ease, transform 280ms ease;
-  padding: 0 0.15rem;
+  padding: 0;
 }
 
 .groupOpen .groupBody {
@@ -319,7 +308,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   background: transparent;
-  padding: 0.9rem 0;
+  padding: 0.9rem 1rem;
   opacity: 0;
   transform: translateX(12px);
   transition:
@@ -358,11 +347,12 @@
   line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #fff;
+  color: var(--foreground);
 }
 
 .fieldDescription {
   margin-top: 0.65rem;
+  margin-bottom: 0.85rem;
   font-size: 12px;
   line-height: 1.4;
   color: var(--remixer-text-dim);
@@ -446,7 +436,7 @@
   border: 0;
   border-radius: 0;
   background: rgba(0, 0, 0, 0.28);
-  color: #fff;
+  color: var(--foreground);
   padding: 0.4rem 0.15rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
@@ -563,8 +553,8 @@
 }
 
 .checkboxOuter {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 4px;
   display: inline-flex;
@@ -591,7 +581,7 @@
 
 .checkboxText {
   font-size: 0.9rem;
-  color: #fff;
+  color: var(--foreground);
 }
 
 .textInput {
@@ -627,6 +617,6 @@
   }
 
   100% {
-    transform: rotate(360deg);
+    transform: rotate(-360deg);
   }
 }

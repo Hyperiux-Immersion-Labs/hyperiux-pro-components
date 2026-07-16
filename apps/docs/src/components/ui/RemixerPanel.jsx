@@ -1,8 +1,67 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "motion/react";
+import gsap from "gsap";
 import { Check, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import styles from "./remixer-panel.module.css";
+
+const COPY_ICON_RESET_DELAY_MS = 2000;
+
+const bodyVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.09, delayChildren: 0.25 },
+  },
+};
+
+const groupItemVariants = {
+  hidden: { opacity: 0, x: 18 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.45, ease: [0.62, 0.05, 0.01, 0.99] },
+  },
+};
+
+function animateIconSwap(element, rotation, onSwapped) {
+  return gsap
+    .timeline()
+    .to(element, {
+      scale: 0,
+      rotation,
+      duration: 0.2,
+      ease: "power2.in",
+      onComplete: onSwapped,
+    })
+    .to(element, {
+      scale: 1.2,
+      rotation: 0,
+      duration: 0.3,
+      ease: "back.out(1.7)",
+    })
+    .to(element, {
+      scale: 1,
+      duration: 0.15,
+      ease: "power2.out",
+    });
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.className = "clipboard-fallback";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  document.execCommand("copy");
+  textArea.remove();
+}
 
 function ControlField({ control, value, onChange, delay = 0 }) {
   const formattedValue = control.format ? control.format(value) : value;
@@ -108,6 +167,9 @@ function ControlField({ control, value, onChange, delay = 0 }) {
         <span className={styles.fieldLabel}>{control.label}</span>
         <span className={styles.fieldValue}>{formattedValue}</span>
       </div>
+      {control.description ? (
+        <p className={styles.fieldDescription}>{control.description}</p>
+      ) : null}
       <input
         type="range"
         min={control.min}
@@ -117,9 +179,6 @@ function ControlField({ control, value, onChange, delay = 0 }) {
         onChange={(event) => onChange(Number(event.target.value))}
         className={styles.range}
       />
-      {control.description ? (
-        <p className={styles.fieldDescription}>{control.description}</p>
-      ) : null}
     </label>
   );
 }
@@ -134,18 +193,27 @@ export default function RemixerPanel({
   defaultOpenGroupId,
 }) {
   const [openGroupId, setOpenGroupId] = useState(defaultOpenGroupId ?? groups[0]?.id ?? null);
-  const [copyState, setCopyState] = useState("idle");
   const [resetSpin, setResetSpin] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const iconRef = useRef(null);
+  const resetTimeoutRef = useRef(null);
+  const animationTimelineRef = useRef(null);
 
   const availableGroups = useMemo(
     () => groups.filter((group) => Array.isArray(group.controls) && group.controls.length > 0),
     [groups],
   );
 
-  useEffect(() => {
-    if (copyState !== "copied") return;
-    setCopyState("idle");
-  }, [values]);
+  const clearCopyAnimation = () => {
+    if (resetTimeoutRef.current !== null) {
+      window.clearTimeout(resetTimeoutRef.current);
+      resetTimeoutRef.current = null;
+    }
+    animationTimelineRef.current?.kill();
+    animationTimelineRef.current = null;
+  };
+
+  useEffect(() => () => clearCopyAnimation(), []);
 
   const toggleGroup = (groupId) => {
     setOpenGroupId((current) => (current === groupId ? null : groupId));
@@ -155,12 +223,24 @@ export default function RemixerPanel({
     if (!onCopyCode) return;
 
     try {
-      const code = onCopyCode();
-      await navigator.clipboard.writeText(code);
-      setCopyState("copied");
-      window.setTimeout(() => setCopyState("idle"), 1200);
+      await copyTextToClipboard(onCopyCode());
+
+      if (!iconRef.current) return;
+
+      clearCopyAnimation();
+      animationTimelineRef.current = animateIconSwap(iconRef.current, -180, () => {
+        setCopied(true);
+      });
+
+      resetTimeoutRef.current = window.setTimeout(() => {
+        resetTimeoutRef.current = null;
+        if (!iconRef.current) return;
+        animationTimelineRef.current = animateIconSwap(iconRef.current, 180, () => {
+          setCopied(false);
+        });
+      }, COPY_ICON_RESET_DELAY_MS);
     } catch {
-      setCopyState("idle");
+      setCopied(false);
     }
   };
 
@@ -172,16 +252,20 @@ export default function RemixerPanel({
 
   return (
     <aside className={`${styles.panel} ${isExpanded ? styles.panelOpen : styles.panelClosed}`}>
-      <div className={styles.body}>
-        {availableGroups.map((group, groupIndex) => {
+      <motion.div
+        className={styles.body}
+        variants={bodyVariants}
+        initial="hidden"
+        animate={isExpanded ? "visible" : "hidden"}
+      >
+        {availableGroups.map((group) => {
           const isOpen = openGroupId === group.id;
-          const groupDelay = `${groupIndex * 120}ms`;
 
           return (
-            <section
+            <motion.section
               key={group.id}
               className={`${styles.group} ${isOpen ? styles.groupOpen : ""}`}
-              style={{ "--group-delay": groupDelay }}
+              variants={groupItemVariants}
             >
               <button
                 type="button"
@@ -207,28 +291,27 @@ export default function RemixerPanel({
                   ))}
                 </div>
               </div>
-            </section>
+            </motion.section>
           );
         })}
-      </div>
+      </motion.div>
 
       <div className={styles.footer}>
         <div className={styles.footerActions}>
           <button
             type="button"
             onClick={handleCopy}
-            className={`${styles.footerButton} ${copyState === "copied" ? styles.buttonFeedback : ""}`}
-            data-tooltip={copyState === "copied" ? "Copied" : "Copy code"}
+            className={`${styles.footerButton} ${copied ? styles.buttonFeedback : ""}`}
+            aria-label="Copy code to clipboard"
           >
-            {copyState === "copied" ? (
-              <Check className={styles.actionIcon} />
-            ) : (
-              <Copy className={styles.actionIcon} />
-            )}
-            <span className={styles.footerButtonText}>
-              {copyState === "copied" ? "Copied" : "Copy code"}
+            <span ref={iconRef} className="inline-flex">
+              {copied ? (
+                <Check className={styles.actionIcon} />
+              ) : (
+                <Copy className={styles.actionIcon} />
+              )}
             </span>
-            <span className={styles.tooltip}>{copyState === "copied" ? "Copied" : "Copy code"}</span>
+            <span className={styles.footerButtonText}>{copied ? "Copied" : "Copy code"}</span>
           </button>
           <button
             type="button"
