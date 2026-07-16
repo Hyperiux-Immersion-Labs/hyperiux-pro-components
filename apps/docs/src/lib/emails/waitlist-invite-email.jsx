@@ -22,13 +22,13 @@ import {
 const baseUrl = "https://vault.hyperiux.com";
 
 const socialLinks = [
-  { label: "X", href: "https://x.com/_hyperiux_", icon: "/assets/social-icons/twitter.svg" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/", icon: "/assets/social-icons/linkedIn.svg" },
-  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", icon: "/icons/github.svg" },
-  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/assets/social-icons/instagram.svg" },
+  { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/twitter.svg" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/", icon: "/emails/linkedIn.svg" },
+  { label: "GitHub", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", icon: "/emails/github.svg" },
+  { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/emails/instagram.svg" },
 ];
 
-const fontFamily = "AvenirNextCyr, Arial, sans-serif";
+const fontFamily = "Aeonik, Arial, sans-serif";
 
 export const waitlistInviteSubject = "You're in — Hyperiux Vault Pro is now open";
 
@@ -50,41 +50,39 @@ export function WaitlistInviteEmail({ inviteUrl }) {
       <Html>
         <Head>
           <Font
-            fontFamily="AvenirNextCyr"
+            fontFamily="Aeonik"
             fallbackFontFamily="Arial"
             webFont={{
-              url: `${baseUrl}/assets/fonts/AvenirNextCyr-Regular.woff2`,
+              url: `${baseUrl}/assets/fonts/Aeonik-Regular.woff2`,
               format: "woff2",
             }}
             fontWeight={400}
             fontStyle="normal"
           />
-          <Font
-            fontFamily="AvenirNextCyr"
-            fallbackFontFamily="Arial"
-            webFont={{
-              url: `${baseUrl}/assets/fonts/AvenirNextCyr-Medium.woff2`,
-              format: "woff2",
-            }}
-            fontWeight={500}
-            fontStyle="normal"
-          />
         </Head>
         <Preview>Your Hyperiux Vault Pro spot is ready</Preview>
-        <Body className="m-0 bg-[#0a0a0a]" style={{ fontFamily }}>
-          <Container className="mx-auto w-full max-w-[600px]">
+        <Body className="m-0 bg-[#E6E7EB]" style={{ fontFamily }}>
+          <Container
+            className="mx-auto w-full max-w-[600px]"
+            style={{
+              backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
+              backgroundSize: "cover",
+              backgroundPosition: "top center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
             <Section className="px-8 pt-8 pb-6">
-              <Img src={`${baseUrl}/hyperiux.png`} alt="Hyperiux" width={140} height={17} />
+              <Img src={`${baseUrl}/emails/hyperiux-logo-white.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
 
-            <Section className="mx-4 mb-8 overflow-hidden rounded-[24px] bg-white">
+            <Section className="mx-4 mb-8 overflow-hidden rounded-[14px] bg-white">
               <Section className="p-4">
                 <Img
                   src={`${baseUrl}/emails/invitation-email-img.png`}
                   alt=""
                   width={560}
                   height={315}
-                  className="block w-full rounded-[16px]"
+                  className="block w-full rounded-[9px]"
                 />
               </Section>
 
@@ -95,7 +93,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
 
                 <Heading
                   as="h1"
-                  style={{ fontFamily, fontWeight: 500 }}
+                  style={{ fontFamily }}
                   className="m-0 mt-3 text-[48px] leading-[1.05] text-[#0a0a0a]"
                 >
                   You&apos;re in.
