@@ -62,6 +62,11 @@ export function WelcomeEmail() {
             fontWeight={400}
             fontStyle="normal"
           />
+          <style>{`
+            @media only screen and (max-width: 542px) {
+              .vault-btn { padding: 8px 16px !important; }
+            }
+          `}</style>
         </Head>
         <Preview>Start with 30+ free, source-owned interaction effects.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
@@ -137,9 +142,10 @@ export function WelcomeEmail() {
                         >
                           <a
                             href={`${baseUrl}/effects`}
+                            className="vault-btn"
                             style={{
                               display: "inline-block",
-                              padding: "16px 32px",
+                              padding: "10px 20px",
                               fontFamily,
                               fontSize: "15px",
                               fontWeight: 600,
@@ -160,6 +166,7 @@ export function WelcomeEmail() {
                   style={{ fontFamily }}
                 >
                   Need a hand getting started?{" "}
+                  <br/>
                   <Link href={`${baseUrl}/docs`} className="text-[#ff5f00] underline">
                     Here&apos;s a quick guide →
                   </Link>
