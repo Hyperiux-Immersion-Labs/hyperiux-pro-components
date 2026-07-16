@@ -50,10 +50,10 @@ function setLoaderRuntimeState({ running, complete }) {
 
 function dispatchLoaderComplete(skipped = false) {
   window.dispatchEvent(
-    new CustomEvent("loaderComplete", { detail: { skipped } })
+    new CustomEvent("loaderComplete", { detail: { skipped } }),
   );
   window.dispatchEvent(
-    new CustomEvent("hyperiux:loader-complete", { detail: { skipped } })
+    new CustomEvent("hyperiux:loader-complete", { detail: { skipped } }),
   );
 }
 
@@ -82,16 +82,16 @@ const Loader2 = () => {
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
 
-    if (hasLoaderRun() || shouldSkipLoader()) {
-      setVisible(false);
-      setShouldRun(false);
-      setLoaderRuntimeState({ running: false, complete: true });
-      document.body.classList.remove("loader-active");
-      requestAnimationFrame(() => {
-        dispatchLoaderComplete(true);
-      });
-      return;
-    }
+    // if (hasLoaderRun() || shouldSkipLoader()) {
+    //   setVisible(false);
+    //   setShouldRun(false);
+    //   setLoaderRuntimeState({ running: false, complete: true });
+    //   document.body.classList.remove("loader-active");
+    //   requestAnimationFrame(() => {
+    //     dispatchLoaderComplete(true);
+    //   });
+    //   return;
+    // }
 
     setVisible(true);
     setShouldRun(true);
@@ -115,7 +115,7 @@ const Loader2 = () => {
     const ctx = gsap.context(() => {
       const sequence = root.querySelector(".sequence-container");
       const numberContainers = gsap.utils.toArray(
-        root.querySelectorAll(".number-container")
+        root.querySelectorAll(".number-container"),
       );
       const digitWidth =
         numberContainers[0]?.querySelector("span")?.offsetWidth || 0;
@@ -137,42 +137,82 @@ const Loader2 = () => {
       gsap.set(progress, {
         x: 0,
         y: parkedY,
-        scaleX: 0.2,
+        scaleX: 0,
         transformOrigin: "left top",
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: .7 },
+        delay: 0.5,
       });
 
-      for (let i = 1; i <= 4; i++) {
-        const label = `step-${i}`;
+      // 00 → 27
+      tl.to(sequence, { x: `+=${step}`, duration: 0.7, ease: "power2.inOut" })
+        .to(
+          numberContainers,
+          { x: `-=${digitWidth}`, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        )
+        .to(
+          progress,
+          { scaleX: 0.4, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        );
 
-        tl.addLabel(label)
-          .to(sequence, { x: i * step }, label)
-          .to(numberContainers, { x: -i * digitWidth }, label)
-          .to(progress, { scaleX: (i + 1) * 0.2 }, label);
-      }
+      // 27 → 59
+      tl.to(sequence, { x: `+=${step}`, duration: 0.7, ease: "power2.inOut" })
+        .to(
+          numberContainers,
+          { x: `-=${digitWidth}`, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        )
+        .to(
+          progress,
+          { scaleX: 0.6, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        );
+
+      // 59 → 77
+      tl.to(sequence, { x: `+=${step}`, duration: 0.7, ease: "power2.inOut" })
+        .to(
+          numberContainers,
+          { x: `-=${digitWidth}`, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        )
+        .to(
+          progress,
+          { scaleX: 0.8, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        );
+
+      // 77 → 99
+      tl.to(sequence, { x: `+=${step}`, duration: 0.7, ease: "power2.inOut" })
+        .to(
+          numberContainers,
+          { x: `-=${digitWidth}`, duration: 0.7, ease: "power2.inOut" },
+          "<",
+        )
+        .to(progress, { scaleX: 1, duration: 0.7, ease: "power2.inOut" }, "<");
 
       tl.to(sequence, {
         x: root.clientWidth,
         duration: 0.7,
         opacity: 0,
+        ease: "power2.inOut",
       });
 
       tl.to(
         progress,
         {
           y: 0,
-          delay: .1,
+          delay: 0.6,
           duration: 0.4,
-          ease: "power2.out",
+          ease: "power2.inOut",
           onComplete: () => {
             gsap.set(root, { autoAlpha: 0, pointerEvents: "none" });
             signalLoaderComplete(false);
           },
         },
-        "<"
+        "<",
       );
 
       if (loadingText) {
@@ -183,14 +223,14 @@ const Loader2 = () => {
             duration: 0.5,
             ease: "power2.inOut",
           },
-          "<"
+          "<",
         );
       }
 
       tl.to(progress, {
         y: -root.clientHeight,
         duration: 0.4,
-        ease: "power2.out",
+        ease: "power2.inOut",
         onComplete: () => {
           hideLoaderLayers({ root, progress, footer });
           setVisible(false);
