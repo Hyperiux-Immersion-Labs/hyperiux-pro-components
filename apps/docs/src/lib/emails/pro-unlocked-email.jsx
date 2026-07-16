@@ -62,6 +62,11 @@ export function ProUnlockedEmail({ planLabel = "Vault Pro" }) {
             fontWeight={400}
             fontStyle="normal"
           />
+          <style>{`
+            @media only screen and (max-width: 542px) {
+              .vault-btn { padding: 8px 16px !important; }
+            }
+          `}</style>
         </Head>
         <Preview>Your Pro access is active. Everything&apos;s unlocked. Let&apos;s go!</Preview>
         <Body className="m-0" style={{ fontFamily }}>
@@ -136,9 +141,10 @@ export function ProUnlockedEmail({ planLabel = "Vault Pro" }) {
                         >
                           <a
                             href={`${baseUrl}/effects`}
+                            className="vault-btn"
                             style={{
                               display: "inline-block",
-                              padding: "16px 32px",
+                              padding: "10px 20px",
                               fontFamily,
                               fontSize: "18px",
                               fontWeight: 600,

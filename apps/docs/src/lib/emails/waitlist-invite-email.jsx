@@ -66,6 +66,11 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             fontWeight={400}
             fontStyle="normal"
           />
+          <style>{`
+            @media only screen and (max-width: 542px) {
+              .vault-btn { padding: 8px 16px !important; }
+            }
+          `}</style>
         </Head>
         <Preview>Your Founding Access invite is ready. Just the first 100 get this.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
@@ -157,9 +162,10 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                         >
                           <a
                             href={inviteUrl}
+                            className="vault-btn"
                             style={{
                               display: "inline-block",
-                              padding: "16px 32px",
+                              padding: "10px 20px",
                               fontFamily,
                               fontSize: "18px",
                               fontWeight: 600,
