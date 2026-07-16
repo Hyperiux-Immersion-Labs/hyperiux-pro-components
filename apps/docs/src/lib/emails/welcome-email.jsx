@@ -67,7 +67,7 @@ export function WelcomeEmail() {
         <Preview>Start with 30+ free, source-owned interaction effects.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
-            className="mx-auto w-full max-w-[600px] px-6"
+            className="mx-auto w-full max-w-[600px] px-4"
             style={{
               backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
               backgroundSize: "cover",
@@ -85,12 +85,11 @@ export function WelcomeEmail() {
                   src={`${baseUrl}/emails/invitation-email-img.png`}
                   alt=""
                   width={560}
-                  height={315}
-                  className="block w-full rounded-[9px]"
+                  className="block h-auto w-full rounded-[9px]"
                 />
               </Section>
 
-              <Section className="px-10 pb-10 text-center">
+              <Section className="px-4 pb-10 text-center">
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400 }}
