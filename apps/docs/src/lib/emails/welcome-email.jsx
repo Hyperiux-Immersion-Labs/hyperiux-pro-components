@@ -76,30 +76,30 @@ export function WelcomeEmail() {
             }}
           >
             <Section className="px-1 pt-8 pb-6">
-              <Img src={`${baseUrl}/emails/hyperiux-logo-white.png`} alt="Hyperiux" width={140} height={17} />
+              <Img src={`${baseUrl}/emails/hyperiux-email-logo.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
 
             <Section className="mb-8 overflow-hidden rounded-[14px] bg-white">
               <Section className="p-4">
                 <Img
-                  src={`${baseUrl}/emails/invitation-email-img.png`}
+                  src={`${baseUrl}/emails/welcome-email-img.jpg`}
                   alt=""
                   width={560}
                   className="block h-auto w-full rounded-[9px]"
                 />
               </Section>
 
-              <Section className="px-4 pb-10 text-center">
+              <Section className="px-8 pb-10 text-center">
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400 }}
-                  className="m-0 text-[40px] leading-[1.15] text-[#0a0a0a]"
+                  className="m-0 text-[32px] leading-[1.15] text-[#0a0a0a]"
                 >
                   Welcome to Vault.
                 </Heading>
 
                 <Text
-                  className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
                   Explore the collection, preview an effect, add the
@@ -121,7 +121,7 @@ export function WelcomeEmail() {
                   <Button
                     href={`${baseUrl}/effects`}
                     style={{ fontFamily }}
-                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-medium text-white"
+                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-semibold text-white"
                   >
                     Choose Your First Effect
                   </Button>
@@ -153,14 +153,7 @@ export function WelcomeEmail() {
                   </Column>
                 </Row>
 
-                <Text
-                  className="m-0 mt-6 text-[12px] leading-5 text-[#a1a1aa]"
-                  style={{ fontFamily }}
-                >
-                  312, Tower A, Grandslam I-Thum,
-                  <br />
-                  Sector 62, Noida, Uttar Pradesh
-                </Text>
+                
               </Section>
             </Section>
           </Container>

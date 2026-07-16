@@ -28,7 +28,7 @@ const socialLinks = [
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/", icon: "/emails/insta-icon-email-temp.png" },
 ];
 
-const fontFamily = "Aeonik, Arial, sans-serif";
+const fontFamily = "Aeonik, system-ui";
 
 export const waitlistInviteSubject = "You're first: Vault Pro is live! 🚀";
 
@@ -80,30 +80,30 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             }}
           >
             <Section className="px-1 pt-8 pb-6">
-              <Img src={`${baseUrl}/emails/hyperiux-logo-white.png`} alt="Hyperiux" width={140} height={17} />
+              <Img src={`${baseUrl}/emails/hyperiux-email-logo.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
 
             <Section className=" mb-8 overflow-hidden rounded-[14px] bg-white">
               <Section className="p-4">
                 <Img
-                  src={`${baseUrl}/emails/invitation-email-img.png`}
+                  src={`${baseUrl}/emails/invite-email-img.jpg`}
                   alt=""
                   width={560}
                   className="block h-auto w-full rounded-[9px]"
                 />
               </Section>
 
-              <Section className="px-4 pb-10 text-center">
+              <Section className="px-8 pb-10 text-center">
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400 }}
-                  className="m-0 text-[40px] leading-[1.15] text-[#0a0a0a]"
+                  className="m-0 text-[32px] leading-[1.15] text-[#0a0a0a]"
                 >
-                  The door&apos;s open. Vault Pro is live.
+                  The Door&apos;s Open. Vault Pro is Live.
                 </Heading>
 
                 <Text
-                  className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
                   Everyone else will find out later today. You already
@@ -134,21 +134,21 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                   className="m-0 mt-4 text-[15px] font-semibold leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                   Claim Founding Price - $149/year
+                   Claim Founding Price $149/year
                 </Text>
 
                 <Section className="mt-8 text-center">
                   <Button
                     href={inviteUrl}
                     style={{ fontFamily }}
-                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-medium text-white"
+                    className="inline-block rounded-full bg-[#ff5f00] px-8 py-4 text-[15px] font-semibold text-white"
                   >
                     Accept Invite
                   </Button>
                 </Section>
 
                 <Text
-                  className="m-0 mt-4 text-[13px] text-[#8a8a8a]"
+                  className="m-0 mt-8 text-[13px] leading-[1.3] text-[#8a8a8a]"
                   style={{ fontFamily }}
                 >
                   Once these 100 spots are gone, this price won&apos;t
@@ -156,7 +156,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                 </Text>
 
                 <Text
-                  className="m-0 mt-1 text-[13px] text-[#8a8a8a]"
+                  className="m-0 mt-4 text-[13px] leading-[1.3] text-[#8a8a8a] italic"
                   style={{ fontFamily }}
                 >
                   Cancel anytime. Code you have already installed stays
@@ -179,14 +179,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                   </Column>
                 </Row>
 
-                <Text
-                  className="m-0 mt-6 text-[12px] leading-5 text-[#a1a1aa]"
-                  style={{ fontFamily }}
-                >
-                  312, Tower A, Grandslam I-Thum,
-                  <br />
-                  Sector 62, Noida, Uttar Pradesh
-                </Text>
+               
               </Section>
             </Section>
           </Container>
