@@ -13,7 +13,7 @@ import ShimmerText from "../WebsiteComps/ShimmerText";
 import { LOADER_STORAGE_KEY } from "./Loader";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText, useGSAP);
+  gsap.registerPlugin(SplitText);
 }
 
 const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
