@@ -82,16 +82,16 @@ const Loader2 = () => {
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
 
-    if (hasLoaderRun() || shouldSkipLoader()) {
-      setVisible(false);
-      setShouldRun(false);
-      setLoaderRuntimeState({ running: false, complete: true });
-      document.body.classList.remove("loader-active");
-      requestAnimationFrame(() => {
-        dispatchLoaderComplete(true);
-      });
-      return;
-    }
+    // if (hasLoaderRun() || shouldSkipLoader()) {
+    //   setVisible(false);
+    //   setShouldRun(false);
+    //   setLoaderRuntimeState({ running: false, complete: true });
+    //   document.body.classList.remove("loader-active");
+    //   requestAnimationFrame(() => {
+    //     dispatchLoaderComplete(true);
+    //   });
+    //   return;
+    // }
 
     setVisible(true);
     setShouldRun(true);
@@ -142,7 +142,7 @@ const Loader2 = () => {
       });
 
       const tl = gsap.timeline({
-        defaults: { ease: "power2.inOut", duration: .6 },
+        defaults: { duration: .7 },
       });
 
       for (let i = 1; i <= 4; i++) {
@@ -156,7 +156,7 @@ const Loader2 = () => {
 
       tl.to(sequence, {
         x: root.clientWidth,
-        duration: 0.9,
+        duration: 0.7,
         opacity: 0,
       });
 
@@ -164,8 +164,9 @@ const Loader2 = () => {
         progress,
         {
           y: 0,
-          duration: 0.5,
-          ease: "power2.inOut",
+          delay: .1,
+          duration: 0.4,
+          ease: "power2.out",
           onComplete: () => {
             gsap.set(root, { autoAlpha: 0, pointerEvents: "none" });
             signalLoaderComplete(false);
@@ -188,8 +189,8 @@ const Loader2 = () => {
 
       tl.to(progress, {
         y: -root.clientHeight,
-        duration: 0.5,
-        ease: "power2.inOut",
+        duration: 0.4,
+        ease: "power2.out",
         onComplete: () => {
           hideLoaderLayers({ root, progress, footer });
           setVisible(false);
@@ -240,7 +241,7 @@ const Loader2 = () => {
 
       <div
         ref={progressRef}
-        className="loader-progress pointer-events-none fixed top-0 left-0 z-1300 h-screen w-full origin-left bg-primary will-change-transform"
+        className="loader-progress pointer-events-none fixed top-0 left-0 z-1300 h-screen w-full origin-left bg-[linear-gradient(to_right,#f16b0d,#e61216)] will-change-transform"
       />
 
       <div
