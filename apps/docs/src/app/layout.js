@@ -16,7 +16,6 @@ import {
 import { createRootMetadata } from "@/lib/seo-metadata";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
-import AnnouncementBar from "@/components/WebsiteComps/AnnouncementBar";
 
 const layGrotesk = localFont({
   src: [
@@ -76,7 +75,6 @@ export default function RootLayout({ children }) {
         <script
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
-        <AnnouncementBar />
         {/* ClerkProvider deliberately absent here - it lives in
             (app)/layout.js so marketing routes ship zero Clerk scripts. */}
         <OrganizationJsonLd />

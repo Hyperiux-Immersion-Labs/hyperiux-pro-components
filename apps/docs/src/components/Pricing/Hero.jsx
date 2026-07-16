@@ -3,6 +3,7 @@ import React from 'react'
 import SplitLine from '../WebsiteComps/SplitLine'
 import RandomBlur from '../WebsiteComps/RandomBlur'
 import { useFadeUp } from '../Animations/gsapAnimations'
+import LineReveal from '../Animations/LineReveal'
 
 const Hero = () => {
     useFadeUp()
@@ -19,14 +20,12 @@ const Hero = () => {
             >
 
                 <div className="h-fit flex max-sm:flex-col max-sm:justify-start items-center w-full">
-                    <RandomBlur
+                    <LineReveal
                         as="h1"
-                        className="text120 max-sm:text-left max-sm:indent-0! relative w-full"
+                        className="text120 max-sm:text-left max-sm:indent-0! relative w-full text-white"
                     >
-                        <span className="inline-block">
-                           Start Free Today.<br/> Join Founding Access for Pro.
-                        </span>
-                    </RandomBlur>
+                        Start Free Today.<br/> Upgrade to Pro for Complete Access.
+                    </LineReveal>
                 </div>
                 <SplitLine
                     as="p"

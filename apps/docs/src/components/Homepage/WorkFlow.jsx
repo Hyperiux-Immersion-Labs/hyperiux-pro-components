@@ -5,7 +5,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { Eye, Download, Sliders, Rocket } from 'lucide-react'
 import LazyVideo from '../WebsiteComps/LazyVideo'
-import RandomBlur from './RandomBlur'
+import LineReveal from '../Animations/LineReveal'
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger)
@@ -349,14 +349,14 @@ export default function Workflow() {
                 id="Workflow"
                 className="h-[200vh] max-sm:mb-4 max-sm:h-[300vh] relative"
             >
-                <RandomBlur as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
+                <LineReveal as="h2" className="text110 max-md:hidden w-[80vw] mx-auto text-center">
                     Preview. Install. Tune. <span className='text-[#ff5f00]!'>Ship.</span>
-                </RandomBlur>
+                </LineReveal>
 
                 <div className="h-screen max-sm:h-[85vh] max-md:h-[80vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
-                     <RandomBlur as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
+                     <LineReveal as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
                     Preview. Install. Tune. <span className='text-[#ff5f00]!'>Ship.</span>
-                </RandomBlur>
+                </LineReveal>
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}
                         <div

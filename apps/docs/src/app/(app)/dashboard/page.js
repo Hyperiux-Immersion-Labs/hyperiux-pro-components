@@ -44,64 +44,8 @@ function StatCard({ label, value, detail, href }) {
 export default function DashboardPage() {
   const searchParams = useSearchParams();
   const justUpgraded = searchParams.get("upgraded") === "true";
-  const sessionId = searchParams.get("session_id");
 
   const [data, setData] = useState(null);
-  const [syncing, setSyncing] = useState(false);
-  const [openingPortal, setOpeningPortal] = useState(false);
-  const [portalError, setPortalError] = useState(null);
-
-  async function handleManageSubscription() {
-    setOpeningPortal(true);
-    setPortalError(null);
-    try {
-      const res = await fetch("/api/stripe/portal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ returnPath: "/dashboard/settings" }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Portal unavailable");
-      window.location.href = json.url;
-    } catch (err) {
-      setPortalError(err.message);
-      setOpeningPortal(false);
-    }
-  }
-
-
-  // When Stripe redirects back with a session_id, sync the subscription to
-  // Supabase + Clerk immediately (covers local dev where webhooks don't fire).
-  useEffect(() => {
-    if (!justUpgraded || !sessionId) return;
-
-    let active = true;
-    setSyncing(true);
-
-    fetch("/api/stripe/sync-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
-    })
-      .then((r) => r.json())
-      .then(() => {
-        if (!active) return;
-        // Reload dashboard data to reflect the updated plan
-        return fetch("/api/dashboard")
-          .then((r) => r.json())
-          .then((json) => {
-            if (active) setData(json);
-          });
-      })
-      .catch(console.error)
-      .finally(() => {
-        if (active) setSyncing(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [justUpgraded, sessionId]);
 
   useEffect(() => {
     let active = true;
@@ -161,9 +105,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {justUpgraded && (
         <div className="border border-green-500/30 rounded-lg px-6 py-4 bg-green-500/10 text-green-400">
-          {syncing
-            ? "Activating your Pro account…"
-            : "🎉 Welcome to Pro! Your account has been upgraded."}
+          🎉 Welcome to Pro! Your account has been upgraded.
         </div>
       )}
 
@@ -243,10 +185,10 @@ export default function DashboardPage() {
            {data.plan === "free" && (
             <>
               <Link
-                href="/waitlist"
+                href="/pricing"
                 className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
               >
-               Join Founding Access
+               Upgrade to Pro
               </Link>
 
             </>
@@ -255,13 +197,16 @@ export default function DashboardPage() {
           {data.plan === "pro" && (
             <div className="flex flex-col items-end gap-2">
               <div className="flex gap-3 max-sm:flex-col">
-                <button
-                  onClick={handleManageSubscription}
-                  disabled={openingPortal}
-                  className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {openingPortal ? "Opening…" : "Manage Subscription"}
-                </button>
+                {data.manageSubscriptionUrl && (
+                  <a
+                    href={data.manageSubscriptionUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex px-7 py-3 rounded-full border border-white/20 text-white transition duration-300 hover:bg-white hover:text-black"
+                  >
+                    Manage Subscription
+                  </a>
+                )}
                 <Link
                   href="/effects/pro"
                   className="inline-flex px-7 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
@@ -269,9 +214,6 @@ export default function DashboardPage() {
                   Explore Pro Effects
                 </Link>
               </div>
-              {portalError && (
-                <p className="text-red-400 text-sm">{portalError}</p>
-              )}
             </div>
           )}
 

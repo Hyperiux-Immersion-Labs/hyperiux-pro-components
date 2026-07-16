@@ -324,12 +324,12 @@ export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
                     tl.fromTo(
                         headingRef.current,
                         {
-                            yPercent: 70,
+                            yPercent: 10,
                         },
                         {
-                            yPercent: 10,
-                            duration: cardData.length - 1,
-                            ease: 'none',
+                            yPercent: 90,
+                            duration: 5,
+                            ease: 'linear',
                         },
                         0
                     )

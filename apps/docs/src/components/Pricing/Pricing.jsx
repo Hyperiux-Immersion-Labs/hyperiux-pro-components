@@ -2,12 +2,15 @@
 
 import React, { useState, useEffect, useRef, memo } from "react";
 import gsap from "gsap";
+import { useLenis } from "lenis/react";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
 import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import { useUser } from "@clerk/nextjs";
 import ShimmerText from "../WebsiteComps/ShimmerText";
+import RazorpayCheckoutButton from "../Payments/RazorpayCheckoutButton";
+import LineReveal from "../Animations/LineReveal";
 
 const DIGITS = [...Array(10).keys()];
 
@@ -44,6 +47,35 @@ const PriceDigit = memo(({ digit, visible = true }) => {
 
 PriceDigit.displayName = "PriceDigit";
 
+// Renders a price as individual animated digit slots. The yearly amount
+// always has more digits than monthly (e.g. "20"->"179", "1999"->"17990") -
+// the extra leading digits fade in/out via `visible`, the shared trailing
+// slots flip their value between the monthly and yearly figure.
+function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
+  const monthlyDigits = String(monthlyAmount).split("");
+  const yearlyDigits = String(yearlyAmount).split("");
+  const leadCount = yearlyDigits.length - monthlyDigits.length;
+
+  return (
+    <>
+      {yearlyDigits.slice(0, leadCount).map((d, i) => (
+        <PriceDigit key={`lead-${i}`} digit={d} visible={isYearly} />
+      ))}
+      {monthlyDigits.map((d, i) => (
+        <PriceDigit
+          key={`trail-${i}`}
+          digit={isYearly ? yearlyDigits[leadCount + i] : d}
+        />
+      ))}
+    </>
+  );
+}
+
+const PRICING = {
+  USD: { symbol: "$", monthly: 20, yearly: 179 },
+  INR: { symbol: "₹", monthly: 1999, yearly: 17990 },
+};
+
 const freeFeatures = [
   "30+ production-ready effects",
   "Copy-paste + CLI install",
@@ -55,23 +87,53 @@ const ProFeatures = [
   "New effects added regularly.",
   "Priority access to upcoming packs",
   "Hyperiux CLI install + auth",
-  "Dependency, performance & reduced-motion notes per effect",
+  "Dependency, performance & reduced-motion notes",
   "Code you own, commercial-friendly",
-  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
-export default function Pricing({ padding, content = true }) {
+export default function Pricing({ padding, content = true, isIndia = false }) {
   const [isYearly, setIsYearly] = useState(true);
 
   const { isLoaded, isSignedIn, user } = useUser();
   const userPlan = isSignedIn ? (user?.publicMetadata?.plan || "free") : null;
+  const currency = isIndia ? "INR" : "USD";
+  const { symbol, monthly: monthlyAmount, yearly: yearlyAmount } = PRICING[currency];
+
+  // Post-signup lands here via fallbackRedirectUrl="/pricing#pricing-cards".
+  // Lenis owns scroll and resets position on init, so the browser's native
+  // anchor-jump doesn't stick - scroll to the cards ourselves once Lenis is up.
+  const lenis = useLenis();
+  const hasScrolledToHash = useRef(false);
+
+  useEffect(() => {
+    if (hasScrolledToHash.current) return;
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#pricing-cards") return;
+
+    const target = document.getElementById("pricing-cards");
+    if (!target) return;
+
+    const timer = setTimeout(() => {
+      const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
+      if (lenis) {
+        lenis.scrollTo(targetTop, { force: true });
+      } else {
+        window.scrollTo({ top: targetTop, left: 0, behavior: "smooth" });
+      }
+
+      hasScrolledToHash.current = true;
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [lenis]);
 
   return (
     <div className={`h-fit text-background pricing  max-md:overflow-hidden flex pb-[6vw] flex-col gap-[6vw]  max-md:gap-[10vw] items-center justify-center min-h-screen  bg-foreground self-padd  w-full ${padding ? padding : "pt-[35vw]! relative z-2 pb-[15vw]!"}`}>
       {content && <div className=" text-center space-y-[4vw] max-md:space-y-[6vw]">
-        <RandomBlur as="h2" className="text110 w-[70vw] max-md:w-full">
+        <LineReveal as="h2" className="text110 w-[70vw] max-md:w-full">
           Start free.<br /> Upgrade when you’re ready.
-        </RandomBlur>
+        </LineReveal>
         <SplitLine as="p" className="text24 max-md:w-[90vw] mx-auto">
           The free core stays free, forever. Pro unlocks everything and every
           new drop.
@@ -79,7 +141,7 @@ export default function Pricing({ padding, content = true }) {
       </div>}
       <div
         id="pricing-cards"
-        className="h-[55vw] max-md:h-fit max-md:flex-col-reverse max-md:gap-[8vw] relative w-full flex gap-[1.5vw] max-sm:gap-[15vw] fadeup-cards "
+        className="h-[55vw] max-md:h-fit max-md:flex-col-reverse max-md:gap-[8vw] relative w-full flex justify-between max-sm:gap-[15vw] fadeup-cards"
       >
         {/* TOGGLE for mobile */}
 
@@ -107,11 +169,11 @@ export default function Pricing({ padding, content = true }) {
           </p>
         </div>
 
-        <div className="h-full max-md:w-full px-[4vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw]  flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-[#F0F0F0] max-sm:rounded-sm">
+        <div className="h-full w-[49%] max-md:w-full px-[3.5vw] rounded-md max-md:p-[6vw] flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between bg-[#F0F0F0] max-sm:rounded-sm">
           <div className="space-y-[1.5vw] max-md:space-y-[4vw] max-sm:space-y-[6vw]">
             <p className="text80 font-medium! font-heading">Free</p>
             <div className="flex gap-[1vw] max-md:gap-[3vw] items-end">
-              <p className="text110 max-sm:text-[13vw]! font-medium! font-heading">$0</p>
+              <p className="text110 max-sm:text-[13vw]! font-medium! font-heading">{symbol}0</p>
               <p className="text24 mb-[1vw] max-md:mb-2">Forever</p>
             </div>
             <p className="text24 mt-[-1vw] max-md:mt-[-1vw] max-sm:mt-[-3.5vw]">
@@ -165,16 +227,22 @@ export default function Pricing({ padding, content = true }) {
           </p>
         </div>
 
-        <div className="h-full rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 bg-background text-foreground">
+        <div className="h-full w-[49%] rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[3.5vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between bg-background text-foreground">
           <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
             <p className="text80 font-heading">Pro</p>
 
+            {/* Always shows the full yearly price. First 100 paid users
+                (shared pool across USD and INR) are silently switched to the
+                founding plan_id server-side (create-subscription route) -
+                no visible indication, no separate tier on this card. */}
             <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
               <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
-                <span>$</span>
-                <PriceDigit digit="1" visible={isYearly} />
-                <PriceDigit digit={isYearly ? "7" : "2"} />
-                <PriceDigit digit={isYearly ? "9" : "0"} />
+                <span>{symbol}</span>
+                <PriceDigits
+                  monthlyAmount={monthlyAmount}
+                  yearlyAmount={yearlyAmount}
+                  isYearly={isYearly}
+                />
               </p>
               <p className="text24 mb-[1vw] max-md:mb-2">
                 {isYearly ? "Yearly" : "Monthly"}
@@ -210,7 +278,7 @@ export default function Pricing({ padding, content = true }) {
           </div>
           <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
             <div className="w-fit max-sm:w-full">
-              {!isLoaded ? (
+              {!isLoaded ? (  
                 <Button
                   variant="orange"
                   text="···"
@@ -225,17 +293,21 @@ export default function Pricing({ padding, content = true }) {
                   disabled
                 />
               ) : userPlan === "free" ? (
-                <Button
-                  variant="orange"
-                  text="Join Founding Access"
-                  href="/sign-up"
-                  className="max-md:w-full max-sm:text-[4vw]"
-                />
+                <RazorpayCheckoutButton
+                  plan={isYearly ? "yearly" : "monthly"}
+                  currency={currency}
+                  className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full max-sm:text-[4vw]"
+                  onSuccess={() => {
+                    window.location.href = "/dashboard?upgraded=true";
+                  }}
+                >
+                  {isYearly ? "Get Pro" : "Get Pro"}
+                </RazorpayCheckoutButton>
               ) : (
                 <Button
                   variant="orange"
-                  text="Join Founding Access"
-                  href="/waitlist"
+                  text="Get Pro"
+                  href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />
               )}

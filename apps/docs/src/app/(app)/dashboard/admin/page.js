@@ -107,13 +107,22 @@ export default function AdminPage() {
             {users.length} users · {proCount} Pro · {freeCount} Free
           </p>
         </div>
-        <Link
-          href="/dashboard/admin/emails"
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
-        >
-          Email Log
-          <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/dashboard/admin/waitlist"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Waitlist
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/dashboard/admin/emails"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Email Log
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
@@ -159,7 +168,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Status</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Stripe</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -221,9 +230,9 @@ export default function AdminPage() {
                       {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
                     </td>
                     <td className="px-4 py-3">
-                      {user.stripeCustomerId ? (
-                        <span className="font-mono text-xs text-white/40" title={user.stripeCustomerId}>
-                          {user.stripeCustomerId.slice(0, 12)}…
+                      {user.razorpayCustomerId ? (
+                        <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
+                          {user.razorpayCustomerId.slice(0, 12)}…
                         </span>
                       ) : (
                         <span className="text-xs text-white/25">-</span>
@@ -243,7 +252,7 @@ export default function AdminPage() {
                           ? "Updating…"
                           : user.plan === "pro"
                             ? "Downgrade"
-                            : "Join Founding Access"}
+                            : "Upgrade to Pro"}
                       </button>
                     </td>
                   </tr>

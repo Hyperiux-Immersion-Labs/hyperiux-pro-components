@@ -4,10 +4,11 @@ import React, { useState, useEffect, useRef, memo } from "react";
 import gsap from "gsap";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
-import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
 import Scrolltrigger from "gsap/dist/ScrollTrigger";
 import ShimmerText from "../WebsiteComps/ShimmerText";
+import LineReveal from "../Animations/LineReveal";
+import SplitLineNoMask from "./SplitLineNoMask";
 gsap.registerPlugin(Scrolltrigger);
 
 const DIGITS = [...Array(10).keys()];
@@ -65,7 +66,6 @@ const ProFeatures = [
   "Hyperiux CLI install + auth",
   "Dependency, performance & reduced-motion notes per effect",
   "Code you own, commercial-friendly",
-  "Subscription cost for Indian Residents is INR 1999/- monthly or 17990/- annually."
 ];
 
 export default function Pricing({ padding, content = true }) {
@@ -140,13 +140,12 @@ export default function Pricing({ padding, content = true }) {
       <div className=" w-full h-fit overflow-hidden flex flex-col gap-[6vw]  max-sm:gap-[10vw] items-center justify-center ">
         {content && (
           <div className=" text-center space-y-[4vw] max-sm:space-y-[6vw]">
-            <RandomBlur
-              start="top 50%"
+            <LineReveal
               as="h2"
               className="text110 w-full"
             >
-              Start Free Today.<br/> Join Founding Access for Pro.
-            </RandomBlur>
+              Start Free Today.<br /> Upgrade to Pro for Complete Access.
+            </LineReveal>
             <SplitLine
               start="top 60%"
               as="p"
@@ -297,22 +296,22 @@ export default function Pricing({ padding, content = true }) {
                     variant. Plan-aware pricing lives on /pricing. */}
                 <Button
                   variant="orange"
-                  text="Join Founding Access"
-                  href="/waitlist"
+                  text="Upgrade to Pro"
+                  href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />
               </div>
             </div>
           </div>
         </div>
-        <SplitLine
+        <SplitLineNoMask
           as="p"
           className="text34 max-md:text-[4vw] max-sm:text-[5vw] max-md:leading-[1.3] relative z-50 text-center w-[65vw] max-md:w-[85vw]"
         >
           Code you install stays in your repo. Free Core effects are available
           now. Pro downloads, Pro updates, and new Pro effect access require
           active Pro access.
-        </SplitLine>
+        </SplitLineNoMask>
       </div>
     </div>
   );

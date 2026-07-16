@@ -448,7 +448,7 @@ export function UpgradeCard() {
       <h2>Pro Effect</h2>
       <p>Subscribe to Hyperiux Pro to access this effect and 90+ others.</p>
       <button onClick={handleUpgrade}>
-        Join Founding Access - $X/month
+        Upgrade to Pro - $X/month
       </button>
     </div>
   )

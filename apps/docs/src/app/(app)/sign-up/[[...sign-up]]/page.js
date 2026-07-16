@@ -28,8 +28,7 @@ export default function SignUpPage() {
             path="/sign-up"
             routing="path"
             signInUrl="/sign-in"
-            waitlistUrl="/waitlist"
-            fallbackRedirectUrl="/effects"
+            fallbackRedirectUrl="/pricing#pricing-cards"
           />
         </div>
       </AuthShell>
