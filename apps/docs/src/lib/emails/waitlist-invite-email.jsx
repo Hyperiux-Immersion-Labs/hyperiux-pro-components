@@ -30,15 +30,23 @@ const socialLinks = [
 
 const fontFamily = "Aeonik, Arial, sans-serif";
 
-export const waitlistInviteSubject = "You're in — Hyperiux Vault Pro is now open";
+export const waitlistInviteSubject = "You're first: Vault Pro is live! 🚀";
 
 export function waitlistInviteText({ inviteUrl }) {
   return `
-Good news - Hyperiux Vault Pro is now open.
+The door's open. Vault Pro is live.
 
-You joined the Founding Access waitlist, and your spot is ready. Click below to create your account and unlock the full 115-effect vault.
+Everyone else will find out later today. You already knew, because you trusted us before everyone else.
 
-Accept your invite: ${inviteUrl}
+As a thank you, we're opening founding access to the first 100 people on our waitlist: $149/year, locked in for as long as your annual subscription remains active and uninterrupted. After those 100 memberships are claimed, Vault Pro will be $179/year or $20/month.
+
+Unlock the complete Pro collection with source code that lands directly in your project. Edit it, restyle it, and make every interaction yours without starting from zero or working around a black box.
+
+Claim Founding Price — $149/year: ${inviteUrl}
+
+Once these 100 spots are gone, this price won't come back.
+
+Cancel anytime. Code you have already installed stays in your repo.
 
 Hyperiux Vault
 `;
@@ -60,10 +68,10 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             fontStyle="normal"
           />
         </Head>
-        <Preview>Your Hyperiux Vault Pro spot is ready</Preview>
-        <Body className="m-0 bg-[#E6E7EB]" style={{ fontFamily }}>
+        <Preview>Founding access for $149/year, before anyone else sees it.</Preview>
+        <Body className="m-0" style={{ fontFamily }}>
           <Container
-            className="mx-auto w-full max-w-[600px]"
+            className="mx-auto w-full max-w-[600px] px-6"
             style={{
               backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
               backgroundSize: "cover",
@@ -71,11 +79,11 @@ export function WaitlistInviteEmail({ inviteUrl }) {
               backgroundRepeat: "no-repeat",
             }}
           >
-            <Section className="px-8 pt-8 pb-6">
+            <Section className="px-1 pt-8 pb-6">
               <Img src={`${baseUrl}/emails/hyperiux-logo-white.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
 
-            <Section className="mx-4 mb-8 overflow-hidden rounded-[14px] bg-white">
+            <Section className=" mb-8 overflow-hidden rounded-[14px] bg-white">
               <Section className="p-4">
                 <Img
                   src={`${baseUrl}/emails/invitation-email-img.png`}
@@ -87,25 +95,47 @@ export function WaitlistInviteEmail({ inviteUrl }) {
               </Section>
 
               <Section className="px-10 pb-10 text-center">
-                <Text className="m-0 text-[14px] text-[#8a8a8a]" style={{ fontFamily }}>
-                  Thanks for joining us
-                </Text>
-
                 <Heading
                   as="h1"
-                  style={{ fontFamily }}
-                  className="m-0 mt-3 text-[48px] leading-[1.05] text-[#0a0a0a]"
+                  style={{ fontFamily, fontWeight: 400 }}
+                  className="m-0 text-[40px] leading-[1.15] text-[#0a0a0a]"
                 >
-                  You&apos;re in.
+                  The door&apos;s open. Vault Pro is live.
                 </Heading>
 
                 <Text
-                  className="m-0 mt-4 text-[15px] leading-6 text-[#666666]"
+                  className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Hyperiux Vault Pro is now open, and your Founding Access
-                  spot is ready. Accept your invite to create your account
-                  and unlock the full vault.
+                  Everyone else will find out later today. You already
+                  knew, because you trusted us before everyone else.
+                </Text>
+
+                <Text
+                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
+                  style={{ fontFamily }}
+                >
+                  As a thank you, we&apos;re opening founding access to
+                  the first 100 people on our waitlist: $149/year, locked
+                  in for as long as your annual subscription remains
+                  active and uninterrupted. After those 100 memberships
+                  are claimed, Vault Pro will be $179/year or $20/month.
+                </Text>
+
+                <Text
+                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
+                  style={{ fontFamily }}
+                >
+                  Unlock the complete Pro collection with source code
+                  that lands directly in your project. Edit it, restyle
+                  it, and make every interaction yours without starting
+                  from zero or working around a black box.
+                </Text>
+                <Text
+                  className="m-0 mt-4 text-[15px] font-semibold leading-6 text-[#1D1D1D]"
+                  style={{ fontFamily }}
+                >
+                   Claim Founding Price - $149/year
                 </Text>
 
                 <Section className="mt-8 text-center">
@@ -117,6 +147,22 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                     Accept Invite
                   </Button>
                 </Section>
+
+                <Text
+                  className="m-0 mt-4 text-[13px] text-[#8a8a8a]"
+                  style={{ fontFamily }}
+                >
+                  Once these 100 spots are gone, this price won&apos;t
+                  come back.
+                </Text>
+
+                <Text
+                  className="m-0 mt-1 text-[13px] text-[#8a8a8a]"
+                  style={{ fontFamily }}
+                >
+                  Cancel anytime. Code you have already installed stays
+                  in your repo.
+                </Text>
 
                 <Hr className="mx-0 mt-10 mb-8 border-[#e4e4e7]" />
 
