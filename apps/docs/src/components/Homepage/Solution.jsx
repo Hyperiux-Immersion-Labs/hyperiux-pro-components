@@ -1,6 +1,6 @@
 'use client'
 
-import TextFillAnimation from '@/components/text-fill-animation'
+import TextFillAnimationCustom from '@/components/WebsiteComps/TextFillAnimationCustom'
 import CodeBlockWorkflow from './CodeBlockWorkFlow'
 import LineReveal from '../Animations/LineReveal'
 import LinkButton from '../WebsiteComps/LinkButton'
@@ -14,7 +14,7 @@ const Solution = () => {
                 Vault is That Layer, Ready to <span className='text-[#ff5f00]'> Install. </span>
             </LineReveal>
 
-            <TextFillAnimation
+            <TextFillAnimationCustom
                 text={SOLUTION_TEXT}
                 textColor="#ffffff"
                 primaryColor="#ff5f00"
