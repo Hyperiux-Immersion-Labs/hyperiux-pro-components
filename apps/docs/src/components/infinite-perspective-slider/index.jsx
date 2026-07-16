@@ -1,8 +1,8 @@
 import { InfinitePerspectiveSliderComp } from "./InfinitePerspectiveSliderComp";
 
 
-export default function InfinitePerspectiveSlider() {
-    
+export default function InfinitePerspectiveSlider(props) {
+
     return (
         <>
             <div className=" bg-white h-screen  pt-8 max-md:pt-20 max-sm:gap-10 max-md:gap-20 max-md:justify-start flex flex-col justify-start gap-8">
@@ -20,7 +20,7 @@ export default function InfinitePerspectiveSlider() {
                     </p>
 
                 </div>
-                <InfinitePerspectiveSliderComp images={images} />
+                <InfinitePerspectiveSliderComp images={images} {...props} />
             </div>
         </>
     );
