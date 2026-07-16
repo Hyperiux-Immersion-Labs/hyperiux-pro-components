@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+// import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -51,7 +51,7 @@ export default function Hero() {
 
   useFadeUp();
 
-  useGSAP(
+  useEffect(
     () => {
       if (shouldBypassHeroIntroForAudit()) return;
 
