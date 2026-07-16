@@ -68,7 +68,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             fontStyle="normal"
           />
         </Head>
-        <Preview>Founding access for $149/year, before anyone else sees it.</Preview>
+        <Preview>Founding access before anyone else sees it.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
             className="mx-auto w-full max-w-[600px] px-4"
