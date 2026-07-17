@@ -46,6 +46,8 @@ const DEFAULT_MENU_ITEMS = [
 ];
 
 const DROPDOWN_ITEM_OFFSET_Y = -8;
+const DROPDOWN_ITEM_STAGGER_IN = 0.025;
+const DROPDOWN_ITEM_STAGGER_OUT = 0.015;
 const NAV_TEXT_DURATION = 0.35;
 const CTA_DURATION = 0.4;
 const DROPDOWN_POINTER_DELAY = 0.03;
@@ -63,6 +65,13 @@ const DEFAULT_CTA = {
 export function ElevateNavbarDesktop({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
+  navTextDuration = NAV_TEXT_DURATION,
+  ctaDuration = CTA_DURATION,
+  dropdownItemOffsetY = DROPDOWN_ITEM_OFFSET_Y,
+  dropdownPointerDelay = DROPDOWN_POINTER_DELAY,
+  staggerItems = true,
+  ctaBackground = DEFAULT_CTA_BACKGROUND,
+  ctaHoverBackground = HOVER_CTA_BACKGROUND,
 }) {
   const navWrapRef = useRef(null);
   const navLinksRef = useRef([]);
@@ -152,14 +161,14 @@ export function ElevateNavbarDesktop({
     gsap
       .timeline({
         defaults: {
-          duration: NAV_TEXT_DURATION,
+          duration: navTextDuration,
           ease: "power2.out",
           overwrite: true,
         },
       })
       .to(item.defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(item.hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, []);
+  }, [navTextDuration]);
 
   const initDropdownItemText = useCallback(() => {
     dropdownTextDataRef.current = dropdownItemsRef.current.map((itemElement) => {
@@ -189,7 +198,7 @@ export function ElevateNavbarDesktop({
 
     gsap.set(dropdownItems, {
       opacity: 0,
-      y: DROPDOWN_ITEM_OFFSET_Y,
+      y: dropdownItemOffsetY,
       pointerEvents: "auto",
     });
 
@@ -201,10 +210,10 @@ export function ElevateNavbarDesktop({
       y: 0,
       opacity: 1,
       duration: 0.22,
-      stagger: 0.025,
+      stagger: staggerItems ? DROPDOWN_ITEM_STAGGER_IN : 0,
       ease: "power3.out",
     });
-  }, [getCurrentDropdownItems, killItemTween]);
+  }, [getCurrentDropdownItems, killItemTween, dropdownItemOffsetY, staggerItems]);
 
   const animateDropdownItemsOut = useCallback(
     (onComplete) => {
@@ -229,14 +238,14 @@ export function ElevateNavbarDesktop({
       });
 
       itemTweenRef.current.to(dropdownItems, {
-        y: DROPDOWN_ITEM_OFFSET_Y,
+        y: dropdownItemOffsetY,
         opacity: 0,
         duration: 0.16,
-        stagger: 0.015,
+        stagger: staggerItems ? DROPDOWN_ITEM_STAGGER_OUT : 0,
         ease: "power2.out",
       });
     },
-    [getCurrentDropdownItems, killItemTween]
+    [getCurrentDropdownItems, killItemTween, dropdownItemOffsetY, staggerItems]
   );
 
   const closeDropdown = useCallback(() => {
@@ -332,12 +341,12 @@ export function ElevateNavbarDesktop({
   const scheduleCloseDropdown = useCallback(() => {
     killHideCall();
 
-    hideCallRef.current = gsap.delayedCall(DROPDOWN_POINTER_DELAY, () => {
+    hideCallRef.current = gsap.delayedCall(dropdownPointerDelay, () => {
       if (isPointerInsideDropdownRef.current) return;
 
       closeDropdown();
     });
-  }, [closeDropdown, killHideCall]);
+  }, [closeDropdown, killHideCall, dropdownPointerDelay]);
 
   const onHeaderMouseEnter = useCallback(() => {
     killHideCall();
@@ -425,7 +434,7 @@ export function ElevateNavbarDesktop({
     gsap
       .timeline({
         defaults: {
-          duration: CTA_DURATION,
+          duration: ctaDuration,
           ease: "power2.out",
           overwrite: true,
         },
@@ -433,15 +442,13 @@ export function ElevateNavbarDesktop({
       .to(
         ctaElement,
         {
-          backgroundColor: isEntering
-            ? HOVER_CTA_BACKGROUND
-            : DEFAULT_CTA_BACKGROUND,
+          backgroundColor: isEntering ? ctaHoverBackground : ctaBackground,
         },
         0
       )
       .to(defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, []);
+  }, [ctaDuration, ctaBackground, ctaHoverBackground]);
 
   const onDropdownMouseEnter = useCallback(() => {
     isPointerInsideDropdownRef.current = true;
@@ -571,7 +578,8 @@ export function ElevateNavbarDesktop({
         <Link
           ref={ctaRef}
           href={cta.href}
-          className="relative overflow-hidden rounded-[0.26vw] bg-white px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
+          style={{ backgroundColor: ctaBackground }}
+          className="relative overflow-hidden rounded-[0.26vw] px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
           onMouseEnter={() => onCtaHover(true)}
           onMouseLeave={() => onCtaHover(false)}
         >

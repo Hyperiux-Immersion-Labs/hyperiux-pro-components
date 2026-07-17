@@ -1,17 +1,10 @@
-import ElevateNavbar from '@/components/elevate-navbar'
-import React from 'react'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import DemoContent from "./DemoContent";
 
-
-const page = () => {
-  return (
-    <>
-    <ElevateNavbar/>
-    </>
-  )
-}
-
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("elevate-navbar");
+}
+
+export default function Page() {
+  return <DemoContent />;
 }

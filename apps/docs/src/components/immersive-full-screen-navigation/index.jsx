@@ -34,18 +34,21 @@ const NAV_CONTENT = {
 };
 
 export default function ImmersiveFullscreenNav({
-  navConfig = NAV_CONFIG,
-  navContent = NAV_CONTENT,
+  navConfig,
+  navContent,
 }) {
+  const config = { ...NAV_CONFIG, ...navConfig };
+  const content = { ...NAV_CONTENT, ...navContent };
+
   return (
     <>
-      <FullscreenNav {...navConfig}>
+      <FullscreenNav {...config}>
         {(isOpen) => (
           <CustomNavbar
-            {...navContent}
+            {...content}
             isOpen={isOpen}
-            overlayBg={navConfig.overlayBg}
-            delay={navConfig.openDuration}
+            overlayBg={config.overlayBg}
+            delay={config.openDuration}
           />
         )}
       </FullscreenNav>

@@ -91,8 +91,26 @@ function useIsDesktop() {
   return hasMounted && isDesktop;
 }
 
-export default function CircularSplitRoll() {
+const ROLL_CONFIG = {
+  sectionHeight: 100,
+  leftRadiusX: 500,
+  leftRadiusY: 500,
+  rightRadiusX: 500,
+  rightRadiusY: 500,
+  imageCardWidth: 205,
+  imageCardHeight: 205,
+  scrub: 1.2,
+  textCenterScale: 1,
+  textSideScale: 0.68,
+  textSideOpacity: 0.18,
+  imageCenterScale: 1,
+  imageSideScale: 0.58,
+  imageSideOpacity: 0.14,
+};
+
+export default function CircularSplitRoll({ config }) {
   const isDesktop = useIsDesktop();
+  const rollConfig = { ...ROLL_CONFIG, ...config };
 
   return (
     <ReactLenis
@@ -102,22 +120,9 @@ export default function CircularSplitRoll() {
       }}
     >
       <main>
-        <CircularSplitRollComp
-          items={showcaseItems}
-          sectionHeight={100}
-          leftRadiusX={500}
-          leftRadiusY={500}
-          rightRadiusX={500}
-          rightRadiusY={500}
-          imageCardWidth={205}
-          imageCardHeight={205}
-          centerScale={1.4}
-          sideScale={0.2}
-          centerOpacity={1}
-          sideOpacity={0}
-        />
+        <CircularSplitRollComp items={showcaseItems} {...rollConfig} />
       </main>
-      
+
     </ReactLenis>
   );
 }

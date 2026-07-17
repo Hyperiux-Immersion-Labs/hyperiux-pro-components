@@ -259,7 +259,8 @@ export default function RemixerPanel({
         animate={isExpanded ? "visible" : "hidden"}
       >
         {availableGroups.map((group) => {
-          const isOpen = openGroupId === group.id;
+          const hasTitle = Boolean(group.title);
+          const isOpen = hasTitle ? openGroupId === group.id : true;
 
           return (
             <motion.section
@@ -267,16 +268,18 @@ export default function RemixerPanel({
               className={`${styles.group} ${isOpen ? styles.groupOpen : ""}`}
               variants={groupItemVariants}
             >
-              <button
-                type="button"
-                onClick={() => toggleGroup(group.id)}
-                className={styles.groupTrigger}
-                aria-expanded={isOpen}
-                aria-controls={`remixer-group-${group.id}`}
-              >
-                <span className={styles.groupTitle}>{group.title}</span>
-                <ChevronDown className={styles.groupChevron} />
-              </button>
+              {hasTitle ? (
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.id)}
+                  className={styles.groupTrigger}
+                  aria-expanded={isOpen}
+                  aria-controls={`remixer-group-${group.id}`}
+                >
+                  <span className={styles.groupTitle}>{group.title}</span>
+                  <ChevronDown className={styles.groupChevron} />
+                </button>
+              ) : null}
 
               <div id={`remixer-group-${group.id}`} className={styles.groupBody}>
                 <div className={styles.groupBodyInner}>

@@ -6,7 +6,19 @@ import { ElevateNavbarDesktop } from "./ElevateDesktopNav";
 import DemoHeader from "../WebsiteComps/DemoHeader";
 
 
-export default function ElevateNavbar() {
+const NAV_CONFIG = {
+  backgroundColor: "#d8b4fe",
+  navTextDuration: 0.35,
+  ctaDuration: 0.4,
+  dropdownItemOffsetY: -8,
+  dropdownPointerDelay: 0.03,
+  staggerItems: true,
+  ctaBackground: "#ffffff",
+  ctaHoverBackground: "#000000",
+};
+
+export default function ElevateNavbar({ navConfig }) {
+  const config = { ...NAV_CONFIG, ...navConfig };
   const [isMobile, setIsMobile] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -34,7 +46,10 @@ export default function ElevateNavbar() {
   return (
     <>
     <DemoHeader/>
-    <div className="relative h-screen w-full bg-purple-300 font-mono text-[0.75vw]">
+    <div
+      style={{ backgroundColor: config.backgroundColor }}
+      className="relative h-screen w-full font-mono text-[0.75vw]"
+    >
       <div className="absolute left-1/2 top-[30%] max-sm:top-[15%] w-full -translate-x-1/2 -translate-y-1/2 text-center  text-[#363737]">
       <h1 className="text-[8vw] font-black uppercase">
         Elevate Navbar
@@ -49,7 +64,17 @@ export default function ElevateNavbar() {
       {isMobile ? (
         <ElevateNavbarMobile menuItems={menuItems} cta={cta} />
       ) : (
-        <ElevateNavbarDesktop menuItems={menuItems} cta={cta} />
+        <ElevateNavbarDesktop
+          menuItems={menuItems}
+          cta={cta}
+          navTextDuration={config.navTextDuration}
+          ctaDuration={config.ctaDuration}
+          dropdownItemOffsetY={config.dropdownItemOffsetY}
+          dropdownPointerDelay={config.dropdownPointerDelay}
+          staggerItems={config.staggerItems}
+          ctaBackground={config.ctaBackground}
+          ctaHoverBackground={config.ctaHoverBackground}
+        />
       )}
     </div>
     </>
