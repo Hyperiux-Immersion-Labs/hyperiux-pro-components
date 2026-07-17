@@ -3,6 +3,11 @@ import { Webhook } from "svix";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
 import { renderWelcomeEmail, welcomeSubject, welcomeText } from "@/lib/emails/welcome-email";
+import {
+  renderResetPasswordEmail,
+  resetPasswordSubject,
+  resetPasswordText,
+} from "@/lib/emails/reset-password-email";
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
@@ -66,6 +71,33 @@ export async function POST(request) {
         react: renderWelcomeEmail(),
         text: welcomeText(),
         emailType: "welcome",
+      });
+    }
+  } else if (event.type === "email.created") {
+    // Fires for any Clerk system email whose "Delivered by Clerk" toggle is
+    // off (currently just the reset-password-code template - see Dashboard
+    // > Customization > Emails). delivered_by_clerk is false only in that
+    // case, so gating on it (rather than guessing the template's internal
+    // slug string) is what tells us Clerk expects us to send this one
+    // ourselves instead of just logging/ignoring the event.
+    const { to_email_address: toEmail, delivered_by_clerk: deliveredByClerk, data } = event.data;
+    const otpCode = data?.otp_code;
+
+    if (deliveredByClerk === false && toEmail && otpCode) {
+      await sendEmail({
+        to: toEmail,
+        subject: resetPasswordSubject,
+        react: renderResetPasswordEmail({
+          otpCode,
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        text: resetPasswordText({
+          otpCode,
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        emailType: "reset_password_code",
       });
     }
   }
