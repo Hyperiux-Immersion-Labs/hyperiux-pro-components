@@ -1,13 +1,13 @@
-import { Waitlist } from "@clerk/nextjs";
+import { SignUp } from "@clerk/nextjs";
 import AuthShell from "@/components/auth/AuthShell";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import Navbar from "@/components/WebsiteComps/Navbar";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 
 export const metadata = createPageMetadata({
-  title: "Join the Waitlist | Hyperiux Vault",
-  description: "Join the Hyperiux Vault waitlist for early access to Pro.",
-  path: "/waitlist",
+  title: "Continue Sign Up | Hyperiux Vault",
+  description: "Finish setting up your Hyperiux Vault account.",
+  path: "/signup/continue",
   image: "/seo/homepage.png",
   robots: {
     index: false,
@@ -15,7 +15,7 @@ export const metadata = createPageMetadata({
   },
 });
 
-export default function WaitlistPage() {
+export default function SignUpContinuePage() {
   return (
     <>
       <Navbar />
@@ -23,7 +23,12 @@ export default function WaitlistPage() {
 
       <AuthShell>
         <div className="hyperiux-clerk mx-auto w-[40vw] max-md:w-[90vw] max-sm:w-full">
-          <Waitlist signInUrl="/sign-in" />
+          <SignUp
+            path="/signup/continue"
+            routing="path"
+            signInUrl="/sign-in"
+            fallbackRedirectUrl="/pricing"
+          />
         </div>
       </AuthShell>
     </>

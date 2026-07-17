@@ -63,8 +63,23 @@ function isLoaderActive() {
   return (
     document.body.classList.contains("loader-active") ||
     window.__HYPERIUX_LOADER_RUNNING__ === true ||
-    Boolean(document.querySelector("#site-loader"))
+    Boolean(document.querySelector("#site-loader")) ||
+    Boolean(document.querySelector("#loader"))
   );
+}
+
+function hasLoaderCompleted() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    if (window.sessionStorage.getItem("hyperiux-loader-has-run") === "true") {
+      return true;
+    }
+  } catch {
+    // ignore
+  }
+
+  return window.__HYPERIUX_LOADER_COMPLETE__ === true;
 }
 
 function isEffectsCategoryRoute(pathname) {
@@ -405,19 +420,21 @@ export default function NavbarMobile() {
     let fallbackTimeout;
 
     const tryPlayIntro = () => {
-      if (!isLoaderActive()) {
+      // Loader2 keeps #loader in the DOM until the orange wipe finishes, so
+      // isLoaderActive() alone can stay true too long. Also accept the
+      // completion flags / session mark that Loader2 writes.
+      // if (hasLoaderCompleted() || !isLoaderActive()) {
         if (poll) {
           window.clearInterval(poll);
           poll = null;
         }
 
         playNavbarIntro();
-      }
+      // }
     };
 
-    window.addEventListener("loaderComplete", tryPlayIntro, {
-      once: true,
-    });
+    window.addEventListener("loaderComplete", tryPlayIntro);
+    window.addEventListener("hyperiux:loader-complete", tryPlayIntro);
 
     requestAnimationFrame(() => {
       requestAnimationFrame(tryPlayIntro);
@@ -427,10 +444,11 @@ export default function NavbarMobile() {
 
     fallbackTimeout = window.setTimeout(() => {
       tryPlayIntro();
-    }, 500);
+    }, 8000);
 
     return () => {
       window.removeEventListener("loaderComplete", tryPlayIntro);
+      window.removeEventListener("hyperiux:loader-complete", tryPlayIntro);
 
       if (poll) {
         window.clearInterval(poll);
@@ -568,7 +586,7 @@ export default function NavbarMobile() {
           visibility: "hidden",
           transform: "translate3d(0, -18px, 0)",
         }}
-        className="fixed left-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-1000 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
+        className="fixed left-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-1100 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
       >
         <Link prefetch={false} href="/" onClick={handleNavigate} aria-label="Hyperiux Vault home">
           <HyperiuxLogo className="h-auto max-sm:w-[40vw] text-primary max-md:w-[25vw]" />
@@ -666,8 +684,8 @@ export default function NavbarMobile() {
                 state. */}
             <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
               <Button
-                text="Join Founding Access"
-                href="/waitlist"
+                text="Get Pro"
+                href="/sign-up"
                 className="border-white/50! w-full"
                 variant="outline2"
               />

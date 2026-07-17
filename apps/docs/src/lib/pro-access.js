@@ -3,6 +3,11 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
+import {
+  renderProUnlockedEmail,
+  proUnlockedSubject,
+  proUnlockedText,
+} from "@/lib/emails/pro-unlocked-email";
 
 // Razorpay subscription statuses that count as "paying customer".
 // "authenticated" = mandate approved, first charge pending (trial-like window).
@@ -12,10 +17,29 @@ const PLAN_INTERVALS = {
   [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
   [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "yearly",
   [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "yearly",
+  [process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID]: "monthly",
+  [process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID]: "yearly",
+  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_INR_PLAN_ID]: "yearly",
+};
+
+// Separate from PLAN_INTERVALS because founding vs. regular yearly share the
+// same "yearly" billing interval but need different copy in the pro-unlocked
+// email ("Vault Pro Annual" vs. "Vault Pro Founding Annual").
+const PLAN_LABELS = {
+  [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "Vault Pro Monthly",
+  [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "Vault Pro Annual",
+  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "Vault Pro Founding Annual",
+  [process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID]: "Vault Pro Monthly",
+  [process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID]: "Vault Pro Annual",
+  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_INR_PLAN_ID]: "Vault Pro Founding Annual",
 };
 
 export function getBillingInterval(planId) {
   return PLAN_INTERVALS[planId] || null;
+}
+
+export function getPlanLabel(planId) {
+  return PLAN_LABELS[planId] || "Vault Pro";
 }
 
 function getPeriodEnd(subscription) {
@@ -52,6 +76,7 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
       razorpay_customer_id: subscription.customer_id || null,
       razorpay_subscription_id: subscription.id,
       razorpay_plan_id: subscription.plan_id,
+      razorpay_short_url: subscription.short_url || null,
       billing_interval: billingInterval,
       plan: "pro",
       status,
@@ -112,6 +137,10 @@ export async function markUserFree({ clerkUserId, status = "inactive" }) {
 // Fires once per real charge - called only from the subscription.charged
 // webhook (see api/razorpay/webhooks/route.js), never from verify-payment,
 // so a renewal never sends two receipts for the same charge.
+//
+// First payment gets the branded "Vault Pro is now unlocked" welcome email
+// (no amount/invoice details, just the unlock moment). Renewals get the
+// receipt-style invoice email, since that's the one with amount/invoice link.
 export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
   try {
     const client = await clerkClient();
@@ -119,6 +148,21 @@ export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
     const email = user?.emailAddresses?.[0]?.emailAddress;
 
     if (!email) return;
+
+    const isFirstPayment = subscription?.paid_count === 1;
+
+    if (isFirstPayment) {
+      const planLabel = getPlanLabel(subscription.plan_id);
+
+      await sendEmail({
+        to: email,
+        subject: proUnlockedSubject,
+        react: renderProUnlockedEmail({ planLabel }),
+        text: proUnlockedText({ planLabel }),
+        emailType: "pro_unlocked",
+      });
+      return;
+    }
 
     const emailContent = createSubscriptionInvoiceEmail({
       name: user?.firstName || user?.fullName || "there",
@@ -128,7 +172,7 @@ export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
       paymentId: payment?.id,
       periodEnd: getPeriodEnd(subscription),
       invoiceUrl: subscription?.short_url,
-      isFirstPayment: subscription?.paid_count === 1,
+      isFirstPayment: false,
     });
 
     await sendEmail({

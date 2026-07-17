@@ -24,7 +24,7 @@ const Hero = () => {
                         as="h1"
                         className="text120 max-sm:text-left max-sm:indent-0! relative w-full text-white"
                     >
-                        Start Free Today.<br/> Join Founding Access for Pro.
+                        Start Free Today.<br/> Upgrade to Pro for Complete Access.
                     </LineReveal>
                 </div>
                 <SplitLine

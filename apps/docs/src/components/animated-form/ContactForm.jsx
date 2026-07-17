@@ -16,7 +16,14 @@
  * successMessage?: string (default" Form submitted successfully!")
  * errorMessage?: string (default" Error sending message. Please try again.")
  *
- * Built-in validation  * - required fields checked automatically
+ * schema?: ZodType
+ * Optional Zod schema for the whole form. When provided it becomes the
+ * source of truth for validation and its messages are mapped back onto
+ * fields by name (schema key === field.name). The built-in checks below
+ * are used only when no schema is supplied.
+ *
+ * Built-in validation (fallback when no `schema` is passed)
+ * - required fields checked automatically
  * - email fields validated with regex
  * - phone fields validated for minimum length
  * - Each field can supply its own `validate(value) => string | undefined`
@@ -61,6 +68,7 @@ function buildInitialValues(fields) {
 export default function ContactForm({
  fields = [],
  onSubmit,
+ schema,
  submitLabel ="Submit",
  loadingLabel ="Sending...",
  successMessage =" Form submitted successfully!",
@@ -100,27 +108,45 @@ export default function ContactForm({
  );
 
  // ── full-form validation ──
+ // Returns { valid, data } where `data` is Zod's parsed (coerced/trimmed)
+ // output when a schema is used, or the raw values otherwise.
  const validateAll = useCallback(() => {
  const newErrors = {};
+
+ if (schema) {
+ // Zod is the source of truth: map the first issue per field by name.
+ const result = schema.safeParse(values);
+ if (result.success) {
+ setErrors(newErrors);
+ return { valid: true, data: result.data };
+ }
+ for (const issue of result.error.issues) {
+ const key = issue.path[0];
+ if (key != null && !newErrors[key]) newErrors[key] = issue.message;
+ }
+ } else {
  for (const f of fields) {
  const err = validateField(f, values[f.name]);
  if (err) newErrors[f.name] = err;
  }
+ }
+
  setErrors(newErrors);
- return Object.keys(newErrors).length === 0;
- }, [fields, values, validateField]);
+ return { valid: Object.keys(newErrors).length === 0, data: values };
+ }, [fields, values, validateField, schema]);
 
  // ── submit ──
  const handleSubmit = useCallback(
  async (e) => {
  e.preventDefault();
- if (!validateAll()) return;
+ const { valid, data } = validateAll();
+ if (!valid) return;
 
  setIsLoading(true);
  setFailed(false);
 
  try {
- await onSubmit(values);
+ await onSubmit(data);
  setSubmitted(true);
  setValues(buildInitialValues(fields));
  setTimeout(() => setSubmitted(false), 7000);
@@ -131,7 +157,7 @@ export default function ContactForm({
  setIsLoading(false);
  }
  },
- [fields, values, validateAll, onSubmit]
+ [fields, validateAll, onSubmit]
  );
 
  // ── render field ──

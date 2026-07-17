@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 export default function RazorpayCheckoutButton({
   amount,
   plan,
+  currency = "USD",
   className = "",
   onSuccess,
   onError,
@@ -31,7 +32,7 @@ export default function RazorpayCheckoutButton({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plan ? { plan } : { amount }),
+        body: JSON.stringify(plan ? { plan, currency } : { amount }),
       });
       const data = await res.json();
 

@@ -155,7 +155,7 @@ const faqItems = [
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault - React & Next.js Interaction Effects.",
   description:
-    "Start with 30+ free source-first effects. Join Founding Access for 80+ Pro effects opening next week.",
+    "Start with 30+ free source-first effects. Upgrade to Pro for 80+ Pro effects.",
   path: "/",
   image:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
