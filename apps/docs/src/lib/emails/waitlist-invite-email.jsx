@@ -41,7 +41,7 @@ As a thank you, we're opening founding access to the first 100 people on our wai
 
 Unlock the complete Pro collection with source code that lands directly in your project. Edit it, restyle it, and make every interaction yours without starting from zero or working around a black box.
 
-Claim Founding Price — $149/year: ${inviteUrl}
+Claim Founding Price - $149/year: ${inviteUrl}
 
 Once these 100 spots are gone, this price won't come back.
 

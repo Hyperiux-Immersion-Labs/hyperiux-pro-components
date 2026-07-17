@@ -49,6 +49,10 @@ export default function AdminPage() {
   const [welcomeTestMessage, setWelcomeTestMessage] = useState(null);
   const [sendingProUnlockedTest, setSendingProUnlockedTest] = useState(false);
   const [proUnlockedTestMessage, setProUnlockedTestMessage] = useState(null);
+  const [sendingResetPasswordTest, setSendingResetPasswordTest] = useState(false);
+  const [resetPasswordTestMessage, setResetPasswordTestMessage] = useState(null);
+  const [sendingPasswordChangedTest, setSendingPasswordChangedTest] = useState(false);
+  const [passwordChangedTestMessage, setPasswordChangedTestMessage] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -129,6 +133,36 @@ export default function AdminPage() {
     }
   }
 
+  async function handleSendResetPasswordTest() {
+    setSendingResetPasswordTest(true);
+    setResetPasswordTestMessage(null);
+    try {
+      const res = await fetch("/api/temp/send-reset-password-test", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to send");
+      setResetPasswordTestMessage({ type: "success", text: "Reset password email sent to harsh@weareenigma.com" });
+    } catch (err) {
+      setResetPasswordTestMessage({ type: "error", text: err.message });
+    } finally {
+      setSendingResetPasswordTest(false);
+    }
+  }
+
+  async function handleSendPasswordChangedTest() {
+    setSendingPasswordChangedTest(true);
+    setPasswordChangedTestMessage(null);
+    try {
+      const res = await fetch("/api/temp/send-password-changed-test", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to send");
+      setPasswordChangedTestMessage({ type: "success", text: "Password-changed email sent to harsh@weareenigma.com" });
+    } catch (err) {
+      setPasswordChangedTestMessage({ type: "error", text: err.message });
+    } finally {
+      setSendingPasswordChangedTest(false);
+    }
+  }
+
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
 
@@ -179,6 +213,22 @@ export default function AdminPage() {
             <Mail className="h-3.5 w-3.5" />
             {sendingProUnlockedTest ? "Sending…" : "Send Pro Unlocked Test"}
           </button>
+          {/* <button
+            onClick={handleSendResetPasswordTest}
+            disabled={sendingResetPasswordTest}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Mail className="h-3.5 w-3.5" />
+            {sendingResetPasswordTest ? "Sending…" : "Send Reset Password Test"}
+          </button>
+          <button
+            onClick={handleSendPasswordChangedTest}
+            disabled={sendingPasswordChangedTest}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Mail className="h-3.5 w-3.5" />
+            {sendingPasswordChangedTest ? "Sending…" : "Send Password Changed Test"}
+          </button> */}
         </div>
       </div>
 
@@ -203,6 +253,30 @@ export default function AdminPage() {
           }`}
         >
           {proUnlockedTestMessage.text}
+        </div>
+      )}
+
+      {resetPasswordTestMessage && (
+        <div
+          className={`rounded-lg border px-4 py-3 text-sm ${
+            resetPasswordTestMessage.type === "success"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-red-500/30 bg-red-500/10 text-red-400"
+          }`}
+        >
+          {resetPasswordTestMessage.text}
+        </div>
+      )}
+
+      {passwordChangedTestMessage && (
+        <div
+          className={`rounded-lg border px-4 py-3 text-sm ${
+            passwordChangedTestMessage.type === "success"
+              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+              : "border-red-500/30 bg-red-500/10 text-red-400"
+          }`}
+        >
+          {passwordChangedTestMessage.text}
         </div>
       )}
 

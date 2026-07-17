@@ -8,6 +8,11 @@ import {
   resetPasswordSubject,
   resetPasswordText,
 } from "@/lib/emails/reset-password-email";
+import {
+  renderPasswordChangedEmail,
+  passwordChangedSubject,
+  passwordChangedText,
+} from "@/lib/emails/password-changed-email";
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
@@ -75,15 +80,26 @@ export async function POST(request) {
     }
   } else if (event.type === "email.created") {
     // Fires for any Clerk system email whose "Delivered by Clerk" toggle is
-    // off (currently just the reset-password-code template - see Dashboard
-    // > Customization > Emails). delivered_by_clerk is false only in that
-    // case, so gating on it (rather than guessing the template's internal
-    // slug string) is what tells us Clerk expects us to send this one
-    // ourselves instead of just logging/ignoring the event.
-    const { to_email_address: toEmail, delivered_by_clerk: deliveredByClerk, data } = event.data;
+    // off (currently: reset-password-code and password-changed - see
+    // Dashboard > Customization > Emails). delivered_by_clerk is false only
+    // for those, so gating on it (rather than guessing each template's
+    // internal slug string) is what tells us Clerk expects us to send this
+    // one ourselves instead of just logging/ignoring the event.
+    const { to_email_address: toEmail, delivered_by_clerk: deliveredByClerk, slug, data } = event.data;
+
+    if (deliveredByClerk !== false || !toEmail) {
+      return NextResponse.json({ received: true });
+    }
+
+    // TODO: once a real delivery has been inspected in the Clerk Dashboard's
+    // Webhooks > Logs tab, replace this data-shape guess with a direct
+    // `slug === "..."` check for each template - more robust than inferring
+    // from which fields happen to be present.
+    console.log("CLERK_EMAIL_CREATED_SLUG:", slug);
+
     const otpCode = data?.otp_code;
 
-    if (deliveredByClerk === false && toEmail && otpCode) {
+    if (otpCode) {
       await sendEmail({
         to: toEmail,
         subject: resetPasswordSubject,
@@ -98,6 +114,23 @@ export async function POST(request) {
           requestedAt: data?.requested_at,
         }),
         emailType: "reset_password_code",
+      });
+    } else {
+      // No otp_code means this isn't the reset-password-code email - with
+      // only two templates currently disabled, the other one is
+      // password-changed.
+      await sendEmail({
+        to: toEmail,
+        subject: passwordChangedSubject,
+        react: renderPasswordChangedEmail({
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        text: passwordChangedText({
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        emailType: "password_changed",
       });
     }
   }
