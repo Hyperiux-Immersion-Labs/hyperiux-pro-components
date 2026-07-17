@@ -12,6 +12,7 @@
     "@next/bundle-analyzer": "^16.2.10",
     "disposable-email-domains": "^1.0.62",
     "next-recaptcha-v3": "^1.5.3",
+    "razorpay": "^2.9.8",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2"
   }
