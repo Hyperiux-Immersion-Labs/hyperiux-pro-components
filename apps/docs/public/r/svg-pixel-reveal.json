@@ -12,10 +12,17 @@
   "previewUrl": "/demo/svg-pixel-reveal",
   "files": [
     {
-      "path": "svg-pixel-reveal.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/svg-pixel-reveal.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "PixelatedScgFilter.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/PixelatedScgFilter.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -7,20 +7,22 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "ClipPathSlider",
+  "exportName": "ClippathSlider",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "previewUrl": "/demo/clippath-slider",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/clippath-slider/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "ClippathSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/clippath-slider/ClippathSliderComp.jsx"
+      "target": "components/hyperiux/ClippathSliderComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

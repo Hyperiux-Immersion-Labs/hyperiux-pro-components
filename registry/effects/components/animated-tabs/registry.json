@@ -1,5 +1,6 @@
 {
   "name": "animated-tabs",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",

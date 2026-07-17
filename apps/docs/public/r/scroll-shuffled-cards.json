@@ -12,15 +12,22 @@
   "previewUrl": "/demo/scroll-shuffled-cards",
   "files": [
     {
-      "path": "scroll-shuffled-cards.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/scroll-shuffled-cards.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "card.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/card.jsx"
+    },
+    {
+      "path": "ScrollShuffledCardsComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/ScrollShuffledCardsComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

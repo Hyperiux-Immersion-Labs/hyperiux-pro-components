@@ -1,5 +1,6 @@
 {
   "name": "grid-lift",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Grid Lift",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",

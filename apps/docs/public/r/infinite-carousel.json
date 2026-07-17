@@ -13,10 +13,17 @@
   "previewUrl": "/demo/infinite-carousel",
   "files": [
     {
-      "path": "infinite-carousel.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/infinite-carousel.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "InfiniteCarouselComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/InfiniteCarouselComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -7,15 +7,22 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "ScrollStack",
+  "exportName": "defaultContent",
   "exportKind": "default",
   "previewUrl": "/demo/scroll-stack",
   "files": [
     {
-      "path": "scroll-stack.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/scroll-stack.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "ScrollStackComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/ScrollStackComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

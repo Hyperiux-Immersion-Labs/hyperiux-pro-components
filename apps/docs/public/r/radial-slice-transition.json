@@ -16,7 +16,9 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/radial-slice-transition/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ]
+  ],
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -12,43 +12,45 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "arrows.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/arrows.jsx"
+      "target": "components/hyperiux/arrows.jsx"
     },
     {
       "path": "ArrowsLimit.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
+      "target": "components/hyperiux/ArrowsLimit.jsx"
     },
     {
       "path": "ArrowsOpacity.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
+      "target": "components/hyperiux/ArrowsOpacity.jsx"
     },
     {
       "path": "ArrowsPlay.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
+      "target": "components/hyperiux/ArrowsPlay.jsx"
     },
     {
       "path": "lines.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/lines.jsx"
+      "target": "components/hyperiux/lines.jsx"
     },
     {
       "path": "points.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/points.jsx"
+      "target": "components/hyperiux/points.jsx"
     },
     {
       "path": "utils.js",
       "type": "registry:component",
-      "target": "src/components/effects/interactive-arrows/utils.js"
+      "target": "components/hyperiux/utils.js"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

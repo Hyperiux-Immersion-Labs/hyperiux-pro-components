@@ -1,5 +1,6 @@
 {
   "name": "webgl-slider",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "WebGL Slider",
   "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",

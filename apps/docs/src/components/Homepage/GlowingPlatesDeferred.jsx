@@ -32,11 +32,9 @@ export default function GlowingPlatesDeferred(props) {
 
   return (
     <DeferredMount strategy="idle" fallback={BACKDROP}>
-      {/* Decoupled from the site loader: the scene is behind the loader's
-          opaque overlay (and its own fade starts at opacity 0 regardless),
-          so it can compile/init concurrently instead of waiting for
-          loaderComplete - one less thing serialized behind the loader. */}
-      <GlowingPlates waitForLoader={false} {...props} />
+      {/* Wait for Loader2's loaderComplete before fading the canvas in —
+          otherwise the scene pops/glitches when the orange wipe exits. */}
+      <GlowingPlates waitForLoader {...props} />
     </DeferredMount>
   );
 }

@@ -1,5 +1,6 @@
 {
   "name": "svg-path",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Marquee on SVG Path",
   "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",

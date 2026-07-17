@@ -38,7 +38,7 @@ const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"), {
   ),
 });
 const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
-import Loader from "./Loader";
+import Loader from "./Loader2";
 
 const Footer = dynamic(() => import("./Footer"), {
   loading: () => null,

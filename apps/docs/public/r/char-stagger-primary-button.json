@@ -9,13 +9,15 @@
   "registryDependencies": [],
   "exportName": "CharStaggerPrimaryButton",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "previewUrl": "/demo/char-stagger-primary-button",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/char-stagger-primary-button/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
-import { createWelcomeEmail } from "@/lib/emails/welcome-email";
+import { renderWelcomeEmail, welcomeSubject, welcomeText } from "@/lib/emails/welcome-email";
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
@@ -36,10 +36,9 @@ export async function POST(request) {
   }
 
   if (event.type === "user.created") {
-    const { id: clerkUserId, email_addresses, first_name, last_name, created_at } = event.data;
+    const { id: clerkUserId, email_addresses, created_at } = event.data;
 
     const email = email_addresses?.[0]?.email_address;
-    const name = [first_name, last_name].filter(Boolean).join(" ") || "there";
 
     // Provision a free subscription row in Supabase
     const { error: upsertError } = await supabase
@@ -61,12 +60,11 @@ export async function POST(request) {
 
     // Send welcome email
     if (email) {
-      const { subject, html, text } = createWelcomeEmail({ name });
       await sendEmail({
         to: email,
-        subject,
-        html,
-        text,
+        subject: welcomeSubject,
+        react: renderWelcomeEmail(),
+        text: welcomeText(),
         emailType: "welcome",
       });
     }

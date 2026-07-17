@@ -21,5 +21,6 @@
       "path": "index.jsx",
       "target": "src/components/effects/spider-particles/index.jsx"
     }
-  ]
+  ],
+  "version": "1.0.0"
 }

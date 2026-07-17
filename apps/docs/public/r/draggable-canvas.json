@@ -12,20 +12,22 @@
   "previewUrl": "/demo/draggable-canvas",
   "files": [
     {
-      "path": "draggable-canvas.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/draggable-canvas.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "drag-cursor.jsx",
+      "path": "DragCursor.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/drag-cursor.jsx"
+      "target": "components/hyperiux/DragCursor.jsx"
     },
     {
-      "path": "masked-container.jsx",
+      "path": "MaskedContainer.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/masked-container.jsx"
+      "target": "components/hyperiux/MaskedContainer.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -1,5 +1,6 @@
 {
   "name": "spotlight-text",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Spotlight Text",
   "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",

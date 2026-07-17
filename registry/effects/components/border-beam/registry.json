@@ -1,5 +1,6 @@
 {
   "name": "border-beam",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Border Beam",
   "description": "Animated border beam effect for cards and surfaces",

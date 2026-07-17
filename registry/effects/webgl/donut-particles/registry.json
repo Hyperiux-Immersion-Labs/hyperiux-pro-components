@@ -1,5 +1,6 @@
 {
   "name": "donut-particles",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Donut Particles",
   "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",

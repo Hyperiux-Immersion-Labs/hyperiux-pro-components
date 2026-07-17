@@ -12,10 +12,17 @@
   "previewUrl": "/demo/file-encryption",
   "files": [
     {
-      "path": "file-encryption.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/file-encryption.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "FileEncryptionComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/FileEncryptionComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

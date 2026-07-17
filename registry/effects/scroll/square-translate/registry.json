@@ -1,5 +1,6 @@
 {
   "name": "square-translate",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Square Translate",
   "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",

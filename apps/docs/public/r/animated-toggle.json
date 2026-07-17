@@ -7,28 +7,30 @@
   "registryDependencies": [],
   "exportName": "AnimatedToggle",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
   "previewUrl": "/demo/animated-toggle",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-toggle/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "ChevronBird.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-toggle/ChevronBird.jsx"
+      "target": "components/hyperiux/ChevronBird.jsx"
     },
     {
       "path": "Cross.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-toggle/Cross.jsx"
+      "target": "components/hyperiux/Cross.jsx"
     },
     {
       "path": "Plus.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/animated-toggle/Plus.jsx"
+      "target": "components/hyperiux/Plus.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

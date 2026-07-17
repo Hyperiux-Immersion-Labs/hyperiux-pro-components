@@ -1,5 +1,6 @@
 {
   "name": "animated-faq",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Animated FAQ",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",

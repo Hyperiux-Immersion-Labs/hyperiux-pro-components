@@ -1,5 +1,6 @@
 {
   "name": "colliding-models",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Colliding Models",
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",

@@ -318,7 +318,10 @@ async function buildRegistry() {
         : [...fileContents, ...assetFiles];
 
       // title and description kept as fallbacks for the detail page when Sanity content is absent.
-      // All other display fields (tier, coverImage, videoUrl, previewUrl, addedAt) now live in Sanity.
+      // coverImage/videoUrl/previewUrl/addedAt now live in Sanity, but `tier` and `version` must
+      // stay here: the CLI's fetchPublicEffect() reads `tier` straight off this file to decide
+      // whether to fall through to the authenticated pro route (content is stripped above when
+      // isPro), and reads `version`/`changelog` for `hyperiux outdated`/`diff`/`update`.
       const registryItem = {
         name: registryJson.name,
         type: registryJson.type || "registry:component",
@@ -328,6 +331,9 @@ async function buildRegistry() {
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
+        tier,
+        version: registryJson.version || "1.0.0",
+        changelog: registryJson.changelog || [],
         files: publicFiles,
       };
 
@@ -348,6 +354,7 @@ async function buildRegistry() {
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
+        version: registryJson.version || "1.0.0",
       });
     }
   }

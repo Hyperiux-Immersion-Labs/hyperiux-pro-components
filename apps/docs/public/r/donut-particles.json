@@ -13,10 +13,12 @@
   "previewUrl": "/demo/donut-particles",
   "files": [
     {
-      "path": "donut-particles.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/donut-particles.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -15,25 +15,27 @@
   "previewUrl": "/demo/mouse-pixelation",
   "files": [
     {
-      "path": "mouse-pixelation.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/mouse-pixelation/mouse-pixelation.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "enhanced-pixel-cube.jsx",
+      "path": "EnhancedPixelCube.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/mouse-pixelation/enhanced-pixel-cube.jsx"
+      "target": "components/hyperiux/EnhancedPixelCube.jsx"
     },
     {
-      "path": "pixel-circle.jsx",
+      "path": "PixelCircle.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/mouse-pixelation/pixel-circle.jsx"
+      "target": "components/hyperiux/PixelCircle.jsx"
     },
     {
-      "path": "pixel-shift.jsx",
+      "path": "PixelShift.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/mouse-pixelation/pixel-shift.jsx"
+      "target": "components/hyperiux/PixelShift.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -12,10 +12,12 @@
   "previewUrl": "/demo/rope-cursor",
   "files": [
     {
-      "path": "rope-cursor.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/rope-cursor.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

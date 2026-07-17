@@ -9,13 +9,15 @@
   "registryDependencies": [],
   "exportName": "CircleTextReveal",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "previewUrl": "/demo/circle-text-reveal",
   "files": [
     {
-      "path": "circle-text-reveal.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circle-text-reveal.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

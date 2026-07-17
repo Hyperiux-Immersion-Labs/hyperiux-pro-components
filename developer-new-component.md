@@ -2,6 +2,12 @@
 
 A concise, step-by-step guide from writing your first file to making the component installable via the CLI.
 
+> **Updating an existing component instead of creating a new one?** See
+> [`effects-versioning.md`](./effects-versioning.md) for the full workflow
+> (bumping `version`, `changelog`, rebuilding, syncing the free-tier mirror
+> in `hyperiux-components`) and the complete CLI command reference. This
+> doc only covers creating something new.
+
 ---
 
 ## How the System Works (Read This First)
@@ -121,7 +127,8 @@ This is the most important file. The build script reads this to generate everyth
 | Field | What to put | Example |
 |---|---|---|
 | `name` | Must match the folder name exactly | `"glitch-text"` |
-| `type` | Always `"effect"` | `"effect"` |
+| `version` | Always start new components at `"1.0.0"` | `"1.0.0"` |
+| `type` | Always `"registry:component"` | `"registry:component"` |
 | `title` | Human-readable Title Case name | `"Glitch Text"` |
 | `description` | One sentence - what it does and when to use it | `"Text that glitches..."` |
 | `category` | Exact category string from the table above | `"text"` |
@@ -227,6 +234,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 - [ ] `registry/effects/{category}/{slug}/` folder created
 - [ ] Distributable files copied in (no demo wrappers)
 - [ ] `registry.json` created with all required fields
+- [ ] `version` set to `"1.0.0"`
 - [ ] `name` in `registry.json` matches folder name exactly
 - [ ] All sub-component files listed in `files` array
 - [ ] `package.json` created with correct `@hyperiux/{slug}` name
@@ -256,10 +264,12 @@ When you update a component, always bump the `version` in `package.json`, delete
 ## Things That Will Break It
 
 - **Editing `public/r/` files manually** - always overwritten on next build
-- **Using `"type": "registry:component"`** - the correct value is `"effect"`
+- **Using anything other than `"type": "registry:component"`** (e.g. `"effect"`) - every real component in this registry uses `"registry:component"`
 - **`name` in `registry.json` not matching the folder name** - the slug will be wrong everywhere
 - **Missing files in the `files` array** - users get import errors after installing
+- **Leaving a stale duplicate source file lying around** (e.g. an old `index.jsx` next to the real `index.js` after a rename) - `build-registry.js` scans the folder by file extension, not by the `files` array, so a stray file gets bundled too and can silently win the entry-point detection over the real one. Delete old files when you rename/replace them, don't just stop referencing them.
 - **Using `@/` imports between your own files** - `@/` resolves to the user's project, not yours
+- **Editing a component's code without bumping `version` in its `registry.json`** - the registry will silently serve the new code under the old version number, and no CLI command (`outdated`, `diff`, `versions`) will ever detect it changed. See `effects-versioning.md` for the full versioning workflow.
 - **Not bumping the version before re-packing** - old tarballs get silently overwritten
 - **Forgetting to re-run `build:registry` after edits** - the docs site and CLI both read from `public/r/`, not the source
 - **Free component added only to `hyperiux-pro-components`** - it must also be in the `hyperiux-components` public repo or it won't be installable without auth

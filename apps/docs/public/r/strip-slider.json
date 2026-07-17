@@ -12,16 +12,17 @@
   "previewUrl": "/demo/strip-slider",
   "files": [
     {
-      "path": "strip-slider.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/strip-slider.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "assets/nature/nature01.png",
-      "type": "registry:asset",
-      "target": "public/assets/nature/nature01.png",
-      "source": "/assets/nature/nature01.png"
+      "path": "StripSliderComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/StripSliderComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

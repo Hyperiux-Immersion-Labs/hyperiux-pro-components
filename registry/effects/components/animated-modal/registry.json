@@ -1,5 +1,6 @@
 {
   "name": "animated-modal",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Animated Modal",
   "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",

@@ -10,15 +10,17 @@
   "previewUrl": "/demo/full-screen-crosshair",
   "files": [
     {
-      "path": "full-screen-crosshair.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/full-screen-crosshair.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
-      "path": "use-mouse.js",
+      "path": "useMouse.js",
       "type": "registry:component",
-      "target": "components/hyperiux/use-mouse.js"
+      "target": "components/hyperiux/useMouse.js"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

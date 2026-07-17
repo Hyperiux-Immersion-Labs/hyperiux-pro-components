@@ -11,6 +11,9 @@
   "exportName": "BlockTransition",
   "exportKind": "default",
   "previewUrl": "/demo/block-transition",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",

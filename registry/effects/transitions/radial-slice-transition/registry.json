@@ -1,5 +1,6 @@
 {
   "name": "radial-slice-transition",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Radial Slice Transition",
   "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",

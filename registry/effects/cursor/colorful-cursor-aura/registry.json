@@ -1,5 +1,6 @@
 {
   "name": "colorful-cursor-aura",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Colorful Cursor Aura",
   "description": "Layered radial color aura that follows the cursor across oversized headline text",

@@ -1,5 +1,6 @@
 {
   "name": "number-counter",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Number Counter",
   "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",

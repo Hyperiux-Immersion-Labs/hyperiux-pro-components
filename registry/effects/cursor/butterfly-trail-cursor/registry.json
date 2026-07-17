@@ -1,5 +1,6 @@
 {
   "name": "butterfly-trail-cursor",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Butterfly Trail Cursor",
   "description": "3D butterfly swarm that spawns around the pointer and fades through space",

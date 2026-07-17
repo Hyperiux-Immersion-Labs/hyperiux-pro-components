@@ -1,5 +1,6 @@
 {
   "name": "blur-text",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",

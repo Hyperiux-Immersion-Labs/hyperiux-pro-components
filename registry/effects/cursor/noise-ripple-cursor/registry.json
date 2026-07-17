@@ -1,5 +1,6 @@
 {
   "name": "noise-ripple-cursor",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Noise Ripple Cursor",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",

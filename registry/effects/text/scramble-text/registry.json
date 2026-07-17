@@ -1,5 +1,6 @@
 {
   "name": "scramble-text",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Scramble Text",
   "description": "Hacker-style text scramble effect that reveals text character by character on scroll",

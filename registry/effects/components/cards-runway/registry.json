@@ -1,5 +1,6 @@
 {
   "name": "cards-runway",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Cards Runway",
   "description": "A horizontal runway of cards that animates as you scroll",

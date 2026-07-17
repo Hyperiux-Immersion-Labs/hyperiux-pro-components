@@ -10,18 +10,20 @@
   "registryDependencies": [],
   "exportName": "CircularSlider",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "previewUrl": "/demo/circular-slider",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "CircularSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/CircularSliderComp.jsx"
+      "target": "components/hyperiux/CircularSliderComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

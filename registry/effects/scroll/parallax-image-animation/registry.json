@@ -1,5 +1,6 @@
 {
   "name": "parallax-image-animation",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Parallax Image",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",

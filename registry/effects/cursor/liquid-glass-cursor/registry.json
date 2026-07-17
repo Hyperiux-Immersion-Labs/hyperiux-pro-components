@@ -24,5 +24,14 @@
       "path": "LiquidText.jsx",
       "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
     }
+  ],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-15",
+      "summary": "Removed a stray, stale index.jsx that was shadowing the real index.js during builds, causing the wrong exportKind (named instead of default) and potentially stale code to ship",
+      "breaking": false
+    }
   ]
 }

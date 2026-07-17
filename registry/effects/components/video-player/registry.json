@@ -1,5 +1,6 @@
 {
   "name": "video-player",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Custom Video Player",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",

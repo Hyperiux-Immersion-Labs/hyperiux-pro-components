@@ -12,10 +12,17 @@
   "previewUrl": "/demo/square-translate",
   "files": [
     {
-      "path": "square-translate.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/square-translate.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "SquareTranslateComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/SquareTranslateComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

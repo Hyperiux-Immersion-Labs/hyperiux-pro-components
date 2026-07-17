@@ -12,10 +12,22 @@
   "previewUrl": "/demo/text-stream",
   "files": [
     {
-      "path": "text-stream.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/text-stream.jsx"
+      "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "hooks.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/hooks.js"
+    },
+    {
+      "path": "TextStreamComp.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/TextStreamComp.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

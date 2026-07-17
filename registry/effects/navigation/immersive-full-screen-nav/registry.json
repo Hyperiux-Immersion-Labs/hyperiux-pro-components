@@ -1,5 +1,6 @@
 {
   "name": "immersive-full-screen-nav",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Immersive Full Screen Navigation",
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",

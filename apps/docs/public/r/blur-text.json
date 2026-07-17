@@ -9,13 +9,15 @@
   "registryDependencies": [],
   "exportName": "BlurText",
   "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "previewUrl": "/demo/blur-text",
   "files": [
     {
-      "path": "blur-text.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/blur-text.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

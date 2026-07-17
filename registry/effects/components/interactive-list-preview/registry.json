@@ -1,5 +1,6 @@
 {
   "name": "interactive-list-preview",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Interactive List Preview",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",

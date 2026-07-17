@@ -1,5 +1,6 @@
 {
   "name": "helix-slider",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Helix Slider",
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",

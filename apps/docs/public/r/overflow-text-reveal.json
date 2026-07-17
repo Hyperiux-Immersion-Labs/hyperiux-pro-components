@@ -12,10 +12,12 @@
   "previewUrl": "/demo/overflow-text-reveal",
   "files": [
     {
-      "path": "overflow-text-reveal.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/overflow-text-reveal.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

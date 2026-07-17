@@ -17,17 +17,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/index.jsx"
+      "target": "components/hyperiux/index.jsx"
     },
     {
       "path": "MorphingParticleModelNew.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/MorphingParticleModelNew.jsx"
+      "target": "components/hyperiux/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/MouseTrailParticles.jsx"
+      "target": "components/hyperiux/MouseTrailParticles.jsx"
     },
     {
       "path": "assets/models/hyperiux-new-model.glb",
@@ -36,5 +36,7 @@
       "source": "/assets/models/hyperiux-new-model.glb"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -13,10 +13,12 @@
   "previewUrl": "/demo/page-flip-transition",
   "files": [
     {
-      "path": "page-flip-transition.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/page-flip-transition.jsx"
+      "target": "components/hyperiux/index.jsx"
     }
   ],
-  "tier": "pro"
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": []
 }

@@ -1,5 +1,6 @@
 {
   "name": "book-flip",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",

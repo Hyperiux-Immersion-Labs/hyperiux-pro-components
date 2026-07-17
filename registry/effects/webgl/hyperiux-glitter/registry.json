@@ -1,5 +1,6 @@
 {
   "name": "hyperiux-glitter",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",

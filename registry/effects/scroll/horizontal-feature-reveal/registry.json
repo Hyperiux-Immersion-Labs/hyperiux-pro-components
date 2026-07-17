@@ -1,5 +1,6 @@
 {
   "name": "horizontal-feature-reveal",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Horizontal Feature Reveal",
   "description": "Horizontal storytelling section that converts vertical scroll into a panoramic gallery track",

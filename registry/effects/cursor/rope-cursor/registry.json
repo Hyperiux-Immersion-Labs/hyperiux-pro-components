@@ -1,5 +1,6 @@
 {
   "name": "rope-cursor",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Rope Cursor",
   "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
