@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrollStack",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/scroll-stack",
   "files": [
     {
       "path": "scroll-stack.jsx",

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextHover",
   "exportKind": "default",
+  "previewUrl": "/demo/text-hover",
   "files": [
     {
       "path": "index.jsx",

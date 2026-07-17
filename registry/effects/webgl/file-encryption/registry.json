@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/file-encryption",
+  "previewUrl": "/demo/file-encryption",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "FileEncryption",
+  "exportKind": "default",
   "importPath": "@/components/effects/file-encryption",
   "target": "src/components/effects/file-encryption",
   "files": [

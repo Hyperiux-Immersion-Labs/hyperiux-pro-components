@@ -8,15 +8,16 @@
     "three",
     "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/postprocessing",
-    "postprocessing"
+    "@react-three/postprocessing"
   ],
   "registryDependencies": [],
-  "previewUrl": "/hyperiux-glitter",
+  "previewUrl": "/demo/hyperiux-glitter",
   "coverImage": "hyperiux-glitter",
   "videoUrl": "/hyperiux-glitter.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HyperiuxGlitter",
+  "exportKind": "default",
   "importPath": "@/components/effects/hyperiux-glitter",
   "target": "src/components/effects/hyperiux-glitter",
   "files": [

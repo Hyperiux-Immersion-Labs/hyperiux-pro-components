@@ -10,7 +10,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ButterflyTrailCursor",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/butterfly-trail-cursor",
   "files": [
     {
       "path": "butterfly-trail-cursor.jsx",

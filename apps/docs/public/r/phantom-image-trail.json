@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "PhantomImageTrail",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/phantom-image-trail",
   "files": [
     {
       "path": "index.jsx",

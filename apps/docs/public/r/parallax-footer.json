@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ParallaxFooter",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/parallax-footer",
   "files": [
     {
       "path": "index.jsx",

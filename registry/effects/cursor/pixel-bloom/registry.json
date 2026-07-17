@@ -6,15 +6,23 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/cursors/pixel-bloom",
+  "previewUrl": "/demo/pixel-bloom",
   "coverImage": "pixel-bloom",
   "videoUrl": "pixel-bloom",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "PixelBloom",
+  "exportKind": "default",
   "importPath": "@/components/effects/pixel-bloom",
   "target": "src/components/effects/pixel-bloom",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/pixel-bloom/index.jsx" },
-    { "path": "2dcanvasTracker.js", "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/pixel-bloom/index.jsx"
+    },
+    {
+      "path": "2dcanvasTracker.js",
+      "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
+    }
   ]
 }

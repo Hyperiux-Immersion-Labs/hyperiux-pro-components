@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "CardsRunway",
   "exportKind": "default",
+  "previewUrl": "/demo/cards-runway",
   "files": [
     {
       "path": "index.jsx",

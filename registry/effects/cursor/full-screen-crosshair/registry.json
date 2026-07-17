@@ -8,9 +8,11 @@
   "registryDependencies": [],
   "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
-  "previewUrl": "/full-screen-crosshair",
+  "previewUrl": "/demo/full-screen-crosshair",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "FullScreenCrosshair",
+  "exportKind": "named",
   "importPath": "@/components/effects/full-screen-crosshair",
   "target": "src/components/effects/full-screen-crosshair",
   "files": [

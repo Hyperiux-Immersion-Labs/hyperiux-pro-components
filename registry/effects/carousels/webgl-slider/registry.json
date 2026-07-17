@@ -10,10 +10,12 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/webgl-slider",
+  "previewUrl": "/demo/webgl-slider",
   "coverImage": "webgl-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "WebGLSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/webgl-slider",
   "target": "src/components/effects/webgl-slider",
   "files": [

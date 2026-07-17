@@ -9,12 +9,12 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "postprocessing",
     "maath"
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/colliding-models",
   "files": [
     {
       "path": "colliding-models.jsx",

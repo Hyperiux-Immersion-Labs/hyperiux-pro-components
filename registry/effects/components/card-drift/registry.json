@@ -9,9 +9,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/card-drift",
+  "previewUrl": "/demo/card-drift",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CardDrift",
+  "exportKind": "default",
   "importPath": "@/components/effects/card-drift",
   "target": "src/components/effects/card-drift",
   "files": [

@@ -4,16 +4,24 @@
   "title": "Donut Particles",
   "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
   "category": "webgl",
-  "dependencies": ["three", "@react-three/fiber"],
+  "dependencies": [
+    "three",
+    "@react-three/fiber"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/donut-particles",
+  "previewUrl": "/demo/donut-particles",
   "coverImage": "donut-particles",
   "videoUrl": "donut-particles.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DonutParticles",
+  "exportKind": "default",
   "importPath": "@/components/effects/donut-particles",
   "target": "src/components/effects/donut-particles",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/donut-particles/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/donut-particles/index.jsx"
+    }
   ]
 }

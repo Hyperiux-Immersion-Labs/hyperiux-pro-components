@@ -9,8 +9,9 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "exportName": "WebglSlider",
-  "exportKind": "named",
+  "exportName": "WebGLSlider",
+  "exportKind": "default",
+  "previewUrl": "/demo/webgl-slider",
   "files": [
     {
       "path": "webgl-slider.jsx",

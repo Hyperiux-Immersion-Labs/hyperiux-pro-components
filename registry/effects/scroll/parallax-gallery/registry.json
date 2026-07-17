@@ -5,12 +5,15 @@
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "category": "scroll",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-gallery",
+  "previewUrl": "/demo/parallax-gallery",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxGallery",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-gallery",
   "target": "src/components/effects/parallax-gallery",
   "files": [

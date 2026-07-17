@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
+  "previewUrl": "/demo/expanding-navbar",
   "files": [
     {
       "path": "index.jsx",

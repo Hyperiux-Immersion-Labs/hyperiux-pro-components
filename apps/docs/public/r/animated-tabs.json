@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedTabs",
   "exportKind": "default",
+  "previewUrl": "/demo/animated-tabs",
   "tier": "pro",
   "files": [
     {

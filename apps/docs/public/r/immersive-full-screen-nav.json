@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ImmersiveFullscreenNav",
   "exportKind": "default",
+  "previewUrl": "/demo/immersive-full-screen-nav",
   "files": [
     {
       "path": "index.jsx",

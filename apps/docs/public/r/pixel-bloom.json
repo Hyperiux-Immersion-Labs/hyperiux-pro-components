@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "PixelBloom",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/pixel-bloom",
   "files": [
     {
       "path": "pixel-bloom.jsx",

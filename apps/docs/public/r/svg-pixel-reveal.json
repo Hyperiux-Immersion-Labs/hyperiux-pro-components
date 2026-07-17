@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "SvgPixelReveal",
   "exportKind": "named",
+  "previewUrl": "/demo/svg-pixel-reveal",
   "files": [
     {
       "path": "svg-pixel-reveal.jsx",

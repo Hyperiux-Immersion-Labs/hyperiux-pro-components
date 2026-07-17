@@ -9,8 +9,9 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "FishEyeImage",
-  "exportKind": "named",
+  "exportName": "FishEye",
+  "exportKind": "default",
+  "previewUrl": "/demo/fish-eye",
   "files": [
     {
       "path": "index.jsx",

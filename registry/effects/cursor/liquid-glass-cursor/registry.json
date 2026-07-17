@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/liquid-glass-cursor",
+  "previewUrl": "/demo/liquid-glass-cursor",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.js",
+  "exportName": "LiquidGlassCursor",
+  "exportKind": "default",
   "importPath": "@/components/effects/liquid-glass-cursor",
   "target": "src/components/effects/liquid-glass-cursor",
   "files": [

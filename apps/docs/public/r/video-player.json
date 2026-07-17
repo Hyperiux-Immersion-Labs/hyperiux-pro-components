@@ -7,8 +7,9 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "CustomVideoPlayer",
-  "exportKind": "named",
+  "exportName": "VideoPlayer",
+  "exportKind": "default",
+  "previewUrl": "/demo/video-player",
   "files": [
     {
       "path": "index.jsx",

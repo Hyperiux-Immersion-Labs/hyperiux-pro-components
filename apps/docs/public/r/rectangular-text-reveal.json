@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "RectangularTextReveal",
   "exportKind": "default",
+  "previewUrl": "/demo/rectangular-text-reveal",
   "files": [
     {
       "path": "index.jsx",

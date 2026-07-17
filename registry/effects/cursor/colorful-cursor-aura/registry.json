@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/colorful-cursor-aura",
+  "previewUrl": "/demo/colorful-cursor-aura",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ColorfulCursorAura",
+  "exportKind": "default",
   "importPath": "@/components/effects/colorful-cursor-aura",
   "target": "src/components/effects/colorful-cursor-aura",
   "files": [

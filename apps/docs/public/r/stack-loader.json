@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "StackLoader",
   "exportKind": "default",
+  "previewUrl": "/demo/stack-loader",
   "files": [
     {
       "path": "index.jsx",

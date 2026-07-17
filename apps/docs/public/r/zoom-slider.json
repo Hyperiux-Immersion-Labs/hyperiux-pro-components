@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ZoomSlider",
   "exportKind": "default",
+  "previewUrl": "/demo/zoom-slider",
   "files": [
     {
       "path": "index.jsx",

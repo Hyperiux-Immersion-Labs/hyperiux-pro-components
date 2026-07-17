@@ -10,7 +10,8 @@
   ],
   "registryDependencies": [],
   "exportName": "CardDrift",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/card-drift",
   "files": [
     {
       "path": "index.jsx",

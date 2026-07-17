@@ -11,7 +11,7 @@
   "registryDependencies": [],
   "packageName": "@hyperiux/elevate-navbar",
   "sourcePath": "apps/docs/src/components/elevate-navbar",
-  "previewUrl": "/navigation/elevate-navbar",
+  "previewUrl": "/demo/elevate-navbar",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",

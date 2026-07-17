@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "RingCarousel",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/ring-carousel",
   "files": [
     {
       "path": "ring-carousel.jsx",

@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "TextStream",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/text-stream",
   "files": [
     {
       "path": "text-stream.jsx",

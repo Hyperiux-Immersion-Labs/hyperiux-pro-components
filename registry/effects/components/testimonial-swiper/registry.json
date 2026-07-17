@@ -10,9 +10,11 @@
     "next"
   ],
   "registryDependencies": [],
-  "previewUrl": "/testimonial",
+  "previewUrl": "/demo/testimonial-swiper",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "TestimonialSwiper",
+  "exportKind": "default",
   "importPath": "@/components/effects/testimonial-swiper",
   "target": "src/components/effects/testimonial-swiper",
   "files": [

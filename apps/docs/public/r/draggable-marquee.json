@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DraggableMarquee",
   "exportKind": "default",
+  "previewUrl": "/demo/draggable-marquee",
   "tier": "pro",
   "files": [
     {

@@ -4,11 +4,15 @@
   "title": "Animated Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
   "category": "components",
-  "dependencies": [],
+  "dependencies": [
+    "zod"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/animated-form",
+  "previewUrl": "/demo/animated-form",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedForm",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-form",
   "target": "src/components/effects/animated-form",
   "files": [

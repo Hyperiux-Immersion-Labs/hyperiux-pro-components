@@ -9,9 +9,11 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/cylindrical-scroll",
+  "previewUrl": "/demo/helix-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HelixSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/helix-slider",
   "target": "src/components/effects/helix-slider",
   "files": [

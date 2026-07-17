@@ -8,9 +8,11 @@
     "motion"
   ],
   "registryDependencies": [],
-  "previewUrl": "/svg-path",
+  "previewUrl": "/demo/svg-path",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "SVGPath",
+  "exportKind": "default",
   "importPath": "@/components/effects/svg-path",
   "target": "src/components/effects/svg-path",
   "files": [

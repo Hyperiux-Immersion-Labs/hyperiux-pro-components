@@ -7,12 +7,12 @@
     "three",
     "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/postprocessing",
-    "postprocessing"
+    "@react-three/postprocessing"
   ],
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/hyperiux-glitter",
   "files": [
     {
       "path": "index.jsx",

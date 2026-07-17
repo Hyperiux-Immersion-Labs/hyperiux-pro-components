@@ -9,8 +9,9 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "exportName": "WebGLPortfolioSlider",
-  "exportKind": "named",
+  "exportName": "PortfolioSlider3D",
+  "exportKind": "default",
+  "previewUrl": "/demo/3d-portfolio-slider",
   "files": [
     {
       "path": "webgl-portfolio-slider.jsx",

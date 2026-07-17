@@ -3,10 +3,13 @@
   "type": "registry:component",
   "title": "Animated Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
-  "dependencies": [],
+  "dependencies": [
+    "zod"
+  ],
   "registryDependencies": [],
   "exportName": "AnimatedForm",
   "exportKind": "default",
+  "previewUrl": "/demo/animated-form",
   "files": [
     {
       "path": "index.jsx",

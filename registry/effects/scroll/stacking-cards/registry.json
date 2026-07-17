@@ -6,12 +6,15 @@
   "category": "scroll",
   "dependencies": [
     "gsap",
-    "next"
+    "next",
+    "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/stacking-cards",
+  "previewUrl": "/demo/stacking-cards",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "StackingCards",
+  "exportKind": "default",
   "importPath": "@/components/effects/stacking-cards",
   "target": "src/components/effects/stacking-cards",
   "files": [

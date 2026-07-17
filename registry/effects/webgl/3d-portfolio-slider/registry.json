@@ -14,9 +14,11 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/3d-portfolio-slider",
+  "previewUrl": "/demo/3d-portfolio-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "PortfolioSlider3D",
+  "exportKind": "default",
   "importPath": "@/components/effects/3d-portfolio-slider",
   "target": "src/components/effects/3d-portfolio-slider",
   "files": [

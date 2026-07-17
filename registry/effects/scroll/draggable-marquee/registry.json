@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/draggable-marquee",
+  "previewUrl": "/demo/draggable-marquee",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DraggableMarquee",
+  "exportKind": "default",
   "importPath": "@/components/effects/draggable-marquee",
   "target": "src/components/effects/draggable-marquee",
   "files": [

@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "SVGBrushTransition",
   "exportKind": "default",
+  "previewUrl": "/demo/svg-brush-transition",
   "tier": "pro",
   "files": [
     {

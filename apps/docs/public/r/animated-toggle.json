@@ -5,8 +5,9 @@
   "description": "Pure CSS animated icon components: ChevronBird (chevron/arrow), Cross (plus to X), and Plus (open/close). No animation libraries required.",
   "dependencies": [],
   "registryDependencies": [],
-  "exportName": "ChevronBird",
-  "exportKind": "named",
+  "exportName": "AnimatedToggle",
+  "exportKind": "default",
+  "previewUrl": "/demo/animated-toggle",
   "files": [
     {
       "path": "index.jsx",

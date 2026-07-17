@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "DonutParticles",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/donut-particles",
   "files": [
     {
       "path": "donut-particles.jsx",

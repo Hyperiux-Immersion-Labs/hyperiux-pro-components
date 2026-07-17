@@ -7,14 +7,17 @@
   "dependencies": [
     "three",
     "@react-three/fiber",
-    "@react-three/drei"
+    "@react-three/drei",
+    "maath"
   ],
   "registryDependencies": [],
-  "previewUrl": "/book-flip",
+  "previewUrl": "/demo/book-flip",
   "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "BookFlip",
+  "exportKind": "default",
   "importPath": "@/components/effects/book-flip",
   "target": "src/components/effects/book-flip",
   "files": [

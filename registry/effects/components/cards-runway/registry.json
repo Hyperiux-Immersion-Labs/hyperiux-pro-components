@@ -8,7 +8,7 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/cards-runway",
+  "previewUrl": "/demo/cards-runway",
   "tier": "pro",
   "main": "index.jsx",
   "exportName": "CardsRunway",

@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "BorderBeam",
   "exportKind": "default",
+  "previewUrl": "/demo/border-beam",
   "files": [
     {
       "path": "index.jsx",

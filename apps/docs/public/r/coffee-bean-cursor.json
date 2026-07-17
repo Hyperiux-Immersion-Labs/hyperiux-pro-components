@@ -10,7 +10,8 @@
   ],
   "registryDependencies": [],
   "exportName": "CoffeeBeanCursor",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/coffee-bean-cursor",
   "files": [
     {
       "path": "coffee-bean-cursor.jsx",

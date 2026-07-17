@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "PerspectiveTextReveal",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/perspective-text-reveal",
   "files": [
     {
       "path": "perspective-text-reveal.jsx",

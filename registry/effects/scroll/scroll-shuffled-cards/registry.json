@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/scroll-shuffled-cards",
+  "previewUrl": "/demo/scroll-shuffled-cards",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ScrollShuffledCards",
+  "exportKind": "default",
   "importPath": "@/components/effects/scroll-shuffled-cards",
   "target": "src/components/effects/scroll-shuffled-cards",
   "files": [

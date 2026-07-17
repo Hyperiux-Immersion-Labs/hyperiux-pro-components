@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ColorfulCursorAura",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/colorful-cursor-aura",
   "files": [
     {
       "path": "index.jsx",

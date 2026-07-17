@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "GridLift",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/grid-lift",
   "files": [
     {
       "path": "grid-lift.jsx",

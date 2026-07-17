@@ -9,10 +9,12 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/circular-split-roll",
+  "previewUrl": "/demo/circular-split-roll",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "CircularSplitRoll",
+  "exportKind": "default",
   "importPath": "@/components/effects/circular-split-roll",
   "target": "src/components/effects/circular-split-roll",
   "files": [

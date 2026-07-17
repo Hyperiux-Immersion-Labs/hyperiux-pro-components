@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "SquareTranslate",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/square-translate",
   "files": [
     {
       "path": "square-translate.jsx",

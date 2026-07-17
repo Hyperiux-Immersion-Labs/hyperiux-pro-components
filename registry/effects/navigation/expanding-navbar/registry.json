@@ -10,9 +10,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/expanding-navbar",
+  "previewUrl": "/demo/expanding-navbar",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ExpandingNavbar",
+  "exportKind": "default",
   "importPath": "@/components/effects/expanding-navbar",
   "target": "src/components/effects/expanding-navbar",
   "files": [

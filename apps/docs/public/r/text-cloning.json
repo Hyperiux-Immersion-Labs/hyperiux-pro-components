@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "TextCloning",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/text-cloning",
   "files": [
     {
       "path": "text-cloning.jsx",

@@ -9,10 +9,12 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/animated-faq",
+  "previewUrl": "/demo/animated-faq",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "AnimatedFAQ",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-faq",
   "target": "src/components/effects/animated-faq",
   "files": [

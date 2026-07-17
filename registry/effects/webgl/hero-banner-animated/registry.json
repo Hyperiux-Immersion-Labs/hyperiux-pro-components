@@ -15,9 +15,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/hero-banner-animated",
+  "previewUrl": "/demo/hero-banner-animated",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HeroBannerAnimated",
+  "exportKind": "default",
   "importPath": "@/components/effects/hero-banner-animated",
   "target": "src/components/effects/hero-banner-animated",
   "files": [

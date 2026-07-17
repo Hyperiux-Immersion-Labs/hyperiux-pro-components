@@ -11,9 +11,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/mouse-pixelation",
+  "previewUrl": "/demo/mouse-pixelation",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "MousePixelation",
+  "exportKind": "default",
   "importPath": "@/components/effects/mouse-pixelation",
   "target": "src/components/effects/mouse-pixelation",
   "files": [

@@ -8,6 +8,7 @@
   "registryDependencies": [],
   "exportName": "GooeyCounter",
   "exportKind": "default",
+  "previewUrl": "/demo/gooey-counter",
   "files": [
     {
       "path": "index.jsx",

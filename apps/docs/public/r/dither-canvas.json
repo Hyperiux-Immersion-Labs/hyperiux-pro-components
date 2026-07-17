@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "DitherCanvas",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/dither-canvas",
   "files": [
     {
       "path": "index.jsx",

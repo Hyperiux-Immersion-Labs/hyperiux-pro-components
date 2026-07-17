@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "PixelTransition",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/pixel-transition",
   "files": [
     {
       "path": "pixel-transition.jsx",

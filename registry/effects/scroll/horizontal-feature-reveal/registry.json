@@ -8,10 +8,12 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/horizontal-feature-reveal",
+  "previewUrl": "/demo/horizontal-feature-reveal",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "HorizontalFeatureReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/horizontal-feature-reveal",
   "target": "src/components/effects/horizontal-feature-reveal",
   "files": [

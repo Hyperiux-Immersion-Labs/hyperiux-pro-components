@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/inertia-img",
+  "previewUrl": "/demo/inertia-img",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "InertiaImage",
+  "exportKind": "default",
   "importPath": "@/components/effects/inertia-img",
   "target": "src/components/effects/inertia-img",
   "files": [

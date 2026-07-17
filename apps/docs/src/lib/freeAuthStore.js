@@ -1,9 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 
-const STORE_PATH = path.join(process.cwd(), "free-users.json");
+const STORE_PATH = path.join(process.cwd());
 
-async function readStore() {
+async function readStore() { 
   try {
     const raw = await fs.readFile(STORE_PATH, "utf8");
     return JSON.parse(raw);

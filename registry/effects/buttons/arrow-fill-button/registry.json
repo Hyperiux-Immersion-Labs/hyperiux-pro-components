@@ -4,12 +4,16 @@
   "title": "Arrow Fill Button",
   "description": "Button with expanding circle fill and animated arrow icon on hover",
   "category": "buttons",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/buttons/arrow-fill-button",
+  "previewUrl": "/demo/arrow-fill-button",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "ArrowFillButton",
+  "exportKind": "default",
   "importPath": "@/components/effects/arrow-fill-button",
   "target": "src/components/effects/arrow-fill-button",
   "files": [

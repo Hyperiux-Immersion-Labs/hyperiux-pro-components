@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "FractalGlass",
   "exportKind": "default",
+  "previewUrl": "/demo/fractal-glass",
   "files": [
     {
       "path": "index.jsx",

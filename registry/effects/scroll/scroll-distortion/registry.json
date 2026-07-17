@@ -6,15 +6,16 @@
   "category": "scroll",
   "dependencies": [
     "gsap",
-    "lenis",
     "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/scroll-distortion",
+  "previewUrl": "/demo/scroll-distortion",
   "coverImage": "scroll-distortion",
   "videoUrl": "scroll-distortion.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ScrollDistortion",
+  "exportKind": "default",
   "importPath": "@/components/effects/scroll-distortion",
   "target": "src/components/effects/scroll-distortion",
   "files": [

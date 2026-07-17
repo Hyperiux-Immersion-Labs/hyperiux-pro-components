@@ -8,10 +8,12 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/loaders/stack-loader",
+  "previewUrl": "/demo/stack-loader",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "StackLoader",
+  "exportKind": "default",
   "importPath": "@/components/effects/stack-loader",
   "target": "src/components/effects/stack-loader",
   "files": [

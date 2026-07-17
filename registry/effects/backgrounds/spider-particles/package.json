@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/spider-particles",
   "version": "0.0.1",
-  "description": "Canvas particle network background with connecting lines and mouse-driven repulsion - pure canvas, zero dependencies",
+  "description": "Canvas particle network background with connecting lines and mouse-driven repulsion.",
   "main": "spider-particles.jsx",
   "files": [
     "spider-particles.jsx",

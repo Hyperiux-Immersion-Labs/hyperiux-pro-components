@@ -10,9 +10,11 @@
     "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/cursors/fish-eye",
+  "previewUrl": "/demo/fish-eye",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "FishEye",
+  "exportKind": "default",
   "importPath": "@/components/effects/fish-eye",
   "target": "src/components/effects/fish-eye",
   "files": [

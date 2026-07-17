@@ -12,6 +12,8 @@
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "ImmersiveFullscreenNav",
+  "exportKind": "default",
   "importPath": "@/components/effects/immersive-full-screen-nav",
   "target": "src/components/effects/immersive-full-screen-nav",
   "files": [

@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/text-hover",
+  "previewUrl": "/demo/text-hover",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "TextHover",
+  "exportKind": "default",
   "importPath": "@/components/effects/text-hover",
   "target": "src/components/effects/text-hover",
   "files": [

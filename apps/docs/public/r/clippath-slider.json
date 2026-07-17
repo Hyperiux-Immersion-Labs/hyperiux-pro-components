@@ -7,8 +7,9 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "ClippathSlider",
-  "exportKind": "named",
+  "exportName": "ClipPathSlider",
+  "exportKind": "default",
+  "previewUrl": "/demo/clippath-slider",
   "files": [
     {
       "path": "index.jsx",

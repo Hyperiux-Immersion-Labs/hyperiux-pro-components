@@ -6,13 +6,18 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/pixelated-image-effect",
+  "previewUrl": "/demo/pixelated-image-effect",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "PixelatedImageEffect",
+  "exportKind": "default",
   "importPath": "@/components/effects/pixelated-image-effect",
   "target": "src/components/effects/pixelated-image-effect",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/pixelated-image-effect/index.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/pixelated-image-effect/index.jsx"
+    }
   ]
 }

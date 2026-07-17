@@ -8,6 +8,7 @@
     "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json",
     "importPath": "@/components/effects/dither-canvas",
     "target": "src/components/effects/dither-canvas",
+    "previewUrl": "/demo/dither-canvas",
     "files": [
       {
         "path": "index.jsx",
@@ -23,7 +24,8 @@
     "tier": "free",
     "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json",
     "importPath": "@/components/effects/dotted-grid",
-    "target": "src/components/effects/dotted-grid"
+    "target": "src/components/effects/dotted-grid",
+    "previewUrl": "/demo/dotted-grid"
   },
   {
     "name": "spider-particles",
@@ -33,7 +35,8 @@
     "tier": "free",
     "registryPath": "registry/effects/backgrounds/spider-particles/registry.json",
     "importPath": "@/components/effects/spider-particles",
-    "target": "src/components/effects/spider-particles"
+    "target": "src/components/effects/spider-particles",
+    "previewUrl": "/demo/spider-particles"
   },
   {
     "name": "animated-toggle",
@@ -44,6 +47,7 @@
     "registryPath": "registry/effects/buttons/animated-toggle/registry.json",
     "importPath": "@/components/effects/animated-toggle",
     "target": "src/components/effects/animated-toggle",
+    "previewUrl": "/demo/animated-toggle",
     "files": [
       {
         "path": "index.jsx",
@@ -71,7 +75,8 @@
     "tier": "free",
     "registryPath": "registry/effects/buttons/arrow-fill-button/registry.json",
     "importPath": "@/components/effects/arrow-fill-button",
-    "target": "src/components/effects/arrow-fill-button"
+    "target": "src/components/effects/arrow-fill-button",
+    "previewUrl": "/demo/arrow-fill-button"
   },
   {
     "name": "char-stagger-button",
@@ -82,6 +87,7 @@
     "registryPath": "registry/effects/buttons/char-stagger-button/registry.json",
     "importPath": "@/components/effects/char-stagger-button",
     "target": "src/components/effects/char-stagger-button",
+    "previewUrl": "/demo/char-stagger-button",
     "files": [
       {
         "path": "index.jsx",
@@ -98,6 +104,7 @@
     "registryPath": "registry/effects/buttons/char-stagger-primary-button/registry.json",
     "importPath": "@/components/effects/char-stagger-primary-button",
     "target": "src/components/effects/char-stagger-primary-button",
+    "previewUrl": "/demo/char-stagger-primary-button",
     "files": [
       {
         "path": "index.jsx",
@@ -114,6 +121,7 @@
     "registryPath": "registry/effects/buttons/dot-fill-button/registry.json",
     "importPath": "@/components/effects/dot-fill-button",
     "target": "src/components/effects/dot-fill-button",
+    "previewUrl": "/demo/dot-fill-button",
     "files": [
       {
         "path": "index.jsx",
@@ -129,7 +137,8 @@
     "tier": "free",
     "registryPath": "registry/effects/buttons/link-button/registry.json",
     "importPath": "@/components/effects/link-button",
-    "target": "src/components/effects/link-button"
+    "target": "src/components/effects/link-button",
+    "previewUrl": "/demo/link-button"
   },
   {
     "name": "scramble-link-button",
@@ -139,7 +148,8 @@
     "tier": "free",
     "registryPath": "registry/effects/buttons/scramble-link-button/registry.json",
     "importPath": "@/components/effects/scramble-link-button",
-    "target": "src/components/effects/scramble-link-button"
+    "target": "src/components/effects/scramble-link-button",
+    "previewUrl": "/demo/scramble-link-button"
   },
   {
     "name": "clippath-slider",
@@ -150,6 +160,7 @@
     "registryPath": "registry/effects/carousels/clippath-slider/registry.json",
     "importPath": "@/components/effects/clippath-slider",
     "target": "src/components/effects/clippath-slider",
+    "previewUrl": "/demo/clippath-slider",
     "files": [
       {
         "path": "index.jsx",
@@ -169,7 +180,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/carousels/infinite-carousel/registry.json",
     "importPath": "@/components/effects/infinite-carousel",
-    "target": "src/components/effects/infinite-carousel"
+    "target": "src/components/effects/infinite-carousel",
+    "previewUrl": "/demo/infinite-carousel"
   },
   {
     "name": "ring-carousel",
@@ -179,7 +191,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/carousels/ring-carousel/registry.json",
     "importPath": "@/components/effects/ring-carousel",
-    "target": "src/components/effects/ring-carousel"
+    "target": "src/components/effects/ring-carousel",
+    "previewUrl": "/demo/ring-carousel"
   },
   {
     "name": "webgl-slider",
@@ -189,7 +202,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/carousels/webgl-slider/registry.json",
     "importPath": "@/components/effects/webgl-slider",
-    "target": "src/components/effects/webgl-slider"
+    "target": "src/components/effects/webgl-slider",
+    "previewUrl": "/demo/webgl-slider"
   },
   {
     "name": "zoom-slider",
@@ -199,7 +213,8 @@
     "tier": "free",
     "registryPath": "registry/effects/carousels/zoom-slider/registry.json",
     "importPath": "@/components/effects/zoom-slider",
-    "target": "src/components/effects/zoom-slider"
+    "target": "src/components/effects/zoom-slider",
+    "previewUrl": "/demo/zoom-slider"
   },
   {
     "name": "animated-faq",
@@ -209,7 +224,8 @@
     "tier": "free",
     "registryPath": "registry/effects/components/animated-faq/registry.json",
     "importPath": "@/components/effects/animated-faq",
-    "target": "src/components/effects/animated-faq"
+    "target": "src/components/effects/animated-faq",
+    "previewUrl": "/demo/animated-faq"
   },
   {
     "name": "card-drift",
@@ -220,6 +236,7 @@
     "registryPath": "registry/effects/components/card-drift/registry.json",
     "importPath": "@/components/effects/card-drift",
     "target": "src/components/effects/card-drift",
+    "previewUrl": "/demo/card-drift",
     "files": [
       {
         "path": "index.jsx",
@@ -244,6 +261,7 @@
     "registryPath": "registry/effects/components/video-player/registry.json",
     "importPath": "@/components/effects/video-player",
     "target": "src/components/effects/video-player",
+    "previewUrl": "/demo/video-player",
     "files": [
       {
         "path": "index.jsx",
@@ -264,6 +282,7 @@
     "registryPath": "registry/effects/components/depth-card-stack/registry.json",
     "importPath": "@/components/effects/depth-card-stack",
     "target": "src/components/effects/depth-card-stack",
+    "previewUrl": "/demo/depth-card-stack",
     "files": [
       {
         "path": "index.jsx",
@@ -288,6 +307,7 @@
     "registryPath": "registry/effects/components/animated-form/registry.json",
     "importPath": "@/components/effects/animated-form",
     "target": "src/components/effects/animated-form",
+    "previewUrl": "/demo/animated-form",
     "files": [
       {
         "path": "index.jsx",
@@ -328,11 +348,12 @@
     "title": "Border Beam",
     "category": "components",
     "type": "registry:component",
-    "tier": "free",
+    "tier": "pro",
     "dependencies": [],
     "registryPath": "registry/effects/components/border-beam/registry.json",
     "importPath": "@/components/effects/border-beam",
     "target": "src/components/effects/border-beam",
+    "previewUrl": "/demo/border-beam",
     "files": [
       {
         "path": "index.jsx",
@@ -357,13 +378,14 @@
     "title": "Cards Runway",
     "category": "components",
     "type": "registry:component",
-    "tier": "free",
+    "tier": "pro",
     "dependencies": [
       "gsap"
     ],
     "registryPath": "registry/effects/components/cards-runway/registry.json",
     "importPath": "@/components/effects/cards-runway",
     "target": "src/components/effects/cards-runway",
+    "previewUrl": "/demo/cards-runway",
     "files": [
       {
         "path": "index.jsx",
@@ -383,7 +405,8 @@
     "tier": "free",
     "registryPath": "registry/effects/components/gooey-counter/registry.json",
     "importPath": "@/components/effects/gooey-counter",
-    "target": "src/components/effects/gooey-counter"
+    "target": "src/components/effects/gooey-counter",
+    "previewUrl": "/demo/gooey-counter"
   },
   {
     "name": "hover-stack",
@@ -393,7 +416,8 @@
     "tier": "free",
     "registryPath": "registry/effects/components/hover-stack/registry.json",
     "importPath": "@/components/effects/hover-stack",
-    "target": "src/components/effects/hover-stack"
+    "target": "src/components/effects/hover-stack",
+    "previewUrl": "/demo/hover-stack"
   },
   {
     "name": "interactive-list-preview",
@@ -403,7 +427,8 @@
     "tier": "free",
     "registryPath": "registry/effects/components/interactive-list-preview/registry.json",
     "importPath": "@/components/effects/interactive-list-preview",
-    "target": "src/components/effects/interactive-list-preview"
+    "target": "src/components/effects/interactive-list-preview",
+    "previewUrl": "/demo/interactive-list-preview"
   },
   {
     "name": "animated-modal",
@@ -414,6 +439,7 @@
     "registryPath": "registry/effects/components/animated-modal/registry.json",
     "importPath": "@/components/effects/animated-modal",
     "target": "src/components/effects/animated-modal",
+    "previewUrl": "/demo/animated-modal",
     "files": [
       {
         "path": "index.jsx",
@@ -437,7 +463,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/components/ribbon-drift/registry.json",
     "importPath": "@/components/effects/ribbon-drift",
-    "target": "src/components/effects/ribbon-drift"
+    "target": "src/components/effects/ribbon-drift",
+    "previewUrl": "/demo/ribbon-drift"
   },
   {
     "name": "animated-tabs",
@@ -448,6 +475,7 @@
     "registryPath": "registry/effects/components/animated-tabs/registry.json",
     "importPath": "@/components/effects/animated-tabs",
     "target": "src/components/effects/animated-tabs",
+    "previewUrl": "/demo/animated-tabs",
     "files": [
       {
         "path": "index.jsx",
@@ -468,6 +496,7 @@
     "registryPath": "registry/effects/components/testimonial-swiper/registry.json",
     "importPath": "@/components/effects/testimonial-swiper",
     "target": "src/components/effects/testimonial-swiper",
+    "previewUrl": "/demo/testimonial-swiper",
     "files": [
       {
         "path": "index.jsx",
@@ -491,7 +520,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/butterfly-trail-cursor/registry.json",
     "importPath": "@/components/effects/butterfly-trail-cursor",
-    "target": "src/components/effects/butterfly-trail-cursor"
+    "target": "src/components/effects/butterfly-trail-cursor",
+    "previewUrl": "/demo/butterfly-trail-cursor"
   },
   {
     "name": "character-trail",
@@ -502,6 +532,7 @@
     "registryPath": "registry/effects/cursor/character-trail/registry.json",
     "importPath": "@/components/effects/character-trail",
     "target": "src/components/effects/character-trail",
+    "previewUrl": "/demo/character-trail",
     "files": [
       {
         "path": "index.jsx",
@@ -521,7 +552,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/coffee-bean-cursor/registry.json",
     "importPath": "@/components/effects/coffee-bean-cursor",
-    "target": "src/components/effects/coffee-bean-cursor"
+    "target": "src/components/effects/coffee-bean-cursor",
+    "previewUrl": "/demo/coffee-bean-cursor"
   },
   {
     "name": "colorful-cursor-aura",
@@ -532,6 +564,7 @@
     "registryPath": "registry/effects/cursor/colorful-cursor-aura/registry.json",
     "importPath": "@/components/effects/colorful-cursor-aura",
     "target": "src/components/effects/colorful-cursor-aura",
+    "previewUrl": "/demo/colorful-cursor-aura",
     "files": [
       {
         "path": "index.jsx",
@@ -551,7 +584,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/cursor-move/registry.json",
     "importPath": "@/components/effects/cursor-move",
-    "target": "src/components/effects/cursor-move"
+    "target": "src/components/effects/cursor-move",
+    "previewUrl": "/demo/cursor-move"
   },
   {
     "name": "fish-eye",
@@ -562,6 +596,7 @@
     "registryPath": "registry/effects/cursor/fish-eye/registry.json",
     "importPath": "@/components/effects/fish-eye",
     "target": "src/components/effects/fish-eye",
+    "previewUrl": "/demo/fish-eye",
     "files": [
       {
         "path": "index.jsx",
@@ -577,7 +612,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/full-screen-crosshair/registry.json",
     "importPath": "@/components/effects/full-screen-crosshair",
-    "target": "src/components/effects/full-screen-crosshair"
+    "target": "src/components/effects/full-screen-crosshair",
+    "previewUrl": "/demo/full-screen-crosshair"
   },
   {
     "name": "inertia-img",
@@ -588,6 +624,7 @@
     "registryPath": "registry/effects/cursor/inertia-img/registry.json",
     "importPath": "@/components/effects/inertia-img",
     "target": "src/components/effects/inertia-img",
+    "previewUrl": "/demo/inertia-img",
     "files": [
       {
         "path": "index.jsx",
@@ -608,6 +645,7 @@
     "registryPath": "registry/effects/cursor/interactive-arrows/registry.json",
     "importPath": "@/components/effects/interactive-arrows",
     "target": "src/components/effects/interactive-arrows",
+    "previewUrl": "/demo/interactive-arrows",
     "files": [
       {
         "path": "index.jsx",
@@ -652,6 +690,7 @@
     "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json",
     "importPath": "@/components/effects/liquid-glass-cursor",
     "target": "src/components/effects/liquid-glass-cursor",
+    "previewUrl": "/demo/liquid-glass-cursor",
     "files": [
       {
         "path": "index.js",
@@ -672,6 +711,7 @@
     "registryPath": "registry/effects/cursor/magnetic-image-trail/registry.json",
     "importPath": "@/components/effects/magnetic-image-trail",
     "target": "src/components/effects/magnetic-image-trail",
+    "previewUrl": "/demo/magnetic-image-trail",
     "files": [
       {
         "path": "index.jsx",
@@ -691,7 +731,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/noise-ripple-cursor/registry.json",
     "importPath": "@/components/effects/noise-ripple-cursor",
-    "target": "src/components/effects/noise-ripple-cursor"
+    "target": "src/components/effects/noise-ripple-cursor",
+    "previewUrl": "/demo/noise-ripple-cursor"
   },
   {
     "name": "phantom-image-trail",
@@ -701,7 +742,8 @@
     "tier": "free",
     "registryPath": "registry/effects/cursor/phantom-image-trail/registry.json",
     "importPath": "@/components/effects/phantom-image-trail",
-    "target": "src/components/effects/phantom-image-trail"
+    "target": "src/components/effects/phantom-image-trail",
+    "previewUrl": "/demo/phantom-image-trail"
   },
   {
     "name": "pixel-bloom",
@@ -709,9 +751,10 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/cursor/PixelBloom/registry.json",
+    "registryPath": "registry/effects/cursor/pixel-bloom/registry.json",
     "importPath": "@/components/effects/pixel-bloom",
-    "target": "src/components/effects/pixel-bloom"
+    "target": "src/components/effects/pixel-bloom",
+    "previewUrl": "/demo/pixel-bloom"
   },
   {
     "name": "pixelated-image-effect",
@@ -721,7 +764,8 @@
     "tier": "free",
     "registryPath": "registry/effects/cursor/pixelated-image-effect/registry.json",
     "importPath": "@/components/effects/pixelated-image-effect",
-    "target": "src/components/effects/pixelated-image-effect"
+    "target": "src/components/effects/pixelated-image-effect",
+    "previewUrl": "/demo/pixelated-image-effect"
   },
   {
     "name": "rope-cursor",
@@ -731,7 +775,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/cursor/rope-cursor/registry.json",
     "importPath": "@/components/effects/rope-cursor",
-    "target": "src/components/effects/rope-cursor"
+    "target": "src/components/effects/rope-cursor",
+    "previewUrl": "/demo/rope-cursor"
   },
   {
     "name": "lines-loader",
@@ -742,6 +787,7 @@
     "registryPath": "registry/effects/loaders/lines-loader/registry.json",
     "importPath": "@/components/effects/lines-loader",
     "target": "src/components/effects/lines-loader",
+    "previewUrl": "/demo/lines-loader",
     "files": [
       {
         "path": "index.jsx",
@@ -769,7 +815,8 @@
     "tier": "free",
     "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json",
     "importPath": "@/components/effects/numeric-tunnel",
-    "target": "src/components/effects/numeric-tunnel"
+    "target": "src/components/effects/numeric-tunnel",
+    "previewUrl": "/demo/numeric-tunnel"
   },
   {
     "name": "stack-loader",
@@ -779,7 +826,8 @@
     "tier": "free",
     "registryPath": "registry/effects/loaders/stack-loader/registry.json",
     "importPath": "@/components/effects/stack-loader",
-    "target": "src/components/effects/stack-loader"
+    "target": "src/components/effects/stack-loader",
+    "previewUrl": "/demo/stack-loader"
   },
   {
     "name": "directional-menu",
@@ -789,7 +837,8 @@
     "tier": "free",
     "registryPath": "registry/effects/navigation/directional-menu/registry.json",
     "importPath": "@/components/effects/directional-menu",
-    "target": "src/components/effects/directional-menu"
+    "target": "src/components/effects/directional-menu",
+    "previewUrl": "/demo/directional-menu"
   },
   {
     "name": "elevate-navbar",
@@ -799,7 +848,8 @@
     "tier": "free",
     "registryPath": "registry/effects/navigation/elevate-navbar/registry.json",
     "importPath": "@/components/effects/elevate-navbar",
-    "target": "src/components/effects/elevate-navbar"
+    "target": "src/components/effects/elevate-navbar",
+    "previewUrl": "/demo/elevate-navbar"
   },
   {
     "name": "expanding-navbar",
@@ -810,6 +860,7 @@
     "registryPath": "registry/effects/navigation/expanding-navbar/registry.json",
     "importPath": "@/components/effects/expanding-navbar",
     "target": "src/components/effects/expanding-navbar",
+    "previewUrl": "/demo/expanding-navbar",
     "files": [
       {
         "path": "index.jsx",
@@ -834,16 +885,6 @@
     ]
   },
   {
-    "name": "immersive-full-screen-navigation",
-    "title": "Immersive Full Screen Navigation",
-    "category": "navigation",
-    "type": "registry:component",
-    "tier": "free",
-    "registryPath": "registry/effects/navigation/immersive-full-screen-navigation/registry.json",
-    "importPath": "@/components/effects/immersive-full-screen-navigation",
-    "target": "src/components/effects/immersive-full-screen-navigation"
-  },
-  {
     "name": "circular-slider",
     "title": "Rotating Carousel",
     "category": "scroll",
@@ -852,6 +893,7 @@
     "registryPath": "registry/effects/scroll/circular-slider/registry.json",
     "importPath": "@/components/effects/circular-slider",
     "target": "src/components/effects/circular-slider",
+    "previewUrl": "/demo/circular-slider",
     "files": [
       {
         "path": "index.jsx",
@@ -871,7 +913,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/circular-split-roll/registry.json",
     "importPath": "@/components/effects/circular-split-roll",
-    "target": "src/components/effects/circular-split-roll"
+    "target": "src/components/effects/circular-split-roll",
+    "previewUrl": "/demo/circular-split-roll"
   },
   {
     "name": "draggable-marquee",
@@ -882,6 +925,7 @@
     "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
     "importPath": "@/components/effects/draggable-marquee",
     "target": "src/components/effects/draggable-marquee",
+    "previewUrl": "/demo/draggable-marquee",
     "files": [
       {
         "path": "index.jsx",
@@ -902,6 +946,7 @@
     "registryPath": "registry/effects/scroll/grid-scale/registry.json",
     "importPath": "@/components/effects/grid-scale",
     "target": "src/components/effects/grid-scale",
+    "previewUrl": "/demo/grid-scale",
     "files": [
       {
         "path": "index.jsx",
@@ -918,6 +963,7 @@
     "registryPath": "registry/effects/scroll/helix-slider/registry.json",
     "importPath": "@/components/effects/helix-slider",
     "target": "src/components/effects/helix-slider",
+    "previewUrl": "/demo/helix-slider",
     "files": [
       {
         "path": "index.jsx",
@@ -937,17 +983,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/horizontal-feature-reveal/registry.json",
     "importPath": "@/components/effects/horizontal-feature-reveal",
-    "target": "src/components/effects/horizontal-feature-reveal"
-  },
-  {
-    "name": "inertia-scroll-effect",
-    "title": "Inertia Scroll Effect",
-    "category": "scroll",
-    "type": "registry:component",
-    "tier": "pro",
-    "registryPath": "registry/effects/scroll/inertia-scroll-effect/registry.json",
-    "importPath": "@/components/effects/inertia-scroll-effect",
-    "target": "src/components/effects/inertia-scroll-effect"
+    "target": "src/components/effects/horizontal-feature-reveal",
+    "previewUrl": "/demo/horizontal-feature-reveal"
   },
   {
     "name": "infinite-perspective-slider",
@@ -957,7 +994,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/infinite-perspective-slider/registry.json",
     "importPath": "@/components/effects/infinite-perspective-slider",
-    "target": "src/components/effects/infinite-perspective-slider"
+    "target": "src/components/effects/infinite-perspective-slider",
+    "previewUrl": "/demo/infinite-perspective-slider"
   },
   {
     "name": "parallax-footer",
@@ -968,6 +1006,7 @@
     "registryPath": "registry/effects/scroll/parallax-footer/registry.json",
     "importPath": "@/components/effects/parallax-footer",
     "target": "src/components/effects/parallax-footer",
+    "previewUrl": "/demo/parallax-footer",
     "files": [
       {
         "path": "index.jsx",
@@ -988,6 +1027,7 @@
     "registryPath": "registry/effects/scroll/parallax-gallery/registry.json",
     "importPath": "@/components/effects/parallax-gallery",
     "target": "src/components/effects/parallax-gallery",
+    "previewUrl": "/demo/parallax-gallery",
     "files": [
       {
         "path": "index.jsx",
@@ -1008,6 +1048,7 @@
     "registryPath": "registry/effects/scroll/parallax-image-animation/registry.json",
     "importPath": "@/components/effects/parallax-image-animation",
     "target": "src/components/effects/parallax-image-animation",
+    "previewUrl": "/demo/parallax-image-animation",
     "files": [
       {
         "path": "index.jsx",
@@ -1023,7 +1064,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/parallax-slider/registry.json",
     "importPath": "@/components/effects/parallax-slider",
-    "target": "src/components/effects/parallax-slider"
+    "target": "src/components/effects/parallax-slider",
+    "previewUrl": "/demo/parallax-slider"
   },
   {
     "name": "rotation-slider",
@@ -1033,7 +1075,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/rotation-slider/registry.json",
     "importPath": "@/components/effects/rotation-slider",
-    "target": "src/components/effects/rotation-slider"
+    "target": "src/components/effects/rotation-slider",
+    "previewUrl": "/demo/rotation-slider"
   },
   {
     "name": "scroll-distortion",
@@ -1043,7 +1086,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/scroll-distortion/registry.json",
     "importPath": "@/components/effects/scroll-distortion",
-    "target": "src/components/effects/scroll-distortion"
+    "target": "src/components/effects/scroll-distortion",
+    "previewUrl": "/demo/scroll-distortion"
   },
   {
     "name": "scroll-shuffled-cards",
@@ -1053,7 +1097,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/scroll-shuffled-cards/registry.json",
     "importPath": "@/components/effects/scroll-shuffled-cards",
-    "target": "src/components/effects/scroll-shuffled-cards"
+    "target": "src/components/effects/scroll-shuffled-cards",
+    "previewUrl": "/demo/scroll-shuffled-cards"
   },
   {
     "name": "scroll-stack",
@@ -1063,7 +1108,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/scroll-stack/registry.json",
     "importPath": "@/components/effects/scroll-stack",
-    "target": "src/components/effects/scroll-stack"
+    "target": "src/components/effects/scroll-stack",
+    "previewUrl": "/demo/scroll-stack"
   },
   {
     "name": "split-canvas",
@@ -1073,7 +1119,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/split-canvas/registry.json",
     "importPath": "@/components/effects/split-canvas",
-    "target": "src/components/effects/split-canvas"
+    "target": "src/components/effects/split-canvas",
+    "previewUrl": "/demo/split-canvas"
   },
   {
     "name": "square-translate",
@@ -1083,7 +1130,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/square-translate/registry.json",
     "importPath": "@/components/effects/square-translate",
-    "target": "src/components/effects/square-translate"
+    "target": "src/components/effects/square-translate",
+    "previewUrl": "/demo/square-translate"
   },
   {
     "name": "stacking-cards",
@@ -1093,7 +1141,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/stacking-cards/registry.json",
     "importPath": "@/components/effects/stacking-cards",
-    "target": "src/components/effects/stacking-cards"
+    "target": "src/components/effects/stacking-cards",
+    "previewUrl": "/demo/stacking-cards"
   },
   {
     "name": "sticky-content-wrapper",
@@ -1103,7 +1152,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/sticky-content-wrapper/registry.json",
     "importPath": "@/components/effects/sticky-content-wrapper",
-    "target": "src/components/effects/sticky-content-wrapper"
+    "target": "src/components/effects/sticky-content-wrapper",
+    "previewUrl": "/demo/sticky-content-wrapper"
   },
   {
     "name": "svg-path",
@@ -1113,7 +1163,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/svg-path/registry.json",
     "importPath": "@/components/effects/svg-path",
-    "target": "src/components/effects/svg-path"
+    "target": "src/components/effects/svg-path",
+    "previewUrl": "/demo/svg-path"
   },
   {
     "name": "svg-pixel-reveal",
@@ -1123,7 +1174,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/scroll/svg-pixel-reveal/registry.json",
     "importPath": "@/components/effects/svg-pixel-reveal",
-    "target": "src/components/effects/svg-pixel-reveal"
+    "target": "src/components/effects/svg-pixel-reveal",
+    "previewUrl": "/demo/svg-pixel-reveal"
   },
   {
     "name": "text-convergence",
@@ -1133,7 +1185,8 @@
     "tier": "free",
     "registryPath": "registry/effects/scroll/text-convergence/registry.json",
     "importPath": "@/components/effects/text-convergence",
-    "target": "src/components/effects/text-convergence"
+    "target": "src/components/effects/text-convergence",
+    "previewUrl": "/demo/text-convergence"
   },
   {
     "name": "blur-text",
@@ -1143,7 +1196,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/blur-text/registry.json",
     "importPath": "@/components/effects/blur-text",
-    "target": "src/components/effects/blur-text"
+    "target": "src/components/effects/blur-text",
+    "previewUrl": "/demo/blur-text"
   },
   {
     "name": "circle-text-reveal",
@@ -1153,17 +1207,19 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/circle-text-reveal/registry.json",
     "importPath": "@/components/effects/circle-text-reveal",
-    "target": "src/components/effects/circle-text-reveal"
+    "target": "src/components/effects/circle-text-reveal",
+    "previewUrl": "/demo/circle-text-reveal"
   },
   {
     "name": "number-counter",
     "title": "Number Counter",
     "category": "text",
     "type": "registry:component",
-    "tier": "pro",
+    "tier": "free",
     "registryPath": "registry/effects/text/number-counter/registry.json",
     "importPath": "@/components/effects/number-counter",
-    "target": "src/components/effects/number-counter"
+    "target": "src/components/effects/number-counter",
+    "previewUrl": "/demo/number-counter"
   },
   {
     "name": "glitchy-text",
@@ -1173,7 +1229,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/glitchy-text/registry.json",
     "importPath": "@/components/effects/glitchy-text",
-    "target": "src/components/effects/glitchy-text"
+    "target": "src/components/effects/glitchy-text",
+    "previewUrl": "/demo/glitchy-text"
   },
   {
     "name": "mask-text-reveal",
@@ -1183,7 +1240,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/mask-text-reveal/registry.json",
     "importPath": "@/components/effects/mask-text-reveal",
-    "target": "src/components/effects/mask-text-reveal"
+    "target": "src/components/effects/mask-text-reveal",
+    "previewUrl": "/demo/mask-text-reveal"
   },
   {
     "name": "overflow-stagger-text",
@@ -1193,7 +1251,8 @@
     "tier": "free",
     "registryPath": "registry/effects/text/overflow-stagger-text/registry.json",
     "importPath": "@/components/effects/overflow-stagger-text",
-    "target": "src/components/effects/overflow-stagger-text"
+    "target": "src/components/effects/overflow-stagger-text",
+    "previewUrl": "/demo/overflow-stagger-text"
   },
   {
     "name": "overflow-text-reveal",
@@ -1203,7 +1262,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/overflow-text-reveal/registry.json",
     "importPath": "@/components/effects/overflow-text-reveal",
-    "target": "src/components/effects/overflow-text-reveal"
+    "target": "src/components/effects/overflow-text-reveal",
+    "previewUrl": "/demo/overflow-text-reveal"
   },
   {
     "name": "perspective-text-reveal",
@@ -1213,7 +1273,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/perspective-text-reveal/registry.json",
     "importPath": "@/components/effects/perspective-text-reveal",
-    "target": "src/components/effects/perspective-text-reveal"
+    "target": "src/components/effects/perspective-text-reveal",
+    "previewUrl": "/demo/perspective-text-reveal"
   },
   {
     "name": "rectangular-text-reveal",
@@ -1223,7 +1284,8 @@
     "tier": "free",
     "registryPath": "registry/effects/text/rectangular-text-reveal/registry.json",
     "importPath": "@/components/effects/rectangular-text-reveal",
-    "target": "src/components/effects/rectangular-text-reveal"
+    "target": "src/components/effects/rectangular-text-reveal",
+    "previewUrl": "/demo/rectangular-text-reveal"
   },
   {
     "name": "scramble-text",
@@ -1233,7 +1295,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/scramble-text/registry.json",
     "importPath": "@/components/effects/scramble-text",
-    "target": "src/components/effects/scramble-text"
+    "target": "src/components/effects/scramble-text",
+    "previewUrl": "/demo/scramble-text"
   },
   {
     "name": "slide-text-reveal",
@@ -1243,7 +1306,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/slide-text-reveal/registry.json",
     "importPath": "@/components/effects/slide-text-reveal",
-    "target": "src/components/effects/slide-text-reveal"
+    "target": "src/components/effects/slide-text-reveal",
+    "previewUrl": "/demo/slide-text-reveal"
   },
   {
     "name": "spotlight-text",
@@ -1253,7 +1317,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/spotlight-text/registry.json",
     "importPath": "@/components/effects/spotlight-text",
-    "target": "src/components/effects/spotlight-text"
+    "target": "src/components/effects/spotlight-text",
+    "previewUrl": "/demo/spotlight-text"
   },
   {
     "name": "text-cloning",
@@ -1263,7 +1328,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/text-cloning/registry.json",
     "importPath": "@/components/effects/text-cloning",
-    "target": "src/components/effects/text-cloning"
+    "target": "src/components/effects/text-cloning",
+    "previewUrl": "/demo/text-cloning"
   },
   {
     "name": "text-fill-animation",
@@ -1273,7 +1339,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/text-fill-animation/registry.json",
     "importPath": "@/components/effects/text-fill-animation",
-    "target": "src/components/effects/text-fill-animation"
+    "target": "src/components/effects/text-fill-animation",
+    "previewUrl": "/demo/text-fill-animation"
   },
   {
     "name": "text-hover",
@@ -1283,7 +1350,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/text-hover/registry.json",
     "importPath": "@/components/effects/text-hover",
-    "target": "src/components/effects/text-hover"
+    "target": "src/components/effects/text-hover",
+    "previewUrl": "/demo/text-hover"
   },
   {
     "name": "text-stream",
@@ -1293,17 +1361,19 @@
     "tier": "pro",
     "registryPath": "registry/effects/text/text-stream/registry.json",
     "importPath": "@/components/effects/text-stream",
-    "target": "src/components/effects/text-stream"
+    "target": "src/components/effects/text-stream",
+    "previewUrl": "/demo/text-stream"
   },
   {
     "name": "block-transition",
     "title": "Block Transition",
     "category": "transitions",
     "type": "registry:component",
-    "tier": "pro",
+    "tier": "free",
     "registryPath": "registry/effects/transitions/block-transition/registry.json",
     "importPath": "@/components/effects/block-transition",
-    "target": "src/components/effects/block-transition"
+    "target": "src/components/effects/block-transition",
+    "previewUrl": "/demo/block-transition"
   },
   {
     "name": "chess-grid-transition",
@@ -1313,7 +1383,8 @@
     "tier": "free",
     "registryPath": "registry/effects/transitions/chess-grid-transition/registry.json",
     "importPath": "@/components/effects/chess-grid-transition",
-    "target": "src/components/effects/chess-grid-transition"
+    "target": "src/components/effects/chess-grid-transition",
+    "previewUrl": "/demo/chess-grid-transition"
   },
   {
     "name": "page-flip-transition",
@@ -1323,7 +1394,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/transitions/page-flip-transition/registry.json",
     "importPath": "@/components/effects/page-flip-transition",
-    "target": "src/components/effects/page-flip-transition"
+    "target": "src/components/effects/page-flip-transition",
+    "previewUrl": "/demo/page-flip-transition"
   },
   {
     "name": "pixel-transition",
@@ -1333,17 +1405,19 @@
     "tier": "pro",
     "registryPath": "registry/effects/transitions/pixel-transition/registry.json",
     "importPath": "@/components/effects/pixel-transition",
-    "target": "src/components/effects/pixel-transition"
+    "target": "src/components/effects/pixel-transition",
+    "previewUrl": "/demo/pixel-transition"
   },
   {
     "name": "radial-slice-transition",
     "title": "Radial Slice Transition",
     "category": "transitions",
     "type": "registry:component",
-    "tier": "free",
+    "tier": "pro",
     "registryPath": "registry/effects/transitions/radial-slice-transition/registry.json",
     "importPath": "@/components/effects/radial-slice-transition",
-    "target": "src/components/effects/radial-slice-transition"
+    "target": "src/components/effects/radial-slice-transition",
+    "previewUrl": "/demo/radial-slice-transition"
   },
   {
     "name": "svg-brush-transition",
@@ -1351,9 +1425,10 @@
     "category": "transitions",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/transitions/svg-draw-page-transition/registry.json",
+    "registryPath": "registry/effects/transitions/svg-brush-transition/registry.json",
     "importPath": "@/components/effects/svg-brush-transition",
-    "target": "src/components/effects/svg-brush-transition"
+    "target": "src/components/effects/svg-brush-transition",
+    "previewUrl": "/demo/svg-brush-transition"
   },
   {
     "name": "3d-portfolio-slider",
@@ -1363,7 +1438,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/3d-portfolio-slider/registry.json",
     "importPath": "@/components/effects/3d-portfolio-slider",
-    "target": "src/components/effects/3d-portfolio-slider"
+    "target": "src/components/effects/3d-portfolio-slider",
+    "previewUrl": "/demo/3d-portfolio-slider"
   },
   {
     "name": "book-flip",
@@ -1373,7 +1449,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/book-flip/registry.json",
     "importPath": "@/components/effects/book-flip",
-    "target": "src/components/effects/book-flip"
+    "target": "src/components/effects/book-flip",
+    "previewUrl": "/demo/book-flip"
   },
   {
     "name": "colliding-models",
@@ -1383,7 +1460,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/colliding-models/registry.json",
     "importPath": "@/components/effects/colliding-models",
-    "target": "src/components/effects/colliding-models"
+    "target": "src/components/effects/colliding-models",
+    "previewUrl": "/demo/colliding-models"
   },
   {
     "name": "curved-plane",
@@ -1393,17 +1471,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/curved-plane/registry.json",
     "importPath": "@/components/effects/curved-plane",
-    "target": "src/components/effects/curved-plane"
-  },
-  {
-    "name": "curved-plane-v2",
-    "title": "Curved Plane V2",
-    "category": "webgl",
-    "type": "registry:component",
-    "tier": "pro",
-    "registryPath": "registry/effects/webgl/curved-plane-v2/registry.json",
-    "importPath": "@/components/effects/curved-plane-v2",
-    "target": "src/components/effects/curved-plane-v2"
+    "target": "src/components/effects/curved-plane",
+    "previewUrl": "/demo/curved-plane"
   },
   {
     "name": "donut-particles",
@@ -1413,7 +1482,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/donut-particles/registry.json",
     "importPath": "@/components/effects/donut-particles",
-    "target": "src/components/effects/donut-particles"
+    "target": "src/components/effects/donut-particles",
+    "previewUrl": "/demo/donut-particles"
   },
   {
     "name": "draggable-canvas",
@@ -1423,7 +1493,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/draggable-canvas/registry.json",
     "importPath": "@/components/effects/draggable-canvas",
-    "target": "src/components/effects/draggable-canvas"
+    "target": "src/components/effects/draggable-canvas",
+    "previewUrl": "/demo/draggable-canvas"
   },
   {
     "name": "file-encryption",
@@ -1433,7 +1504,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/file-encryption/registry.json",
     "importPath": "@/components/effects/file-encryption",
-    "target": "src/components/effects/file-encryption"
+    "target": "src/components/effects/file-encryption",
+    "previewUrl": "/demo/file-encryption"
   },
   {
     "name": "fractal-glass",
@@ -1443,7 +1515,8 @@
     "tier": "free",
     "registryPath": "registry/effects/webgl/fractal-glass/registry.json",
     "importPath": "@/components/effects/fractal-glass",
-    "target": "src/components/effects/fractal-glass"
+    "target": "src/components/effects/fractal-glass",
+    "previewUrl": "/demo/fractal-glass"
   },
   {
     "name": "grid-lift",
@@ -1453,7 +1526,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/grid-lift/registry.json",
     "importPath": "@/components/effects/grid-lift",
-    "target": "src/components/effects/grid-lift"
+    "target": "src/components/effects/grid-lift",
+    "previewUrl": "/demo/grid-lift"
   },
   {
     "name": "grid-tunnel",
@@ -1463,17 +1537,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/grid-tunnel/registry.json",
     "importPath": "@/components/effects/grid-tunnel",
-    "target": "src/components/effects/grid-tunnel"
-  },
-  {
-    "name": "hero-animated-banner",
-    "title": "Hero Animated Banner",
-    "category": "webgl",
-    "type": "registry:component",
-    "tier": "pro",
-    "registryPath": "registry/effects/webgl/hero-animated-banner/registry.json",
-    "importPath": "@/components/effects/hero-animated-banner",
-    "target": "src/components/effects/hero-animated-banner"
+    "target": "src/components/effects/grid-tunnel",
+    "previewUrl": "/demo/grid-tunnel"
   },
   {
     "name": "hero-banner-animated",
@@ -1483,7 +1548,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/hero-banner-animated/registry.json",
     "importPath": "@/components/effects/hero-banner-animated",
-    "target": "src/components/effects/hero-banner-animated"
+    "target": "src/components/effects/hero-banner-animated",
+    "previewUrl": "/demo/hero-banner-animated"
   },
   {
     "name": "hover-slider",
@@ -1493,7 +1559,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/interactive-hover-slider/registry.json",
     "importPath": "@/components/effects/hover-slider",
-    "target": "src/components/effects/hover-slider"
+    "target": "src/components/effects/hover-slider",
+    "previewUrl": "/demo/hover-slider"
   },
   {
     "name": "hyperiux-glitter",
@@ -1503,7 +1570,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/hyperiux-glitter/registry.json",
     "importPath": "@/components/effects/hyperiux-glitter",
-    "target": "src/components/effects/hyperiux-glitter"
+    "target": "src/components/effects/hyperiux-glitter",
+    "previewUrl": "/demo/hyperiux-glitter"
   },
   {
     "name": "infinite-grid-gallery",
@@ -1513,7 +1581,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/infinite-grid-gallery/registry.json",
     "importPath": "@/components/effects/infinite-grid-gallery",
-    "target": "src/components/effects/infinite-grid-gallery"
+    "target": "src/components/effects/infinite-grid-gallery",
+    "previewUrl": "/demo/infinite-grid-gallery"
   },
   {
     "name": "interactive-blur-reveal",
@@ -1523,17 +1592,8 @@
     "tier": "free",
     "registryPath": "registry/effects/webgl/interactive-blur-reveal/registry.json",
     "importPath": "@/components/effects/interactive-blur-reveal",
-    "target": "src/components/effects/interactive-blur-reveal"
-  },
-  {
-    "name": "milkyway",
-    "title": "Milky Way",
-    "category": "webgl",
-    "type": "registry:component",
-    "tier": "free",
-    "registryPath": "registry/effects/webgl/milkyway/registry.json",
-    "importPath": "@/components/effects/milkyway",
-    "target": "src/components/effects/milkyway"
+    "target": "src/components/effects/interactive-blur-reveal",
+    "previewUrl": "/demo/interactive-blur-reveal"
   },
   {
     "name": "mouse-pixelation",
@@ -1543,7 +1603,8 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/mouse-pixelation/registry.json",
     "importPath": "@/components/effects/mouse-pixelation",
-    "target": "src/components/effects/mouse-pixelation"
+    "target": "src/components/effects/mouse-pixelation",
+    "previewUrl": "/demo/mouse-pixelation"
   },
   {
     "name": "progressive-bloom-valley",
@@ -1554,6 +1615,7 @@
     "registryPath": "registry/effects/scroll/progressive-bloom-valley/registry.json",
     "importPath": "@/components/effects/progressive-bloom-valley",
     "target": "src/components/effects/progressive-bloom-valley",
+    "previewUrl": "/demo/progressive-bloom-valley",
     "files": [
       {
         "path": "index.jsx",
@@ -1572,9 +1634,9 @@
         "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
       },
       {
-      "path": "ExperienceComp.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
-    },
+        "path": "ExperienceComp.jsx",
+        "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
+      },
       {
         "path": "FilmGrainEffect.jsx",
         "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
@@ -1605,6 +1667,29 @@
     "tier": "pro",
     "registryPath": "registry/effects/webgl/strip-slider/registry.json",
     "importPath": "@/components/effects/strip-slider",
-    "target": "src/components/effects/strip-slider"
+    "target": "src/components/effects/strip-slider",
+    "previewUrl": "/demo/strip-slider"
+  },
+  {
+    "name": "immersive-full-screen-nav",
+    "title": "Immersive Full Screen Navigation",
+    "category": "navigation",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/navigation/immersive-full-screen-nav/registry.json",
+    "importPath": "@/components/effects/immersive-full-screen-nav",
+    "target": "src/components/effects/immersive-full-screen-nav",
+    "previewUrl": "/demo/immersive-full-screen-nav"
+  },
+  {
+    "name": "milky-way",
+    "title": "Milky Way",
+    "category": "webgl",
+    "type": "registry:component",
+    "tier": "free",
+    "registryPath": "registry/effects/webgl/milky-way/registry.json",
+    "importPath": "@/components/effects/milky-way",
+    "target": "src/components/effects/milky-way",
+    "previewUrl": "/demo/milky-way"
   }
 ]

@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "MaskTextReveal",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/mask-text-reveal",
   "files": [
     {
       "path": "mask-text-reveal.jsx",

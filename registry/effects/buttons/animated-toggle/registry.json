@@ -6,9 +6,11 @@
   "category": "buttons",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/buttons/animated-toggle",
+  "previewUrl": "/demo/animated-toggle",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedToggle",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-toggle",
   "target": "src/components/effects/animated-toggle",
   "files": [

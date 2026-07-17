@@ -8,10 +8,12 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/interactive-list-preview",
+  "previewUrl": "/demo/interactive-list-preview",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "InteractiveListPreview",
+  "exportKind": "default",
   "importPath": "@/components/effects/interactive-list-preview",
   "target": "src/components/effects/interactive-list-preview",
   "files": [

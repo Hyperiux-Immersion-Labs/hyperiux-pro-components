@@ -11,10 +11,12 @@
     "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/loaders/numeric-tunnel",
+  "previewUrl": "/demo/numeric-tunnel",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "NumericTunnel",
+  "exportKind": "default",
   "importPath": "@/components/effects/numeric-tunnel",
   "target": "src/components/effects/numeric-tunnel",
   "files": [

@@ -7,8 +7,9 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "InertiaImg",
+  "exportName": "InertiaImage",
   "exportKind": "default",
+  "previewUrl": "/demo/inertia-img",
   "files": [
     {
       "path": "index.jsx",

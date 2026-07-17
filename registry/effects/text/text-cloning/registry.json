@@ -6,9 +6,11 @@
   "category": "text",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/text-cloning",
+  "previewUrl": "/demo/text-cloning",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "TextCloning",
+  "exportKind": "default",
   "importPath": "@/components/effects/text-cloning",
   "target": "src/components/effects/text-cloning",
   "files": [

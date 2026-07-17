@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "DraggableCanvas",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/draggable-canvas",
   "files": [
     {
       "path": "draggable-canvas.jsx",

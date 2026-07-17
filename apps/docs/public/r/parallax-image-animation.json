@@ -7,8 +7,9 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "ParallaxImage",
-  "exportKind": "named",
+  "exportName": "ParallaxImageAnimation",
+  "exportKind": "default",
+  "previewUrl": "/demo/parallax-image-animation",
   "files": [
     {
       "path": "index.jsx",

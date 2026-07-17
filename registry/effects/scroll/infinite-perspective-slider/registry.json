@@ -9,10 +9,12 @@
   ],
   "registryDependencies": [],
   "coverImage": "infinite-perspective-slider",
-  "previewUrl": "/infinite-perspective-slider",
+  "previewUrl": "/demo/infinite-perspective-slider",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "InfinitePerspectiveSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/infinite-perspective-slider",
   "target": "src/components/effects/infinite-perspective-slider",
   "files": [

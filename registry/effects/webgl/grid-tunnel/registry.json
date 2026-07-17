@@ -10,9 +10,11 @@
     "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/grid-tunnel",
+  "previewUrl": "/demo/grid-tunnel",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "GridTunnel",
+  "exportKind": "default",
   "importPath": "@/components/effects/grid-tunnel",
   "target": "src/components/effects/grid-tunnel",
   "files": [

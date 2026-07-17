@@ -5,8 +5,9 @@
   "description": "Button with expanding dot that fills the background on hover with character stagger",
   "dependencies": [],
   "registryDependencies": [],
-  "exportName": "DotFillButton",
-  "exportKind": "named",
+  "exportName": "DotFillBtn",
+  "exportKind": "default",
+  "previewUrl": "/demo/dot-fill-button",
   "files": [
     {
       "path": "index.jsx",

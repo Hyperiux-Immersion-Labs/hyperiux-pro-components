@@ -14,8 +14,9 @@
     "three"
   ],
   "registryDependencies": [],
-  "exportName": "HeroBanner",
-  "exportKind": "named",
+  "exportName": "HeroBannerAnimated",
+  "exportKind": "default",
+  "previewUrl": "/demo/hero-banner-animated",
   "files": [
     {
       "path": "hero-banner.jsx",

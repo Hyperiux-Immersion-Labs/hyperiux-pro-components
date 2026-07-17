@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/perspective-text-reveal",
+  "previewUrl": "/demo/perspective-text-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "PerspectiveTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/perspective-text-reveal",
   "target": "src/components/effects/perspective-text-reveal",
   "files": [

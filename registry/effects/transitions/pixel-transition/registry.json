@@ -9,9 +9,11 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/page-transitions/pixels",
+  "previewUrl": "/demo/pixel-transition",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "PixelTransition",
+  "exportKind": "default",
   "importPath": "@/components/effects/pixel-transition",
   "target": "src/components/effects/pixel-transition",
   "files": [

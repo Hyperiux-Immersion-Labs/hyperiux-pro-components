@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/slide-text-reveal",
+  "previewUrl": "/demo/slide-text-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "SlideTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/slide-text-reveal",
   "target": "src/components/effects/slide-text-reveal",
   "files": [

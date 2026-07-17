@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "LinkButton",
   "exportKind": "default",
+  "previewUrl": "/demo/link-button",
   "files": [
     {
       "path": "index.jsx",

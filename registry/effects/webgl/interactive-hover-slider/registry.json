@@ -9,9 +9,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/hover-slider",
+  "previewUrl": "/demo/hover-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HoverSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/hover-slider",
   "target": "src/components/effects/hover-slider",
   "files": [

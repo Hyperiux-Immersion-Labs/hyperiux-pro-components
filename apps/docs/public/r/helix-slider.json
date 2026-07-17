@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "HelixSlider",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/helix-slider",
   "files": [
     {
       "path": "index.jsx",

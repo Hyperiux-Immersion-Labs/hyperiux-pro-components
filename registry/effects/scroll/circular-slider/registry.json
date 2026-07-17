@@ -9,9 +9,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/circular-slider",
+  "previewUrl": "/demo/circular-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CircularSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/circular-slider",
   "target": "src/components/effects/circular-slider",
   "files": [

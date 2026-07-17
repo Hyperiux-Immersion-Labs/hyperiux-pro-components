@@ -8,9 +8,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/animated-modal",
+  "previewUrl": "/demo/animated-modal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedModal",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-modal",
   "target": "src/components/effects/animated-modal",
   "files": [

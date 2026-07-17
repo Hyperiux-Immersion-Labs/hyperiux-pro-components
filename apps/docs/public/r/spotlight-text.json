@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpotlightText",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/spotlight-text",
   "files": [
     {
       "path": "spotlight-text.jsx",

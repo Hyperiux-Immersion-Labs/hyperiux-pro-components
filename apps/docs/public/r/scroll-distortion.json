@@ -5,12 +5,12 @@
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
   "dependencies": [
     "gsap",
-    "lenis",
     "three"
   ],
   "registryDependencies": [],
   "exportName": "ScrollDistortion",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/scroll-distortion",
   "files": [
     {
       "path": "scroll-distortion.jsx",

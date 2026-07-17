@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "HorizontalFeatureReveal",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/horizontal-feature-reveal",
   "files": [
     {
       "path": "index.jsx",

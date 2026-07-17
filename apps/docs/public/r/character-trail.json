@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CharacterTrail",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/character-trail",
   "files": [
     {
       "path": "index.jsx",

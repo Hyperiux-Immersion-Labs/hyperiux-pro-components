@@ -8,9 +8,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/video-player",
+  "previewUrl": "/demo/video-player",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "VideoPlayer",
+  "exportKind": "default",
   "importPath": "@/components/effects/video-player",
   "target": "src/components/effects/video-player",
   "files": [

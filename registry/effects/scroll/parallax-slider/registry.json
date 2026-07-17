@@ -9,9 +9,11 @@
     "next"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-slider",
+  "previewUrl": "/demo/parallax-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-slider",
   "target": "src/components/effects/parallax-slider",
   "files": [

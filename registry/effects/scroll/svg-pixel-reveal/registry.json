@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/svg-pixel-reveal",
+  "previewUrl": "/demo/svg-pixel-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "SvgPixelReveal",
+  "exportKind": "named",
   "importPath": "@/components/effects/svg-pixel-reveal",
   "target": "src/components/effects/svg-pixel-reveal",
   "files": [

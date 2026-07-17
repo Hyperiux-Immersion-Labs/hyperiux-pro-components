@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "DottedGrid",
-  "exportKind": "default",
+  "exportKind": "named",
+  "previewUrl": "/demo/dotted-grid",
   "files": [
     {
       "path": "index.jsx",

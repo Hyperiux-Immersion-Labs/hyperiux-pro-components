@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "FileEncryption",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/file-encryption",
   "files": [
     {
       "path": "file-encryption.jsx",

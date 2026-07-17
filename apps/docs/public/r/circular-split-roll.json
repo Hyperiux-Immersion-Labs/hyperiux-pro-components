@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "CircularSplitRoll",
   "exportKind": "default",
+  "previewUrl": "/demo/circular-split-roll",
   "files": [
     {
       "path": "index.jsx",

@@ -8,9 +8,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/buttons/char-stagger-primary-button",
+  "previewUrl": "/demo/char-stagger-primary-button",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CharStaggerPrimaryButton",
+  "exportKind": "default",
   "importPath": "@/components/effects/char-stagger-primary-button",
   "target": "src/components/effects/char-stagger-primary-button",
   "files": [

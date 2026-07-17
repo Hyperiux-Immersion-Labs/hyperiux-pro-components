@@ -8,10 +8,12 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/phantom-image-trail",
+  "previewUrl": "/demo/phantom-image-trail",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "PhantomImageTrail",
+  "exportKind": "default",
   "importPath": "@/components/effects/phantom-image-trail",
   "target": "src/components/effects/phantom-image-trail",
   "files": [

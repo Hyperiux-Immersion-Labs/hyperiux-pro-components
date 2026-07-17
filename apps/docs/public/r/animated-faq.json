@@ -8,8 +8,9 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "FAQGroup",
-  "exportKind": "named",
+  "exportName": "AnimatedFAQ",
+  "exportKind": "default",
+  "previewUrl": "/demo/animated-faq",
   "files": [
     {
       "path": "index.jsx",

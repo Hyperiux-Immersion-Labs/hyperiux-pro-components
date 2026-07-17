@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "MagneticImageTrail",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/magnetic-image-trail",
   "files": [
     {
       "path": "index.jsx",

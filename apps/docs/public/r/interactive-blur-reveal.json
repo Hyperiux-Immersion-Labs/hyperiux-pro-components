@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
+  "previewUrl": "/demo/interactive-blur-reveal",
   "files": [
     {
       "path": "index.jsx",

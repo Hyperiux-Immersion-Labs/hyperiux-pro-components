@@ -6,7 +6,8 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CursorMove",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/cursor-move",
   "files": [
     {
       "path": "cursor-move.jsx",

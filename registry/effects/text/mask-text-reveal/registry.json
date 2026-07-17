@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/mask-text-reveal",
+  "previewUrl": "/demo/mask-text-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "MaskTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/mask-text-reveal",
   "target": "src/components/effects/mask-text-reveal",
   "files": [

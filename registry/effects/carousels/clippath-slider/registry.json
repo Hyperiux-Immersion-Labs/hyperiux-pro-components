@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/clippath-slider",
+  "previewUrl": "/demo/clippath-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ClipPathSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/clippath-slider",
   "target": "src/components/effects/clippath-slider",
   "files": [

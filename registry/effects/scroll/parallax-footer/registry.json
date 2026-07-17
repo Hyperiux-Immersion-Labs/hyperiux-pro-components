@@ -8,9 +8,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-footer",
+  "previewUrl": "/demo/parallax-footer",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxFooter",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-footer",
   "target": "src/components/effects/parallax-footer",
   "files": [

@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ArrowFillButton",
-  "exportKind": "named",
+w  "exportKind": "default",
+  "previewUrl": "/demo/arrow-fill-button",
   "files": [
     {
       "path": "index.jsx",

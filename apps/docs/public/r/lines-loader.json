@@ -8,8 +8,9 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "CenterLinesLoader",
-  "exportKind": "named",
+  "exportName": "LinesLoader",
+  "exportKind": "default",
+  "previewUrl": "/demo/lines-loader",
   "files": [
     {
       "path": "index.jsx",

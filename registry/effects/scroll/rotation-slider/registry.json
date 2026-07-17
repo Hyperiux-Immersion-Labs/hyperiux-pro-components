@@ -10,10 +10,12 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/rotation-slider",
+  "previewUrl": "/demo/rotation-slider",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "RotationSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/rotation-slider",
   "target": "src/components/effects/rotation-slider",
   "files": [

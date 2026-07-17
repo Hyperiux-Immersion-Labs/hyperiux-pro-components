@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-image-animation",
+  "previewUrl": "/demo/parallax-image-animation",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxImageAnimation",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-image-animation",
   "target": "src/components/effects/parallax-image-animation",
   "files": [

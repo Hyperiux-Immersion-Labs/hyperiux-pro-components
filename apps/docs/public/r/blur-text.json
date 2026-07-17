@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "BlurText",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/blur-text",
   "files": [
     {
       "path": "blur-text.jsx",

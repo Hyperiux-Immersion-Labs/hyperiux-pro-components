@@ -4,12 +4,16 @@
   "title": "Link Button",
   "description": "Minimal link button with animated underline and rotating arrow icon",
   "category": "buttons",
-  "dependencies": ["lucide-react"],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/buttons/link-button",
+  "previewUrl": "/demo/link-button",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "LinkButton",
+  "exportKind": "default",
   "importPath": "@/components/effects/link-button",
   "target": "src/components/effects/link-button",
   "files": [

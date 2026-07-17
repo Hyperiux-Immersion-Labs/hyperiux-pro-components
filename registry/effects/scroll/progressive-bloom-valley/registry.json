@@ -9,12 +9,16 @@
     "@react-three/drei",
     "@react-three/postprocessing",
     "three",
-    "postprocessing"
+    "postprocessing",
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/webgl/progressive-bloom-valley",
+  "previewUrl": "/demo/progressive-bloom-valley",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ProgressiveBloomValley",
+  "exportKind": "default",
   "importPath": "@/components/effects/progressive-bloom-valley",
   "target": "src/components/effects/progressive-bloom-valley",
   "files": [

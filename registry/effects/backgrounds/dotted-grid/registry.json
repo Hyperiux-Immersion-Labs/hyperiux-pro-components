@@ -6,10 +6,12 @@
   "category": "backgrounds",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/dotted-grid",
+  "previewUrl": "/demo/dotted-grid",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "DottedGrid",
+  "exportKind": "named",
   "importPath": "@/components/effects/dotted-grid",
   "target": "src/components/effects/dotted-grid",
   "files": [

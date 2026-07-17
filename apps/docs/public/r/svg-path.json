@@ -7,8 +7,9 @@
     "motion"
   ],
   "registryDependencies": [],
-  "exportName": "MarqueeAlongSvgPath",
-  "exportKind": "named",
+  "exportName": "SVGPath",
+  "exportKind": "default",
+  "previewUrl": "/demo/svg-path",
   "files": [
     {
       "path": "index.jsx",

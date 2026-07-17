@@ -9,9 +9,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/loaders/lines-loading",
+  "previewUrl": "/demo/lines-loader",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "LinesLoader",
+  "exportKind": "default",
   "importPath": "@/components/effects/lines-loader",
   "target": "src/components/effects/lines-loader",
   "files": [

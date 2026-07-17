@@ -4,15 +4,26 @@
   "title": "Ribbon Drift",
   "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
   "category": "components",
-  "dependencies": ["gsap", "lenis"],
+  "dependencies": [
+    "gsap",
+    "lenis"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/ribbon-drift",
+  "previewUrl": "/demo/ribbon-drift",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "RibbonDrift",
+  "exportKind": "default",
   "importPath": "@/components/effects/ribbon-drift",
   "target": "src/components/effects/ribbon-drift",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/ribbon-drift/index.jsx" },
-    { "path": "RibbonDriftComp.jsx", "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/ribbon-drift/index.jsx"
+    },
+    {
+      "path": "RibbonDriftComp.jsx",
+      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
+    }
   ]
 }

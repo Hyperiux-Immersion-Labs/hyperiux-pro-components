@@ -6,9 +6,11 @@
   "category": "text",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/spotlight-text",
+  "previewUrl": "/demo/spotlight-text",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "SpotlightText",
+  "exportKind": "default",
   "importPath": "@/components/effects/spotlight-text",
   "target": "src/components/effects/spotlight-text",
   "files": [

@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrambleText",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/scramble-text",
   "files": [
     {
       "path": "scramble-text.jsx",

@@ -8,8 +8,9 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "exportName": "PageFlipTransition",
-  "exportKind": "named",
+  "exportName": "FlipTransition",
+  "exportKind": "default",
+  "previewUrl": "/demo/page-flip-transition",
   "files": [
     {
       "path": "page-flip-transition.jsx",

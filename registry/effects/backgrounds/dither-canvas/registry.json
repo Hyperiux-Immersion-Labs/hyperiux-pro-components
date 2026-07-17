@@ -6,9 +6,11 @@
   "category": "backgrounds",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/binary-effect",
+  "previewUrl": "/demo/dither-canvas",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DitherCanvas",
+  "exportKind": "default",
   "importPath": "@/components/effects/dither-canvas",
   "target": "src/components/effects/dither-canvas",
   "files": [

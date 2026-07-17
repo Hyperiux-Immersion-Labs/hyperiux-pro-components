@@ -10,10 +10,12 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/split-canvas",
+  "previewUrl": "/demo/split-canvas",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "SplitCanvas",
+  "exportKind": "default",
   "importPath": "@/components/effects/split-canvas",
   "target": "src/components/effects/split-canvas",
   "files": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedModal",
   "exportKind": "default",
+  "previewUrl": "/demo/animated-modal",
   "files": [
     {
       "path": "index.jsx",

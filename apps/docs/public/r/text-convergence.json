@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextConvergence",
   "exportKind": "default",
+  "previewUrl": "/demo/text-convergence",
   "files": [
     {
       "path": "index.jsx",

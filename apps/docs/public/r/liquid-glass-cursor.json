@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "LiquidGlassCursor",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/liquid-glass-cursor",
   "files": [
     {
       "path": "index.js",

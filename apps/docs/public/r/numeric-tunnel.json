@@ -12,6 +12,7 @@
   "registryDependencies": [],
   "exportName": "NumericTunnel",
   "exportKind": "default",
+  "previewUrl": "/demo/numeric-tunnel",
   "files": [
     {
       "path": "index.jsx",

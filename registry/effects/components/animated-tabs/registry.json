@@ -11,6 +11,8 @@
   "previewUrl": "/demo/animated-tabs",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedTabs",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-tabs",
   "target": "src/components/effects/animated-tabs",
   "files": [

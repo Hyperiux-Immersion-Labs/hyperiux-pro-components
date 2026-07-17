@@ -18,6 +18,8 @@
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "MilkyWay",
+  "exportKind": "default",
   "importPath": "@/components/effects/milky-way",
   "target": "src/components/effects/milky-way",
   "files": [

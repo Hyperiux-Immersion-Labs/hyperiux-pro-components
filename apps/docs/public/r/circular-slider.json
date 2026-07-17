@@ -8,8 +8,9 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "RotatingCarousel",
-  "exportKind": "named",
+  "exportName": "CircularSlider",
+  "exportKind": "default",
+  "previewUrl": "/demo/circular-slider",
   "files": [
     {
       "path": "index.jsx",

@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "RopeCursor",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/rope-cursor",
   "files": [
     {
       "path": "rope-cursor.jsx",

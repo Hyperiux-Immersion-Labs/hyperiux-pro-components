@@ -8,10 +8,12 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/rectangular-text-reveal",
+  "previewUrl": "/demo/rectangular-text-reveal",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "RectangularTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/rectangular-text-reveal",
   "target": "src/components/effects/rectangular-text-reveal",
   "files": [

@@ -6,9 +6,11 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/character-trail",
+  "previewUrl": "/demo/character-trail",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CharacterTrail",
+  "exportKind": "default",
   "importPath": "@/components/effects/character-trail",
   "target": "src/components/effects/character-trail",
   "files": [

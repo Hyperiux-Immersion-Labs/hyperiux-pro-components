@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/text-stream",
+  "previewUrl": "/demo/text-stream",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "TextStream",
+  "exportKind": "default",
   "importPath": "@/components/effects/text-stream",
   "target": "src/components/effects/text-stream",
   "files": [

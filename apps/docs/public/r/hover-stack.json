@@ -8,7 +8,7 @@
   "registryDependencies": [],
   "packageName": "@hyperiux/hover-stack",
   "sourcePath": "apps/docs/src/components/hover-stack",
-  "previewUrl": "/hover-stack",
+  "previewUrl": "/demo/hover-stack",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",

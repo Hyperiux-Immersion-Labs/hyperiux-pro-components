@@ -10,7 +10,8 @@
   ],
   "registryDependencies": [],
   "exportName": "GridTunnel",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/grid-tunnel",
   "files": [
     {
       "path": "grid-tunnel.jsx",

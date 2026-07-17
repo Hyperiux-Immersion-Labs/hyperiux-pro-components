@@ -9,10 +9,12 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/ring-carousel",
+  "previewUrl": "/demo/ring-carousel",
   "coverImage": "ring-carousel",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "RingCarousel",
+  "exportKind": "default",
   "importPath": "@/components/effects/ring-carousel",
   "target": "src/components/effects/ring-carousel",
   "files": [

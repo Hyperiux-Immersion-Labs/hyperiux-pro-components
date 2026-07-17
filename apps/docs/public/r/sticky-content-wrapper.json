@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "StickyContentWrapper",
   "exportKind": "default",
+  "previewUrl": "/demo/sticky-content-wrapper",
   "files": [
     {
       "path": "index.jsx",

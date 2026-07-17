@@ -13,6 +13,8 @@
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "BlockTransition",
+  "exportKind": "default",
   "importPath": "@/components/effects/block-transition",
   "target": "src/components/effects/block-transition",
   "files": [

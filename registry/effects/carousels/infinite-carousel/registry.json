@@ -9,10 +9,12 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/infinite-carousel",
+  "previewUrl": "/demo/infinite-carousel",
   "coverImage": "infinite-carousel",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "InfiniteCarousel",
+  "exportKind": "default",
   "importPath": "@/components/effects/infinite-carousel",
   "target": "src/components/effects/infinite-carousel",
   "files": [

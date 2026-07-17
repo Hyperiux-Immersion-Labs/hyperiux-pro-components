@@ -6,9 +6,11 @@
   "category": "buttons",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/buttons/dot-fill-button",
+  "previewUrl": "/demo/dot-fill-button",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DotFillBtn",
+  "exportKind": "default",
   "importPath": "@/components/effects/dot-fill-button",
   "target": "src/components/effects/dot-fill-button",
   "files": [

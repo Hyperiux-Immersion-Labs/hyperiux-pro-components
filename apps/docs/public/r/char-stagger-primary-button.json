@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "CharStaggerPrimaryButton",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/char-stagger-primary-button",
   "files": [
     {
       "path": "index.jsx",

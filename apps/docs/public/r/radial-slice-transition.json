@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "RadialSliceTransition",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/radial-slice-transition",
   "tier": "pro",
   "files": [
     {

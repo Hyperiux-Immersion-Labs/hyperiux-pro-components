@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "PixelatedImageEffect",
   "exportKind": "default",
+  "previewUrl": "/demo/pixelated-image-effect",
   "files": [
     {
       "path": "index.jsx",

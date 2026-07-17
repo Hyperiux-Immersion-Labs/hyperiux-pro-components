@@ -11,7 +11,8 @@
   ],
   "registryDependencies": [],
   "exportName": "MousePixelation",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/mouse-pixelation",
   "files": [
     {
       "path": "mouse-pixelation.jsx",

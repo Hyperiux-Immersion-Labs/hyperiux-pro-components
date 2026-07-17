@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "OverflowStaggerText",
   "exportKind": "default",
+  "previewUrl": "/demo/overflow-stagger-text",
   "files": [
     {
       "path": "index.jsx",

@@ -8,16 +8,22 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/webgl/zoom-slider",
+  "previewUrl": "/demo/zoom-slider",
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
+  "exportName": "ZoomSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/zoom-slider",
   "target": "src/components/effects/zoom-slider",
   "files": [
     {
       "path": "index.jsx",
       "target": "src/components/effects/zoom-slider/index.jsx"
+    },
+    {
+      "path": "ZoomSliderComp.jsx",
+      "target": "src/components/effects/zoom-slider/ZoomSliderComp.jsx"
     }
   ]
 }

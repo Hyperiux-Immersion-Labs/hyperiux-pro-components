@@ -9,7 +9,8 @@
   ],
   "registryDependencies": [],
   "exportName": "InfiniteCarousel",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/infinite-carousel",
   "files": [
     {
       "path": "infinite-carousel.jsx",

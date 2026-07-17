@@ -43,12 +43,28 @@ function detectExport(content, preferredName) {
     /export\s+default\s+(?:function|class)\s+([A-Za-z_$][\w$]*)/
   );
 
+  // export default SomeIdentifier; -- a component declared earlier in the
+  // file (const/function) and re-exported as default by reference, rather
+  // than inline. Missing this pattern was the root cause of the
+  // animated-faq mis-detection (it picked up an unrelated helper export
+  // instead).
+  const defaultIdentifier = content.match(
+    /export\s+default\s+([A-Za-z_$][\w$]*)\s*;/
+  );
+
+  const preferredLower = preferredName?.toLowerCase();
+  const namedMatch = namedExports.find(
+    (name) => name.toLowerCase() === preferredLower
+  );
+
   // A named export matching the effect's own name wins outright, even if a
   // default export also exists elsewhere in the file (helper exports are
-  // common alongside the main component).
-  if (namedExports.includes(preferredName)) {
+  // common alongside the main component). Case-insensitive so acronym
+  // casing (e.g. source "AnimatedFAQ" vs toPascalCase's "AnimatedFaq")
+  // still matches instead of silently falling through.
+  if (namedMatch) {
     return {
-      exportName: preferredName,
+      exportName: namedMatch,
       exportKind: "named",
     };
   }
@@ -60,10 +76,10 @@ function detectExport(content, preferredName) {
     };
   }
 
-  if (namedExports.length > 0) {
+  if (defaultIdentifier) {
     return {
-      exportName: namedExports[0],
-      exportKind: "named",
+      exportName: defaultIdentifier[1],
+      exportKind: "default",
     };
   }
 
@@ -81,14 +97,44 @@ function detectExport(content, preferredName) {
       .map((entry) => entry.trim().split(/\s+as\s+/).pop()?.trim())
       .filter(Boolean);
 
-    if (exportedNames.length > 0) {
-      return {
-        exportName: exportedNames.includes(preferredName)
-          ? preferredName
-          : exportedNames[0],
-        exportKind: "named",
-      };
+    const listMatch = exportedNames.find(
+      (name) => name.toLowerCase() === preferredLower
+    );
+
+    if (listMatch) {
+      return { exportName: listMatch, exportKind: "named" };
     }
+
+    if (exportedNames.length === 1) {
+      return { exportName: exportedNames[0], exportKind: "named" };
+    }
+
+    if (exportedNames.length > 1) {
+      throw new Error(
+        `Ambiguous export for "${preferredName}": "export { ... }" lists multiple ` +
+          `names [${exportedNames.join(", ")}] and none match the expected export ` +
+          `name. Add exportName/exportKind explicitly to this effect's registry.json.`
+      );
+    }
+  }
+
+  // Exactly one named export with no preferred-name match is unambiguous --
+  // there's only one thing it could be. More than one is a guess, so fail
+  // the build instead of silently picking namedExports[0] (the bug that
+  // shipped animated-faq with exportName "FAQGroup" instead of "AnimatedFAQ").
+  if (namedExports.length === 1) {
+    return {
+      exportName: namedExports[0],
+      exportKind: "named",
+    };
+  }
+
+  if (namedExports.length > 1) {
+    throw new Error(
+      `Ambiguous export for "${preferredName}": found multiple named exports ` +
+        `[${namedExports.join(", ")}] and none match the expected export name ` +
+        `"${preferredName}". Add exportName/exportKind explicitly to this effect's registry.json.`
+    );
   }
 
   return null;
@@ -177,6 +223,17 @@ async function buildRegistry() {
 
       // Read registry metadata
       const registryJson = JSON.parse(fs.readFileSync(registryJsonPath, "utf-8"));
+
+      // previewUrl must always resolve to the effect's real demo route.
+      // Catches drift like "/border-beam" or "/webgl/fractal-glass" before
+      // it ships, instead of leaving a 404'ing link live.
+      const expectedPreviewUrl = `/demo/${registryJson.name}`;
+      if (registryJson.previewUrl && registryJson.previewUrl !== expectedPreviewUrl) {
+        throw new Error(
+          `Invalid previewUrl for "${registryJson.name}" in ${registryJsonPath}: ` +
+            `found "${registryJson.previewUrl}", expected "${expectedPreviewUrl}".`
+        );
+      }
 
       // Find component files (JS/JSX and CSS)
       const files = fs

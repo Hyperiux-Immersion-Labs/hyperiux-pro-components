@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "SplitCanvas",
   "exportKind": "default",
+  "previewUrl": "/demo/split-canvas",
   "files": [
     {
       "path": "index.jsx",

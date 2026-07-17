@@ -8,9 +8,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/overflow-text-reveal",
+  "previewUrl": "/demo/overflow-text-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "OverflowTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/overflow-text-reveal",
   "target": "src/components/effects/overflow-text-reveal",
   "files": [

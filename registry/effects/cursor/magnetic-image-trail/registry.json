@@ -6,9 +6,11 @@
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/magnetic-image-trail",
+  "previewUrl": "/demo/magnetic-image-trail",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "MagneticImageTrail",
+  "exportKind": "default",
   "importPath": "@/components/effects/magnetic-image-trail",
   "target": "src/components/effects/magnetic-image-trail",
   "files": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "InfinitePerspectiveSlider",
   "exportKind": "default",
+  "previewUrl": "/demo/infinite-perspective-slider",
   "files": [
     {
       "path": "index.jsx",

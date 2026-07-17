@@ -8,7 +8,8 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrambleLinkButton",
-  "exportKind": "named",
+  "exportKind": "default",
+  "previewUrl": "/demo/scramble-link-button",
   "files": [
     {
       "path": "index.jsx",

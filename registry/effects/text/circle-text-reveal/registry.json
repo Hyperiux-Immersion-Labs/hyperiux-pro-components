@@ -5,12 +5,14 @@
   "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
   "category": "text",
   "dependencies": [
-    "framer-motion"
+    "motion"
   ],
   "registryDependencies": [],
-  "previewUrl": "/circle-reveal",
+  "previewUrl": "/demo/circle-text-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CircleTextReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/circle-text-reveal",
   "target": "src/components/effects/circle-text-reveal",
   "files": [
