@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+import { useLenis } from "lenis/react";
 
 export const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
@@ -76,8 +77,102 @@ const Loader2 = () => {
   const progressRef = useRef(null);
   const footerRef = useRef(null);
   const loadingTextRef = useRef(null);
+  const scrollLockRef = useRef({
+    locked: false,
+    scrollY: 0,
+    bodyOverflow: "",
+    htmlOverflow: "",
+    bodyPosition: "",
+    bodyTop: "",
+    bodyWidth: "",
+    bodyTouchAction: "",
+    htmlOverscrollBehavior: "",
+    stopInterval: null,
+    stopRaf: null,
+  });
   const [visible, setVisible] = useState(false);
   const [shouldRun, setShouldRun] = useState(false);
+  const lenis = useLenis();
+  const lenisRef = useRef(lenis);
+  lenisRef.current = lenis;
+
+  const lockScroll = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    lenisRef.current?.stop?.();
+    window.__HYPERIUX_LENIS_LOCKED__ = true;
+
+    const lock = scrollLockRef.current;
+    if (!lock.locked) {
+      lock.locked = true;
+      lock.scrollY = window.scrollY || window.pageYOffset || 0;
+      lock.bodyOverflow = document.body.style.overflow;
+      lock.htmlOverflow = document.documentElement.style.overflow;
+      lock.bodyPosition = document.body.style.position;
+      lock.bodyTop = document.body.style.top;
+      lock.bodyWidth = document.body.style.width;
+      lock.bodyTouchAction = document.body.style.touchAction;
+      lock.htmlOverscrollBehavior =
+        document.documentElement.style.overscrollBehavior;
+
+      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.overscrollBehavior = "none";
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${lock.scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.touchAction = "none";
+    }
+
+    if (!lock.stopInterval) {
+      lock.stopInterval = window.setInterval(() => {
+        lenisRef.current?.stop?.();
+      }, 50);
+    }
+
+    const stopEveryFrame = () => {
+      if (!scrollLockRef.current.locked) return;
+      lenisRef.current?.stop?.();
+      scrollLockRef.current.stopRaf =
+        window.requestAnimationFrame(stopEveryFrame);
+    };
+
+    if (!lock.stopRaf) {
+      lock.stopRaf = window.requestAnimationFrame(stopEveryFrame);
+    }
+  }, []);
+
+  const unlockScroll = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const lock = scrollLockRef.current;
+
+    if (lock.stopInterval) {
+      window.clearInterval(lock.stopInterval);
+      lock.stopInterval = null;
+    }
+    if (lock.stopRaf) {
+      window.cancelAnimationFrame(lock.stopRaf);
+      lock.stopRaf = null;
+    }
+
+    if (lock.locked) {
+      document.documentElement.style.overflow = lock.htmlOverflow;
+      document.documentElement.style.overscrollBehavior =
+        lock.htmlOverscrollBehavior;
+      document.body.style.overflow = lock.bodyOverflow;
+      document.body.style.position = lock.bodyPosition;
+      document.body.style.top = lock.bodyTop;
+      document.body.style.width = lock.bodyWidth;
+      document.body.style.touchAction = lock.bodyTouchAction;
+      window.scrollTo(0, lock.scrollY || 0);
+    }
+
+    lock.locked = false;
+    window.__HYPERIUX_LENIS_LOCKED__ = false;
+    lenisRef.current?.start?.();
+    requestAnimationFrame(() => lenisRef.current?.start?.());
+  }, []);
 
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
@@ -103,6 +198,19 @@ const Loader2 = () => {
     };
   }, []);
 
+  // Freeze page scroll for the entire loader (native + Lenis).
+  useLayoutEffect(() => {
+    if (!shouldRun || !visible) return;
+    lockScroll();
+    return () => unlockScroll();
+  }, [shouldRun, visible, lockScroll, unlockScroll]);
+
+  // If Lenis mounts mid-loader, stop it immediately.
+  useEffect(() => {
+    if (!shouldRun || !visible || !lenis) return;
+    lenis.stop?.();
+  }, [shouldRun, visible, lenis]);
+
   useEffect(() => {
     if (!shouldRun || !visible) return;
 
@@ -111,6 +219,12 @@ const Loader2 = () => {
     const footer = footerRef.current;
     const loadingText = loadingTextRef.current;
     if (!root || !progress) return;
+
+    const finishLoader = () => {
+      hideLoaderLayers({ root, progress, footer });
+      setVisible(false);
+      unlockScroll();
+    };
 
     const ctx = gsap.context(() => {
       const sequence = root.querySelector(".sequence-container");
@@ -122,8 +236,7 @@ const Loader2 = () => {
 
       if (!digitWidth || !sequence) {
         signalLoaderComplete(false);
-        hideLoaderLayers({ root, progress, footer });
-        setVisible(false);
+        finishLoader();
         return;
       }
 
@@ -231,15 +344,12 @@ const Loader2 = () => {
         y: -root.clientHeight,
         duration: 0.4,
         ease: "power2.inOut",
-        onComplete: () => {
-          hideLoaderLayers({ root, progress, footer });
-          setVisible(false);
-        },
+        onComplete: finishLoader,
       });
     }, root);
 
     return () => ctx.revert();
-  }, [shouldRun, visible]);
+  }, [shouldRun, visible, unlockScroll]);
 
   if (!visible) return null;
 
