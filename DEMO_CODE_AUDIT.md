@@ -117,8 +117,8 @@ import { ReactLenis } from"lenis/react";
 
 **Two Tailwind typos that silently do nothing:**
 
-- [`scramble-text/ScrambleTextWrapper.jsx:33`](apps/docs/src/app/(marketing)/demo/scramble-text/ScrambleTextWrapper.jsx#L33) — `max-md:leadng-[1.2]` → `leading`
-- [`overflow-text-reveal/OverflowTextRevealWrapper.jsx:40`](apps/docs/src/app/(marketing)/demo/overflow-text-reveal/OverflowTextRevealWrapper.jsx#L40) — `max-smd:text-sm` → `max-sm`
+- [`scramble-text/ScrambleTextWrapper.jsx:33`](apps/docs/src/app/(marketing)/demo/scramble-text/ScrambleTextWrapper.jsx#L33) — `max-md:leading-[1.2]` → `leading`
+- [`overflow-text-reveal/OverflowTextRevealWrapper.jsx:40`](apps/docs/src/app/(marketing)/demo/overflow-text-reveal/OverflowTextRevealWrapper.jsx#L40) — `max-sm:text-sm` → `max-sm`
 
 Both compile fine and produce nothing. Nobody noticed because nothing enforces it. Add `eslint-plugin-tailwindcss` (or Tailwind v4's `detectUnknownClasses`) — it catches both mechanically.
 
@@ -552,6 +552,6 @@ Every item preserves the current visual result.
 - **Why:** the logo currently renders the wrong color.
 
 ### 10. `scramble-text/ScrambleTextWrapper.jsx`
-- **Now:** `max-md:leadng-[1.2]` typo; `h-155`/`h-130`/`h-90`/`h-75` magic sizes; unused React import.
+- **Now:** `max-md:leading-[1.2]` typo; `h-155`/`h-130`/`h-90`/`h-75` magic sizes; unused React import.
 - **Better:** fix the typo; name the sizes or use aspect ratios; drop the import.
 - **Why:** the intended line-height has never once applied in production.

@@ -83,7 +83,7 @@ Severity: 🔴 Critical · 🟠 Major · 🟡 Minor · ⚪ Nitpick
 **Fix:** One config-driven `TransitionDemo` / `TransitionDestination` pair. Removes ~10 near-duplicate files and closes M12 systematically.
 
 ### M14. Two Tailwind typos that silently do nothing
-**Where:** `scramble-text/ScrambleTextWrapper.jsx:33` (`max-md:leadng-[1.2]`); `overflow-text-reveal/OverflowTextRevealWrapper.jsx:40` (`max-smd:text-sm`)
+**Where:** `scramble-text/ScrambleTextWrapper.jsx:33` (`max-md:leading-[1.2]`); `overflow-text-reveal/OverflowTextRevealWrapper.jsx:40` (`max-sm:text-sm`)
 **Fix:** Correct to `leading` / `max-sm`. Add `eslint-plugin-tailwindcss` — both are caught mechanically. The intended line-height has never applied in production.
 
 ### M15. Inverted heading semantics

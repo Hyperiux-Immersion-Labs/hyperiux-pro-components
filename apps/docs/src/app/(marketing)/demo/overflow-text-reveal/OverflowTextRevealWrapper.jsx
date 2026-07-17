@@ -37,7 +37,7 @@ const OverflowTextRevealWrapper = () => {
           </button>
 
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-smd:text-sm">
+            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-sm:text-sm">
               direction - bottom (default)
             </p>
           </SplitLine>
