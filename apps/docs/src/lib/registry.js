@@ -241,6 +241,44 @@ export function getEffectSource(slug) {
   return attachPrivateFileContent(effect, privateMatch.effectDir);
 }
 
+// Single content-shaping function for both Pro-effect delivery APIs (CLI
+// route and web route) - parameterize on slug only, since both callers need
+// the identical response shape. Auth is the caller's job (getEffectAccessDecision
+// in effect-access.js); call this only after confirming access.
+export function buildEffectDeliveryPayload(slug) {
+  const effect = getEffectSource(slug);
+
+  if (!effect) return null;
+
+  return {
+    name: effect.name,
+    type: effect.type,
+    title: effect.title,
+    description: effect.description,
+    category: effect.category,
+    categories: effect.categories || [effect.category || "components"],
+    tier: effect.tier || "free",
+    version: effect.version || "1.0.0",
+    changelog: effect.changelog || [],
+    dependencies: effect.dependencies || [],
+    registryDependencies: effect.registryDependencies || [],
+    exportName: effect.exportName,
+    exportKind: effect.exportKind || "named",
+    previewUrl: effect.previewUrl,
+    coverImage: effect.coverImage,
+    videoUrl: effect.videoUrl,
+    files: (effect.files || []).map((file) => ({
+      path: file.path,
+      target: file.target,
+      targetPath: file.target || file.targetPath || file.path,
+      type: file.type,
+      source: file.source,
+      encoding: file.encoding,
+      content: file.content,
+    })),
+  };
+}
+
 export function getPublicEffectBySlug(slug) {
   for (const slugAlias of getEffectSlugAliases(slug)) {
     const publicEffectPath = path.join(PUBLIC_REGISTRY_PATH, `${slugAlias}.json`);

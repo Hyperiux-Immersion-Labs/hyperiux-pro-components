@@ -9,7 +9,8 @@
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "build:registry": "node scripts/build-registry.js"
+    "build:registry": "node scripts/build-registry.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "@14islands/r3f-scroll-rig": "^8.15.0",
@@ -61,7 +62,8 @@
     "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "vitest": "^4.1.10"
   },
   "browserslist": [
     "chrome >= 93",
