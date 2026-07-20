@@ -977,7 +977,7 @@ function LockedCodePlaceholder({ filename }) {
   ];
 
   const subtitle =
-    "You can preview it now. Pro install access opens next week for Founding Access users.";
+    "You can preview it now. Upgrade to Pro for instant install access.";
 
   return (
     <section className="fadeup relative min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">

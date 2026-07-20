@@ -85,7 +85,7 @@ export const proEffectsContent = {
   },
   description: [
     "The Pro tier is where Hyperiux Vault goes deeper - more complex interactions, more refined motion, and effects that take real effort to build from scratch.",
-    "Preview available. Pro opens next week through Founding Access.",
+    "Preview available now. Upgrade to Pro for instant install access.",
   ],
 };
 

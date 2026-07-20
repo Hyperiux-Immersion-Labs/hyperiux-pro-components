@@ -152,9 +152,9 @@ export default function Pricing({ padding, content = true }) {
               className="text24 w-[50vw] max-md:w-[70vw] max-sm:w-[85vw] mx-auto"
             >
               Free Core is open today with 30+ source-first effects. Vault Pro
-              opens next week through Founding Access, unlocking 80+ premium
-              effects across scroll systems, cursor effects, text reveals, page
-              transitions, loaders, backgrounds, and WebGL scenes.
+              is available now, unlocking 80+ premium effects across scroll
+              systems, cursor effects, text reveals, page transitions, loaders,
+              backgrounds, and WebGL scenes.
             </SplitLine>
           </div>
         )}
