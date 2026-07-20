@@ -1,6 +1,6 @@
 # Hyperiux Monetization Plan
 
-A complete implementation plan for gating 115 effects behind a subscription paywall, while keeping 10–15 effects permanently free. Both the docs site and the CLI are gated.
+A complete implementation plan for gating 115 effects behind a subscription paywall, while keeping 32 effects permanently free. Both the docs site and the CLI are gated.
 
 ---
 
@@ -44,7 +44,7 @@ A complete implementation plan for gating 115 effects behind a subscription payw
 | Service | Purpose | Free tier available |
 |---|---|---|
 | [Clerk](https://clerk.com) | Authentication (login, sessions, user management) | Yes - generous free tier |
-| [Stripe](https://stripe.com) | Subscription billing | Yes - pay per transaction only |
+| [Razorpay](https://razorpay.com) | Subscription billing | Yes - pay per transaction only |
 | [Supabase](https://supabase.com) | Database to store user subscription status | Yes - free tier |
 
 ### Packages to install in `apps/docs`
@@ -95,7 +95,7 @@ Valid values: `"free"` or `"pro"`. Default to `"pro"` if the field is missing (s
 
 ### Step 1.2 - Pick the free effects
 
-Choose 10–15 effects. Recommended criteria:
+Choose 32 effects. Recommended criteria:
 - Visually impressive (drives sharing and discovery)
 - Cover multiple categories (text, scroll, cursor, webgl - show breadth)
 - Not the most complex ones (leave depth behind the paywall)
@@ -130,7 +130,7 @@ const effectData = {
 
 ## Phase 2 - Auth & Billing Infrastructure
 
-**Goal:** Set up Clerk for login, Stripe for subscriptions, and Supabase to track who has an active subscription.
+**Goal:** Set up Clerk for login, Razorpay for subscriptions, and Supabase to track who has an active subscription.
 
 ### Step 2.1 - Set up Clerk
 
