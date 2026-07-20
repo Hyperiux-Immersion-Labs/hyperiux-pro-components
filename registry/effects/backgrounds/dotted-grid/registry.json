@@ -19,6 +19,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/dotted-grid/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/dotted-grid/createSuspendedRaf.js"
     }
   ]
 }

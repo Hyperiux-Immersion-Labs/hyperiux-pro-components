@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from"react";
 import { LevaPanel, useControls } from"leva";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
@@ -216,7 +217,7 @@ useEffect(() => {
  const maskCanvas = document.createElement("canvas");
  const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
 
- let width = 0, height = 0, dpr = 1, animationFrame;
+ let width = 0, height = 0, dpr = 1;
 
  const createTextMask = () => {
  maskCtx.clearRect(0, 0, width, height);
@@ -382,12 +383,14 @@ useEffect(() => {
  ctx.restore();
  };
 
- const render = () => {
- updateCells();
- ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
- drawBaseGrid(); drawRaisedMaskGrid();
- animationFrame = requestAnimationFrame(render);
- };
+ const loop = createSuspendedRaf({
+  root: canvas,
+  onFrame: () => {
+    updateCells();
+    ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
+    drawBaseGrid(); drawRaisedMaskGrid();
+  },
+ });
 
  const onPointerMove = (e) => {
   if (!isDesktop) return;
@@ -397,7 +400,7 @@ useEffect(() => {
  };
  const onPointerLeave = () => { mouseRef.current.active = false; };
 
- resize(); render();
+ resize(); loop.start();
  window.addEventListener("resize", resize);
  // Only attach pointer listeners on desktop-capable devices
  if (isDesktop) {
@@ -409,7 +412,7 @@ useEffect(() => {
  }
 
  return () => {
- cancelAnimationFrame(animationFrame);
+ loop.destroy();
   window.removeEventListener("resize", resize);
   if (isDesktop) {
     window.removeEventListener("pointermove", onPointerMove);

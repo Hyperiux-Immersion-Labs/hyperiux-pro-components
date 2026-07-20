@@ -17,6 +17,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 function getMediaProxyUrl(src = "") {
   if (!src) return src;
@@ -834,11 +835,9 @@ galleryContainer.add(mesh);
       }
     }
 
-    let rafId;
-
-    function animate(t) {
-      rafId = requestAnimationFrame(animate);
-
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: (t) => {
       const frameDelta = Math.min(t - tLast, 100);
 
       tLast = t;
@@ -943,7 +942,8 @@ galleryContainer.add(mesh);
       camera.updateProjectionMatrix();
 
       renderer.render(scene, camera);
-    }
+      },
+    });
 
    function onMouseMove(event) {
   const rect = canvas.getBoundingClientRect();
@@ -1068,10 +1068,10 @@ galleryContainer.add(mesh);
 
     resize();
 
-    rafId = requestAnimationFrame(animate);
+    loop.start();
 
     return () => {
-      cancelAnimationFrame(rafId);
+      loop.destroy();
 
       resizeObs.disconnect();
 

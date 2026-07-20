@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from"@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from"react";
 import * as THREE from"three";
 import { degToRad } from"three/src/math/MathUtils";
+import { createVisibilityGate } from"./createSuspendedRaf";
 
 const PARTICLE_SIZES = [0.08, 0.09, 0.1, 0.2,0.4,0.6 ];
 const OFFSCREEN = 9999;
@@ -584,7 +585,18 @@ export default function DonutParticles({
  cameraFov = 50,
  dpr = [1, 2],
 }) {
+ const rootRef = useRef(null);
+ const [frameloop, setFrameloop] = useState("always");
  const [viewportWidth, setViewportWidth] = useState(1280);
+
+ useEffect(() => {
+ const gate = createVisibilityGate({
+ root: rootRef,
+ onChange: (active) => setFrameloop(active ? "always" : "never"),
+ });
+ setFrameloop(gate.isActive ? "always" : "never");
+ return () => gate.destroy();
+ }, []);
 
  useEffect(() => {
  const updateViewportWidth = () => {
@@ -613,8 +625,8 @@ export default function DonutParticles({
  : donutPosition;
 
  return (
- <div className={`h-screen w-full bg-black ${className}`}>
- <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr}>
+ <div ref={rootRef} className={`h-screen w-full bg-black ${className}`}>
+ <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr} frameloop={frameloop}>
  <DonutParticle
  position={responsivePosition}
  scale={responsiveScale}

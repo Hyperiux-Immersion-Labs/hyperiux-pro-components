@@ -22,6 +22,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/fish-eye/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/fish-eye/createSuspendedRaf.js"
     }
   ]
 }

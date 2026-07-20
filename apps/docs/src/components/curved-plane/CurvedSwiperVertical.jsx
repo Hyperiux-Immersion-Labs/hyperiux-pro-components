@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useId, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 // GLSL Shaders
 const vertexShader = `
@@ -263,35 +264,37 @@ const CurvedPlaneVertical = ({ routes }) => {
       });
     };
 
-    const animate = () => {
-      if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-        targetOffsetRef.current += velocityRef.current;
-        velocityRef.current *= MOMENTUM_FRICTION;
-      }
+    const loop = createSuspendedRaf({
+      root: container,
+      onFrame: () => {
+        if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
+          targetOffsetRef.current += velocityRef.current;
+          velocityRef.current *= MOMENTUM_FRICTION;
+        }
 
-      const now = Date.now();
-      const isRecentlyScrolled = now - lastScrollTime.current < 100;
+        const now = Date.now();
+        const isRecentlyScrolled = now - lastScrollTime.current < 100;
 
-      if (!dragging.current && !isRecentlyScrolled) {
-        targetDeformationRef.current = 0;
-      }
+        if (!dragging.current && !isRecentlyScrolled) {
+          targetDeformationRef.current = 0;
+        }
 
-      offsetRef.current = lerp(
-        offsetRef.current,
-        targetOffsetRef.current,
-        SCROLL_SMOOTHNESS
-      );
-      deformationRef.current = lerp(
-        deformationRef.current,
-        targetDeformationRef.current,
-        DEFORMATION_SMOOTHNESS
-      );
+        offsetRef.current = lerp(
+          offsetRef.current,
+          targetOffsetRef.current,
+          SCROLL_SMOOTHNESS
+        );
+        deformationRef.current = lerp(
+          deformationRef.current,
+          targetDeformationRef.current,
+          DEFORMATION_SMOOTHNESS
+        );
 
-      updateMeshes();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
+        updateMeshes();
+        renderer.render(scene, camera);
+      },
+    });
+    loop.start();
 
     const onResize = () => {
       const viewHeight = window.innerHeight;
@@ -376,6 +379,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     dom.addEventListener("wheel", onWheel);
 
     return () => {
+      loop.destroy();
       window.removeEventListener("resize", onResize);
       dom.removeEventListener("mousedown", onPointerDown);
       dom.removeEventListener("mousemove", onPointerMove);

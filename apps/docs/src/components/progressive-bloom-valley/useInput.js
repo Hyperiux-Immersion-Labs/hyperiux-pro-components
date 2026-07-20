@@ -1,5 +1,6 @@
 import { useEffect, useRef } from"react";
 import { useThree } from"@react-three/fiber";
+import { createSuspendedRaf } from"./createSuspendedRaf";
 
 export default function useInput({
  scrollIntensity = 1,
@@ -49,11 +50,9 @@ export default function useInput({
  }, [gl.domElement, scrollIntensity]);
 
  useEffect(() => {
- let running = true;
-
- const update = () => {
- if (!running) return;
-
+ const loop = createSuspendedRaf({
+ root: gl.domElement,
+ onFrame: () => {
  // damping
  velocity.current *= damping;
 
@@ -73,14 +72,12 @@ export default function useInput({
  scroll.current = loopPoint - 0.001;
  velocity.current = 0;
  }
+ },
+ });
 
- requestAnimationFrame(update);
- };
- update();
- return () => {
- running = false;
- };
- }, [autoSpeed, damping, loopPoint]);
+ loop.start();
+ return () => loop.destroy();
+ }, [gl.domElement, autoSpeed, damping, loopPoint]);
 
  return { mouse, scroll };
 }

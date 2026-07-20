@@ -35,6 +35,10 @@
     {
       "path": "pixel-transition.js",
       "target": "src/components/effects/split-canvas/pixel-transition.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/split-canvas/createSuspendedRaf.js"
     }
   ]
 }

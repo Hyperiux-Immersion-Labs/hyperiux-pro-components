@@ -43,6 +43,10 @@
     {
       "path": "VideoUI.jsx",
       "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
     }
   ]
 }

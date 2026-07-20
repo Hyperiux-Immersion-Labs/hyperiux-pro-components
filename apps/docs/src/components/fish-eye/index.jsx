@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
@@ -124,6 +125,8 @@ function ImageNodeMaterial({ src, isMobile }) {
 }
 
 export default function FishEye({ src }) {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -151,15 +154,26 @@ export default function FishEye({ src }) {
     }
   }, [src, isMobile])
 
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
+
   if (isMobile) return null
 
   if (!objectUrl) return null
 
   return (
+    <div ref={rootRef} className="h-full w-full">
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0, 5], fov: 45 }}
       className="h-full w-full"
+      frameloop={frameloop}
       style={{
         pointerEvents: isMobile ? 'none' : 'auto',
         touchAction: isMobile ? 'none' : 'auto',
@@ -179,5 +193,6 @@ export default function FishEye({ src }) {
     >
       <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
     </Canvas>
+    </div>
   )
 }

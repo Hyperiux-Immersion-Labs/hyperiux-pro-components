@@ -20,6 +20,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/spider-particles/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/spider-particles/createSuspendedRaf.js"
     }
   ],
   "version": "1.0.0"

@@ -22,6 +22,10 @@
     {
       "path": "CharacterTrailComp.jsx",
       "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/character-trail/createSuspendedRaf.js"
     }
   ]
 }

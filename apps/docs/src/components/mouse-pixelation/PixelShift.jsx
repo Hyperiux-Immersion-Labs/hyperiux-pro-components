@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const IMAGE_ASPECT_RATIO = 1920 / 1080;
 const TABLET_MAX_WIDTH = 768;
@@ -326,15 +327,27 @@ export default function PixelShift({
   imageUrl = img || DEFAULT_IMAGE_URL,
   notice = DEFAULT_NOTICE,
 }) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
+
   return (
-    <div className="relative h-screen w-full">
+    <div ref={rootRef} className="relative h-screen w-full">
       <div className="pointer-events-none absolute left-1/2 top-40 z-10 hidden w-full -translate-x-1/2 px-5 max-md:flex max-md:justify-center max-sm:left-0 max-sm:block max-sm:translate-x-0 max-sm:pt-5">
         <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-md:w-[80%] max-md:text-center max-md:text-[2.8vw] max-sm:w-full max-sm:text-[3.5vw]">
           {notice}
         </p>
       </div>
 
-      <Canvas aria-hidden="true" camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas aria-hidden="true" camera={{ position: [0, 0, 5], fov: 45 }} frameloop={frameloop}>
         <color attach="background" args={["#000000"]} />
         <Scene img={imageUrl} />
       </Canvas>

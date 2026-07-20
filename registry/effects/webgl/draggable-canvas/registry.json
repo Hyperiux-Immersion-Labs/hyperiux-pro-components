@@ -28,6 +28,10 @@
     {
       "path": "MaskedContainer.jsx",
       "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
     }
   ]
 }

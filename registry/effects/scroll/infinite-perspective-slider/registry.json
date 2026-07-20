@@ -26,6 +26,10 @@
     {
       "path": "InfinitePerspectiveSliderComp.jsx",
       "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.js"
     }
   ]
 }
