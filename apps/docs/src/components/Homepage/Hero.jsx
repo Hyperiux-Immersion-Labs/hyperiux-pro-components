@@ -264,7 +264,7 @@ export default function Hero() {
           <ShimmerText
             baseColor="#939393"
             shimmerColor="#ffffff"
-            className="max-sm:text-[3.5vw] leading-[1.2]"
+            className="max-sm:text-[3.5vw] capitalize leading-[1.2]"
           >
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install ·
             Source-first code

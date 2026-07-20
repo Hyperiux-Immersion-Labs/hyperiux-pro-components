@@ -32,6 +32,7 @@ import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
 import FAQs from "@/components/Homepage/FAQs";
+import { FilterMenu, FILTER_OPTIONS } from "./FilterMenu";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -207,52 +208,7 @@ const routeKey = `${pathname}${
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const filterMenuRef = useRef(null);
-  const filterButtonRef = useRef(null);
-  const filterMenuPanelRef = useRef(null);
-  // On mobile/tablet the category row is a horizontal scroll container, which
-  // clips an absolutely-positioned dropdown. When set, the menu is portaled to
-  // <body> with these fixed viewport coords so it renders on top instead.
-  const [filterMenuPos, setFilterMenuPos] = useState(null);
   const [gridColumns, setGridColumns] = useState(3);
-
-  // featured/free/pro are filters (not real categories); they live behind the
-  // filter icon dropdown. Everything else renders inline as category chips.
-  const FILTER_OPTIONS = ["featured", "free", "pro"];
-
-  useEffect(() => {
-    if (!filterMenuOpen) return;
-
-    const handlePointerDown = (event) => {
-      if (
-        !filterMenuRef.current?.contains(event.target) &&
-        !filterMenuPanelRef.current?.contains(event.target)
-      ) {
-        setFilterMenuOpen(false);
-      }
-    };
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") setFilterMenuOpen(false);
-    };
-
-    // The mobile/tablet panel is portaled with fixed coords, so close it on
-    // scroll/resize rather than let it float detached from its button.
-    const handleReposition = () => setFilterMenuOpen(false);
-
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("scroll", handleReposition, true);
-    window.addEventListener("resize", handleReposition);
-
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("scroll", handleReposition, true);
-      window.removeEventListener("resize", handleReposition);
-    };
-  }, [filterMenuOpen]);
 
   const featuredEffects = useMemo(
     () => getFeaturedEffects(safeEffects),
@@ -660,123 +616,12 @@ const routeKey = `${pathname}${
                   ].join(" ")}
                 >
                   {/* Filter dropdown: featured / free / pro */}
-                  <div ref={filterMenuRef} className="relative shrink-0">
-                    <button
-                      ref={filterButtonRef}
-                      type="button"
-                      onClick={() =>
-                        setFilterMenuOpen((open) => {
-                          const next = !open;
-
-                          if (
-                            next &&
-                            typeof window !== "undefined" &&
-                            window.innerWidth < 768
-                          ) {
-                            const rect =
-                              filterButtonRef.current?.getBoundingClientRect();
-
-                            if (rect) {
-                              setFilterMenuPos({
-                                top: rect.bottom + 8,
-                                left: rect.left,
-                              });
-                            }
-                          } else {
-                            setFilterMenuPos(null);
-                          }
-
-                          return next;
-                        })
-                      }
-                      aria-haspopup="menu"
-                      aria-expanded={filterMenuOpen}
-                      aria-label="Filter effects"
-                      className={`
-                        px-6 py-2.5 text-md relative rounded-full max-sm:px-5 max-sm:py-2
-                        backdrop-blur-[6px] font-sans flex items-center gap-2 cursor-pointer
-                        transition-colors duration-300 max-sm:text-lg text20
-                        ${activeFilter
-                          ? "bg-white text-[#111111] hover:bg-white"
-                          : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
-                        }
-                      `}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="shrink-0"
-                      >
-                        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-                      </svg>
-                      <span className="leading-none">
-                        {activeFilter ? getQuickCategoryLabel(activeFilter) : ""}
-                      </span>
-                    </button>
-
-                    {filterMenuOpen &&
-                      (() => {
-                        const panel = (
-                          <div
-                            ref={filterMenuPanelRef}
-                            role="menu"
-                            style={
-                              filterMenuPos
-                                ? {
-                                    top: filterMenuPos.top,
-                                    left: filterMenuPos.left,
-                                  }
-                                : undefined
-                            }
-                            className={[
-                              "space-y-1.5 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5",
-                              filterMenuPos
-                                ? "fixed z-[9999]"
-                                : "absolute left-0 top-full mt-2 z-30",
-                            ].join(" ")}
-                          >
-                            {FILTER_OPTIONS.map((cat) => {
-                              const isSelected = categoryFilter === cat;
-
-                              return (
-                                <button
-                                  key={cat}
-                                  type="button"
-                                  role="menuitem"
-                                  onClick={() => {
-                                    handleCategoryLinkClick(cat);
-                                    setFilterMenuOpen(false);
-                                  }}
-                                  className={`
-                                flex w-full items-center rounded-full px-4 py-2.5 hover:bg-white text-left text20
-                                 duration-300! transition-colors cursor-pointer
-                                ${isSelected
-                                      ? "bg-white text-[#111111]"
-                                      : "text-foreground hover:bg-white hover:text-black"
-                                    }
-                              `}
-                                >
-                                  <span className="leading-none">
-                                    {getQuickCategoryLabel(cat)}
-                                  </span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        );
-
-                        return filterMenuPos && mounted
-                          ? createPortal(panel, document.body)
-                          : panel;
-                      })()}
-                  </div>
+                  <FilterMenu
+                    activeFilter={activeFilter}
+                    categoryFilter={categoryFilter}
+                    getLabel={getQuickCategoryLabel}
+                    onSelect={handleCategoryLinkClick}
+                  />
 
                   {/* Divider between filters and categories */}
                   <span
