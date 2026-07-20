@@ -406,7 +406,7 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
       gl.uniform1i(maskLocation, TEXTURE_UNIT_MASK);
 
       function resize() {
-        const devicePixelRatio = window.devicePixelRatio || 1;
+        const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
         const nextWidth = Math.floor(window.innerWidth * devicePixelRatio);
         const nextHeight = Math.floor(window.innerHeight * devicePixelRatio);
 

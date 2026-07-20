@@ -406,7 +406,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       gl.uniform1i(maskLocation, TEXTURE_UNIT_MASK);
 
       function resize() {
-        const devicePixelRatio = window.devicePixelRatio || 1;
+        const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
         const nextWidth = Math.floor(window.innerWidth * devicePixelRatio);
         const nextHeight = Math.floor(window.innerHeight * devicePixelRatio);
 

@@ -85,7 +85,7 @@ export default function PixelTransition({
  const resizeCanvas = () => {
  const canvas = canvasRef.current
  if (!canvas) return
- const dpr = window.devicePixelRatio || 1
+ const dpr = Math.min(window.devicePixelRatio || 1, 2)
  const w = window.innerWidth
  const h = window.innerHeight
  canvas.width = Math.ceil(w * dpr)

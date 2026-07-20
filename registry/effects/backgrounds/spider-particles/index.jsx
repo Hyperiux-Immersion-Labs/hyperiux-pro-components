@@ -99,7 +99,7 @@ export default function SpiderParticles({
     // ─── Renderer & Scene ──────────────────────────────────────────────────────
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 1);
     mount.appendChild(renderer.domElement);
@@ -216,7 +216,7 @@ export default function SpiderParticles({
       uniforms: {
         uColor:          { value: _particleColor },
         uGlow:           { value: _glowColor },
-        uSize:           { value: particleSize * window.devicePixelRatio },
+        uSize:           { value: particleSize * Math.min(window.devicePixelRatio, 2) },
         uMouse:          { value: new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN) },
         uSpotlightRadius: { value: spotlightRadius },
         uGlowEnabled:    { value: particlesGlow },
@@ -244,7 +244,7 @@ export default function SpiderParticles({
       uniforms: {
         uColor:       { value: _centerColor },
         uGlow:        { value: _glowColor },
-        uSize:        { value: particleSize * window.devicePixelRatio },
+        uSize:        { value: particleSize * Math.min(window.devicePixelRatio, 2) },
         uGlowEnabled: { value: particlesGlow },
         uAlpha:       { value: 0.0 },
       },

@@ -18,7 +18,7 @@ export default function TextCloning() {
         const lerp = (a, b, t) => a + (b - a) * t;
 
         const resize = () => {
-            dpr = window.devicePixelRatio || 1;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
             w = window.innerWidth;
             h = window.innerHeight;
 

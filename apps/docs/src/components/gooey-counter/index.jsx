@@ -239,7 +239,7 @@ export default function GooeyCounter() {
 
   // Layout
   function resize() {
-   const dpr = window.devicePixelRatio || 1;
+   const dpr = Math.min(window.devicePixelRatio || 1, 2);
    const vw = window.innerWidth, vh = window.innerHeight;
    const newRows = getRowsForWidth(vw);
    const widthChanged = vw !== sim.viewportWidth;

@@ -142,7 +142,7 @@ export function DottedGrid() {
 
     let width = 0;
     let height = 0;
-    let dpr = window.devicePixelRatio || 1;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let animationId;
     let dots = [];
 
@@ -172,7 +172,7 @@ export function DottedGrid() {
       const rect = canvas.getBoundingClientRect();
       width  = rect.width;
       height = rect.height;
-      dpr    = window.devicePixelRatio || 1;
+      dpr    = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width  = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
