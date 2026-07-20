@@ -5,12 +5,15 @@
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
   "dependencies": [
     "gsap",
+    "next",
     "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
-  "previewUrl": "/demo/expanding-navbar",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -37,8 +40,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/HoverFillLink.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

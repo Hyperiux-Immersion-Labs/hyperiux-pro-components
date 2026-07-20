@@ -9,7 +9,8 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "maath"
+    "maath",
+    "next"
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",
@@ -17,7 +18,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/colliding-models",
   "files": [
     {
       "path": "index.jsx",

@@ -12,7 +12,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/char-stagger-primary-button",
   "files": [
     {
       "path": "index.jsx",

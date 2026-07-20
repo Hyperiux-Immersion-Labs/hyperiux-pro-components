@@ -10,7 +10,9 @@
   "registryDependencies": [],
   "exportName": "DepthCardStack",
   "exportKind": "default",
-  "previewUrl": "/demo/depth-card-stack",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -27,8 +29,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/SliderCard.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

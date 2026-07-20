@@ -4,20 +4,20 @@
   "title": "Parallax Slider",
   "description": "Pinned horizontal gallery with clip-path reveals and image parallax",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "next"
   ],
   "registryDependencies": [],
   "exportName": "ParallaxSlider",
   "exportKind": "default",
-  "previewUrl": "/demo/parallax-slider",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

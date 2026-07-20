@@ -5,12 +5,15 @@
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
   "dependencies": [
     "gsap",
-    "lucide-react"
+    "lucide-react",
+    "next"
   ],
   "registryDependencies": [],
   "exportName": "TestimonialSwiper",
   "exportKind": "default",
-  "previewUrl": "/demo/testimonial-swiper",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -27,8 +30,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/TestimonialComp.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

@@ -12,7 +12,9 @@
   "registryDependencies": [],
   "exportName": "MousePixelation",
   "exportKind": "default",
-  "previewUrl": "/demo/mouse-pixelation",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -34,8 +36,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/PixelShift.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

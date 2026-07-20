@@ -9,12 +9,16 @@
     "@react-three/postprocessing",
     "postprocessing",
     "gsap",
-    "three"
+    "three",
+    "motion",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "HeroBannerAnimated",
   "exportKind": "default",
-  "previewUrl": "/demo/hero-banner-animated",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -41,8 +45,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/VideoUI.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

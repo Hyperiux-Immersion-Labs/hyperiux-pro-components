@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ArrowUpRight, ChevronDown, Mail } from "lucide-react";
+import { Search, ArrowUpRight, ChevronDown } from "lucide-react";
 
 function formatDate(value) {
   if (!value) return "-";
@@ -45,14 +45,6 @@ export default function AdminPage() {
   const [planFilter, setPlanFilter] = useState("all");
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState(null);
-  const [sendingWelcomeTest, setSendingWelcomeTest] = useState(false);
-  const [welcomeTestMessage, setWelcomeTestMessage] = useState(null);
-  const [sendingProUnlockedTest, setSendingProUnlockedTest] = useState(false);
-  const [proUnlockedTestMessage, setProUnlockedTestMessage] = useState(null);
-  const [sendingResetPasswordTest, setSendingResetPasswordTest] = useState(false);
-  const [resetPasswordTestMessage, setResetPasswordTestMessage] = useState(null);
-  const [sendingPasswordChangedTest, setSendingPasswordChangedTest] = useState(false);
-  const [passwordChangedTestMessage, setPasswordChangedTestMessage] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -103,66 +95,6 @@ export default function AdminPage() {
     }
   }
 
-  async function handleSendWelcomeTest() {
-    setSendingWelcomeTest(true);
-    setWelcomeTestMessage(null);
-    try {
-      const res = await fetch("/api/temp/send-welcome-test", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to send");
-      setWelcomeTestMessage({ type: "success", text: "Welcome email sent to harsh@weareenigma.com" });
-    } catch (err) {
-      setWelcomeTestMessage({ type: "error", text: err.message });
-    } finally {
-      setSendingWelcomeTest(false);
-    }
-  }
-
-  async function handleSendProUnlockedTest() {
-    setSendingProUnlockedTest(true);
-    setProUnlockedTestMessage(null);
-    try {
-      const res = await fetch("/api/temp/send-pro-unlocked-test", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to send");
-      setProUnlockedTestMessage({ type: "success", text: "Pro-unlocked email sent to harsh@weareenigma.com" });
-    } catch (err) {
-      setProUnlockedTestMessage({ type: "error", text: err.message });
-    } finally {
-      setSendingProUnlockedTest(false);
-    }
-  }
-
-  async function handleSendResetPasswordTest() {
-    setSendingResetPasswordTest(true);
-    setResetPasswordTestMessage(null);
-    try {
-      const res = await fetch("/api/temp/send-reset-password-test", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to send");
-      setResetPasswordTestMessage({ type: "success", text: "Reset password email sent to harsh@weareenigma.com" });
-    } catch (err) {
-      setResetPasswordTestMessage({ type: "error", text: err.message });
-    } finally {
-      setSendingResetPasswordTest(false);
-    }
-  }
-
-  async function handleSendPasswordChangedTest() {
-    setSendingPasswordChangedTest(true);
-    setPasswordChangedTestMessage(null);
-    try {
-      const res = await fetch("/api/temp/send-password-changed-test", { method: "POST" });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to send");
-      setPasswordChangedTestMessage({ type: "success", text: "Password-changed email sent to harsh@weareenigma.com" });
-    } catch (err) {
-      setPasswordChangedTestMessage({ type: "error", text: err.message });
-    } finally {
-      setSendingPasswordChangedTest(false);
-    }
-  }
-
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
 
@@ -197,88 +129,8 @@ export default function AdminPage() {
             Email Log
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
-          <button
-            onClick={handleSendWelcomeTest}
-            disabled={sendingWelcomeTest}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            {sendingWelcomeTest ? "Sending…" : "Send Welcome Test"}
-          </button>
-          <button
-            onClick={handleSendProUnlockedTest}
-            disabled={sendingProUnlockedTest}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            {sendingProUnlockedTest ? "Sending…" : "Send Pro Unlocked Test"}
-          </button>
-          {/* <button
-            onClick={handleSendResetPasswordTest}
-            disabled={sendingResetPasswordTest}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            {sendingResetPasswordTest ? "Sending…" : "Send Reset Password Test"}
-          </button>
-          <button
-            onClick={handleSendPasswordChangedTest}
-            disabled={sendingPasswordChangedTest}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            {sendingPasswordChangedTest ? "Sending…" : "Send Password Changed Test"}
-          </button> */}
         </div>
       </div>
-
-      {welcomeTestMessage && (
-        <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            welcomeTestMessage.type === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border-red-500/30 bg-red-500/10 text-red-400"
-          }`}
-        >
-          {welcomeTestMessage.text}
-        </div>
-      )}
-
-      {proUnlockedTestMessage && (
-        <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            proUnlockedTestMessage.type === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border-red-500/30 bg-red-500/10 text-red-400"
-          }`}
-        >
-          {proUnlockedTestMessage.text}
-        </div>
-      )}
-
-      {resetPasswordTestMessage && (
-        <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            resetPasswordTestMessage.type === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border-red-500/30 bg-red-500/10 text-red-400"
-          }`}
-        >
-          {resetPasswordTestMessage.text}
-        </div>
-      )}
-
-      {passwordChangedTestMessage && (
-        <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
-            passwordChangedTestMessage.type === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-              : "border-red-500/30 bg-red-500/10 text-red-400"
-          }`}
-        >
-          {passwordChangedTestMessage.text}
-        </div>
-      )}
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">

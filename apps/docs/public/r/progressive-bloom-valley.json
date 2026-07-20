@@ -15,7 +15,9 @@
   "registryDependencies": [],
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
-  "previewUrl": "/demo/progressive-bloom-valley",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -73,11 +75,6 @@
       "target": "components/hyperiux/Flower.jsx"
     },
     {
-      "path": "shaders.js",
-      "type": "registry:component",
-      "target": "components/hyperiux/shaders.js"
-    },
-    {
       "path": "use-input.js",
       "type": "registry:component",
       "target": "components/hyperiux/use-input.js"
@@ -91,9 +88,11 @@
       "path": "useValleyData.js",
       "type": "registry:component",
       "target": "components/hyperiux/useValleyData.js"
+    },
+    {
+      "path": "shaders.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/shaders.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

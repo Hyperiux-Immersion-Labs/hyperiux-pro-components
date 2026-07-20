@@ -2,6 +2,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
+import { invalidatePlanCache } from "@/lib/subscription";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
 import {
   renderProUnlockedEmail,
@@ -101,6 +102,8 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
     currentPeriodEnd,
   });
 
+  invalidatePlanCache(clerkUserId);
+
   return { plan: "pro", status, billingInterval, currentPeriodEnd };
 }
 
@@ -132,6 +135,8 @@ export async function markUserFree({ clerkUserId, status = "inactive" }) {
     razorpayPlanId: null,
     currentPeriodEnd: null,
   });
+
+  invalidatePlanCache(clerkUserId);
 }
 
 // Fires once per real charge - called only from the subscription.charged

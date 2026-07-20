@@ -7,6 +7,11 @@ const __dirname = path.dirname(__filename);
 
 const REGISTRY_PATH = path.join(__dirname, "../../../registry/effects");
 const OUTPUT_PATH = path.join(__dirname, "../public/r");
+// Same filesystem as OUTPUT_PATH (both under public/) so the final swap can
+// use fs.renameSync, which is atomic on POSIX - a crash mid-build leaves
+// this directory behind (cleaned up at the start of the next run) but never
+// leaves OUTPUT_PATH itself in a partial state.
+const TMP_OUTPUT_PATH = path.join(__dirname, "../public/r.tmp");
 const PUBLIC_PATH = path.join(__dirname, "../public");
 const PUBLIC_ASSET_REGEX =
   /(?<![\w])["'`]((?:\/(?:assets|models|valley|601|svgs|img)\/[^"'`)\s]+)|(?:\/(?:showreel|eye-loop|hyperiux-wordmark|hyperiux)\.(?:mp4|svg)))["'`]/g;
@@ -168,16 +173,11 @@ function collectPublicAssets(fileContents) {
 async function buildRegistry() {
   console.log("Building registry...");
 
-  // Ensure output directory exists
-  if (!fs.existsSync(OUTPUT_PATH)) {
-    fs.mkdirSync(OUTPUT_PATH, { recursive: true });
-  }
-
-  for (const fileName of fs.readdirSync(OUTPUT_PATH)) {
-    if (fileName.endsWith(".json")) {
-      fs.rmSync(path.join(OUTPUT_PATH, fileName));
-    }
-  }
+  // Clear any stale temp dir left behind by a previously killed/failed run,
+  // then build entirely into it. OUTPUT_PATH itself is untouched until the
+  // atomic swap at the very end of a fully successful run.
+  fs.rmSync(TMP_OUTPUT_PATH, { recursive: true, force: true });
+  fs.mkdirSync(TMP_OUTPUT_PATH, { recursive: true });
 
   const index = {
     items: [],
@@ -278,7 +278,19 @@ async function buildRegistry() {
           const overlap = baseName
             .split("-")
             .filter((part) => nameParts.has(part)).length;
-          const hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          // This scoring pass runs detectExport against every file in the
+          // effect directory, not just the eventual entry file - a helper
+          // file with genuinely ambiguous exports (e.g. a styles.js with
+          // several named exports) must not abort the whole build here.
+          // Treat "ambiguous" the same as "no confident match" for sorting
+          // purposes; the entry file actually chosen below still throws for
+          // real if it can't be resolved.
+          let hasExport;
+          try {
+            hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          } catch {
+            hasExport = 20;
+          }
 
           return hasExport - overlap;
         };
@@ -288,9 +300,15 @@ async function buildRegistry() {
       });
 
       const entryFile = fileContents.find((file) => file.type === "registry:component");
-      const exportInfo = entryFile
-        ? detectExport(entryFile.content, preferredExportName)
-        : null;
+      // registry.json's own exportName/exportKind override short-circuits
+      // before detectExport ever runs, so an effect that already declares
+      // its export explicitly never depends on the entry file being
+      // unambiguous (avoids the same throw-before-override-checked bug the
+      // scoring pass above has).
+      const exportInfo =
+        !registryJson.exportName && entryFile
+          ? detectExport(entryFile.content, preferredExportName)
+          : null;
       const exportName = registryJson.exportName || exportInfo?.exportName;
       const exportKind = registryJson.exportKind || exportInfo?.exportKind;
 
@@ -338,7 +356,7 @@ async function buildRegistry() {
       };
 
       // Write individual effect JSON
-      const outputFile = path.join(OUTPUT_PATH, `${registryJson.name}.json`);
+      const outputFile = path.join(TMP_OUTPUT_PATH, `${registryJson.name}.json`);
       fs.writeFileSync(outputFile, JSON.stringify(registryItem, null, 2));
       console.log(`  Created ${registryJson.name}.json`);
 
@@ -360,11 +378,21 @@ async function buildRegistry() {
   }
 
   // Write index
-  const indexFile = path.join(OUTPUT_PATH, "index.json");
+  const indexFile = path.join(TMP_OUTPUT_PATH, "index.json");
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
   console.log("  Created index.json");
+
+  // Atomic swap - only reached if every effect above processed without
+  // throwing. OUTPUT_PATH is replaced in one rename, so readers never see a
+  // partial mix of old and new output, and a crash before this point leaves
+  // the previous OUTPUT_PATH completely untouched.
+  fs.rmSync(OUTPUT_PATH, { recursive: true, force: true });
+  fs.renameSync(TMP_OUTPUT_PATH, OUTPUT_PATH);
 
   console.log(`\nRegistry built successfully! ${index.items.length} effects.`);
 }
 
-buildRegistry().catch(console.error);
+buildRegistry().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

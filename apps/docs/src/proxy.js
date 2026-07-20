@@ -23,6 +23,7 @@ const isMarketingRoute = createRouteMatcher([
   "/",
   "/docs(.*)",
   "/legal(.*)",
+  "/demo(.*)",
 ]);
 
 const withClerk = clerkMiddleware(async (auth, request) => {

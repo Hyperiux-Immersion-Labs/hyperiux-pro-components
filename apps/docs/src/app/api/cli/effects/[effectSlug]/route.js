@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getEffectBySlug } from "@/lib/registry";
+import { getEffectMetadata, getEffectSource } from "@/lib/registry";
 import { getCliTokenFromRequest, verifyCliToken } from "@/lib/cli-auth";
 
 function normalizeFiles(effect) {
@@ -17,16 +17,16 @@ function normalizeFiles(effect) {
 export async function GET(request, { params }) {
   const { effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
+  const effectMeta = getEffectMetadata(effectSlug);
 
-  if (!effect) {
+  if (!effectMeta) {
     return NextResponse.json(
       { error: "Effect not found." },
       { status: 404 }
     );
   }
 
-  const effectTier = effect.tier || "free";
+  const effectTier = effectMeta.tier || "free";
   const isProEffect = effectTier === "pro" || effectTier === "paid";
 
   if (isProEffect) {
@@ -43,6 +43,9 @@ export async function GET(request, { params }) {
       );
     }
   }
+
+  // Source is only read from disk after tier/token verification above.
+  const effect = getEffectSource(effectSlug);
 
   return NextResponse.json({
     name: effect.name,

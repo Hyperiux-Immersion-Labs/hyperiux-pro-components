@@ -12,7 +12,9 @@
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
   "exportKind": "default",
-  "previewUrl": "/demo/hyperiux-glitter",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -35,8 +37,5 @@
       "target": "public/assets/models/hyperiux-new-model.glb",
       "source": "/assets/models/hyperiux-new-model.glb"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

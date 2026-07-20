@@ -14,7 +14,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/3d-portfolio-slider",
   "files": [
     {
       "path": "index.jsx",

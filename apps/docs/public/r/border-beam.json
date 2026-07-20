@@ -7,7 +7,9 @@
   "registryDependencies": [],
   "exportName": "BorderBeam",
   "exportKind": "default",
-  "previewUrl": "/demo/border-beam",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -29,8 +31,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/styles.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

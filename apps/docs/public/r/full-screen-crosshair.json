@@ -7,7 +7,9 @@
   "registryDependencies": [],
   "exportName": "FullScreenCrosshair",
   "exportKind": "named",
-  "previewUrl": "/demo/full-screen-crosshair",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -19,8 +21,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/useMouse.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

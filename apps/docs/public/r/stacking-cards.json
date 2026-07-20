@@ -5,12 +5,15 @@
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
   "dependencies": [
     "gsap",
+    "next",
     "lenis"
   ],
   "registryDependencies": [],
   "exportName": "StackingCards",
   "exportKind": "default",
-  "previewUrl": "/demo/stacking-cards",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -22,8 +25,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/StackingCardComp.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

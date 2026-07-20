@@ -7,7 +7,9 @@
   "registryDependencies": [],
   "exportName": "InfiniteGridGallery",
   "exportKind": "default",
-  "previewUrl": "/demo/infinite-grid-gallery",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -24,8 +26,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/util.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

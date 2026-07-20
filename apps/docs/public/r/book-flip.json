@@ -15,7 +15,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-   "previewUrl": "/demo/book-flip",
   "files": [
     {
       "path": "index.jsx",
@@ -38,14 +37,14 @@
       "target": "components/hyperiux/Experience.jsx"
     },
     {
-      "path": "PageContext.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/PageContext.jsx"
-    },
-    {
       "path": "UI.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/UI.jsx"
+    },
+    {
+      "path": "PageContext.jsx",
+      "type": "registry:component",
+      "target": "components/hyperiux/PageContext.jsx"
     },
     {
       "path": "assets/audio/page-flip-01a.mp3",

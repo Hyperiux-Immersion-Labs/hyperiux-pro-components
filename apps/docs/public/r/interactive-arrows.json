@@ -7,7 +7,9 @@
   "registryDependencies": [],
   "exportName": "InteractiveArrows",
   "exportKind": "default",
-  "previewUrl": "/demo/interactive-arrows",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -49,8 +51,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/utils.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import { getAllPrivateEffects, getEffectBySlug } from "@/lib/registry";
+import { getAllPrivateEffects, getEffectMetadata, getEffectSource } from "@/lib/registry";
 
 import {
   getAllSanityEffectEntries,
@@ -14,6 +14,46 @@ import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { resolveOgImageUrl } from "@/lib/media";
+
+// Mirrors effect-detail.jsx's isCodeOnlyBlock - a Sanity portable-text block
+// whose only content is a single "code"-marked span (used for freeform code
+// snippets outside of explicit effectCodeBlock entries).
+function isCodeOnlyBlock(block) {
+  const children = block?.children || [];
+
+  if (!children.length) return false;
+
+  return children.every(
+    (child) => child?._type === "span" && (child.marks || []).includes("code")
+  );
+}
+
+// Sanity content.body can carry full Pro source two ways: explicit
+// effectCodeBlock entries (block.code) and "code-only" portable-text blocks
+// (block.children[].text). effect-detail.jsx already gates which component
+// renders based on isLocked, but that only controls the UI - the underlying
+// block data still gets passed to the client component and serialized into
+// the page's RSC payload regardless. Strip the actual code text server-side
+// when locked, so it's never present in what reaches the browser at all.
+function redactLockedBody(body, isLocked) {
+  if (!isLocked || !Array.isArray(body)) return body;
+
+  return body.map((block) => {
+    if (block?._type === "effectCodeBlock") {
+      const { code, ...rest } = block;
+      return rest;
+    }
+
+    if (block?._type === "block" && isCodeOnlyBlock(block)) {
+      return {
+        ...block,
+        children: block.children.map((child) => ({ ...child, text: "" })),
+      };
+    }
+
+    return block;
+  });
+}
 
 function getFallbackContent(effect, effectSlug) {
   if (!effect) return null;
@@ -153,7 +193,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug, effectSlug } = await params;
-  const effect = getEffectBySlug(effectSlug);
+  const effect = getEffectMetadata(effectSlug);
   const content =
     (await getSanityEffectContent(slug, effectSlug)) ||
     getFallbackContent(effect, effectSlug);
@@ -173,19 +213,25 @@ export async function generateMetadata({ params }) {
 export default async function EffectPage({ params }) {
   const { slug, effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
+  // Metadata only - no Pro source content read yet. Auth/plan is resolved
+  // from this before we ever touch source file bytes, so an unauthorized
+  // request never has Pro source attached to its response payload.
+  const effectMeta = getEffectMetadata(effectSlug);
   const content =
     (await getSanityEffectContent(slug, effectSlug)) ||
-    getFallbackContent(effect, effectSlug);
+    getFallbackContent(effectMeta, effectSlug);
 
-  if (!content && !effect) {
+  if (!content && !effectMeta) {
     notFound();
   }
 
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);
-  const effectTier = content.tier ?? effect?.tier ?? "pro";
+  const effectTier = content.tier ?? effectMeta?.tier ?? "pro";
   const isLocked = !canAccessEffect(effectTier, userPlan);
+
+  // Only attach Pro source content once the requester is confirmed authorized.
+  const effect = isLocked ? effectMeta : getEffectSource(effectSlug);
 
   const sanityEntries = await getAllSanityEffectEntries();
   const allEffects = buildEffectsFromSanity(sanityEntries);
@@ -224,6 +270,10 @@ export default async function EffectPage({ params }) {
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
 
+  // Only the object actually sent to the client needs redaction - FAQ/SEO
+  // extraction above already ran against the full `content`.
+  const clientContent = { ...content, body: redactLockedBody(content.body, isLocked) };
+
   return (
     <>
       <WebpageJsonLd metadata={pageMetadata} />
@@ -233,7 +283,7 @@ export default async function EffectPage({ params }) {
         slug={effectSlug}
         categorySlug={slug}
         effect={stripFileContent(effect)}
-        content={content}
+        content={clientContent}
         relatedEffects={relatedEffects}
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}

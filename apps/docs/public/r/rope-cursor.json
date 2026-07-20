@@ -9,15 +9,14 @@
   "registryDependencies": [],
   "exportName": "RopeCursor",
   "exportKind": "default",
-  "previewUrl": "/demo/rope-cursor",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/index.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }
