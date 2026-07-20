@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { useFocusTrap } from "./useFocusTrap";
 
 const DEFAULT_MENU_ITEMS = [
   {
@@ -66,6 +67,15 @@ export function ElevateNavbarMobile({
   const panelRef = useRef(null);
   const backdropRef = useRef(null);
   const sectionsRef = useRef([]);
+  const containerRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  useFocusTrap({
+    active: isMenuOpen,
+    containerRef,
+    initialFocusRef: toggleButtonRef,
+    onEscape: () => setIsMenuOpen(false),
+  });
 
   useEffect(() => {
     const panelElement = panelRef.current;
@@ -133,7 +143,10 @@ export function ElevateNavbarMobile({
   }, [activeDropdownIndex]);
 
   return (
-    <div className="fixed h-fit left-1/2 max-md:top-[10%] max-sm:top-[31%] -translate-x-1/2 z-999">
+    <div
+      ref={containerRef}
+      className="fixed h-fit left-1/2 max-md:top-[10%] max-sm:top-[31%] -translate-x-1/2 z-999"
+    >
       <div
         ref={backdropRef}
         onClick={() => setIsMenuOpen(false)}
@@ -146,6 +159,7 @@ export function ElevateNavbarMobile({
         </span>
 
         <button
+          ref={toggleButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
           className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10"

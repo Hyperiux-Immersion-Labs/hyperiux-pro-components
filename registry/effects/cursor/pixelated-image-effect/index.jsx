@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 export function PixelateSvgFilter({
- id ="pixelate-filter",
+ id: idProp,
  size: propSize = 16,
  crossLayers = false
 }) {
+ const generatedId = `pixelate-filter-${useId().replace(/:/g, "")}`;
+ const id = idProp ?? generatedId;
  const size = Math.max(2, propSize);
  return (
  <svg
@@ -127,6 +129,7 @@ export default function PixelatedImageEffect({
  const imageRef = useRef(null);
  const isTouching = useRef(false);
  const [pixelSize, setPixelSize] = useState(16);
+ const pixelateFilterId = `pixelate-filter-${useId().replace(/:/g, "")}`;
 
  const updatePixel = (event) => {
  if (!imageRef.current) return;
@@ -165,7 +168,7 @@ export default function PixelatedImageEffect({
  </h2>
 
  <PixelateSvgFilter
- id="pixelate-filter"
+ id={pixelateFilterId}
  size={pixelSize}
  crossLayers
  />
@@ -173,7 +176,7 @@ export default function PixelatedImageEffect({
  <div
  ref={imageRef}
  className="relative h-[55vh] w-full max-sm:max-w-[90%] overflow-hidden max-xl:max-w-[90%] max-w-lg touch-none"
- style={{ filter:"url(#pixelate-filter)" }}
+ style={{ filter:`url(#${pixelateFilterId})` }}
  onPointerDown={handlePointerDown}
  onPointerMove={handlePointerMove}
  onPointerUp={handlePointerUp}

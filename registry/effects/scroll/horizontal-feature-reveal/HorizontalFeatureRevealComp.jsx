@@ -2,13 +2,16 @@
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const defaultPropertiesData = [];
 
 export default function HorizontalScrollComp({ propertiesData = defaultPropertiesData }) {
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `industries-${uid}`;
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (window.innerWidth <= 1025) return;
@@ -30,7 +33,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
           duration: 1,
           ease: "back.out",
           scrollTrigger: {
-            trigger: "#industries",
+            trigger: `#${sectionId}`,
             start: "top top",
             end: "20% top",
             scrub: true,
@@ -42,7 +45,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
         xPercent: -79,
         ease: "none",
         scrollTrigger: {
-          trigger: "#industries",
+          trigger: `#${sectionId}`,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
@@ -77,7 +80,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             duration: 0.7,
             ease: "power2.out",
             scrollTrigger: {
-              trigger: "#industries",
+              trigger: `#${sectionId}`,
               start: startNo,
               end: endNo,
               toggleActions: "play none none reverse",
@@ -102,7 +105,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             duration: 0.7,
             ease: "power2.out",
             scrollTrigger: {
-              trigger: "#industries",
+              trigger: `#${sectionId}`,
               start: startTitle,
               end: endTitle,
               // markers: true,
@@ -126,7 +129,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             duration: 0.7,
             ease: "power2.out",
             scrollTrigger: {
-              trigger: "#industries",
+              trigger: `#${sectionId}`,
               start: startContent,
               end: endContent,
               toggleActions: "play none none reverse",
@@ -141,7 +144,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             translateX: "30%",
             ease: "none",
             scrollTrigger: {
-              trigger: "#industries",
+              trigger: `#${sectionId}`,
               start: startImg,
               end: endImg,
               scrub: true,
@@ -155,13 +158,13 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
     });
 
     return () => ctx.revert();
-  }, [propertiesData]);
+  }, [propertiesData, sectionId]);
 
 
   return (
     <section
       className="w-screen h-[600vh] bg-white text-black relative z-10 max-xl:mt-0 max-xl:h-fit max-xl:py-[15%] max-xl:px-[7vw]"
-      id="industries"
+      id={sectionId}
     >
       
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-xl:static max-xl:w-full max-xl:h-fit max-xl:flex max-xl:flex-col max-xl:items-start">

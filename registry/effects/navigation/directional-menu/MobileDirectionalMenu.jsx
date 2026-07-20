@@ -1,14 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { useFocusTrap } from "./useFocusTrap";
 
 const hasDropdownContent = (item) => Boolean(item?.customContent);
 
 export function MobileDirectionalMenu({ items = [] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+
+  const containerRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setActiveIndex(null);
+  };
+
+  // Trap focus across the toggle + panel while open, restore it on close.
+  useFocusTrap({
+    active: isMenuOpen,
+    containerRef,
+    initialFocusRef: toggleButtonRef,
+    onEscape: closeMenu,
+  });
 
   const onToggleMenu = () => {
     setIsMenuOpen((currentValue) => {
@@ -27,7 +44,7 @@ export function MobileDirectionalMenu({ items = [] }) {
   };
 
   return (
-    <div className="relative hidden max-xl:block px-6 py-4">
+    <div ref={containerRef} className="relative hidden max-xl:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center  gap-3 cursor-pointer">
           <svg width="35" height="35" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -58,6 +75,7 @@ export function MobileDirectionalMenu({ items = [] }) {
         </Link>
 
         <button
+          ref={toggleButtonRef}
           type="button"
           onClick={onToggleMenu}
           className="flex h-11 w-11 items-center justify-center rounded-full  text-white transition-colors duration-200 hover:bg-white/10"

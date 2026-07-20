@@ -54,6 +54,8 @@ export function ZoomSliderComp({
     lastY: 0,
     velocity: 0,
   });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const announcedIndexRef = useRef(0);
 
   useEffect(() => {
     const onResize = () => {
@@ -145,6 +147,19 @@ export function ZoomSliderComp({
       }
 
       positionCards(state.current);
+
+      if (images.length) {
+        const normalizedOffset =
+          ((state.current % loopWidth) + loopWidth) % loopWidth;
+        const nextIndex =
+          Math.floor(normalizedOffset / cardStep) % images.length;
+
+        if (nextIndex !== announcedIndexRef.current) {
+          announcedIndexRef.current = nextIndex;
+          setActiveIndex(nextIndex);
+        }
+      }
+
       state.raf = requestAnimationFrame(tick);
     };
 
@@ -302,11 +317,21 @@ export function ZoomSliderComp({
     return () => cleanups.forEach((cleanup) => cleanup());
   }, [images]);
 
+  const activeItem = images[activeIndex];
+  const slideAnnouncement = images.length
+    ? activeItem?.title
+      ? `${activeItem.title}, slide ${activeIndex + 1} of ${images.length}`
+      : `Slide ${activeIndex + 1} of ${images.length}`
+    : '';
+
   return (
     <div
       className="relative w-screen overflow-hidden bg-black"
       style={{ height: '100svh', touchAction: 'none' }}
     >
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {slideAnnouncement}
+      </div>
       {title ? (
         <div className="pointer-events-none absolute left-1/2 top-20 max-md:top-25 z-20 -translate-x-1/2 px-4 text-center">
           <h1 className="text-4xl text-white max-sm:text-2xl">

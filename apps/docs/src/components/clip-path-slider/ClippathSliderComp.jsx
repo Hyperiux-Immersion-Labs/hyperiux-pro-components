@@ -475,8 +475,15 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
   if (slides.length === 0) return null;
 
+  const slideLabel = slides[currentSlide]?.name
+    ? `${slides[currentSlide].name}, slide ${currentSlide + 1} of ${slides.length}`
+    : `Slide ${currentSlide + 1} of ${slides.length}`;
+
   return (
     <section className="relative w-screen h-screen overflow-hidden">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {slideLabel}
+      </div>
 
       <div
         ref={bgRefA}

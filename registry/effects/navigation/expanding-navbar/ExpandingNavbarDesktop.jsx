@@ -5,6 +5,7 @@ import { CustomEase } from "gsap/CustomEase";
 import { HoverFillLink } from "./HoverFillLink";
 import { navigationData } from "./data";
 import Link from "next/link";
+import { useFocusTrap } from "./useFocusTrap";
 
 gsap.registerPlugin(CustomEase);
 
@@ -37,6 +38,8 @@ export function ExpandingNavbarDesktop() {
     const col3Ref = useRef(null);
     const mainSquareRef = useRef(null);
     const mainItemRefs = useRef([]);
+    const containerRef = useRef(null);
+    const toggleButtonRef = useRef(null);
 
     const menuEasing = "cubic-bezier(0.625, 0.05, 0, 1)";
 
@@ -246,10 +249,24 @@ export function ExpandingNavbarDesktop() {
         }
     };
 
+    const closeMenu = () => {
+        if (!menuTimeline.current || !isMenuOpen) return;
+        menuTimeline.current.reverse();
+        setIsMenuOpen(false);
+    };
+
+    // Trap focus across the toggle + panel while open, restore it on close.
+    useFocusTrap({
+        active: isMenuOpen,
+        containerRef,
+        initialFocusRef: toggleButtonRef,
+        onEscape: closeMenu,
+    });
+
     return (
-        <div className="max-xl:hidden">
+        <div ref={containerRef} className="max-xl:hidden">
             <div
-                onClick={() => { menuTimeline.current.reverse(); setIsMenuOpen(false); }}
+                onClick={closeMenu}
                 ref={backgroundOverlayRef}
                 className="fixed h-screen w-screen z-800 opacity-0 bg-black/50 top-0 left-0 pointer-events-none"
             />
@@ -419,15 +436,19 @@ export function ExpandingNavbarDesktop() {
                         </svg>
                     </Link>
 
-                    <div
+                    <button
+                        ref={toggleButtonRef}
+                        type="button"
                         onClick={toggleMenu}
-                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] p-[1vw] rounded-md items-center justify-center"
+                        aria-expanded={isMenuOpen}
+                        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
                     >
                         <div className="w-[1.5vw] h-[1vw] relative flex items-center justify-center">
                             <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
                             <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
                         </div>
-                    </div>
+                    </button>
                 </header>
             </div>
         </div>

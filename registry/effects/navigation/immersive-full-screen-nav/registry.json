@@ -29,6 +29,10 @@
     {
       "path": "FullscreenNav.jsx",
       "target": "src/components/effects/immersive-full-screen-nav/FullscreenNav.jsx"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "target": "src/components/effects/immersive-full-screen-nav/useFocusTrap.js"
     }
   ]
 }

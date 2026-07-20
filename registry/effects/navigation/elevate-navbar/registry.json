@@ -32,6 +32,10 @@
     {
       "path": "ElevateDesktopNav.jsx",
       "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "target": "src/components/effects/elevate-navbar/useFocusTrap.js"
     }
   ]
 }

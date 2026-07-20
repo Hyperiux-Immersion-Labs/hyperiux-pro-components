@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useFocusTrap } from "./useFocusTrap";
 
 const CLIPS = {
   bottom: {
@@ -50,6 +51,8 @@ export default function FullscreenNav({
   const linksWrapperRef = useRef(null);
   const timelineRef = useRef(null);
   const isAnimatingRef = useRef(false);
+  const rootRef = useRef(null);
+  const toggleButtonRef = useRef(null);
 
   // Derived values
   const { closedInitial, open: openClipPath, closedFinal } =
@@ -147,9 +150,16 @@ export default function FullscreenNav({
     };
   }, [isOpen]);
 
+  useFocusTrap({
+    active: isOpen,
+    containerRef: rootRef,
+    initialFocusRef: toggleButtonRef,
+    onEscape: onCloseMenu,
+  });
+
   // Return
   return (
-    <>
+    <div ref={rootRef}>
       <header
         className={`fixed top-6 max-sm:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
@@ -187,6 +197,7 @@ export default function FullscreenNav({
         </div>
 
         <button
+          ref={toggleButtonRef}
           onClick={onToggleMenu}
           onTouchStart={onToggleMenu}
           aria-label="Toggle menu"
@@ -241,6 +252,6 @@ export default function FullscreenNav({
             ))}
         </div>
       </nav>
-    </>
+    </div>
   );
 }

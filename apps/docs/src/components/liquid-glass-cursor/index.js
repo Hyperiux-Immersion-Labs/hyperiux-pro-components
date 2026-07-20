@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from"react";
+import React, { useEffect, useId, useRef } from"react";
 import gsap from"gsap";
 
 import { LIQUID_TEXTURE } from "./LiquidText";
@@ -15,6 +15,9 @@ export default function LiquidGlassCursor({
  maxButtonWidth = 200,
  maxButtonHeight = 150,
  }) {
+ const uid = useId().replace(/:/g, "");
+ const frostedFilterId = `frosted-${uid}`;
+ const internalDivId = `internaldiv-${uid}`;
  const cursorRef = useRef(null);
  const innerRef = useRef(null);
  const textRef = useRef(null);
@@ -124,7 +127,7 @@ export default function LiquidGlassCursor({
  <>
  <svg className="h-0 w-0 opacity-0 absolute">
  <filter
- id="frosted"
+ id={frostedFilterId}
  colorInterpolationFilters="sRGB"
  primitiveUnits="objectBoundingBox"
  x="-50%"
@@ -187,7 +190,7 @@ export default function LiquidGlassCursor({
  <div
  style={{
  filter:
- `url(#frosted) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightness})`,
+ `url(#${frostedFilterId}) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightness})`,
  backdropFilter:"blur(1px)",
 
  isolation:"isolate",
@@ -202,7 +205,7 @@ export default function LiquidGlassCursor({
  // border: `1px solid ${borderColor}`,
  }
  }
- id="internaldiv"
+ id={internalDivId}
  className="bg-white/10 rounded-full absolute left-0 right-0"
  ></div>
   </div>

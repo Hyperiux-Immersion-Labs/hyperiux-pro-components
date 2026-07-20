@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ScrollStackComp = ({ cards = [] }) => {
+    const uid = useId().replace(/:/g, "");
+    const sectionId = `state-${uid}`;
     const sectionRef = useRef(null);
     const rowRefs = useRef([]);
     const cardRefs = useRef([]);
@@ -86,7 +88,7 @@ const ScrollStackComp = ({ cards = [] }) => {
 
     return (
         <section
-            id="state"
+            id={sectionId}
             ref={sectionRef}
             className={`main bg-white py-[7%] max-md:py-[15%] max-sm:py-[15%]`}
         >

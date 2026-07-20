@@ -30,7 +30,7 @@
 
  */
 
-import React, { useState, useCallback } from"react";
+import React, { useState, useCallback, useId } from"react";
 import Input from"./Input";
 import Textarea from"./Textarea";
 import Select from"./Select";
@@ -79,6 +79,8 @@ export default function ContactForm({
  const [isLoading, setIsLoading] = useState(false);
  const [submitted, setSubmitted] = useState(false);
  const [failed, setFailed] = useState(false);
+ const uid = useId().replace(/:/g, "");
+ const sectionId = `contact-form-${uid}`;
 
  // ── value helpers ──
  const setValue = useCallback((name, value) => {
@@ -240,7 +242,7 @@ export default function ContactForm({
  };
 
  return (
- <section className="h-full w-full" id="contact-form">
+ <section className="h-full w-full" id={sectionId}>
  <div className="w-full h-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form
