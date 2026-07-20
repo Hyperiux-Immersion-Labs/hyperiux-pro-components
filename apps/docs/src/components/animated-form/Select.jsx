@@ -36,6 +36,8 @@ const Select = forwardRef(function Select(
  type="button"
  id={id}
  ref={ref}
+ aria-invalid={error ? true : undefined}
+ aria-describedby={error ? `${id}-error` : undefined}
  onClick={() => setOpen((prev) => !prev)}
  className={`
  w-full border rounded-full bg-white
@@ -107,7 +109,7 @@ const Select = forwardRef(function Select(
  </div>
 
  {error && (
- <p className="mt-1 ml-4 text-xs text-red-500">{error}</p>
+ <p id={`${id}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>
  )}
  </div>
  );

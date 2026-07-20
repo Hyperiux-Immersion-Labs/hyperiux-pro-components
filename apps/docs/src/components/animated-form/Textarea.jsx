@@ -58,11 +58,13 @@ const Textarea = forwardRef(function Textarea(
  ${error ?"border-red-400 focus:border-red-400" :""}
  ${className}
  `}
+ aria-invalid={error ? true : undefined}
+ aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  />
  </div>
  {error && (
- <p className="mt-1 ml-4 text-xs text-red-500">{error}</p>
+ <p id={`${id}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>
  )}
  </div>
  );

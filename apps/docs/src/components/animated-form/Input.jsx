@@ -85,10 +85,12 @@ const Input = forwardRef(function Input(
  ${error ? "border-red-400 focus:border-red-400" : ""}
  ${className}
  `}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${inputId}-error` : undefined}
           {...rest}
         />
       </div>
-      {error && <p className="mt-1 ml-4 text-xs text-red-500">{error}</p>}
+      {error && <p id={`${inputId}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>}
     </div>
   );
 });
