@@ -15,6 +15,7 @@ const Solution = () => {
             </LineReveal>
 
             <TextFillAnimationCustom
+                as="p"
                 text={SOLUTION_TEXT}
                 textColor="#ffffff"
                 primaryColor="#ff5f00"
