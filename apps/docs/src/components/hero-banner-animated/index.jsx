@@ -196,7 +196,7 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section ref={rootRef} className="w-full h-screen bg-black relative">
+      <section ref={rootRef} className="w-full h-screen overflow-hidden bg-black relative">
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -206,12 +206,12 @@ export default function HeroBannerAnimated() {
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
               className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
             >
-              <div className='flex items-start pt-[5vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
+              <div className='flex items-start max-sm:hidden pt-[2vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
                 <motion.h1
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                  className='text-[20vw] font-semibold leading-1 tracking-tight max-sm:text-[28vw]'
+                  className='text-[15vw] font-semibold leading-[0.6]! tracking-tight max-sm:text-[28vw]'
                 >
                   HXR
                 </motion.h1>
@@ -231,7 +231,7 @@ export default function HeroBannerAnimated() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className='text-[20vw] font-semibold tracking-tight text-right w-full max-sm:text-[28vw]'
+                className='text-[15vw] max-sm:hidden max-sm:pt-auto pt-[30vh] max-sm:pt-[50vh] font-semibold tracking-tight text-right w-full max-sm:text-[28vw]'
               >
                 UI
               </motion.p>
