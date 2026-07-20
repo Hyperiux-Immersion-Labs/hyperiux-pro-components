@@ -1557,7 +1557,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/webgl/interactive-hover-slider/registry.json",
+    "registryPath": "registry/effects/webgl/hover-slider/registry.json",
     "importPath": "@/components/effects/hover-slider",
     "target": "src/components/effects/hover-slider",
     "previewUrl": "/demo/hover-slider"
@@ -1612,7 +1612,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "registryPath": "registry/effects/scroll/progressive-bloom-valley/registry.json",
+    "registryPath": "registry/effects/webgl/progressive-bloom-valley/registry.json",
     "importPath": "@/components/effects/progressive-bloom-valley",
     "target": "src/components/effects/progressive-bloom-valley",
     "previewUrl": "/demo/progressive-bloom-valley",

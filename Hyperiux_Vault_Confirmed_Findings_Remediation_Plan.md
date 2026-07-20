@@ -9,7 +9,7 @@ Prepared for the Hyperiux Vault engineering, content, product, and legal owners.
 > **Do not forward, externally share, or reproduce until F-034 has passed production re-verification.**
 
 ### Distribution
-
+f
 This document contains the exact vulnerable architecture, affected routes and source paths, confirmation that all 83 Pro effects are exposed, and details relevant to admin authorization and secrets. Do not place this document in a public drive folder, a broad company Slack channel, or an externally accessible project-management board.
 
 **Initial distribution, restricted to:**
