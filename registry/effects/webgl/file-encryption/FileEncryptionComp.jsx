@@ -748,6 +748,7 @@ export function FileEncryptionComp({ cards = [] }) {
  {/* WebGL beam canvas - full section coverage, screen blend */}
  <canvas
  ref={beamCanvasRef}
+ aria-hidden="true"
  className="pointer-events-none absolute inset-0 z-40"
  style={{
  width:"100%",
@@ -757,6 +758,7 @@ export function FileEncryptionComp({ cards = [] }) {
  />
  <canvas
  ref={particleCanvasRef}
+ aria-hidden="true"
  className="pointer-events-none absolute inset-0 z-50"
  style={{
  width:"100%",

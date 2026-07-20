@@ -486,6 +486,7 @@ useEffect(() => {
  </div>
  <canvas
  ref={canvasRef}
+ aria-hidden="true"
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />

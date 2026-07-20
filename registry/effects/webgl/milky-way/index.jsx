@@ -917,6 +917,7 @@ export default function MilkyWay() {
 
          {showDesktopScene ? (
             <Canvas
+               aria-hidden="true"
                dpr={viewport.dpr}
                gl={{ antialias: false, powerPreference: 'high-performance' }}
                camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}

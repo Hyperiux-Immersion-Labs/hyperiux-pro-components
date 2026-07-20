@@ -334,7 +334,7 @@ export default function PixelShift({
         </p>
       </div>
 
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas aria-hidden="true" camera={{ position: [0, 0, 5], fov: 45 }}>
         <color attach="background" args={["#000000"]} />
         <Scene img={imageUrl} />
       </Canvas>

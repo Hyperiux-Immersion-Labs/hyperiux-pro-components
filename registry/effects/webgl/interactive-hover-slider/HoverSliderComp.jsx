@@ -151,6 +151,7 @@ export default function HoverSliderComp({ items = [] }) {
       pointerEvents: "none",
     });
 
+    renderer.domElement.setAttribute("aria-hidden", "true");
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();

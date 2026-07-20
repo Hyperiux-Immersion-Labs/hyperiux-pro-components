@@ -58,6 +58,7 @@ function Scene() {
 
   return (
     <Canvas
+      aria-hidden="true"
       onClick={click}
       shadows
       dpr={[1.0, 1.1]}

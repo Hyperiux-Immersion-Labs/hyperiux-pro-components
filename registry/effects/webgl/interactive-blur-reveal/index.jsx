@@ -652,6 +652,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       onPointerEnter={onPointerEnter}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}

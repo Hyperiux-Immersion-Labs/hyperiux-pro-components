@@ -172,6 +172,7 @@ export default function FractalGlass({
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(W, H);
+    renderer.domElement.setAttribute("aria-hidden", "true");
     el.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();

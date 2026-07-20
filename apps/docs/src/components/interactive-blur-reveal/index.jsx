@@ -652,6 +652,7 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       onPointerEnter={onPointerEnter}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}

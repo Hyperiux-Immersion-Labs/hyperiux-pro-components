@@ -560,6 +560,7 @@ export default function EnhancedPixelCube({
       </div>
 
       <Canvas
+        aria-hidden="true"
         camera={{ position: [0, 0, 4], fov: 75 }}
         gl={{ antialias: true }}
         onCreated={({ gl, camera }) => {

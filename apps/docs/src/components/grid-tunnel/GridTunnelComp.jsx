@@ -525,6 +525,7 @@ export default function GridTunnelComp({ images = [] }) {
   return (
     <section className="relative h-screen w-full overflow-hidden bg-white">
       <Canvas
+        aria-hidden="true"
         camera={{
           position: [0, 0, CAMERA_START_Z],
           fov: 72,

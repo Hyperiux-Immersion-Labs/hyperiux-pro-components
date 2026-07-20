@@ -614,7 +614,7 @@ export default function DonutParticles({
 
  return (
  <div className={`h-screen w-full bg-black ${className}`}>
- <Canvas className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr}>
+ <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr}>
  <DonutParticle
  position={responsivePosition}
  scale={responsiveScale}

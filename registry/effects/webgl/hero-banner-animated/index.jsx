@@ -256,6 +256,7 @@ export default function HeroBannerAnimated() {
         {!isMobile && (
           <>
             <Canvas
+              aria-hidden="true"
               dpr={[1, 2]}
               camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
             >

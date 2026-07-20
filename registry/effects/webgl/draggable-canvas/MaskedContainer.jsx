@@ -115,7 +115,7 @@ export default function MaskedContainer({
         <p>Y:{position.y.toFixed(2)}</p>
       </div>
       {/* Canvas for rendering masked video */}
-      <canvas ref={canvasRef} className="w-full h-full" />
+      <canvas ref={canvasRef} className="w-full h-full" aria-hidden="true" />
     </div>
   );
 }

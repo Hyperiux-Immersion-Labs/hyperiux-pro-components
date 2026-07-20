@@ -66,7 +66,7 @@ export const BookFlipp = ({ images = [],
                 width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0,
                 backgroundColor: bgColor,
             }}>
-                <Canvas camera={{
+                <Canvas aria-hidden="true" camera={{
                     position: [-0.5, 1, cameraZ],
                     fov: 45,
                 }}>

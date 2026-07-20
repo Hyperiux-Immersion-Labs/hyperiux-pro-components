@@ -1109,6 +1109,7 @@ galleryContainer.add(mesh);
   return (
     <canvas
     ref={canvasRef}
+    aria-hidden="true"
     style={{
       display: "block",
       width: "100%",

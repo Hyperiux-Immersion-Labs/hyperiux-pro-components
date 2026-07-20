@@ -56,6 +56,7 @@ export default function PortfolioSlider({ items }) {
  renderer.setSize(width, height);
  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+ renderer.domElement.setAttribute("aria-hidden", "true");
  container.appendChild(renderer.domElement);
 
  // IMAGE SETUP

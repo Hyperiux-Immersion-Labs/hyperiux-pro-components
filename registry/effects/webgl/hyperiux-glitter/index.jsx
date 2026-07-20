@@ -31,6 +31,7 @@ useEffect(() => {
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-black">
       <Canvas
+        aria-hidden="true"
         className="h-full w-full"
         camera={{ position: [0, 0, 5], fov: 45 }}
         dpr={[1, 2]}
