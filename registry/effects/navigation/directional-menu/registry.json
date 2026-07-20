@@ -42,6 +42,10 @@
     {
       "path": "MobileDirectionalMenu.jsx",
       "target": "src/components/effects/directional-menu/MobileDirectionalMenu.jsx"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "target": "src/components/effects/directional-menu/useFocusTrap.js"
     }
   ]
 }

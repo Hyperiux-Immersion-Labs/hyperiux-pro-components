@@ -4,6 +4,7 @@ import gsap from "gsap";
 import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { navigationData } from "./data";
+import { useFocusTrap } from "./useFocusTrap";
 
 function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/50" }) {
     return (
@@ -38,6 +39,8 @@ export function ExpandingNavbarMobile() {
     const contentRef = useRef(null);
     const menuTimeline = useRef(null);
     const mainItemRefs = useRef([]);
+    const containerRef = useRef(null);
+    const toggleButtonRef = useRef(null);
     const menuEase = "cubic-bezier(0.625, 0.05, 0, 1)";
 
     useEffect(() => {
@@ -114,6 +117,14 @@ export function ExpandingNavbarMobile() {
         setExpandedSub(null);
     };
 
+    // Trap focus across the toggle + panel while open, restore it on close.
+    useFocusTrap({
+        active: isMenuOpen,
+        containerRef,
+        initialFocusRef: toggleButtonRef,
+        onEscape: closeMenu,
+    });
+
     const toggleMain = (index) => {
         if (expandedMain === index) {
             setExpandedMain(null);
@@ -129,7 +140,7 @@ export function ExpandingNavbarMobile() {
     };
 
     return (
-        <div className="hidden max-md:block">
+        <div ref={containerRef} className="hidden max-md:block">
             {/* Background Overlay */}
             <div
                 ref={overlayRef}
@@ -259,6 +270,7 @@ export function ExpandingNavbarMobile() {
                     </svg>
 
                     <button
+                        ref={toggleButtonRef}
                         type="button"
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}

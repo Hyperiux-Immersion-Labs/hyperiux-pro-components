@@ -1,15 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { useFocusTrap } from "./useFocusTrap";
 
 const hasDropdownContent = (item) => Boolean(item?.customContent);
 
 export function MobileDirectionalMenu({ items = [] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
+  const containerRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setActiveIndex(null);
+  };
+
+  useFocusTrap({
+    active: isMenuOpen,
+    containerRef,
+    initialFocusRef: toggleButtonRef,
+    onEscape: closeMenu,
+  });
 
   const onToggleMenu = () => {
     setIsMenuOpen((currentValue) => {
@@ -28,7 +43,7 @@ export function MobileDirectionalMenu({ items = [] }) {
   };
 
   return (
-    <div className="relative hidden max-md:block px-6 py-4">
+    <div ref={containerRef} className="relative hidden max-md:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
         <Link prefetch={false} href="/" className="flex items-center  gap-3 cursor-pointer">
           <Image
@@ -46,6 +61,7 @@ export function MobileDirectionalMenu({ items = [] }) {
         </Link>
 
         <button
+          ref={toggleButtonRef}
           type="button"
           onClick={onToggleMenu}
           className="flex h-11 w-11 items-center justify-center rounded-full  text-white transition-colors duration-200 hover:bg-white/10"

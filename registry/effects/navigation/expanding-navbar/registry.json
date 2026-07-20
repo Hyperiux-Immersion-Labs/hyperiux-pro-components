@@ -38,6 +38,10 @@
     {
       "path": "data.js",
       "target": "src/components/effects/expanding-navbar/data.js"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
     }
   ]
 }
