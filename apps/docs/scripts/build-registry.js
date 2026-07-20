@@ -326,7 +326,13 @@ async function buildRegistry() {
         ? registryJson.categories
         : [primaryCategory];
 
-      const tier = registryJson.tier || "free";
+      if (!("tier" in registryJson) || registryJson.tier == null || registryJson.tier === "") {
+        throw new Error(
+          `Missing required "tier" field in ${registryJsonPath}. Every effect registry.json must declare an explicit tier.`
+        );
+      }
+
+      const tier = registryJson.tier;
       const isPro = tier === "pro" || tier === "paid";
 
       // For pro effects, strip file content from the public JSON.

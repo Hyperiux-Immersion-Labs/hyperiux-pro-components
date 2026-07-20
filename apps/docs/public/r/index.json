@@ -171,27 +171,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "progressive-bloom-valley",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "three",
-        "postprocessing",
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ProgressiveBloomValley",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
       "name": "rotation-slider",
       "type": "registry:component",
       "category": "scroll",
@@ -1660,6 +1639,22 @@
       "version": "1.0.0"
     },
     {
+      "name": "hover-slider",
+      "type": "registry:component",
+      "category": "webgl",
+      "categories": [
+        "webgl"
+      ],
+      "dependencies": [
+        "three",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "HoverSlider",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
       "name": "hyperiux-glitter",
       "type": "registry:component",
       "category": "webgl",
@@ -1704,22 +1699,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "hover-slider",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "HoverSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
       "name": "milky-way",
       "type": "registry:component",
       "category": "webgl",
@@ -1755,6 +1734,27 @@
       ],
       "registryDependencies": [],
       "exportName": "MousePixelation",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
+      "name": "progressive-bloom-valley",
+      "type": "registry:component",
+      "category": "webgl",
+      "categories": [
+        "webgl"
+      ],
+      "dependencies": [
+        "@react-three/fiber",
+        "@react-three/drei",
+        "@react-three/postprocessing",
+        "three",
+        "postprocessing",
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "ProgressiveBloomValley",
       "exportKind": "default",
       "version": "1.0.0"
     },
