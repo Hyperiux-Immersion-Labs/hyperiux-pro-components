@@ -316,6 +316,17 @@ const RingCarouselComp = ({
  };
  }, [autoPlay, autoPlayInterval, totalItems, pauseOnHover, startAutoplay, stopAutoplay]);
 
+ const activeItem = items[activeIndex];
+ const activeLabel =
+ typeof activeItem ==="string"
+ ? null
+ : activeItem?.alt || activeItem?.title || activeItem?.name || null;
+ const slideAnnouncement = totalItems
+ ? activeLabel
+ ? `${activeLabel}, slide ${activeIndex + 1} of ${totalItems}`
+ : `Slide ${activeIndex + 1} of ${totalItems}`
+ :"";
+
  return (
  <div
  className={` relative h-[70vh] w-full select-none overflow-hidden bg-black ${className}`}
@@ -329,6 +340,9 @@ const RingCarouselComp = ({
  if (pauseOnHover && autoPlay) startAutoplay();
  }}
  >
+ <div className="sr-only" aria-live="polite" aria-atomic="true">
+ {slideAnnouncement}
+ </div>
  <div className=" absolute left-1/2 top-[40%] h-[30vw] w-screen -translate-x-1/2 -translate-y-1/2 perspective-[2000px] transform-3d">
  <div className=" relative h-full w-full transform-3d" ref={ringRef}>
  {items.map((item, i) => {

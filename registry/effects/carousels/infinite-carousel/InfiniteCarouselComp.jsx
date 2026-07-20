@@ -102,6 +102,7 @@ function horizontalLoop(items, config = {}) {
  }
 
  curIndex = newIndex;
+ config.onIndexChange?.(newIndex);
  vars.overwrite = true;
  return tl.tweenTo(time, vars);
  }
@@ -111,7 +112,8 @@ function horizontalLoop(items, config = {}) {
  tl.current = () => curIndex;
  tl.toIndex = (index, vars) => toIndex(index, vars);
  tl.updateIndex = () => {
- curIndex = Math.round(tl.progress() * length);
+ curIndex = gsap.utils.wrap(0, length, Math.round(tl.progress() * length));
+ config.onIndexChange?.(curIndex);
  };
  tl.times = times;
 
@@ -209,6 +211,7 @@ export default function InfiniteCarouselComp({
  const isAdjustingScrollRef = useRef(false);
 
  const [isMobile, setIsMobile] = useState(false);
+ const [activeIndex, setActiveIndex] = useState(0);
 
  const childArray = useMemo(() => {
  return Array.isArray(children)
@@ -217,6 +220,19 @@ export default function InfiniteCarouselComp({
  ? [children]
  : [];
  }, [children]);
+
+ const slideCount = childArray.length;
+ const activeChild = slideCount ? childArray[activeIndex] : null;
+ const identifyingText =
+ activeChild?.props?.title ||
+ activeChild?.props?.["aria-label"] ||
+ activeChild?.props?.alt ||
+ null;
+ const slideAnnouncement = slideCount
+ ? identifyingText
+ ? `${identifyingText}, slide ${activeIndex + 1} of ${slideCount}`
+ : `Slide ${activeIndex + 1} of ${slideCount}`
+ :"";
 
  const isWrapMode = isMobile && mobileMode ==="wrap";
  const isSwiperMode = isMobile && mobileMode ==="swiper";
@@ -258,6 +274,7 @@ export default function InfiniteCarouselComp({
  const loop = horizontalLoop(items, {
  draggable,
  wrapperEl: wrapperRef.current,
+ onIndexChange: setActiveIndex,
  });
 
  if (!loop) {
@@ -269,6 +286,7 @@ export default function InfiniteCarouselComp({
  }
 
  loopRef.current = loop;
+ setActiveIndex(loop.current());
  }
 
  const raf = requestAnimationFrame(tryInit);
@@ -329,6 +347,24 @@ export default function InfiniteCarouselComp({
  isAdjustingScrollRef.current = false;
  });
  }
+
+ if (!childArray.length) return;
+
+ const center = wrapper.scrollLeft + wrapper.clientWidth / 2;
+ let closestIndex = 0;
+ let closestDistance = Infinity;
+
+ mobileCardRefs.current.forEach((el, i) => {
+ if (!el) return;
+ const cardCenter = el.offsetLeft + el.offsetWidth / 2;
+ const distance = Math.abs(cardCenter - center);
+ if (distance < closestDistance) {
+ closestDistance = distance;
+ closestIndex = i % childArray.length;
+ }
+ });
+
+ setActiveIndex(closestIndex);
  };
 
  wrapper.addEventListener("scroll", handleScroll, { passive: true });
@@ -386,6 +422,9 @@ export default function InfiniteCarouselComp({
 
  return (
  <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-xl:gap-4 max-md:gap-3 max-md:pb-0 ${pageClassName}`} style={pageStyle}>
+ <div className="sr-only" aria-live="polite" aria-atomic="true">
+ {slideAnnouncement}
+ </div>
  {showNav && !isWrapMode && (
  <div
  className={`flex w-[95%] items-center justify-end gap-4 max-xl:w-full max-xl:justify-center max-xl:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
