@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import Lenis from "lenis";
 import gsap from "gsap";
+import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 function getViewportConfig() {
   const width = window.innerWidth;
@@ -31,7 +32,6 @@ export default function PortfolioSlider({ items }) {
   useEffect(() => {
     let scene, camera, renderer;
     let planes = [];
-    let rafId;
 
     let currentRadius = getViewportConfig().initialRadius;
 
@@ -124,8 +124,12 @@ export default function PortfolioSlider({ items }) {
     let snapTimeout = null;
     let snapObj = { offset: 0 };
 
-    // COMBINED RAF + RENDER LOOP
-    function raf(time) {
+    // COMBINED RAF + RENDER LOOP (visibility-gated)
+    const loop = createSuspendedRaf({
+      root: null,
+      observeTab: false,
+      observeOffscreen: false,
+      onFrame: (time) => {
       lenis.raf(time);
 
       // Delta
@@ -164,7 +168,9 @@ export default function PortfolioSlider({ items }) {
                 },
                 onComplete: () => {
                   isSnapping = false;
-                  lenis.start();
+                  if (gate.isActive) {
+                    lenis.start();
+                  }
                 }
               });
             }
@@ -249,13 +255,33 @@ export default function PortfolioSlider({ items }) {
       });
 
       renderer.render(scene, camera);
-      rafId = requestAnimationFrame(raf);
+      },
+    });
+
+    const gate = createVisibilityGate({
+      root: container,
+      onChange: (active) => {
+        if (active) {
+          if (!isSnapping) {
+            lenis?.start?.();
+          }
+          loop.start();
+        } else {
+          lenis?.stop?.();
+          loop.stop();
+        }
+      },
+    });
+
+    if (gate.isActive) {
+      loop.start();
+    } else {
+      lenis?.stop?.();
     }
 
-    rafId = requestAnimationFrame(raf);
-
     return () => {
-      cancelAnimationFrame(rafId);
+      loop.destroy();
+      gate.destroy();
       if (snapTimeout) clearTimeout(snapTimeout);
       gsap.killTweensOf(snapObj);
       renderer.dispose();

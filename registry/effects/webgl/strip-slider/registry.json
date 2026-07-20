@@ -24,6 +24,10 @@
     {
       "path": "StripSliderComp.jsx",
       "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
     }
   ]
 }

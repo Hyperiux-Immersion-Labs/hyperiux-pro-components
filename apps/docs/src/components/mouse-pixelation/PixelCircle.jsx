@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -249,10 +250,22 @@ export default function Pixelation({
   mobileNotice = DEFAULT_MOBILE_NOTICE,
   description = DEFAULT_DESCRIPTION,
 }) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
+
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div ref={rootRef} className="relative h-screen w-screen overflow-hidden">
       <div className="fixed left-0 top-0 h-full w-full overflow-hidden">
-        <Canvas aria-hidden="true">
+        <Canvas aria-hidden="true" frameloop={frameloop}>
           <PixelCirclesPlane />
         </Canvas>
       </div>

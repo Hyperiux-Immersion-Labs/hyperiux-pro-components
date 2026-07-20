@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -140,7 +141,6 @@ export default function DottedGrid() {
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let animationId;
     let dots = [];
 
 
@@ -268,7 +268,9 @@ export default function DottedGrid() {
     };
 
 
-    const animate = (ms) => {
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: (ms) => {
       const time = ms * 0.001;
       const mouse = mouseRef.current;
       const now = performance.now();
@@ -345,9 +347,8 @@ export default function DottedGrid() {
 
         drawDot(dot.x, dot.y, radius, brightness, grayDisperseBlink, dot.currentTrailStrength, dot.currentMouseStrength);
       }
-
-      animationId = requestAnimationFrame(animate);
-    };
+      },
+    });
 
 
     resize();
@@ -355,14 +356,14 @@ export default function DottedGrid() {
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
-    animationId = requestAnimationFrame(animate);
+    loop.start();
 
     return () => {
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
-      cancelAnimationFrame(animationId);
+      loop.destroy();
     };
   }, []);
 

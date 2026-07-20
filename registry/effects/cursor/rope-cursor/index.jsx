@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from'react'
 import gsap from'gsap'
+import { createSuspendedRaf } from './createSuspendedRaf'
 
 export default function RopeCursor({
 	ropeColor ='#bda985',
@@ -32,7 +33,6 @@ export default function RopeCursor({
 		if (isMobile) return
 
  let isInitialized = false
- let animationFrameId = null
 
  const initializeRopeSegments = (startX, startY) => {
  ropeSegments.current = Array.from({ length: segmentCount }, () => ({
@@ -100,12 +100,13 @@ export default function RopeCursor({
  return pathData
  }
 
- const animate = () => {
+ const loop = createSuspendedRaf({
+ root: svgRef.current,
+ onFrame: () => {
  const segments = ropeSegments.current
  const mouse = mousePosition.current
 
  if (!isInitialized || mouse.x === null) {
- animationFrameId = requestAnimationFrame(animate)
  return
  }
 
@@ -115,16 +116,15 @@ export default function RopeCursor({
  if (pathRef.current) {
  pathRef.current.setAttribute('d', generateSmoothPath(segments))
  }
-
- animationFrameId = requestAnimationFrame(animate)
- }
+ },
+ })
 
  window.addEventListener('mousemove', handleMouseMove)
- animationFrameId = requestAnimationFrame(animate)
+ loop.start()
 
  return () => {
  window.removeEventListener('mousemove', handleMouseMove)
- cancelAnimationFrame(animationFrameId)
+ loop.destroy()
  }
 	}, [segmentCount, segmentLength, isMobile])
 

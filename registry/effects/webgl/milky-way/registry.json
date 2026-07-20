@@ -35,6 +35,10 @@
     {
       "path": "edge-blur-effect.jsx",
       "target": "src/components/effects/milky-way/edge-blur-effect.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/milky-way/createSuspendedRaf.js"
     }
   ]
 }

@@ -1,8 +1,9 @@
 'use client'
-import React, { useRef, useMemo, useCallback, useEffect } from'react'
+import React, { useRef, useMemo, useCallback, useEffect, useState } from'react'
 import { Canvas, useFrame } from'@react-three/fiber'
 import { useGLTF } from'@react-three/drei'
 import * as THREE from'three'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 const BEAN_COUNT = 300
 const FLOW_DURATION = 4
@@ -230,6 +231,8 @@ function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, t
 }
 
 export default function CoffeeBeanCursor() {
+ const rootRef = useRef(null)
+ const [frameloop, setFrameloop] = useState('always')
  const mousePositionRef = useRef({ x: 0, y: 0 })
  const mouseVelocityRef = useRef({ x: 0, y: 0 })
  const targetPositionRef = useRef({ x: 0, y: 0 })
@@ -243,6 +246,16 @@ export default function CoffeeBeanCursor() {
  lastMouseRef.current.time = now
  lastMoveTimeRef.current = now
  }, [])
+
+ useEffect(() => {
+ const gate = createVisibilityGate({
+ root: rootRef,
+ onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+ })
+ setFrameloop(gate.isActive ? 'always' : 'never')
+ return () => gate.destroy()
+ }, [])
+
   const handleMouseMove = useCallback((e) => {
  const rect = e.currentTarget.getBoundingClientRect()
  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1
@@ -259,12 +272,12 @@ export default function CoffeeBeanCursor() {
  lastMoveTimeRef.current = now
  }, [])
   return (
- <div  className='h-screen w-full bg-linear-to-b from-black to-[#110904] relative'
+ <div  ref={rootRef} className='h-screen w-full bg-linear-to-b from-black to-[#110904] relative'
  onMouseMove={handleMouseMove}
  >
     <h1 className='absolute text-[#3D1C0C] text-[8vw] w-full text-center font-bold left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>COFFEE BEANS</h1>
  
- <Canvas camera={{ position: [0, 0, 4.8] }} className='h-full w-full'>
+ <Canvas camera={{ position: [0, 0, 4.8] }} className='h-full w-full' frameloop={frameloop}>
  <MouseTracker  mousePositionRef={mousePositionRef}
  mouseVelocityRef={mouseVelocityRef}
  targetPositionRef={targetPositionRef}

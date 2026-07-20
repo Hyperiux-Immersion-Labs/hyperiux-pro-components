@@ -6,6 +6,7 @@ import gsap from'gsap';
 import { ScrollTrigger } from'gsap/ScrollTrigger';
 import { PixelTransitionFragment, PixelTransitionVertex } from './pixel-transition';
 import { imageSources } from './content';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,7 +50,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  let renderer, scene, camera, mesh, material;
  let textures = [];
  let isMounted = true;
- let animationId;
+ let loop = null;
 
  const getCanvasSize = () => {
  if (typeof window === 'undefined') return 599;
@@ -171,13 +172,15 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  },
  });
 
- const render = () => {
+ const loopInstance = createSuspendedRaf({
+ root: container,
+ onFrame: () => {
  if (!isMounted) return;
  renderer.render(scene, camera);
- animationId = requestAnimationFrame(render);
- };
-
- render();
+ },
+ });
+ loop = loopInstance;
+ loop.start();
  };
 
  // Load all SVGs as canvases, then create textures
@@ -206,8 +209,9 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  return () => {
  isMounted = false;
  hasInit.current = false;
- if (animationId) {
- cancelAnimationFrame(animationId);
+ if (loop) {
+ loop.destroy();
+ loop = null;
  }
  ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {

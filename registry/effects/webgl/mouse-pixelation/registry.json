@@ -35,6 +35,10 @@
     {
       "path": "PixelShift.jsx",
       "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
     }
   ]
 }

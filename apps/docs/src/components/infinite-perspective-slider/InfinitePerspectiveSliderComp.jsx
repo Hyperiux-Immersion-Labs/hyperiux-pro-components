@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(SplitText);
 
@@ -79,7 +80,6 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
   const stateRef = useRef({
     current: 0,
     target: 0,
-    raf: null,
     velocity: 0,
     smoothVelocity: 0,
     rotationVelocity: 0,
@@ -229,8 +229,6 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
       }
 
       positionCards(state.current, finalRotation);
-
-      state.raf = requestAnimationFrame(tick);
     };
 
     const onWheel = (event) => {
@@ -298,7 +296,11 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
     positionCards(0, 0);
     gsap.set(cardRefs.current, { opacity: 1 });
 
-    state.raf = requestAnimationFrame(tick);
+    const loop = createSuspendedRaf({
+      root: stripRef,
+      onFrame: tick,
+    });
+    loop.start();
 
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("resize", onResize);
@@ -312,7 +314,7 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
     window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      cancelAnimationFrame(state.raf);
+      loop.destroy();
 
       if (scrollStopTimerRef.current) {
         window.clearTimeout(scrollStopTimerRef.current);

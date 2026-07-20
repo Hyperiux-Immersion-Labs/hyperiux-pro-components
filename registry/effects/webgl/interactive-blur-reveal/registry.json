@@ -23,6 +23,10 @@
     {
       "path": "webgl-context-recovery.js",
       "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.js"
     }
   ]
 }

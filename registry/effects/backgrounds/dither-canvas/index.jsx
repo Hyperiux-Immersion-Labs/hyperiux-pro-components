@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 /* ── constants  */
 const FC = 80;
@@ -704,12 +705,12 @@ export default function DitherCanvas({
 
     let phase = 0;
     let frame = 0;
-    let rafId = 0;
-
     const tpBuf = new Float32Array(TM * 4);
     const tlBuf = new Float32Array(TM);
 
-    const render = () => {
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: () => {
       if (video.readyState >= 2) {
         const timestamp = now();
 
@@ -808,18 +809,17 @@ export default function DitherCanvas({
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
+      },
+    });
 
-      rafId = requestAnimationFrame(render);
-    };
-
-    render();
+    loop.start();
 
     return () => {
       isDisposed = true;
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
 
-      cancelAnimationFrame(rafId);
+      loop.destroy();
 
       video.pause();
       video.removeAttribute("src");

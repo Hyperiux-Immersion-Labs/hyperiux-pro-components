@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { gsap, Expo } from "gsap";
 import { useMouse } from "./useMouse";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const MOBILE_POINTER_QUERY = "(pointer: coarse)";
 const OFFSCREEN_POSITION = -9999;
@@ -116,7 +117,7 @@ export function PhantomImageTrail({
   const totalImages = resolvedImages.length * safeImageMultiplier;
 
   const imagesRef = useRef([]);
-  const animationFrameRef = useRef(null);
+  const containerRef = useRef(null);
   const idleTimerRef = useRef(null);
 
   const isMobileRef = useRef(false);
@@ -323,12 +324,10 @@ export function PhantomImageTrail({
   const runAnimationLoop = useCallback(
     function runAnimationLoop() {
       if (disableOnMobile && isMobileRef.current) {
-        animationFrameRef.current = requestAnimationFrame(runAnimationLoop);
         return;
       }
 
       if (isMobileRef.current) {
-        animationFrameRef.current = requestAnimationFrame(runAnimationLoop);
         return;
       }
 
@@ -350,8 +349,6 @@ export function PhantomImageTrail({
       if (allImagesInactive) {
         zIndexRef.current = INITIAL_Z_INDEX;
       }
-
-      animationFrameRef.current = requestAnimationFrame(runAnimationLoop);
     },
     [
       disableOnMobile,
@@ -398,16 +395,18 @@ export function PhantomImageTrail({
 
     mediaQuery?.addEventListener?.("change", updatePointerType);
 
-    animationFrameRef.current = requestAnimationFrame(runAnimationLoop);
+    const loop = createSuspendedRaf({
+      root: containerRef.current,
+      onFrame: runAnimationLoop,
+    });
+    loop.start();
 
     if (idleSpawn && !(disableOnMobile && isMobileRef.current)) {
       scheduleIdleSpawn();
     }
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      loop.destroy();
 
       if (idleTimerRef.current) {
         clearTimeout(idleTimerRef.current);
@@ -430,6 +429,7 @@ export function PhantomImageTrail({
 
   return (
     <div
+      ref={containerRef}
       className={`relative h-screen w-full overflow-hidden ${className}`}
       onClick={onTap}
       onTouchStart={onTap}

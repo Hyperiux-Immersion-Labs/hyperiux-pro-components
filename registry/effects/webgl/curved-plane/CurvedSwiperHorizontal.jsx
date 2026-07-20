@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 // GLSL shaders with proper horizontal deformation only
 const vertexShader = `
 uniform vec2 uOffset;
@@ -242,45 +243,46 @@ const CurvedPlaneHorizontal = () => {
       });
     };
 
-    // Render Loop
-    const animate = () => {
-      // Apply scroll velocity with lerp
-      if (Math.abs(scrollVelocityRef.current) > 0.0001) {
-        targetOffsetRef.current += scrollVelocityRef.current;
-        scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
-      }
+    const loop = createSuspendedRaf({
+      root: container,
+      onFrame: () => {
+        // Apply scroll velocity with lerp
+        if (Math.abs(scrollVelocityRef.current) > 0.0001) {
+          targetOffsetRef.current += scrollVelocityRef.current;
+          scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
+        }
 
-      // Decay scroll intensity more slowly
-      scrollIntensityRef.current = lerp(scrollIntensityRef.current, 0, 0.02);
+        // Decay scroll intensity more slowly
+        scrollIntensityRef.current = lerp(scrollIntensityRef.current, 0, 0.02);
 
-      // Momentum for drag
-      if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-        targetOffsetRef.current += velocityRef.current;
-        velocityRef.current *= MOMENTUM_FRICTION;
-      }
+        // Momentum for drag
+        if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
+          targetOffsetRef.current += velocityRef.current;
+          velocityRef.current *= MOMENTUM_FRICTION;
+        }
 
-      // Only reset deformation when not dragging and scroll intensity is very low
-      if (!dragging.current) {
-        targetDeformationRef.current = lerp(targetDeformationRef.current, 0, 0.05);
-      }
+        // Only reset deformation when not dragging and scroll intensity is very low
+        if (!dragging.current) {
+          targetDeformationRef.current = lerp(targetDeformationRef.current, 0, 0.05);
+        }
 
-      // Smooth interpolation
-      offsetRef.current = lerp(
-        offsetRef.current,
-        targetOffsetRef.current,
-        SCROLL_SMOOTHNESS
-      );
-      deformationRef.current = lerp(
-        deformationRef.current,
-        targetDeformationRef.current,
-        DEFORMATION_SMOOTHNESS
-      );
+        // Smooth interpolation
+        offsetRef.current = lerp(
+          offsetRef.current,
+          targetOffsetRef.current,
+          SCROLL_SMOOTHNESS
+        );
+        deformationRef.current = lerp(
+          deformationRef.current,
+          targetDeformationRef.current,
+          DEFORMATION_SMOOTHNESS
+        );
 
-      updateMeshes();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
+        updateMeshes();
+        renderer.render(scene, camera);
+      },
+    });
+    loop.start();
 
     const onResize = () => {
       const viewHeight = window.innerHeight * 0.8;
@@ -384,6 +386,7 @@ const CurvedPlaneHorizontal = () => {
     dom.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
+      loop.destroy();
       window.removeEventListener("resize", onResize);
       dom.removeEventListener("mousedown", onPointerDown);
       dom.removeEventListener("mousemove", onPointerMove);

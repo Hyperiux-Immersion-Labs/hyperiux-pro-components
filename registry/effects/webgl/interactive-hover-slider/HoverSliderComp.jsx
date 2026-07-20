@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const vertexShader = /* glsl */ `
 uniform vec2 uVelocity;
@@ -293,7 +294,6 @@ export default function HoverSliderComp({ items = [] }) {
 
     let floatIdx = 0;
     let prevFloat = 0;
-    let raf = 0;
 
     const vel = new THREE.Vector2(0, 0);
 
@@ -410,69 +410,70 @@ export default function HoverSliderComp({ items = [] }) {
       show(0);
     }
 
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
+        const targetIdx = stateRef.current.activeIndex;
+        const diff = targetIdx - floatIdx;
+        const distToTarget = Math.abs(diff);
 
-      const targetIdx = stateRef.current.activeIndex;
-      const diff = targetIdx - floatIdx;
-      const distToTarget = Math.abs(diff);
+        const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
 
-      const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
+        floatIdx += diff * t;
 
-      floatIdx += diff * t;
+        const delta = floatIdx - prevFloat;
 
-      const delta = floatIdx - prevFloat;
+        vel.y = lerp(vel.y, delta * 60, 0.16);
+        vel.x = lerp(vel.x, 0, 0.14);
 
-      vel.y = lerp(vel.y, delta * 60, 0.16);
-      vel.x = lerp(vel.x, 0, 0.14);
+        prevFloat = floatIdx;
 
-      prevFloat = floatIdx;
+        const centreInt = Math.round(floatIdx);
+        const drift = floatIdx - centreInt;
 
-      const centreInt = Math.round(floatIdx);
-      const drift = floatIdx - centreInt;
+        for (let i = 0; i < VISIBLE; i++) {
+          const offset = i - HALF;
 
-      for (let i = 0; i < VISIBLE; i++) {
-        const offset = i - HALF;
+          const itemIdx =
+            ((centreInt + offset) % items.length + items.length) % items.length;
 
-        const itemIdx =
-          ((centreInt + offset) % items.length + items.length) % items.length;
+          const posY = (-offset + drift) * (CH + GAP);
+          const dist = Math.abs(offset - drift);
 
-        const posY = (-offset + drift) * (CH + GAP);
-        const dist = Math.abs(offset - drift);
+          const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
 
-        const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
+          const sw = CW;
+          const sh = CH * scaleH;
 
-        const sw = CW;
-        const sh = CH * scaleH;
+          const baseOpacity = 0.88;
+          const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
 
-        const baseOpacity = 0.88;
-        const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
+          const wantTex = getTexture(items[itemIdx].img);
 
-        const wantTex = getTexture(items[itemIdx].img);
+          if (wantTex && meshes[i].material.uniforms.uTexture.value !== wantTex) {
+            meshes[i].material.uniforms.uTexture.value = wantTex;
+          }
 
-        if (wantTex && meshes[i].material.uniforms.uTexture.value !== wantTex) {
-          meshes[i].material.uniforms.uTexture.value = wantTex;
+          syncImageSize(meshes[i]);
+
+          meshes[i].position.set(0, posY, i);
+          meshes[i].scale.set(sw, sh, 1);
+          meshes[i].rotation.z = 0;
+
+          meshes[i].material.uniforms.uVelocity.value.set(vel.x, vel.y * 0.28);
+          meshes[i].material.uniforms.uAlpha.value = opacity;
+          meshes[i].material.uniforms.uZoom.value =
+            curveAnim.zoom - clamp(1.0 - dist, 0, 1) * 0.04;
+          meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
+          meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
+          meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
         }
 
-        syncImageSize(meshes[i]);
+        renderer.render(scene, camera);
+      },
+    });
 
-        meshes[i].position.set(0, posY, i);
-        meshes[i].scale.set(sw, sh, 1);
-        meshes[i].rotation.z = 0;
-
-        meshes[i].material.uniforms.uVelocity.value.set(vel.x, vel.y * 0.28);
-        meshes[i].material.uniforms.uAlpha.value = opacity;
-        meshes[i].material.uniforms.uZoom.value =
-          curveAnim.zoom - clamp(1.0 - dist, 0, 1) * 0.04;
-        meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
-        meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
-        meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
-      }
-
-      renderer.render(scene, camera);
-    };
-
-    tick();
+    loop.start();
 
     glRef.current = {
       setActive: (index) => {
@@ -484,7 +485,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     return () => {
-      cancelAnimationFrame(raf);
+      loop.destroy();
 
       window.removeEventListener("resize", onResize);
 

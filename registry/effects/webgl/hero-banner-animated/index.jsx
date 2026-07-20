@@ -13,6 +13,7 @@ import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import Link from 'next/link'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -147,10 +148,21 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 }
 
 export default function HeroBannerAnimated() {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const [isZoomed, setIsZoomed] = useState(false)
   const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
   const isMobile = deviceType === 'mobile'
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
 
   useEffect(() => {
     const tabletMq = window.matchMedia('(max-width: 1025px)')
@@ -183,7 +195,7 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section className="w-full h-screen bg-black relative">
+      <section ref={rootRef} className="w-full h-screen bg-black relative">
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -259,6 +271,7 @@ export default function HeroBannerAnimated() {
               aria-hidden="true"
               dpr={[1, 2]}
               camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
+              frameloop={frameloop}
             >
               <Center>
                 <SceneContent

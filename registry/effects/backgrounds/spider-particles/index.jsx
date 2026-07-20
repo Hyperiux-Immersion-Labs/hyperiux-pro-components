@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -89,7 +90,6 @@ export default function SpiderParticles({
 
     let width = mount.clientWidth || window.innerWidth;
     let height = mount.clientHeight || window.innerHeight;
-    let animId;
 
     const _glowColor     = new THREE.Color(glowColor);
     const _particleColor = new THREE.Color(particleColor);
@@ -294,91 +294,92 @@ export default function SpiderParticles({
 
     // ─── Animation Loop ────────────────────────────────────────────────────────
 
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
+        // Fade the entire effect in/out as cursor enters or leaves
+        mouseEntryAlpha = mousePresent
+          ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
+          : Math.max(0, mouseEntryAlpha - FADE_SPEED);
 
-      // Fade the entire effect in/out as cursor enters or leaves
-      mouseEntryAlpha = mousePresent
-        ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
-        : Math.max(0, mouseEntryAlpha - FADE_SPEED);
+        // Snap smoothMouse on the first frame, lerp every frame after
+        if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
+          if (mouseJustEntered) {
+            smoothMouse.copy(mouse); // instant snap — avoids lerp drift from previous position
+            mouseJustEntered = false;
+          } else {
+            smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
+            smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
+          }
+        } else if (!mousePresent && mouseEntryAlpha <= 0) {
+          smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
+        }
 
-      // Snap smoothMouse on the first frame, lerp every frame after
-      if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
-        if (mouseJustEntered) {
-          smoothMouse.copy(mouse); // instant snap — avoids lerp drift from previous position
-          mouseJustEntered = false;
+        // Sync uniforms
+        particleMat.uniforms.uMouse.value.copy(smoothMouse);
+        particleMat.uniforms.uAlpha.value = mouseEntryAlpha;
+        cursorMat.uniforms.uAlpha.value   = mouseEntryAlpha;
+
+        // Move cursor dot
+        if (smoothMouse.x > MOUSE_THRESHOLD) {
+          cursorPoint.position.set(smoothMouse.x, smoothMouse.y, 0);
+          cursorPoint.visible = true;
         } else {
-          smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
-          smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
+          cursorPoint.visible = false;
         }
-      } else if (!mousePresent && mouseEntryAlpha <= 0) {
-        smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
-      }
 
-      // Sync uniforms
-      particleMat.uniforms.uMouse.value.copy(smoothMouse);
-      particleMat.uniforms.uAlpha.value = mouseEntryAlpha;
-      cursorMat.uniforms.uAlpha.value   = mouseEntryAlpha;
+        // Build web lines — one segment per nearby particle
+        let mIdx = 0;
 
-      // Move cursor dot
-      if (smoothMouse.x > MOUSE_THRESHOLD) {
-        cursorPoint.position.set(smoothMouse.x, smoothMouse.y, 0);
-        cursorPoint.visible = true;
-      } else {
-        cursorPoint.visible = false;
-      }
+        if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
+          for (let i = 0; i < actualCount; i++) {
+            const px = positions[i * 3];
+            const py = positions[i * 3 + 1];
+            const dx = px - smoothMouse.x;
+            const dy = py - smoothMouse.y;
+            const d  = Math.sqrt(dx * dx + dy * dy);
 
-      // Build web lines — one segment per nearby particle
-      let mIdx = 0;
+            if (d >= mouseConnectDist) continue; // outside web radius, skip
 
-      if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
-        for (let i = 0; i < actualCount; i++) {
-          const px = positions[i * 3];
-          const py = positions[i * 3 + 1];
-          const dx = px - smoothMouse.x;
-          const dy = py - smoothMouse.y;
-          const d  = Math.sqrt(dx * dx + dy * dy);
+            const alpha = (1 - d / mouseConnectDist) * 0.85 * mouseEntryAlpha;
+            const si    = mIdx * 6;
 
-          if (d >= mouseConnectDist) continue; // outside web radius, skip
+            // Line start = cursor position
+            mouseLinePositions[si]     = smoothMouse.x;
+            mouseLinePositions[si + 1] = smoothMouse.y;
+            mouseLinePositions[si + 2] = 0;
 
-          const alpha = (1 - d / mouseConnectDist) * 0.85 * mouseEntryAlpha;
-          const si    = mIdx * 6;
+            // Line end = particle position
+            mouseLinePositions[si + 3] = px;
+            mouseLinePositions[si + 4] = py;
+            mouseLinePositions[si + 5] = 0;
 
-          // Line start = cursor position
-          mouseLinePositions[si]     = smoothMouse.x;
-          mouseLinePositions[si + 1] = smoothMouse.y;
-          mouseLinePositions[si + 2] = 0;
+            // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
+            mouseLineColors[si]     = _webColor.r;
+            mouseLineColors[si + 1] = _webColor.g;
+            mouseLineColors[si + 2] = _webColor.b;
+            mouseLineColors[si + 3] = _webColor.r * alpha;
+            mouseLineColors[si + 4] = _webColor.g * alpha;
+            mouseLineColors[si + 5] = _webColor.b * alpha;
 
-          // Line end = particle position
-          mouseLinePositions[si + 3] = px;
-          mouseLinePositions[si + 4] = py;
-          mouseLinePositions[si + 5] = 0;
-
-          // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
-          mouseLineColors[si]     = _webColor.r;
-          mouseLineColors[si + 1] = _webColor.g;
-          mouseLineColors[si + 2] = _webColor.b;
-          mouseLineColors[si + 3] = _webColor.r * alpha;
-          mouseLineColors[si + 4] = _webColor.g * alpha;
-          mouseLineColors[si + 5] = _webColor.b * alpha;
-
-          mIdx++;
+            mIdx++;
+          }
         }
-      }
 
-      mouseLineGeo.setDrawRange(0, mIdx * 2);
-      mouseLineGeo.attributes.position.needsUpdate = true;
-      mouseLineGeo.attributes.color.needsUpdate    = true;
+        mouseLineGeo.setDrawRange(0, mIdx * 2);
+        mouseLineGeo.attributes.position.needsUpdate = true;
+        mouseLineGeo.attributes.color.needsUpdate    = true;
 
-      renderer.render(scene, camera);
-    };
+        renderer.render(scene, camera);
+      },
+    });
 
-    animate();
+    loop.start();
 
     // ─── Cleanup ───────────────────────────────────────────────────────────────
 
     return () => {
-      cancelAnimationFrame(animId);
+      loop.destroy();
       window.removeEventListener("resize", onResize);
       if (mount) {
         mount.removeEventListener("mousemove",  onMove);

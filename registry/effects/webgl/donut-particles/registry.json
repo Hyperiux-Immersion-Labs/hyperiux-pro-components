@@ -23,6 +23,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/donut-particles/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/donut-particles/createSuspendedRaf.js"
     }
   ]
 }

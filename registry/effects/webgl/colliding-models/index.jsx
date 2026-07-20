@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import { useEffect, useRef, useReducer, useMemo, useCallback, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
+import { createVisibilityGate } from './createSuspendedRaf'
 import {
   useGLTF,
   MeshTransmissionMaterial,
@@ -33,7 +34,7 @@ const shuffle = (accent = 0) => [
   { color: accents[accent], roughness: 0.1, accent: true },
 ]
 
-function Scene() {
+function Scene({ frameloop = 'always' }) {
   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
   const [showTitle, setShowTitle] = useState(true)
   const connectors = useMemo(() => shuffle(accent), [accent])
@@ -79,6 +80,7 @@ function Scene() {
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
       className="h-full w-full "
+      frameloop={frameloop}
     >
       {showTitle && (
         <Text
@@ -329,12 +331,24 @@ function Model({ children, color = 'white', roughness = 0 }) {
 
 
 export default function CollidingModels() {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
+
   return (
 
     <>
       <div className="w-full h-screen flex items-center justify-center px-12 max-md:px-6 max-xl:px-10">
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
-          <Scene />
+        <div ref={rootRef} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
+          <Scene frameloop={frameloop} />
           <p className="pointer-events-none max-xl:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>

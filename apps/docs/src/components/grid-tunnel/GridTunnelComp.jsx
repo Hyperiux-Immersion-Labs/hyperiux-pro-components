@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Image, Preload } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const TUNNEL_DEPTH = 90;
 const TUNNEL_WIDTH = 18;
@@ -414,6 +415,8 @@ function FooterMark() {
 }
 
 export default function GridTunnelComp({ images = [] }) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
   const fallbackImages = [
     "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
     "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
@@ -468,6 +471,15 @@ export default function GridTunnelComp({ images = [] }) {
   // This prevents CORS/network failures from flooding the loader with bad URLs.
   const [validatedImages, setValidatedImages] = useState([]);
   const [validating, setValidating] = useState(true);
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -531,9 +543,10 @@ export default function GridTunnelComp({ images = [] }) {
   const imageList = !validating && validatedImages && validatedImages.length > 0 ? validatedImages : images.length > 0 ? images : fallbackImages;
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-white">
+    <section ref={rootRef} className="relative h-screen w-full overflow-hidden bg-white">
       <Canvas
         aria-hidden="true"
+        frameloop={frameloop}
         camera={{
           position: [0, 0, CAMERA_START_Z],
           fov: 72,

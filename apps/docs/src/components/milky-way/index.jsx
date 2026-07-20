@@ -10,6 +10,7 @@ import { ArrowRight, Stars } from 'lucide-react'
 import Link from 'next/link'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import CircularText from './CircularText'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 
 const CFG = {
@@ -861,9 +862,20 @@ function SceneReady({ onReady }) {
 }
 
 export default function MilkyWay() {
+   const rootRef = useRef(null)
+   const [frameloop, setFrameloop] = useState('always')
    const [isPageLoaded, setIsPageLoaded] = useState(false)
    const [viewport, setViewport] = useState(null)
    const [isSceneReady, setIsSceneReady] = useState(false)
+
+   useEffect(() => {
+      const gate = createVisibilityGate({
+         root: rootRef,
+         onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+      })
+      setFrameloop(gate.isActive ? 'always' : 'never')
+      return () => gate.destroy()
+   }, [])
 
    useLayoutEffect(() => {
       const markLoaded = () => {
@@ -912,7 +924,7 @@ export default function MilkyWay() {
    const showMobileContent = showMobileFallback
 
    return (
-      <section style={{ width: '100%', height: '100vh', background: '#000' }}>
+      <section ref={rootRef} style={{ width: '100%', height: '100vh', background: '#000' }}>
 
 
          {showDesktopScene ? (
@@ -922,6 +934,7 @@ export default function MilkyWay() {
                gl={{ antialias: false, powerPreference: 'high-performance' }}
                camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}
                style={{ opacity: isSceneReady ? 1 : 0 }}
+               frameloop={frameloop}
             >
                <SceneReady onReady={() => setIsSceneReady(true)} />
                <BackgroundStars />

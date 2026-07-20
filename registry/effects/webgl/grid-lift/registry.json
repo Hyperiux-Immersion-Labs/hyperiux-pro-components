@@ -20,6 +20,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/grid-lift/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/grid-lift/createSuspendedRaf.js"
     }
   ]
 }

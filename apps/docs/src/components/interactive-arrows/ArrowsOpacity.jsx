@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Point } from './utils';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
   constructor(position) {
@@ -38,7 +39,6 @@ class Arrow {
 
 const ArrowsOpacity = () => {
   const canvasRef = useRef(null);
-  const requestIdRef = useRef(null);
   const arrowArrRef = useRef([]);
   const mouseRef = useRef({ x: 0, y: 0 });
 
@@ -72,34 +72,36 @@ const ArrowsOpacity = () => {
       }
     };
 
-    const animate = () => {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const { x: mx, y: my } = mouseRef.current;
-      for (let y = 0; y < canvas.height / 20; y++) {
-        for (let x = 0; x < canvas.width / 50; x++) {
-          const arrow = arrowArrRef.current[y * 10 + x];
-          if (arrow) {
-            arrow.update(mx, my);
-            arrow.draw(ctx);
-          }
-        }
-      }
-      requestIdRef.current = requestAnimationFrame(animate);
-    };
-
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     initializeArrows(canvas);
     window.addEventListener('resize', handleResize);
     canvas.addEventListener('mousemove', handleMouseMove);
-    requestIdRef.current = requestAnimationFrame(animate);
+
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: () => {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const { x: mx, y: my } = mouseRef.current;
+        for (let y = 0; y < canvas.height / 20; y++) {
+          for (let x = 0; x < canvas.width / 50; x++) {
+            const arrow = arrowArrRef.current[y * 10 + x];
+            if (arrow) {
+              arrow.update(mx, my);
+              arrow.draw(ctx);
+            }
+          }
+        }
+      },
+    });
+    loop.start();
+
     return () => {
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
-      if (requestIdRef.current) cancelAnimationFrame(requestIdRef.current);
+      loop.destroy();
     };
   }, []);
 

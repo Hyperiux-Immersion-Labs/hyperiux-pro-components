@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Point {
   constructor(x, y) {
@@ -40,7 +41,6 @@ const Points = () => {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const pointsRef = useRef([]);
-  const animationFrameRef = useRef(null);
   const mouseEnteredRef = useRef(false); 
   const lineLengthRef = useRef(0); 
   const maxLineLength = 25; 
@@ -102,7 +102,7 @@ const Points = () => {
     }
   }, []);
 
-  const main = useCallback(function drawFrame() {
+  const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -115,8 +115,6 @@ const Points = () => {
     points.forEach(point => {
       point.draw(ctx, mouse.x, mouse.y, mouseEnteredRef.current, lineLengthRef.current);
     });
-
-    animationFrameRef.current = requestAnimationFrame(drawFrame);
   }, [updateLineLength]);
 
   useEffect(() => {
@@ -130,18 +128,20 @@ const Points = () => {
     canvas.addEventListener('mouseenter', handleMouseEnter);
     // canvas.addEventListener('mouseleave', handleMouseLeave);
 
-    main();
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: drawFrame,
+    });
+    loop.start();
 
     return () => {
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseenter', handleMouseEnter);
       // canvas.removeEventListener('mouseleave', handleMouseLeave);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      loop.destroy();
     };
-  }, [handleMouseEnter, handleMouseMove, handleResize, initializePoints, main]);
+  }, [drawFrame, handleMouseEnter, handleMouseMove, handleResize, initializePoints]);
 
   return (
     <div className="w-full h-full ">

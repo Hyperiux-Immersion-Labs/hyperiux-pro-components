@@ -28,6 +28,10 @@
     {
       "path": "webgl-context-recovery.js",
       "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/file-encryption/createSuspendedRaf.js"
     }
   ]
 }

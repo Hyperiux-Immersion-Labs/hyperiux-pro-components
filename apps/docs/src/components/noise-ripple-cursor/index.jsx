@@ -3,6 +3,7 @@ import { useEffect, useRef } from'react';
 import * as THREE from'three';
 
 import { registerFxTarget, unregisterFxTarget } from './2dCanvasTracker';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 const VERTEX_SRC = `
 varying vec2 vUv;
@@ -311,9 +312,10 @@ export const NoiseDietherShader = ({
  });
 
  const clock = new THREE.Clock();
- let raf = 0;
 
- const animate = () => {
+ const loop = createSuspendedRaf({
+ root: container,
+ onFrame: () => {
  mainMaterial.uniforms.uTime.value = clock.getElapsedTime();
 
  // Update FBO uniforms - only add influence if mouse is moving
@@ -341,15 +343,15 @@ export const NoiseDietherShader = ({
 
  // Render main scene
  renderer.render(scene, camera);
- raf = requestAnimationFrame(animate);
- };
- raf = requestAnimationFrame(animate);
+ },
+ });
+ loop.start();
 
- threeRef.current = { renderer, fboA, fboB, mainMaterial, fboMaterial, ro, raf, imageTexture };
+ threeRef.current = { renderer, fboA, fboB, mainMaterial, fboMaterial, ro, imageTexture };
 
  return () => {
  ro.disconnect();
- cancelAnimationFrame(raf);
+ loop.destroy();
  if (mouseStopTimeoutRef.current) {
  clearTimeout(mouseStopTimeoutRef.current);
  }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { attachWebGLContextRecovery } from "./webgl-context-recovery";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   -1, -1,
@@ -334,7 +335,7 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
 
   useEffect(() => {
     let isDisposed = false;
-    let animationFrameId = 0;
+    let loop = null;
     let cleanupWebgl;
 
     async function init() {
@@ -575,8 +576,6 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
         gl.uniform1f(timeLocation, now / 1000);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-        animationFrameId = requestAnimationFrame(render);
       }
 
       window.addEventListener("pointermove", onWindowPointerMove, {
@@ -584,13 +583,18 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
       });
       window.addEventListener("mouseout", onWindowPointerLeave);
 
-      render();
+      loop = createSuspendedRaf({
+        root: canvas,
+        onFrame: render,
+      });
+      loop.start();
 
       return () => {
         window.removeEventListener("pointermove", onWindowPointerMove);
         window.removeEventListener("mouseout", onWindowPointerLeave);
 
-        cancelAnimationFrame(animationFrameId);
+        loop?.destroy();
+        loop = null;
         gl.deleteTexture(baseTexture);
         gl.deleteTexture(noiseTexture);
         gl.deleteTexture(maskTexture);
@@ -622,10 +626,12 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
     // on restore, rebuild them by re-running init().
     const detachRecovery = attachWebGLContextRecovery(canvasRef.current, {
       onLost: () => {
-        cancelAnimationFrame(animationFrameId);
         if (cleanupWebgl) {
           cleanupWebgl();
           cleanupWebgl = undefined;
+        } else {
+          loop?.destroy();
+          loop = null;
         }
       },
       onRestored: () => {
@@ -637,11 +643,13 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
 
     return () => {
       isDisposed = true;
-      cancelAnimationFrame(animationFrameId);
       detachRecovery();
 
       if (cleanupWebgl) {
         cleanupWebgl();
+      } else {
+        loop?.destroy();
+        loop = null;
       }
     };
   }, [iChannel0, iChannel1]);
