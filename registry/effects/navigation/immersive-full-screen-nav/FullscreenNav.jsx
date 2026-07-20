@@ -196,17 +196,17 @@ export default function FullscreenNav({
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
+            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "translate-y-1.75 rotate-45" : "bg-black"
               }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-500 delay-300 ${isOpen ? "scale-x-0 opacity-0" : "bg-black"
+            className={`block h-0.5 w-full transition-all duration-500 delay-300 ${isOpen ? "scale-x-0 opacity-0" : "bg-black"
               }`}
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-[2px] w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
+            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 ${isOpen ? "-translate-y-2.25 -rotate-45" : "bg-black"
               }`}
           />
         </button>

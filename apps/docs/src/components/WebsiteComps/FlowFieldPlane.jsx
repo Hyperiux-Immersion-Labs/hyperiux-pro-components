@@ -179,6 +179,10 @@ function FlowFieldPlane({
   );
 
   useEffect(() => {
+    // useTexture has no option to configure filtering/wrapping/colorSpace at
+    // load time - mutating the loaded THREE.Texture in-place is the only API
+    // Three.js exposes for this, and it's confined to an effect.
+    // eslint-disable-next-line react-hooks/immutability
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.generateMipmaps = false;

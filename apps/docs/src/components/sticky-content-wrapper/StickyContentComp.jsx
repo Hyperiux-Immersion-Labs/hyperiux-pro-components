@@ -299,6 +299,7 @@ export function StickyContentComp({
               }}
               className={`absolute inset-0 h-full w-full opacity-0 ${imageClassName}`}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={item.image}
                 alt={item.alt || item.imageAlt || `sticky-image-${index + 1}`}

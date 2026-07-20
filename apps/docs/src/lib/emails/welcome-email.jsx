@@ -71,7 +71,7 @@ export function WelcomeEmail() {
         <Preview>Start with 30+ free, source-owned interaction effects.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
-            className="mx-auto w-full max-w-[600px] px-4"
+            className="mx-auto w-full max-w-150 px-4"
             style={{
               backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
               backgroundSize: "cover",

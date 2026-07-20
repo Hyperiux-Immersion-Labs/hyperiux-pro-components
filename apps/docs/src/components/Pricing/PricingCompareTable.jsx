@@ -56,7 +56,7 @@ function Cell({ value, highlight = false }) {
 
 export default function PricingCompareTable() {
   return (
-    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[0vw] max-md:py-[16vw]">
+    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-0 max-md:py-[16vw]">
 
       {/* Heading */}
       <LineReveal
@@ -71,7 +71,7 @@ export default function PricingCompareTable() {
         <div className="mx-auto w-full max-w-[82vw]  rounded-lg border border-white/8 overflow-hidden  max-sm:max-w-[240vw] max-sm:w-[240vw] max-md:max-w-[150vw] max-md:w-[150vw]">
 
           {/* Column headers */}
-          <div className="grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] bg-white/[0.04] px-[2.5vw] py-[1.3vw] max-md:px-6 max-md:py-4 border-b border-white/8">
+          <div className="grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] bg-white/4 px-[2.5vw] py-[1.3vw] max-md:px-6 max-md:py-4 border-b border-white/8">
             <span className=" text-[1.2vw] max-md:text-[3vw] max-sm:text-[5vw] text-white/50 uppercase">
               Feature
             </span>
@@ -87,7 +87,7 @@ export default function PricingCompareTable() {
           {rows.map((row, i) => (
             <div
               key={row.feature}
-              className={`grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] items-center px-[2.5vw] py-[1.4vw] max-md:px-6 max-md:py-4 border-t border-white/6 ${i % 2 !== 0 ? "bg-white/[0.02]" : ""
+              className={`grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] items-center px-[2.5vw] py-[1.4vw] max-md:px-6 max-md:py-4 border-t border-white/6 ${i % 2 !== 0 ? "bg-white/2" : ""
                 }`}
             >
               <span className="text24 max-md:text-sm text-white/80 pr-[2vw]">

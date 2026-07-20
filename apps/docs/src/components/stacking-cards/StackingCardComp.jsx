@@ -180,6 +180,7 @@ const SliderCard = ({
 
                 <div className="mb-6 hidden h-[42svh] w-full max-md:block">
                     <div className="h-full max-sm:w-full overflow-hidden max-md:w-[80%] max-md:mx-auto max-sm:rounded-[6vw] max-md:rounded-[3vw]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={image} alt={title} className="h-full w-full object-cover" />
                     </div>
                 </div>
@@ -220,6 +221,7 @@ const SliderCard = ({
  max-md:hidden"
             >
                 <div className="h-full w-full overflow-hidden rounded-[2vw]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={image} alt={title} className="card-image h-full w-full rounded-[2vw] object-cover" />
                 </div>
             </div>

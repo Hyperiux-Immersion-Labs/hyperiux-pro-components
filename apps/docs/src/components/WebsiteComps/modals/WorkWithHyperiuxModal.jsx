@@ -226,7 +226,7 @@ function WorkWithHyperiuxModalInner() {
       {isOpen && (
         <motion.div
           key="work-with-hyperiux-modal"
-          className="fixed inset-0 z-[9999] flex items-center justify-center px-6 py-10"
+          className="fixed inset-0 z-9999 flex items-center justify-center px-6 py-10"
           role="dialog"
           aria-modal="true"
           aria-labelledby="work-with-hyperiux-title"
@@ -276,8 +276,8 @@ function WorkWithHyperiuxModalInner() {
               className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
-                <span className="h-[1px] w-4 rotate-45 bg-white" />
-                <span className="absolute h-[1px] w-4 -rotate-45 bg-white" />
+                <span className="h-px w-4 rotate-45 bg-white" />
+                <span className="absolute h-px w-4 -rotate-45 bg-white" />
               </div>
             </button>
 
@@ -301,7 +301,7 @@ function WorkWithHyperiuxModalInner() {
                     Your enquiry has been sent successfully.
                   </p>
                   <p className="mt-2 text-[1vw] text-white/70 max-md:text-sm">
-                    Check your inbox for a confirmation. We'll be in touch shortly.
+                    Check your inbox for a confirmation. We&apos;ll be in touch shortly.
                   </p>
                 </div>
               ) : (

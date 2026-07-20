@@ -284,6 +284,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									key={`left-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
+									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
 										src={item.src}
 										alt={item.title}
@@ -318,6 +319,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
 								>
+									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
 										src={item.src}
 										alt={item.title}
@@ -351,6 +353,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									key={`right-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
+									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
 										src={item.src}
 										alt={item.title}
@@ -411,6 +414,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 								className="overflow-hidden rounded-sm max-sm:mx-auto  w-full max-sm:w-[80%]"
 							>
 								<div className="relative  max-sm:aspect-auto h-[35vh] max-sm:h-[35vh]  ">
+									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
 										src={item.src}
 										alt={item.title}

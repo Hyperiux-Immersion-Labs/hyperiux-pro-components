@@ -477,6 +477,7 @@ export default function ExpandingNavbar() {
                         style={{ display: "block" }}
                     />
                     <div className="w-[8vw] h-auto relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src="/hyperiux-wordmark.svg"
                             alt="logo"

@@ -378,6 +378,7 @@ export default function PixelBloom({
           className="absolute inset-0 h-full w-full object-cover opacity-0"
         />
       ) : (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           ref={mediaRef}
           src={getCanvasSafeMediaUrl(src)}

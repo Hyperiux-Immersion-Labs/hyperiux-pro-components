@@ -317,7 +317,7 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03]">
+              <tr className="border-b border-white/10 bg-white/3">
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
@@ -327,7 +327,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-white/6">
               {loading ? (
                 Array.from({ length: 6 }).map((_, i) => (
                   <tr key={i}>
@@ -346,7 +346,7 @@ export default function AdminPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="transition hover:bg-white/[0.02]">
+                  <tr key={user.id} className="transition hover:bg-white/2">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {user.imageUrl ? (

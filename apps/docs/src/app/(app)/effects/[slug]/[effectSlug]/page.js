@@ -101,6 +101,24 @@ function getSanityFaqs(content) {
     .filter((item) => item.question && item.answer);
 }
 
+// Registry file content (full component source) must never cross into a
+// "use client" component's props - Next.js serializes the whole prop value
+// into the page's initial HTML/RSC payload regardless of whether the client
+// component actually renders it, so an unauthenticated visitor could read
+// Pro effect source straight out of view-source even though the UI shows a
+// lock screen. The rendered "Source Code" section is driven entirely by
+// Sanity content blocks (which already gate on isLocked) - this raw
+// registry content isn't used on this page at all, only by the
+// separately-authenticated CLI download route.
+function stripFileContent(effect) {
+  if (!effect?.files?.length) return effect;
+
+  return {
+    ...effect,
+    files: effect.files.map(({ content, ...rest }) => rest),
+  };
+}
+
 function normalize(value = "") {
   return value
     .toString()
@@ -214,7 +232,7 @@ export default async function EffectPage({ params }) {
       <EffectDetailContent
         slug={effectSlug}
         categorySlug={slug}
-        effect={effect}
+        effect={stripFileContent(effect)}
         content={content}
         relatedEffects={relatedEffects}
         effectCounts={effectCounts}

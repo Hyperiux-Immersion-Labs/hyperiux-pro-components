@@ -1,5 +1,6 @@
 "use client"
 import React from 'react'
+import Image from 'next/image'
 import SplitLine from '../WebsiteComps/SplitLine'
 import RandomBlur from '../WebsiteComps/RandomBlur'
 import { useFadeUp } from '../Animations/gsapAnimations'
@@ -9,11 +10,13 @@ const Hero = () => {
     useFadeUp()
     return (
         <section className="relative z-20 pointer-events-none self-padd h-screen flex items-center w-full">
-            <img
+            <Image
         src="/landing-page/hero-bg.webp"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden h-full w-full object-cover max-md:block"
+        fill
+        sizes="100vw"
+        className="pointer-events-none -z-10 hidden object-cover max-md:block"
       />
             <div
                 className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2 w-[75%] max-md:w-full"

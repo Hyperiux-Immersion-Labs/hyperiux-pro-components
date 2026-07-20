@@ -179,6 +179,7 @@ export default function PixelatedImageEffect({
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt}

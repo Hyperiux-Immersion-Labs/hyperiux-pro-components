@@ -173,7 +173,6 @@ export default function EdgeBlurEffect({
  resolution: [width, height],
  frag,
  });
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [blurStrength, blurStart, frag]);
 
  useEffect(() => {

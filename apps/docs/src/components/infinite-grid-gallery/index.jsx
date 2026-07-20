@@ -522,6 +522,7 @@ export default function InfiniteGridGallery() {
                     />
                   </>
                 ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     className="block h-full w-full object-cover absolute inset-0"
                     src={display.src}
@@ -608,6 +609,7 @@ export default function InfiniteGridGallery() {
                           }}
                           aria-label={`Open ${item.caption}`}
                         >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
                             src={item.src}

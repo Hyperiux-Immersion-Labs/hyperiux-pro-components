@@ -397,6 +397,7 @@ export default function NoiseRippleCursor({
  <div className={`${wrapperClassName} relative`}>
 
   {imageSrc && (
+  // eslint-disable-next-line @next/next/no-img-element
   <img
   src={imageSrc}
   alt="Background"
