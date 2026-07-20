@@ -5,6 +5,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -41,6 +42,9 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
   { images = DEFAULT_IMAGE_SOURCES, onComplete },
   ref
 ) {
+  const uid = useId().replace(/:/g, "");
+  const loaderWrapperId = `loader-wrapper-${uid}`;
+  const imgsWrapperId = `imgs-wrapper-${uid}`;
   const rootRef = useRef(null);
   const imagesRef = useRef([]);
   const text1Ref = useRef(null);
@@ -93,7 +97,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       const tl = gsap.timeline();
 
       tl.fromTo(
-        "#imgs-wrapper",
+        `#${imgsWrapperId}`,
         {
           yPercent: IMAGE_ENTRY_Y_PERCENT,
           opacity: 0,
@@ -199,7 +203,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 
 
       tl.to(
-        "#imgs-wrapper",
+        `#${imgsWrapperId}`,
         {
           yPercent: 0,
           ease: INTRO_EASE,
@@ -251,7 +255,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
     }, rootRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [imgsWrapperId]);
 
   return (
     <section
@@ -264,7 +268,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
           ref.current = element;
         }
       }}
-      id="loader-wrapper"
+      id={loaderWrapperId}
       className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-md:px-[5vw] max-sm:px-[6vw]"
     >
       <div className="flex w-full items-center justify-between max-md:flex-col max-md:justify-center max-md:gap-[33vh] max-sm:gap-[70vw]">
@@ -276,7 +280,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         </h1>
 
         <div
-          id="imgs-wrapper"
+          id={imgsWrapperId}
           className="relative size-[6.5vw] max-md:z-99 max-md:size-[13vw] max-sm:size-[18vw]"
         >
           {images.map((src, index) => (
@@ -320,6 +324,8 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 export default function StackLoader({
   images = DEFAULT_IMAGE_SOURCES,
 }) {
+  const uid = useId().replace(/:/g, "");
+  const demoUiId = `demo-ui-${uid}`;
   const [isLoaderComplete, setIsLoaderComplete] = useState(false);
   const [introInstance, setIntroInstance] = useState(0);
   const stackToSpreadIntroRef = useRef(null);
@@ -335,7 +341,7 @@ export default function StackLoader({
 
   return (
     <div
-      id="DEMO UI"
+      id={demoUiId}
       className="relative h-screen w-screen overflow-hidden bg-zinc-900"
     >
       <div

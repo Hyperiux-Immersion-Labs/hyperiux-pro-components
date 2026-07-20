@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import * as THREE from "three";
 
 // GLSL Shaders
@@ -104,6 +104,8 @@ function lerp(a, b, t) {
 }
 
 const CurvedPlaneVertical = ({ routes }) => {
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `curved-swiper-vertical-${uid}`;
   const containerRef = useRef(null);
   const sceneRef = useRef();
   const cameraRef = useRef();
@@ -396,7 +398,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     <main
       ref={containerRef}
       className="w-screen h-screen relative overflow-hidden flex items-center justify-center"
-      id="curved-swiper-vertical"
+      id={sectionId}
       style={{ background: "white", touchAction: "none" }}
     >
 {!imagesLoaded && (

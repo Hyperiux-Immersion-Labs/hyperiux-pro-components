@@ -87,6 +87,8 @@ function WebGLSliderComp({ images = [] }) {
   const lenisResumeTimeout = useRef(null);
   const isSnapping = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const announcedIndexRef = useRef(0);
 
   useEffect(() => {
     const updateViewport = () => setIsMobile(window.innerWidth < 768);
@@ -366,6 +368,14 @@ function WebGLSliderComp({ images = [] }) {
       const worldOffset = scrollRef.current / pxPerWorldUnit;
       const wrappedOffset = mod(worldOffset, loopLength);
 
+      if (total > 0) {
+        const nextIndex = mod(Math.round(wrappedOffset / GAP), total);
+        if (nextIndex !== announcedIndexRef.current) {
+          announcedIndexRef.current = nextIndex;
+          setActiveIndex(nextIndex);
+        }
+      }
+
       const halfScreenW = window.innerWidth / 2;
       const halfScreenH = window.innerHeight / 2;
       const invHalfViewW = 1 / (viewW / 2);
@@ -521,8 +531,21 @@ function WebGLSliderComp({ images = [] }) {
     );
   }
 
+  const activeImage = images[activeIndex];
+  const identifyingText = activeImage?.text
+    ? String(activeImage.text).replace(/\s+/g, " ").trim()
+    : null;
+  const slideAnnouncement = images.length
+    ? identifyingText
+      ? `${identifyingText}, slide ${activeIndex + 1} of ${images.length}`
+      : `Slide ${activeIndex + 1} of ${images.length}`
+    : "";
+
   return (
     <div className="relative w-full">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {slideAnnouncement}
+      </div>
       <div
         ref={containerRef}
         className="fixed inset-0 z-10 h-screen w-full pointer-events-none"

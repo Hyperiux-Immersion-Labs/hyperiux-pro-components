@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 const COLS = 22;
 const ROWS = 13;
@@ -175,6 +175,7 @@ function drawCapsule(ctx, x1, y1, x2, y2, r) {
 export default function GooeyCounter() {
  const canvasRef = useRef(null);
  const stateRef = useRef(null);
+ const gooeyFilterId = `gooey-${useId().replace(/:/g, "")}`;
 
  useEffect(() => {
   // Canvas setup
@@ -182,6 +183,7 @@ export default function GooeyCounter() {
   const ctx = canvas.getContext("2d");
   let offscreen = new OffscreenCanvas(1, 1);
   let offCtx = offscreen.getContext("2d");
+  const filterUrl = `url(#${gooeyFilterId})`;
 
   // Simulation state
   const sim = {
@@ -321,7 +323,7 @@ export default function GooeyCounter() {
    }
 
    ctx.save();
-   ctx.filter = "url(#gooey)";
+   ctx.filter = filterUrl;
    ctx.drawImage(offscreen, 0, 0, vw, vh);
    ctx.restore();
 
@@ -348,7 +350,7 @@ export default function GooeyCounter() {
    clearTimeout(sim.timer);
    window.removeEventListener("resize", resize);
   };
- }, []);
+ }, [gooeyFilterId]);
 
  return (
   <div style={{ position: "fixed", inset: 0, background: BG }}>
@@ -362,7 +364,7 @@ export default function GooeyCounter() {
     </div>
    <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute" }}>
     <defs>
-     <filter id="gooey" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
+     <filter id={gooeyFilterId} x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
       <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
       <feColorMatrix in="blur" mode="matrix"
        values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="goo"/>

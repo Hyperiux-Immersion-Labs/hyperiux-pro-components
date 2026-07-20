@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
 import Link from "next/link";
@@ -20,6 +20,8 @@ motion-first composition, gradient-led art direction, and small details
 that make a brand experience unforgettable.`;
 
 const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) => {
+	const uid = useId().replace(/:/g, "");
+	const sectionId = `ribbon-drift-${uid}`;
 	const headingRef = useRef(null);
 	const paragraphRef = useRef(null);
 	const sectionBreakFillRef = useRef(null);
@@ -68,7 +70,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 				const introTl = gsap.timeline({
 					scrollTrigger: {
-						trigger: "#ribbon-drift",
+						trigger: `#${sectionId}`,
 						start: "top top",
 						end: "10% top",
 						scrub: true,
@@ -164,7 +166,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 				const tl = gsap.timeline({
 					scrollTrigger: {
-						trigger: "#ribbon-drift",
+						trigger: `#${sectionId}`,
 						start: "3% top",
 						end: "bottom bottom",
 						scrub: true,
@@ -193,7 +195,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 				const sectionBreakTl = gsap.timeline({
 					scrollTrigger: {
-						trigger: "#ribbon-drift",
+						trigger: `#${sectionId}`,
 						start: "65% top",
 						end: "bottom bottom",
 						scrub: true,
@@ -237,7 +239,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 		});
 
 		return () => ctx.revert();
-	}, []);
+	}, [sectionId]);
 
 	let titleIndex = 0;
 
@@ -251,7 +253,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 		<>
 			<div
 				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-xl:hidden"
-				id="ribbon-drift"
+				id={sectionId}
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
 					<div className="w-full flex justify-between">
