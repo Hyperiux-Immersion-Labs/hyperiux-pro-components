@@ -26,6 +26,7 @@ import {
 import HeadAnim from "@/components/Animations/HeadAnim";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
+import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
@@ -1095,6 +1096,21 @@ function EffectsGridInner({
 
       {/* Sentinel - 400px ahead of viewport triggers the next batch before user reaches bottom */}
       {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+
+      {/* Manual fallback - covers slow IntersectionObserver support or scroll
+          that never reaches the sentinel (short viewports, trackpads, etc). */}
+      {hasMore && (
+        <div className="flex justify-center pt-10">
+          <LinkButton
+            text="Load More"
+            shimmer
+            tilted={false}
+            onClick={() =>
+              setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, filteredEffects.length))
+            }
+          />
+        </div>
+      )}
     </>
   );
 }
