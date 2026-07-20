@@ -72,11 +72,3 @@ export async function getUserPlan(userId) {
 
   return plan;
 }
-
-export function canAccessEffect(effectTier = "free", userPlan = "free") {
-  if (!effectTier || effectTier === "free") {
-    return true;
-  }
-
-  return userPlan === "pro";
-}

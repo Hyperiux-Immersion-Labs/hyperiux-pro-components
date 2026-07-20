@@ -27,6 +27,7 @@ export default function TextFillAnimationCustom({
   mobileTextWidth = '95%',
   tabletTextSize = '6.5vw',
   tabletTextWidth = '88%',
+  as: Tag = 'div',
 }) {
   const sectionRef = useRef(null);
   const textRef = useRef(null);
@@ -215,12 +216,12 @@ export default function TextFillAnimationCustom({
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto text-center">
-          <h1
+          <Tag
             ref={textRef}
             className={`tfa-heading opacity-0 font-display font-medium leading-[1.18] tracking-[-0.03em] ${className}`}
           >
             {text}
-          </h1>
+          </Tag>
         </div>
       </div>
     </section>

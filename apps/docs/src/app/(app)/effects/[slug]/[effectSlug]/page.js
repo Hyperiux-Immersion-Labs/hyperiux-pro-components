@@ -9,7 +9,8 @@ import {
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
-import { getUserPlan, canAccessEffect } from "@/lib/subscription";
+import { getUserPlan } from "@/lib/subscription";
+import { getEffectAccessDecision } from "@/lib/effect-access";
 import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -226,9 +227,16 @@ export default async function EffectPage({ params }) {
   }
 
   const { userId } = await auth();
-  const userPlan = await getUserPlan(userId);
   const effectTier = content.tier ?? effectMeta?.tier ?? "pro";
-  const isLocked = !canAccessEffect(effectTier, userPlan);
+
+  // userPlan drives general "are you Pro" UI (upgrade CTAs etc.) independent
+  // of this specific effect; access is the actual per-effect gating decision,
+  // shared with the CLI and legacy web API routes - see docs/effect-access.md.
+  const [userPlan, access] = await Promise.all([
+    getUserPlan(userId),
+    getEffectAccessDecision({ effectTier, clerkUserId: userId }),
+  ]);
+  const isLocked = !access.allowed;
 
   // Only attach Pro source content once the requester is confirmed authorized.
   const effect = isLocked ? effectMeta : getEffectSource(effectSlug);
