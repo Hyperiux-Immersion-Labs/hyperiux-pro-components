@@ -223,6 +223,7 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                     transformStyle: "preserve-3d",
                 }}
             >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src={src}
                     alt="slider"

@@ -213,6 +213,7 @@ export default function CustomNavbar({
                 style={{ opacity: 0, transform: `scale(${IMAGE_INITIAL_SCALE})` }}
                 className="relative h-[18vw] w-[25vw] overflow-hidden rounded-xl max-md:h-[25vh] max-md:w-[35vw] max-sm:h-[30vw] max-sm:w-[60vw] max-sm:rounded-md"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`img-${index}`}

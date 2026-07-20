@@ -37,7 +37,7 @@ const UI_CARDS = [
   },
 ];
 
-export default function wUIKit() {
+export default function UIKit() {
   useEffect(() => {
     let ctx = gsap.context(() => {
       const reduceMotion = prefersReducedMotion();

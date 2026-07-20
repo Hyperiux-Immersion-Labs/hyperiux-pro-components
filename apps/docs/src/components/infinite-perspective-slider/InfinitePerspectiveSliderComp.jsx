@@ -560,6 +560,7 @@ export  function InfinitePerspectiveSliderComp({ images = [] }) {
                   }}
                   className="relative h-[50vh] w-full overflow-hidden bg-white max-md:h-[45vh] max-sm:h-[40vh]"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={src}
                     alt={`slide-${index}`}

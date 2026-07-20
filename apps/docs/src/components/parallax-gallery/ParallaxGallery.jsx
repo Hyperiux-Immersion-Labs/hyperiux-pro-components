@@ -296,6 +296,7 @@ export default function ScrollParallaxGallery({
                       filter: "none",
                     }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={slide.src}
                       alt={slide.id}
@@ -373,6 +374,7 @@ function ThumbStrip({
               borderRadius: 0,
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slide.src}
               alt={slide.id}

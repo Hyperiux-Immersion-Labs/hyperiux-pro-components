@@ -54,7 +54,7 @@ export default function ForDevelopers() {
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2}>
                         <h2
                             ref={headingRef}
-                            className="w-[33vw] font-medium text64 h-fit max-md:pt-22 max-sm:pt-[5vw] max-md:w-full tracking-tight max-sm:leading-[1.25]! leading-[1.1]"
+                            className="w-[33vw] font-medium text64 h-fit max-md:pt-22 max-sm:pt-[5vw] max-md:w-full tracking-tight max-sm:leading-tight! leading-[1.1]"
                         >
                             For Developers, Founders, Agencies, and Teams That
                             Need the Site to Feel as Premium as the Product.

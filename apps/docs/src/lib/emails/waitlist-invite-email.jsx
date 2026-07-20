@@ -75,7 +75,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
         <Preview>Your Founding Access invite is ready. Just the first 100 get this.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
-            className="mx-auto w-full max-w-[600px] px-4"
+            className="mx-auto w-full max-w-150 px-4"
             style={{
               backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
               backgroundSize: "cover",

@@ -174,6 +174,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
               className="w-[80vw] h-screen flex gap-[5vw] industry-card max-xl:h-fit max-xl:flex-col-reverse max-xl:w-full"
             >
               <div className="w-[40vw] h-screen overflow-hidden max-md:h-[110vw] max-xl:w-full max-md:rounded-[4vw] max-xl:h-[80vw] max-xl:rounded-[2vw]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}

@@ -303,6 +303,7 @@ const DraggableMarqueeComp = ({
                         {renderItem ? (
                             renderItem(item, index % items.length)
                         ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                                 src={item.src}
                                 alt={item.alt || "marquee-item"}

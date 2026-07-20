@@ -290,6 +290,7 @@ export default function PortfolioSlider({ items }) {
                   transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
                 }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.url} alt={item.description} className="absolute inset-0 w-full h-full object-cover" />
               </div>
             );

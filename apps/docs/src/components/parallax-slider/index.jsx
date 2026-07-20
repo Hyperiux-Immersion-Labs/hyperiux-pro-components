@@ -137,6 +137,7 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
                   clipPath: "inset(0 100% 0 0)",
                 }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`Slide ${i + 1}`}

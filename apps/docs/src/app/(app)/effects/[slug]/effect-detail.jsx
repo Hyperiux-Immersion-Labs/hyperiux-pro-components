@@ -792,7 +792,14 @@ function SanityBodyBlock({ block, isLocked = false }) {
     return (
       <figure className="fadeup">
         <div className={styles.imageFrame}>
-          <img src={block.url} alt={block.alt || ""} className={styles.image} />
+          <Image
+            src={block.url}
+            alt={block.alt || ""}
+            width={1600}
+            height={900}
+            sizes="(max-width: 768px) 100vw, 800px"
+            className={styles.image}
+          />
         </div>
 
         {block.caption && (

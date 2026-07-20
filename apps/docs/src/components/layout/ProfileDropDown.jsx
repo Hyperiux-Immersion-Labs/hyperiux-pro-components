@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
 
@@ -45,10 +46,12 @@ export default function ProfileDropdown({
         onClick={() => setOpen(!open)}
         className="flex items-center gap-3 w-fit h-fit relative"
       >
-        <img
+        <Image
           src={user.imageUrl}
           alt={user.fullName || "User"}
-          className="w-10 h-10 rounded-full border border-white/10"
+          width={40}
+          height={40}
+          className="w-10 h-10 rounded-full border border-white/10 object-cover"
         />
 
         {plan === "pro" && (
@@ -100,7 +103,7 @@ export default function ProfileDropdown({
 
             
 
-            <div className="my-2 border-t border-white/10 w-[110%] -translate-x-[5%]" />
+            <div className="my-2 border-t border-white/10 w-[110%] translate-x-[-5%]" />
 
             <button
               onClick={() => signOut(() => {

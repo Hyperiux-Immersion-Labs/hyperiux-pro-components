@@ -296,7 +296,7 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
                 <RazorpayCheckoutButton
                   plan={isYearly ? "yearly" : "monthly"}
                   currency={currency}
-                  className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full max-sm:text-[4vw]"
+                  className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full"
                   onSuccess={() => {
                     window.location.href = "/dashboard?upgraded=true";
                   }}
