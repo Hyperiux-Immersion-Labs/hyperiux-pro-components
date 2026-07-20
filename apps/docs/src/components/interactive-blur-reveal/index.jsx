@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { attachWebGLContextRecovery } from "./webgl-context-recovery";
 
 const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   -1, -1,
@@ -598,20 +599,46 @@ function InteractiveBlurReveal({ iChannel0="https://pub-8abee449136941f5b0a1cd2c
       };
     }
 
-    init()
-      .then((cleanup) => {
-        cleanupWebgl = cleanup;
-      })
-      .catch((error) => {
-        console.warn(
-          "InteractiveBlurReveal could not initialize. The provided texture URL must be directly loadable by the browser and must allow CORS for WebGL.",
-          error?.message || error
-        );
-      });
+    const boot = () => {
+      init()
+        .then((cleanup) => {
+          // If the effect unmounted while init was still loading, discard it.
+          if (isDisposed) {
+            if (cleanup) cleanup();
+            return;
+          }
+          cleanupWebgl = cleanup;
+        })
+        .catch((error) => {
+          console.warn(
+            "InteractiveBlurReveal could not initialize. The provided texture URL must be directly loadable by the browser and must allow CORS for WebGL.",
+            error?.message || error
+          );
+        });
+    };
+
+    // A raw WebGL2 context gets no automatic recovery (unlike THREE.WebGLRenderer).
+    // On loss, stop the loop and drop the invalidated program/buffers/textures;
+    // on restore, rebuild them by re-running init().
+    const detachRecovery = attachWebGLContextRecovery(canvasRef.current, {
+      onLost: () => {
+        cancelAnimationFrame(animationFrameId);
+        if (cleanupWebgl) {
+          cleanupWebgl();
+          cleanupWebgl = undefined;
+        }
+      },
+      onRestored: () => {
+        if (!isDisposed) boot();
+      },
+    });
+
+    boot();
 
     return () => {
       isDisposed = true;
       cancelAnimationFrame(animationFrameId);
+      detachRecovery();
 
       if (cleanupWebgl) {
         cleanupWebgl();

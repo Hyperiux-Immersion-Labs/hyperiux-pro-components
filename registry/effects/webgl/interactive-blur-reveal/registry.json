@@ -19,6 +19,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/interactive-blur-reveal/index.jsx"
+    },
+    {
+      "path": "webgl-context-recovery.js",
+      "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
     }
   ]
 }

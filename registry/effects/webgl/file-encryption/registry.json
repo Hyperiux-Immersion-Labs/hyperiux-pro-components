@@ -24,6 +24,10 @@
     {
       "path": "FileEncryptionComp.jsx",
       "target": "src/components/effects/file-encryption/FileEncryptionComp.jsx"
+    },
+    {
+      "path": "webgl-context-recovery.js",
+      "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
     }
   ]
 }

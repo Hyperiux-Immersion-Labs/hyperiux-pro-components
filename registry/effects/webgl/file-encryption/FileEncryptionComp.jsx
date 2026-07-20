@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from"react";
 import gsap from"gsap";
+import { attachWebGLContextRecovery } from"./webgl-context-recovery";
 
 const CARD_W = 380;
 const CARD_H = 240;
@@ -208,12 +209,21 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
  if (!gl) return;
 
- const prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
+ const [r, g, b] = hexToRgb(primaryColor);
+
+ let raf;
+ let prog;
+ let buf;
+
+ // Build (or rebuild) the GPU program, buffer, and uniform wiring, then start
+ // the render loop. Extracted so it can re-run after WebGL context restore.
+ const setup = () => {
+ prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
  gl.useProgram(prog);
  gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
  // full-screen quad
- const buf = gl.createBuffer();
+ buf = gl.createBuffer();
  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
  const loc = gl.getAttribLocation(prog,"a_pos");
@@ -228,9 +238,6 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const uCardTop = gl.getUniformLocation(prog,"u_cardTop");
  const uCardBottom = gl.getUniformLocation(prog,"u_cardBottom");
 
- const [r, g, b] = hexToRgb(primaryColor);
-
- let raf;
  let seeded = false;
  const smoothed = {
  card: 0,
@@ -289,7 +296,28 @@ function useWebGLBeam(canvasRef, primaryColor) {
  raf = requestAnimationFrame(tick);
  };
  raf = requestAnimationFrame(tick);
- return () => cancelAnimationFrame(raf);
+ };
+
+ // A raw WebGL context gets no automatic recovery (unlike THREE.WebGLRenderer).
+ // On loss, stop the loop and release the invalidated program/buffer; on
+ // restore, rebuild them and resume.
+ const teardown = () => {
+ cancelAnimationFrame(raf);
+ if (buf) { gl.deleteBuffer(buf); buf = null; }
+ if (prog) { gl.deleteProgram(prog); prog = null; }
+ };
+
+ setup();
+
+ const detachRecovery = attachWebGLContextRecovery(canvas, {
+ onLost: teardown,
+ onRestored: setup,
+ });
+
+ return () => {
+ detachRecovery();
+ teardown();
+ };
  }, [canvasRef, primaryColor]);
 
  return stateRef;
