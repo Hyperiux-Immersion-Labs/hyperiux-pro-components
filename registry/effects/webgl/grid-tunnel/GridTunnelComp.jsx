@@ -41,6 +41,14 @@ function Line({ points }) {
     return g;
   }, [points]);
 
+  // Geometry is created imperatively (not via JSX), so R3F won't auto-dispose
+  // it. Release the GPU buffer on unmount to avoid leaking across remounts.
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+    };
+  }, [geometry]);
+
   return (
     <line geometry={geometry}>
       <lineBasicMaterial

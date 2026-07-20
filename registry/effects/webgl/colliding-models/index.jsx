@@ -13,6 +13,9 @@ import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/r
 import { EffectComposer, N8AO, Bloom } from '@react-three/postprocessing'
 import { easing } from 'maath'
 
+const LOGO_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb'
+const GLASS_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb'
+
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00', '#ff5f00']
 const MODEL_SCALE = 0.08
 const COLLIDER_SCALE = 0.5
@@ -53,6 +56,17 @@ function Scene() {
 
     return () => {
       mediaQuery.removeEventListener('change', updateTitleVisibility)
+    }
+  }, [])
+
+  // The scene's dominant GPU resources are the two loaded GLB models, cached
+  // by drei's useGLTF. Clear them on unmount so their geometries, materials,
+  // and textures are disposed and repeated mount/unmount cycles don't
+  // accumulate GPU memory. Clearing also forces a clean re-parse on remount.
+  useEffect(() => {
+    return () => {
+      useGLTF.clear(LOGO_MODEL_URL)
+      useGLTF.clear(GLASS_MODEL_URL)
     }
   }, [])
 
@@ -277,8 +291,8 @@ function Pointer({ vec = new THREE.Vector3() }) {
 
 function Model({ children, color = 'white', roughness = 0 }) {
   const ref = useRef()
-  const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb')
-  const { nodes: nodes2, materials: materials2 } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb')
+  const { nodes } = useGLTF(LOGO_MODEL_URL)
+  const { nodes: nodes2, materials: materials2 } = useGLTF(GLASS_MODEL_URL)
   const geometry = nodes.FINAL?.geometry
   console.log(materials2)
 
