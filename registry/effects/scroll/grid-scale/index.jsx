@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
@@ -41,6 +41,8 @@ const floatingWords = [
 ]
 
 export default function GridScale() {
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `grid-scale-${uid}`;
   const centeredTextRef = useRef(null);
   const ideaTextRef = useRef(null);
 
@@ -58,7 +60,7 @@ export default function GridScale() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#grid-scale',
+          trigger: `#${sectionId}`,
           start: 'top top',
           end: '40% bottom',
           scrub: true,
@@ -144,7 +146,7 @@ tl.fromTo(
     })
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionId])
 
   useEffect(() => {
     const isMobile = window.innerWidth < 640
@@ -153,7 +155,7 @@ tl.fromTo(
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#grid-scale',
+          trigger: `#${sectionId}`,
           start: '% top',
           end: '100% bottom',
           scrub: true,
@@ -199,11 +201,11 @@ tl.fromTo(
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [sectionId]);
 
   return (
     <>
-      <section id='grid-scale' className='h-[400vh] w-full bg-[#242424]'>
+      <section id={sectionId} className='h-[400vh] w-full bg-[#242424]'>
         <div className='h-screen w-full sticky top-0 overflow-hidden'>
           <div
             className="clip-path flex items-center justify-center z-200 absolute top-0 left-0 w-full h-screen bg-white"
