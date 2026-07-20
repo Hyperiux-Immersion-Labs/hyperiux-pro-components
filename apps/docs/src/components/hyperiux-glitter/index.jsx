@@ -1,14 +1,28 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Center } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import MouseTrailParticles from "./MouseTrailParticles";
 import MorphingParticleModel from "./MorphingParticleModelNew";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 export default function HyperiuxGlitter() {
-const [modelScale, setModelScale] = useState(0.15);
+
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
+  const [modelScale, setModelScale] = useState(0.15);
+
+useEffect(() => {
+  const gate = createVisibilityGate({
+    root: rootRef,
+    onChange: (active) => setFrameloop(active ? "always" : "never"),
+  });
+  setFrameloop(gate.isActive ? "always" : "never");
+  return () => gate.destroy();
+}, []);
+
 useEffect(() => {
   const updateScale = () => {
     if (window.innerWidth < 768) {
@@ -27,13 +41,14 @@ useEffect(() => {
 }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-black">
+    <div ref={rootRef} className="relative h-screen w-screen overflow-hidden bg-black">
       <Canvas
         aria-hidden="true"
         className="h-full w-full"
         camera={{ position: [0, 0, 5], fov: 45 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false }}
+        frameloop={frameloop}
       >
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.2} />

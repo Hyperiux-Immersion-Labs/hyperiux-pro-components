@@ -24,6 +24,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/coffee-bean-cursor/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.js"
     }
   ]
 }

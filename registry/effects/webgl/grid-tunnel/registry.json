@@ -26,6 +26,10 @@
     {
       "path": "GridTunnelComp.jsx",
       "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
     }
   ]
 }

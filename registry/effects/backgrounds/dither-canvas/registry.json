@@ -18,6 +18,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/dither-canvas/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
     }
   ]
 }

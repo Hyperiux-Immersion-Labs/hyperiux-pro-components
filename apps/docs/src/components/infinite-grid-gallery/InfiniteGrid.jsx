@@ -1,3 +1,5 @@
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
 export default class InfiniteGrid {
     constructor({ el, sources, data, originalSize, onItemClick }) {
         this.$container = el;
@@ -53,8 +55,13 @@ export default class InfiniteGrid {
         window.addEventListener('pointercancel', this.onPointerUp);
         this.$container.style.touchAction = 'none';
 
+        this._loop = createSuspendedRaf({
+            root: this.$container,
+            onFrame: this.render,
+        });
+
         this.onResize();
-        this.render();
+        this._loop.start();
     }
 
     onResize() {
@@ -333,11 +340,11 @@ export default class InfiniteGrid {
 
         this.scroll.last.x = this.scroll.current.x;
         this.scroll.last.y = this.scroll.current.y;
-
-        requestAnimationFrame(this.render);
     }
 
     destroy() {
+        this._loop?.destroy();
+        this._loop = null;
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('wheel', this.onWheel);
         window.removeEventListener('pointermove', this.onPointerMove);

@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
@@ -124,6 +125,8 @@ function ImageNodeMaterial({ src, isMobile }) {
 }
 
 export default function FishEye({ src }) {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -151,33 +154,45 @@ export default function FishEye({ src }) {
     }
   }, [src, isMobile])
 
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
+
   if (isMobile) return null
 
-  if (!objectUrl) return null
-
   return (
-    <Canvas
-      dpr={[1, 2]}
-      camera={{ position: [0, 0, 5], fov: 45 }}
-      className="h-full w-full"
-      style={{
-        pointerEvents: isMobile ? 'none' : 'auto',
-        touchAction: isMobile ? 'none' : 'auto',
-      }}
-      gl={({ canvas }) => {
-        const renderer = new THREE.WebGPURenderer({
-          canvas,
-          antialias: true,
-        })
+    <div ref={rootRef} className="h-full w-full">
+      {objectUrl ? (
+        <Canvas
+          dpr={[1, 2]}
+          camera={{ position: [0, 0, 5], fov: 45 }}
+          className="h-full w-full"
+          frameloop={frameloop}
+          style={{
+            pointerEvents: isMobile ? 'none' : 'auto',
+            touchAction: isMobile ? 'none' : 'auto',
+          }}
+          gl={({ canvas }) => {
+            const renderer = new THREE.WebGPURenderer({
+              canvas,
+              antialias: true,
+            })
 
-        renderer.outputColorSpace = THREE.SRGBColorSpace
-        renderer.toneMapping = THREE.NoToneMapping
-        renderer.init()
+            renderer.outputColorSpace = THREE.SRGBColorSpace
+            renderer.toneMapping = THREE.NoToneMapping
+            renderer.init()
 
-        return renderer
-      }}
-    >
-      <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
-    </Canvas>
+            return renderer
+          }}
+        >
+          <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
+        </Canvas>
+      ) : null}
+    </div>
   )
 }

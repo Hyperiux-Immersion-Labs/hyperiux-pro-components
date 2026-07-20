@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Point, lerpAngle } from './utils';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
   constructor(position) {
@@ -40,7 +41,6 @@ const ArrowsPlay = () => {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const arrowsRef = useRef([]);
-  const animationFrameRef = useRef(null);
   const divRef = useRef(null); // For the center div with text
 
   const initializeArrows = useCallback((canvas) => {
@@ -114,7 +114,7 @@ const ArrowsPlay = () => {
     }
   }, []);
 
-  const main = useCallback(function drawFrame() {
+  const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -127,8 +127,6 @@ const ArrowsPlay = () => {
       arrow.update(mouse.x, mouse.y);
       arrow.draw(ctx);
     });
-
-    animationFrameRef.current = requestAnimationFrame(drawFrame);
   }, []);
 
   useEffect(() => {
@@ -145,16 +143,18 @@ const ArrowsPlay = () => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
 
-    main();
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: drawFrame,
+    });
+    loop.start();
 
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      loop.destroy();
     };
-  }, [handleMouseMove, handleResize, initializeArrows, main]);
+  }, [drawFrame, handleMouseMove, handleResize, initializeArrows]);
 
   return (
     <div className="relative w-full h-full ">

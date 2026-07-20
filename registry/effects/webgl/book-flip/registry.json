@@ -45,6 +45,10 @@
     {
       "path": "BookFlip.jsx",
       "target": "src/components/effects/book-flip/BookFlip.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/book-flip/createSuspendedRaf.js"
     }
   ]
 }

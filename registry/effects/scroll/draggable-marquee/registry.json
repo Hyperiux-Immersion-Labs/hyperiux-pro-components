@@ -24,6 +24,10 @@
     {
       "path": "DraggableMarqueeComp.jsx",
       "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/draggable-marquee/createSuspendedRaf.js"
     }
   ]
 }

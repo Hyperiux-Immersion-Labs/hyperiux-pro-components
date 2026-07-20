@@ -30,6 +30,10 @@
     {
       "path": "PortfolioSlider.jsx",
       "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.js"
     }
   ]
 }

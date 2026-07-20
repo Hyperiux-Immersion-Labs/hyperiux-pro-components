@@ -24,6 +24,10 @@
     {
       "path": "2dcanvasTracker.js",
       "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/pixel-bloom/createSuspendedRaf.js"
     }
   ]
 }

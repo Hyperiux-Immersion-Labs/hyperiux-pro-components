@@ -1,7 +1,8 @@
 'use client'
 import * as THREE from 'three'
-import { useEffect, useRef, useReducer, useMemo, useCallback, useState } from 'react'
+import {useEffect, useRef, useReducer, useMemo, useCallback, useState} from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
+import { createVisibilityGate } from './createSuspendedRaf'
 import {
   useGLTF,
   MeshTransmissionMaterial,
@@ -12,6 +13,9 @@ import {
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
 import { EffectComposer, N8AO, Bloom } from '@react-three/postprocessing'
 import { easing } from 'maath'
+
+const LOGO_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb'
+const GLASS_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb'
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00', '#ff5f00']
 const MODEL_SCALE = 0.08
@@ -30,7 +34,7 @@ const shuffle = (accent = 0) => [
   { color: accents[accent], roughness: 0.1, accent: true },
 ]
 
-function Scene() {
+function Scene({ frameloop = 'always' }) {
   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
   const [showTitle, setShowTitle] = useState(true)
   const connectors = useMemo(() => shuffle(accent), [accent])
@@ -56,6 +60,17 @@ function Scene() {
     }
   }, [])
 
+  // The scene's dominant GPU resources are the two loaded GLB models, cached
+  // by drei's useGLTF. Clear them on unmount so their geometries, materials,
+  // and textures are disposed and repeated mount/unmount cycles don't
+  // accumulate GPU memory. Clearing also forces a clean re-parse on remount.
+  useEffect(() => {
+    return () => {
+      useGLTF.clear(LOGO_MODEL_URL)
+      useGLTF.clear(GLASS_MODEL_URL)
+    }
+  }, [])
+
   return (
     <Canvas
       aria-hidden="true"
@@ -65,6 +80,7 @@ function Scene() {
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
       className="h-full w-full"
+      frameloop={frameloop}
     >
       {showTitle && (
         <Text
@@ -277,8 +293,8 @@ function Pointer({ vec = new THREE.Vector3() }) {
 
 function Model({ children, color = 'white', roughness = 0 }) {
   const ref = useRef()
-const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb')
-  const { nodes: nodes2, materials: materials2 } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb')
+const { nodes } = useGLTF(LOGO_MODEL_URL)
+  const { nodes: nodes2, materials: materials2 } = useGLTF(GLASS_MODEL_URL)
   const geometry = nodes.FINAL?.geometry
   console.log(materials2)
 
@@ -315,12 +331,24 @@ const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/h
 
 
 export default function CollidingModels() {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
+
   return (
 
     <>
       <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
-        <div className="relative h-[90%] min-h-[30vw] w-full overflow-hidden rounded-2xl bg-black max-sm:h-[80%]">
-          <Scene />
+        <div ref={rootRef} className="relative h-[90%] min-h-[30vw] w-full overflow-hidden rounded-2xl bg-black max-sm:h-[80%]">
+          <Scene frameloop={frameloop} />
           <p className="pointer-events-none max-md:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-sm:bottom-4 max-sm:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>

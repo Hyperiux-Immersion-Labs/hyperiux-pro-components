@@ -25,6 +25,10 @@
     {
       "path": "HoverSliderComp.jsx",
       "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
     }
   ]
 }

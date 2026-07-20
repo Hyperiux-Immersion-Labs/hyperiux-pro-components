@@ -62,6 +62,10 @@
     {
       "path": "shaders.js",
       "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
     }
   ]
 }

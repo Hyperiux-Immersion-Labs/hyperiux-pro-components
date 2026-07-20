@@ -22,6 +22,10 @@
     {
       "path": "MagneticTrail.jsx",
       "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.js"
     }
   ]
 }

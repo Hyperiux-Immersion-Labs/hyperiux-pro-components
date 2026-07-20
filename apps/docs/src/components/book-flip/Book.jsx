@@ -203,6 +203,24 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  }, [picture, picture2]);
 
  /**
+ * RESOURCE DISPOSAL
+ * Release this page's GPU resources when it unmounts. The cloned textures,
+ * the two textured materials (indexes 4 and 5), and the skeleton are created
+ * per page and must be disposed explicitly. The shared module-level
+ * pageGeometry and pageMaterials (indexes 0-3) are intentionally left intact.
+ */
+ useEffect(() => {
+ return () => {
+ picture.dispose();
+ picture2.dispose();
+ const materials = manualSkinnedMesh.material;
+ materials[4]?.dispose();
+ materials[5]?.dispose();
+ manualSkinnedMesh.skeleton?.dispose();
+ };
+ }, [picture, picture2, manualSkinnedMesh]);
+
+ /**
  * ANIMATION LOOP
  * Updates bone rotations each frame to create page flip effect
  */

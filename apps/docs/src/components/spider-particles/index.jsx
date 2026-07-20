@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 //  Constants
 const MOUSE_OFFSCREEN = -9999;
@@ -87,7 +88,6 @@ export default function SpiderParticles({
 
     let width = mount.clientWidth || window.innerWidth;
     let height = mount.clientHeight || window.innerHeight;
-    let animId;
 
     const _glowColor     = new THREE.Color(glowColor);
     const _particleColor = new THREE.Color(particleColor);
@@ -290,9 +290,9 @@ export default function SpiderParticles({
 
     //  Animation Loop 
 
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
       // Fade the entire effect in/out as cursor enters or leaves
       mouseEntryAlpha = mousePresent
         ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
@@ -367,14 +367,15 @@ export default function SpiderParticles({
       mouseLineGeo.attributes.color.needsUpdate    = true;
 
       renderer.render(scene, camera);
-    };
+      },
+    });
 
-    animate();
+    loop.start();
 
     //  Cleanup 
 
     return () => {
-      cancelAnimationFrame(animId);
+      loop.destroy();
       window.removeEventListener("resize", onResize);
       if (mount) {
         mount.removeEventListener("mousemove",  onMove);

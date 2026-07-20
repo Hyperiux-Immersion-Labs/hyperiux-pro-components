@@ -4,6 +4,7 @@ import { useEffect, useRef } from'react';
 import * as THREE from'three';
 import gsap from'gsap';
 import { ScrollTrigger } from'gsap/ScrollTrigger';
+import { createSuspendedRaf } from './createSuspendedRaf';
 import { PixelTransitionFragment, PixelTransitionVertex } from './shaders/pixelTransition';
 import { imageSources } from './content';
 
@@ -49,7 +50,7 @@ export default function SplitCanvasComp({ wrapperRef }) {
  let renderer, scene, camera, mesh, material;
  let textures = [];
  let isMounted = true;
- let animationId;
+ let loop = null;
 
  const getCanvasSize = () => {
  if (typeof window === 'undefined') return 599;
@@ -171,13 +172,15 @@ export default function SplitCanvasComp({ wrapperRef }) {
  },
  });
 
- const render = () => {
+ const loopInstance = createSuspendedRaf({
+ root: container,
+ onFrame: () => {
  if (!isMounted) return;
  renderer.render(scene, camera);
- animationId = requestAnimationFrame(render);
- };
-
- render();
+ },
+ });
+ loop = loopInstance;
+ loop.start();
  };
 
  // Load all SVGs as canvases, then create textures
@@ -206,8 +209,9 @@ export default function SplitCanvasComp({ wrapperRef }) {
  return () => {
  isMounted = false;
  hasInit.current = false;
- if (animationId) {
- cancelAnimationFrame(animationId);
+ if (loop) {
+ loop.destroy();
+ loop = null;
  }
  ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {

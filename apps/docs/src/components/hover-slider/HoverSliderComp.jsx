@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const vertexShader = /* glsl */ `
 uniform vec2 uVelocity;
@@ -293,7 +294,6 @@ export default function HoverSliderComp({ items = [] }) {
 
     let floatIdx = 0;
     let prevFloat = 0;
-    let raf = 0;
 
     const vel = new THREE.Vector2(0, 0);
 
@@ -410,9 +410,9 @@ export default function HoverSliderComp({ items = [] }) {
       show(0);
     }
 
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
-
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
       const targetIdx = stateRef.current.activeIndex;
       const diff = targetIdx - floatIdx;
       const distToTarget = Math.abs(diff);
@@ -470,9 +470,10 @@ export default function HoverSliderComp({ items = [] }) {
       }
 
       renderer.render(scene, camera);
-    };
+      },
+    });
 
-    tick();
+    loop.start();
 
     glRef.current = {
       setActive: (index) => {
@@ -484,7 +485,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     return () => {
-      cancelAnimationFrame(raf);
+      loop.destroy();
 
       window.removeEventListener("resize", onResize);
 
