@@ -660,7 +660,14 @@ const routeKey = `${pathname}${
               </div>
 
               {/* Grid density viewer: 2 or 3 cards per row */}
-              <div className="shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+              <div className="relative shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1 left-1 h-8 w-10 rounded-sm bg-white transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translateX(${gridColumns === 3 ? "calc(2.5rem + 0.25rem)" : "0"})`,
+                  }}
+                />
                 {[2, 3].map((cols) => {
                   const isActive = gridColumns === cols;
 
@@ -672,10 +679,10 @@ const routeKey = `${pathname}${
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}
                       className={`
-                        flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
+                        relative z-10 flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
                         transition-colors duration-300 cursor-pointer
                         ${isActive
-                          ? "bg-white text-[#111111]"
+                          ? "text-[#111111]"
                           : "text-foreground hover:text-white"
                         }
                       `}
