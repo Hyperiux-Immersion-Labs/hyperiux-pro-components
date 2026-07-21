@@ -3,6 +3,7 @@
 import React, { useRef } from 'react'
 import gsap from 'gsap'
 import { TransitionRouter } from 'next-transition-router'
+import { prefersReducedMotion } from '@/lib/motion'
 
 export default function RadialSliceTransition({
     children,
@@ -73,6 +74,12 @@ export default function RadialSliceTransition({
                 applySlice(0, 0)
 
                 const tl = gsap.timeline({ onComplete: next })
+
+                if (prefersReducedMotion()) {
+                    tl.to(contentRef.current, { opacity: 0.7, duration: 0.2, ease: 'power1.out' }, 0)
+                    return () => tl.kill()
+                }
+
                 const tExit = (duration - DELAY) / 2
 
                 tl.to(contentRef.current, {
@@ -111,6 +118,12 @@ export default function RadialSliceTransition({
                         next()
                     }
                 })
+
+                if (prefersReducedMotion()) {
+                    tl.to(contentRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
+                    return () => tl.kill()
+                }
+
                 const tExit = (duration - DELAY) / 2
                 const tEnter = tExit
 

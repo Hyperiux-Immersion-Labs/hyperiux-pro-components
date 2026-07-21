@@ -630,7 +630,7 @@
       "registryDependencies": [],
       "exportName": "BlockTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "chess-grid-transition",
@@ -646,7 +646,7 @@
       "registryDependencies": [],
       "exportName": "ChessGridTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "page-flip-transition",
@@ -662,7 +662,7 @@
       "registryDependencies": [],
       "exportName": "FlipTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "pixel-transition",
@@ -678,7 +678,7 @@
       "registryDependencies": [],
       "exportName": "PixelTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "radial-slice-transition",
@@ -694,7 +694,7 @@
       "registryDependencies": [],
       "exportName": "RadialSliceTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "svg-brush-transition",
@@ -710,7 +710,7 @@
       "registryDependencies": [],
       "exportName": "SVGBrushTransition",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "blur-text",
@@ -720,12 +720,12 @@
         "text"
       ],
       "dependencies": [
-        "framer-motion"
+        "motion"
       ],
       "registryDependencies": [],
       "exportName": "BlurText",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "circle-text-reveal",
@@ -740,7 +740,7 @@
       "registryDependencies": [],
       "exportName": "CircleTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "glitchy-text",
@@ -755,7 +755,7 @@
       "registryDependencies": [],
       "exportName": "GlitchyText",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "mask-text-reveal",
@@ -770,7 +770,7 @@
       "registryDependencies": [],
       "exportName": "MaskTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "number-counter",
@@ -785,7 +785,7 @@
       "registryDependencies": [],
       "exportName": "NumberCounter",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "overflow-stagger-text",
@@ -800,7 +800,7 @@
       "registryDependencies": [],
       "exportName": "OverflowStaggerText",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "overflow-text-reveal",
@@ -815,7 +815,7 @@
       "registryDependencies": [],
       "exportName": "OverflowTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "perspective-text-reveal",
@@ -830,7 +830,7 @@
       "registryDependencies": [],
       "exportName": "PerspectiveTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "rectangular-text-reveal",
@@ -845,7 +845,7 @@
       "registryDependencies": [],
       "exportName": "RectangularTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "scramble-text",
@@ -860,7 +860,7 @@
       "registryDependencies": [],
       "exportName": "ScrambleText",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "slide-text-reveal",
@@ -875,7 +875,7 @@
       "registryDependencies": [],
       "exportName": "SlideTextReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "spotlight-text",
@@ -888,7 +888,7 @@
       "registryDependencies": [],
       "exportName": "SpotlightText",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "text-cloning",
@@ -901,7 +901,7 @@
       "registryDependencies": [],
       "exportName": "TextCloning",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "text-fill-animation",
@@ -931,7 +931,7 @@
       "registryDependencies": [],
       "exportName": "TextHover",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "text-stream",
@@ -946,7 +946,7 @@
       "registryDependencies": [],
       "exportName": "TextStream",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "animated-toggle",

@@ -4,6 +4,7 @@ import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(DrawSVGPlugin)
 
@@ -20,6 +21,7 @@ export default function SVGBrushTransition({
   const transitionOverlayRef = useRef(null)
   const svgPathDesktopRef = useRef(null)
   const svgPathMobileRef = useRef(null)
+  const contentRef = useRef(null)
 
   // Returns whichever path is currently visible (desktop or mobile)
   const getActivePath = () => {
@@ -50,6 +52,11 @@ export default function SVGBrushTransition({
         const activePath = getActivePath()
         const tl = gsap.timeline({ onComplete: next })
 
+        if (prefersReducedMotion()) {
+          tl.to(contentRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
+          return () => tl.kill()
+        }
+
         tl.to(transitionOverlayRef.current, {
           opacity: 1,
           backdropFilter: enableBlur ? 'blur(10px)' : 'none',
@@ -71,6 +78,11 @@ export default function SVGBrushTransition({
       enter={(next) => {
         const activePath = getActivePath()
         const tl = gsap.timeline({ onComplete: next })
+
+        if (prefersReducedMotion()) {
+          tl.to(contentRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
+          return () => tl.kill()
+        }
 
         tl.to(activePath, {
           drawSVG: '100% 100%',
@@ -146,7 +158,7 @@ export default function SVGBrushTransition({
         </svg>
       </div>
 
-      {children}
+      <div ref={contentRef}>{children}</div>
     </TransitionRouter>
   )
 }

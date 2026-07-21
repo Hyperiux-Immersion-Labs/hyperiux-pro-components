@@ -1,6 +1,22 @@
 "use client";
 import { useEffect, useRef, useState } from"react";
 
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+ () => typeof window !== 'undefined'
+ && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+ );
+
+ useEffect(() => {
+ const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+ const handler = (e) => setPrefersReducedMotion(e.matches);
+ mq.addEventListener('change', handler);
+ return () => mq.removeEventListener('change', handler);
+ }, []);
+
+ return prefersReducedMotion;
+}
+
 export default function SpotlightText({
  text ="",
  className ="",
@@ -16,6 +32,7 @@ export default function SpotlightText({
  const isInside = useRef(false);
 
  const [isMobile, setIsMobile] = useState(false);
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  const lerp = (start, end, factor) => start + (end - start) * factor;
 
@@ -37,6 +54,7 @@ export default function SpotlightText({
 
  const el = containerRef.current;
  let raf;
+ const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
 
  const updateTarget = (e) => {
  const rect = el.getBoundingClientRect();
@@ -66,8 +84,8 @@ export default function SpotlightText({
  };
 
  const animate = () => {
- current.current.x = lerp(current.current.x, target.current.x, 0.08);
- current.current.y = lerp(current.current.y, target.current.y, 0.08);
+ current.current.x = lerp(current.current.x, target.current.x, positionLerpFactor);
+ current.current.y = lerp(current.current.y, target.current.y, positionLerpFactor);
  currentOpacity.current = lerp(currentOpacity.current, targetOpacity.current, 0.12);
 
  el.style.setProperty("--x", `${current.current.x}px`);
@@ -89,7 +107,7 @@ export default function SpotlightText({
  el.removeEventListener("mousemove", handleMove);
  el.removeEventListener("mouseleave", handleLeave);
  };
- }, [isMobile]);
+ }, [isMobile, prefersReducedMotion]);
 
  const alignment =
  align ==="center"

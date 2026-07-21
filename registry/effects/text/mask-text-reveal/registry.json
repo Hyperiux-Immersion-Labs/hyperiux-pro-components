@@ -1,6 +1,20 @@
 {
   "name": "mask-text-reveal",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion mask reveal.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Mask Text Reveal",
   "description": "Text reveal animation with gradient mask effect that sweeps across each line on scroll",
@@ -9,17 +23,6 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/mask-text-reveal",
-  "tier": "pro",
-  "main": "index.jsx",
-  "exportName": "MaskTextReveal",
-  "exportKind": "default",
-  "importPath": "@/components/effects/mask-text-reveal",
-  "target": "src/components/effects/mask-text-reveal",
-  "files": [
-    {
-      "path": "index.jsx",
-      "target": "src/components/effects/mask-text-reveal/index.jsx"
-    }
-  ]
+  "previewUrl": "/mask-text-reveal",
+  "tier": "pro"
 }

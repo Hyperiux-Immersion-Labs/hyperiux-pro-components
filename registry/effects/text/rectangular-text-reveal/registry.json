@@ -1,6 +1,20 @@
 {
   "name": "rectangular-text-reveal",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion rectangular reveal.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Rectangular Text Reveal",
   "description": "Text reveal animation with colored rectangles sliding across each line",
@@ -9,18 +23,6 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/rectangular-text-reveal",
-  "tier": "free",
-  "subfolder": true,
-  "main": "index.jsx",
-  "exportName": "RectangularTextReveal",
-  "exportKind": "default",
-  "importPath": "@/components/effects/rectangular-text-reveal",
-  "target": "src/components/effects/rectangular-text-reveal",
-  "files": [
-    {
-      "path": "index.jsx",
-      "target": "src/components/effects/rectangular-text-reveal/index.jsx"
-    }
-  ]
+  "previewUrl": "/rectangular-text-reveal",
+  "tier": "free"
 }

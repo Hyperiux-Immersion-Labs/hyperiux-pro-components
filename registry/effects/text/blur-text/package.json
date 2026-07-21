@@ -12,6 +12,6 @@
     "hyperiux"
   ],
   "dependencies": {
-    "framer-motion": "*"
+    "motion": "*"
   }
 }

@@ -5,6 +5,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 
 const page = () => {
@@ -14,6 +15,7 @@ const page = () => {
       <LenisSmoothScroll />
       <div className="fadeup">
       <TextStream />
+      <ScrollBottom className="bottom-[3%] left-[20%]! gap-[1vw] max-sm:left-1/2!"/>
 
       </div>
       <div className=" px-[5vw] pt-[7%] flex flex-col gap-[2vw] text-white absolute inset-0 w-[40%] max-md:pt-[20%]">

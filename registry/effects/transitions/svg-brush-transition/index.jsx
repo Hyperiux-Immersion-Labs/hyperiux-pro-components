@@ -5,6 +5,11 @@ import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
+
 gsap.registerPlugin(DrawSVGPlugin)
 
 export default function SVGBrushTransition({
@@ -20,6 +25,7 @@ export default function SVGBrushTransition({
   const transitionOverlayRef = useRef(null)
   const svgPathDesktopRef = useRef(null)
   const svgPathMobileRef = useRef(null)
+  const contentRef = useRef(null)
 
   // Returns whichever path is currently visible (desktop or mobile)
   const getActivePath = () => {
@@ -50,6 +56,11 @@ export default function SVGBrushTransition({
         const activePath = getActivePath()
         const tl = gsap.timeline({ onComplete: next })
 
+        if (prefersReducedMotion()) {
+          tl.to(contentRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
+          return () => tl.kill()
+        }
+
         tl.to(transitionOverlayRef.current, {
           opacity: 1,
           backdropFilter: enableBlur ? 'blur(10px)' : 'none',
@@ -71,6 +82,11 @@ export default function SVGBrushTransition({
       enter={(next) => {
         const activePath = getActivePath()
         const tl = gsap.timeline({ onComplete: next })
+
+        if (prefersReducedMotion()) {
+          tl.to(contentRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
+          return () => tl.kill()
+        }
 
         tl.to(activePath, {
           drawSVG: '100% 100%',
@@ -107,7 +123,7 @@ export default function SVGBrushTransition({
           viewBox="0 0 1316 664"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full scale-130 h-full max-xl:hidden block"
+          className="w-full scale-130 h-full hidden md:block"
           preserveAspectRatio="xMidYMid slice"
         >
           <path
@@ -132,7 +148,7 @@ export default function SVGBrushTransition({
           viewBox="0 0 390 844"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full scale-120 max-xl:block hidden"
+          className="w-full h-full scale-120 block md:hidden"
           preserveAspectRatio="xMidYMid slice"
         >
           <path
@@ -146,7 +162,7 @@ export default function SVGBrushTransition({
         </svg>
       </div>
 
-      {children}
+      <div ref={contentRef}>{children}</div>
     </TransitionRouter>
   )
 }

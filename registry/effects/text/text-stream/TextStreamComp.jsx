@@ -10,7 +10,6 @@ export default function TextStreamComp({ items = [] }) {
   const trackRef = useRef(null);
   const contentRef = useRef(null);
   const containerRef = useRef(null);
-  const touchStartYRef = useRef(null);
 
   const [copyCount, setCopyCount] = useState(2);
   const isMobile = useIsMobile();
@@ -34,8 +33,19 @@ export default function TextStreamComp({ items = [] }) {
       return undefined;
     }
 
+    const prefersReducedMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const idleSpeed = prefersReducedMotion ? 0 : BASE_SPEED;
+    const velocityLerpFactor = prefersReducedMotion ? 1 : 0.14;
+
+    metricsRef.current.currentVelocity = idleSpeed;
+    metricsRef.current.targetVelocity = idleSpeed;
+
     const ctx = gsap.context(() => {
-      const maxBoost = 12;
+      const maxBoost = prefersReducedMotion ? 4 : 12;
+      const boostScale = prefersReducedMotion ? 0.03 : 0.08;
       let lastScrollY = window.scrollY;
 
       const startAnimation = () => {
@@ -74,7 +84,7 @@ export default function TextStreamComp({ items = [] }) {
         metricsRef.current.currentVelocity = gsap.utils.interpolate(
           metricsRef.current.currentVelocity,
           metricsRef.current.targetVelocity,
-          0.14
+          velocityLerpFactor
         );
 
         metricsRef.current.currentY +=
@@ -96,7 +106,7 @@ export default function TextStreamComp({ items = [] }) {
 
         const boost = Math.min(
           maxBoost,
-          BASE_SPEED + Math.pow(Math.abs(delta), 1.2) * 0.08
+          idleSpeed + Math.pow(Math.abs(delta), 1.2) * boostScale
         );
 
         metricsRef.current.lastScrollDirection = direction;
@@ -106,7 +116,7 @@ export default function TextStreamComp({ items = [] }) {
 
         scrollTimeoutRef.current = window.setTimeout(() => {
           metricsRef.current.targetVelocity =
-            metricsRef.current.lastScrollDirection * BASE_SPEED;
+            metricsRef.current.lastScrollDirection * idleSpeed;
         }, 120);
       };
 
@@ -121,25 +131,6 @@ export default function TextStreamComp({ items = [] }) {
         lastScrollY = nextScrollY;
 
         applyScrollMotion(delta);
-      };
-
-      const handleTouchStart = (event) => {
-        touchStartYRef.current = event.touches[0]?.clientY ?? null;
-      };
-
-      const handleTouchMove = (event) => {
-        const nextTouchY = event.touches[0]?.clientY ?? null;
-
-        if (touchStartYRef.current == null || nextTouchY == null) {
-          return;
-        }
-
-        applyScrollMotion(touchStartYRef.current - nextTouchY);
-        touchStartYRef.current = nextTouchY;
-      };
-
-      const handleTouchEnd = () => {
-        touchStartYRef.current = null;
       };
 
       startAnimation();
@@ -160,32 +151,12 @@ export default function TextStreamComp({ items = [] }) {
         passive: true,
       });
 
-      container.addEventListener("touchstart", handleTouchStart, {
-        passive: true,
-      });
-
-      container.addEventListener("touchmove", handleTouchMove, {
-        passive: true,
-      });
-
-      container.addEventListener("touchend", handleTouchEnd, {
-        passive: true,
-      });
-
-      container.addEventListener("touchcancel", handleTouchEnd, {
-        passive: true,
-      });
-
       return () => {
         resizeObserver.disconnect();
 
         window.removeEventListener("resize", startAnimation);
         window.removeEventListener("wheel", handleWheel);
         window.removeEventListener("scroll", handleScroll);
-        container.removeEventListener("touchstart", handleTouchStart);
-        container.removeEventListener("touchmove", handleTouchMove);
-        container.removeEventListener("touchend", handleTouchEnd);
-        container.removeEventListener("touchcancel", handleTouchEnd);
 
         window.clearTimeout(scrollTimeoutRef.current);
 
@@ -203,16 +174,16 @@ export default function TextStreamComp({ items = [] }) {
   if (!items.length) return null;
 
   return (
-    <div className="flex h-[100dvh] min-h-[100dvh]">
-      <div className="w-[45%] flex max-md:w-[30%] max-xl:w-[35%] items-center justify-end pr-2">
-        <p className="max-md:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
+    <div className="flex h-screen">
+      <div className="w-[45%] flex max-sm:w-[30%] max-md:w-[35%] items-center justify-end pr-2">
+        <p className="max-sm:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
           Hyperiux
         </p>
       </div>
 
       <div
         ref={containerRef}
-        className="relative w-[55%] max-xl:w-[65%] max-md:w-[70%] h-full overflow-hidden touch-pan-y"
+        className="relative w-[55%] max-md:w-[65%] max-sm:w-[70%] h-full overflow-hidden "
         style={{
           maskImage: revealMask,
           WebkitMaskImage: revealMask,
@@ -220,7 +191,7 @@ export default function TextStreamComp({ items = [] }) {
       >
         <div
           ref={trackRef}
-          className="absolute left-0 top-0 flex flex-col max-md:text-xl text-4xl font-extralight leading-none"
+          className="absolute left-0 top-0 flex flex-col max-sm:text-xl text-4xl font-extralight leading-none"
         >
           {Array.from({ length: copyCount }, (_, copyIndex) => (
             <div
@@ -231,17 +202,17 @@ export default function TextStreamComp({ items = [] }) {
             >
               {items.map((text, i) => (
                 <div
-                  key={`${copyIndex}-${i}`}
-                  className="
-                    py-1
-                    pl-2
-                    whitespace-nowrap
-                    max-xl:whitespace-normal
-                    max-xl:break-words
-                    max-md:pr-3
-                    max-xl:max-w-full
-                  "
-                >
+  key={`${copyIndex}-${i}`}
+  className="
+    py-1
+    pl-2
+    whitespace-nowrap
+    max-md:whitespace-normal
+    max-md:wrap-break-word
+    max-sm:pr-3
+    max-md:max-w-full
+  "
+>
                   {text}
                 </div>
               ))}

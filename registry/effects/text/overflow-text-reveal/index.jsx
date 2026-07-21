@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +15,9 @@ const DIRECTION_INITIAL = {
   left: { yPercent: 0, xPercent: -100, rotate: -8 },
   right: { yPercent: 0, xPercent: 100, rotate: 8 },
 };
+
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
 
 export default function OverflowTextReveal({
   children,
@@ -37,6 +40,10 @@ export default function OverflowTextReveal({
     const elements = containerRef.current.hasAttribute("data-copy-wrapper")
       ? Array.from(containerRef.current.children)
       : [containerRef.current];
+
+    const prefersReduced =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let ctx;
 
@@ -61,6 +68,34 @@ export default function OverflowTextReveal({
           splitRefs.current.push(split);
           charsRef.current.push(...split.chars);
         });
+
+        if (prefersReduced) {
+          gsap.set(charsRef.current, { yPercent: 0, xPercent: 0, rotate: 0, opacity: 1 });
+          gsap.set(containerRef.current, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+          const fadeUpProps = {
+            opacity: 1,
+            y: 0,
+            duration: REDUCED_MOTION_FADE_DURATION,
+            ease: "power2.out",
+            delay,
+          };
+
+          if (animateOnScroll) {
+            gsap.to(containerRef.current, {
+              ...fadeUpProps,
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 80%",
+                once: true,
+              },
+            });
+          } else {
+            gsap.to(containerRef.current, fadeUpProps);
+          }
+
+          return;
+        }
 
         const initialProps = DIRECTION_INITIAL[direction] ?? DIRECTION_INITIAL.bottom;
 
@@ -92,7 +127,6 @@ export default function OverflowTextReveal({
               trigger: containerRef.current,
               start: "top 80%",
               end: "bottom 68%",
-            //   markers: true,
               scrub,
             },
           });

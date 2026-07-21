@@ -33,8 +33,19 @@ export default function TextStreamComp({ items = [] }) {
       return undefined;
     }
 
+    const prefersReducedMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const idleSpeed = prefersReducedMotion ? 0 : BASE_SPEED;
+    const velocityLerpFactor = prefersReducedMotion ? 1 : 0.14;
+
+    metricsRef.current.currentVelocity = idleSpeed;
+    metricsRef.current.targetVelocity = idleSpeed;
+
     const ctx = gsap.context(() => {
-      const maxBoost = 12;
+      const maxBoost = prefersReducedMotion ? 4 : 12;
+      const boostScale = prefersReducedMotion ? 0.03 : 0.08;
       let lastScrollY = window.scrollY;
 
       const startAnimation = () => {
@@ -73,7 +84,7 @@ export default function TextStreamComp({ items = [] }) {
         metricsRef.current.currentVelocity = gsap.utils.interpolate(
           metricsRef.current.currentVelocity,
           metricsRef.current.targetVelocity,
-          0.14
+          velocityLerpFactor
         );
 
         metricsRef.current.currentY +=
@@ -95,7 +106,7 @@ export default function TextStreamComp({ items = [] }) {
 
         const boost = Math.min(
           maxBoost,
-          BASE_SPEED + Math.pow(Math.abs(delta), 1.2) * 0.08
+          idleSpeed + Math.pow(Math.abs(delta), 1.2) * boostScale
         );
 
         metricsRef.current.lastScrollDirection = direction;
@@ -105,7 +116,7 @@ export default function TextStreamComp({ items = [] }) {
 
         scrollTimeoutRef.current = window.setTimeout(() => {
           metricsRef.current.targetVelocity =
-            metricsRef.current.lastScrollDirection * BASE_SPEED;
+            metricsRef.current.lastScrollDirection * idleSpeed;
         }, 120);
       };
 

@@ -33,6 +33,22 @@ function useIsPointerFine() {
  return isPointerFine;
 }
 
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+ () => typeof window !== 'undefined'
+ && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+ );
+
+ useEffect(() => {
+ const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+ const handler = (e) => setPrefersReducedMotion(e.matches);
+ mq.addEventListener('change', handler);
+ return () => mq.removeEventListener('change', handler);
+ }, []);
+
+ return prefersReducedMotion;
+}
+
 export default function CircleTextReveal({
  textColor ='#111',
  Text="Some ideas only bloom when you move toward them.",
@@ -43,6 +59,7 @@ export default function CircleTextReveal({
  const [isHovered, setIsHovered] = useState(false);
  const { x, y } = useMousePosition();
  const isPointerFine = useIsPointerFine();
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  const [smoothPos, setSmoothPos] = useState(null);
 
@@ -54,14 +71,15 @@ export default function CircleTextReveal({
  let animationFrame;
 
  const lerp = (start, end, factor) => start + (end - start) * factor;
+ const lerpFactor = prefersReducedMotion ? 1 : 0.15;
 
  const animate = () => {
  setSmoothPos((prev) => {
  if (x === null || y === null) return prev;
  if (prev === null) return { x, y };
  return {
- x: lerp(prev.x, x, 0.15),
- y: lerp(prev.y, y, 0.15),
+ x: lerp(prev.x, x, lerpFactor),
+ y: lerp(prev.y, y, lerpFactor),
  };
  });
 
@@ -71,7 +89,7 @@ export default function CircleTextReveal({
  animate();
 
  return () => cancelAnimationFrame(animationFrame);
- }, [x, y, isPointerFine]);
+ }, [x, y, isPointerFine, prefersReducedMotion]);
 
  return (
  <section className="w-screen h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] bg-[#fefefe] relative overflow-hidden">
@@ -98,7 +116,11 @@ export default function CircleTextReveal({
  WebkitMaskPosition: `${smoothPos.x - size / 2}px ${smoothPos.y - size / 2}px`,
  WebkitMaskSize: `${size}px ${size}px`,
  }}
- transition={{ type:'tween', ease:'backOut', duration: 0.5 }}
+ transition={
+ prefersReducedMotion
+ ? { type:'tween', ease:'linear', duration: 0 }
+ : { type:'tween', ease:'backOut', duration: 0.5 }
+ }
  >
  <div className="absolute inset-0" style={{ backgroundColor: circleColorBg }} />
 

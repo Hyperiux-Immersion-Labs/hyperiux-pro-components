@@ -3,6 +3,7 @@
 import { TransitionRouter } from'next-transition-router'
 import { useEffect, useRef } from'react'
 import gsap from'gsap'
+import { prefersReducedMotion } from '@/lib/motion'
 
 const COLS = 30
 const ROWS = 40
@@ -136,6 +137,11 @@ export default function PixelTransition({
  leave={(next) => {
  const timeline = gsap.timeline()
 
+ if (prefersReducedMotion()) {
+ timeline.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out', onComplete: next })
+ return () => timeline.kill()
+ }
+
  if (enableContentShift) {
  timeline.fromTo(
  wrapperRef.current,
@@ -157,6 +163,11 @@ export default function PixelTransition({
  }}
  enter={(next) => {
  const timeline = gsap.timeline()
+
+ if (prefersReducedMotion()) {
+ timeline.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all', onComplete: next })
+ return () => timeline.kill()
+ }
 
  if (enableContentShift) {
  timeline.fromTo(

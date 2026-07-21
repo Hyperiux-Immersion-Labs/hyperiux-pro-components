@@ -1,6 +1,20 @@
 {
   "name": "scramble-text",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion scramble playback.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Scramble Text",
   "description": "Hacker-style text scramble effect that reveals text character by character on scroll",
@@ -9,17 +23,6 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/scramble-text",
-  "tier": "pro",
-  "main": "index.jsx",
-  "exportName": "ScrambleText",
-  "exportKind": "default",
-  "importPath": "@/components/effects/scramble-text",
-  "target": "src/components/effects/scramble-text",
-  "files": [
-    {
-      "path": "index.jsx",
-      "target": "src/components/effects/scramble-text/index.jsx"
-    }
-  ]
+  "previewUrl": "/scramble-text",
+  "tier": "pro"
 }

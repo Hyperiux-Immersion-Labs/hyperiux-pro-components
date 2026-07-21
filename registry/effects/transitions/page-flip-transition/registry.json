@@ -1,6 +1,20 @@
 {
   "name": "page-flip-transition",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion route fallback with short opacity fades.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Page Flip Transition",
   "description": "Angular full-screen route wipe with a folding panel and staggered indicator bars",
@@ -10,19 +24,8 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/page-flip-transition",
+  "previewUrl": "/page-transitions/flip",
   "coverImage": "page-flip-transition",
   "videoUrl": "page-flip-transition.mp4",
-  "tier": "pro",
-  "main": "index.jsx",
-  "exportName": "FlipTransition",
-  "exportKind": "default",
-  "importPath": "@/components/effects/page-flip-transition",
-  "target": "src/components/effects/page-flip-transition",
-  "files": [
-    {
-      "path": "index.jsx",
-      "target": "src/components/effects/page-flip-transition/index.jsx"
-    }
-  ]
+  "tier": "pro"
 }
