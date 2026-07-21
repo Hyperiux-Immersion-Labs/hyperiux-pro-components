@@ -21,7 +21,7 @@ export default function Page() {
                     <LinkButton
                         text="Hover me"
                         href="#"
-                        iconClassName="size-[2vw] mt-[0.2vw] max-sm:size-[4vw]"
+                        iconClassName="size-[2vw] mt-[0.2vw] max-md:size-[3vw] max-sm:size-[4vw]"
                         className="text-[2vw] hover:text-[#ff6b00] max-sm:text-[4.5vw]"
                     />
                 </div>
