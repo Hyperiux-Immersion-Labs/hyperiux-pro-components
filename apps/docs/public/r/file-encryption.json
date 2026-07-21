@@ -9,7 +9,16 @@
   "registryDependencies": [],
   "exportName": "FileEncryption",
   "exportKind": "default",
-  "previewUrl": "/demo/file-encryption",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -20,9 +29,16 @@
       "path": "FileEncryptionComp.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/FileEncryptionComp.jsx"
+    },
+    {
+      "path": "webgl-context-recovery.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/webgl-context-recovery.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

@@ -7,7 +7,9 @@
   "registryDependencies": [],
   "exportName": "FullScreenCrosshair",
   "exportKind": "named",
-  "previewUrl": "/demo/full-screen-crosshair",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -18,9 +20,11 @@
       "path": "useMouse.js",
       "type": "registry:component",
       "target": "components/hyperiux/useMouse.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

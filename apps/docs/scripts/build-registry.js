@@ -278,7 +278,14 @@ async function buildRegistry() {
           const overlap = baseName
             .split("-")
             .filter((part) => nameParts.has(part)).length;
-          const hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          // Helper files (e.g. createSuspendedRaf) can have multiple named
+          // exports that don't match the effect — treat as non-entry, don't throw.
+          let hasExport = 20;
+          try {
+            hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          } catch {
+            hasExport = 20;
+          }
 
           return hasExport - overlap;
         };

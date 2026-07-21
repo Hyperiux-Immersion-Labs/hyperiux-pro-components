@@ -7,15 +7,19 @@
   "registryDependencies": [],
   "exportName": "DitherCanvas",
   "exportKind": "default",
-  "previewUrl": "/demo/dither-canvas",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

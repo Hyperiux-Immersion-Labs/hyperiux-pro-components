@@ -9,7 +9,16 @@
   "registryDependencies": [],
   "exportName": "CurvedPlane",
   "exportKind": "default",
-  "previewUrl": "/demo/curved-plane",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -25,9 +34,11 @@
       "path": "CurvedSwiperVertical.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/CurvedSwiperVertical.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

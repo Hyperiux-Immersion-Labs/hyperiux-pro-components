@@ -12,7 +12,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/cards-runway",
   "files": [
     {
       "path": "index.jsx",

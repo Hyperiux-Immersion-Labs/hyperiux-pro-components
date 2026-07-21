@@ -12,7 +12,16 @@
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
   "exportKind": "default",
-  "previewUrl": "/demo/hyperiux-glitter",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -30,13 +39,15 @@
       "target": "components/hyperiux/MouseTrailParticles.jsx"
     },
     {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
+    },
+    {
       "path": "assets/models/hyperiux-new-model.glb",
       "type": "registry:asset",
       "target": "public/assets/models/hyperiux-new-model.glb",
       "source": "/assets/models/hyperiux-new-model.glb"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

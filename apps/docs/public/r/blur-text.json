@@ -4,7 +4,7 @@
   "title": "Blur Text",
   "description": "Text that reveals with a blur-to-focus animation on scroll",
   "dependencies": [
-    "motion"
+    "framer-motion"
   ],
   "registryDependencies": [],
   "exportName": "BlurText",
@@ -12,7 +12,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/blur-text",
   "files": [
     {
       "path": "index.jsx",

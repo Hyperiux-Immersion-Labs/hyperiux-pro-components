@@ -9,7 +9,9 @@
   "registryDependencies": [],
   "exportName": "DraggableCanvas",
   "exportKind": "default",
-  "previewUrl": "/demo/draggable-canvas",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -25,9 +27,11 @@
       "path": "MaskedContainer.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/MaskedContainer.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

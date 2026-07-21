@@ -12,7 +12,6 @@
   "tier": "free",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/arrow-fill-button",
   "files": [
     {
       "path": "index.jsx",

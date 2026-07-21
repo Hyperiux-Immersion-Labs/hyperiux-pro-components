@@ -13,7 +13,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/circular-slider",
   "files": [
     {
       "path": "index.jsx",

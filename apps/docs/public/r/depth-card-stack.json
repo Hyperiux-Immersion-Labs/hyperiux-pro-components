@@ -10,7 +10,16 @@
   "registryDependencies": [],
   "exportName": "DepthCardStack",
   "exportKind": "default",
-  "previewUrl": "/demo/depth-card-stack",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Disable pointer tilt and texture reveal under reduced motion",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -27,8 +36,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/SliderCard.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

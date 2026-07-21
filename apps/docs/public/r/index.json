@@ -14,7 +14,7 @@
       "registryDependencies": [],
       "exportName": "CircularSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/circular-slider"
+      "version": "1.0.0"
     },
     {
       "name": "circular-split-roll",
@@ -30,7 +30,7 @@
       "registryDependencies": [],
       "exportName": "CircularSplitRoll",
       "exportKind": "default",
-      "previewUrl": "/demo/circular-split-roll"
+      "version": "1.0.1"
     },
     {
       "name": "draggable-marquee",
@@ -45,7 +45,7 @@
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "previewUrl": "/demo/draggable-marquee"
+      "version": "1.0.0"
     },
     {
       "name": "grid-scale",
@@ -60,7 +60,7 @@
       "registryDependencies": [],
       "exportName": "GridScale",
       "exportKind": "default",
-      "previewUrl": "/demo/grid-scale"
+      "version": "1.0.0"
     },
     {
       "name": "helix-slider",
@@ -70,12 +70,13 @@
         "scroll"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lenis"
       ],
       "registryDependencies": [],
       "exportName": "HelixSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/helix-slider"
+      "version": "1.0.0"
     },
     {
       "name": "horizontal-feature-reveal",
@@ -90,7 +91,7 @@
       "registryDependencies": [],
       "exportName": "HorizontalFeatureReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/horizontal-feature-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "infinite-perspective-slider",
@@ -105,7 +106,7 @@
       "registryDependencies": [],
       "exportName": "InfinitePerspectiveSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/infinite-perspective-slider"
+      "version": "1.0.0"
     },
     {
       "name": "parallax-footer",
@@ -114,11 +115,13 @@
       "categories": [
         "scroll"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "ParallaxFooter",
       "exportKind": "default",
-      "previewUrl": "/demo/parallax-footer"
+      "version": "1.0.0"
     },
     {
       "name": "parallax-gallery",
@@ -134,7 +137,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxGallery",
       "exportKind": "default",
-      "previewUrl": "/demo/parallax-gallery"
+      "version": "1.0.0"
     },
     {
       "name": "parallax-image-animation",
@@ -149,7 +152,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxImageAnimation",
       "exportKind": "default",
-      "previewUrl": "/demo/parallax-image-animation"
+      "version": "1.0.0"
     },
     {
       "name": "parallax-slider",
@@ -165,7 +168,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/parallax-slider"
+      "version": "1.0.0"
     },
     {
       "name": "progressive-bloom-valley",
@@ -186,7 +189,7 @@
       "registryDependencies": [],
       "exportName": "ProgressiveBloomValley",
       "exportKind": "default",
-      "previewUrl": "/demo/progressive-bloom-valley"
+      "version": "1.1.0"
     },
     {
       "name": "rotation-slider",
@@ -203,7 +206,7 @@
       "registryDependencies": [],
       "exportName": "RotationSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/rotation-slider"
+      "version": "1.0.0"
     },
     {
       "name": "scroll-distortion",
@@ -219,7 +222,7 @@
       "registryDependencies": [],
       "exportName": "ScrollDistortion",
       "exportKind": "default",
-      "previewUrl": "/demo/scroll-distortion"
+      "version": "1.0.0"
     },
     {
       "name": "scroll-shuffled-cards",
@@ -234,7 +237,7 @@
       "registryDependencies": [],
       "exportName": "ScrollShuffledCards",
       "exportKind": "default",
-      "previewUrl": "/demo/scroll-shuffled-cards"
+      "version": "1.0.0"
     },
     {
       "name": "scroll-stack",
@@ -249,7 +252,7 @@
       "registryDependencies": [],
       "exportName": "ScrollStack",
       "exportKind": "default",
-      "previewUrl": "/demo/scroll-stack"
+      "version": "1.0.0"
     },
     {
       "name": "split-canvas",
@@ -260,12 +263,13 @@
       ],
       "dependencies": [
         "gsap",
-        "three"
+        "three",
+        "lenis"
       ],
       "registryDependencies": [],
       "exportName": "SplitCanvas",
       "exportKind": "default",
-      "previewUrl": "/demo/split-canvas"
+      "version": "1.0.0"
     },
     {
       "name": "square-translate",
@@ -280,7 +284,7 @@
       "registryDependencies": [],
       "exportName": "SquareTranslate",
       "exportKind": "default",
-      "previewUrl": "/demo/square-translate"
+      "version": "1.0.0"
     },
     {
       "name": "stacking-cards",
@@ -297,7 +301,7 @@
       "registryDependencies": [],
       "exportName": "StackingCards",
       "exportKind": "default",
-      "previewUrl": "/demo/stacking-cards"
+      "version": "1.0.0"
     },
     {
       "name": "sticky-content-wrapper",
@@ -307,12 +311,13 @@
         "scroll"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lenis"
       ],
       "registryDependencies": [],
       "exportName": "StickyContentWrapper",
       "exportKind": "default",
-      "previewUrl": "/demo/sticky-content-wrapper"
+      "version": "1.0.0"
     },
     {
       "name": "svg-path",
@@ -327,7 +332,7 @@
       "registryDependencies": [],
       "exportName": "SVGPath",
       "exportKind": "default",
-      "previewUrl": "/demo/svg-path"
+      "version": "1.0.0"
     },
     {
       "name": "svg-pixel-reveal",
@@ -342,7 +347,7 @@
       "registryDependencies": [],
       "exportName": "SvgPixelReveal",
       "exportKind": "named",
-      "previewUrl": "/demo/svg-pixel-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "text-convergence",
@@ -357,7 +362,7 @@
       "registryDependencies": [],
       "exportName": "TextConvergence",
       "exportKind": "default",
-      "previewUrl": "/demo/text-convergence"
+      "version": "1.0.0"
     },
     {
       "name": "butterfly-trail-cursor",
@@ -374,7 +379,7 @@
       "registryDependencies": [],
       "exportName": "ButterflyTrailCursor",
       "exportKind": "default",
-      "previewUrl": "/demo/butterfly-trail-cursor"
+      "version": "1.0.0"
     },
     {
       "name": "character-trail",
@@ -387,7 +392,7 @@
       "registryDependencies": [],
       "exportName": "CharacterTrail",
       "exportKind": "default",
-      "previewUrl": "/demo/character-trail"
+      "version": "1.0.0"
     },
     {
       "name": "coffee-bean-cursor",
@@ -404,7 +409,7 @@
       "registryDependencies": [],
       "exportName": "CoffeeBeanCursor",
       "exportKind": "default",
-      "previewUrl": "/demo/coffee-bean-cursor"
+      "version": "1.0.0"
     },
     {
       "name": "colorful-cursor-aura",
@@ -419,7 +424,7 @@
       "registryDependencies": [],
       "exportName": "ColorfulCursorAura",
       "exportKind": "default",
-      "previewUrl": "/demo/colorful-cursor-aura"
+      "version": "1.0.0"
     },
     {
       "name": "cursor-move",
@@ -432,7 +437,7 @@
       "registryDependencies": [],
       "exportName": "CursorMove",
       "exportKind": "default",
-      "previewUrl": "/demo/cursor-move"
+      "version": "1.0.0"
     },
     {
       "name": "fish-eye",
@@ -449,7 +454,7 @@
       "registryDependencies": [],
       "exportName": "FishEye",
       "exportKind": "default",
-      "previewUrl": "/demo/fish-eye"
+      "version": "1.0.0"
     },
     {
       "name": "full-screen-crosshair",
@@ -462,7 +467,7 @@
       "registryDependencies": [],
       "exportName": "FullScreenCrosshair",
       "exportKind": "named",
-      "previewUrl": "/demo/full-screen-crosshair"
+      "version": "1.0.0"
     },
     {
       "name": "inertia-img",
@@ -477,7 +482,7 @@
       "registryDependencies": [],
       "exportName": "InertiaImage",
       "exportKind": "default",
-      "previewUrl": "/demo/inertia-img"
+      "version": "1.0.0"
     },
     {
       "name": "interactive-arrows",
@@ -490,7 +495,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveArrows",
       "exportKind": "default",
-      "previewUrl": "/demo/interactive-arrows"
+      "version": "1.0.0"
     },
     {
       "name": "liquid-glass-cursor",
@@ -505,7 +510,7 @@
       "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
       "exportKind": "default",
-      "previewUrl": "/demo/liquid-glass-cursor"
+      "version": "1.0.0"
     },
     {
       "name": "magnetic-image-trail",
@@ -518,7 +523,7 @@
       "registryDependencies": [],
       "exportName": "MagneticImageTrail",
       "exportKind": "default",
-      "previewUrl": "/demo/magnetic-image-trail"
+      "version": "1.0.0"
     },
     {
       "name": "noise-ripple-cursor",
@@ -533,7 +538,7 @@
       "registryDependencies": [],
       "exportName": "NoiseRippleCursor",
       "exportKind": "default",
-      "previewUrl": "/demo/noise-ripple-cursor"
+      "version": "1.0.0"
     },
     {
       "name": "phantom-image-trail",
@@ -548,20 +553,7 @@
       "registryDependencies": [],
       "exportName": "PhantomImageTrail",
       "exportKind": "default",
-      "previewUrl": "/demo/phantom-image-trail"
-    },
-    {
-      "name": "pixelated-image-effect",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "PixelatedImageEffect",
-      "exportKind": "default",
-      "previewUrl": "/demo/pixelated-image-effect"
+      "version": "1.0.0"
     },
     {
       "name": "pixel-bloom",
@@ -574,7 +566,20 @@
       "registryDependencies": [],
       "exportName": "PixelBloom",
       "exportKind": "default",
-      "previewUrl": "/demo/pixel-bloom"
+      "version": "1.0.0"
+    },
+    {
+      "name": "pixelated-image-effect",
+      "type": "registry:component",
+      "category": "cursor",
+      "categories": [
+        "cursor"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "PixelatedImageEffect",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "rope-cursor",
@@ -589,7 +594,7 @@
       "registryDependencies": [],
       "exportName": "RopeCursor",
       "exportKind": "default",
-      "previewUrl": "/demo/rope-cursor"
+      "version": "1.0.0"
     },
     {
       "name": "dither-canvas",
@@ -602,7 +607,7 @@
       "registryDependencies": [],
       "exportName": "DitherCanvas",
       "exportKind": "default",
-      "previewUrl": "/demo/dither-canvas"
+      "version": "1.0.0"
     },
     {
       "name": "dotted-grid",
@@ -615,7 +620,7 @@
       "registryDependencies": [],
       "exportName": "DottedGrid",
       "exportKind": "named",
-      "previewUrl": "/demo/dotted-grid"
+      "version": "1.0.0"
     },
     {
       "name": "spider-particles",
@@ -630,7 +635,7 @@
       "registryDependencies": [],
       "exportName": "SpiderParticles",
       "exportKind": "default",
-      "previewUrl": "/demo/spider-particles"
+      "version": "1.1.0"
     },
     {
       "name": "block-transition",
@@ -646,7 +651,7 @@
       "registryDependencies": [],
       "exportName": "BlockTransition",
       "exportKind": "default",
-      "previewUrl": "/demo/block-transition"
+      "version": "1.0.0"
     },
     {
       "name": "chess-grid-transition",
@@ -662,7 +667,7 @@
       "registryDependencies": [],
       "exportName": "ChessGridTransition",
       "exportKind": "default",
-      "previewUrl": "/demo/chess-grid-transition"
+      "version": "1.0.0"
     },
     {
       "name": "page-flip-transition",
@@ -678,23 +683,7 @@
       "registryDependencies": [],
       "exportName": "FlipTransition",
       "exportKind": "default",
-      "previewUrl": "/demo/page-flip-transition"
-    },
-    {
-      "name": "radial-slice-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "RadialSliceTransition",
-      "exportKind": "default",
-      "previewUrl": "/demo/radial-slice-transition"
+      "version": "1.0.0"
     },
     {
       "name": "pixel-transition",
@@ -710,7 +699,23 @@
       "registryDependencies": [],
       "exportName": "PixelTransition",
       "exportKind": "default",
-      "previewUrl": "/demo/pixel-transition"
+      "version": "1.0.0"
+    },
+    {
+      "name": "radial-slice-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "RadialSliceTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "svg-brush-transition",
@@ -726,7 +731,7 @@
       "registryDependencies": [],
       "exportName": "SVGBrushTransition",
       "exportKind": "default",
-      "previewUrl": "/demo/svg-brush-transition"
+      "version": "1.0.0"
     },
     {
       "name": "blur-text",
@@ -741,7 +746,7 @@
       "registryDependencies": [],
       "exportName": "BlurText",
       "exportKind": "default",
-      "previewUrl": "/demo/blur-text"
+      "version": "1.0.0"
     },
     {
       "name": "circle-text-reveal",
@@ -756,22 +761,7 @@
       "registryDependencies": [],
       "exportName": "CircleTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/circle-text-reveal"
-    },
-    {
-      "name": "number-counter",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "NumberCounter",
-      "exportKind": "default",
-      "previewUrl": "/demo/number-counter"
+      "version": "1.0.0"
     },
     {
       "name": "glitchy-text",
@@ -786,7 +776,7 @@
       "registryDependencies": [],
       "exportName": "GlitchyText",
       "exportKind": "default",
-      "previewUrl": "/demo/glitchy-text"
+      "version": "1.0.0"
     },
     {
       "name": "mask-text-reveal",
@@ -801,7 +791,22 @@
       "registryDependencies": [],
       "exportName": "MaskTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/mask-text-reveal"
+      "version": "1.0.0"
+    },
+    {
+      "name": "number-counter",
+      "type": "registry:component",
+      "category": "text",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "NumberCounter",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "overflow-stagger-text",
@@ -816,7 +821,7 @@
       "registryDependencies": [],
       "exportName": "OverflowStaggerText",
       "exportKind": "default",
-      "previewUrl": "/demo/overflow-stagger-text"
+      "version": "1.0.0"
     },
     {
       "name": "overflow-text-reveal",
@@ -831,7 +836,7 @@
       "registryDependencies": [],
       "exportName": "OverflowTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/overflow-text-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "perspective-text-reveal",
@@ -846,7 +851,7 @@
       "registryDependencies": [],
       "exportName": "PerspectiveTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/perspective-text-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "rectangular-text-reveal",
@@ -861,7 +866,7 @@
       "registryDependencies": [],
       "exportName": "RectangularTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/rectangular-text-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "scramble-text",
@@ -876,7 +881,7 @@
       "registryDependencies": [],
       "exportName": "ScrambleText",
       "exportKind": "default",
-      "previewUrl": "/demo/scramble-text"
+      "version": "1.0.0"
     },
     {
       "name": "slide-text-reveal",
@@ -891,7 +896,7 @@
       "registryDependencies": [],
       "exportName": "SlideTextReveal",
       "exportKind": "default",
-      "previewUrl": "/demo/slide-text-reveal"
+      "version": "1.0.0"
     },
     {
       "name": "spotlight-text",
@@ -904,7 +909,7 @@
       "registryDependencies": [],
       "exportName": "SpotlightText",
       "exportKind": "default",
-      "previewUrl": "/demo/spotlight-text"
+      "version": "1.0.0"
     },
     {
       "name": "text-cloning",
@@ -917,7 +922,7 @@
       "registryDependencies": [],
       "exportName": "TextCloning",
       "exportKind": "default",
-      "previewUrl": "/demo/text-cloning"
+      "version": "1.0.0"
     },
     {
       "name": "text-fill-animation",
@@ -932,7 +937,7 @@
       "registryDependencies": [],
       "exportName": "TextFillAnimation",
       "exportKind": "default",
-      "previewUrl": "/demo/text-fill-animation"
+      "version": "1.0.0"
     },
     {
       "name": "text-hover",
@@ -947,7 +952,7 @@
       "registryDependencies": [],
       "exportName": "TextHover",
       "exportKind": "default",
-      "previewUrl": "/demo/text-hover"
+      "version": "1.0.0"
     },
     {
       "name": "text-stream",
@@ -962,7 +967,7 @@
       "registryDependencies": [],
       "exportName": "TextStream",
       "exportKind": "default",
-      "previewUrl": "/demo/text-stream"
+      "version": "1.0.0"
     },
     {
       "name": "animated-toggle",
@@ -975,7 +980,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedToggle",
       "exportKind": "default",
-      "previewUrl": "/demo/animated-toggle"
+      "version": "1.0.0"
     },
     {
       "name": "arrow-fill-button",
@@ -990,7 +995,7 @@
       "registryDependencies": [],
       "exportName": "ArrowFillButton",
       "exportKind": "default",
-      "previewUrl": "/demo/arrow-fill-button"
+      "version": "1.0.0"
     },
     {
       "name": "char-stagger-button",
@@ -1005,7 +1010,7 @@
       "registryDependencies": [],
       "exportName": "CharStaggerButton",
       "exportKind": "default",
-      "previewUrl": "/demo/char-stagger-button"
+      "version": "1.0.0"
     },
     {
       "name": "char-stagger-primary-button",
@@ -1014,11 +1019,13 @@
       "categories": [
         "buttons"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "CharStaggerPrimaryButton",
       "exportKind": "default",
-      "previewUrl": "/demo/char-stagger-primary-button"
+      "version": "1.0.0"
     },
     {
       "name": "dot-fill-button",
@@ -1031,7 +1038,7 @@
       "registryDependencies": [],
       "exportName": "DotFillBtn",
       "exportKind": "default",
-      "previewUrl": "/demo/dot-fill-button"
+      "version": "1.0.0"
     },
     {
       "name": "link-button",
@@ -1046,7 +1053,7 @@
       "registryDependencies": [],
       "exportName": "LinkButton",
       "exportKind": "default",
-      "previewUrl": "/demo/link-button"
+      "version": "1.0.1"
     },
     {
       "name": "scramble-link-button",
@@ -1061,7 +1068,7 @@
       "registryDependencies": [],
       "exportName": "ScrambleLinkButton",
       "exportKind": "default",
-      "previewUrl": "/demo/scramble-link-button"
+      "version": "1.0.0"
     },
     {
       "name": "clippath-slider",
@@ -1076,7 +1083,7 @@
       "registryDependencies": [],
       "exportName": "ClipPathSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/clippath-slider"
+      "version": "1.0.0"
     },
     {
       "name": "infinite-carousel",
@@ -1086,12 +1093,13 @@
         "carousels"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "InfiniteCarousel",
       "exportKind": "default",
-      "previewUrl": "/demo/infinite-carousel"
+      "version": "1.0.0"
     },
     {
       "name": "ring-carousel",
@@ -1107,7 +1115,7 @@
       "registryDependencies": [],
       "exportName": "RingCarousel",
       "exportKind": "default",
-      "previewUrl": "/demo/ring-carousel"
+      "version": "1.0.0"
     },
     {
       "name": "webgl-slider",
@@ -1124,7 +1132,7 @@
       "registryDependencies": [],
       "exportName": "WebGLSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/webgl-slider"
+      "version": "1.0.0"
     },
     {
       "name": "zoom-slider",
@@ -1139,7 +1147,7 @@
       "registryDependencies": [],
       "exportName": "ZoomSlider",
       "exportKind": "default",
-      "previewUrl": "/demo/zoom-slider"
+      "version": "1.0.0"
     },
     {
       "name": "animated-faq",
@@ -1155,10 +1163,25 @@
       "registryDependencies": [],
       "exportName": "AnimatedFAQ",
       "exportKind": "default",
-      "previewUrl": "/demo/animated-faq"
+      "version": "1.0.0"
     },
     {
-      "name": "video-player",
+      "name": "animated-form",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedForm",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
+      "name": "animated-modal",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1168,9 +1191,68 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "VideoPlayer",
+      "exportName": "AnimatedModal",
       "exportKind": "default",
-      "previewUrl": "/demo/video-player"
+      "version": "1.0.0"
+    },
+    {
+      "name": "animated-tabs",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedTabs",
+      "exportKind": "default",
+      "version": "1.1.0"
+    },
+    {
+      "name": "border-beam",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "BorderBeam",
+      "exportKind": "default",
+      "version": "1.1.0"
+    },
+    {
+      "name": "card-drift",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "CardDrift",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cards-runway",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "CardsRunway",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "depth-card-stack",
@@ -1186,25 +1268,10 @@
       "registryDependencies": [],
       "exportName": "DepthCardStack",
       "exportKind": "default",
-      "previewUrl": "/demo/depth-card-stack"
+      "version": "1.1.0"
     },
     {
-      "name": "animated-form",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "zod"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedForm",
-      "exportKind": "default",
-      "previewUrl": "/demo/animated-form"
-    },
-    {
-      "name": "border-beam",
+      "name": "gooey-counter",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1212,24 +1279,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [],
-      "exportName": "BorderBeam",
+      "exportName": "GooeyCounter",
       "exportKind": "default",
-      "previewUrl": "/demo/border-beam"
-    },
-    {
-      "name": "cards-runway",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "CardsRunway",
-      "exportKind": "default",
-      "previewUrl": "/demo/cards-runway"
+      "version": "1.1.0"
     },
     {
       "name": "hover-stack",
@@ -1242,25 +1294,10 @@
       "registryDependencies": [],
       "exportName": "HoverStack",
       "exportKind": "default",
-      "previewUrl": "/demo/hover-stack"
+      "version": "1.1.0"
     },
     {
-      "name": "animated-modal",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedModal",
-      "exportKind": "default",
-      "previewUrl": "/demo/animated-modal"
-    },
-    {
-      "name": "animated-tabs",
+      "name": "interactive-list-preview",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1270,10 +1307,25 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "AnimatedTabs",
+      "exportName": "InteractiveListPreview",
       "exportKind": "default",
-      "previewUrl": "/demo/animated-tabs",
-      "tier": "pro"
+      "version": "1.1.0"
+    },
+    {
+      "name": "ribbon-drift",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lenis"
+      ],
+      "registryDependencies": [],
+      "exportName": "RibbonDrift",
+      "exportKind": "default",
+      "version": "1.1.0"
     },
     {
       "name": "testimonial-swiper",
@@ -1290,7 +1342,22 @@
       "registryDependencies": [],
       "exportName": "TestimonialSwiper",
       "exportKind": "default",
-      "previewUrl": "/demo/testimonial-swiper"
+      "version": "1.1.0"
+    },
+    {
+      "name": "video-player",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "VideoPlayer",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "directional-menu",
@@ -1303,12 +1370,10 @@
         "gsap",
         "lucide-react"
       ],
-      "registryDependencies": [
-        "chevron-bird"
-      ],
+      "registryDependencies": [],
       "exportName": "DirectionalMenu",
       "exportKind": "default",
-      "previewUrl": "/demo/directional-menu"
+      "version": "1.0.0"
     },
     {
       "name": "elevate-navbar",
@@ -1324,7 +1389,7 @@
       "registryDependencies": [],
       "exportName": "ElevateNavbar",
       "exportKind": "default",
-      "previewUrl": "/demo/elevate-navbar"
+      "version": "1.0.0"
     },
     {
       "name": "expanding-navbar",
@@ -1335,12 +1400,13 @@
       ],
       "dependencies": [
         "gsap",
-        "next"
+        "next",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "ExpandingNavbar",
       "exportKind": "default",
-      "previewUrl": "/demo/expanding-navbar"
+      "version": "1.0.0"
     },
     {
       "name": "immersive-full-screen-nav",
@@ -1355,7 +1421,7 @@
       "registryDependencies": [],
       "exportName": "ImmersiveFullscreenNav",
       "exportKind": "default",
-      "previewUrl": "/demo/immersive-full-screen-nav"
+      "version": "1.0.0"
     },
     {
       "name": "lines-loader",
@@ -1365,12 +1431,13 @@
         "loaders"
       ],
       "dependencies": [
-        "gsap"
+        "gsap",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "LinesLoader",
       "exportKind": "default",
-      "previewUrl": "/demo/lines-loader"
+      "version": "1.1.0"
     },
     {
       "name": "numeric-tunnel",
@@ -1388,7 +1455,7 @@
       "registryDependencies": [],
       "exportName": "NumericTunnel",
       "exportKind": "default",
-      "previewUrl": "/demo/numeric-tunnel"
+      "version": "1.1.0"
     },
     {
       "name": "stack-loader",
@@ -1403,7 +1470,7 @@
       "registryDependencies": [],
       "exportName": "StackLoader",
       "exportKind": "default",
-      "previewUrl": "/demo/stack-loader"
+      "version": "1.1.0"
     },
     {
       "name": "3d-portfolio-slider",
@@ -1421,7 +1488,7 @@
       "registryDependencies": [],
       "exportName": "PortfolioSlider3D",
       "exportKind": "default",
-      "previewUrl": "/demo/3d-portfolio-slider"
+      "version": "1.0.0"
     },
     {
       "name": "book-flip",
@@ -1439,7 +1506,7 @@
       "registryDependencies": [],
       "exportName": "BookFlip",
       "exportKind": "default",
-      "previewUrl": "/demo/book-flip"
+      "version": "1.0.0"
     },
     {
       "name": "colliding-models",
@@ -1460,7 +1527,7 @@
       "registryDependencies": [],
       "exportName": "CollidingModels",
       "exportKind": "default",
-      "previewUrl": "/demo/colliding-models"
+      "version": "1.0.0"
     },
     {
       "name": "curved-plane",
@@ -1475,7 +1542,7 @@
       "registryDependencies": [],
       "exportName": "CurvedPlane",
       "exportKind": "default",
-      "previewUrl": "/demo/curved-plane"
+      "version": "1.1.0"
     },
     {
       "name": "donut-particles",
@@ -1491,7 +1558,7 @@
       "registryDependencies": [],
       "exportName": "DonutParticles",
       "exportKind": "default",
-      "previewUrl": "/demo/donut-particles"
+      "version": "1.1.0"
     },
     {
       "name": "draggable-canvas",
@@ -1506,7 +1573,7 @@
       "registryDependencies": [],
       "exportName": "DraggableCanvas",
       "exportKind": "default",
-      "previewUrl": "/demo/draggable-canvas"
+      "version": "1.0.0"
     },
     {
       "name": "file-encryption",
@@ -1521,7 +1588,7 @@
       "registryDependencies": [],
       "exportName": "FileEncryption",
       "exportKind": "default",
-      "previewUrl": "/demo/file-encryption"
+      "version": "1.1.0"
     },
     {
       "name": "fractal-glass",
@@ -1536,7 +1603,7 @@
       "registryDependencies": [],
       "exportName": "FractalGlass",
       "exportKind": "default",
-      "previewUrl": "/demo/fractal-glass"
+      "version": "1.0.1"
     },
     {
       "name": "grid-lift",
@@ -1551,7 +1618,7 @@
       "registryDependencies": [],
       "exportName": "GridLift",
       "exportKind": "default",
-      "previewUrl": "/demo/grid-lift"
+      "version": "1.0.0"
     },
     {
       "name": "grid-tunnel",
@@ -1568,7 +1635,7 @@
       "registryDependencies": [],
       "exportName": "GridTunnel",
       "exportKind": "default",
-      "previewUrl": "/demo/grid-tunnel"
+      "version": "1.1.0"
     },
     {
       "name": "hero-banner-animated",
@@ -1582,15 +1649,15 @@
         "@react-three/drei",
         "@react-three/postprocessing",
         "postprocessing",
-        "lucide-react",
-        "motion",
         "gsap",
-        "three"
+        "three",
+        "motion",
+        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "HeroBannerAnimated",
       "exportKind": "default",
-      "previewUrl": "/demo/hero-banner-animated"
+      "version": "1.0.0"
     },
     {
       "name": "hyperiux-glitter",
@@ -1608,8 +1675,7 @@
       "registryDependencies": [],
       "exportName": "HyperiuxGlitter",
       "exportKind": "default",
-      "previewUrl": "/demo/hyperiux-glitter",
-      "tier": "pro"
+      "version": "1.1.0"
     },
     {
       "name": "infinite-grid-gallery",
@@ -1622,1838 +1688,7 @@
       "registryDependencies": [],
       "exportName": "InfiniteGridGallery",
       "exportKind": "default",
-      "previewUrl": "/demo/infinite-grid-gallery"
-    },
-    {
-      "name": "interactive-blur-reveal",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "InteractiveBlurReveal",
-      "exportKind": "default",
-      "previewUrl": "/demo/interactive-blur-reveal"
-    },
-    {
-      "name": "hover-slider",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "HoverSlider",
-      "exportKind": "default",
-      "previewUrl": "/demo/hover-slider"
-    },
-    {
-      "name": "milky-way",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "postprocessing",
-        "three",
-        "lucide-react",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "MilkyWay",
-      "exportKind": "default",
-      "previewUrl": "/demo/milky-way"
-    },
-    {
-      "name": "mouse-pixelation",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "@react-three/fiber",
-        "@react-three/postprocessing",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "MousePixelation",
-      "exportKind": "default",
-      "previewUrl": "/demo/mouse-pixelation"
-    },
-    {
-      "name": "strip-slider",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl",
-        "scroll"
-      ],
-      "dependencies": [
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "StripSlider",
-      "exportKind": "default",
-      "previewUrl": "/demo/strip-slider"
-    },
-    {
-      "name": "card-drift",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "CardDrift",
-      "exportKind": "default",
-      "previewUrl": "/demo/card-drift"
-    },
-    {
-      "name": "gooey-counter",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "GooeyCounter",
-      "exportKind": "default",
-      "previewUrl": "/demo/gooey-counter"
-    },
-    {
-      "name": "interactive-list-preview",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "InteractiveListPreview",
-      "exportKind": "default",
-      "previewUrl": "/demo/interactive-list-preview"
-    },
-    {
-      "name": "ribbon-drift",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "RibbonDrift",
-      "exportKind": "default",
-      "previewUrl": "/demo/ribbon-drift"
-    },
-    {
-      "name": "circular-slider",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "CircularSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "circular-split-roll",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "CircularSplitRoll",
-      "exportKind": "default",
-      "version": "1.0.1"
-    },
-    {
-      "name": "draggable-marquee",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "DraggableMarquee",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "grid-scale",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "GridScale",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "helix-slider",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "HelixSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "horizontal-feature-reveal",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "HorizontalFeatureReveal",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "infinite-perspective-slider",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "InfinitePerspectiveSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "parallax-footer",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ParallaxFooter",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "parallax-gallery",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ParallaxGallery",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "parallax-image-animation",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ParallaxImageAnimation",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "parallax-slider",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "next"
-      ],
-      "registryDependencies": [],
-      "exportName": "ParallaxSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "progressive-bloom-valley",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "three",
-        "postprocessing"
-      ],
-      "registryDependencies": [],
-      "exportName": "ProgressiveBloomValley",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "rotation-slider",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "next",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "RotationSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "scroll-distortion",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "ScrollDistortion",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "scroll-shuffled-cards",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ScrollShuffledCards",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "scroll-stack",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "defaultContent",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "split-canvas",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "three",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "SplitCanvas",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "square-translate",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "SquareTranslate",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "stacking-cards",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "next"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackingCards",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "sticky-content-wrapper",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "StickyContentWrapper",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "svg-path",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "SVGPath",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "svg-pixel-reveal",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "SvgPixelReveal",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "text-convergence",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "TextConvergence",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "butterfly-trail-cursor",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "@react-three/drei",
-        "@react-three/fiber",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "ButterflyTrailCursor",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "character-trail",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "CharacterTrail",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "coffee-bean-cursor",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "@react-three/drei",
-        "@react-three/fiber",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "CoffeeBeanCursor",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "colorful-cursor-aura",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ColorfulCursorAura",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "cursor-move",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "CursorMove",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "fish-eye",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "FishEye",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "full-screen-crosshair",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "FullScreenCrosshair",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "inertia-img",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "InertiaImg",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "interactive-arrows",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "InteractiveArrows",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "liquid-glass-cursor",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "LiquidGlassCursor",
-      "exportKind": "default",
-      "version": "1.0.1"
-    },
-    {
-      "name": "magnetic-image-trail",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "MagneticImageTrail",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "noise-ripple-cursor",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "NoiseRippleCursor",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "phantom-image-trail",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "PhantomImageTrail",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "pixel-bloom",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "PixelBloom",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "pixelated-image-effect",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "PixelatedImageEffect",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "rope-cursor",
-      "type": "registry:component",
-      "category": "cursor",
-      "categories": [
-        "cursor"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "RopeCursor",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "dither-canvas",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DitherCanvas",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "dotted-grid",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DottedGrid",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "spider-particles",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "SpiderParticles",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "block-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "BlockTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "chess-grid-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "ChessGridTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "page-flip-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "FlipTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "pixel-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "PixelTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "radial-slice-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "RadialSliceTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "svg-brush-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "SVGBrushTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "blur-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "framer-motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "BlurText",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "circle-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "framer-motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "CircleTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "glitchy-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "GlitchyText",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "mask-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "MaskTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "number-counter",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "NumberCounter",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "overflow-stagger-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "OverflowStaggerText",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "overflow-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "OverflowTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "perspective-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "PerspectiveTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "rectangular-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "RectangularTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "scramble-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ScrambleText",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "slide-text-reveal",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "SlideTextReveal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "spotlight-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "SpotlightText",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "text-cloning",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "TextCloning",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "text-fill-animation",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "TextFillAnimation",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "text-hover",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "TextHover",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "text-stream",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "TextStream",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "animated-toggle",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "AnimatedToggle",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "arrow-fill-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ArrowFillButton",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "char-stagger-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "CharStaggerButton",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "char-stagger-primary-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "CharStaggerPrimaryButton",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "dot-fill-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DotFillButton",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "link-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "LinkButton",
-      "exportKind": "default",
-      "version": "1.0.1"
-    },
-    {
-      "name": "scramble-link-button",
-      "type": "registry:component",
-      "category": "buttons",
-      "categories": [
-        "buttons"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ScrambleLinkButton",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "clippath-slider",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ClippathSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "infinite-carousel",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "InfiniteCarousel",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "ring-carousel",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "RingCarousel",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "webgl-slider",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "three",
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "WebglSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "zoom-slider",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ZoomSlider",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "animated-faq",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "FAQGroup",
-      "exportKind": "named",
-      "version": "1.0.0"
-    },
-    {
-      "name": "animated-form",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "AnimatedForm",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "animated-modal",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedModal",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "animated-tabs",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedTabs",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "border-beam",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "BorderBeam",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "card-drift",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "CardDrift",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "cards-runway",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "CardsRunway",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "depth-card-stack",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "DepthCardStack",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "gooey-counter",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "GooeyCounter",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "hover-stack",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "HoverStack",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "interactive-list-preview",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "InteractiveListPreview",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "ribbon-drift",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "RibbonDrift",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "testimonial-swiper",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react",
-        "next"
-      ],
-      "registryDependencies": [],
-      "exportName": "TestimonialSwiper",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "video-player",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "VideoPlayer",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "directional-menu",
-      "type": "registry:component",
-      "category": "navigation",
-      "categories": [
-        "navigation"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "DirectionalMenu",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "elevate-navbar",
-      "type": "registry:component",
-      "category": "navigation",
-      "categories": [
-        "navigation"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ElevateNavbar",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "expanding-navbar",
-      "type": "registry:component",
-      "category": "navigation",
-      "categories": [
-        "navigation"
-      ],
-      "dependencies": [
-        "gsap",
-        "next",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "ExpandingNavbar",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "immersive-full-screen-nav",
-      "type": "registry:component",
-      "category": "navigation",
-      "categories": [
-        "navigation"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ImmersiveFullscreenNav",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "lines-loader",
-      "type": "registry:component",
-      "category": "loaders",
-      "categories": [
-        "loaders"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "LinesLoader",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "numeric-tunnel",
-      "type": "registry:component",
-      "category": "loaders",
-      "categories": [
-        "loaders"
-      ],
-      "dependencies": [
-        "gsap",
-        "@react-three/fiber",
-        "@react-three/drei",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "NumericTunnel",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "stack-loader",
-      "type": "registry:component",
-      "category": "loaders",
-      "categories": [
-        "loaders"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackLoader",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "3d-portfolio-slider",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl",
-        "scroll"
-      ],
-      "dependencies": [
-        "three",
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "PortfolioSlider3D",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "book-flip",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "@react-three/fiber",
-        "@react-three/drei"
-      ],
-      "registryDependencies": [],
-      "exportName": "BookFlip",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "colliding-models",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/rapier",
-        "@react-three/postprocessing",
-        "postprocessing",
-        "maath",
-        "next"
-      ],
-      "registryDependencies": [],
-      "exportName": "CollidingModels",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "curved-plane",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "CurvedPlane",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "donut-particles",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "@react-three/fiber"
-      ],
-      "registryDependencies": [],
-      "exportName": "DonutParticles",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "draggable-canvas",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "DraggableCanvas",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "file-encryption",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "FileEncryption",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "fractal-glass",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "FractalGlass",
-      "exportKind": "default",
-      "version": "1.0.1"
-    },
-    {
-      "name": "grid-lift",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "leva"
-      ],
-      "registryDependencies": [],
-      "exportName": "GridLift",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "grid-tunnel",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "GridTunnel",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "hero-banner-animated",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "postprocessing",
-        "gsap",
-        "three",
-        "motion",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "HeroBannerAnimated",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "hyperiux-glitter",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "three",
-        "@react-three/fiber",
-        "@react-three/drei",
-        "@react-three/postprocessing",
-        "postprocessing"
-      ],
-      "registryDependencies": [],
-      "exportName": "HyperiuxGlitter",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
-      "name": "infinite-grid-gallery",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "InfiniteGridGallery",
-      "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "interactive-blur-reveal",
@@ -3482,7 +1717,7 @@
       "registryDependencies": [],
       "exportName": "HoverSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "milky-way",
@@ -3503,7 +1738,7 @@
       "registryDependencies": [],
       "exportName": "MilkyWay",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "mouse-pixelation",
@@ -3531,8 +1766,7 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "gsap"
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "StripSlider",

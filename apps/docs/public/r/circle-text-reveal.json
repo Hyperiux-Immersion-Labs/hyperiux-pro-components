@@ -12,7 +12,6 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/circle-text-reveal",
   "files": [
     {
       "path": "index.jsx",

@@ -14,12 +14,16 @@
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [],
-  "previewUrl": "/demo/coffee-bean-cursor",
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

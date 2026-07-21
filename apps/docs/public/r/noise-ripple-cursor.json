@@ -9,7 +9,9 @@
   "registryDependencies": [],
   "exportName": "NoiseRippleCursor",
   "exportKind": "default",
-  "previewUrl": "/demo/noise-ripple-cursor",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -20,9 +22,11 @@
       "path": "2dCanvasTracker.js",
       "type": "registry:component",
       "target": "components/hyperiux/2dCanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

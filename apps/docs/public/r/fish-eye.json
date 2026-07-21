@@ -11,15 +11,19 @@
   "registryDependencies": [],
   "exportName": "FishEye",
   "exportKind": "default",
-  "previewUrl": "/demo/fish-eye",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

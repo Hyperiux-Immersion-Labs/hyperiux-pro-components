@@ -15,7 +15,16 @@
   "registryDependencies": [],
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
-  "previewUrl": "/demo/progressive-bloom-valley",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -73,9 +82,9 @@
       "target": "components/hyperiux/Flower.jsx"
     },
     {
-      "path": "shaders.js",
+      "path": "prefersReducedMotion.js",
       "type": "registry:component",
-      "target": "components/hyperiux/shaders.js"
+      "target": "components/hyperiux/prefersReducedMotion.js"
     },
     {
       "path": "use-input.js",
@@ -91,9 +100,16 @@
       "path": "useValleyData.js",
       "type": "registry:component",
       "target": "components/hyperiux/useValleyData.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
+    },
+    {
+      "path": "shaders.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/shaders.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

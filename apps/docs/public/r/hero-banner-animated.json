@@ -9,12 +9,16 @@
     "@react-three/postprocessing",
     "postprocessing",
     "gsap",
-    "three"
+    "three",
+    "motion",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "HeroBannerAnimated",
   "exportKind": "default",
-  "previewUrl": "/demo/hero-banner-animated",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -40,9 +44,11 @@
       "path": "VideoUI.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/VideoUI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }

@@ -9,7 +9,9 @@
   "registryDependencies": [],
   "exportName": "VideoPlayer",
   "exportKind": "default",
-  "previewUrl": "/demo/video-player",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
       "path": "index.jsx",
@@ -21,8 +23,5 @@
       "type": "registry:component",
       "target": "components/hyperiux/VideoPlayerComp.jsx"
     }
-  ],
-  "tier": "pro",
-  "version": "1.0.0",
-  "changelog": []
+  ]
 }
