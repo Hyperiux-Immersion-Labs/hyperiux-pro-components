@@ -4,8 +4,12 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import gsap from"gsap";
 import { Draggable } from"gsap/Draggable";
 import { ArrowLeft, ArrowRight } from"lucide-react";
+import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(Draggable);
+
+const REDUCED_MOTION_FADE_DURATION = 0.16;
+const REDUCED_MOTION_DRAG_MULTIPLIER = 0.35;
 
 const RingCarouselComp = ({
  items = [],
@@ -38,10 +42,17 @@ const RingCarouselComp = ({
 
  const [activeIndex, setActiveIndex] = useState(0);
  const [isMobile, setIsMobile] = useState(false);
+ const [reduceMotion, setReduceMotion] = useState(false);
 
  const totalItems = items.length;
  const resolvedItemWidth = isMobile ? itemWidth * 0.88 : itemWidth;
  const resolvedItemHeight = isMobile ? itemHeight * 0.88 : itemHeight;
+ const resolvedDragSensitivity = reduceMotion
+ ? dragSensitivity * REDUCED_MOTION_DRAG_MULTIPLIER
+ : dragSensitivity;
+ const resolvedMomentum = reduceMotion
+ ? momentum * REDUCED_MOTION_DRAG_MULTIPLIER
+ : momentum;
 
  const stepAngle = useMemo(() => {
  if (!totalItems) return 0;
@@ -87,18 +98,37 @@ const RingCarouselComp = ({
 
  const targetRotation = getRotationForStep(step);
 
- if (animate) {
+ if (animate && !reduceMotion) {
  gsap.to(ringRef.current, {
  rotationY: targetRotation,
  duration: 0.7,
  ease:"power3.out",
  });
- } else {
+ } else if (animate && reduceMotion) {
+ gsap.killTweensOf(ringRef.current);
+ gsap.to(ringRef.current, {
+ opacity: 0.72,
+ duration: REDUCED_MOTION_FADE_DURATION / 2,
+ ease:"power2.out",
+ onComplete: () => {
  gsap.set(ringRef.current, {
  rotationY: targetRotation,
  });
+ gsap.to(ringRef.current, {
+ opacity: 1,
+ duration: REDUCED_MOTION_FADE_DURATION / 2,
+ ease:"power2.out",
+ });
+ },
+ });
+ } else {
+ gsap.killTweensOf(ringRef.current);
+ gsap.set(ringRef.current, {
+ rotationY: targetRotation,
+ opacity: 1,
+ });
  }
- }, [getRotationForStep, setActiveFromStep, totalItems]);
+ }, [getRotationForStep, reduceMotion, setActiveFromStep, totalItems]);
 
  const updateStepFromRotation = useCallback(() => {
  if (!ringRef.current || !stepAngle) return;
@@ -117,14 +147,14 @@ const RingCarouselComp = ({
  stopAutoplay();
  }
 
- rotateToStep(currentStepRef.current + 1);
- }, [rotateToStep, stopAutoplay, stopMomentum]);
+ rotateToStep(currentStepRef.current + 1, !reduceMotion);
+ }, [reduceMotion, rotateToStep, stopAutoplay, stopMomentum]);
 
  const goToPrev = useCallback(() => {
  stopMomentum();
  stopAutoplay();
- rotateToStep(currentStepRef.current - 1);
- }, [rotateToStep, stopAutoplay, stopMomentum]);
+ rotateToStep(currentStepRef.current - 1, !reduceMotion);
+ }, [reduceMotion, rotateToStep, stopAutoplay, stopMomentum]);
 
  const goToSlide = useCallback((targetIndex) => {
  stopMomentum();
@@ -143,11 +173,11 @@ const RingCarouselComp = ({
  ? currentStep + forwardDistance
  : currentStep - backwardDistance;
 
- rotateToStep(nextStep);
- }, [normalizeIndex, rotateToStep, stopAutoplay, stopMomentum, totalItems]);
+ rotateToStep(nextStep, !reduceMotion);
+ }, [normalizeIndex, reduceMotion, rotateToStep, stopAutoplay, stopMomentum, totalItems]);
 
  const startAutoplay = useCallback(() => {
- if (!autoPlay || totalItems <= 1) return;
+ if (!autoPlay || reduceMotion || totalItems <= 1) return;
 
  stopAutoplay();
 
@@ -155,7 +185,7 @@ const RingCarouselComp = ({
  if (pauseOnHover && isHoveredRef.current) return;
  goToNext(true);
  }, autoPlayInterval);
- }, [autoPlay, autoPlayInterval, goToNext, pauseOnHover, stopAutoplay, totalItems]);
+ }, [autoPlay, autoPlayInterval, goToNext, pauseOnHover, reduceMotion, stopAutoplay, totalItems]);
 
  useEffect(() => {
  const mediaQuery = window.matchMedia("(max-width: 639px)");
@@ -169,6 +199,24 @@ const RingCarouselComp = ({
  };
  }, []);
 
+ useEffect(() => {
+ const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+ const syncReducedMotion = (event) => {
+ const matches =
+ "matches" in event ? event.matches : event.currentTarget?.matches ?? prefersReducedMotion();
+ setReduceMotion(matches);
+ };
+
+ if (mediaQuery) {
+ syncReducedMotion(mediaQuery);
+ mediaQuery.addEventListener("change", syncReducedMotion);
+ return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+ }
+
+ setReduceMotion(prefersReducedMotion());
+ }, []);
+
  useLayoutEffect(() => {
  if (!totalItems) return;
 
@@ -179,7 +227,7 @@ const RingCarouselComp = ({
  if (!ring || !dragger || !panels.length) return;
 
  const updateRingRotation = (deltaX) => {
- const rotationDelta = deltaX * dragSensitivity;
+ const rotationDelta = deltaX * resolvedDragSensitivity;
 
  gsap.set(ring, {
  rotationY: `-=${rotationDelta}`,
@@ -189,6 +237,15 @@ const RingCarouselComp = ({
  };
 
  const runMomentum = () => {
+ if (reduceMotion) {
+ velocityRef.current = 0;
+ if (snap && stepAngle > 0) {
+ updateStepFromRotation();
+ rotateToStep(currentStepRef.current, false);
+ }
+ return;
+ }
+
  stopMomentum();
 
  const animate = () => {
@@ -240,6 +297,12 @@ const RingCarouselComp = ({
  transformStyle:"preserve-3d",
  });
 
+ if (reduceMotion) {
+ gsap.set(panels, {
+ y: 0,
+ opacity: 1,
+ });
+ } else {
  gsap.from(panels, {
  duration: 1.2,
  y: 120,
@@ -247,6 +310,7 @@ const RingCarouselComp = ({
  stagger: 0.08,
  ease:"expo.out",
  });
+ }
 
  Draggable.create(dragger, {
  type:"x,y",
@@ -264,14 +328,14 @@ const RingCarouselComp = ({
  const deltaX = clientX - lastXRef.current;
 
  updateRingRotation(deltaX);
- velocityRef.current = deltaX * momentum;
+ velocityRef.current = deltaX * resolvedMomentum;
  lastXRef.current = clientX;
  },
  onRelease: function () {
  gsap.set(dragger, { x: 0, y: 0 });
  runMomentum();
 
- if (!(pauseOnHover && isHoveredRef.current) && autoPlay) {
+ if (!(pauseOnHover && isHoveredRef.current) && autoPlay && !reduceMotion) {
  startAutoplay();
  }
  },
@@ -288,14 +352,15 @@ const RingCarouselComp = ({
  resolvedItemHeight,
  radius,
  panelAngle,
- dragSensitivity,
- momentum,
+ resolvedDragSensitivity,
+ resolvedMomentum,
  friction,
  snap,
  stepAngle,
  autoPlay,
  pauseOnHover,
  autoPlayInterval,
+ reduceMotion,
  updateStepFromRotation,
  rotateToStep,
  getRotationForStep,
@@ -305,7 +370,7 @@ const RingCarouselComp = ({
  ]);
 
  useEffect(() => {
- if (autoPlay && totalItems > 1 && !(pauseOnHover && isHoveredRef.current)) {
+ if (autoPlay && !reduceMotion && totalItems > 1 && !(pauseOnHover && isHoveredRef.current)) {
  startAutoplay();
  } else {
  stopAutoplay();
@@ -314,7 +379,7 @@ const RingCarouselComp = ({
  return () => {
  stopAutoplay();
  };
- }, [autoPlay, autoPlayInterval, totalItems, pauseOnHover, startAutoplay, stopAutoplay]);
+ }, [autoPlay, autoPlayInterval, reduceMotion, totalItems, pauseOnHover, startAutoplay, stopAutoplay]);
 
  const activeItem = items[activeIndex];
  const activeLabel =
@@ -337,7 +402,7 @@ const RingCarouselComp = ({
  }}
  onMouseLeave={() => {
  isHoveredRef.current = false;
- if (pauseOnHover && autoPlay) startAutoplay();
+ if (pauseOnHover && autoPlay && !reduceMotion) startAutoplay();
  }}
  >
  <div className="sr-only" aria-live="polite" aria-atomic="true">
@@ -384,7 +449,7 @@ const RingCarouselComp = ({
  <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3 max-sm:bottom-[10%]">
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
  onClick={goToPrev}
  aria-label="Previous slide"
  >
@@ -393,7 +458,7 @@ const RingCarouselComp = ({
 
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
  onClick={() => goToNext(false)}
  aria-label="Next slide"
  >
@@ -415,7 +480,7 @@ const RingCarouselComp = ({
  aria-label={`Go to slide ${index + 1}`}
  >
  <span
- className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] max-md:h-2.25 max-md:w-2.25 max-sm:h-2 max-sm:w-2 ${
+ className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none max-md:h-2.25 max-md:w-2.25 max-sm:h-2 max-sm:w-2 ${
  activeIndex === index
  ? "w-10.5 bg-white/92 max-md:w-9 max-sm:w-7"
  : ""
