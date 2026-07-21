@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
 import { invalidatePlanCache } from "@/lib/subscription";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
+import { confirmFoundingSlot } from "@/lib/founding-slots";
 import {
   renderProUnlockedEmail,
   proUnlockedSubject,
@@ -90,6 +91,22 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
   if (error) {
     console.error("SUPABASE_MARK_PRO_ERROR:", error);
     throw error;
+  }
+
+  // Covers both the webhook path and the verify-payment path, since both
+  // call this function - the reservation itself is never blocking here,
+  // pro access is already granted by the upsert above regardless.
+  const foundingReservationId = subscription?.notes?.founding_reservation_id || null;
+
+  if (foundingReservationId) {
+    try {
+      await confirmFoundingSlot({
+        reservationId: foundingReservationId,
+        razorpaySubscriptionId: subscription.id,
+      });
+    } catch (confirmError) {
+      console.error("CONFIRM_FOUNDING_SLOT_ERROR:", foundingReservationId, confirmError);
+    }
   }
 
   await updateClerkPlan(clerkUserId, {
