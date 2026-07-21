@@ -33,6 +33,10 @@ function TunnelRing({ index, loaderValue, tunnelPhase }) {
  const ringContentRef = useRef()
  const textMaterialRef = useRef(null)
  const direction = index % 2 === 0 ? 1 : -1
+ const reduceMotionRef = useRef(
+ typeof window !== 'undefined' &&
+ (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false)
+ )
 
  const textMaterial = useMemo(
  () =>
@@ -52,6 +56,17 @@ function TunnelRing({ index, loaderValue, tunnelPhase }) {
  textMaterial.dispose()
  }
  }, [textMaterial])
+
+ useEffect(() => {
+ const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+ if (!mq) return undefined
+ const onChange = (event) => {
+ reduceMotionRef.current = event.matches
+ }
+ reduceMotionRef.current = mq.matches
+ mq.addEventListener?.('change', onChange)
+ return () => mq.removeEventListener?.('change', onChange)
+ }, [])
 
  useFrame((state, delta) => {
  if (!groupRef.current || !ringContentRef.current) return
@@ -92,7 +107,10 @@ function TunnelRing({ index, loaderValue, tunnelPhase }) {
  material.opacity = opacity * (1 - tunnelPhase)
  }
 
+ // Reduced-motion: keep counter, skip ring rotation.
+ if (!reduceMotionRef.current) {
  ringContentRef.current.rotation.z += delta * TUNNEL_CONFIG.ringRotateSpeed * direction
+ }
  })
 
  return (

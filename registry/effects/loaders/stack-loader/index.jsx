@@ -56,6 +56,77 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
   }, [onComplete]);
 
   useLayoutEffect(() => {
+    const reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ??
+      false;
+
+    // Reduced-motion: images already in a vertical line — smooth opacity only.
+    if (reduceMotion) {
+      const ctx = gsap.context(() => {
+        const imageElements = imagesRef.current.filter(Boolean);
+        const sideText = [text1Ref.current, text2Ref.current].filter(Boolean);
+        const description = descriptionTextRef.current;
+        const totalImages = imageElements.length;
+        const totalSpread =
+          totalImages > 1 ? SPREAD_Y_PERCENT_STEP * (totalImages - 1) : 0;
+
+        gsap.set(`#${imgsWrapperId}`, { yPercent: 0, opacity: 1 });
+        gsap.set(imageElements, {
+          opacity: 0,
+          scale: 1,
+          zIndex: (index) => index,
+          yPercent: (index) =>
+            totalImages === 1
+              ? 0
+              : -totalSpread / 2 + index * SPREAD_Y_PERCENT_STEP,
+        });
+        gsap.set(sideText, { opacity: 0, rotateX: 0 });
+        if (description) gsap.set(description, { opacity: 0, rotateX: 0 });
+
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.inOut" },
+          onComplete: () => {
+            gsap.set(rootRef.current, { display: "none" });
+            onCompleteRef.current?.();
+          },
+        });
+
+        // Smooth opacity in (already laid out vertically).
+        tl.to(imageElements, {
+          opacity: 1,
+          duration: 0.7,
+          stagger: { each: 0.06, from: "center" },
+        });
+
+        tl.to(
+          sideText,
+          { opacity: 1, duration: 0.55 },
+          "-=0.35"
+        );
+        if (description) {
+          tl.to(description, { opacity: 1, duration: 0.55 }, "<");
+        }
+
+        tl.to(
+          [...sideText, description].filter(Boolean),
+          { opacity: 0, duration: 0.5 },
+          "+=0.55"
+        );
+        tl.to(
+          imageElements,
+          {
+            opacity: 0,
+            duration: 0.55,
+            stagger: { each: 0.04, from: "edges" },
+          },
+          "-=0.15"
+        );
+        tl.to(rootRef.current, { opacity: 0, duration: 0.4 }, "-=0.2");
+      }, rootRef);
+
+      return () => ctx.revert();
+    }
+
     const ctx = gsap.context(() => {
       const imageElements = imagesRef.current.filter(Boolean);
 

@@ -62,7 +62,7 @@ const FileEncryption = () => {
       <div className="relative z-10 flex flex-col items-center gap-3 max-sm:gap-3 max-md:gap-10 mb-16 text-center px-4">
         <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/30 bg-black/20">
           <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            className="w-1.5 h-1.5 rounded-full animate-pulse motion-reduce:animate-none"
             style={{ background: "#ff5f00" }}
           />
           <span className="font-mono text-xs max-sm:text-sm max-md:text-base tracking-widest uppercase text-primary opacity-80">

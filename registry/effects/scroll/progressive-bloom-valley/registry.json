@@ -66,6 +66,10 @@
     {
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
+    },
+    {
+      "path": "prefersReducedMotion.js",
+      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
     }
   ]
 }

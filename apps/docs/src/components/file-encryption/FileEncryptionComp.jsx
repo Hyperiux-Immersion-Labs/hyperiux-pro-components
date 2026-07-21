@@ -215,6 +215,13 @@ function useWebGLBeam(canvasRef, primaryColor) {
  let loop = null;
  let prog;
  let buf;
+ let reduceMotion =
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotion = event.matches;
+ };
+ mq?.addEventListener?.("change", onReduceMotionChange);
 
  // Build (or rebuild) the GPU program, buffer, and uniform wiring, then start
  // the render loop. Extracted so it can re-run after WebGL context restore.
@@ -268,7 +275,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
 
  const targetCard = hasCard ? 1 : 0;
 
- if (!seeded) {
+ if (!seeded || reduceMotion) {
  seeded = true;
  smoothed.card = targetCard;
  smoothed.top = cardTop;
@@ -286,7 +293,8 @@ function useWebGLBeam(canvasRef, primaryColor) {
 
  gl.clear(gl.COLOR_BUFFER_BIT);
  gl.uniform2f(uRes, w, h);
- gl.uniform1f(uTime, ts);
+ // Freeze beam flicker/shimmer under reduced motion.
+ gl.uniform1f(uTime, reduceMotion ? 0 : ts);
  gl.uniform3f(uColor, r, g, b);
  gl.uniform1f(uCard, smoothed.card);
  gl.uniform1f(uSplit, splitNorm);
@@ -321,6 +329,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
  });
 
  return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
  detachRecovery();
  teardown();
  };
@@ -351,6 +360,14 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  const ctx = canvas.getContext("2d");
  if (!ctx) return;
 
+ let reduceMotion =
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotion = event.matches;
+ };
+ mq?.addEventListener?.("change", onReduceMotionChange);
+
  const visibleState = {
  alpha: 0,
  splitNorm: 0.5,
@@ -374,6 +391,9 @@ function useParticleCanvas(canvasRef, beamStateRef) {
 
  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
  ctx.clearRect(0, 0, width, height);
+
+ // Reduced-motion: skip animated particle scatter.
+ if (reduceMotion) return;
 
  const state = beamStateRef.current;
  const targetAlpha = state.hasCard ? 1 : 0;
@@ -447,7 +467,10 @@ const fade =
  onFrame: draw,
  });
  loop.start();
- return () => loop.destroy();
+ return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
+ loop.destroy();
+ };
  }, [beamStateRef, canvasRef, particles]);
 }
 
@@ -531,6 +554,7 @@ function AsciiFace({ card, beamLit }) {
 
  useEffect(() => {
  if (!beamLit) return;
+ if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
  const interval = setInterval(() => {
  const rand = randRef.current;
  setGrid(prev =>
@@ -625,6 +649,10 @@ export function FileEncryptionComp({ cards = [] }) {
  const beamCanvasRef = useRef(null);
  const particleCanvasRef = useRef(null);
  const settersRef = useRef({});
+ const reduceMotionRef = useRef(
+ typeof window !== "undefined" &&
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+ );
 
  const allCards = useMemo(() => {
  if (!cards.length) return [];
@@ -670,6 +698,16 @@ export function FileEncryptionComp({ cards = [] }) {
  const track = trackRef.current;
  if (!root || !track) return;
 
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotionRef.current = event.matches;
+ if (event.matches) dragRef.current.velocity = 0;
+ };
+ if (mq) {
+ reduceMotionRef.current = mq.matches;
+ mq.addEventListener?.("change", onReduceMotionChange);
+ }
+
  if (xRef.current === null) xRef.current = -singleGroupWidth;
 
  const onDown = (e) => {
@@ -683,11 +721,12 @@ export function FileEncryptionComp({ cards = [] }) {
  const cx = e.clientX ?? e.touches?.[0]?.clientX;
  const dx = cx - dragRef.current.lastX;
  dragRef.current.lastX = cx;
- dragRef.current.velocity = dx;
+ dragRef.current.velocity = reduceMotionRef.current ? 0 : dx;
  xRef.current += dx;
  };
  const onUp = () => {
  dragRef.current.active = false;
+ if (reduceMotionRef.current) dragRef.current.velocity = 0;
  root.style.cursor ="grab";
  };
 
@@ -700,10 +739,15 @@ export function FileEncryptionComp({ cards = [] }) {
  const dt = Math.min(delta, 50);
 
  if (!dragRef.current.active) {
+ if (reduceMotionRef.current) {
+ // No auto-scroll / inertia — drag still moves cards directly.
+ dragRef.current.velocity = 0;
+ } else {
  xRef.current += (AUTO_SPEED * dt) / 1000;
  if (Math.abs(dragRef.current.velocity) > 0.5) {
  xRef.current += dragRef.current.velocity * 0.4;
  dragRef.current.velocity *= 0.88;
+ }
  }
  }
 
@@ -777,6 +821,7 @@ export function FileEncryptionComp({ cards = [] }) {
  if (!gate.isActive) gsap.ticker.sleep();
 
  return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
  gate.destroy();
  gsap.ticker.wake();
  gsap.ticker.remove(update);
@@ -800,7 +845,7 @@ export function FileEncryptionComp({ cards = [] }) {
  <canvas
  ref={beamCanvasRef}
  aria-hidden="true"
- className="pointer-events-none  absolute inset-0 z-40"
+ className="pointer-events-none absolute inset-0 z-40"
  style={{
  width:"100%",
  height:"100%",
@@ -821,13 +866,13 @@ export function FileEncryptionComp({ cards = [] }) {
  {/* Edge vignette */}
  <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-32"
  style={{ background:"linear-gradient(90deg, #07060f, transparent)" }} />
- <div className="pointer-events-none  absolute inset-y-0 right-0 z-30 w-32"
+ <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-32"
  style={{ background:"linear-gradient(270deg, #07060f, transparent)" }} />
 
  {/* Card track */}
  <div
  ref={trackRef}
- className="absolute top-1/2  left-0 flex will-change-transform"
+ className="absolute top-1/2 left-0 flex will-change-transform"
 style={{
   gap: cardGap,
   marginTop: -(CARD_H / 2),

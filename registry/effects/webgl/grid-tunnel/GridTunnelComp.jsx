@@ -287,6 +287,10 @@ function InfiniteScrollCamera() {
   const cameraRef = useRef(null);
   const targetZ = useRef(CAMERA_START_Z);
   const scrollVelocity = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
   const touchState = useRef({
     active: false,
     lastY: 0,
@@ -297,20 +301,45 @@ function InfiniteScrollCamera() {
   }, [camera]);
 
   useEffect(() => {
-    const preventPageScroll = (event) => {
-      event.preventDefault();
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
 
-      // Accumulate velocity for a smoother inertial scroll feel.
-      scrollVelocity.current += -event.deltaY * SCROLL_SPEED;
-      scrollVelocity.current = THREE.MathUtils.clamp(
-        scrollVelocity.current,
-        -MAX_SCROLL_VELOCITY,
-        MAX_SCROLL_VELOCITY
-      );
+    const onChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        scrollVelocity.current = 0;
+      }
+    };
+
+    reduceMotionRef.current = mq.matches;
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const applyDelta = (delta) => {
+      if (reduceMotionRef.current) {
+        // Reduced-motion: move instantly — no velocity coast.
+        scrollVelocity.current = 0;
+        targetZ.current += delta;
+      } else {
+        scrollVelocity.current += delta;
+        scrollVelocity.current = THREE.MathUtils.clamp(
+          scrollVelocity.current,
+          -MAX_SCROLL_VELOCITY,
+          MAX_SCROLL_VELOCITY
+        );
+      }
 
       if (targetZ.current > CAMERA_START_Z) {
         targetZ.current = CAMERA_START_Z;
+        scrollVelocity.current = 0;
       }
+    };
+
+    const preventPageScroll = (event) => {
+      event.preventDefault();
+      applyDelta(-event.deltaY * SCROLL_SPEED);
     };
 
     const onTouchStart = (event) => {
@@ -329,16 +358,7 @@ function InfiniteScrollCamera() {
       const deltaY = touch.clientY - touchState.current.lastY;
       touchState.current.lastY = touch.clientY;
 
-      scrollVelocity.current += deltaY * SCROLL_SPEED;
-      scrollVelocity.current = THREE.MathUtils.clamp(
-        scrollVelocity.current,
-        -MAX_SCROLL_VELOCITY,
-        MAX_SCROLL_VELOCITY
-      );
-
-      if (targetZ.current > CAMERA_START_Z) {
-        targetZ.current = CAMERA_START_Z;
-      }
+      applyDelta(deltaY * SCROLL_SPEED);
     };
 
     const onTouchEnd = () => {
@@ -366,6 +386,17 @@ function InfiniteScrollCamera() {
 
     cam.position.x = 0;
     cam.position.y = 0;
+
+    if (reduceMotionRef.current) {
+      // Snap camera to target — no inertia / follow lerp.
+      scrollVelocity.current = 0;
+      if (targetZ.current > CAMERA_START_Z) {
+        targetZ.current = CAMERA_START_Z;
+      }
+      cam.position.z = targetZ.current;
+      cam.lookAt(0, 0, cam.position.z - 12);
+      return;
+    }
 
     // Decay velocity so the tunnel eases out after scrolling stops.
     const damping = Math.exp(-SCROLL_DAMPING * delta);

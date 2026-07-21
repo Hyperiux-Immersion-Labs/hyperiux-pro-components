@@ -122,6 +122,10 @@ const CurvedPlaneVertical = ({ routes }) => {
   const dragging = useRef(false);
   const lastY = useRef(0);
   const lastTime = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -149,6 +153,21 @@ const CurvedPlaneVertical = ({ routes }) => {
 
   useEffect(() => {
     if (!imagesLoaded) return;
+
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const onReduceMotionChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+      }
+    };
+    if (mq) {
+      reduceMotionRef.current = mq.matches;
+      mq.addEventListener?.("change", onReduceMotionChange);
+    }
 
     const container = containerRef.current;
     const viewHeight = window.innerHeight;
@@ -267,6 +286,17 @@ const CurvedPlaneVertical = ({ routes }) => {
     const loop = createSuspendedRaf({
       root: container,
       onFrame: () => {
+        if (reduceMotionRef.current) {
+          // Snap columns — no inertia or curve deformation.
+          velocityRef.current = 0;
+          targetDeformationRef.current = 0;
+          deformationRef.current = 0;
+          offsetRef.current = targetOffsetRef.current;
+          updateMeshes();
+          renderer.render(scene, camera);
+          return;
+        }
+
         if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
           targetOffsetRef.current += velocityRef.current;
           velocityRef.current *= MOMENTUM_FRICTION;
@@ -327,6 +357,17 @@ const CurvedPlaneVertical = ({ routes }) => {
       const delta = (dy / SPACING_Y) * DRAG_SENSITIVITY;
       targetOffsetRef.current -= delta;
 
+      if (reduceMotionRef.current) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        lastY.current = currentY;
+        lastTime.current = currentTime;
+        e.preventDefault();
+        return;
+      }
+
       const instantVelocity = dy / dt;
       velocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY,
@@ -354,6 +395,15 @@ const CurvedPlaneVertical = ({ routes }) => {
       const delta = e.deltaY / 100;
       targetOffsetRef.current += delta * 0.12;   // reduced from 0.25
 
+      if (reduceMotionRef.current) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        lastScrollTime.current = Date.now();
+        return;
+      }
+
       velocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY,
         Math.min(MAX_SCROLL_VELOCITY, delta * 0.15)  // reduced from 0.4
@@ -380,6 +430,7 @@ const CurvedPlaneVertical = ({ routes }) => {
 
     return () => {
       loop.destroy();
+      mq?.removeEventListener?.("change", onReduceMotionChange);
       window.removeEventListener("resize", onResize);
       dom.removeEventListener("mousedown", onPointerDown);
       dom.removeEventListener("mousemove", onPointerMove);
