@@ -10,8 +10,15 @@
   "exportName": "ScrollShuffledCards",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: cards stay at their resting position with 0 rotation instead of shuffling; the container's overall scroll slide is unaffected",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

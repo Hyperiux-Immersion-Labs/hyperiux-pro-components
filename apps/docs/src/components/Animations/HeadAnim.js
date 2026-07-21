@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
+import { prefersReducedMotion } from "@/lib/motion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -87,6 +88,17 @@ export default function HeadAnim({
       gsap.set(container, {
         autoAlpha: 1,
         clearProps: "visibility,opacity,transform",
+      });
+
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      tweenRef.current = gsap.to(container, {
+        autoAlpha: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        delay,
       });
 
       return;

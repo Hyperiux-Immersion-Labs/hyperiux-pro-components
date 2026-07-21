@@ -1,6 +1,9 @@
 {
   "name": "split-canvas",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: the pixel-grid shutter transition becomes a plain crossfade between images", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Split Canvas",
   "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",

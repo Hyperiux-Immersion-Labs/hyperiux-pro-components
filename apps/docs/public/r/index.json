@@ -45,7 +45,7 @@
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "grid-scale",
@@ -60,7 +60,7 @@
       "registryDependencies": [],
       "exportName": "GridScale",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "helix-slider",
@@ -106,7 +106,7 @@
       "registryDependencies": [],
       "exportName": "InfinitePerspectiveSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "parallax-footer",
@@ -137,7 +137,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxGallery",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "parallax-image-animation",
@@ -152,7 +152,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxImageAnimation",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "parallax-slider",
@@ -168,7 +168,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "rotation-slider",
@@ -185,7 +185,7 @@
       "registryDependencies": [],
       "exportName": "RotationSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "scroll-distortion",
@@ -201,7 +201,7 @@
       "registryDependencies": [],
       "exportName": "ScrollDistortion",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "scroll-shuffled-cards",
@@ -216,7 +216,7 @@
       "registryDependencies": [],
       "exportName": "ScrollShuffledCards",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "scroll-stack",
@@ -229,9 +229,9 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "ScrollStack",
-      "exportKind": "default",
-      "version": "1.0.0"
+      "exportName": "defaultContent",
+      "exportKind": "named",
+      "version": "1.1.0"
     },
     {
       "name": "split-canvas",
@@ -248,7 +248,7 @@
       "registryDependencies": [],
       "exportName": "SplitCanvas",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "square-translate",
@@ -263,7 +263,7 @@
       "registryDependencies": [],
       "exportName": "SquareTranslate",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "stacking-cards",
@@ -296,7 +296,7 @@
       "registryDependencies": [],
       "exportName": "StickyContentWrapper",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "svg-path",
@@ -341,7 +341,7 @@
       "registryDependencies": [],
       "exportName": "TextConvergence",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "butterfly-trail-cursor",

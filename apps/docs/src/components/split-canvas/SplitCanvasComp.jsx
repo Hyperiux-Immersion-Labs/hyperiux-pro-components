@@ -7,6 +7,7 @@ import { ScrollTrigger } from'gsap/ScrollTrigger';
 import { createSuspendedRaf } from './createSuspendedRaf';
 import { PixelTransitionFragment, PixelTransitionVertex } from './shaders/pixelTransition';
 import { imageSources } from './content';
+import { prefersReducedMotion } from '@/lib/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,6 +62,7 @@ export default function SplitCanvasComp({ wrapperRef }) {
 
  const canvasSize = getCanvasSize();
  const numSlices = 32;
+ const reducedMotion = prefersReducedMotion();
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 
@@ -92,6 +94,7 @@ export default function SplitCanvasComp({ wrapperRef }) {
  u_numSlices: { value: numSlices },
  u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },
  u_gridSize: { value: 16.0 }, // Grid cell size in pixels
+ u_reducedMotion: { value: reducedMotion ? 1 : 0 },
  },
  vertexShader: PixelTransitionVertex,
  fragmentShader: PixelTransitionFragment,

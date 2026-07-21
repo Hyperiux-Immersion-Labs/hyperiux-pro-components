@@ -3,6 +3,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,6 +37,7 @@ export default function HelixSliderComp({
 }) {
     const sectionRef = useRef(null);
     const cardRefs = useRef([]);
+    const reducedMotion = usePrefersReducedMotion();
 
     const repeatedItems = useMemo(() => {
         return [...items, ...items, ...items];
@@ -46,7 +48,7 @@ export default function HelixSliderComp({
     }, []);
 
     useLayoutEffect(() => {
-        if (!sectionRef.current || !cardRefs.current.length) return;
+        if (!sectionRef.current || !cardRefs.current.length || reducedMotion) return;
 
         const ctx = gsap.context(() => {
             const cards = cardRefs.current;
@@ -141,7 +143,47 @@ export default function HelixSliderComp({
         scaleMin,
         yRotateStrength,
         maxYRotation,
+        reducedMotion,
     ]);
+
+    if (reducedMotion) {
+        return (
+            <section
+                className={`relative w-full bg-[#020202] px-6 py-16 max-sm:px-4 max-sm:py-10 ${className}`}
+            >
+                <div className="mx-auto grid max-w-5xl grid-cols-3 gap-6 max-md:grid-cols-2 max-sm:grid-cols-1">
+                    {items.map((item, index) => (
+                        <div
+                            key={item.id ?? index}
+                            className="relative aspect-3/4 w-full overflow-hidden rounded-md bg-[#f2eee2] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)]"
+                        >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={item.image}
+                                alt={item.title || `Card ${index + 1}`}
+                                className="absolute inset-0 h-full w-full object-cover"
+                            />
+                        </div>
+                    ))}
+                </div>
+
+                <div
+                    aria-live="polite"
+                    className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+                >
+                    <h2 className="text-[clamp(1.25rem,3vw,2rem)] leading-none text-[#111111]">
+                        The helix has stopped spinning.
+                    </h2>
+                    <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+                        Reduced motion is enabled, so cards are shown in a static
+                        stack instead of rotating along the 3D helix. The effect
+                        depends on continuous scroll-driven rotation, and your
+                        system preference asks us to keep that still.
+                    </p>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section

@@ -7,6 +7,13 @@ import { createVisibilityGate } from "./createSuspendedRaf";
 
 gsap.registerPlugin(Draggable);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
 const DraggableMarqueeComp = ({
     items = [],
     speed = 1,
@@ -52,6 +59,10 @@ const DraggableMarqueeComp = ({
 
         let wrapValue = (value) => value;
         let resizeRaf = null;
+
+        // Reduced motion: keep the marquee draggable (user-initiated, not
+        // imposed motion) but stop the automatic continuous auto-scroll.
+        const reducedMotion = prefersReducedMotion();
 
         const observers = [];
         const setX = gsap.quickSetter(track, "x", "px");
@@ -135,7 +146,7 @@ const DraggableMarqueeComp = ({
 
         const update = () => {
             if (!isDragging) {
-                if (!(pauseOnHover && isPointerOver)) {
+                if (!reducedMotion && !(pauseOnHover && isPointerOver)) {
                     x -= speed;
                 }
 
@@ -176,13 +187,20 @@ const DraggableMarqueeComp = ({
                 this.x = x;
 
                 if (dt > 0) {
-                    const sampledVelocity = (dx / dt) * 36.67;
+                    // Reduced motion: dragging itself stays 1:1 (direct,
+                    // user-initiated), but no momentum carries past release -
+                    // it stops exactly where you let go instead of sliding on.
+                    if (reducedMotion) {
+                        throwVelocity = 0;
+                    } else {
+                        const sampledVelocity = (dx / dt) * 36.67;
 
-                    throwVelocity = gsap.utils.clamp(
-                        -maxThrowVelocity,
-                        maxThrowVelocity,
-                        sampledVelocity * throwMultiplier
-                    );
+                        throwVelocity = gsap.utils.clamp(
+                            -maxThrowVelocity,
+                            maxThrowVelocity,
+                            sampledVelocity * throwMultiplier
+                        );
+                    }
                 }
 
                 lastDragX = this.x;

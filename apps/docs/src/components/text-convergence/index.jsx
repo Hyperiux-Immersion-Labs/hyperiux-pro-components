@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const BASE_HEIGHT_VH = 600;
 const MIN_HEIGHT_VH = 300;
@@ -16,6 +17,11 @@ const CHARACTER_Y_PERCENT_MAX = 200;
 const CHARACTER_ROTATION_MIN = -20;
 const CHARACTER_ROTATION_MAX = 20;
 const CHARACTER_EASE = "elastic.out(1,0.8)";
+
+// Reduced motion: keep the per-character assembly, just far weaker - the
+// main horizontal scroll (xPercent:-100) is left alone, it's the functional
+// scroll-through mechanism, not decorative per-char movement.
+const REDUCED_MOTION_FACTOR = 0.25;
 
 const getDynamicHeight = (text) => {
   const trimmedText = text.trim();
@@ -91,6 +97,9 @@ export default function TextConvergence({
         type: CHARACTER_SPLIT_TYPE,
       });
 
+      const reducedMotion = prefersReducedMotion();
+      const charScale = reducedMotion ? REDUCED_MOTION_FACTOR : 1;
+
       const scrollTween = gsap.to(textElement, {
         xPercent: -100,
         ease: "linear",
@@ -107,14 +116,12 @@ export default function TextConvergence({
 
       split.chars.forEach((character) => {
         gsap.from(character, {
-          yPercent: gsap.utils.random(
-            CHARACTER_Y_PERCENT_MIN,
-            CHARACTER_Y_PERCENT_MAX
-          ),
-          rotation: gsap.utils.random(
-            CHARACTER_ROTATION_MIN,
-            CHARACTER_ROTATION_MAX
-          ),
+          yPercent:
+            gsap.utils.random(CHARACTER_Y_PERCENT_MIN, CHARACTER_Y_PERCENT_MAX) *
+            charScale,
+          rotation:
+            gsap.utils.random(CHARACTER_ROTATION_MIN, CHARACTER_ROTATION_MAX) *
+            charScale,
           ease: CHARACTER_EASE,
           scrollTrigger: {
             trigger: character,

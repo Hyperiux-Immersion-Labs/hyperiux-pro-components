@@ -1,6 +1,9 @@
 {
   "name": "sticky-content-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: images crossfade instead of clip-path wiping and scaling; content transition is unaffected", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Sticky Content Wrapper",
   "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",

@@ -19,6 +19,10 @@ export default function StackingCardComp({ data = [] }) {
         cardsRef.current = cardsRef.current.slice(0, data.length);
 
         const ctx = gsap.context(() => {
+            const reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
             const cards = cardsRef.current.filter(Boolean);
             const numCards = cards.length;
 
@@ -38,7 +42,7 @@ export default function StackingCardComp({ data = [] }) {
 
             const firstImage = cards[0]?.querySelector(".card-image");
 
-            if (firstImage) {
+            if (firstImage && !reduceMotion) {
                 gsap.fromTo(
                     firstImage,
                     { scale: 1.5 },
@@ -67,7 +71,6 @@ export default function StackingCardComp({ data = [] }) {
             });
 
             for (let i = 1; i < numCards; i++) {
-                const rotateDir = (i - 1) % 2 === 0 ? -5 : 5;
                 const segmentStart = i - 1;
 
                 tl.to(
@@ -79,6 +82,12 @@ export default function StackingCardComp({ data = [] }) {
                     },
                     segmentStart
                 );
+
+                // Reduced motion: a card still stacks (slides into place
+                // above the previous one), but that's it - no tilt, scale,
+                // rotateX, border-radius morph, opacity fade, or image zoom
+                // once it's stacked.
+                if (reduceMotion) continue;
 
                 const currentImage = cards[i].querySelector(".card-image");
 
@@ -94,6 +103,8 @@ export default function StackingCardComp({ data = [] }) {
                         segmentStart
                     );
                 }
+
+                const rotateDir = (i - 1) % 2 === 0 ? -5 : 5;
 
                 tl.to(
                     cards[i - 1],
@@ -128,7 +139,10 @@ export default function StackingCardComp({ data = [] }) {
             className="relative z-0 h-[var(--stack-height)] w-full"
             style={{ "--stack-height": `${data.length * 100}vh` }}
         >
-            <h1 clasName="aboslute sr-only text-white text-4xl font-bold"> Stacking Cards</h1>
+            <div className="sr-only">
+                <h1 clasName="aboslute text-white text-4xl font-bold"> Stacking Cards</h1>
+
+            </div>
 
             <div
                 ref={containerRef}
@@ -161,7 +175,7 @@ const SliderCard = ({
 }) => {
     return (
         <div
-            className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center ${backgroundColor}
+            className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
  max-sm:min-h-[100svh] max-md:flex-col max-md:justify-start max-sm:py-8`}
         >
 

@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { useLayoutEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
+import { prefersReducedMotion } from "@/lib/motion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -56,13 +57,17 @@ export function useFadeUp(containerRef, deps = []) {
       return;
     }
 
+    const reduceMotion = prefersReducedMotion();
+
     gsap.set(content, {
       opacity: 0,
-      y: 50,
+      y: reduceMotion ? 0 : 50,
     });
 
     const ctx = gsap.context(() => {
       content.forEach((element) => {
+        const delay = parseFloat(element.dataset.fadeupDelay || "0") || 0;
+
         gsap.to(element, {
           scrollTrigger: {
             trigger: element,
@@ -71,8 +76,9 @@ export function useFadeUp(containerRef, deps = []) {
           },
           opacity: 1,
           y: 0,
-          ease: "power3.out",
-          duration: 1.2,
+          ease: reduceMotion ? "power2.out" : "power3.out",
+          duration: reduceMotion ? 0.6 : 1.2,
+          delay,
           onComplete: () => {
             gsap.set(element, {
               clearProps: "opacity,transform",
@@ -94,7 +100,7 @@ export function useLineAnim(containerRef, deps = []) {
 
     if (!lineDraws.length) return;
 
-    if (shouldSkipSidebarDocsAnimation()) {
+    if (shouldSkipSidebarDocsAnimation() || prefersReducedMotion()) {
       gsap.set(lineDraws, {
         scaleX: 1,
         clearProps: "transform",
