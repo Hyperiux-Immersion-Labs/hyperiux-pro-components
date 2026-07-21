@@ -31,207 +31,263 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	useEffect(() => {
 		const ctx = gsap.context(() => {
 			const mm = gsap.matchMedia();
-			mm.add("(min-width: 1025px)", () => {
-				const headingSplit = new SplitText(headingRef.current, {
-					type: "chars,lines",
-					linesClass: "split-line",
-					mask: "lines",
-				});
 
-				const paragraphSplit = new SplitText(paragraphRef.current, {
-					type: "lines",
-					linesClass: "split-line",
-					mask: "lines",
-				});
+			mm.add(
+				{
+					isDesktop: "(min-width: 1025px)",
+					reduceMotion: "(prefers-reduced-motion: reduce)",
+				},
+				(context) => {
+					const { isDesktop, reduceMotion } = context.conditions;
+					if (!isDesktop) return;
 
-				const sectionBreakSplit = new SplitText(sectionBreakFillRef.current, {
-					type: "lines",
-					linesClass: "section-break-line",
-				});
-
-				gsap.set(headingSplit.lines, { yPercent: 0 });
-				gsap.set(paragraphSplit.lines, { yPercent: 0 });
-
-				gsap.set(sectionBreakSplit.lines, {
-					color: "transparent",
-					backgroundImage:
-						"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 100%)",
-					backgroundRepeat: "no-repeat",
-					backgroundSize: "0% 100%",
-					backgroundPosition: "left center",
-					WebkitBackgroundClip: "text",
-					backgroundClip: "text",
-				});
-
-				gsap.set(".section-break-content, .section-break-wrapper > p", { opacity: 1 });
-
-				const allTitles = titleRefs.current.filter(Boolean);
-				const cards = gsap.utils.toArray(".project-card");
-
-				const introTl = gsap.timeline({
-					scrollTrigger: {
-						trigger: `#${sectionId}`,
-						start: "top top",
-						end: "10% top",
-						scrub: true,
-					},
-				});
-
-				introTl.to(
-					headingSplit.chars,
-					{
-						yPercent: -100,
-						duration: 1.2,
-						stagger: 0.02,
-						ease: "power3.inOut",
-					},
-					0,
-				);
-
-				introTl.to(
-					paragraphSplit.lines,
-					{
-						yPercent: -100,
-						duration: 1.2,
-						stagger: 0.06,
-						ease: "power3.inOut",
-					},
-					0.1,
-				);
-
-				hoverSplitsRef.current = allTitles.map((el) => {
-					const split = new SplitText(el, {
-						type: "chars",
-						charsClass: "project-char",
+					const headingSplit = new SplitText(headingRef.current, {
+						type: "chars,lines",
+						linesClass: "split-line",
+						mask: "lines",
 					});
 
-					gsap.set(allTitles, { opacity: 1 });
-					gsap.set(split.chars, {
-						yPercent: 120,
-						opacity: 0,
-						force3D: true,
+					const paragraphSplit = new SplitText(paragraphRef.current, {
+						type: "lines",
+						linesClass: "split-line",
+						mask: "lines",
 					});
 
-					return split;
-				});
-
-				gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
-				gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
-				gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
-
-				cards.forEach((card, index) => {
-					const split = hoverSplitsRef.current[index];
-					const image = card.querySelector(".project-image");
-
-					if (!split || !image) return;
-
-					gsap.set(image, {
-						force3D: true,
-						scale: 1,
-						opacity: 1,
+					const sectionBreakSplit = new SplitText(sectionBreakFillRef.current, {
+						type: "lines",
+						linesClass: "section-break-line",
 					});
 
-					const onEnter = () => {
-						gsap.killTweensOf(image);
-						gsap.killTweensOf(split.chars);
-						gsap.to(split.chars, {
-							yPercent: 0,
-							opacity: 1,
-							stagger: 0.02,
-							duration: 0.45,
-							ease: "power3.out",
-							overwrite: true,
+					gsap.set(headingSplit.lines, { yPercent: 0 });
+					gsap.set(paragraphSplit.lines, { yPercent: 0 });
+
+					gsap.set(sectionBreakSplit.lines, {
+						color: "transparent",
+						backgroundImage:
+							"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 100%)",
+						backgroundRepeat: "no-repeat",
+						backgroundSize: "0% 100%",
+						backgroundPosition: "left center",
+						WebkitBackgroundClip: "text",
+						backgroundClip: "text",
+					});
+
+					gsap.set(".section-break-content, .section-break-wrapper > p", { opacity: 1 });
+
+					const allTitles = titleRefs.current.filter(Boolean);
+					const cards = gsap.utils.toArray(".project-card");
+
+					const introTl = gsap.timeline({
+						scrollTrigger: {
+							trigger: `#${sectionId}`,
+							start: "top top",
+							end: "10% top",
+							scrub: true,
+						},
+					});
+
+					if (reduceMotion) {
+						// No Y exit — fade copy out instead.
+						introTl.to(
+							[headingRef.current, paragraphRef.current],
+							{
+								opacity: 0,
+								duration: 1.2,
+								ease: "power3.inOut",
+							},
+							0,
+						);
+					} else {
+						introTl.to(
+							headingSplit.chars,
+							{
+								yPercent: -100,
+								duration: 1.2,
+								stagger: 0.02,
+								ease: "power3.inOut",
+							},
+							0,
+						);
+
+						introTl.to(
+							paragraphSplit.lines,
+							{
+								yPercent: -100,
+								duration: 1.2,
+								stagger: 0.06,
+								ease: "power3.inOut",
+							},
+							0.1,
+						);
+					}
+
+					hoverSplitsRef.current = allTitles.map((el) => {
+						const split = new SplitText(el, {
+							type: "chars",
+							charsClass: "project-char",
 						});
-					};
 
-					const onLeave = () => {
-						gsap.killTweensOf(image);
-						gsap.killTweensOf(split.chars);
-						gsap.to(split.chars, {
-							yPercent: 120,
+						gsap.set(allTitles, { opacity: 1 });
+						gsap.set(split.chars, {
+							yPercent: reduceMotion ? 0 : 120,
 							opacity: 0,
-							stagger: 0.015,
-							duration: 0.35,
-							ease: "power3.in",
-							overwrite: true,
+							force3D: true,
 						});
-					};
 
-					card.addEventListener("mouseenter", onEnter);
-					card.addEventListener("mouseleave", onLeave);
-
-					card._onEnter = onEnter;
-					card._onLeave = onLeave;
-				});
-
-				const tl = gsap.timeline({
-					scrollTrigger: {
-						trigger: `#${sectionId}`,
-						start: "3% top",
-						end: "bottom bottom",
-						scrub: true,
-					},
-				});
-
-				tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
-				tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
-				tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
-				tl.to(".card-1", {
-					yPercent: -100,
-					duration: 0.3,
-					ease: "power3.inOut",
-				});
-				tl.to(
-					".card-2",
-					{
-						yPercent: 100,
-						duration: 0.3,
-						ease: "power3.inOut",
-					},
-					"<",
-				);
-				tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, "<");
-				tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, "<");
-
-				const sectionBreakTl = gsap.timeline({
-					scrollTrigger: {
-						trigger: `#${sectionId}`,
-						start: "65% top",
-						end: "bottom bottom",
-						scrub: true,
-					},
-				});
-
-				sectionBreakTl.from(".section-break-wrapper", {
-					scale: 0.7,
-					opacity: 0,
-					duration: 3,
-					ease: "power3.inOut",
-				});
-
-				sectionBreakTl.to(sectionBreakSplit.lines, {
-					backgroundSize: "100% 100%",
-					stagger: 0.45,
-					ease: "none",
-					delay: -1,
-				});
-
-				return () => {
-					cards.forEach((card) => {
-						if (card._onEnter) {
-							card.removeEventListener("mouseenter", card._onEnter);
-						}
-						if (card._onLeave) {
-							card.removeEventListener("mouseleave", card._onLeave);
-						}
+						return split;
 					});
 
-					hoverSplitsRef.current.forEach((split) => split?.revert());
-					headingSplit.revert();
-					paragraphSplit.revert();
-					sectionBreakSplit.revert();
-				};
-			});
+					if (reduceMotion) {
+						// Settled vertical layout — only X pans animate below.
+						gsap.set(".mid-strip", { yPercent: -4.5, scale: 1 });
+						gsap.set(".left-strip", { yPercent: -77, scale: 1 });
+						gsap.set(".right-strip", { yPercent: -77, scale: 1 });
+					} else {
+						gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
+						gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
+						gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
+					}
+
+					cards.forEach((card, index) => {
+						const split = hoverSplitsRef.current[index];
+						const image = card.querySelector(".project-image");
+
+						if (!split || !image) return;
+
+						gsap.set(image, {
+							force3D: true,
+							scale: 1,
+							opacity: 1,
+						});
+
+						const onEnter = () => {
+							gsap.killTweensOf(image);
+							gsap.killTweensOf(split.chars);
+							if (reduceMotion) {
+								gsap.to(split.chars, {
+									opacity: 1,
+									stagger: 0.02,
+									duration: 0.45,
+									ease: "power3.out",
+									overwrite: true,
+								});
+								return;
+							}
+							gsap.to(split.chars, {
+								yPercent: 0,
+								opacity: 1,
+								stagger: 0.02,
+								duration: 0.45,
+								ease: "power3.out",
+								overwrite: true,
+							});
+						};
+
+						const onLeave = () => {
+							gsap.killTweensOf(image);
+							gsap.killTweensOf(split.chars);
+							if (reduceMotion) {
+								gsap.to(split.chars, {
+									opacity: 0,
+									stagger: 0.015,
+									duration: 0.35,
+									ease: "power3.in",
+									overwrite: true,
+								});
+								return;
+							}
+							gsap.to(split.chars, {
+								yPercent: 120,
+								opacity: 0,
+								stagger: 0.015,
+								duration: 0.35,
+								ease: "power3.in",
+								overwrite: true,
+							});
+						};
+
+						card.addEventListener("mouseenter", onEnter);
+						card.addEventListener("mouseleave", onLeave);
+
+						card._onEnter = onEnter;
+						card._onLeave = onLeave;
+					});
+
+					const tl = gsap.timeline({
+						scrollTrigger: {
+							trigger: `#${sectionId}`,
+							start: "3% top",
+							end: "bottom bottom",
+							scrub: true,
+						},
+					});
+
+					if (reduceMotion) {
+						// X-only strip exit at normal scrub speed.
+						tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, 0);
+						tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, 0);
+					} else {
+						tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
+						tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
+						tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
+						tl.to(".card-1", {
+							yPercent: -100,
+							duration: 0.3,
+							ease: "power3.inOut",
+						});
+						tl.to(
+							".card-2",
+							{
+								yPercent: 100,
+								duration: 0.3,
+								ease: "power3.inOut",
+							},
+							"<",
+						);
+						tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, "<");
+						tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, "<");
+					}
+
+					const sectionBreakTl = gsap.timeline({
+						scrollTrigger: {
+							trigger: `#${sectionId}`,
+							start: "65% top",
+							end: "bottom bottom",
+							scrub: true,
+						},
+					});
+
+					sectionBreakTl.from(".section-break-wrapper", {
+						scale: reduceMotion ? 1 : 0.7,
+						opacity: 0,
+						duration: 3,
+						ease: "power3.inOut",
+					});
+
+					sectionBreakTl.to(sectionBreakSplit.lines, {
+						backgroundSize: "100% 100%",
+						stagger: 0.45,
+						ease: "none",
+						delay: -1,
+					});
+
+					return () => {
+						cards.forEach((card) => {
+							if (card._onEnter) {
+								card.removeEventListener("mouseenter", card._onEnter);
+							}
+							if (card._onLeave) {
+								card.removeEventListener("mouseleave", card._onLeave);
+							}
+						});
+
+						hoverSplitsRef.current.forEach((split) => split?.revert());
+						headingSplit.revert();
+						paragraphSplit.revert();
+						sectionBreakSplit.revert();
+					};
+				},
+			);
 
 			return () => {
 				mm.revert();
