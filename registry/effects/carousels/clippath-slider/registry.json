@@ -1,6 +1,10 @@
 {
   "name": "clippath-slider",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: slide transitions use a reduced-motion-safe fade instead of the full clip-path animation", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Clip Path Slider",
   "description": "Fullscreen image slider where transitions sweep via two canvas-drawn radial clip-path arcs. Includes a dual-layer background crossfade, GSAP SplitText line reveals, and a smooth custom cursor that flips direction arrows left/right.",

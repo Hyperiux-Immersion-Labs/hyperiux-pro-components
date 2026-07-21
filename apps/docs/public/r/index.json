@@ -959,7 +959,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedToggle",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "arrow-fill-button",
@@ -974,7 +974,7 @@
       "registryDependencies": [],
       "exportName": "ArrowFillButton",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "char-stagger-button",
@@ -989,7 +989,7 @@
       "registryDependencies": [],
       "exportName": "CharStaggerButton",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "char-stagger-primary-button",
@@ -1004,7 +1004,7 @@
       "registryDependencies": [],
       "exportName": "CharStaggerPrimaryButton",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "dot-fill-button",
@@ -1017,7 +1017,7 @@
       "registryDependencies": [],
       "exportName": "DotFillBtn",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "link-button",
@@ -1062,7 +1062,7 @@
       "registryDependencies": [],
       "exportName": "ClipPathSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "infinite-carousel",
@@ -1078,7 +1078,7 @@
       "registryDependencies": [],
       "exportName": "InfiniteCarousel",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "ring-carousel",
@@ -1094,7 +1094,7 @@
       "registryDependencies": [],
       "exportName": "RingCarousel",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "webgl-slider",
@@ -1111,7 +1111,7 @@
       "registryDependencies": [],
       "exportName": "WebGLSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "zoom-slider",
@@ -1126,7 +1126,7 @@
       "registryDependencies": [],
       "exportName": "ZoomSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "animated-faq",
@@ -1352,7 +1352,7 @@
       "registryDependencies": [],
       "exportName": "DirectionalMenu",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "elevate-navbar",
@@ -1368,7 +1368,7 @@
       "registryDependencies": [],
       "exportName": "ElevateNavbar",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "expanding-navbar",
@@ -1385,7 +1385,7 @@
       "registryDependencies": [],
       "exportName": "ExpandingNavbar",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "immersive-full-screen-nav",
@@ -1400,7 +1400,7 @@
       "registryDependencies": [],
       "exportName": "ImmersiveFullscreenNav",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "lines-loader",

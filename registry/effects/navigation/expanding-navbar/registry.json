@@ -1,6 +1,10 @@
 {
   "name": "expanding-navbar",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: column/square expand animations are set instantly instead of tweened when the user has reduced motion enabled", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Expanding Navbar",
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
