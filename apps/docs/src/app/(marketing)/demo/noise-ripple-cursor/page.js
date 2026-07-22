@@ -36,20 +36,6 @@ export default function page() {
           >
             Drift through the frame. Leave the ordinary behind.
           </SplitLine>
-
-          <div
-            aria-live="polite"
-            className="pointer-events-none fixed top-24 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-          >
-            <h2 className="text-sm leading-none text-white">
-              The ripple keeps rolling.
-            </h2>
-            <p className="mt-2 text-xs leading-5 text-white/65">
-              Noise Ripple Cursor distorts the image live as your cursor
-              moves through it. The distortion is the effect itself, so
-              reduced motion can&apos;t be applied here.
-            </p>
-          </div>
         </section>
       </div>
     </>

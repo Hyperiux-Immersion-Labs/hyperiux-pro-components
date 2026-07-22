@@ -47,19 +47,6 @@ export default function Page() {
             <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">
                Float your cursor over an image - watch the scene bulge, wobble and come alive.
             </div>
-            <div
-              aria-live="polite"
-              className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white/20 backdrop-blur-md p-3 text-center max-md:hidden"
-            >
-              <h2 className="text-sm leading-none text-[#111111]">
-                The lens keeps bending.
-              </h2>
-              <p className="mt-2 text-xs leading-5 text-black/65">
-                Fish Eye distorts the image as your cursor moves across it.
-                Since the warp is driven entirely by motion, there&apos;s no
-                reduced motion version to fall back on.
-              </p>
-            </div>
         </div>
            </>
     )

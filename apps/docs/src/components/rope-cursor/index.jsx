@@ -131,6 +131,7 @@ export default function RopeCursor({
 	if (isMobile) return null
 
 	return (
+ <>
  <svg
  ref={svgRef}
  className="w-full h-full absolute inset-0"
@@ -146,5 +147,19 @@ export default function RopeCursor({
  opacity={ropeOpacity}
  />
  </svg>
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-sm p-3 text-center max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-[#111111]">
+     The rope keeps swinging.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-black/65">
+     Rope Cursor is a live trail of your cursor&apos;s movement. The
+     motion is the entire effect, so it can&apos;t be swapped for a
+     reduced motion alternative.
+   </p>
+ </div>
+ </>
 	)
 }
