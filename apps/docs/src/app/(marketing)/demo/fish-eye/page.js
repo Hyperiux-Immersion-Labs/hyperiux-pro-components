@@ -12,7 +12,7 @@ export default function Page() {
      
         <div className='h-screen w-full bg-zinc-200 max-md:p-[20vw] max-sm:p-[10vw] max-md:flex-col flex items-start p-[5vw] pt-[6.5vw] justify-between max-md:justify-center max-md:gap-[10vw] max-md:items-center'>
 
-            <h1 className='absolute bottom-[5vw] left-[5vw] max-md:left-[2vw]  max-sm:top-[18vw] max-md:top-[8vh] max-sm:right-[5vw] text-black text-[7vw] max-md:text-[7vw] max-sm:text-[12vw] leading-none font-bold'>
+            <h1 className='absolute bottom-[8vw] left-[5vw] max-md:left-[2vw]  max-sm:top-[18vw] max-md:top-[8vh] max-sm:right-[5vw] text-black text-[7vw] max-md:text-[7vw] max-sm:text-[12vw] leading-none font-bold'>
                 FISH EYE
             </h1>
 
@@ -46,6 +46,19 @@ export default function Page() {
 
             <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">
                Float your cursor over an image - watch the scene bulge, wobble and come alive.
+            </div>
+            <div
+              aria-live="polite"
+              className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white/20 backdrop-blur-md p-3 text-center max-md:hidden"
+            >
+              <h2 className="text-sm leading-none text-[#111111]">
+                The lens keeps bending.
+              </h2>
+              <p className="mt-2 text-xs leading-5 text-black/65">
+                Fish Eye distorts the image as your cursor moves across it.
+                Since the warp is driven entirely by motion, there&apos;s no
+                reduced motion version to fall back on.
+              </p>
             </div>
         </div>
            </>

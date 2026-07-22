@@ -44,6 +44,19 @@ const page = () => {
                 idleFadeMultiplier={1.8}
                 imageMultiplier={3}
             />
+            <div
+                aria-live="polite"
+                className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center max-md:hidden"
+            >
+                <h2 className="text-sm leading-none text-[#111111]">
+                    The trail keeps spawning.
+                </h2>
+                <p className="mt-2 text-xs leading-5 text-black/65">
+                    Phantom Image Trail spawns images as the cursor moves. The
+                    motion is the effect itself, so there&apos;s no static
+                    fallback for reduced motion preferences.
+                </p>
+            </div>
         </div>
         </>
     );
