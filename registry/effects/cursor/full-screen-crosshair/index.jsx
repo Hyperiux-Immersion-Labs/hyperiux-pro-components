@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useMouse } from "./useMouse";
 
-const CrosshairCursor = ({
+const FullScreenCrosshair = ({
   color = "#ffffff",
   centerContent = "•",
   hideNativeCursor = true,
@@ -66,4 +66,4 @@ const CrosshairCursor = ({
   );
 };
 
-export { CrosshairCursor as FullScreenCrosshair };
+export default FullScreenCrosshair;

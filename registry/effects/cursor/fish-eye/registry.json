@@ -1,6 +1,10 @@
 {
   "name": "fish-eye",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Fish Eye",
   "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
