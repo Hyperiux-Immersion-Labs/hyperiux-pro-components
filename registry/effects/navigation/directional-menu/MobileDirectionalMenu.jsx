@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useFocusTrap } from "./useFocusTrap";
 
@@ -46,7 +45,7 @@ export function MobileDirectionalMenu({ items = [] }) {
   return (
     <div ref={containerRef} className="relative hidden max-xl:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center  gap-3 cursor-pointer">
+        <a href="/" className="flex items-center  gap-3 cursor-pointer">
           <svg width="35" height="35" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -72,7 +71,7 @@ export function MobileDirectionalMenu({ items = [] }) {
             <rect x="35.5166" width="6.62183" height="42.1389" fill="white"/>
             <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
           </svg>
-        </Link>
+        </a>
 
         <button
           ref={toggleButtonRef}
@@ -101,14 +100,14 @@ export function MobileDirectionalMenu({ items = [] }) {
 
               if (!isDropdown) {
                 return (
-                  <Link
+                  <a
                     key={item.label}
                     href={item.href || "#"}
                     className="rounded-lg border border-neutral-200 bg-neutral-50/60 px-4 py-4 max-md:text-sm max-xl:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500 transition-all duration-300 ease-in-out hover:bg-neutral-100 motion-reduce:bg-neutral-50/60 motion-reduce:transition-none max-xl:rounded-none max-xl:border-x-0 max-xl:border-t-0"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.label}
-                  </Link>
+                  </a>
                 );
               }
 

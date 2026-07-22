@@ -10,10 +10,10 @@
   "exportName": "DraggableMarquee",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Added prefers-reduced-motion support: auto-scroll and post-release throw momentum are disabled, drag remains fully interactive",
       "breaking": false

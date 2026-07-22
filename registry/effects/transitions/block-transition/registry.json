@@ -1,9 +1,9 @@
 {
   "name": "block-transition",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Added reduced-motion route fallback with short opacity fades.",
       "breaking": false
@@ -24,6 +24,6 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/page-transitions/block",
+  "previewUrl": "/demo/block-transition",
   "tier": "free"
 }

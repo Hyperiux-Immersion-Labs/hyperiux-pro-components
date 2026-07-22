@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useFocusTrap } from "./useFocusTrap";
@@ -221,14 +219,14 @@ export function ElevateNavbarMobile({
 
             if (!hasDropdown) {
               return (
-                <Link
+                <a
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-xl:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                 >
                   {item.name}
-                </Link>
+                </a>
               );
             }
 
@@ -264,14 +262,14 @@ export function ElevateNavbarMobile({
                 >
                   <div className="space-y-[2vw] pt-[1vw]">
                     {item.dropdown.map((dropdownItem) => (
-                      <Link
+                      <a
                         key={dropdownItem.title}
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
                         className="flex items-center gap-[3vw] rounded-[2vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-xl:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
                       >
                         <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[2vw] bg-white/25">
-                          <Image
+                          <img
                             src={dropdownItem.img}
                             alt={dropdownItem.title}
                             width={80}
@@ -281,7 +279,7 @@ export function ElevateNavbarMobile({
                         </div>
 
                         <span className="flex-1">{dropdownItem.title}</span>
-                      </Link>
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -290,13 +288,13 @@ export function ElevateNavbarMobile({
           })}
 
           <div className="pt-[3vw]">
-            <Link
+            <a
               href={cta.href}
               onClick={() => setIsMenuOpen(false)}
               className="block w-full max-md:py-[3vw] rounded-[3vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-xl:text-[2.5vw] font-semibold text-black"
             >
               {cta.label}
-            </Link>
+            </a>
           </div>
         </div>
       </div>

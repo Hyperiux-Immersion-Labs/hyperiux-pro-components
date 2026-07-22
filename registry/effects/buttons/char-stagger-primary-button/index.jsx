@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const CharStaggerPrimaryButton = ({
@@ -90,7 +89,7 @@ const CharStaggerPrimaryButton = ({
     const iconHoverClass = !prefersReducedMotion && isTouchHovered ? "translate-x-[5%]" : "";
 
     return (
-        <Link
+        <a
             ref={linkRef}
             href={href}
             {...linkProps}
@@ -137,7 +136,7 @@ const CharStaggerPrimaryButton = ({
                     </div>
                 </div>
             )}
-        </Link>
+        </a>
     );
 };
 

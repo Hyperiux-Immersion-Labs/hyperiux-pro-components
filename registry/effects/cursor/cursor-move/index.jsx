@@ -1,12 +1,7 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
-import { Inter } from "next/font/google";
-
-// Inter is a variable font exposing a `wght` axis, which the cursor-driven
-// weight morph below animates. It's loaded here so the component is fully
-// self-contained - no font setup is required in layout.js, globals.css, or
-// the page that renders it.
-const cursorMoveFont = Inter({ subsets: ["latin"], display: "swap" });
+const CURSOR_MOVE_FONT_FAMILY =
+  'var(--cursor-move-font-family, Inter, ui-sans-serif, system-ui, sans-serif)';
 
 const DESKTOP_CURSOR_MOVE_QUERY = "(min-width: 1025px) and (pointer: fine)";
 
@@ -115,6 +110,7 @@ function VariableFontAndCursor({
       className={className}
       style={{
         fontVariationSettings,
+        fontFamily: CURSOR_MOVE_FONT_FAMILY,
         transform: `skewX(${skewX}deg)`,
         transition,
         transformOrigin,
@@ -227,7 +223,7 @@ export default function CursorMove({
         <VariableFontAndCursor
           containerRef={containerRef}
           fontVariationMapping={fontVariationMapping}
-          className={`${cursorMoveFont.className} ${textClassName}`}
+          className={textClassName}
           as={textAs}
           transition={variableTextTransition}
           transformOrigin={variableTextTransformOrigin}

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 const DEFAULT_HREF = "#";
 const DEFAULT_STAGGER_STEP = 0.01;
@@ -134,7 +133,7 @@ export default function CharStaggerButton({
 
   // Render
   return (
-    <Link href={href}
+    <a href={href}
       {...linkProps}
       {...props}
       onClick={onClick}
@@ -193,6 +192,6 @@ export default function CharStaggerButton({
           )}
         </div>
       )}
-    </Link>
+    </a>
   );
 }

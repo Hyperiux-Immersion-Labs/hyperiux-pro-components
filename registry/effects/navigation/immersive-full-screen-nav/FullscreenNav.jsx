@@ -1,8 +1,6 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useFocusTrap } from "./useFocusTrap";
 
@@ -221,7 +219,7 @@ export default function FullscreenNav({
         className={`fixed top-0 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3 cursor-pointer">
+          <a href="/" className="flex items-center gap-3 cursor-pointer">
           <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 motion-reduce:transition-none ${isOpen ? "brightness-100  delay-700" : "brightness-0  delay-700"}`}>
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -250,7 +248,7 @@ export default function FullscreenNav({
               <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
             </svg>
           </div>
-          </Link>
+          </a>
         </div>
 
         <button
@@ -306,7 +304,7 @@ export default function FullscreenNav({
           {children
             ? children(isOpen)
             : links.map(({ label, href }) => (
-              <Link
+              <a
                 key={label}
                 href={href}
                 onClick={isOpen ? onCloseMenu : undefined}
@@ -317,7 +315,7 @@ export default function FullscreenNav({
                 className={`${linkSizeClass} font-normal tracking-tight transition-colors motion-reduce:transition-none`}
               >
                 {label}
-              </Link>
+              </a>
             ))}
         </div>
       </nav>

@@ -1,8 +1,6 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const SOCIAL_ICONS = {
@@ -212,9 +210,9 @@ export default function CustomNavbar({
               style={{ opacity: 0, transform: `translateY(${LINK_Y_OFFSET}px)` }}
             >
 
-              <Link href={link.href}>
+              <a href={link.href}>
                 {link.label}
-              </Link>
+              </a>
             </div>
           ))}
         </div>
@@ -228,11 +226,10 @@ export default function CustomNavbar({
                 style={{ opacity: 0, transform: `scale(${IMAGE_INITIAL_SCALE})` }}
                 className="relative h-[18vw] w-[25vw] overflow-hidden rounded-xl max-xl:h-[25vh] max-xl:w-[35vw] max-md:h-[30vw] max-md:w-[60vw] max-md:rounded-md"
               >
-                <Image
+                <img
                   src={src}
                   alt={`img-${index}`}
-                  fill
-                  className="object-cover transition duration-500 hover:scale-105 motion-reduce:scale-100 motion-reduce:hover:scale-100 motion-reduce:transition-none"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-500 hover:scale-105 motion-reduce:scale-100 motion-reduce:hover:scale-100 motion-reduce:transition-none"
                 />
               </div>
             ))}
@@ -243,14 +240,14 @@ export default function CustomNavbar({
 
       <div className="flex gap-6 items-end justify-end max-xl:justify-start max-xl:pb-10 ">
         {socials.map((social, index) => (
-          <Link
+          <a
             key={index}
             href={social.href}
             ref={setSocialRef(index)}
             style={{ opacity: 0, transform: `translateY(${SOCIAL_Y_OFFSET}px)` }}
           >
             {SOCIAL_ICONS[social.type]}
-          </Link>
+          </a>
         ))}
       </div>
     </div>

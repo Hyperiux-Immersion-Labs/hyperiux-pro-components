@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from"react";
-import Link from"next/link";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
+const DEFAULT_HREF = "#";
 
 const DotFillBtn = ({
  btnText ="",
+ href = DEFAULT_HREF,
  className ="",
  textClassName ="",
  staggerStep = 0.01,
@@ -157,7 +158,8 @@ const DotFillBtn = ({
 	};
 
 	return (
-		<Link
+		<a
+			href={href}
 			{...props}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
@@ -190,7 +192,7 @@ const DotFillBtn = ({
 					{btnText}
 				</span>
 			</span>
-		</Link>
+		</a>
 	);
 };
 

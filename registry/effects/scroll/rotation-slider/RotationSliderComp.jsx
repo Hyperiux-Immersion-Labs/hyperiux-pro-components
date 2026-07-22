@@ -3,7 +3,6 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { Mouse } from "lucide-react";
 
 // True when the user has asked the OS to minimise animation. Safe to call
@@ -251,12 +250,10 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                     transformStyle: "preserve-3d",
                 }}
             >
-                <Image
+                <img
                     src={src}
                     alt="slider"
-                    fill
-                    className="object-cover"
-                    priority
+                    className="absolute inset-0 h-full w-full object-cover"
                 />
             </div>
 

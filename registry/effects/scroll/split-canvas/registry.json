@@ -1,8 +1,13 @@
 {
   "name": "split-canvas",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
-    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: the pixel-grid shutter transition becomes a plain crossfade between images", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: the pixel-grid shutter transition becomes a plain crossfade between images",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Split Canvas",

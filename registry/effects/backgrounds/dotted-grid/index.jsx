@@ -145,6 +145,18 @@ export function DottedGrid() {
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let dots = [];
+    let reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotionMq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+    const handleReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+      if (reduceMotion) {
+        mouseRef.current.active = false;
+        mouseRef.current.trail = [];
+        patternRef.current.transitionStartTime = null;
+      }
+    };
 
     // ─── Dot Setup ─────────────────────────────────────────────────────────────
 
@@ -201,7 +213,7 @@ export function DottedGrid() {
 
     const handleClick = () => {
       patternRef.current.currentShapeIndex = (patternRef.current.currentShapeIndex + 1) % TOTAL_SHAPES;
-      patternRef.current.transitionStartTime = performance.now() * 0.001;
+      patternRef.current.transitionStartTime = reduceMotion ? null : performance.now() * 0.001;
     };
 
     // ─── Transition / Shape Interpolator ───────────────────────────────────────
@@ -297,6 +309,21 @@ export function DottedGrid() {
         ctx.fillRect(0, 0, width, height);
 
         for (const dot of dots) {
+          if (reduceMotion) {
+            const shapeStrength = getRawShapeStrength(
+              patternRef.current.currentShapeIndex,
+              dot.x,
+              dot.y,
+              0,
+              width,
+              height
+            );
+            const brightness = clamp01(0.16 + shapeStrength * 0.84);
+            const radius = BASE_RADIUS + shapeStrength * 1.25;
+            drawDot(dot.x, dot.y, radius, brightness, 0, 0, 0);
+            continue;
+          }
+
           const { shapeStrength, randomStrength, grayDisperseStrength } = getShapeData(dot.x, dot.y, time);
 
           dot.currentShapeStrength = lerp(dot.currentShapeStrength, shapeStrength, 0.12);
@@ -368,6 +395,7 @@ export function DottedGrid() {
 
     resize();
     window.addEventListener("resize", resize);
+    reduceMotionMq?.addEventListener?.("change", handleReduceMotionChange);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
@@ -375,6 +403,7 @@ export function DottedGrid() {
 
     return () => {
       window.removeEventListener("resize", resize);
+      reduceMotionMq?.removeEventListener?.("change", handleReduceMotionChange);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
@@ -397,4 +426,3 @@ export function DottedGrid() {
     </section>
   );
 }
-

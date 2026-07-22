@@ -7,7 +7,6 @@ import * as THREE from 'three'
 import { degToRad } from 'three/src/math/MathUtils'
 import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { ArrowRight, Stars } from 'lucide-react'
-import Link from 'next/link'
 import EdgeBlurEffect from './edge-blur-effect'
 import CircularText from './circular-text'
 import { createVisibilityGate } from './createSuspendedRaf'
@@ -1034,12 +1033,12 @@ export default function MilkyWay() {
                   <p className='rounded-full bg-white/10 px-5 py-3 w-full max-w-[60vw] max-xl:max-w-[70vw] max-md:max-w-full text-2xl max-md:text-base backdrop-blur-sm'>
                      Open in desktop to experience this effect.
                   </p>
-                  <Link
+                  <a
                      href={"/effects"}
                      className='rounded-full  bg-primary  px-6 py-3 max-md:text-sm font-medium text-base text-white'
                   >
                      Explore effects
-                  </Link>
+                  </a>
                </div>
             </div>
             </>

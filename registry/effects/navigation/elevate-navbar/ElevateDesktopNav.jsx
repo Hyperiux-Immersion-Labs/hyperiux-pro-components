@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
@@ -599,7 +597,7 @@ export function ElevateNavbarDesktop({
             const isDropdownActive = activeChevronIndex === index;
 
             return (
-              <Link
+              <a
                 key={item.name}
                 ref={(element) => {
                   navLinksRef.current[index] = element;
@@ -629,12 +627,12 @@ export function ElevateNavbarDesktop({
                     }`}
                   />
                 )}
-              </Link>
+              </a>
             );
           })}
         </div>
 
-        <Link
+        <a
           ref={ctaRef}
           href={cta.href}
           className="relative overflow-hidden rounded-[0.26vw] bg-white px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
@@ -651,7 +649,7 @@ export function ElevateNavbarDesktop({
           >
             {cta.label}
           </span>
-        </Link>
+        </a>
 
         <div
           ref={dropdownRef}
@@ -668,7 +666,7 @@ export function ElevateNavbarDesktop({
                 }}
                 className="link-btns"
               >
-                <Link
+                <a
                   href={item.href}
                   onMouseEnter={() => onDropdownItemEnter(index)}
                   onMouseLeave={() => onDropdownItemLeave(index)}
@@ -676,7 +674,7 @@ export function ElevateNavbarDesktop({
                 >
                   <div className="flex items-center gap-[1.95vw]">
                     <div className="size-[6.5vw] overflow-hidden rounded-[0.55vw]">
-                      <Image
+                      <img
                         src={item.img}
                         alt={item.title}
                         width={500}
@@ -700,7 +698,7 @@ export function ElevateNavbarDesktop({
                   </div>
 
                   <ChevronRight className="mr-[2.6vw] h-[1.3vw] w-[1.3vw]" />
-                </Link>
+                </a>
               </div>
             ))}
           </div>

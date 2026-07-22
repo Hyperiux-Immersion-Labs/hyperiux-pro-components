@@ -1,6 +1,4 @@
 "use client";
-
-import Image from "next/image";
 import {
   forwardRef,
   useCallback,
@@ -361,13 +359,12 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
               }}
               className="absolute top-0 left-0 size-full overflow-hidden rounded-sm opacity-0"
             >
-              <Image
+              <img
                 src={src}
                 width={1000}
                 height={1000}
                 className="h-full w-full object-cover"
                 alt=""
-                priority={index === 0}
               />
             </div>
           ))}

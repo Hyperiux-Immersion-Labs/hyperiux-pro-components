@@ -11,5 +11,7 @@
     "scroll",
     "hyperiux"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "lucide-react": "*"
+  }
 }

@@ -13,7 +13,6 @@
   ],
   "dependencies": {
     "gsap": "*",
-    "lucide-react": "*",
-    "next": "*"
+    "lucide-react": "*"
   }
 }

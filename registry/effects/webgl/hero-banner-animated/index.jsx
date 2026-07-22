@@ -12,7 +12,6 @@ import VideoUI from'./VideoUI'
 import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
-import Link from 'next/link'
 import { createVisibilityGate } from './createSuspendedRaf'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
@@ -241,9 +240,9 @@ export default function HeroBannerAnimated() {
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
   className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-xl:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
+  <a href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </Link>
+  </a>
 
   <Play className='w-4 h-4 max-xl:hidden' fill='#ECE4B4' />
 </motion.p>

@@ -5,7 +5,6 @@
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
   "dependencies": [
     "gsap",
-    "next",
     "lenis"
   ],
   "registryDependencies": [],
@@ -13,7 +12,14 @@
   "exportKind": "default",
   "tier": "pro",
   "version": "1.0.0",
-  "changelog": [],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-07-21",
+      "summary": "Initial release with prefers-reduced-motion support for reduced scroll and card motion.",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

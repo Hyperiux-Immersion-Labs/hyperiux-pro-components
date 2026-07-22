@@ -8,6 +8,11 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const defaultPropertiesData = [];
 
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
 export default function HorizontalScrollComp({ propertiesData = defaultPropertiesData }) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `industries-${uid}`;
@@ -15,11 +20,28 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
   useEffect(() => {
     const ctx = gsap.context(() => {
       if (window.innerWidth <= 1025) return;
+      const reducedMotion = prefersReducedMotion();
 
       gsap.set(
         ".industry-img, .industry-no, .industry-title, .industry-content",
         { opacity: 1 },
       );
+
+      gsap.to(".industry-container", {
+        xPercent: -79,
+        ease: "none",
+        scrollTrigger: {
+          trigger: `#${sectionId}`,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+        },
+      });
+
+      if (reducedMotion) {
+        ScrollTrigger.refresh();
+        return;
+      }
 
       const head = document.querySelector(".industry-head");
       if (head) {
@@ -40,18 +62,6 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
           },
         });
       }
-
-      gsap.to(".industry-container", {
-        xPercent: -79,
-        ease: "none",
-        scrollTrigger: {
-          trigger: `#${sectionId}`,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-          // markers: true,
-        },
-      });
 
       const cards = document.querySelectorAll(".industry-card");
 

@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Minus, Plus } from "lucide-react";
 import { navigationData } from "./data";
-import Link from "next/link";
 import { useFocusTrap } from "./useFocusTrap";
 
 function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/50" }) {
@@ -166,12 +165,12 @@ export function ExpandingNavbarMobile() {
                                     className="flex items-center justify-between cursor-pointer active:opacity-70 transition-opacity"
                                     onClick={() => item.sublinks ? toggleMain(mainIndex) : null}
                                 >
-                                    <Link
+                                    <a
                                         href={item.href}
                                         className="text-3xl max-md:text-3xl max-xl:text-4xl font-medium tracking-tight text-white"
                                     >
                                         {item.name}
-                                    </Link>
+                                    </a>
                                     {item.sublinks && <ExpandToggle expanded={expandedMain === mainIndex} />}
                                 </div>
 
@@ -195,12 +194,12 @@ export function ExpandingNavbarMobile() {
                                                             className="flex items-center justify-between cursor-pointer active:opacity-70 transition-opacity"
                                                             onClick={() => sub.nestedLinks ? toggleSub(subIndex) : null}
                                                         >
-                                                            <Link
+                                                            <a
                                                                 href={sub.href}
                                                                 className="max-md:text-xl text-2xl text-white/80"
                                                             >
                                                                 {sub.name}
-                                                            </Link>
+                                                            </a>
                                                             {sub.nestedLinks && (
                                                                 <ExpandToggle
                                                                     expanded={expandedSub === subIndex}
@@ -225,12 +224,12 @@ export function ExpandingNavbarMobile() {
                                                                     <div className="pl-4 mt-2 space-y-2">
                                                                         {sub.nestedLinks.map((nested, nIndex) => (
                                                                             <div key={nIndex}>
-                                                                                <Link
+                                                                                <a
                                                                                     href={nested.href}
                                                                                     className="text-lg text-white/60 block active:text-white transition-colors"
                                                                                 >
                                                                                     {nested.name}
-                                                                                </Link>
+                                                                                </a>
                                                                             </div>
                                                                         ))}
                                                                     </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useLenis } from "lenis/react";
@@ -375,7 +374,7 @@ export function StickyContentComp({
               }}
               className={`absolute inset-0 h-full w-full opacity-0 ${imageClassName}`}
             >
-              <Image
+              <img
                 src={item.image}
                 alt={item.alt || item.imageAlt || `sticky-image-${index + 1}`}
                 className="h-full w-full object-cover"
