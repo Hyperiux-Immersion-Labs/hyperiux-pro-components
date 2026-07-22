@@ -11,6 +11,19 @@ const Page = () => {
         <div className="absolute bottom-[0.5vw] text-center backdrop-blur-sm bg-black/10 left-1/2 -translate-x-1/2 z-40  px-7 py-2 rounded-full text-[#545454] w-[40vw] text-[1.1vw] max-md:hidden">
          Drift your cursor inside the canvas - the arrows will skitter, point and follow across every version.
         </div>
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center"
+        >
+          <h2 className="text-sm leading-none text-[#111111]">
+            The arrows keep turning.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black/65">
+            Each arrow reorients toward your cursor continuously. That
+            motion is the entire effect, so it can&apos;t be scaled back for
+            reduced motion preferences.
+          </p>
+        </div>
       </div>
 
       {/* Mobile */}

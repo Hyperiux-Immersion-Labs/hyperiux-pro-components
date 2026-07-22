@@ -9,6 +9,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextSlideIndex, setNextSlideIndex] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
   const isInside = useRef(false);
 
   const [layerA, setLayerA] = useState({ index: 0 });
@@ -29,6 +30,13 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
+
+  const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
+  const REDUCED_MOTION_FADE_DURATION = 0.18;
+  const REDUCED_MOTION_FADE_EASE = "power2.out";
 
   const drawStaticLines = useCallback(() => {
     const canvas = linesCanvasRef.current;
@@ -102,6 +110,18 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
     return () => window.removeEventListener("resize", handleResize);
   }, [drawStaticLines]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => {
+      setReduceMotion(mediaQuery.matches);
+    };
+
+    updateMotionPreference();
+    mediaQuery.addEventListener("change", updateMotionPreference);
+
+    return () => mediaQuery.removeEventListener("change", updateMotionPreference);
+  }, []);
+
   // TEXT IN
   useEffect(() => {
     if (!textRef.current || isTransitioning) return;
@@ -119,6 +139,13 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         mask: "lines",
       });
       splitRef.current = split;
+      if (prefersReducedMotion()) {
+        gsap.set(split.lines, {
+          yPercent: 0,
+          opacity: 1,
+        });
+        return;
+      }
       gsap.from(split.lines, {
         yPercent: 100,
         opacity: 0,
@@ -127,13 +154,28 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         ease: "power2.out",
       });
     });
-  }, [currentSlide, isTransitioning]);
+  }, [currentSlide, isTransitioning, reduceMotion]);
 
   // FADE OUT TEXT
   const fadeOutText = useCallback(() => {
     return new Promise((resolve) => {
       if (!textRef.current) return resolve();
       gsap.killTweensOf(textRef.current);
+      if (prefersReducedMotion()) {
+        gsap.to(textRef.current, {
+          opacity: 0,
+          duration: REDUCED_MOTION_FADE_DURATION,
+          ease: REDUCED_MOTION_FADE_EASE,
+          onComplete: () => {
+            if (splitRef.current) {
+              splitRef.current.revert();
+              splitRef.current = null;
+            }
+            resolve();
+          },
+        });
+        return;
+      }
       gsap.to(textRef.current, {
         opacity: 0,
         duration: 0.3,
@@ -157,6 +199,12 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       const ctx = canvas.getContext("2d");
       const W = canvas.width;
       const H = canvas.height;
+
+      if (prefersReducedMotion()) {
+        ctx.clearRect(0, 0, W, H);
+        resolve();
+        return;
+      }
 
       const img = new Image();
       img.src = slides[nextIndex].image;
@@ -273,11 +321,15 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
     if (outgoingRef.current) {
       gsap.killTweensOf(outgoingRef.current);
-      gsap.to(outgoingRef.current, {
-        scale: 1.0,
-        duration: 1.2,
-        ease: "power2.inOut",
-      });
+      if (prefersReducedMotion()) {
+        gsap.set(outgoingRef.current, { scale: 1.25 });
+      } else {
+        gsap.to(outgoingRef.current, {
+          scale: 1.0,
+          duration: 1.2,
+          ease: "power2.inOut",
+        });
+      }
     }
 
     await fadeOutText();
@@ -285,14 +337,53 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
     activeLayerRef.current = outgoingIsA ? "B" : "A";
 
-    if (outgoingRef.current) {
-      gsap.killTweensOf(outgoingRef.current);
-      gsap.set(outgoingRef.current, { opacity: 0, scale: 1.25, zIndex: 0 });
-    }
+    if (prefersReducedMotion()) {
+      const transition = gsap.timeline();
 
-    if (incomingRef.current) {
-      gsap.killTweensOf(incomingRef.current);
-      gsap.set(incomingRef.current, { zIndex: 1, opacity: 1, scale: 1.25 });
+      if (incomingRef.current) {
+        gsap.killTweensOf(incomingRef.current);
+        gsap.set(incomingRef.current, { zIndex: 1, scale: 1.25 });
+      }
+
+      if (outgoingRef.current) {
+        gsap.killTweensOf(outgoingRef.current);
+      }
+
+      transition.to(
+        outgoingRef.current,
+        {
+          opacity: 0,
+          duration: REDUCED_MOTION_FADE_DURATION,
+          ease: REDUCED_MOTION_FADE_EASE,
+        },
+        0
+      );
+
+      transition.to(
+        incomingRef.current,
+        {
+          opacity: 1,
+          duration: REDUCED_MOTION_FADE_DURATION,
+          ease: REDUCED_MOTION_FADE_EASE,
+        },
+        0
+      );
+
+      transition.set(outgoingRef.current, {
+        opacity: 0,
+        scale: 1.25,
+        zIndex: 0,
+      });
+    } else {
+      if (outgoingRef.current) {
+        gsap.killTweensOf(outgoingRef.current);
+        gsap.set(outgoingRef.current, { opacity: 0, scale: 1.25, zIndex: 0 });
+      }
+
+      if (incomingRef.current) {
+        gsap.killTweensOf(incomingRef.current);
+        gsap.set(incomingRef.current, { zIndex: 1, opacity: 1, scale: 1.25 });
+      }
     }
 
     setCurrentSlide(newIndex);
@@ -471,7 +562,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
     };
-  }, []);
+  }, [reduceMotion]);
 
   if (slides.length === 0) return null;
 

@@ -7,6 +7,12 @@ import { InertiaPlugin } from"gsap/InertiaPlugin";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
+const prefersReducedMotion = () =>
+ typeof window !=="undefined" &&
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
+const REDUCED_MOTION_NAV_DURATION = 0.15;
+
 function horizontalLoop(items, config = {}) {
  items[0].getBoundingClientRect();
 
@@ -160,7 +166,9 @@ function horizontalLoop(items, config = {}) {
  },
  onDrag: align,
  onThrowUpdate: align,
- inertia: true,
+ // Reduced motion drops the post-release momentum coast entirely, so the
+ // carousel stops exactly where the drag ends instead of gliding on.
+ inertia: !config.reduceMotion,
  snap: (value) => {
  const n =
  Math.round(parseFloat(value) / dragSnap) * dragSnap * roundFactor;
@@ -212,6 +220,7 @@ export default function InfiniteCarouselComp({
 
  const [isMobile, setIsMobile] = useState(false);
  const [activeIndex, setActiveIndex] = useState(0);
+ const [reduceMotion, setReduceMotion] = useState(false);
 
  const childArray = useMemo(() => {
  return Array.isArray(children)
@@ -254,6 +263,20 @@ export default function InfiniteCarouselComp({
  }, [mobileBreakpoint]);
 
  useEffect(() => {
+ const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+ const syncReducedMotion = (event) => {
+ setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
+ };
+
+ if (!mediaQuery) return;
+
+ syncReducedMotion(mediaQuery);
+ mediaQuery.addEventListener("change", syncReducedMotion);
+ return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+ }, []);
+
+ useEffect(() => {
  itemRefs.current = itemRefs.current.slice(0, childArray.length);
  mobileCardRefs.current = mobileCardRefs.current.slice(0, mobileLoopItems.length);
  }, [childArray.length, mobileLoopItems.length]);
@@ -273,6 +296,7 @@ export default function InfiniteCarouselComp({
 
  const loop = horizontalLoop(items, {
  draggable,
+ reduceMotion,
  wrapperEl: wrapperRef.current,
  onIndexChange: setActiveIndex,
  });
@@ -298,7 +322,7 @@ export default function InfiniteCarouselComp({
  loopRef.current = null;
  attemptsRef.current = 0;
  };
- }, [childArray.length, draggable, isMobile]);
+ }, [childArray.length, draggable, isMobile, reduceMotion]);
 
  useEffect(() => {
  if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
@@ -394,7 +418,7 @@ export default function InfiniteCarouselComp({
 
  wrapperRef.current.scrollBy({
  left: direction * amount,
- behavior:"smooth",
+ behavior: reduceMotion ?"auto" :"smooth",
  });
  };
 
@@ -406,7 +430,11 @@ export default function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.next({ duration: 0.4, ease:"power1.inOut" });
+ loopRef.current?.next(
+ reduceMotion
+ ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
+ : { duration: 0.4, ease:"power1.inOut" }
+ );
  };
 
  const handlePrev = () => {
@@ -417,7 +445,11 @@ export default function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.previous({ duration: 0.4, ease:"power1.inOut" });
+ loopRef.current?.previous(
+ reduceMotion
+ ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
+ : { duration: 0.4, ease:"power1.inOut" }
+ );
  };
 
  return (

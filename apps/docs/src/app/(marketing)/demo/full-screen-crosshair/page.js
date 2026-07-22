@@ -38,6 +38,20 @@ export default function Page() {
   <br/>
   Best experienced on desktop.
  </p>
+
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The crosshair keeps tracking.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Full Screen Crosshair follows your cursor continuously across the
+     screen. Since tracking motion is the entire effect, reduced motion
+     can&apos;t be applied here.
+   </p>
+ </div>
  </main>
  );
 }

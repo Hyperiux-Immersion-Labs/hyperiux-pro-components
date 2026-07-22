@@ -40,7 +40,7 @@ export function Menu2() {
           <Link
             key={block.title}
             href={block.href}
-            className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-6 transition-all duration-200 hover:bg-neutral-100 max-md:p-4"
+            className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-6 transition-all duration-200 hover:bg-neutral-100 max-md:p-4 motion-reduce:bg-transparent motion-reduce:transition-none"
           >
             <h4 className="text-lg font-semibold text-neutral-800 max-xl:text-3xl max-md:text-xl">{block.title}</h4>
             <p className="text-sm leading-6 text-neutral-600 max-xl:text-xl max-md:text-base max-md:leading-[1.2]">

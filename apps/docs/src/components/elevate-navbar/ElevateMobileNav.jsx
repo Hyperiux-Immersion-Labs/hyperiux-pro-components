@@ -69,6 +69,9 @@ export function ElevateNavbarMobile({
   const sectionsRef = useRef([]);
   const containerRef = useRef(null);
   const toggleButtonRef = useRef(null);
+  const reduceMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
   useFocusTrap({
     active: isMenuOpen,
@@ -87,6 +90,15 @@ export function ElevateNavbarMobile({
       gsap.set(panelElement, {
         pointerEvents: "auto",
       });
+
+      if (reduceMotion()) {
+        gsap.set(backdropElement, { autoAlpha: 1 });
+        gsap.set(panelElement, {
+          autoAlpha: 1,
+          y: 0,
+        });
+        return;
+      }
 
       gsap.to(backdropElement, {
         autoAlpha: 1,
@@ -107,6 +119,18 @@ export function ElevateNavbarMobile({
         }
       );
 
+      return;
+    }
+
+    if (reduceMotion()) {
+      gsap.set(panelElement, {
+        autoAlpha: 0,
+        y: PANEL_OFFSET_Y,
+        pointerEvents: "none",
+      });
+      gsap.set(backdropElement, {
+        autoAlpha: 0,
+      });
       return;
     }
 
@@ -132,6 +156,14 @@ export function ElevateNavbarMobile({
       if (!sectionElement) return;
 
       const isSectionOpen = activeDropdownIndex === index;
+
+      if (reduceMotion()) {
+        gsap.set(sectionElement, {
+          height: isSectionOpen ? sectionElement.scrollHeight : 0,
+          autoAlpha: isSectionOpen ? 1 : 0,
+        });
+        return;
+      }
 
       gsap.to(sectionElement, {
         height: isSectionOpen ? sectionElement.scrollHeight : 0,
@@ -162,7 +194,7 @@ export function ElevateNavbarMobile({
           ref={toggleButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
-          className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10"
+          className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMenuOpen ? (
@@ -192,7 +224,7 @@ export function ElevateNavbarMobile({
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw] max-sm:text-[3vw] uppercase text-white/85 transition hover:bg-white/10"
+                  className="flex items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw] max-sm:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                 >
                   {item.name}
                 </Link>
@@ -208,12 +240,12 @@ export function ElevateNavbarMobile({
                       currentIndex === index ? null : index
                     )
                   }
-                  className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw]! max-sm:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10"
+                  className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-md:text-[2.5vw]! max-sm:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                 >
                   {item.name}
 
                   <ChevronDown
-                    className={`h-[3.5vw] w-[3.5vw] transition-transform ${
+                    className={`h-[3.5vw] w-[3.5vw] transition-transform motion-reduce:rotate-0 motion-reduce:transition-none ${
                       isDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -235,7 +267,7 @@ export function ElevateNavbarMobile({
                         key={dropdownItem.title}
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center gap-[3vw] rounded-[2vw] bg-white/5 p-[2vw] max-sm:text-[2.8vw] max-md:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10"
+                        className="flex items-center gap-[3vw] rounded-[2vw] bg-white/5 p-[2vw] max-sm:text-[2.8vw] max-md:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
                       >
                         <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[2vw] bg-white/25">
                           <Image

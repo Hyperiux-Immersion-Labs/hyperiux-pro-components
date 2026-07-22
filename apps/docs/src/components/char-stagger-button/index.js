@@ -35,22 +35,41 @@ export default function CharStaggerButton({
 
   // State
   const [isActive, setIsActive] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   // Effects
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+    const syncReducedMotion = (event) => {
+      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+      setPrefersReducedMotion(matches);
+    };
+
+    if (mediaQuery) {
+      syncReducedMotion(mediaQuery);
+      mediaQuery.addEventListener("change", syncReducedMotion);
+    }
+
+    return () => {
+      mediaQuery?.removeEventListener("change", syncReducedMotion);
+    };
+  }, []);
+
   useEffect(() => {
     if (!hasMountedRef.current) {
       hasMountedRef.current = true;
       return;
     }
     const line = lineRef.current;
-    if (!line || isActive) return;
+    if (!line || isActive || prefersReducedMotion) return;
     line.style.transformOrigin = "right center";
     const onEnd = () => {
       line.style.transformOrigin = "left center";
       line.removeEventListener("transitionend", onEnd);
     };
     line.addEventListener("transitionend", onEnd);
-  }, [isActive]);
+  }, [isActive, prefersReducedMotion]);
 
   useEffect(() => {
     const textElement = textRef.current;
@@ -66,23 +85,25 @@ export default function CharStaggerButton({
       span.style.position = "relative";
       span.style.textShadow = `0px ${CHAR_TRANSLATE_Y} currentColor`;
       span.style.transform = "translateY(0em) rotate(0.001deg)";
-      span.style.transition = "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
+      span.style.transition = prefersReducedMotion
+        ? "none"
+        : "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
       span.style.willChange = "transform";
-      span.style.transitionDelay = `${index * staggerStep}s`;
+      span.style.transitionDelay = prefersReducedMotion ? "0s" : `${index * staggerStep}s`;
       if (char === " ") span.style.whiteSpace = "pre";
       textElement.appendChild(span);
     });
-  }, [text, staggerStep]);
+  }, [text, staggerStep, prefersReducedMotion]);
 
   useEffect(() => {
     const textElement = textRef.current;
     if (!textElement) return;
     Array.from(textElement.children).forEach((span) => {
-      span.style.transform = isActive
+      span.style.transform = isActive && !prefersReducedMotion
         ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
         : "translateY(0em) rotate(0.001deg)";
     });
-  }, [isActive]);
+  }, [isActive, prefersReducedMotion]);
 
   // Event handlers
   const onMouseEnter = useCallback(() => {
@@ -123,7 +144,7 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] ${className}`.trim()}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-md:motion-reduce:transition-none max-sm:motion-reduce:transition-none ${className}`.trim()}
     >
       <div className="mt-[0.3vw]">
         <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
@@ -138,9 +159,11 @@ export default function CharStaggerButton({
               className="absolute left-0 bottom-[15%] w-full bg-current"
               style={{
                 height: "1.5px",
-                transform: `scaleX(${isActive ? 1 : 0})`,
+                transform: `scaleX(${isActive && !prefersReducedMotion ? 1 : 0})`,
                 transformOrigin: "left center",
-                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+                transition: prefersReducedMotion
+                  ? "none"
+                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
               }}
             />
           )}
@@ -150,13 +173,18 @@ export default function CharStaggerButton({
       {showArrow && Icon && (
         <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
-            <Icon className="h-4 w-4 shrink-0" />
+            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none max-sm:motion-reduce:transition-none" />
           ) : (
             <div
               className="flex w-max"
               style={{
-                transform: isActive ? "translateX(5%)" : "translateX(-100%)",
-                transition: "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+                transform:
+                  isActive && !prefersReducedMotion
+                    ? "translateX(5%)"
+                    : "translateX(-100%)",
+                transition: prefersReducedMotion
+                  ? "none"
+                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
                 willChange: "transform",
               }}
             >
