@@ -9,6 +9,7 @@ const MAX_TRAIL_LENGTH = 8;
 const CELL_LIFETIME = 100;
 const GRID_IMAGE_BASE_URL =
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/FeddleAsciCursor";
+const getCanvasSafeMediaUrl = (source) => source;
 
 export default function PixelBloom({
   src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
@@ -39,7 +40,7 @@ export default function PixelBloom({
 
     for (let i = 0; i < totalImages; i++) {
       const img = new window.Image();
-      img.src = `${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`;
+      img.src = getCanvasSafeMediaUrl(`${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`);
 
       img.onload = () => {
         loadedCount += 1;
@@ -359,7 +360,7 @@ export default function PixelBloom({
     };
   }, [cellLifetime, effectRadius, gridImages, gridSize, src, type]);
 
-  const defaultVideoSrc = "/assets/videos/draggable-video.mp4";
+  const defaultVideoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/draggable-video.mp4";
 
   return (
     <div
@@ -370,7 +371,6 @@ export default function PixelBloom({
         <video
           ref={mediaRef}
           src={src || defaultVideoSrc}
-          crossOrigin="anonymous"
           autoPlay
           loop
           muted
@@ -378,9 +378,10 @@ export default function PixelBloom({
           className="absolute inset-0 h-full w-full object-cover opacity-0"
         />
       ) : (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           ref={mediaRef}
-          src={src}
+          src={getCanvasSafeMediaUrl(src)}
           alt="asset-image"
           className="absolute inset-0 h-full w-full object-cover opacity-0"
         />

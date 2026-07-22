@@ -262,7 +262,7 @@ export default function CoffeeBeanCursor() {
  <div  className='h-screen w-full bg-linear-to-b from-black to-[#110904] relative'
  onMouseMove={handleMouseMove}
  >
-    <p className='absolute text-[#3D1C0C] text-[8vw] w-full text-center font-bold left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>COFFEE BEANS</p>
+    <h1 className='absolute text-[#3D1C0C] text-[8vw] w-full text-center font-bold left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2'>COFFEE BEANS</h1>
  
  <Canvas camera={{ position: [0, 0, 4.8] }} className='h-full w-full'>
  <MouseTracker  mousePositionRef={mousePositionRef}

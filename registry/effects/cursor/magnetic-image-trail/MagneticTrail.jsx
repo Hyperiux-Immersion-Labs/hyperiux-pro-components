@@ -1,8 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef } from"react";
 
+const proxy = (url) => `/api/media-proxy?url=${encodeURIComponent(url)}`;
+
 const imageUrls = [
-  "https://picsum.photos/seed/1/800/600",
+ "https://picsum.photos/seed/1/800/600",
   "https://picsum.photos/seed/2/800/600",
   "https://picsum.photos/seed/3/800/600",
   "https://picsum.photos/seed/4/800/600",

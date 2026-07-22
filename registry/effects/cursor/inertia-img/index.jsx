@@ -2,7 +2,7 @@
 import InertiaImageComp from './InertiaImgComp';
 
 const images = [
-    "https://picsum.photos/seed/1/800/600",
+   "https://picsum.photos/seed/1/800/600",
     "https://picsum.photos/seed/2/800/600",
     "https://picsum.photos/seed/3/800/600",
     "https://picsum.photos/seed/4/800/600",
