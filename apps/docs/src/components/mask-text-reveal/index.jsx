@@ -6,6 +6,9 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
+
 export default function MaskTextReveal({
     children,
     animateOnScroll = true,
@@ -84,13 +87,41 @@ export default function MaskTextReveal({
 
             if (!linesRef.current.length) return;
 
-            gsap.set(el, { opacity: 1 });
-
             if (prefersReduced) {
                 gsap.set(linesRef.current, { maskPosition: "0% 100%" });
                 elements.forEach(forceAriaVisible);
+
+                gsap.set(el, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+                const fadeUpProps = {
+                    opacity: 1,
+                    y: 0,
+                    duration: REDUCED_MOTION_FADE_DURATION,
+                    ease: "power2.out",
+                    delay,
+                };
+
+                if (animateOnScroll) {
+                    const tween = gsap.to(el, {
+                        ...fadeUpProps,
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 80%",
+                            once: true,
+                        },
+                    });
+
+                    if (tween?.scrollTrigger) {
+                        triggersRef.current.push(tween.scrollTrigger);
+                    }
+                } else {
+                    gsap.to(el, fadeUpProps);
+                }
+
                 return;
             }
+
+            gsap.set(el, { opacity: 1 });
 
             gsap.set(linesRef.current, {
                 maskPosition: "100% 100%",

@@ -1,6 +1,20 @@
 {
   "name": "block-transition",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion route fallback with short opacity fades.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Block Transition",
   "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
@@ -10,18 +24,6 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/block-transition",
-  "tier": "free",
-  "subfolder": true,
-  "main": "index.jsx",
-  "exportName": "BlockTransition",
-  "exportKind": "default",
-  "importPath": "@/components/effects/block-transition",
-  "target": "src/components/effects/block-transition",
-  "files": [
-    {
-      "path": "index.jsx",
-      "target": "src/components/effects/block-transition/index.jsx"
-    }
-  ]
+  "previewUrl": "/page-transitions/block",
+  "tier": "free"
 }

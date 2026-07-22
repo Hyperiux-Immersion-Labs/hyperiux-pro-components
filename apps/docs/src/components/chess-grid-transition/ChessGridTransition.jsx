@@ -3,6 +3,7 @@
 import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import { prefersReducedMotion } from '@/lib/motion'
 
 export default function ChessGridTransition({ children, enableContentShift = false }) {
   const wrapperRef = useRef(null)
@@ -95,8 +96,14 @@ export default function ChessGridTransition({ children, enableContentShift = fal
     <TransitionRouter
       auto
       leave={(next) => {
-        const cells = gridRef.current.children
         const tl = gsap.timeline({ onComplete: next })
+
+        if (prefersReducedMotion()) {
+          tl.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
+          return () => tl.kill()
+        }
+
+        const cells = gridRef.current.children
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
@@ -109,8 +116,14 @@ export default function ChessGridTransition({ children, enableContentShift = fal
         return () => tl.kill()
       }}
       enter={(next) => {
-        const cells = gridRef.current.children
         const tl = gsap.timeline({ onComplete: next })
+
+        if (prefersReducedMotion()) {
+          tl.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
+          return () => tl.kill()
+        }
+
+        const cells = gridRef.current.children
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],

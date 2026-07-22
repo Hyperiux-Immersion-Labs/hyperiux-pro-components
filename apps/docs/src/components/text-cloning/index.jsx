@@ -15,6 +15,13 @@ export default function TextCloning() {
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
 
+        const prefersReducedMotion =
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
+        const layerCount = prefersReducedMotion ? 3 : 9;
+
         const lerp = (a, b, t) => a + (b - a) * t;
 
         const resize = () => {
@@ -49,7 +56,7 @@ export default function TextCloning() {
             const depthX = dx * 220;
             const depthY = dy * 220;
 
-            const layers = 9;
+            const layers = layerCount;
             const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42);
 
             for (let i = layers; i >= 0; i--) {
@@ -78,8 +85,8 @@ export default function TextCloning() {
         };
 
         const render = () => {
-            mouse.x = lerp(mouse.x, target.x, 0.08);
-            mouse.y = lerp(mouse.y, target.y, 0.08);
+            mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
+            mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
 
             ctx.clearRect(0, 0, w, h);
             ctx.fillStyle = "#101010";

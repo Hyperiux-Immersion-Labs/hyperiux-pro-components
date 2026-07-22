@@ -3,13 +3,30 @@
   "type": "registry:component",
   "title": "Spotlight Text",
   "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",
+  "category": "text",
+  "categories": [
+    "text"
+  ],
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpotlightText",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion spotlight tracking.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

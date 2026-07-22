@@ -3,13 +3,30 @@
   "type": "registry:component",
   "title": "Text Cloning",
   "description": "Canvas 2D effect that renders 9 depth-layered clones of any text string, offset by mouse parallax to create a 3D depth illusion. Includes a live text input and a subtle star-field background.",
+  "category": "text",
+  "categories": [
+    "text"
+  ],
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "TextCloning",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion cloning movement.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

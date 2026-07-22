@@ -3,6 +3,10 @@
   "type": "registry:component",
   "title": "Overflow Text Reveal",
   "description": "Text lines slide up from hidden overflow with smooth stagger animation on scroll",
+  "category": "text",
+  "categories": [
+    "text"
+  ],
   "dependencies": [
     "gsap"
   ],
@@ -10,8 +14,21 @@
   "exportName": "OverflowTextReveal",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion overflow reveal.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
