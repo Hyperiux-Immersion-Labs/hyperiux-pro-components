@@ -31,11 +31,15 @@ const fontFamily = "Aeonik, Arial, sans-serif";
 
 export const proUnlockedSubject = "Vault Pro is now unlocked";
 
-export function proUnlockedText({ planLabel }) {
+export function proUnlockedText({ planLabel, isAdminGrant = false }) {
+  const introLine = isAdminGrant
+    ? "Your Pro access is now active."
+    : "Your payment was successful.";
+
   return `
 Welcome to Vault Pro.
 
-Your payment was successful. Your account is live, and everything's unlocked. Browse every effect, add the source code directly to your project, customise it without package-level restrictions, and give your next project a look people won't forget.
+${introLine} Your account is live, and everything's unlocked. Browse every effect, add the source code directly to your project, customise it without package-level restrictions, and give your next project a look people won't forget.
 
 Your plan: ${planLabel}
 
@@ -47,7 +51,10 @@ Hyperiux Vault
 `;
 }
 
-export function ProUnlockedEmail({ planLabel = "Vault Pro" }) {
+export function ProUnlockedEmail({ planLabel = "Vault Pro", isAdminGrant = false }) {
+  const introLine = isAdminGrant
+    ? "Your Pro access is now active."
+    : "Your payment was successful.";
   return (
     <Tailwind>
       <Html>
@@ -106,7 +113,7 @@ export function ProUnlockedEmail({ planLabel = "Vault Pro" }) {
                   className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Your payment was successful. Your account is live, and
+                  {introLine} Your account is live, and
                   everything&apos;s unlocked. Browse every effect, add
                   the source code directly to your project, customise it
                   without package-level restrictions, and give your next
@@ -222,6 +229,6 @@ export function ProUnlockedEmail({ planLabel = "Vault Pro" }) {
 
 export default ProUnlockedEmail;
 
-export function renderProUnlockedEmail({ planLabel }) {
-  return <ProUnlockedEmail planLabel={planLabel} />;
+export function renderProUnlockedEmail({ planLabel, isAdminGrant = false }) {
+  return <ProUnlockedEmail planLabel={planLabel} isAdminGrant={isAdminGrant} />;
 }

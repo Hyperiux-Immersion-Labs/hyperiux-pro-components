@@ -1,5 +1,5 @@
 import "server-only";
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 
 const ACTIVE_STATUSES = ["active", "trialing"];
@@ -42,6 +42,7 @@ export async function getUserPlan(userId) {
   }
 
   let plan = "free";
+  let isExpired = false;
 
   if (data?.plan === "pro" && ACTIVE_STATUSES.includes(data.status)) {
     if (!data.current_period_end) {
@@ -50,14 +51,20 @@ export async function getUserPlan(userId) {
       const periodEnd = new Date(data.current_period_end).getTime();
       if (Number.isNaN(periodEnd) || periodEnd > Date.now()) {
         plan = "pro";
+      } else {
+        isExpired = true;
       }
     }
   }
 
-  if (plan === "free") {
-    // Legitimate "no active row yet" case (Supabase queried successfully,
-    // just nothing pro on file) - bridges the window between a successful
-    // checkout and the webhook writing the Supabase row.
+  if (plan === "free" && !data) {
+    // Legitimate "no row at all yet" case (Supabase queried successfully,
+    // nothing on file) - bridges the window between a successful checkout
+    // and the webhook writing the Supabase row. Deliberately NOT used when
+    // a row exists but is expired/inactive: Clerk's publicMetadata is only
+    // ever cleared by a webhook (real subscriptions) or the admin route
+    // (manual grants) - an expired row has neither in flight, so falling
+    // through here would resurrect access from stale metadata forever.
     const user = await currentUser();
 
     if (
@@ -65,6 +72,42 @@ export async function getUserPlan(userId) {
       user?.publicMetadata?.proAccess === true
     ) {
       plan = "pro";
+    }
+  }
+
+  if (isExpired) {
+    // Manually-granted pro (admin route) has no real Razorpay subscription
+    // behind it, so no webhook ever fires to downgrade it - this is the
+    // only place that happens, lazily, on the next time anything checks
+    // this user's plan. Real subscriptions should already be caught up by
+    // their own webhook before current_period_end passes; this is a safety
+    // net for both, not admin-grant-specific.
+    await supabase
+      .from("subscriptions")
+      .update({ plan: "free", status: "expired", updated_at: new Date().toISOString() })
+      .eq("clerk_user_id", userId);
+
+    try {
+      const clerk = await clerkClient();
+      const clerkUser = await clerk.users.getUser(userId);
+
+      // Same field set markUserFree() clears on a real cancellation/expiry
+      // webhook - this is the manual-grant/missed-webhook equivalent, so it
+      // shouldn't leave a different (stale) shape behind in publicMetadata.
+      await clerk.users.updateUser(userId, {
+        publicMetadata: {
+          ...clerkUser.publicMetadata,
+          plan: "free",
+          proAccess: false,
+          billingInterval: null,
+          subscriptionStatus: "expired",
+          currentPeriodEnd: null,
+          razorpaySubscriptionId: null,
+          razorpayPlanId: null,
+        },
+      });
+    } catch (metaError) {
+      console.error("GET_USER_PLAN_SELF_HEAL_CLERK_ERROR:", metaError);
     }
   }
 
