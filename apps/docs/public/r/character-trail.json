@@ -20,6 +20,11 @@
       "path": "CharacterTrailComp.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/CharacterTrailComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

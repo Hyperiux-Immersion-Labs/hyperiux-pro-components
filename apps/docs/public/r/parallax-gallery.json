@@ -11,8 +11,15 @@
   "exportName": "ParallaxGallery",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: off-center item rotation and scale are reduced to 25% strength instead of full parallax",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

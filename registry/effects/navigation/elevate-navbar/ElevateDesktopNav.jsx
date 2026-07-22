@@ -80,6 +80,12 @@ export function ElevateNavbarDesktop({
 
   const [renderedDropdownIndex, setRenderedDropdownIndexState] = useState(null);
   const [activeChevronIndex, setActiveChevronIndex] = useState(null);
+  const reduceMotion = useCallback(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true,
+    []
+  );
 
   const killHideCall = useCallback(() => {
     if (!hideCallRef.current) return;
@@ -134,20 +140,33 @@ export function ElevateNavbarDesktop({
     navLinksRef.current.forEach((linkElement, index) => {
       if (!linkElement) return;
 
+      const color =
+        activeIndex !== null && index !== activeIndex
+          ? DIMMED_TEXT_COLOR
+          : ACTIVE_TEXT_COLOR;
+
+      if (reduceMotion()) {
+        gsap.set(linkElement, { color });
+        return;
+      }
+
       gsap.to(linkElement, {
-        color:
-          activeIndex !== null && index !== activeIndex
-            ? DIMMED_TEXT_COLOR
-            : ACTIVE_TEXT_COLOR,
+        color,
         duration: 0.22,
         ease: "power2.out",
         overwrite: true,
       });
     });
-  }, []);
+  }, [reduceMotion]);
 
   const animateTextSwap = useCallback((item, isEntering) => {
     if (!item) return;
+
+    if (reduceMotion()) {
+      gsap.set(item.defaultText, { yPercent: 0 });
+      gsap.set(item.hoverText, { yPercent: 100 });
+      return;
+    }
 
     gsap
       .timeline({
@@ -159,7 +178,7 @@ export function ElevateNavbarDesktop({
       })
       .to(item.defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(item.hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, []);
+  }, [reduceMotion]);
 
   const initDropdownItemText = useCallback(() => {
     dropdownTextDataRef.current = dropdownItemsRef.current.map((itemElement) => {
@@ -187,6 +206,15 @@ export function ElevateNavbarDesktop({
     killItemTween();
     gsap.killTweensOf(dropdownItems);
 
+    if (reduceMotion()) {
+      gsap.set(dropdownItems, {
+        opacity: 1,
+        y: 0,
+        pointerEvents: "auto",
+      });
+      return;
+    }
+
     gsap.set(dropdownItems, {
       opacity: 0,
       y: DROPDOWN_ITEM_OFFSET_Y,
@@ -204,7 +232,7 @@ export function ElevateNavbarDesktop({
       stagger: 0.025,
       ease: "power3.out",
     });
-  }, [getCurrentDropdownItems, killItemTween]);
+  }, [getCurrentDropdownItems, killItemTween, reduceMotion]);
 
   const animateDropdownItemsOut = useCallback(
     (onComplete) => {
@@ -217,6 +245,16 @@ export function ElevateNavbarDesktop({
 
       killItemTween();
       gsap.killTweensOf(dropdownItems);
+
+      if (reduceMotion()) {
+        gsap.set(dropdownItems, {
+          y: DROPDOWN_ITEM_OFFSET_Y,
+          opacity: 0,
+          pointerEvents: "none",
+        });
+        onComplete?.();
+        return;
+      }
 
       itemTweenRef.current = gsap.timeline({
         overwrite: true,
@@ -236,7 +274,7 @@ export function ElevateNavbarDesktop({
         ease: "power2.out",
       });
     },
-    [getCurrentDropdownItems, killItemTween]
+    [getCurrentDropdownItems, killItemTween, reduceMotion]
   );
 
   const closeDropdown = useCallback(() => {
@@ -292,6 +330,15 @@ export function ElevateNavbarDesktop({
         killItemTween();
         gsap.killTweensOf(dropdownItems);
 
+        if (reduceMotion()) {
+          gsap.set(dropdownItems, {
+            y: 0,
+            opacity: 1,
+            pointerEvents: "auto",
+          });
+          return;
+        }
+
         gsap.set(dropdownItems, {
           pointerEvents: "auto",
         });
@@ -323,6 +370,7 @@ export function ElevateNavbarDesktop({
       killItemTween,
       killSwitchTween,
       menuItems,
+      reduceMotion,
       renderedDropdownIndex,
       setRenderedDropdownIndex,
       showWrapper,
@@ -332,12 +380,18 @@ export function ElevateNavbarDesktop({
   const scheduleCloseDropdown = useCallback(() => {
     killHideCall();
 
+    if (reduceMotion()) {
+      if (isPointerInsideDropdownRef.current) return;
+      closeDropdown();
+      return;
+    }
+
     hideCallRef.current = gsap.delayedCall(DROPDOWN_POINTER_DELAY, () => {
       if (isPointerInsideDropdownRef.current) return;
 
       closeDropdown();
     });
-  }, [closeDropdown, killHideCall]);
+  }, [closeDropdown, killHideCall, reduceMotion]);
 
   const onHeaderMouseEnter = useCallback(() => {
     killHideCall();
@@ -422,6 +476,18 @@ export function ElevateNavbarDesktop({
     const defaultText = ctaElement.querySelector("[data-default]");
     const hoverText = ctaElement.querySelector("[data-hover]");
 
+    if (reduceMotion()) {
+      gsap.set(ctaElement, {
+        backgroundColor: isEntering
+          ? HOVER_CTA_BACKGROUND
+          : DEFAULT_CTA_BACKGROUND,
+        color: isEntering ? "#fff" : "#000",
+      });
+      gsap.set(defaultText, { yPercent: 0 });
+      gsap.set(hoverText, { yPercent: 100 });
+      return;
+    }
+
     gsap
       .timeline({
         defaults: {
@@ -441,7 +507,7 @@ export function ElevateNavbarDesktop({
       )
       .to(defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, []);
+  }, [reduceMotion]);
 
   const onDropdownMouseEnter = useCallback(() => {
     isPointerInsideDropdownRef.current = true;
@@ -558,7 +624,7 @@ export function ElevateNavbarDesktop({
 
                 {item.isDropdown && (
                   <ChevronDown
-                    className={`h-[1.3vw] w-[1.3vw] shrink-0 transition-transform duration-100 ease-out ${
+                    className={`h-[1.3vw] w-[1.3vw] shrink-0 transition-transform duration-100 ease-out motion-reduce:rotate-0 motion-reduce:transition-none ${
                       isDropdownActive ? "-rotate-180" : "rotate-0"
                     }`}
                   />
@@ -606,7 +672,7 @@ export function ElevateNavbarDesktop({
                   href={item.href}
                   onMouseEnter={() => onDropdownItemEnter(index)}
                   onMouseLeave={() => onDropdownItemLeave(index)}
-                  className="flex items-center justify-between rounded-[0.55vw] bg-[#363737] p-[0.52vw] text-[0.98vw] text-white transition-all duration-300 hover:scale-[1.02] hover:bg-white hover:text-black!"
+                  className="flex items-center justify-between rounded-[0.55vw] bg-[#363737] p-[0.52vw] text-[0.98vw] text-white transition-all duration-300 hover:scale-[1.02] hover:bg-white hover:text-black! motion-reduce:scale-100 motion-reduce:bg-[#363737] motion-reduce:text-white! motion-reduce:transition-none"
                 >
                   <div className="flex items-center gap-[1.95vw]">
                     <div className="size-[6.5vw] overflow-hidden rounded-[0.55vw]">

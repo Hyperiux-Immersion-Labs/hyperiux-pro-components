@@ -3,6 +3,7 @@ import {
   motion,
   useAnimationFrame,
   useMotionValue,
+  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
@@ -14,6 +15,11 @@ const wrap = (min, max, value) => {
   const range = max - min
   return ((((value - min) % range) + range) % range) + min
 }
+
+// How much of each scrolled pixel becomes path-offset percentage in
+// reduced-motion mode. Keeps a normal scroll from spinning the item around
+// the path multiple times.
+const REDUCED_MOTION_SCROLL_FACTOR = 0.05
 
 function MarqueePathItem({
   child,
@@ -145,6 +151,7 @@ const SVGPathComp = ({
   const marqueeContainerRef = useRef(null)
   const baseOffset = useMotionValue(0)
   const [isPositionReady, setIsPositionReady] = useState(false)
+  const reduceMotion = useReducedMotion()
 
   const pathRef = useRef(null)
 
@@ -233,6 +240,16 @@ const SVGPathComp = ({
   const scrollVelocity = useVelocity(scrollY)
   const smoothVelocity = useSpring(scrollVelocity, scrollSpringConfig)
 
+  // Reduced motion: track raw scroll position directly, no spring/lerp
+  // smoothing - the path item should only move exactly as far as the user
+  // scrolls, with no eased/interpolated catch-up.
+  const lastScrollYRef = useRef(0)
+
+  useEffect(() => {
+    if (!reduceMotion) return
+    lastScrollYRef.current = scrollY.get()
+  }, [reduceMotion, scrollY])
+
   // Hover and drag state tracking
   const isHoveredRef = useRef(false)
   const isDragging = useRef(false)
@@ -256,6 +273,26 @@ const SVGPathComp = ({
 
   // Animation frame handler
   useAnimationFrame((_, delta) => {
+    if (reduceMotion) {
+      // Static: no autoplay drift, no drag/hover speed changes, no
+      // spring/lerp smoothing. Position only advances by exactly how far
+      // the user has scrolled since the last frame.
+      const currentScrollY = scrollY.get()
+      const scrollDelta = currentScrollY - lastScrollYRef.current
+      lastScrollYRef.current = currentScrollY
+
+      if (scrollDelta !== 0) {
+        // scrollDelta is raw pixels, baseOffset is a 0-100 path percentage -
+        // scale it down so a normal scroll only nudges the offset a little.
+        baseOffset.set(
+          baseOffset.get() +
+            scrollDelta * REDUCED_MOTION_SCROLL_FACTOR * directionFactor.current
+        )
+      }
+
+      return
+    }
+
     if (isDragging.current && draggable) {
       baseOffset.set(baseOffset.get() + dragVelocity.current)
 
@@ -318,7 +355,7 @@ const SVGPathComp = ({
   const lastPointerPosition = useRef({ x: 0, y: 0 })
 
   const handlePointerDown = (e) => {
-    if (!draggable) return
+    if (!draggable || reduceMotion) return
     ;(e.currentTarget).setPointerCapture(e.pointerId)
 
     if (grabCursor) {

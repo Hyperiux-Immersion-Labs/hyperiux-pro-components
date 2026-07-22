@@ -10,8 +10,15 @@
   "exportName": "DraggableMarquee",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: auto-scroll and post-release throw momentum are disabled, drag remains fully interactive",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -22,6 +29,11 @@
       "path": "DraggableMarqueeComp.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/DraggableMarqueeComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

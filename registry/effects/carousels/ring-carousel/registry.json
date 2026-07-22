@@ -1,6 +1,10 @@
 {
   "name": "ring-carousel",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: rotation/drag animations are replaced with a reduced-motion-safe fade and drag sensitivity/momentum are scaled down", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Ring Carousel",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",

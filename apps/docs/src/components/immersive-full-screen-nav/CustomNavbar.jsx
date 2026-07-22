@@ -64,6 +64,9 @@ export default function CustomNavbar({
   const agencyRef = useRef(null);
   const taglineRef = useRef(null);
   const locationRef = useRef(null);
+  const reduceMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
   // Animation helpers
   const killAllTweens = () => {
@@ -107,6 +110,16 @@ export default function CustomNavbar({
     }
 
     resetAnimatedElements();
+
+    if (reduceMotion()) {
+      gsap.set(agencyRef.current, { y: 0, opacity: 1 });
+      gsap.set(taglineRef.current, { y: 0, opacity: 1 });
+      gsap.set(linksRef.current, { y: 0, opacity: 1 });
+      gsap.set(imagesRef.current, { scale: 1, opacity: 1 });
+      gsap.set(socialsRef.current, { y: 0, opacity: 1 });
+      gsap.set(locationRef.current, { y: 0, opacity: 1 });
+      return;
+    }
 
     const animationDelay = Math.max(delay - DELAY_OFFSET, 0);
 
@@ -217,7 +230,7 @@ export default function CustomNavbar({
                 <img
                   src={src}
                   alt={`img-${index}`}
-                  className="object-cover transition duration-500 hover:scale-105 absolute inset-0 w-full h-full"
+                  className="object-cover transition duration-500 hover:scale-105 motion-reduce:scale-100 motion-reduce:hover:scale-100 motion-reduce:transition-none absolute inset-0 w-full h-full"
                 />
               </div>
             ))}

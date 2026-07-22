@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const DESKTOP_WIDTH = 1200;
 const TABLET_MIN_WIDTH = 768;
@@ -92,6 +93,7 @@ export function CircularSplitRollComp({
   const rootRef = useRef(null);
   const stickyRef = useRef(null);
   const progressRef = useRef(0);
+  const reducedMotion = usePrefersReducedMotion();
 
   const safeItems = useMemo(() => {
     return items.map((item, index) => ({
@@ -103,7 +105,7 @@ export function CircularSplitRollComp({
   }, [items]);
 
   useEffect(() => {
-    if (!rootRef.current || !stickyRef.current) return;
+    if (!rootRef.current || !stickyRef.current || reducedMotion) return;
 
     const mm = gsap.matchMedia();
 
@@ -293,6 +295,7 @@ export function CircularSplitRollComp({
     textFocusPower,
     imageFocusStart,
     imageFocusPower,
+    reducedMotion,
   ]);
 
   return (
@@ -307,7 +310,7 @@ export function CircularSplitRollComp({
     >
       <div
         ref={stickyRef}
-        className="relative h-screen w-full overflow-hidden max-md:hidden"
+        className={`relative h-screen w-full overflow-hidden ${reducedMotion ? "hidden" : "max-md:hidden"}`}
       >
         <div className="relative mx-auto flex h-full w-full">
           <div className="relative flex h-full w-[50vw] translate-x-[-60%] items-center justify-center">
@@ -346,7 +349,9 @@ export function CircularSplitRollComp({
         </div>
       </div>
 
-      <div className="hidden w-full px-5 py-10 max-md:block max-sm:px-4 max-sm:py-8">
+      <div
+        className={`w-full px-5 py-10 max-sm:px-4 max-sm:py-8 ${reducedMotion ? "block" : "hidden max-md:block"}`}
+      >
         <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-5 max-sm:grid-cols-2 max-sm:gap-4">
           {safeItems.map((item) => (
             <article
@@ -374,6 +379,23 @@ export function CircularSplitRollComp({
           ))}
         </div>
       </div>
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[clamp(1.25rem,3vw,2rem)] leading-none text-[#111111]">
+            The circle has stopped turning.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, so items are shown in a static grid
+            instead of rolling around a circular path. The effect depends on
+            continuous rotation as you scroll, and your system preference
+            asks us to keep that still.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

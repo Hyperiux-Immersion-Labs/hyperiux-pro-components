@@ -19,6 +19,10 @@ export default function StackingCardComp({ data = [] }) {
  cardsRef.current = cardsRef.current.slice(0, data.length);
 
  const ctx = gsap.context(() => {
+ const reduceMotion = window.matchMedia(
+ "(prefers-reduced-motion: reduce)"
+ ).matches;
+
  const cards = cardsRef.current.filter(Boolean);
  const numCards = cards.length;
 
@@ -38,7 +42,7 @@ export default function StackingCardComp({ data = [] }) {
 
  const firstImage = cards[0]?.querySelector(".card-image");
 
- if (firstImage) {
+ if (firstImage && !reduceMotion) {
  gsap.fromTo(
  firstImage,
  { scale: 1.5 },

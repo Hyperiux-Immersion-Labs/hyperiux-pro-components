@@ -4,14 +4,18 @@ import Link from "next/link";
 import { gsap } from"gsap";
 import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const CircularSliderComp = ({ heading, para, data = [] }) => {
  const outerRef = useRef(null);
  const wheelRef = useRef(null);
+ const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
+ if (reducedMotion) return;
+
  const ctx = gsap.context(() => {
  const wheel = wheelRef.current;
  const cards = gsap.utils.toArray(".wheel-card");
@@ -58,14 +62,14 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  }, outerRef);
 
  return () => ctx.revert();
- }, []);
+ }, [reducedMotion]);
 
  return (
  <>
 
  <section
  ref={outerRef}
- className="max-md:hidden relative h-[250vh]"
+ className={`relative h-[250vh] ${reducedMotion ? "hidden" : "max-md:hidden"}`}
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
@@ -109,7 +113,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </section>
 
  {/* Mobile / Tablet */}
- <section className="hidden max-md:block py-[16vw] max-sm:py-[22vw] px-[5vw]">
+ <section className={`py-[16vw] max-sm:py-[22vw] px-[5vw] ${reducedMotion ? "block" : "hidden max-md:block"}`}>
  <h2 className="text-center max-md:text-[4vw] max-sm:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {heading}
  </h2>
@@ -133,6 +137,23 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  {para}
  </p>
  </section>
+
+ {reducedMotion && (
+ <div
+ aria-live="polite"
+ className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+ >
+ <h2 className="text-[clamp(1.25rem,3vw,2rem)] leading-none text-[#111111]">
+ The wheel has stopped turning.
+ </h2>
+ <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+ Reduced motion is enabled, so products are shown in a static list
+ instead of rotating around the wheel. The effect depends on
+ continuous scroll-driven rotation, and your system preference asks
+ us to keep that still.
+ </p>
+ </div>
+ )}
  </>
  );
 };

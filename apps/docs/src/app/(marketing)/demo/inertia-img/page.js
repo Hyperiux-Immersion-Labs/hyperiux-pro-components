@@ -29,6 +29,20 @@ const Page = () => {
  </div>
  </div>
 
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-5 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center  backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The image keeps drifting.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Inertia Image moves with simulated momentum from your cursor or touch.
+     Because the physics is the effect, reduced motion can&apos;t be
+     honored here.
+   </p>
+ </div>
+
                 <InertiaImage/>
             </div>
         </main>

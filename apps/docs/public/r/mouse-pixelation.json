@@ -35,6 +35,11 @@
       "path": "PixelShift.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/PixelShift.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

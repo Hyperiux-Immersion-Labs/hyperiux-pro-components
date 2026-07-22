@@ -20,6 +20,19 @@ const page = () => {
        </p>
      </div>
     <CoffeeBeanCursor />
+    <div
+      aria-live="polite"
+      className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+    >
+      <h2 className="text-sm leading-none text-white">
+        The beans keep drifting.
+      </h2>
+      <p className="mt-2 text-xs leading-5 text-white/65">
+        Coffee Bean Cursor animates in direct response to cursor movement.
+        The motion is the effect, so it can&apos;t be reduced without
+        disabling it entirely.
+      </p>
+    </div>
     </>
   )
 }

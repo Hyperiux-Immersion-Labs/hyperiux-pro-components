@@ -29,13 +29,15 @@ const ScrollStackComp = ({cards = [] }) => {
  }
 
  const ctx = gsap.context(() => {
+ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
  const currentCards = cardRefs.current.filter(Boolean);
  const currentRows = rowRefs.current.filter(Boolean);
 
  currentCards.forEach((card, index) => {
  gsap.set(card, {
  autoAlpha: 1,
- scale: index === 0 ? 1 : 1.1,
+ scale: reduceMotion || index === 0 ? 1 : 1.1,
  transformOrigin:"center center",
  });
  });
@@ -56,6 +58,7 @@ const ScrollStackComp = ({cards = [] }) => {
  },
  });
 
+ if (!reduceMotion) {
  handoff.to(
  nextCard,
  {
@@ -64,6 +67,7 @@ const ScrollStackComp = ({cards = [] }) => {
  },
  0
  );
+ }
 
  gsap.to(card, {
  autoAlpha: 0,

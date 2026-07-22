@@ -22,6 +22,11 @@
       "path": "2dCanvasTracker.js",
       "type": "registry:component",
       "target": "components/hyperiux/2dCanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

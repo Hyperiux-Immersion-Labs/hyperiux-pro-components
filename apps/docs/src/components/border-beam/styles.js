@@ -845,6 +845,12 @@ function breatheTableStatic(table, variant, frozenAlpha) {
     .join(',\n    ');
 }
 
+/**
+ * Under prefers-reduced-motion, stretch animation durations (and pulse periods)
+ * by this factor instead of freezing the beam entirely.
+ */
+export const REDUCED_MOTION_SCALE = 3;
+
 // Pauses every animation on an instance (wrapper + pseudo layers + bloom) when it
 // carries the `data-paused` attribute. Driven by an IntersectionObserver so beams
 // that are scrolled offscreen stop doing per-frame paint work entirely.
@@ -856,6 +862,20 @@ function frozenAnimRule(id) {
 [data-rim="${id}"][data-paused] [data-rim-glow] {
   animation-play-state: paused !important;
 }`;
+}
+
+/** Slow continuous motion under prefers-reduced-motion (scale durations, don't freeze). */
+function reducedMotionRule(id) {
+  return `
+@media (prefers-reduced-motion: reduce) {
+  [data-rim="${id}"] {
+    --rim-motion-scale: ${REDUCED_MOTION_SCALE};
+  }
+}`;
+}
+
+function motionDur(seconds) {
+  return `calc(${seconds}s * var(--rim-motion-scale, 1))`;
 }
 
 // @property registrations for all per-instance pulse custom properties.
@@ -959,7 +979,7 @@ export function buildPulseConfig(size, theme, duration, hueRange, staticColors, 
 // Only the (short, one-shot) fade is still a CSS animation; the breathing is
 // driven from JS so it can be frame-rate capped and paused offscreen.
 function breatheWrapperAnim(id, fadeName, fadeDur) {
-  return `  animation: ${fadeName}-${id} ${fadeDur}s ease forwards;`;
+  return `  animation: ${fadeName}-${id} ${motionDur(fadeDur)} ease forwards;`;
 }
 
 /**
@@ -1014,7 +1034,7 @@ function smallVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: rim-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: rim-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes rim-hue-shift-${id} {
@@ -1117,14 +1137,14 @@ function smallVariantCSS(options) {
 
 [data-rim="${id}"][data-active] {
   animation:
-    rim-spin-${id} ${duration}s linear infinite,
-    rim-fade-in-${id} 0.6s ease forwards;
+    rim-spin-${id} ${motionDur(duration)} linear infinite,
+    rim-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-rim="${id}"][data-fading] {
   animation:
-    rim-spin-${id} ${duration}s linear infinite,
-    rim-fade-out-${id} 0.5s ease forwards;
+    rim-spin-${id} ${motionDur(duration)} linear infinite,
+    rim-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-rim="${id}"][data-active]::after,
@@ -1223,6 +1243,7 @@ function smallVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${frozenAnimRule(id)}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1253,7 +1274,7 @@ function borderVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: rim-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: rim-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes rim-hue-shift-${id} {
@@ -1346,14 +1367,14 @@ function borderVariantCSS(options) {
 
 [data-rim="${id}"][data-active] {
   animation:
-    rim-spin-${id} ${duration}s linear infinite,
-    rim-fade-in-${id} 0.6s ease forwards;
+    rim-spin-${id} ${motionDur(duration)} linear infinite,
+    rim-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-rim="${id}"][data-fading] {
   animation:
-    rim-spin-${id} ${duration}s linear infinite,
-    rim-fade-out-${id} 0.5s ease forwards;
+    rim-spin-${id} ${motionDur(duration)} linear infinite,
+    rim-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-rim="${id}"][data-active]::after,
@@ -1471,6 +1492,7 @@ function borderVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${frozenAnimRule(id)}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1607,19 +1629,7 @@ ${breatheWrapperAnim(id, 'rim-fade-out', 0.5)}
 @keyframes rim-fade-in-${id} { to { --rim-opacity-${id}: 1; } }
 @keyframes rim-fade-out-${id} { from { --rim-opacity-${id}: 1; } to { --rim-opacity-${id}: 0; } }
 ${frozenAnimRule(id)}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-rim="${id}"][data-active],
-  [data-rim="${id}"][data-fading],
-  [data-rim="${id}"][data-active]::after,
-  [data-rim="${id}"][data-fading]::after,
-  [data-rim="${id}"][data-active]::before,
-  [data-rim="${id}"][data-fading]::before,
-  [data-rim="${id}"][data-active] [data-rim-glow],
-  [data-rim="${id}"][data-fading] [data-rim-glow] {
-    animation: none !important;
-  }
-}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1793,19 +1803,7 @@ ${hairlineOpacity > 0 ? `
 @keyframes rim-fade-in-${id} { to { --rim-opacity-${id}: 1; } }
 @keyframes rim-fade-out-${id} { from { --rim-opacity-${id}: 1; } to { --rim-opacity-${id}: 0; } }
 ${frozenAnimRule(id)}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-rim="${id}"][data-active],
-  [data-rim="${id}"][data-fading],
-  [data-rim="${id}"][data-active]::after,
-  [data-rim="${id}"][data-fading]::after,
-  [data-rim="${id}"][data-active]::before,
-  [data-rim="${id}"][data-fading]::before,
-  [data-rim="${id}"][data-active] [data-rim-glow],
-  [data-rim="${id}"][data-fading] [data-rim-glow] {
-    animation: none !important;
-  }
-}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1836,11 +1834,11 @@ function lineVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: rim-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: rim-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftBloomAnimation = staticColors
     ? ''
-    : `animation: rim-hue-shift-bloom-${id} 8s ease-in-out infinite;`;
+    : `animation: rim-hue-shift-bloom-${id} ${motionDur(8)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes rim-hue-shift-${id} {
@@ -1926,22 +1924,22 @@ function lineVariantCSS(options) {
 
 [data-rim="${id}"][data-active] {
   animation:
-    rim-travel-${id} ${duration}s linear infinite,
-    rim-edge-fade-${id} ${duration}s linear infinite,
-    rim-breathe-${id} ${(duration * 1.3).toFixed(1)}s ease-in-out infinite,
-    rim-spike-${id} ${(duration * 1.33).toFixed(1)}s ease-in-out infinite,
-    rim-spike2-${id} ${(duration * 1.7).toFixed(1)}s ease-in-out infinite,
-    rim-fade-in-${id} 0.6s ease forwards;
+    rim-travel-${id} ${motionDur(duration)} linear infinite,
+    rim-edge-fade-${id} ${motionDur(duration)} linear infinite,
+    rim-breathe-${id} ${motionDur((duration * 1.3).toFixed(1))} ease-in-out infinite,
+    rim-spike-${id} ${motionDur((duration * 1.33).toFixed(1))} ease-in-out infinite,
+    rim-spike2-${id} ${motionDur((duration * 1.7).toFixed(1))} ease-in-out infinite,
+    rim-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-rim="${id}"][data-fading] {
   animation:
-    rim-travel-${id} ${duration}s linear infinite,
-    rim-edge-fade-${id} ${duration}s linear infinite,
-    rim-breathe-${id} ${(duration * 1.3).toFixed(1)}s ease-in-out infinite,
-    rim-spike-${id} ${(duration * 1.33).toFixed(1)}s ease-in-out infinite,
-    rim-spike2-${id} ${(duration * 1.7).toFixed(1)}s ease-in-out infinite,
-    rim-fade-out-${id} 0.5s ease forwards;
+    rim-travel-${id} ${motionDur(duration)} linear infinite,
+    rim-edge-fade-${id} ${motionDur(duration)} linear infinite,
+    rim-breathe-${id} ${motionDur((duration * 1.3).toFixed(1))} ease-in-out infinite,
+    rim-spike-${id} ${motionDur((duration * 1.33).toFixed(1))} ease-in-out infinite,
+    rim-spike2-${id} ${motionDur((duration * 1.7).toFixed(1))} ease-in-out infinite,
+    rim-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-rim="${id}"][data-active]::after,
@@ -2093,5 +2091,6 @@ function lineVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${frozenAnimRule(id)}
+${reducedMotionRule(id)}
 `;
 }

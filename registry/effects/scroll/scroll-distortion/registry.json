@@ -1,6 +1,9 @@
 {
   "name": "scroll-distortion",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: the WebGL image transition drops its displacement/RGB-shift warp for a plain crossfade, and the text transition fades instead of sliding", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Scroll Distortion",
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",

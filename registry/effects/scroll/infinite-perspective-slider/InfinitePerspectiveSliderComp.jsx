@@ -8,6 +8,13 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(SplitText);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
 const SCROLL_PER_PX = 1.0;
 const LERP = 0.1;
 const VELOCITY_LERP = 0.09;
@@ -191,34 +198,46 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
 
     const state = stateRef.current;
     const loopWidth = images.length * cardStep;
+    const reducedMotion = prefersReducedMotion();
 
     initSetters();
 
     const tick = () => {
-      state.current = lerp(state.current, state.target, LERP);
-      state.velocity = state.target - state.current;
+      // Reduced motion: snap straight to the target (no lerp smoothing) and
+      // never build up rotation velocity, so cards never tilt while
+      // scrolling or dragging - they just track the pointer/wheel directly.
+      if (reducedMotion) {
+        state.current = state.target;
+        state.velocity = 0;
+        state.smoothVelocity = 0;
+        state.rotationVelocity = 0;
+        state.currentRotation = 0;
+      } else {
+        state.current = lerp(state.current, state.target, LERP);
+        state.velocity = state.target - state.current;
 
-      state.smoothVelocity = lerp(
-        state.smoothVelocity,
-        state.velocity,
-        VELOCITY_LERP
-      );
+        state.smoothVelocity = lerp(
+          state.smoothVelocity,
+          state.velocity,
+          VELOCITY_LERP
+        );
 
-      state.rotationVelocity = lerp(
-        state.rotationVelocity,
-        state.velocity,
-        ROTATION_DAMP
-      );
+        state.rotationVelocity = lerp(
+          state.rotationVelocity,
+          state.velocity,
+          ROTATION_DAMP
+        );
 
-      const absVel = Math.abs(state.rotationVelocity);
-      const sign = Math.sign(state.rotationVelocity);
-      const targetRotation = sign * absVel * ROTATION_SENSITIVITY;
+        const absVel = Math.abs(state.rotationVelocity);
+        const sign = Math.sign(state.rotationVelocity);
+        const targetRotation = sign * absVel * ROTATION_SENSITIVITY;
 
-      state.currentRotation = lerp(
-        state.currentRotation,
-        targetRotation,
-        ROTATION_LERP
-      );
+        state.currentRotation = lerp(
+          state.currentRotation,
+          targetRotation,
+          ROTATION_LERP
+        );
+      }
 
       const finalRotation = clamp(state.currentRotation, -80, 80);
 

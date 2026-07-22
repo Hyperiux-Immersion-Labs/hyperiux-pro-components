@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useLayoutEffect, useRef, useState } from"react";
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from"react";
 import gsap from"gsap";
 
 const AnimatedTabsComp = ({
@@ -19,7 +19,22 @@ const AnimatedTabsComp = ({
  const labelRefs = useRef([]);
  const contentRefs = useRef([]);
  const activeLineRef = useRef(null);
+ const reduceMotionRef = useRef(
+ typeof window !=="undefined" &&
+ (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+ );
  const baseId = useId();
+
+ useEffect(() => {
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ if (!mq) return;
+ const onChange = (event) => {
+ reduceMotionRef.current = event.matches;
+ };
+ reduceMotionRef.current = mq.matches;
+ mq.addEventListener?.("change", onChange);
+ return () => mq.removeEventListener?.("change", onChange);
+ }, []);
 
  const moveActiveLine = (index) => {
  const activeLabel = labelRefs.current[index];
@@ -42,10 +57,13 @@ const AnimatedTabsComp = ({
  if (!currentContent || !nextContent || currentIndex === nextIndex) return;
 
  const direction = nextIndex > currentIndex ? 1 : -1;
+ // Reduced-motion: opacity fade only — no X slide.
+ const useSlide =
+ animationType ==="slide" && !reduceMotionRef.current;
 
  gsap.killTweensOf([currentContent, nextContent]);
 
- if (animationType ==="slide") {
+ if (useSlide) {
  gsap.to(currentContent, {
  opacity: 0,
  x: -direction * slideDistance,
@@ -82,12 +100,14 @@ const AnimatedTabsComp = ({
  gsap.set(currentContent, {
  display:"none",
  pointerEvents:"none",
+ x: 0,
  });
 
  gsap.set(nextContent, {
  display:"block",
  pointerEvents:"auto",
  opacity: 0,
+ x: 0,
  });
 
  gsap.to(nextContent, {

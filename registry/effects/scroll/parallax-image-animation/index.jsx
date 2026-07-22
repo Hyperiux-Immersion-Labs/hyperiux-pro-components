@@ -6,6 +6,30 @@ import ScrollTrigger from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+ if (typeof window === "undefined") return false;
+ return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
+// Reduced motion: keep the parallax, just much weaker - "reduce", not
+// remove. Applies to both the translateY shift and the optional scale range.
+const REDUCED_MOTION_FACTOR = 0.25;
+
+function reduceOffset(value, factor) {
+ if (typeof value !== "string") return value;
+ const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)$/);
+ if (!match) return value;
+ const [, numeric, unit] = match;
+ return `${(parseFloat(numeric) * factor).toFixed(2)}${unit}`;
+}
+
+function reduceScale(value, factor) {
+ if (typeof value !== "number") return value;
+ return 1 + (value - 1) * factor;
+}
+
 const ParallaxImageAnimation = ({
  src,
  alt ="parallax-img",
@@ -24,17 +48,28 @@ const ParallaxImageAnimation = ({
  const wrapperRef = useRef(null);
  const imageRef = useRef(null);
 
+ const reducedMotion = prefersReducedMotion();
+ const effectiveTranslateY = reducedMotion
+ ? reduceOffset(translateY, REDUCED_MOTION_FACTOR)
+ : translateY;
+ const effectiveScaleFrom = reducedMotion
+ ? reduceScale(scaleFrom, REDUCED_MOTION_FACTOR)
+ : scaleFrom;
+ const effectiveScaleTo = reducedMotion
+ ? reduceScale(scaleTo, REDUCED_MOTION_FACTOR)
+ : scaleTo;
+
  useEffect(() => {
  if (!wrapperRef.current || !imageRef.current) return;
 
  const ctx = gsap.context(() => {
  gsap.set(imageRef.current, {
- scale: enableScale ? scaleFrom : undefined,
+ scale: enableScale ? effectiveScaleFrom : undefined,
  });
 
  gsap.to(imageRef.current, {
- translateY,
- scale: enableScale ? scaleTo : undefined,
+ translateY: effectiveTranslateY,
+ scale: enableScale ? effectiveScaleTo : undefined,
  ease:"none",
  scrollTrigger: {
  trigger: wrapperRef.current,
@@ -46,7 +81,7 @@ const ParallaxImageAnimation = ({
  }, wrapperRef);
 
  return () => ctx.revert();
- }, [translateY, start, end, scrub, enableScale, scaleFrom, scaleTo]);
+ }, [effectiveTranslateY, start, end, scrub, enableScale, effectiveScaleFrom, effectiveScaleTo]);
 
  return (
  <div ref={wrapperRef} className={`overflow-hidden ${wrapperClassName}`}>

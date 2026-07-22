@@ -11,8 +11,15 @@
   "exportName": "RibbonDrift",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Disable vertical motion under reduced motion; keep horizontal pan at normal speed",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

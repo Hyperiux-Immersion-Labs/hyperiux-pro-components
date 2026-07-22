@@ -16,6 +16,10 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
     const ctx = gsap.context(() => {
       if (window.innerWidth <= 1025) return;
 
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
       gsap.set(
         ".industry-img, .industry-no, .industry-title, .industry-content",
         { opacity: 1 },
@@ -25,20 +29,35 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
       if (head) {
         const headSplit = new SplitText(head, { type: "chars" });
 
-        gsap.from(headSplit.chars, {
-          yPercent: () =>
-            (Math.random() < 0.5 ? 1 : -1) * (200 * Math.random()),
-          xPercent: () => 200 * Math.random(),
-          stagger: 0.1,
-          duration: 1,
-          ease: "back.out",
-          scrollTrigger: {
-            trigger: `#${sectionId}`,
-            start: "top top",
-            end: "20% top",
-            scrub: true,
-          },
-        });
+        gsap.from(
+          headSplit.chars,
+          reduceMotion
+            ? {
+                opacity: 0,
+                stagger: 0.1,
+                duration: 1,
+                scrollTrigger: {
+                  trigger: "#industries",
+                  start: "top top",
+                  end: "20% top",
+                  scrub: true,
+                },
+              }
+            : {
+                yPercent: () =>
+                  (Math.random() < 0.5 ? 1 : -1) * (200 * Math.random()),
+                xPercent: () => 200 * Math.random(),
+                stagger: 0.1,
+                duration: 1,
+                ease: "back.out",
+                scrollTrigger: {
+                  trigger: "#industries",
+                  start: "top top",
+                  end: "20% top",
+                  scrub: true,
+                },
+              },
+        );
       }
 
       gsap.to(".industry-container", {
@@ -73,19 +92,34 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             mask: "lines",
           });
 
-          gsap.from(splitNo.chars, {
-            y: 150,
-            rotate: 10,
-            stagger: 0.1,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: `#${sectionId}`,
-              start: startNo,
-              end: endNo,
-              toggleActions: "play none none reverse",
-            },
-          });
+          gsap.from(
+            splitNo.chars,
+            reduceMotion
+              ? {
+                  opacity: 0,
+                  stagger: 0.1,
+                  duration: 0.7,
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startNo,
+                    end: endNo,
+                    toggleActions: "play none none reverse",
+                  },
+                }
+              : {
+                  y: 150,
+                  rotate: 10,
+                  stagger: 0.1,
+                  duration: 0.7,
+                  ease: "power2.out",
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startNo,
+                    end: endNo,
+                    toggleActions: "play none none reverse",
+                  },
+                },
+          );
         }
 
         // FIXED: query property-title instead of industry-title
@@ -99,19 +133,34 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
           gsap.set(titleEl, { lineHeight: 1.2 });
           gsap.set(titleLines.lines, { lineHeight: 1.2 });
 
-          gsap.from(titleLines.lines, {
-            yPercent: 100,
-            stagger: 0.08,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: `#${sectionId}`,
-              start: startTitle,
-              end: endTitle,
-              // markers: true,
-              toggleActions: "play none none reverse",
-            },
-          });
+          gsap.from(
+            titleLines.lines,
+            reduceMotion
+              ? {
+                  opacity: 0,
+                  stagger: 0.08,
+                  duration: 0.7,
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startTitle,
+                    end: endTitle,
+                    toggleActions: "play none none reverse",
+                  },
+                }
+              : {
+                  yPercent: 100,
+                  stagger: 0.08,
+                  duration: 0.7,
+                  ease: "power2.out",
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startTitle,
+                    end: endTitle,
+                    // markers: true,
+                    toggleActions: "play none none reverse",
+                  },
+                },
+          );
         }
 
         // FIXED: query property-content instead of industry-content
@@ -122,24 +171,47 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             mask: "lines",
           });
 
-          gsap.from(contentLines.lines, {
-            yPercent: 100,
-            stagger: 0.08,
-            delay: 0.3,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: `#${sectionId}`,
-              start: startContent,
-              end: endContent,
-              toggleActions: "play none none reverse",
-            },
-          });
+          gsap.from(
+            contentLines.lines,
+            reduceMotion
+              ? {
+                  opacity: 0,
+                  stagger: 0.08,
+                  delay: 0.3,
+                  duration: 0.7,
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startContent,
+                    end: endContent,
+                    toggleActions: "play none none reverse",
+                  },
+                }
+              : {
+                  yPercent: 100,
+                  stagger: 0.08,
+                  delay: 0.3,
+                  duration: 0.7,
+                  ease: "power2.out",
+                  scrollTrigger: {
+                    trigger: "#industries",
+                    start: startContent,
+                    end: endContent,
+                    toggleActions: "play none none reverse",
+                  },
+                },
+          );
         });
 
         // this one was already okay, but keep it consistent
         const propertyImgs = card.querySelectorAll(`[class*="industry-img-"]`);
         propertyImgs.forEach((propertyImg) => {
+          // Reduced motion: images stay put at translate-x-0, no scroll-tied
+          // horizontal parallax.
+          if (reduceMotion) {
+            gsap.set(propertyImg, { x: 0 });
+            return;
+          }
+
           gsap.to(propertyImg, {
             translateX: "30%",
             ease: "none",
@@ -166,10 +238,10 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
       className="w-screen h-[600vh] bg-white text-black relative z-10 max-xl:mt-0 max-xl:h-fit max-xl:py-[15%] max-xl:px-[7vw]"
       id={sectionId}
     >
-      
+
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-xl:static max-xl:w-full max-xl:h-fit max-xl:flex max-xl:flex-col max-xl:items-start">
 
-        
+
         <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-xl:flex-col max-xl:gap-[10vw] max-md:gap-[15vw]">
           {propertiesData.map((property, index) => (
             <div

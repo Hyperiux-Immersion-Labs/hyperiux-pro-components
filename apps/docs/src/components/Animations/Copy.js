@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
+import { prefersReducedMotion } from "@/lib/motion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -64,15 +65,26 @@ export default function Copy({
       return;
     }
 
+    if (prefersReducedMotion()) {
+      gsap.set(container, {
+        opacity: 0,
+      });
+
+      tweenRef.current = gsap.to(container, {
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        delay,
+      });
+
+      return;
+    }
+
     let isKilled = false;
 
     gsap.set(container, {
       opacity: 0,
     });
-
-    const prefersReduced =
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const elements = container.hasAttribute("data-copy-wrapper")
       ? Array.from(container.children)
@@ -112,7 +124,7 @@ export default function Copy({
         allLines.push(...split.lines);
       });
 
-      if (!allLines.length || prefersReduced) {
+      if (!allLines.length) {
         gsap.set(container, {
           opacity: 1,
           clearProps: "opacity",

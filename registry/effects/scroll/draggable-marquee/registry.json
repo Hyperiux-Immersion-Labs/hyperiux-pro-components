@@ -1,6 +1,9 @@
 {
   "name": "draggable-marquee",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: auto-scroll and post-release throw momentum are disabled, drag remains fully interactive", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Draggable Marquee",
   "description": "Infinite horizontal marquee with drag interaction and momentum physics",

@@ -47,6 +47,11 @@
       "target": "components/hyperiux/points.jsx"
     },
     {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
+    },
+    {
       "path": "utils.js",
       "type": "registry:component",
       "target": "components/hyperiux/utils.js"

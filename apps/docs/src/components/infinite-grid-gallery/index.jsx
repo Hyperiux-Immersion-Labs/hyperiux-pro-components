@@ -68,12 +68,22 @@ export default function InfiniteGridGallery() {
   const [displayIndex, setDisplayIndex] = useState(null);
   const [slide, setSlide] = useState(null);
   const [isThumbDragging, setIsThumbDragging] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   const closeTimerRef = useRef(null);
   const slideTimerRef = useRef(null);
 
-  const slideDurationMs = 600;
-  const openCloseDurationMs = 750;
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  const slideDurationMs = reduceMotion ? 0 : 600;
+  const openCloseDurationMs = reduceMotion ? 0 : 750;
   const isAnimating = isOpening || isClosing || Boolean(slide);
 
   const unsplashPool = useMemo(
@@ -305,7 +315,7 @@ export default function InfiniteGridGallery() {
     if (isAnimating) return;
 
     if (nextIndex === expanded.index) {
-      centerActiveThumb(nextIndex, "smooth");
+      centerActiveThumb(nextIndex, reduceMotion ? "auto" : "smooth");
       return;
     }
 
@@ -324,7 +334,7 @@ export default function InfiniteGridGallery() {
       setDisplayIndex(nextIndex);
       setSlide(null);
     }, slideDurationMs);
-  }, [centerActiveThumb, expanded, isAnimating, sources.length, slideDurationMs]);
+  }, [centerActiveThumb, expanded, isAnimating, sources.length, slideDurationMs, reduceMotion]);
 
   const closeExpanded = useCallback(() => {
     if (!expanded || isClosing) return;
@@ -356,9 +366,9 @@ export default function InfiniteGridGallery() {
     if (!expanded) return;
 
     requestAnimationFrame(() => {
-      centerActiveThumb(expanded.index, "smooth");
+      centerActiveThumb(expanded.index, reduceMotion ? "auto" : "smooth");
     });
-  }, [centerActiveThumb, expanded]);
+  }, [centerActiveThumb, expanded, reduceMotion]);
 
   useEffect(() => {
     return () => {
@@ -462,7 +472,7 @@ export default function InfiniteGridGallery() {
 
         {active && expanded && display ? (
           <div
-            className={`fixed inset-0 z-60 cursor-default bg-white transition-opacity duration-750 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isOpening ? "opacity-0" : ""
+            className={`fixed inset-0 z-60 cursor-default bg-white transition-opacity duration-750 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none motion-reduce:duration-0 ${isOpening ? "opacity-0" : ""
               } ${isClosing ? "opacity-0" : ""
               } ${!isOpening && !isClosing ? "opacity-100" : ""}`}
             role="dialog"
@@ -492,7 +502,9 @@ export default function InfiniteGridGallery() {
                       }px) scale(${expanded.rect.width / expanded.target.width}, ${expanded.rect.height / expanded.target.height
                       })`
                       : "translate(0px, 0px) scale(1, 1)",
-                  transition: "transform 750ms cubic-bezier(0.785, 0.135, 0.15, 0.86)",
+                  transition: reduceMotion
+                    ? "none"
+                    : "transform 750ms cubic-bezier(0.785, 0.135, 0.15, 0.86)",
                 }}
               >
                 {slide ? (
@@ -768,6 +780,33 @@ export default function InfiniteGridGallery() {
    }
    to {
      transform: translate3d(0%, 0, 0);
+   }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+   .infinite-grid-gallery-images .item-image,
+   .infinite-grid-gallery-images .item-image img,
+   .infinite-grid-gallery-images .caption {
+     transition: none !important;
+   }
+
+   .infinite-grid-gallery-images .item:hover .item-image {
+     transform: none;
+   }
+
+   .infinite-grid-gallery-images .item:hover .caption {
+     transform: none;
+   }
+
+   .infinite-grid-gallery-closing-media {
+     transition-duration: 0ms !important;
+   }
+
+   .infinite-grid-gallery-slide-left-from,
+   .infinite-grid-gallery-slide-left-to,
+   .infinite-grid-gallery-slide-right-from,
+   .infinite-grid-gallery-slide-right-to {
+     animation: none !important;
    }
  }
  `}</style>

@@ -22,6 +22,11 @@
       "path": "StripSliderComp.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/StripSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

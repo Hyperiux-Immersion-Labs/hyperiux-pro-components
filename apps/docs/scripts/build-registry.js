@@ -278,14 +278,9 @@ async function buildRegistry() {
           const overlap = baseName
             .split("-")
             .filter((part) => nameParts.has(part)).length;
-          // This scoring pass runs detectExport against every file in the
-          // effect directory, not just the eventual entry file - a helper
-          // file with genuinely ambiguous exports (e.g. a styles.js with
-          // several named exports) must not abort the whole build here.
-          // Treat "ambiguous" the same as "no confident match" for sorting
-          // purposes; the entry file actually chosen below still throws for
-          // real if it can't be resolved.
-          let hasExport;
+          // Helper files (e.g. createSuspendedRaf) can have multiple named
+          // exports that don't match the effect — treat as non-entry, don't throw.
+          let hasExport = 20;
           try {
             hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
           } catch {

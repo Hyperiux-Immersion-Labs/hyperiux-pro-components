@@ -7,6 +7,13 @@ import Card from "./card";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
 const getRandomInRange = (min, max) => Math.random() * (max - min) + min;
 
 const ScrollShuffledCardsComp = ({
@@ -56,6 +63,7 @@ const ScrollShuffledCardsComp = ({
 
   useEffect(() => {
     cardRefs.current = cardRefs.current.slice(0, randomizedCards.length);
+    const reducedMotion = prefersReducedMotion();
 
     const ctx = gsap.context(() => {
       const cardElements = cardRefs.current.filter(Boolean);
@@ -65,12 +73,15 @@ const ScrollShuffledCardsComp = ({
         xPercent: initialContainerXPercent,
       });
 
+      // Reduced motion: cards sit at their resting position with no
+      // shuffle offset or rotation - only the container's overall scroll
+      // slide stays in motion.
       cardElements.forEach((cardEl, index) => {
         gsap.set(cardEl, {
-          x: `${randomizedCards[index].startX}vw`,
-          y: `${randomizedCards[index].startY}vw`,
-          rotation: randomizedCards[index].startRotate,
-          opacity: 1, 
+          x: reducedMotion ? 0 : `${randomizedCards[index].startX}vw`,
+          y: reducedMotion ? 0 : `${randomizedCards[index].startY}vw`,
+          rotation: reducedMotion ? 0 : randomizedCards[index].startRotate,
+          opacity: 1,
         });
       });
 
@@ -96,9 +107,9 @@ const ScrollShuffledCardsComp = ({
         tl.to(
           cardEl,
           {
-            x: `${randomizedCards[index].endX}vw`,
-            y: `${randomizedCards[index].endY}vw`,
-            rotation: randomizedCards[index].endRotate,
+            x: reducedMotion ? 0 : `${randomizedCards[index].endX}vw`,
+            y: reducedMotion ? 0 : `${randomizedCards[index].endY}vw`,
+            rotation: reducedMotion ? 0 : randomizedCards[index].endRotate,
             ease: "none",
           },
           0

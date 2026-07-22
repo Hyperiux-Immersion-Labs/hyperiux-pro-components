@@ -592,7 +592,10 @@ const routeKey = `${pathname}${
           </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-sm:px-0 max-md:pt-10">
-            <div className="relative max-md:w-full fadeup flex items-end gap-4">
+            <div
+              className="relative max-md:w-full fadeup flex items-end gap-4"
+              data-fadeup-delay="0.6"
+            >
               <div className="relative min-w-0 flex-1">
               <div
                 className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-md:block"
@@ -614,6 +617,7 @@ const routeKey = `${pathname}${
                     "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
                     "max-md:pb-3",
                   ].join(" ")}
+                  data-fadeup-delay="0.6"
                 >
                   {/* Filter dropdown: featured / free / pro */}
                   <FilterMenu

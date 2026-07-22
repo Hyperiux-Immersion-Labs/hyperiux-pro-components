@@ -4,6 +4,7 @@ export const ChevronBird = ({
     isActive = false,
     size = 14,
     strokeWidth = 10,
+    prefersReducedMotion = false,
     className = "mt-[0.25vw]",
 }) => {
     return (
@@ -15,8 +16,9 @@ export const ChevronBird = ({
             fill="none"
             aria-hidden="true"
             style={{
-                transform: isActive ? 'translateY(-25%)' : 'translateY(0%)',
-                transition: 'transform 0.32s ease-in-out',
+                transform:
+                    isActive && !prefersReducedMotion ? 'translateY(-25%)' : 'translateY(0%)',
+                transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
             }}
         >
             <g>
@@ -28,8 +30,9 @@ export const ChevronBird = ({
                     style={{
                         transformBox: 'view-box',
                         transformOrigin: '50px 50px',
-                        transform: isActive ? 'rotate(-42deg)' : 'rotate(42deg)',
-                        transition: 'transform 0.32s ease-in-out',
+                        transform:
+                            isActive && !prefersReducedMotion ? 'rotate(-42deg)' : 'rotate(42deg)',
+                        transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
                     }}
                 />
                 <path
@@ -40,8 +43,9 @@ export const ChevronBird = ({
                     style={{
                         transformBox: 'view-box',
                         transformOrigin: '50px 50px',
-                        transform: isActive ? 'rotate(42deg)' : 'rotate(-42deg)',
-                        transition: 'transform 0.32s ease-in-out',
+                        transform:
+                            isActive && !prefersReducedMotion ? 'rotate(42deg)' : 'rotate(-42deg)',
+                        transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
                     }}
                 />
             </g>

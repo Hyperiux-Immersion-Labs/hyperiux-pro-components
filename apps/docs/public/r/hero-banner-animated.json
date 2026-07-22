@@ -44,6 +44,11 @@
       "path": "VideoUI.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/VideoUI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

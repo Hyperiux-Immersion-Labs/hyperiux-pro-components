@@ -24,6 +24,11 @@
       "path": "PortfolioSlider.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/PortfolioSlider.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }
