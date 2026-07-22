@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from"react";
-import * as THREE from"three";
-import Lenis from"lenis";
-import gsap from"gsap";
-import { createSuspendedRaf, createVisibilityGate } from"./createSuspendedRaf";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import * as THREE from "three";
+import Lenis from "lenis";
+import gsap from "gsap";
+import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 

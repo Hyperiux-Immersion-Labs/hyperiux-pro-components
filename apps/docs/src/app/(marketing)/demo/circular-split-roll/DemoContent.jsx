@@ -8,7 +8,7 @@ import React from "react";
 export default function Page() {
   return (
     <>
-    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
     <div className="max-md:block flex flex-col justify-center items-center gap-[2vw] text-center max-sm:pt-[18vw] pt-[10vw] sr-only">
       <h1 className="text-[7vw] max-sm:text-[11vw]">
         Circular Split Roll

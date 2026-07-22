@@ -21,7 +21,6 @@ const page = () => {
           dimColor="#AAAAAA"
           backgroundColor="#F0EFE9"
           id="hero-break"
-          containerClassName=""
           mobileTextSize="8vw"
           mobileTextWidth="92%"
           tabletTextSize="6vw"

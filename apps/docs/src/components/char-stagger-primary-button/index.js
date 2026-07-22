@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from"react";
-import Link from"next/link";
-import { ArrowRight } from"lucide-react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const CharStaggerPrimaryButton = ({
  text ="",

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, useCallback } from"react";
-import gsap from"gsap";
-import { ScrollTrigger } from"gsap/ScrollTrigger";
-import { useLenis } from"lenis/react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useCallback } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 

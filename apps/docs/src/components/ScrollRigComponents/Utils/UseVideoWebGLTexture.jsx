@@ -1,7 +1,7 @@
 "use client";
-import React, { useRef, useState, useEffect, useMemo } from"react";
-import { ScrollScene, UseCanvas } from"@14islands/r3f-scroll-rig";
-import * as THREE from"three";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { ScrollScene, UseCanvas } from "@14islands/r3f-scroll-rig";
+import * as THREE from "three";
 
 function VideoTexturePlane({ videoRef, videoElement, sceneProps = {}, materialProps = {} }) {
  const videoTexture = useMemo(() => {

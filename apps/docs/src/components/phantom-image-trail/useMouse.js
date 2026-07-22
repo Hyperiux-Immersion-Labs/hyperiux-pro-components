@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from"react";
-import { createSuspendedRaf } from"./createSuspendedRaf";
+import { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 

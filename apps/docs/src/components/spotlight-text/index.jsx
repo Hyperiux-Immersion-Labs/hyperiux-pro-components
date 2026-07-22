@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from "react";
 
 function usePrefersReducedMotion() {
  const [prefersReducedMotion, setPrefersReducedMotion] = useState(

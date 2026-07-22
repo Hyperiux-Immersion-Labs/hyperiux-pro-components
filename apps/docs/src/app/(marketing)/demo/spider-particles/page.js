@@ -20,7 +20,7 @@ const spiderParticlesProps = {
 const page = () => {
  return (
  <div>
-    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
  <SpiderParticles {...spiderParticlesProps} />
  </div>
  )

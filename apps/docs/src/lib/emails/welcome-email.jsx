@@ -87,7 +87,7 @@ export function WelcomeEmail() {
               <Section className="p-4">
                 <Img
                   src={`${baseUrl}/emails/welcom-email-img.jpg`}
-                  alt=""
+                  alt="welcome-img"
                   width={560}
                   className="block h-auto w-full rounded-[9px]"
                 />

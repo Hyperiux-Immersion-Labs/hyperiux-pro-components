@@ -1,10 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from"@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from"react";
-import * as THREE from"three";
-import { degToRad } from"three/src/math/MathUtils";
-import { createVisibilityGate } from"./createSuspendedRaf";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
+import { degToRad } from "three/src/math/MathUtils";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const PARTICLE_SIZES = [0.08, 0.09, 0.1, 0.2,0.4,0.6 ];
 const OFFSCREEN = 9999;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from"react";
+import { useEffect, useState } from "react";
 import RingCarouselComp from "./RingCarouselComp";
 
 export default function RingCarousel() {

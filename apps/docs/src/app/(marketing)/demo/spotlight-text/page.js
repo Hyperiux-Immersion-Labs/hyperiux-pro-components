@@ -9,7 +9,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
       <div className="h-screen max-sm:h-full max-sm:py-5 flex flex-col items-center mx-auto justify-center gap-25 max-sm:gap-10 ">
         <div className="space-y-5 w-[40%] max-sm:pt-17 max-md:w-[70%] max-sm:w-[70%] mx-auto">
           <HeadAnim>

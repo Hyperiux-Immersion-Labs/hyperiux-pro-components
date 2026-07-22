@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
-import { LevaPanel, useControls } from"leva";
+import React, { useEffect, useRef, useState } from "react";
+import { LevaPanel, useControls } from "leva";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const lerp = (start, end, amount) => start + (end - start) * amount;

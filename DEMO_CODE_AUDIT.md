@@ -358,7 +358,7 @@ Same sentence, maintained twice, already inconsistent. Write it once and vary on
 | Value | Count |
 |---|---|
 | `logoColor="#ffffff"` | 29 |
-| `logoColor='#ffffff'` | 20 |
+| `logoColor='#FFFFFF'` | 20 |
 | `logoColor="white"` | 2 |
 | `logoColor="#FFFFFF"` | 2 |
 | `logoColor={"#ffffff"}` | 1 |

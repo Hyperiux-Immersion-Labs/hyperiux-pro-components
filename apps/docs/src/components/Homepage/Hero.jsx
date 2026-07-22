@@ -196,7 +196,7 @@ export default function Hero() {
     <section className="pointer-events-none relative z-20 flex h-screen w-full max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
-        alt=""
+        alt="hero-background image"
         aria-hidden
         fill
         priority

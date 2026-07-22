@@ -344,7 +344,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
             <span className="relative z-10 flex size-[1.35vw] shrink-0 items-center justify-center">
                 <Image
                     src={icon}
-                    alt=""
+                    alt="icon"
                     width={35}
                     height={35}
                     aria-hidden="true"

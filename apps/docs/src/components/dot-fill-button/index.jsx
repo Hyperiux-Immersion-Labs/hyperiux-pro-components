@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from"react";
-import Link from"next/link";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;

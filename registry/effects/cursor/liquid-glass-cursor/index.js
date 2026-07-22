@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useId, useRef } from"react";
-import gsap from"gsap";
+import React, { useEffect, useId, useRef } from "react";
+import gsap from "gsap";
 
 import { LIQUID_TEXTURE } from "./LiquidText";
 

@@ -301,7 +301,7 @@ export function ListHover({ items }) {
                 zIndex: DEFAULT_IMAGE_Z_INDEX,
               }}
             >
-              <img src={item.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              <img src={item.img} alt="hover-item-image" className="absolute inset-0 h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -327,7 +327,6 @@ export function ListHover({ items }) {
                     onRowEnter(event.currentTarget, index)
                   }
                   onMouseLeave={() => onRowLeave(index)}
-                  className=""
                 >
                   <td className="whitespace-nowrap px-6 py-3 text-xs uppercase tracking-widest">
                     {item.client}

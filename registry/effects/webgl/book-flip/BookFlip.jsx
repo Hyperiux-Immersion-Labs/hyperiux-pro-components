@@ -1,11 +1,11 @@
 'use client'
-import { Loader } from"@react-three/drei";
-import { Canvas } from"@react-three/fiber";
-import { Suspense, useState, useEffect, useRef } from"react";
-import { Experience } from"./Experience";
-import { UI } from"./UI";
-import { PageProvider } from"./PageContext";
-import { createVisibilityGate } from"./createSuspendedRaf";
+import { Loader } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useState, useEffect, useRef } from "react";
+import { Experience } from "./Experience";
+import { UI } from "./UI";
+import { PageProvider } from "./PageContext";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 /**
  * BookFlipViewer - A reusable 3D book flip viewer component

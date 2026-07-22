@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from"react";
-import gsap from"gsap";
-import { attachWebGLContextRecovery } from"./webgl-context-recovery";
-import { createSuspendedRaf, createVisibilityGate } from"./createSuspendedRaf";
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { attachWebGLContextRecovery } from "./webgl-context-recovery";
+import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 const CARD_W = 380;
 const CARD_H = 240;

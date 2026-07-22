@@ -1,8 +1,8 @@
-import { useMemo, useRef } from"react";
-import * as THREE from"three";
-import { useFrame } from"@react-three/fiber";
-import { PerspectiveCamera } from"@react-three/drei";
-import useInput from"./useInput";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import { useFrame } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
+import useInput from "./useInput";
 
 export default function CameraRig({ curve, cameraProps, scrollConfig = {} }) {
  const container = useRef();

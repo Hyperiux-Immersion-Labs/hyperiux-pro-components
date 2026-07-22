@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from"react";
-import gsap from"gsap";
-import { Draggable } from"gsap/Draggable";
-import { InertiaPlugin } from"gsap/InertiaPlugin";
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 

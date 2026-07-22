@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from"react";
-import { createSuspendedRaf } from"./createSuspendedRaf";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const CELL_SIZE = 50;
 const MAX_TRAIL = 25;

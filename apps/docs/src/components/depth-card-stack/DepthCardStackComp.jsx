@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from"react";
-import { gsap } from"gsap";
-import { ChevronLeft, ChevronRight } from"lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { gsap } from "gsap";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import SliderCard from "./SliderCard";
 
 const CARD_W = 300;

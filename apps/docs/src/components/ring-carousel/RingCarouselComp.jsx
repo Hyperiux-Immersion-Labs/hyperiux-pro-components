@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from"react";
-import gsap from"gsap";
-import { Draggable } from"gsap/Draggable";
-import { ArrowLeft, ArrowRight } from"lucide-react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(Draggable);

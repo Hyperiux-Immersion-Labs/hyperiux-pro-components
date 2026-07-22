@@ -1,5 +1,3 @@
-
-// import ScrollDistortion from '@/components/scroll-distortion'
 import ScrollDistortion from '@/components/scroll-distortion'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
 import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
@@ -24,7 +22,7 @@ const shaderConfig = {
 export default function page() {
  return (
     <>
-    <DemoHeader logoColor="text-white" textColor='#ffffff'/>
+    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'/>
     <ScrollDistortion
     sections={sections}
     shaderConfig={shaderConfig}

@@ -18,7 +18,7 @@ export default function FAQDemo() {
 
   return (
     <>
-    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
     <section className="bg-black h-screen px-8 py-20 text-white">
         <div className="max-w-5xl mx-auto text-center text-white mb-12">
                 {/* Heading */}

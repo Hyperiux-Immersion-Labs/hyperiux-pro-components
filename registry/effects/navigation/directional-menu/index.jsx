@@ -101,7 +101,7 @@ export default function DirectionalMenu() {
           {/* Buttons */}
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-md:mt-20">
             <button className="px-7 py-3 cursor-pointer rounded-full bg-white text-black font-medium hover:bg-white/90 transition-all duration-300">
-              <a href={"/effects/navigation/directional-menu"} className="">
+              <a href={"/effects/navigation/directional-menu"}>
                 Get Started
               </a>
             </button>

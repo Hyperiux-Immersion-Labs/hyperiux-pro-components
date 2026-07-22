@@ -328,7 +328,6 @@ export default function InteractiveListPreviewComp({ items }) {
                     onRowEnter(event.currentTarget, index)
                   }
                   onMouseLeave={() => onRowLeave(index)}
-                  className=""
                 >
                   <td className="whitespace-nowrap px-6 py-3 text-xs uppercase tracking-widest">
                     {item.client}

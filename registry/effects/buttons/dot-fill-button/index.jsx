@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from "react";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;

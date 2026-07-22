@@ -1,7 +1,7 @@
 import StickyContentWrapper from "@/components/sticky-content-wrapper";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
-import { ReactLenis } from"lenis/react";
+import { ReactLenis } from "lenis/react";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 

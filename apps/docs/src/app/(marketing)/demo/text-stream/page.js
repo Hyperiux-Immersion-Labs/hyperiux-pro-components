@@ -11,7 +11,7 @@ import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 const page = () => {
   return (
     <>
-    <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
+    <DemoHeader logoColor='#FFFFFF' textColor="#ffffff"/>
       <LenisSmoothScroll />
       <div className="fadeup">
       <TextStream />

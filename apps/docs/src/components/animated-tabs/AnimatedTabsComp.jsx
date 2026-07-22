@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useId, useLayoutEffect, useRef, useState } from"react";
-import gsap from"gsap";
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 const AnimatedTabsComp = ({
  tabs = [],

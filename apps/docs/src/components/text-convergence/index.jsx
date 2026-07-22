@@ -207,7 +207,7 @@ export default function TextConvergence({
             </p>
 
             <div className="flex flex-col items-center gap-[2vw]">
-  <span className="">
+  <span>
   <p className="font-mono text-xs uppercase tracking-[0.25vw] text-white/80">
 
                 scroll

@@ -10,7 +10,7 @@ export default function page() {
   return (
     <>
       <LenisSmoothScroll />
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff"/>
       <div className="min-h-screen w-full relative bg-[]">
         <section className="h-screen w-full relative">
           <HeadAnim animateOnScroll={false}>

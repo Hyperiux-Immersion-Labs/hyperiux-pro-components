@@ -1,7 +1,7 @@
-import { useMemo, useEffect, useRef } from"react";
-import { Effect } from"postprocessing";
-import { Uniform, Vector2 } from"three";
-import { prefersReducedMotion } from"./prefersReducedMotion";
+import { useMemo, useEffect, useRef } from "react";
+import { Effect } from "postprocessing";
+import { Uniform, Vector2 } from "three";
+import { prefersReducedMotion } from "./prefersReducedMotion";
 
 /**
  * Fix for stretched film grain:

@@ -259,7 +259,7 @@ function MobileDropdown({
   }, [isOpen]);
 
   return (
-    <div className="">
+    <div>
       <button
         type="button"
         onClick={onToggle}
