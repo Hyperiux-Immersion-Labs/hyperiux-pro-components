@@ -189,7 +189,7 @@ export default function Hero() {
         descSplit.revert();
       };
     },
-    { scope: containerRef }
+    []
   );
 
   return (
