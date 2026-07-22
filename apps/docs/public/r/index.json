@@ -1169,7 +1169,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedModal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "animated-tabs",
@@ -1480,7 +1480,7 @@
       "registryDependencies": [],
       "exportName": "BookFlip",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "colliding-models",
@@ -1500,7 +1500,7 @@
       "registryDependencies": [],
       "exportName": "CollidingModels",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "curved-plane",
@@ -1546,7 +1546,7 @@
       "registryDependencies": [],
       "exportName": "DraggableCanvas",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "file-encryption",
@@ -1576,7 +1576,7 @@
       "registryDependencies": [],
       "exportName": "FractalGlass",
       "exportKind": "default",
-      "version": "1.0.1"
+      "version": "1.1.0"
     },
     {
       "name": "grid-lift",
@@ -1591,7 +1591,7 @@
       "registryDependencies": [],
       "exportName": "GridLift",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "grid-tunnel",
@@ -1630,7 +1630,7 @@
       "registryDependencies": [],
       "exportName": "HeroBannerAnimated",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "hover-slider",
@@ -1690,7 +1690,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveBlurReveal",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "milky-way",
@@ -1729,7 +1729,7 @@
       "registryDependencies": [],
       "exportName": "MousePixelation",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "progressive-bloom-valley",
@@ -1765,7 +1765,7 @@
       "registryDependencies": [],
       "exportName": "StripSlider",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     }
   ]
 }

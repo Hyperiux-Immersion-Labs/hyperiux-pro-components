@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import { createVisibilityGate } from './createSuspendedRaf'
 import Link from 'next/link'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -154,6 +155,7 @@ export default function HeroBannerAnimated() {
   const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
   const isMobile = deviceType === 'mobile'
+  const prefersReducedMotion = usePrefersReducedMotion()
 
 
   useEffect(() => {
@@ -311,6 +313,23 @@ export default function HeroBannerAnimated() {
                 For the full room, video, and immersive motion experience, view this scene on a larger screen.
               </p>
             </div>
+          </div>
+        )}
+
+        {prefersReducedMotion && (
+          <div
+            aria-live="polite"
+            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          >
+            <h2 className="text-sm leading-none text-white">
+              The light keeps tracking.
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-white/65">
+              Hero Banner Animated moves light with your cursor in
+              real time and zooms the scene on click. Since that tracking
+              motion is continuous, reduced motion can&apos;t be applied
+              here.
+            </p>
           </div>
         )}
       </section>

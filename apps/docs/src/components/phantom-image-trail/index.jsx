@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { gsap, Expo } from "gsap";
 import { useMouse } from "./useMouse";
 import { createSuspendedRaf } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const MOBILE_POINTER_QUERY = "(pointer: coarse)";
 const OFFSCREEN_POSITION = -9999;
@@ -111,6 +112,7 @@ export function PhantomImageTrail({
 
   onImageShow,
 }) {
+  const prefersReducedMotion = usePrefersReducedMotion();
   const resolvedImages = useMemo(() => normalizeImages(images), [images]);
 
   const safeImageMultiplier = Math.max(1, Number(imageMultiplier) || 1);
@@ -454,19 +456,21 @@ export function PhantomImageTrail({
           />
         );
       })}
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 backdrop-blur-sm right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center max-md:hidden"
-      >
-        <h2 className="text-sm leading-none text-[#111111]">
-          The trail keeps spawning.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-black/65">
-          Phantom Image Trail spawns images as the cursor moves. The
-          motion is the effect itself, so there&apos;s no static
-          fallback for reduced motion preferences.
-        </p>
-      </div>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 backdrop-blur-sm right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-[#111111]">
+            The trail keeps spawning.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black/65">
+            Phantom Image Trail spawns images as the cursor moves. The
+            motion is the effect itself, so there&apos;s no static
+            fallback for reduced motion preferences.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

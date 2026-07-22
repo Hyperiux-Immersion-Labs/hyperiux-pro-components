@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Arrows from "./arrows";
 import ArrowsOpacity from "./ArrowsOpacity";
 import ArrowsLimit from "./ArrowsLimit";
@@ -41,8 +41,23 @@ const variations = [
   },
 ];
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 const InteractiveArrows = () => {
   const [active, setActive] = useState(variations[0].id);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const activeVariation =
     variations.find((variation) => variation.id === active) ?? variations[0];
@@ -77,19 +92,21 @@ const InteractiveArrows = () => {
           </div>
         </div>
       </div>
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center"
-      >
-        <h2 className="text-sm leading-none text-[#111111]">
-          The arrows keep turning.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-black/65">
-          Each arrow reorients toward your cursor continuously. That
-          motion is the entire effect, so it can&apos;t be scaled back for
-          reduced motion preferences.
-        </p>
-      </div>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center"
+        >
+          <h2 className="text-sm leading-none text-[#111111]">
+            The arrows keep turning.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black/65">
+            Each arrow reorients toward your cursor continuously. That
+            motion is the entire effect, so it can&apos;t be scaled back for
+            reduced motion preferences.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import {useEffect, useRef, useReducer, useMemo, useCallback, useState} from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { createVisibilityGate } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 import {
   useGLTF,
   MeshTransmissionMaterial,
@@ -333,6 +334,7 @@ const { nodes } = useGLTF(LOGO_MODEL_URL)
 export default function CollidingModels() {
   const rootRef = useRef(null)
   const [frameloop, setFrameloop] = useState('always')
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const gate = createVisibilityGate({
@@ -359,6 +361,21 @@ export default function CollidingModels() {
         </div>
       </div>
 
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#0e0e0e]  p-3 text-center"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The models keep colliding.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/90">
+            Colliding Models runs a live physics simulation that reacts to
+            cursor movement continuously. Since the motion is the entire
+            effect, reduced motion can&apos;t be applied here.
+          </p>
+        </div>
+      )}
     </>
   )
 }

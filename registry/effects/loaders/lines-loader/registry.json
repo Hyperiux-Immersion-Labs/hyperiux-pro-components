@@ -39,7 +39,7 @@
     {
       "version": "1.1.0",
       "date": "2026-07-21",
-      "summary": "Add prefers-reduced-motion support",
+      "summary": "Add prefers-reduced-motion support: hero text fades in as a single block instead of a per-letter stagger",
       "breaking": false
     }
   ]

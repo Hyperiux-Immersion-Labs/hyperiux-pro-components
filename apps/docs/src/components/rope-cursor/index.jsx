@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from'react'
 import gsap from'gsap'
 import { createSuspendedRaf } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 export default function RopeCursor({
 	ropeColor ='#bda985',
@@ -17,6 +18,7 @@ export default function RopeCursor({
 	const mousePosition = useRef({ x: null, y: null })
 	const [isVisible, setIsVisible] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
+	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -147,6 +149,7 @@ export default function RopeCursor({
  opacity={ropeOpacity}
  />
  </svg>
+ {prefersReducedMotion && (
  <div
    aria-live="polite"
    className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-sm p-3 text-center max-md:hidden"
@@ -160,6 +163,7 @@ export default function RopeCursor({
      reduced motion alternative.
    </p>
  </div>
+ )}
  </>
 	)
 }

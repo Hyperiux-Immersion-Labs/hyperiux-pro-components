@@ -1,6 +1,10 @@
 {
   "name": "animated-modal",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Animated Modal",
   "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",

@@ -1,9 +1,23 @@
 'use client'
-import { useEffect, useRef } from'react';
+import { useEffect, useRef, useState } from'react';
 import * as THREE from'three';
 
 import { registerFxTarget, unregisterFxTarget } from './2dCanvasTracker';
 import { createSuspendedRaf } from './createSuspendedRaf';
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener('change', update);
+ return () => mediaQuery.removeEventListener('change', update);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 const VERTEX_SRC = `
 varying vec2 vUv;
@@ -395,6 +409,7 @@ export default function NoiseRippleCursor({
  }
 }) {
  const { pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness } = shaderConfig;
+ const prefersReducedMotion = usePrefersReducedMotion();
  return (
  <div className={`${wrapperClassName} relative`}>
 
@@ -427,6 +442,7 @@ export default function NoiseRippleCursor({
  distortStrength={distortStrength}
  trailDarkness={trailDarkness}
  />
+ {prefersReducedMotion && (
  <div
    aria-live="polite"
    className="pointer-events-none fixed top-24 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
@@ -440,6 +456,7 @@ export default function NoiseRippleCursor({
      reduced motion can&apos;t be applied here.
    </p>
  </div>
+ )}
  </div>
  );
 }

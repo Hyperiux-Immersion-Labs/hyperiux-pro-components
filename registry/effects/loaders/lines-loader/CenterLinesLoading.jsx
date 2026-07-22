@@ -151,7 +151,6 @@ export default function CenterLinesLoading(
                 {
                     opacity: 1,
                     duration: 0.5,
-                    stagger: 0.025,
                 },
                 "-=0.2"
             );

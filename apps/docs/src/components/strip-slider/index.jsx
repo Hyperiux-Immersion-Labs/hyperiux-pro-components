@@ -1,6 +1,9 @@
+"use client";
+
 import React from'react'
 import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
 import StripSliderComp from './StripSliderComp';
+import { usePrefersReducedMotion } from '@/lib/motion';
 
 const P = "/api/media-proxy?url=";
 const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
@@ -30,10 +33,29 @@ const items = [
 ];
 
 const StripSlider = () => {
+ const prefersReducedMotion = usePrefersReducedMotion();
+
  return (
  <div className="w-full h-screen bg-black">
  <LenisSmoothScroll />
  <StripSliderComp items={items} />
+
+ {prefersReducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+ <h2 className="text-sm leading-none text-white">
+ The strip keeps sliding.
+ </h2>
+ <p className="mt-2 text-xs leading-5 text-white/65">
+ Strip Slider ties its horizontal motion to scroll position via
+ smooth-scroll physics. Since the animation is driven by scroll
+ motion itself, it can&apos;t be reduced without removing the
+ effect.
+ </p>
+ </div>
+ )}
  </div>
  )
 }

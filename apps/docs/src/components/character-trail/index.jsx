@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import CharacterTrailComp from './CharacterTrailComp'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
@@ -34,6 +35,7 @@ const Content = () => (
 
 const CharacterTrail = () => {
      const [isMobile, setIsMobile] = useState(false)
+     const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const check = () => {
@@ -54,7 +56,7 @@ const CharacterTrail = () => {
           <Content />
         </CharacterTrailComp>
       )}
-      {!isMobile && (
+      {!isMobile && prefersReducedMotion && (
         <div
           aria-live="polite"
           className="pointer-events-none fixed top-25 right-8 z-50000 w-fit max-w-65 rounded-md border bg-white/10 border-black/10 backdrop-blur-sm  p-3 text-center max-md:hidden"

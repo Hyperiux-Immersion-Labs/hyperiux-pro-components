@@ -14,6 +14,7 @@ export default function DraggableCanvas() {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [containerPositions, setContainerPositions] = useState({
     large: { x: 0, y: 0 },
     medium: { x: 0, y: 0 },
@@ -26,6 +27,19 @@ export default function DraggableCanvas() {
   const setVideoRef = useCallback((node) => {
     videoRef.current = node;
     setVideoElement(node);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    const syncReducedMotion = (event) => {
+      setPrefersReducedMotion("matches" in event ? event.matches : mediaQuery.matches);
+    };
+
+    syncReducedMotion(mediaQuery);
+    mediaQuery.addEventListener("change", syncReducedMotion);
+    return () => mediaQuery.removeEventListener("change", syncReducedMotion);
   }, []);
 
   useEffect(() => {
@@ -87,6 +101,21 @@ export default function DraggableCanvas() {
         <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[85vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:text-sm z-99999 max-sm:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
+        {prefersReducedMotion && (
+          <div
+            aria-live="polite"
+            className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          >
+            <h2 className="text-sm leading-none text-white">
+              The canvas keep drifting.
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-white/65">
+              Draggable Canvas is built on continuous drag and inertia
+              physics. Since the motion is the entire effect, reduced motion
+              can&apos;t be applied here.
+            </p>
+          </div>
+        )}
       {/* Hidden video element - single source for all masks */}
       <video
         ref={setVideoRef}

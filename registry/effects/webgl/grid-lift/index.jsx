@@ -4,6 +4,20 @@ import React, { useEffect, useRef, useState } from "react";
 import { LevaPanel, useControls } from "leva";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener("change", update);
+ return () => mediaQuery.removeEventListener("change", update);
+ }, []);
+
+ return prefersReducedMotion;
+}
+
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
 const DEFAULT_SVG_MASK_URL = null;
@@ -68,6 +82,7 @@ function GridLiftDesktop() {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
  const isDesktop = true;
+ const prefersReducedMotion = usePrefersReducedMotion();
  const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
@@ -520,6 +535,22 @@ useEffect(() => {
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
+ </div>
+ )}
+
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The grid keeps lifting.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Grid Lift raises the mask grid wherever your cursor drifts, in
+     real time. Since the motion is the entire effect, reduced motion
+     can&apos;t be applied here.
+   </p>
  </div>
  )}
 

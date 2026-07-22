@@ -2,6 +2,7 @@
 
 import ImageTrail from './MagneticTrail'
 import { useEffect, useState } from 'react'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 const Content = () => (
   <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
@@ -33,6 +34,7 @@ const Content = () => (
 
 export default function MagneticImageTrail() {
   const [isMobile, setIsMobile] = useState(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const check = () => {
@@ -53,19 +55,21 @@ export default function MagneticImageTrail() {
   ) : (
     <>
       <ImageTrail />
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-md:hidden"
-      >
-        <h2 className="text-sm leading-none text-[#111111]">
-          The images keep pulling.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-black/65">
-          Magnetic Image Trail animates images being drawn toward your
-          cursor in real time. Pausing that motion would remove the
-          effect.
-        </p>
-      </div>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-[#111111]">
+            The images keep pulling.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black/65">
+            Magnetic Image Trail animates images being drawn toward your
+            cursor in real time. Pausing that motion would remove the
+            effect.
+          </p>
+        </div>
+      )}
     </>
   )
 }

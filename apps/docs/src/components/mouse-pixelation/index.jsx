@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import PixelCircle from "./PixelCircle";
 import PixelShift from "./PixelShift";
 import EnhancedPixelCube from "./EnhancedPixelCube";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const VARIANTS = {
   "pixel-circle": PixelCircle,
@@ -35,6 +36,7 @@ export default function MousePixelation({
   const [activeVariant, setActiveVariant] = useState(
     VARIANTS[variant] ? variant : "pixel-shift"
   );
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const ActiveComponent = useMemo(() => {
     return VARIANTS[activeVariant] || PixelShift;
@@ -53,6 +55,22 @@ export default function MousePixelation({
         img={imageUrl}
         {...props}
       />
+
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-28 right-12 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The pixels keep shifting.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/65">
+            Mouse Pixelation reacts to cursor position across all three
+            variants, in real time. Since the transition is driven entirely
+            by motion, reduced motion can&apos;t be applied here.
+          </p>
+        </div>
+      )}
     </>
   );
 }

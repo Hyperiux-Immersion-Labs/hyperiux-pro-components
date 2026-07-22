@@ -4,6 +4,7 @@ import { Canvas, useFrame } from'@react-three/fiber'
 import { useGLTF } from'@react-three/drei'
 import * as THREE from'three'
 import { createVisibilityGate } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 const BEAN_COUNT = 300
 const FLOW_DURATION = 4
@@ -233,6 +234,7 @@ function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, t
 export default function CoffeeBeanCursor() {
  const rootRef = useRef(null)
  const [frameloop, setFrameloop] = useState('always')
+ const prefersReducedMotion = usePrefersReducedMotion()
  const mousePositionRef = useRef({ x: 0, y: 0 })
  const mouseVelocityRef = useRef({ x: 0, y: 0 })
  const targetPositionRef = useRef({ x: 0, y: 0 })
@@ -300,6 +302,7 @@ export default function CoffeeBeanCursor() {
   {/* Mouse-following interactive light */}
  <MouseLight mousePositionRef={mousePositionRef} />
  </Canvas>
+ {prefersReducedMotion && (
  <div
    aria-live="polite"
    className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
@@ -313,6 +316,7 @@ export default function CoffeeBeanCursor() {
      disabling it entirely.
    </p>
  </div>
+ )}
  </div>
  )
 }

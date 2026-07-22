@@ -1,8 +1,25 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { BookFlipp } from "./BookFlip";
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
 
 export default function BookFlip() {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   return (
     <>
     <BookFlipp
@@ -25,6 +42,22 @@ export default function BookFlip() {
     Click on the navigation buttons or the pages itself to flip pages of the book
 
     </div>
+
+    {prefersReducedMotion && (
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+      >
+        <h2 className="text-sm leading-none text-white">
+          The pages keep turning.
+        </h2>
+        <p className="mt-2 text-xs leading-5 text-white/65">
+          Book Flip animates each page turn as a continuous physical bend
+          when you click or drag. Since that motion is the entire
+          interaction, reduced motion can&apos;t be applied here.
+        </p>
+      </div>
+    )}
     </>
   );
 }

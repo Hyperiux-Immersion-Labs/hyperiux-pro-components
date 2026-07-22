@@ -157,6 +157,21 @@ function WholeSceneEffect({ children, active, tunnelPhase }) {
  const portalScene = useMemo(() => new THREE.Scene(), [])
  const fbo = useFBO(size.width, size.height, { samples: 0, depth: false })
  const materialRef = useRef(null)
+ const reduceMotionRef = useRef(
+ typeof window !== 'undefined' &&
+ (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false)
+ )
+
+ useEffect(() => {
+ const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+ if (!mq) return undefined
+ const onChange = (event) => {
+ reduceMotionRef.current = event.matches
+ }
+ reduceMotionRef.current = mq.matches
+ mq.addEventListener?.('change', onChange)
+ return () => mq.removeEventListener?.('change', onChange)
+ }, [])
 
  // Pass tunnelPhase as a uniform for smooth shader transition
  const material = useMemo(() => {
@@ -253,12 +268,10 @@ function WholeSceneEffect({ children, active, tunnelPhase }) {
 
  shaderMaterial.uniforms.uTime.value = state.clock.getElapsedTime()
  shaderMaterial.uniforms.uTunnelPhase.value = tunnelPhase
- // Strength ramps with phase for extra pop; smooth easing
- shaderMaterial.uniforms.uStrength.value = THREE.MathUtils.lerp(
- 5.5,
- 1,
- tunnelPhase
- )
+ // Reduced-motion: keep the crossfade, skip the warp/distortion strength ramp.
+ shaderMaterial.uniforms.uStrength.value = reduceMotionRef.current
+ ? 0
+ : THREE.MathUtils.lerp(5.5, 1, tunnelPhase)
  })
 
  return (
