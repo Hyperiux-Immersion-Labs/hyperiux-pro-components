@@ -326,7 +326,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
                     // hover sweeps, making the pill flicker out and back.
                     layoutId={reduceMotion ? undefined : 'nav-dropdown-pill'}
                     className="absolute inset-0 z-0 rounded-[0.55vw] bg-black"
-                    initial={{ opacity: 0 }}
+                    initial={{ opacity: 1 }}
                     animate={{ opacity: 1 }}
                     transition={
                         reduceMotion

@@ -25,13 +25,12 @@ export default function SVGPixelReveal({
     const filterId = useId().replace(/:/g, "");
     const [pixelSize, setPixelSize] = useState(initialPixelSize);
     const reducedMotion = usePrefersReducedMotion();
-    const renderedPixelSize = reducedMotion ? finalPixelSize : pixelSize;
-    const shouldApplyFilter = !reducedMotion && renderedPixelSize > finalPixelSize + 0.01;
+    const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
 
     useEffect(() => {
         const container = containerRef.current;
 
-        if (!container || reducedMotion) {
+        if (!container) {
             return undefined;
         }
 
@@ -59,13 +58,13 @@ export default function SVGPixelReveal({
             trigger.kill();
             tween.kill();
         };
-    }, [end, finalPixelSize, initialPixelSize, start, reducedMotion]);
+    }, [end, finalPixelSize, initialPixelSize, start]);
 
     return (
         <div ref={containerRef} className={`relative ${className}`}>
             <PixelateSvgFilter
                 id={filterId}
-                size={renderedPixelSize}
+                size={pixelSize}
                 crossLayers={crossLayers}
             />
 
@@ -88,14 +87,13 @@ export default function SVGPixelReveal({
                     className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
                 >
                     <h2 className="text-[clamp(1.25rem,3vw,2rem)] leading-none text-[#111111]">
-                        The image is already in focus.
+                        This effect can&apos;t be reduced.
                     </h2>
                     <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-                        Reduced motion is enabled, so the image appears sharp
-                        immediately instead of resolving from pixels as you
-                        scroll. The effect depends on a continuous
-                        scroll-driven transition, and your system preference
-                        asks us to keep that still.
+                        Reduced motion is enabled, but this effect relies on a
+                        continuous scroll-driven transition from pixelated to
+                        sharp, and can&apos;t be simplified to a fade without
+                        losing the effect entirely.
                     </p>
                 </div>
             )}

@@ -1,4 +1,5 @@
 import localFont from "next/font/local";
+import Script from "next/script";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -59,7 +60,11 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
+        <Script
+          id="loader-first-visit-block"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }}
+        />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
@@ -72,7 +77,9 @@ export default function RootLayout({ children }) {
             title="Google Tag Manager"
           />
         </noscript>
-        <script
+        <Script
+          id="clear-stale-clerk-cookies"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
         {/* ClerkProvider deliberately absent here - it lives in

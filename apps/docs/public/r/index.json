@@ -359,7 +359,7 @@
       "registryDependencies": [],
       "exportName": "ButterflyTrailCursor",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "character-trail",
@@ -372,7 +372,7 @@
       "registryDependencies": [],
       "exportName": "CharacterTrail",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "coffee-bean-cursor",
@@ -389,7 +389,7 @@
       "registryDependencies": [],
       "exportName": "CoffeeBeanCursor",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "colorful-cursor-aura",
@@ -404,7 +404,7 @@
       "registryDependencies": [],
       "exportName": "ColorfulCursorAura",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "cursor-move",
@@ -417,7 +417,7 @@
       "registryDependencies": [],
       "exportName": "CursorMove",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "fish-eye",
@@ -434,7 +434,7 @@
       "registryDependencies": [],
       "exportName": "FishEye",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "full-screen-crosshair",
@@ -447,7 +447,7 @@
       "registryDependencies": [],
       "exportName": "FullScreenCrosshair",
       "exportKind": "named",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "inertia-img",
@@ -462,7 +462,7 @@
       "registryDependencies": [],
       "exportName": "InertiaImage",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "interactive-arrows",
@@ -475,7 +475,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveArrows",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "liquid-glass-cursor",
@@ -490,7 +490,7 @@
       "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "magnetic-image-trail",
@@ -503,7 +503,7 @@
       "registryDependencies": [],
       "exportName": "MagneticImageTrail",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "noise-ripple-cursor",
@@ -518,7 +518,7 @@
       "registryDependencies": [],
       "exportName": "NoiseRippleCursor",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "phantom-image-trail",
@@ -533,7 +533,7 @@
       "registryDependencies": [],
       "exportName": "PhantomImageTrail",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "pixel-bloom",
@@ -546,7 +546,7 @@
       "registryDependencies": [],
       "exportName": "PixelBloom",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "pixelated-image-effect",
@@ -559,7 +559,7 @@
       "registryDependencies": [],
       "exportName": "PixelatedImageEffect",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "rope-cursor",
@@ -574,7 +574,7 @@
       "registryDependencies": [],
       "exportName": "RopeCursor",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "dither-canvas",

@@ -39,6 +39,14 @@ function getLineTargets(containerRef) {
   return gsap.utils.toArray('.lineDraw, [class*="contentDivider"]', root);
 }
 
+function getFadeInTargets(containerRef) {
+  if (typeof document === "undefined") return [];
+
+  const root = containerRef?.current || document;
+
+  return gsap.utils.toArray(".fadein", root);
+}
+
 export function useFadeUp(containerRef, deps = []) {
   useIsomorphicLayoutEffect(() => {
     const content = getFadeTargets(containerRef);
@@ -66,7 +74,8 @@ export function useFadeUp(containerRef, deps = []) {
 
     const ctx = gsap.context(() => {
       content.forEach((element) => {
-        const delay = parseFloat(element.dataset.fadeupDelay || "0") || 0;
+        const rawDelay = parseFloat(element.dataset.fadeupDelay || "0") || 0;
+        const delay = reduceMotion ? Math.min(rawDelay, 0.2) : rawDelay;
 
         gsap.to(element, {
           scrollTrigger: {
@@ -82,6 +91,59 @@ export function useFadeUp(containerRef, deps = []) {
           onComplete: () => {
             gsap.set(element, {
               clearProps: "opacity,transform",
+            });
+          },
+        });
+      });
+    }, containerRef?.current || document);
+
+    refreshScrollTrigger();
+
+    return () => ctx.revert();
+  }, [containerRef, ...deps]);
+}
+
+export function useFadeIn(containerRef, deps = []) {
+  useIsomorphicLayoutEffect(() => {
+    const content = getFadeInTargets(containerRef);
+
+    if (!content.length) return;
+
+    if (shouldSkipSidebarDocsAnimation()) {
+      gsap.set(content, {
+        opacity: 1,
+        clearProps: "opacity",
+      });
+
+      refreshScrollTrigger();
+
+      return;
+    }
+
+    const reduceMotion = prefersReducedMotion();
+
+    gsap.set(content, {
+      opacity: 0,
+    });
+
+    const ctx = gsap.context(() => {
+      content.forEach((element) => {
+        const rawDelay = parseFloat(element.dataset.fadeinDelay || "0") || 0;
+        const delay = reduceMotion ? Math.min(rawDelay, 0.2) : rawDelay;
+
+        gsap.to(element, {
+          scrollTrigger: {
+            trigger: element,
+            start: "top 90%",
+            once: true,
+          },
+          opacity: 1,
+          ease: reduceMotion ? "power2.out" : "power3.out",
+          duration: reduceMotion ? 0.6 : 1,
+          delay,
+          onComplete: () => {
+            gsap.set(element, {
+              clearProps: "opacity",
             });
           },
         });
