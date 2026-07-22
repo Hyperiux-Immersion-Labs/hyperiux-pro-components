@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/motion";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const ImageDistortionVertex = `
   varying vec2 vUv;

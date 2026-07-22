@@ -12,7 +12,7 @@ const Cross = ({
  style={{
   width: size,
   height: size,
-  transform: isActive && !prefersReducedMotion ?'rotate(315deg)' :'rotate(180deg)',
+  transform: isActive ?'rotate(315deg)' :'rotate(180deg)',
  }}
  >
  <span

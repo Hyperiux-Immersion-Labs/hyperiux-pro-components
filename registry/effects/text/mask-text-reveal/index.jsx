@@ -6,9 +6,6 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-const REDUCED_MOTION_FADE_DURATION = 0.8;
-const REDUCED_MOTION_Y_OFFSET = 24;
-
 export default function MaskTextReveal({
     children,
     animateOnScroll = true,
@@ -87,40 +84,8 @@ export default function MaskTextReveal({
 
             if (!linesRef.current.length) return;
 
-            if (prefersReduced) {
-                gsap.set(linesRef.current, { maskPosition: "0% 100%" });
-                elements.forEach(forceAriaVisible);
-
-                gsap.set(el, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
-
-                const fadeUpProps = {
-                    opacity: 1,
-                    y: 0,
-                    duration: REDUCED_MOTION_FADE_DURATION,
-                    ease: "power2.out",
-                    delay,
-                };
-
-                if (animateOnScroll) {
-                    const tween = gsap.to(el, {
-                        ...fadeUpProps,
-                        scrollTrigger: {
-                            trigger: el,
-                            start: "top 80%",
-                            once: true,
-                        },
-                    });
-
-                    if (tween?.scrollTrigger) {
-                        triggersRef.current.push(tween.scrollTrigger);
-                    }
-                } else {
-                    gsap.to(el, fadeUpProps);
-                }
-
-                return;
-            }
-
+            // The mask-position wipe is a clip reveal, not a translate/scale/
+            // parallax motion - subtle enough to keep for reduced motion too.
             gsap.set(el, { opacity: 1 });
 
             gsap.set(linesRef.current, {
@@ -136,13 +101,19 @@ export default function MaskTextReveal({
             };
 
             if (animateOnScroll) {
+                // Reduced motion: always play once and never scrub - scrub
+                // ties the reveal continuously to scroll position, which is
+                // the kind of motion reduced-motion should still avoid, even
+                // though the mask wipe itself is subtle enough to keep.
+                const effectiveScrub = prefersReduced ? false : scrub;
+
                 const tween = gsap.to(linesRef.current, {
                     ...animationProps,
                     scrollTrigger: {
                         trigger: el,
                         start: "top 80%",
-                        once: scrub ? false : true,
-                        scrub,
+                        once: effectiveScrub ? false : true,
+                        scrub: effectiveScrub,
                         onEnter: () => elements.forEach(forceAriaVisible),
                     },
                 });

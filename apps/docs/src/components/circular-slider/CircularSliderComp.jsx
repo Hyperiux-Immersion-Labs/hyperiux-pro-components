@@ -141,7 +141,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  aria-live="polite"
  className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
  >
- <h2 className="text-[clamp(1.25rem,3vw,2rem)] leading-none text-[#111111]">
+ <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
  This effect can&apos;t be reduced.
  </h2>
  <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

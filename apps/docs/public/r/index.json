@@ -277,7 +277,7 @@
       "registryDependencies": [],
       "exportName": "StackingCards",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.2"
     },
     {
       "name": "sticky-content-wrapper",
@@ -583,7 +583,7 @@
       "registryDependencies": [],
       "exportName": "DitherCanvas",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "dotted-grid",
@@ -596,7 +596,7 @@
       "registryDependencies": [],
       "exportName": "DottedGrid",
       "exportKind": "named",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "spider-particles",
@@ -1091,7 +1091,7 @@
       "registryDependencies": [],
       "exportName": "RingCarousel",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "webgl-slider",
@@ -1228,7 +1228,7 @@
       "registryDependencies": [],
       "exportName": "CardsRunway",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "depth-card-stack",
@@ -1462,7 +1462,7 @@
       "registryDependencies": [],
       "exportName": "PortfolioSlider3D",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "book-flip",

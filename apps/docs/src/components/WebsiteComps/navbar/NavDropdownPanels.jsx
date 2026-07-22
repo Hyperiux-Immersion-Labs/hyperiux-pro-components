@@ -8,7 +8,7 @@ import NavDropdownItem from './NavDropdownItem'
 export function CategoriesPanel({ hoverGroupRef }) {
     return (
         <LayoutGroup id="categories-pill">
-            <div className="grid grid-cols-2 gap-x-[1.6vw]">
+            <div className="grid grid-cols-2">
                 {navCategoryColumns.map((column, columnIndex) => (
                     <div key={columnIndex} className="flex flex-col">
                         {column.map((item) => (

@@ -12,7 +12,6 @@ const prefersReducedMotion = () =>
  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
 const REDUCED_MOTION_FADE_DURATION = 0.16;
-const REDUCED_MOTION_DRAG_MULTIPLIER = 0.35;
 
 const RingCarouselComp = ({
  items = [],
@@ -50,12 +49,11 @@ const RingCarouselComp = ({
  const totalItems = items.length;
  const resolvedItemWidth = isMobile ? itemWidth * 0.88 : itemWidth;
  const resolvedItemHeight = isMobile ? itemHeight * 0.88 : itemHeight;
- const resolvedDragSensitivity = reduceMotion
- ? dragSensitivity * REDUCED_MOTION_DRAG_MULTIPLIER
- : dragSensitivity;
- const resolvedMomentum = reduceMotion
- ? momentum * REDUCED_MOTION_DRAG_MULTIPLIER
- : momentum;
+ // Reduced motion still tracks the drag 1:1 - it's user-initiated, not
+ // imposed motion. Only momentum/inertia after release (handled in
+ // runMomentum below) and animated snaps are what actually get reduced.
+ const resolvedDragSensitivity = dragSensitivity;
+ const resolvedMomentum = momentum;
 
  const stepAngle = useMemo(() => {
  if (!totalItems) return 0;

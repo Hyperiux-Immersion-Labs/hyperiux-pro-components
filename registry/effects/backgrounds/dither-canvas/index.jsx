@@ -1,7 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function getServerReducedMotionSnapshot() {
+  return false;
+}
+
+// React hook form, for JSX output that depends on the preference (not just
+// an imperative tween). Safe to call during render - returns false on the
+// server.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot
+  );
+}
 
 /* ── constants  */
 const FC = 80;
@@ -489,6 +517,7 @@ export default function DitherCanvas({
   className = "",
 }) {
   const ref = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const canvas = ref.current;
@@ -858,6 +887,23 @@ export default function DitherCanvas({
         <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-md:text-sm max-xl:text-lg text-white/50 max-xl:block">
           Open on desktop for the full experience - cursor effect included.
         </p>
+      )}
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            cursor-driven fluid distortion rendered every frame, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
       )}
     </>
   );

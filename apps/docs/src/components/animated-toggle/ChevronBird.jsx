@@ -17,7 +17,7 @@ export const ChevronBird = ({
             aria-hidden="true"
             style={{
                 transform:
-                    isActive && !prefersReducedMotion ? 'translateY(-25%)' : 'translateY(0%)',
+                    isActive ? 'translateY(-25%)' : 'translateY(0%)',
                 transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
             }}
         >
@@ -31,7 +31,7 @@ export const ChevronBird = ({
                         transformBox: 'view-box',
                         transformOrigin: '50px 50px',
                         transform:
-                            isActive && !prefersReducedMotion ? 'rotate(-42deg)' : 'rotate(42deg)',
+                            isActive ? 'rotate(-42deg)' : 'rotate(42deg)',
                         transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
                     }}
                 />
@@ -44,7 +44,7 @@ export const ChevronBird = ({
                         transformBox: 'view-box',
                         transformOrigin: '50px 50px',
                         transform:
-                            isActive && !prefersReducedMotion ? 'rotate(42deg)' : 'rotate(-42deg)',
+                            isActive ? 'rotate(42deg)' : 'rotate(-42deg)',
                         transition: prefersReducedMotion ? 'none' : 'transform 0.32s ease-in-out',
                     }}
                 />

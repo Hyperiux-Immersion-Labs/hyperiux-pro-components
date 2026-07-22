@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -118,6 +119,7 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 
 export default function DottedGrid() {
   const canvasRef = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
     currentShapeIndex: 0,
     transitionStartTime: null,
@@ -382,6 +384,23 @@ export default function DottedGrid() {
         Works best on desktop  <br />
         Here, tap & drag to explore
       </div>
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            ambient dot-grid animation with cursor-driven distortion, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

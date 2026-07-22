@@ -209,6 +209,9 @@ export function ExpandingNavbarDesktop() {
         CustomEase.create("menuEase", "0.625,0.05,0,1");
         const tl = gsap.timeline({ paused: true });
 
+        const menuDuration = prefersReducedMotion() ? 0.5 : 1;
+        const lineDuration = prefersReducedMotion() ? 0.25 : 0.5;
+
         gsap.set(backgroundOverlayRef.current, { opacity: 0 });
         gsap.set(menuWrapperRef.current, { width: "55vw" });
         gsap.set(menuContentRef.current, {
@@ -223,7 +226,7 @@ export function ExpandingNavbarDesktop() {
             backgroundOverlayRef.current,
             {
                 opacity: 1,
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
                 pointerEvents: "auto",
             },
@@ -234,7 +237,7 @@ export function ExpandingNavbarDesktop() {
             menuWrapperRef.current,
             {
                 width: "98vw",
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
             },
             0.1,
@@ -243,7 +246,7 @@ export function ExpandingNavbarDesktop() {
         tl.to(menuContentRef.current, {
             clipPath: "inset(0% 0% 0% 0%)",
             WebkitClipPath: "inset(0% 0% 0% 0%)",
-            duration: 1,
+            duration: menuDuration,
             ease: "menuEase",
         },"<+.35");
 
@@ -251,7 +254,7 @@ export function ExpandingNavbarDesktop() {
             seprationLineRef.current,
             {
                 opacity: 1,
-                duration: 0.5,
+                duration: lineDuration,
                 ease: "menuEase",
             },
             "<",

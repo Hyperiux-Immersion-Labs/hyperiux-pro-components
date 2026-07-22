@@ -11,8 +11,14 @@
   "exportName": "RingCarousel",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-22",
+      "summary": "Fixed reduced motion throttling live drag response to 35% strength, making the carousel feel unresponsive while grabbing - drag now tracks 1:1 as before, only momentum/inertia and animated snaps stay reduced",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",

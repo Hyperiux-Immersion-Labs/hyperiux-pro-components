@@ -103,9 +103,7 @@ const DotFillBtn = ({
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				span.style.transform = prefersReducedMotion
-					? "translateY(0em) rotate(0.001deg)"
-					: "translateY(-1.3em) rotate(0.001deg)";
+				span.style.transform = "translateY(-1.3em) rotate(0.001deg)";
 			});
 		}
 		setHovered(true);
@@ -159,7 +157,7 @@ const DotFillBtn = ({
 			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors duration-500 motion-reduce:transition-none max-md:h-[9vw] max-md:pl-[7.6vw] max-md:pr-[4vw] max-md:text-[3vw] max-md:font-normal max-md:motion-reduce:transition-none max-sm:h-[15vw] max-sm:pl-[11.8vw] max-sm:pr-[6vw] max-sm:text-[4.2vw] max-sm:motion-reduce:transition-none ${className}`}
 			style={{
 				background: bgColor,
-				color: hovered && !prefersReducedMotion ? hoverTextColor : textColor,
+				color: hovered ? hoverTextColor : textColor,
 			}}
 		>
 			<span
@@ -168,7 +166,7 @@ const DotFillBtn = ({
 				style={{
 					background: dotColor || fillColor,
 					transform:
-						hovered && !prefersReducedMotion
+						hovered
 							? "translateY(-50%) scale(120)"
 							: "translateY(-50%) scale(1)",
 					transitionTimingFunction: "cubic-bezier(0.785, 0.135, 0.15, 0.86)",

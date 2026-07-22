@@ -83,11 +83,26 @@ export default function StackingCardComp({ data = [] }) {
                     segmentStart
                 );
 
-                // Reduced motion: a card still stacks (slides into place
-                // above the previous one), but that's it - no tilt, scale,
-                // rotateX, border-radius morph, opacity fade, or image zoom
-                // once it's stacked.
-                if (reduceMotion) continue;
+                // Reduced motion: the outgoing card still fades out (a
+                // crossfade, not spatial motion) so it doesn't sit at full
+                // opacity behind the incoming one indefinitely - without
+                // this, any tiny viewport/positioning edge case lets it
+                // bleed through above the current card. Everything actually
+                // spatial (tilt, scale, rotateX, border-radius morph, image
+                // zoom) is still skipped.
+                if (reduceMotion) {
+                    tl.to(
+                        cards[i - 1],
+                        {
+                            opacity: 0,
+                            ease: "none",
+                            duration: 0.25,
+                        },
+                        segmentStart + 0.4
+                    );
+
+                    continue;
+                }
 
                 const currentImage = cards[i].querySelector(".card-image");
 
@@ -137,7 +152,7 @@ export default function StackingCardComp({ data = [] }) {
     return (
         <section
             className="relative z-0 h-[var(--stack-height)] w-full"
-            style={{ "--stack-height": `${data.length * 100}vh` }}
+            style={{ "--stack-height": `${data.length * 100}svh` }}
         >
             <div className="sr-only">
                 <h1 clasName="aboslute text-white text-4xl font-bold"> Stacking Cards</h1>
@@ -146,7 +161,7 @@ export default function StackingCardComp({ data = [] }) {
 
             <div
                 ref={containerRef}
-                className="sticky top-0 h-screen w-screen overflow-hidden bg-black"
+                className="sticky top-0 h-screen max-sm:h-svh w-screen overflow-hidden bg-black"
                 style={{ perspective: "1200px" }}
             >
                 {data.map((item, i) => (

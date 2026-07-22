@@ -12,7 +12,7 @@ const Plus = ({
  style={{
   width: size,
   height: size,
-  transform: isActive && !prefersReducedMotion ?'rotate(180deg)' :'rotate(0deg)',
+  transform: isActive ?'rotate(180deg)' :'rotate(0deg)',
  }}
  >
  <span
@@ -20,7 +20,7 @@ const Plus = ({
  />
  <span
  className='absolute block w-full h-0.5 bg-current transition-transform duration-300 ease-in-out motion-reduce:transition-none'
- style={{ transform: isActive && !prefersReducedMotion ?'rotate(180deg)' :'rotate(90deg)' }}
+ style={{ transform: isActive ?'rotate(180deg)' :'rotate(90deg)' }}
  />
  </div>
  );
