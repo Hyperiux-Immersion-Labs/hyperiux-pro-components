@@ -130,7 +130,7 @@ const faqItems = [
     question:
       "Do you offer discounts for students, nonprofits, or open-source projects?",
     answer:
-      "We review student, nonprofit, and open-source discount requests case by case - email hi@hyperiux.com with a short description of your use case.",
+      "We review student, nonprofit, and open-source discount requests case by case - email hello@hyperiux.com with a short description of your use case.",
   },
   
 

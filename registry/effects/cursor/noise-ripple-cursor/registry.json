@@ -30,6 +30,10 @@
     {
       "path": "2dCanvasTracker.js",
       "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
     }
   ]
 }

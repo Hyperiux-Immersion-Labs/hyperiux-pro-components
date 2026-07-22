@@ -50,6 +50,10 @@
     {
       "path": "utils.js",
       "target": "src/components/effects/interactive-arrows/utils.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
     }
   ]
 }

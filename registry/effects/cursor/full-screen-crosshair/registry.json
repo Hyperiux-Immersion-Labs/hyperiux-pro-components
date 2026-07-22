@@ -28,6 +28,10 @@
     {
       "path": "useMouse.js",
       "target": "src/components/effects/full-screen-crosshair/useMouse.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
     }
   ]
 }

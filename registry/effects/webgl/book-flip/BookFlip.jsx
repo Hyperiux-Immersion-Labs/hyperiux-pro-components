@@ -1,10 +1,11 @@
 'use client'
 import { Loader } from"@react-three/drei";
 import { Canvas } from"@react-three/fiber";
-import { Suspense, useState, useEffect } from"react";
+import { Suspense, useState, useEffect, useRef } from"react";
 import { Experience } from"./Experience";
 import { UI } from"./UI";
 import { PageProvider } from"./PageContext";
+import { createVisibilityGate } from"./createSuspendedRaf";
 
 /**
  * BookFlipViewer - A reusable 3D book flip viewer component
@@ -24,6 +25,8 @@ export const BookFlipp = ({  images = [],
  showUI = true,
  ...props
 }) => {
+ const rootRef = useRef(null);
+ const [frameloop, setFrameloop] = useState("always");
  const [cameraZ, setCameraZ] = useState(cameraDistance.mobile);
  const horizontalDistance = Math.hypot(0.5, cameraZ);
  const basePolarAngle = Math.atan2(horizontalDistance, 1);
@@ -34,6 +37,15 @@ export const BookFlipp = ({  images = [],
  maxPolarAngle: basePolarAngle + Math.PI * 0.08,
  rotateSpeed: 0.2,
  };
+
+ useEffect(() => {
+ const gate = createVisibilityGate({
+ root: rootRef,
+ onChange: (active) => setFrameloop(active ? "always" : "never"),
+ });
+ setFrameloop(gate.isActive ? "always" : "never");
+ return () => gate.destroy();
+ }, []);
 
  useEffect(() => {
  const handleResize = () => {
@@ -48,10 +60,10 @@ export const BookFlipp = ({  images = [],
  <PageProvider>
  {showUI && <UI images={images} />}
  <Loader />
- <div style={{  width:'100vw',  height:'100vh',  position:'fixed',  top: 0,  left: 0,
+ <div ref={rootRef} style={{  width:'100vw',  height:'100vh',  position:'fixed',  top: 0,  left: 0,
  backgroundColor: bgColor
  }}>
- <Canvas aria-hidden="true" camera={{
+ <Canvas aria-hidden="true" frameloop={frameloop} camera={{
  position: [-0.5, 1, cameraZ],
  fov: 45,
  }}>

@@ -28,6 +28,10 @@
     {
       "path": "CurvedSwiperVertical.jsx",
       "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/curved-plane/createSuspendedRaf.js"
     }
   ]
 }

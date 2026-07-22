@@ -32,12 +32,16 @@ export default function RazorpayCheckoutButton({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(plan ? { plan, currency } : { amount }),
+        body: JSON.stringify(
+          plan ? { plan, currency, idempotencyKey: crypto.randomUUID() } : { amount }
+        ),
       });
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Could not start checkout");
+        const checkoutError = new Error(data.error || "Could not start checkout");
+        checkoutError.reason = data.reason || null;
+        throw checkoutError;
       }
 
       const razorpay = new window.Razorpay({
@@ -68,7 +72,7 @@ export default function RazorpayCheckoutButton({
               throw new Error(verifyJson.error || "Payment could not be verified");
             }
 
-            onSuccess?.({ ...response, ...verifyJson });
+            onSuccess?.({ ...response, ...verifyJson, founding: data.founding === true });
           } catch (err) {
             setError(err.message);
             onError?.(err);

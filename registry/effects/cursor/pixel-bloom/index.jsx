@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { registerFxTarget, unregisterFxTarget } from "./2dcanvasTracker";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const GRID_SIZE = 35;
 const EFFECT_RADIUS = 40;
@@ -26,7 +27,6 @@ export default function PixelBloom({
 
   const [gridImages, setGridImages] = useState([]);
 
-  const animationRef = useRef(null);
   const cellImageMapRef = useRef(new Map());
   const trailRef = useRef([]);
   const sequenceRef = useRef(0);
@@ -308,17 +308,16 @@ export default function PixelBloom({
           gridSize
         );
       }
-
-      animationRef.current = requestAnimationFrame(render);
     };
 
-    const startRender = () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+    const loop = createSuspendedRaf({
+      root: container,
+      onFrame: render,
+    });
 
+    const startRender = () => {
       resizeCanvas();
-      render();
+      loop.start();
     };
 
     resizeCanvas();
@@ -350,11 +349,8 @@ export default function PixelBloom({
         media.removeEventListener("load", startRender);
       }
 
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      loop.destroy();
 
-      animationRef.current = null;
       cellImageMapRef.current.clear();
       trailRef.current = [];
     };

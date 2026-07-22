@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef } from"react";
+import { createSuspendedRaf } from"./createSuspendedRaf";
 
 const proxy = (url) => `/api/media-proxy?url=${encodeURIComponent(url)}`;
 
@@ -103,7 +104,6 @@ export default function ImageTrail() {
  const wrapRef = useRef(null);
  const canvasRef = useRef(null);
  const imagesRef = useRef([]);
- const rafRef = useRef(0);
 
  const pointer = useRef({ x: 0, y: 0 });
  const lerpedPointer = useRef({ x: 0, y: 0 }); // lerped pointer position
@@ -298,14 +298,16 @@ export default function ImageTrail() {
 
  ctx.restore();
  }
-
- rafRef.current = requestAnimationFrame(frame);
  }
 
- rafRef.current = requestAnimationFrame(frame);
+ const loop = createSuspendedRaf({
+ root: wrap,
+ onFrame: frame,
+ });
+ loop.start();
 
  return () => {
- cancelAnimationFrame(rafRef.current);
+ loop.destroy();
  window.removeEventListener("resize", resize);
  };
  }, []);

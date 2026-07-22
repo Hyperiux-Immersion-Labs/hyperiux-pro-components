@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { markUserProFromSubscription, markUserFree, sendInvoiceEmail } from "@/lib/pro-access";
+import { releaseFoundingSlot } from "@/lib/founding-slots";
 
 // Razorpay's server calls this — authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -73,6 +74,19 @@ export async function POST(req) {
       }
     } else if (event.event in FREE_EVENTS) {
       await markUserFree({ clerkUserId, status: FREE_EVENTS[event.event] });
+
+      // Only frees the slot if the reservation never got confirmed (a
+      // founding member who cancels after activating keeps their slot -
+      // release_founding_slot no-ops on an already-confirmed reservation).
+      const foundingReservationId = subscription?.notes?.founding_reservation_id;
+
+      if (foundingReservationId) {
+        try {
+          await releaseFoundingSlot({ reservationId: foundingReservationId, reason: event.event });
+        } catch (releaseError) {
+          console.error("RELEASE_FOUNDING_SLOT_ERROR:", foundingReservationId, releaseError);
+        }
+      }
     }
 
     return NextResponse.json({ received: true });

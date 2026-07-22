@@ -1,10 +1,11 @@
 'use client'
 
-import { useRef, useEffect, useMemo } from 'react'
+import { useRef, useEffect, useMemo, useState } from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js'
+import { createVisibilityGate } from './createSuspendedRaf'
 
 const BUTTERFLY_LIFETIME = 2
 const FADE_DURATION = 0.5
@@ -181,8 +182,21 @@ function ButterflyTrail() {
 useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
 export default function ButterflyTrailCursor() {
+	const rootRef = useRef(null)
+	const [frameloop, setFrameloop] = useState('always')
+
+	useEffect(() => {
+		const gate = createVisibilityGate({
+			root: rootRef,
+			onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+		})
+		setFrameloop(gate.isActive ? 'always' : 'never')
+		return () => gate.destroy()
+	}, [])
+
 	return (
 		<div
+			ref={rootRef}
 			className="w-full h-screen relative bg-[#EAEAE9]"
 			style={{ backgroundColor: '#EAEAE9' }}
 		>
@@ -195,6 +209,7 @@ export default function ButterflyTrailCursor() {
 				}}
 				dpr={[1, 1]}
 				performance={{ min: 0.5 }}
+				frameloop={frameloop}
 			>
 				<color attach="background" args={['#EAEAE9']} />
 				<ButterflyTrail />

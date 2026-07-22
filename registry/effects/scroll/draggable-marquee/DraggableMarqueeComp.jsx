@@ -3,6 +3,7 @@
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 gsap.registerPlugin(Draggable);
 
@@ -242,7 +243,21 @@ const DraggableMarqueeComp = ({
 
         gsap.ticker.add(update);
 
+        // Pause the marquee ticker when the section is offscreen or the tab is hidden.
+        // Always wake on teardown so we never leave the global ticker sleeping.
+        const gate = createVisibilityGate({
+            root,
+            onChange: (active) => {
+                if (active) gsap.ticker.wake();
+                else gsap.ticker.sleep();
+            },
+        });
+        if (!gate.isActive) gsap.ticker.sleep();
+
         return () => {
+            gate.destroy();
+            gsap.ticker.wake();
+
             window.removeEventListener("resize", handleResize);
 
             if (pauseOnHover) {

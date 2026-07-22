@@ -408,14 +408,14 @@ const navigateLegal = (event, href) => {
         disableInitialTransition
           ? "transition-none"
           : "transition-[width] duration-300 ease-out"
-      } ${isExpanded ? "w-[20vw]" : "w-22"}`}
+      } ${isExpanded ? "w-[20vw]" : "w-[5.5vw]"}`}
     >
       <button
         type="button"
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         onClick={toggle}
         className={`absolute top-6 z-50 hidden size-8 cursor-pointer items-center justify-center rounded-sm text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
-          isExpanded ? "left-75" : "left-25"
+          isExpanded ? "left-[20.8vw]" : "left-[6.2vw]"
         }`}
       >
         <div className={isExpanded ? "" : "-scale-x-100"}>

@@ -29,6 +29,10 @@
     {
       "path": "useMouse.js",
       "target": "src/components/effects/phantom-image-trail/useMouse.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/phantom-image-trail/createSuspendedRaf.js"
     }
   ]
 }

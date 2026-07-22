@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { attachWebGLContextRecovery } from "./webgl-context-recovery";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   -1, -1,
@@ -333,7 +335,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
 
   useEffect(() => {
     let isDisposed = false;
-    let animationFrameId = 0;
+    let loop = null;
     let cleanupWebgl;
 
     async function init() {
@@ -574,8 +576,6 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
         gl.uniform1f(timeLocation, now / 1000);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-        animationFrameId = requestAnimationFrame(render);
       }
 
       window.addEventListener("pointermove", onWindowPointerMove, {
@@ -583,13 +583,18 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       });
       window.addEventListener("mouseout", onWindowPointerLeave);
 
-      render();
+      loop = createSuspendedRaf({
+        root: canvas,
+        onFrame: render,
+      });
+      loop.start();
 
       return () => {
         window.removeEventListener("pointermove", onWindowPointerMove);
         window.removeEventListener("mouseout", onWindowPointerLeave);
 
-        cancelAnimationFrame(animationFrameId);
+        loop?.destroy();
+        loop = null;
         gl.deleteTexture(baseTexture);
         gl.deleteTexture(noiseTexture);
         gl.deleteTexture(maskTexture);
@@ -598,23 +603,53 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       };
     }
 
-    init()
-      .then((cleanup) => {
-        cleanupWebgl = cleanup;
-      })
-      .catch((error) => {
-        console.warn(
-          "InteractiveBlurReveal could not initialize. The provided texture URL must be directly loadable by the browser and must allow CORS for WebGL.",
-          error?.message || error
-        );
-      });
+    const boot = () => {
+      init()
+        .then((cleanup) => {
+          // If the effect unmounted while init was still loading, discard it.
+          if (isDisposed) {
+            if (cleanup) cleanup();
+            return;
+          }
+          cleanupWebgl = cleanup;
+        })
+        .catch((error) => {
+          console.warn(
+            "InteractiveBlurReveal could not initialize. The provided texture URL must be directly loadable by the browser and must allow CORS for WebGL.",
+            error?.message || error
+          );
+        });
+    };
+
+    // A raw WebGL2 context gets no automatic recovery (unlike THREE.WebGLRenderer).
+    // On loss, stop the loop and drop the invalidated program/buffers/textures;
+    // on restore, rebuild them by re-running init().
+    const detachRecovery = attachWebGLContextRecovery(canvasRef.current, {
+      onLost: () => {
+        if (cleanupWebgl) {
+          cleanupWebgl();
+          cleanupWebgl = undefined;
+        } else {
+          loop?.destroy();
+          loop = null;
+        }
+      },
+      onRestored: () => {
+        if (!isDisposed) boot();
+      },
+    });
+
+    boot();
 
     return () => {
       isDisposed = true;
-      cancelAnimationFrame(animationFrameId);
+      detachRecovery();
 
       if (cleanupWebgl) {
         cleanupWebgl();
+      } else {
+        loop?.destroy();
+        loop = null;
       }
     };
   }, [iChannel0, iChannel1]);

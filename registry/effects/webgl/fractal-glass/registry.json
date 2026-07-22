@@ -24,6 +24,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/fractal-glass/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/fractal-glass/createSuspendedRaf.js"
     }
   ]
 }

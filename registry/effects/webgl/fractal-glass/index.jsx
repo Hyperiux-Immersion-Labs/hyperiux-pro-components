@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const vertexShader = `
  varying vec2 vUv;
@@ -273,21 +274,22 @@ export default function FractalGlass({
     };
     window.addEventListener("resize", onResize);
 
-    let raf;
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
-      current.x += (target.x - current.x) * 0.04;
-      current.y += (target.y - current.y) * 0.04;
-      uniforms.uMouse.value.set(current.x, current.y);
-      // For video, mark texture as needing update every frame
-      if (videoTexture) videoTexture.needsUpdate = true;
-      renderer.render(scene, camera);
-    };
-    tick();
+    const loop = createSuspendedRaf({
+      root: el,
+      onFrame: () => {
+        current.x += (target.x - current.x) * 0.04;
+        current.y += (target.y - current.y) * 0.04;
+        uniforms.uMouse.value.set(current.x, current.y);
+        // For video, mark texture as needing update every frame
+        if (videoTexture) videoTexture.needsUpdate = true;
+        renderer.render(scene, camera);
+      },
+    });
+    loop.start();
 
     return () => {
       isDisposed = true;
-      cancelAnimationFrame(raf);
+      loop.destroy();
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("touchmove", onTouch);
       window.removeEventListener("resize", onResize);

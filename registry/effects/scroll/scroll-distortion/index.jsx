@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const ImageDistortionVertex = `
   varying vec2 vUv;
@@ -582,14 +583,14 @@ export default function ScrollDistortion({
       touchStartYRef.current = currentY;
     };
 
-    let animationFrameId = 0;
+    const loop = createSuspendedRaf({
+      root: containerElement,
+      onFrame: () => {
+        renderer.render(scene, camera);
+      },
+    });
 
-    const renderScene = () => {
-      renderer.render(scene, camera);
-      animationFrameId = window.requestAnimationFrame(renderScene);
-    };
-
-    renderScene();
+    loop.start();
     setIsSceneReady(true);
 
     const onResize = () => {
@@ -624,7 +625,7 @@ export default function ScrollDistortion({
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
 
-      window.cancelAnimationFrame(animationFrameId);
+      loop.destroy();
 
       textTimelineRef.current?.kill();
       textTimelineRef.current = null;

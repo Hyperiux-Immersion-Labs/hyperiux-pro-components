@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from"react";
 import gsap from"gsap";
+import { attachWebGLContextRecovery } from"./webgl-context-recovery";
+import { createSuspendedRaf, createVisibilityGate } from"./createSuspendedRaf";
 
 const CARD_W = 380;
 const CARD_H = 240;
@@ -208,12 +210,21 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
  if (!gl) return;
 
- const prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
+ const [r, g, b] = hexToRgb(primaryColor);
+
+ let loop = null;
+ let prog;
+ let buf;
+
+ // Build (or rebuild) the GPU program, buffer, and uniform wiring, then start
+ // the render loop. Extracted so it can re-run after WebGL context restore.
+ const setup = () => {
+ prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
  gl.useProgram(prog);
  gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
  // full-screen quad
- const buf = gl.createBuffer();
+ buf = gl.createBuffer();
  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
  const loc = gl.getAttribLocation(prog,"a_pos");
@@ -228,9 +239,6 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const uCardTop = gl.getUniformLocation(prog,"u_cardTop");
  const uCardBottom = gl.getUniformLocation(prog,"u_cardBottom");
 
- const [r, g, b] = hexToRgb(primaryColor);
-
- let raf;
  let seeded = false;
  const smoothed = {
  card: 0,
@@ -255,7 +263,6 @@ function useWebGLBeam(canvasRef, primaryColor) {
  // (a full-height, near-white core) across a card already sitting on it.
  if (!ready) {
  gl.clear(gl.COLOR_BUFFER_BIT);
- raf = requestAnimationFrame(tick);
  return;
  }
 
@@ -286,10 +293,37 @@ function useWebGLBeam(canvasRef, primaryColor) {
  gl.uniform1f(uCardTop, smoothed.top);
  gl.uniform1f(uCardBottom, smoothed.bottom);
  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
- raf = requestAnimationFrame(tick);
  };
- raf = requestAnimationFrame(tick);
- return () => cancelAnimationFrame(raf);
+
+ loop?.destroy();
+ loop = createSuspendedRaf({
+ root: canvas,
+ onFrame: tick,
+ });
+ loop.start();
+ };
+
+ // A raw WebGL context gets no automatic recovery (unlike THREE.WebGLRenderer).
+ // On loss, stop the loop and release the invalidated program/buffer; on
+ // restore, rebuild them and resume.
+ const teardown = () => {
+ loop?.destroy();
+ loop = null;
+ if (buf) { gl.deleteBuffer(buf); buf = null; }
+ if (prog) { gl.deleteProgram(prog); prog = null; }
+ };
+
+ setup();
+
+ const detachRecovery = attachWebGLContextRecovery(canvas, {
+ onLost: teardown,
+ onRestored: setup,
+ });
+
+ return () => {
+ detachRecovery();
+ teardown();
+ };
  }, [canvasRef, primaryColor]);
 
  return stateRef;
@@ -317,7 +351,6 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  const ctx = canvas.getContext("2d");
  if (!ctx) return;
 
- let raf;
  const visibleState = {
  alpha: 0,
  splitNorm: 0.5,
@@ -356,7 +389,6 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  }
 
  if (visibleState.alpha < 0.01) {
- raf = requestAnimationFrame(draw);
  return;
  }
 
@@ -408,11 +440,14 @@ const fade =
  }
 
  ctx.restore();
- raf = requestAnimationFrame(draw);
  };
 
- raf = requestAnimationFrame(draw);
- return () => cancelAnimationFrame(raf);
+ const loop = createSuspendedRaf({
+ root: canvas,
+ onFrame: draw,
+ });
+ loop.start();
+ return () => loop.destroy();
  }, [beamStateRef, canvasRef, particles]);
 }
 
@@ -727,7 +762,23 @@ export function FileEncryptionComp({ cards = [] }) {
  };
 
  gsap.ticker.add(update);
+
+ // Pause the marquee ticker when the section is offscreen or the tab is hidden.
+ // Beam/particle loops self-suspend via createSuspendedRaf; sleep/wake the shared
+ // GSAP ticker here so auto-scroll stops with them. Always wake on teardown so we
+ // never leave the global ticker sleeping for the rest of the page.
+ const gate = createVisibilityGate({
+ root,
+ onChange: (active) => {
+ if (active) gsap.ticker.wake();
+ else gsap.ticker.sleep();
+ },
+ });
+ if (!gate.isActive) gsap.ticker.sleep();
+
  return () => {
+ gate.destroy();
+ gsap.ticker.wake();
  gsap.ticker.remove(update);
  root.removeEventListener("pointerdown", onDown);
  window.removeEventListener("pointermove", onMove);

@@ -28,6 +28,10 @@
     {
       "path": "util.js",
       "target": "src/components/effects/infinite-grid-gallery/util.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
     }
   ]
 }
