@@ -7,8 +7,7 @@
   "category": "components",
   "dependencies": [
     "gsap",
-    "lucide-react",
-    "next"
+    "lucide-react"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/testimonial-swiper",

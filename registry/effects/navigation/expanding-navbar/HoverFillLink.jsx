@@ -1,11 +1,8 @@
-
-import Link from "next/link";
-
 export function HoverFillLink({ href, children, className = "", isActive, ...props }) {
     const text = typeof children === "string" ? children : "";
     return (
         <>
-            <Link
+            <a
                 href={href}
                 data-content={text}
                 data-active={isActive ? "true" : undefined}
@@ -13,7 +10,7 @@ export function HoverFillLink({ href, children, className = "", isActive, ...pro
                 {...props}
             >
                 {children}
-            </Link>
+            </a>
 
             <style jsx global>{`
                 @media (prefers-reduced-motion: reduce) {

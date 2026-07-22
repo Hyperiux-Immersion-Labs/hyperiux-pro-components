@@ -9,8 +9,7 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "maath",
-    "next"
+    "maath"
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",

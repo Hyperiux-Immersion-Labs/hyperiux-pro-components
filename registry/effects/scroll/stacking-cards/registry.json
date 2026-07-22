@@ -1,13 +1,20 @@
 {
   "name": "stacking-cards",
   "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-07-21",
+      "summary": "Initial release with prefers-reduced-motion support for reduced scroll and card motion.",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Stacking Cards",
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
   "category": "scroll",
   "dependencies": [
     "gsap",
-    "next",
     "lenis"
   ],
   "registryDependencies": [],

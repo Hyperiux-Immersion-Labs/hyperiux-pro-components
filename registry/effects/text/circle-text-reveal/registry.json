@@ -1,9 +1,9 @@
 {
   "name": "circle-text-reveal",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Added reduced-motion support for accessible lower-motion pointer reveal.",
       "breaking": false
@@ -20,9 +20,9 @@
   "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
   "category": "text",
   "dependencies": [
-    "framer-motion"
+    "motion"
   ],
   "registryDependencies": [],
-  "previewUrl": "/circle-reveal",
+  "previewUrl": "/demo/circle-text-reveal",
   "tier": "pro"
 }

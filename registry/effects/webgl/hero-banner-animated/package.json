@@ -17,6 +17,8 @@
     "@react-three/postprocessing": "*",
     "postprocessing": "*",
     "gsap": "*",
-    "three": "*"
+    "three": "*",
+    "motion": "*",
+    "lucide-react": "*"
   }
 }

@@ -1,8 +1,13 @@
 {
   "name": "text-convergence",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
-    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: per-character fly-in yPercent/rotation range is reduced to 25% strength; the main horizontal scroll is unaffected", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: per-character fly-in yPercent/rotation range is reduced to 25% strength; the main horizontal scroll is unaffected",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Text Convergence",

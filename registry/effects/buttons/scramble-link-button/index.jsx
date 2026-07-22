@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 const DEFAULT_BTN_TEXT = "";
 const DEFAULT_HREF = "#";
@@ -169,7 +168,7 @@ export function ScrambleLinkButton({
   };
 
   return (
-    <Link
+    <a
       href={href}
       {...linkProps}
       {...props}
@@ -207,7 +206,7 @@ export function ScrambleLinkButton({
           <Icon className="transition-transform duration-300 ease-in-out group-hover:-rotate-45 group-data-[pressed=true]:-rotate-45" />
         </span>
       )}
-    </Link>
+    </a>
   );
 }
 

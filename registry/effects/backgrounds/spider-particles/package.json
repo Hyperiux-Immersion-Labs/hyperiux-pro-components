@@ -11,5 +11,7 @@
     "backgrounds",
     "hyperiux"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "three": "*"
+  }
 }

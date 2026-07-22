@@ -1,9 +1,9 @@
 {
   "name": "overflow-stagger-text",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Added reduced-motion support for accessible lower-motion stagger reveal.",
       "breaking": false
@@ -23,6 +23,6 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/overflow-stagger-text",
+  "previewUrl": "/demo/overflow-stagger-text",
   "tier": "free"
 }

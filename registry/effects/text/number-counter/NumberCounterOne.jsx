@@ -1,16 +1,11 @@
 'use client';
-import { useEffect, useRef, memo } from"react";
+import { useEffect, useId, useRef, memo } from"react";
 import gsap from"gsap";
 import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const DIGITS = [...Array(10).keys()]; // [0..9]
-
-const SCROLL_TRIGGER_CONFIG = {
- trigger:"#stats",
- start:"top 80%",
-};
 
 const FONT_WEIGHTS = {
  normal:"font-normal",
@@ -29,7 +24,10 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
  y: `-${parseInt(digit, 10) * 10}%`,
  duration,
  ease:"power1.out",
- scrollTrigger: SCROLL_TRIGGER_CONFIG,
+ scrollTrigger: {
+ trigger,
+ start:"top 80%",
+ },
  });
  });
  return () => ctx.revert();
@@ -103,10 +101,13 @@ export default function CounterOne({
  fontWeight ="normal",
  reducedMotion = false,
 }) {
+ const uid = useId().replace(/:/g, "");
+ const sectionId = `stats-${uid}`;
+ const trigger = `#${sectionId}`;
  const items = stats.slice(0, 3);
 
  return (
- <section id="stats" className="h-fit w-fit">
+ <section id={sectionId} className="h-fit w-fit">
  <div className="p-[1vw]">
  <div className="flex text-center gap-[2vw] w-fit h-fit max-md:flex-wrap max-md:gap-x-0 max-md:gap-y-12 max-sm:flex-col max-sm:text-left">
  {items.map((stat, index) => (

@@ -17,8 +17,6 @@
     "@react-three/drei": "*",
     "@react-three/rapier": "*",
     "@react-three/postprocessing": "*",
-    "postprocessing": "*",
-    "maath": "*",
-    "next": "*"
+    "maath": "*"
   }
 }

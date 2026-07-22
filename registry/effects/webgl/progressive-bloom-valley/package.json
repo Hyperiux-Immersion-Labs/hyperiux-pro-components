@@ -16,6 +16,8 @@
     "@react-three/drei": "*",
     "@react-three/postprocessing": "*",
     "three": "*",
-    "postprocessing": "*"
+    "postprocessing": "*",
+    "gsap": "*",
+    "lucide-react": "*"
   }
 }

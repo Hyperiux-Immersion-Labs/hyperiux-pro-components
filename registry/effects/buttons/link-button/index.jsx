@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
 
 const DEFAULT_HREF = "#";
@@ -52,7 +51,7 @@ export default function LinkButton({
 
   return (
     <>
-      <Link
+      <a
         href={href}
         {...linkProps}
         {...props}
@@ -76,7 +75,7 @@ export default function LinkButton({
 
           {Icon && <Icon className={iconClassNames} />}
         </div>
-      </Link>
+      </a>
 
       <style jsx>{`
         li :global(.btn-link-line)::after {

@@ -18,7 +18,5 @@
     "cursor",
     "hyperiux"
   ],
-  "dependencies": {
-    "gsap": "*"
-  }
+  "dependencies": {}
 }

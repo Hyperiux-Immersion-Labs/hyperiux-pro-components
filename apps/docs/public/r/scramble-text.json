@@ -3,10 +3,6 @@
   "type": "registry:component",
   "title": "Scramble Text",
   "description": "Hacker-style text scramble effect that reveals text character by character on scroll",
-  "category": "text",
-  "categories": [
-    "text"
-  ],
   "dependencies": [
     "gsap"
   ],
@@ -14,10 +10,10 @@
   "exportName": "ScrambleText",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.0.1",
+      "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Added reduced-motion support for accessible lower-motion scramble playback.",
       "breaking": false

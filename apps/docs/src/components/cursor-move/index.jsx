@@ -243,6 +243,20 @@ export default function CursorMove({
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>
         </div>
       ) : null}
+
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+      >
+        <h2 className="text-sm leading-none text-white">
+          The letters keep bending.
+        </h2>
+        <p className="mt-2 text-xs leading-5 text-white/65">
+          Cursor Move warps text and tracks coordinates live as you move
+          the cursor. The animation is the interaction itself, so it
+          can&apos;t be reduced.
+        </p>
+      </div>
     </div>
   );
 }

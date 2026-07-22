@@ -1,8 +1,13 @@
 {
   "name": "sticky-content-wrapper",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
-    { "version": "1.0.1", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: images crossfade instead of clip-path wiping and scaling; content transition is unaffected", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: images crossfade instead of clip-path wiping and scaling; content transition is unaffected",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Sticky Content Wrapper",

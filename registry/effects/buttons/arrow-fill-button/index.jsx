@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
@@ -123,7 +122,7 @@ function ArrowFillButton({
   };
 
   return (
-    <Link
+    <a
       href={href}
       {...props}
       data-pressed={isPressed ? "true" : "false"}
@@ -197,7 +196,7 @@ function ArrowFillButton({
             strokeWidth={1.8}
           />
         </span>
-    </Link>
+    </a>
   );
 }
 

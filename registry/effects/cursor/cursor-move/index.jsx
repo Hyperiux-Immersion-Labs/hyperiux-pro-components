@@ -1,12 +1,7 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
-import { Inter } from "next/font/google";
-
-// Inter is a variable font exposing a `wght` axis, which the cursor-driven
-// weight morph below animates. It's loaded here so the component is fully
-// self-contained - no font setup is required in layout.js, globals.css, or
-// the page that renders it.
-const cursorMoveFont = Inter({ subsets: ["latin"], display: "swap" });
+const CURSOR_MOVE_FONT_FAMILY =
+  'var(--cursor-move-font-family, Inter, ui-sans-serif, system-ui, sans-serif)';
 
 const DESKTOP_CURSOR_MOVE_QUERY = "(min-width: 1025px) and (pointer: fine)";
 
@@ -115,6 +110,7 @@ function VariableFontAndCursor({
       className={className}
       style={{
         fontVariationSettings,
+        fontFamily: CURSOR_MOVE_FONT_FAMILY,
         transform: `skewX(${skewX}deg)`,
         transition,
         transformOrigin,
@@ -227,7 +223,7 @@ export default function CursorMove({
         <VariableFontAndCursor
           containerRef={containerRef}
           fontVariationMapping={fontVariationMapping}
-          className={`${cursorMoveFont.className} ${textClassName}`}
+          className={textClassName}
           as={textAs}
           transition={variableTextTransition}
           transformOrigin={variableTextTransformOrigin}
@@ -243,6 +239,20 @@ export default function CursorMove({
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>
         </div>
       ) : null}
+
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+      >
+        <h2 className="text-sm leading-none text-white">
+          The letters keep bending.
+        </h2>
+        <p className="mt-2 text-xs leading-5 text-white/65">
+          Cursor Move warps text and tracks coordinates live as you move
+          the cursor. The animation is the interaction itself, so it
+          can&apos;t be reduced.
+        </p>
+      </div>
     </div>
   );
 }

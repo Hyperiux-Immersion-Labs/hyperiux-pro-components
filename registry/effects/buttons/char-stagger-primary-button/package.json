@@ -11,5 +11,7 @@
     "buttons",
     "hyperiux"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "lucide-react": "*"
+  }
 }

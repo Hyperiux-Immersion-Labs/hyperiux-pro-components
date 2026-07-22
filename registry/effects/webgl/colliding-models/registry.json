@@ -11,8 +11,7 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "maath",
-    "next"
+    "maath"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/colliding-models",

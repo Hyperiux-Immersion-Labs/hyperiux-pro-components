@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const LINK_GROUPS = [
   {
     heading: "Documentation",
@@ -40,13 +38,13 @@ export function Menu3() {
 
           <div className="flex flex-col gap-3">
             {group.links.map((link) => (
-              <Link
+              <a
                 key={link.label}
                 href={link.href}
                 className="block text-sm font-medium text-neutral-600 transition-opacity duration-200 hover:text-black max-xl:text-xl max-md:text-base motion-reduce:text-neutral-600 motion-reduce:transition-none"
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </div>
         </div>

@@ -3,7 +3,6 @@ import { Effect } from"postprocessing";
 import { Uniform, Vector2 } from"three";
 
 
-
 const classicBlurFragmentShader = /* glsl */ `
 uniform float uBlurStrength;
 uniform float uBlurStart;

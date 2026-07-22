@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const SOLUTION_BLOCKS = [
   {
     title: "Startups",
@@ -37,7 +35,7 @@ export function Menu2() {
 
       <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-2">
         {SOLUTION_BLOCKS.map((block) => (
-          <Link
+          <a
             key={block.title}
             href={block.href}
             className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-6 transition-all duration-200 hover:bg-neutral-100 max-md:p-4 motion-reduce:bg-transparent motion-reduce:transition-none"
@@ -46,7 +44,7 @@ export function Menu2() {
             <p className="text-sm leading-6 text-neutral-600 max-xl:text-xl max-md:text-base max-md:leading-[1.2]">
               {block.description}
             </p>
-          </Link>
+          </a>
         ))}
       </div>
     </div>

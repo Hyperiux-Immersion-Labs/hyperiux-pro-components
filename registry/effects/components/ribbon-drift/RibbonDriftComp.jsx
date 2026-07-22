@@ -4,7 +4,6 @@ import gsap from "gsap";
 import React, { useEffect, useId, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
-import Link from "next/link";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 function buildCards(count, startIndex = 0, imagesArr = IMAGE_POOL, namesArr = PROJECT_NAMES) {
@@ -337,7 +336,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 							const currentIndex = titleIndex++;
 
 							return (
-								<Link
+								<a
 									href={item.href}
 									key={`left-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
@@ -360,7 +359,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 											{item.title}
 										</p>
 									</div>
-								</Link>
+								</a>
 							);
 						})}
 					</div>
@@ -370,7 +369,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 							const currentIndex = titleIndex++;
 
 							return (
-								<Link
+								<a
 									href={item.href}
 									key={`mid-${index}`}
 									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
@@ -394,7 +393,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 											{item.title}
 										</p>
 									</div>
-								</Link>
+								</a>
 							);
 						})}
 					</div>
@@ -404,7 +403,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 							const currentIndex = titleIndex++;
 
 							return (
-								<Link
+								<a
 									href={item.href}
 									key={`right-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
@@ -427,7 +426,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 											{item.title}
 										</p>
 									</div>
-								</Link>
+								</a>
 							);
 						})}
 					</div>
@@ -463,7 +462,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-md:grid-cols-1 max-md:gap-5">
 						{compactCards.map((item, index) => (
-							<Link
+							<a
 								href={item.href}
 								key={`compact-${index}`}
 								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
@@ -480,7 +479,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										{item.title}
 									</p>
 								</div>
-							</Link>
+							</a>
 						))}
 					</div>
 

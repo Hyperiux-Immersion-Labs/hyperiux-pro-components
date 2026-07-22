@@ -25,19 +25,6 @@ const page = () => {
           For the best experience, open on desktop
         </p>
       </div>
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center max-md:hidden"
-      >
-        <h2 className="text-sm leading-none text-[#111111]">
-          The butterflies keep drifting.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-black/65">
-          These butterflies are animated purely by cursor movement. Pausing
-          that motion would remove the effect, so reduced motion isn&apos;t
-          supported here.
-        </p>
-      </div>
     </>
   );
 };

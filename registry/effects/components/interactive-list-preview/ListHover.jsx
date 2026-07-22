@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import Image from "next/image";
 
 const DEFAULT_IMAGE_Z_INDEX = 10;
 const HIGHLIGHT_ANIMATION_DURATION = 0.4;
@@ -302,7 +301,7 @@ export function ListHover({ items }) {
                 zIndex: DEFAULT_IMAGE_Z_INDEX,
               }}
             >
-              <Image src={item.img} alt="" fill className="object-cover" />
+              <img src={item.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -380,11 +379,10 @@ export function ListHover({ items }) {
             </div>
 
             <div className="relative aspect-3/4 h-full w-1/2 max-xl:h-[30vh]">
-              <Image
+              <img
                 src={item.img}
                 alt={item.client}
-                fill
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
           </div>

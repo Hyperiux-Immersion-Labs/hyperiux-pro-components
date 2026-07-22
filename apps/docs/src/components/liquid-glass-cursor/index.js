@@ -218,6 +218,19 @@ export default function LiquidGlassCursor({
  ></span>
   </div>
  </div>
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center "
+ >
+   <h2 className="text-sm leading-none text-[#111111]">
+     The glass keeps flowing.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-black/65">
+     Liquid Glass Cursor&apos;s ripple follows your pointer in real
+     time. Since the distortion is the interaction itself, reduced
+     motion can&apos;t be applied here.
+   </p>
+ </div>
  </>
  );
 }

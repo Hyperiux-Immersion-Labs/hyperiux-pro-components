@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "gsap": "*",
-    "three": "*"
+    "three": "*",
+    "lenis": "*"
   }
 }
