@@ -1,6 +1,6 @@
 {
   "name": "animated-tabs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",
@@ -24,6 +24,14 @@
     {
       "path": "AnimatedTabsComp.jsx",
       "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Under reduced motion, use opacity fade instead of horizontal slide",
+      "breaking": false
     }
   ]
 }

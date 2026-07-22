@@ -655,6 +655,10 @@ const SmokeFlow = React.memo(function SmokeFlow() {
    const gpuRef = useRef(null)
    const matRef = useRef(null)
    const dataRef = useRef(null)
+   const reduceMotionRef = useRef(
+      typeof window !== 'undefined' &&
+         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+   )
    const { geo, posTex, dataTex } = useMemo(() => {
       const { posTex, dataTex } = buildSmokeTextures(SMOKE_CFG)
       const geo = buildSmokeGeo(SMOKE_CFG)
@@ -675,6 +679,17 @@ const SmokeFlow = React.memo(function SmokeFlow() {
    }), [posTex])
 
    useEffect(() => {
+      const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+      if (!mq) return
+      const onChange = (event) => {
+         reduceMotionRef.current = event.matches
+      }
+      reduceMotionRef.current = mq.matches
+      mq.addEventListener?.('change', onChange)
+      return () => mq.removeEventListener?.('change', onChange)
+   }, [])
+
+   useEffect(() => {
       const gpu = new GPUCompute(SMOKE_CFG.texSize, SMOKE_CFG.texSize, gl)
       gpu.addVar('smokePos', SMOKE_SIM_FRAG, posTex)
       gpuRef.current = gpu
@@ -692,6 +707,8 @@ const SmokeFlow = React.memo(function SmokeFlow() {
    }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
 
    useFrame((state, rawDelta) => {
+      if (reduceMotionRef.current) return
+
       const gpu = gpuRef.current
       const material = matRef.current
       if (!gpu || !material) return
@@ -723,9 +740,36 @@ function GalaxyMouseGroup({ children }) {
    const groupRef = useRef(null)
    const mouseRef = useRef({ x: 0, y: 0 })
    const smoothRef = useRef({ x: 0, y: 0 })
+   const reduceMotionRef = useRef(
+      typeof window !== 'undefined' &&
+         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+   )
+
+   useEffect(() => {
+      const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+      if (!mq) return
+
+      const onChange = (event) => {
+         reduceMotionRef.current = event.matches
+         if (event.matches && groupRef.current) {
+            groupRef.current.rotation.set(
+               GALAXY_BASE_ROT[0],
+               GALAXY_BASE_ROT[1],
+               GALAXY_BASE_ROT[2]
+            )
+            smoothRef.current.x = 0
+            smoothRef.current.y = 0
+         }
+      }
+
+      reduceMotionRef.current = mq.matches
+      mq.addEventListener?.('change', onChange)
+      return () => mq.removeEventListener?.('change', onChange)
+   }, [])
 
    useEffect(() => {
       const onMove = (e) => {
+         if (reduceMotionRef.current) return
          const w = window.innerWidth || 1
          const h = window.innerHeight || 1
          mouseRef.current.x = (e.clientX / w) * 2 - 1
@@ -738,6 +782,16 @@ function GalaxyMouseGroup({ children }) {
    useFrame((_, dt) => {
       const g = groupRef.current
       if (!g) return
+
+      if (reduceMotionRef.current) {
+         g.rotation.set(
+            GALAXY_BASE_ROT[0],
+            GALAXY_BASE_ROT[1],
+            GALAXY_BASE_ROT[2]
+         )
+         return
+      }
+
       const m = mouseRef.current
       const s = smoothRef.current
       const t = 1 - Math.exp(-MOUSE_LERP_LAMBDA * dt)
@@ -762,6 +816,10 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
    const gpuRef = useRef(null)
    const matRef = useRef(null)
    const dataRef = useRef(null)
+   const reduceMotionRef = useRef(
+      typeof window !== 'undefined' &&
+         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+   )
    const { geo, posTex, dataTex } = useMemo(() => {
       const { posTex, dataTex } = buildTextures(CFG)
       const geo = buildGeo(CFG)
@@ -781,6 +839,17 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
    }), [posTex])
 
    useEffect(() => {
+      const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+      if (!mq) return
+      const onChange = (event) => {
+         reduceMotionRef.current = event.matches
+      }
+      reduceMotionRef.current = mq.matches
+      mq.addEventListener?.('change', onChange)
+      return () => mq.removeEventListener?.('change', onChange)
+   }, [])
+
+   useEffect(() => {
       const gpu = new GPUCompute(CFG.texSize, CFG.texSize, gl)
       gpu.addVar('pos', SIM_FRAG, posTex)
       gpuRef.current = gpu
@@ -798,6 +867,8 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
    }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
 
    useFrame((state, rawDelta) => {
+      if (reduceMotionRef.current) return
+
       const gpu = gpuRef.current
       const material = matRef.current
       if (!gpu || !material) return

@@ -845,6 +845,12 @@ function pulseTableGradientsStatic(table, variant, frozenAlpha) {
     .join(',\n    ');
 }
 
+/**
+ * Under prefers-reduced-motion, stretch animation durations (and pulse periods)
+ * by this factor instead of freezing the beam entirely.
+ */
+export const REDUCED_MOTION_SCALE = 3;
+
 // Pauses every animation on an instance (wrapper + pseudo layers + bloom) when it
 // carries the `data-paused` attribute. Driven by an IntersectionObserver so beams
 // that are scrolled offscreen stop doing per-frame paint work entirely.
@@ -856,6 +862,20 @@ function pausedAnimationsRule(id) {
 [data-beam="${id}"][data-paused] [data-beam-bloom] {
   animation-play-state: paused !important;
 }`;
+}
+
+/** Slow continuous motion under prefers-reduced-motion (scale durations, don't freeze). */
+function reducedMotionRule(id) {
+  return `
+@media (prefers-reduced-motion: reduce) {
+  [data-beam="${id}"] {
+    --beam-motion-scale: ${REDUCED_MOTION_SCALE};
+  }
+}`;
+}
+
+function motionDur(seconds) {
+  return `calc(${seconds}s * var(--beam-motion-scale, 1))`;
 }
 
 // @property registrations for all per-instance pulse custom properties.
@@ -959,7 +979,7 @@ export function getPulseDriverConfig(size, theme, duration, hueRange, staticColo
 // Only the (short, one-shot) fade is still a CSS animation; the breathing is
 // driven from JS so it can be frame-rate capped and paused offscreen.
 function pulseWrapperAnimation(id, fadeName, fadeDur) {
-  return `  animation: ${fadeName}-${id} ${fadeDur}s ease forwards;`;
+  return `  animation: ${fadeName}-${id} ${motionDur(fadeDur)} ease forwards;`;
 }
 
 /**
@@ -1014,7 +1034,7 @@ function generateSmallVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: beam-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: beam-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes beam-hue-shift-${id} {
@@ -1117,14 +1137,14 @@ function generateSmallVariantCSS(options) {
 
 [data-beam="${id}"][data-active] {
   animation:
-    beam-spin-${id} ${duration}s linear infinite,
-    beam-fade-in-${id} 0.6s ease forwards;
+    beam-spin-${id} ${motionDur(duration)} linear infinite,
+    beam-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-beam="${id}"][data-fading] {
   animation:
-    beam-spin-${id} ${duration}s linear infinite,
-    beam-fade-out-${id} 0.5s ease forwards;
+    beam-spin-${id} ${motionDur(duration)} linear infinite,
+    beam-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-beam="${id}"][data-active]::after,
@@ -1223,6 +1243,7 @@ function generateSmallVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${pausedAnimationsRule(id)}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1253,7 +1274,7 @@ function generateBorderVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: beam-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: beam-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes beam-hue-shift-${id} {
@@ -1346,14 +1367,14 @@ function generateBorderVariantCSS(options) {
 
 [data-beam="${id}"][data-active] {
   animation:
-    beam-spin-${id} ${duration}s linear infinite,
-    beam-fade-in-${id} 0.6s ease forwards;
+    beam-spin-${id} ${motionDur(duration)} linear infinite,
+    beam-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-beam="${id}"][data-fading] {
   animation:
-    beam-spin-${id} ${duration}s linear infinite,
-    beam-fade-out-${id} 0.5s ease forwards;
+    beam-spin-${id} ${motionDur(duration)} linear infinite,
+    beam-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-beam="${id}"][data-active]::after,
@@ -1471,6 +1492,7 @@ function generateBorderVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${pausedAnimationsRule(id)}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1607,19 +1629,7 @@ ${pulseWrapperAnimation(id, 'beam-fade-out', 0.5)}
 @keyframes beam-fade-in-${id} { to { --beam-opacity-${id}: 1; } }
 @keyframes beam-fade-out-${id} { from { --beam-opacity-${id}: 1; } to { --beam-opacity-${id}: 0; } }
 ${pausedAnimationsRule(id)}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-beam="${id}"][data-active],
-  [data-beam="${id}"][data-fading],
-  [data-beam="${id}"][data-active]::after,
-  [data-beam="${id}"][data-fading]::after,
-  [data-beam="${id}"][data-active]::before,
-  [data-beam="${id}"][data-fading]::before,
-  [data-beam="${id}"][data-active] [data-beam-bloom],
-  [data-beam="${id}"][data-fading] [data-beam-bloom] {
-    animation: none !important;
-  }
-}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1793,19 +1803,7 @@ ${hairlineOpacity > 0 ? `
 @keyframes beam-fade-in-${id} { to { --beam-opacity-${id}: 1; } }
 @keyframes beam-fade-out-${id} { from { --beam-opacity-${id}: 1; } to { --beam-opacity-${id}: 0; } }
 ${pausedAnimationsRule(id)}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-beam="${id}"][data-active],
-  [data-beam="${id}"][data-fading],
-  [data-beam="${id}"][data-active]::after,
-  [data-beam="${id}"][data-fading]::after,
-  [data-beam="${id}"][data-active]::before,
-  [data-beam="${id}"][data-fading]::before,
-  [data-beam="${id}"][data-active] [data-beam-bloom],
-  [data-beam="${id}"][data-fading] [data-beam-bloom] {
-    animation: none !important;
-  }
-}
+${reducedMotionRule(id)}
 `;
 }
 
@@ -1836,11 +1834,11 @@ function generateLineVariantCSS(options) {
 
   const hueShiftAnimation = staticColors
     ? ''
-    : `animation: beam-hue-shift-${id} 12s ease-in-out infinite;`;
+    : `animation: beam-hue-shift-${id} ${motionDur(12)} ease-in-out infinite;`;
 
   const hueShiftBloomAnimation = staticColors
     ? ''
-    : `animation: beam-hue-shift-bloom-${id} 8s ease-in-out infinite;`;
+    : `animation: beam-hue-shift-bloom-${id} ${motionDur(8)} ease-in-out infinite;`;
 
   const hueShiftKeyframes = staticColors ? '' : `
 @keyframes beam-hue-shift-${id} {
@@ -1926,22 +1924,22 @@ function generateLineVariantCSS(options) {
 
 [data-beam="${id}"][data-active] {
   animation:
-    beam-travel-${id} ${duration}s linear infinite,
-    beam-edge-fade-${id} ${duration}s linear infinite,
-    beam-breathe-${id} ${(duration * 1.3).toFixed(1)}s ease-in-out infinite,
-    beam-spike-${id} ${(duration * 1.33).toFixed(1)}s ease-in-out infinite,
-    beam-spike2-${id} ${(duration * 1.7).toFixed(1)}s ease-in-out infinite,
-    beam-fade-in-${id} 0.6s ease forwards;
+    beam-travel-${id} ${motionDur(duration)} linear infinite,
+    beam-edge-fade-${id} ${motionDur(duration)} linear infinite,
+    beam-breathe-${id} ${motionDur((duration * 1.3).toFixed(1))} ease-in-out infinite,
+    beam-spike-${id} ${motionDur((duration * 1.33).toFixed(1))} ease-in-out infinite,
+    beam-spike2-${id} ${motionDur((duration * 1.7).toFixed(1))} ease-in-out infinite,
+    beam-fade-in-${id} ${motionDur(0.6)} ease forwards;
 }
 
 [data-beam="${id}"][data-fading] {
   animation:
-    beam-travel-${id} ${duration}s linear infinite,
-    beam-edge-fade-${id} ${duration}s linear infinite,
-    beam-breathe-${id} ${(duration * 1.3).toFixed(1)}s ease-in-out infinite,
-    beam-spike-${id} ${(duration * 1.33).toFixed(1)}s ease-in-out infinite,
-    beam-spike2-${id} ${(duration * 1.7).toFixed(1)}s ease-in-out infinite,
-    beam-fade-out-${id} 0.5s ease forwards;
+    beam-travel-${id} ${motionDur(duration)} linear infinite,
+    beam-edge-fade-${id} ${motionDur(duration)} linear infinite,
+    beam-breathe-${id} ${motionDur((duration * 1.3).toFixed(1))} ease-in-out infinite,
+    beam-spike-${id} ${motionDur((duration * 1.33).toFixed(1))} ease-in-out infinite,
+    beam-spike2-${id} ${motionDur((duration * 1.7).toFixed(1))} ease-in-out infinite,
+    beam-fade-out-${id} ${motionDur(0.5)} ease forwards;
 }
 
 [data-beam="${id}"][data-active]::after,
@@ -2093,5 +2091,6 @@ function generateLineVariantCSS(options) {
 }
 ${hueShiftKeyframes}
 ${pausedAnimationsRule(id)}
+${reducedMotionRule(id)}
 `;
 }

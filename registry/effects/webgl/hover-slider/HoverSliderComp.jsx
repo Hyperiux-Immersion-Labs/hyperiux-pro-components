@@ -305,7 +305,64 @@ export default function HoverSliderComp({ items = [] }) {
       return lerp(SOFT_CURVE, ACTIVE_CURVE, eased);
     };
 
+    const reduceMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    );
+    let reduceMotion = reduceMotionMq?.matches ?? false;
+
+    const snapStack = (targetIdx = stateRef.current.activeIndex) => {
+      curveAnim.value = 0;
+      curveAnim.zoom = 1.06;
+      floatIdx = targetIdx;
+      prevFloat = floatIdx;
+      vel.set(0, 0);
+    };
+
+    // Reduced-motion: swap images with opacity instead of sliding the stack.
+    const fadeToIndex = (targetIdx) => {
+      gsap.killTweensOf(curveAnim);
+
+      const reveal = () => {
+        snapStack(targetIdx);
+        gsap.killTweensOf(anim);
+        gsap.to(anim, {
+          alpha: 1,
+          duration: 0.28,
+          ease: "power2.out",
+        });
+      };
+
+      if (anim.alpha <= 0.01) {
+        reveal();
+        return;
+      }
+
+      gsap.killTweensOf(anim);
+      gsap.to(anim, {
+        alpha: 0,
+        duration: 0.16,
+        ease: "power2.in",
+        onComplete: reveal,
+      });
+    };
+
+    const onReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+
+      if (reduceMotion) {
+        gsap.killTweensOf(curveAnim);
+        snapStack(stateRef.current.activeIndex);
+      }
+    };
+
+    reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
+
     const releaseCurve = (targetIdx = stateRef.current.activeIndex) => {
+      if (reduceMotion) {
+        fadeToIndex(targetIdx);
+        return;
+      }
+
       const peakCurve = getCurveForTravel(targetIdx);
 
       gsap.killTweensOf(curveAnim);
@@ -329,6 +386,11 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     const show = (targetIdx) => {
+      if (reduceMotion) {
+        fadeToIndex(targetIdx);
+        return;
+      }
+
       gsap.killTweensOf(anim);
 
       gsap.to(anim, {
@@ -341,6 +403,18 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     const hide = () => {
+      if (reduceMotion) {
+        gsap.killTweensOf(curveAnim);
+        snapStack(stateRef.current.activeIndex);
+        gsap.killTweensOf(anim);
+        gsap.to(anim, {
+          alpha: 0,
+          duration: 0.22,
+          ease: "power2.out",
+        });
+        return;
+      }
+
       gsap.killTweensOf(anim);
       gsap.killTweensOf(curveAnim);
 
@@ -414,19 +488,27 @@ export default function HoverSliderComp({ items = [] }) {
       root: mount,
       onFrame: () => {
         const targetIdx = stateRef.current.activeIndex;
-        const diff = targetIdx - floatIdx;
-        const distToTarget = Math.abs(diff);
 
-        const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
+        if (reduceMotion) {
+          floatIdx = targetIdx;
+          prevFloat = floatIdx;
+          vel.set(0, 0);
+          curveAnim.value = 0;
+          curveAnim.zoom = 1.06;
+        } else {
+          const diff = targetIdx - floatIdx;
+          const distToTarget = Math.abs(diff);
+          const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
 
-        floatIdx += diff * t;
+          floatIdx += diff * t;
 
-        const delta = floatIdx - prevFloat;
+          const delta = floatIdx - prevFloat;
 
-        vel.y = lerp(vel.y, delta * 60, 0.16);
-        vel.x = lerp(vel.x, 0, 0.14);
+          vel.y = lerp(vel.y, delta * 60, 0.16);
+          vel.x = lerp(vel.x, 0, 0.14);
 
-        prevFloat = floatIdx;
+          prevFloat = floatIdx;
+        }
 
         const centreInt = Math.round(floatIdx);
         const drift = floatIdx - centreInt;
@@ -434,11 +516,19 @@ export default function HoverSliderComp({ items = [] }) {
         for (let i = 0; i < VISIBLE; i++) {
           const offset = i - HALF;
 
+          // Reduced-motion: only the active (center) card — hide the stack above/below.
+          if (reduceMotion && offset !== 0) {
+            meshes[i].material.uniforms.uAlpha.value = 0;
+            meshes[i].position.set(0, 0, i);
+            meshes[i].scale.set(CW, CH, 1);
+            continue;
+          }
+
           const itemIdx =
             ((centreInt + offset) % items.length + items.length) % items.length;
 
-          const posY = (-offset + drift) * (CH + GAP);
-          const dist = Math.abs(offset - drift);
+          const posY = reduceMotion ? 0 : (-offset + drift) * (CH + GAP);
+          const dist = reduceMotion ? 0 : Math.abs(offset - drift);
 
           const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
 
@@ -488,6 +578,7 @@ export default function HoverSliderComp({ items = [] }) {
       loop.destroy();
 
       window.removeEventListener("resize", onResize);
+      reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
 
       gsap.killTweensOf(anim);
       gsap.killTweensOf(curveAnim);

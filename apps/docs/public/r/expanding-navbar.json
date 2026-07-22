@@ -39,6 +39,11 @@
       "path": "HoverFillLink.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/HoverFillLink.jsx"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/useFocusTrap.js"
     }
   ]
 }

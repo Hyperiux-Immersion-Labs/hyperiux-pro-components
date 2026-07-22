@@ -1,6 +1,6 @@
 {
   "name": "grid-tunnel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Grid Tunnel",
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
@@ -30,6 +30,14 @@
     {
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ]
 }

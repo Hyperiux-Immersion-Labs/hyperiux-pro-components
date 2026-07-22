@@ -27,6 +27,11 @@
       "path": "MaskedContainer.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/MaskedContainer.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

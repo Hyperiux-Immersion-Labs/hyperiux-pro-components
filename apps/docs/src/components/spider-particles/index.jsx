@@ -288,27 +288,48 @@ export default function SpiderParticles({
     };
     window.addEventListener("resize", onResize);
 
+    let reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    );
+    const onReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+    };
+    reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
+
     //  Animation Loop 
 
     const loop = createSuspendedRaf({
       root: mount,
       onFrame: () => {
-      // Fade the entire effect in/out as cursor enters or leaves
-      mouseEntryAlpha = mousePresent
-        ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
-        : Math.max(0, mouseEntryAlpha - FADE_SPEED);
-
-      // Snap smoothMouse on the first frame, lerp every frame after
-      if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
-        if (mouseJustEntered) {
-          smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
+      // Reduced-motion: snap cursor + alpha (no lerp / fade trail).
+      if (reduceMotion) {
+        mouseEntryAlpha = mousePresent ? 1 : 0;
+        if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
+          smoothMouse.copy(mouse);
           mouseJustEntered = false;
-        } else {
-          smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
-          smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
+        } else if (!mousePresent) {
+          smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
         }
-      } else if (!mousePresent && mouseEntryAlpha <= 0) {
-        smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
+      } else {
+        // Fade the entire effect in/out as cursor enters or leaves
+        mouseEntryAlpha = mousePresent
+          ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
+          : Math.max(0, mouseEntryAlpha - FADE_SPEED);
+
+        // Snap smoothMouse on the first frame, lerp every frame after
+        if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
+          if (mouseJustEntered) {
+            smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
+            mouseJustEntered = false;
+          } else {
+            smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
+            smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
+          }
+        } else if (!mousePresent && mouseEntryAlpha <= 0) {
+          smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
+        }
       }
 
       // Sync uniforms
@@ -375,6 +396,7 @@ export default function SpiderParticles({
     //  Cleanup 
 
     return () => {
+      reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
       loop.destroy();
       window.removeEventListener("resize", onResize);
       if (mount) {

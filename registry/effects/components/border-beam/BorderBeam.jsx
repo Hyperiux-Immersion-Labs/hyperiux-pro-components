@@ -9,7 +9,7 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { sizePresets, sizeThemePresets, generateBeamCSS, getPulseDriverConfig } from './styles';
+import { sizePresets, sizeThemePresets, generateBeamCSS, getPulseDriverConfig, REDUCED_MOTION_SCALE } from './styles';
 import { registerPulseInstance } from './PulseDriver';
 
 // Runs synchronously before the browser paints on the client, but degrades to a
@@ -35,6 +35,26 @@ function useSystemTheme() {
   }, []);
 
   return theme;
+}
+
+function usePrefersReducedMotion() {
+  const [reduceMotion, setReduceMotion] = useState(() =>
+    typeof window !== 'undefined'
+      ? (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false)
+      : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (!mq) return;
+
+    const onChange = (event) => setReduceMotion(event.matches);
+    setReduceMotion(mq.matches);
+    mq.addEventListener?.('change', onChange);
+    return () => mq.removeEventListener?.('change', onChange);
+  }, []);
+
+  return reduceMotion;
 }
 
 function resolveTheme(theme, systemTheme) {
@@ -87,6 +107,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   const baseId = useId();
   const id = baseId.replace(/:/g, '-');
   const systemTheme = useSystemTheme();
+  const reduceMotion = usePrefersReducedMotion();
   const internalRef = useRef(null);
 
   const [isActive, setIsActive] = useState(active);
@@ -264,29 +285,47 @@ export const BeamBorder = forwardRef(function BeamBorder(
   );
 
   // Runtime config for the JS breathing driver (null for non-pulse sizes).
-  const driverConfig = useMemo(
-    () =>
-      isPulse
-        ? getPulseDriverConfig(size, resolvedTheme, finalDuration, finalHueRange, finalStaticColors, id)
+  // Under reduced motion, stretch oscillator/hue periods instead of freezing.
+  const driverConfig = useMemo(() => {
+    if (!isPulse) return null;
+    const base = getPulseDriverConfig(
+      size,
+      resolvedTheme,
+      finalDuration,
+      finalHueRange,
+      finalStaticColors,
+      id
+    );
+    if (!base || !reduceMotion) return base;
+    return {
+      oscillators: base.oscillators.map((osc) => ({
+        ...osc,
+        period: osc.period * REDUCED_MOTION_SCALE,
+        delay: osc.delay * REDUCED_MOTION_SCALE,
+      })),
+      hue: base.hue
+        ? { ...base.hue, period: base.hue.period * REDUCED_MOTION_SCALE }
         : null,
-    [isPulse, size, resolvedTheme, finalDuration, finalHueRange, finalStaticColors, id]
-  );
+    };
+  }, [
+    isPulse,
+    size,
+    resolvedTheme,
+    finalDuration,
+    finalHueRange,
+    finalStaticColors,
+    id,
+    reduceMotion,
+  ]);
 
   // Drive the Pulse breathing from the shared, fps-capped rAF loop while the
-  // instance is on, onscreen, and the user hasn't requested reduced motion.
+  // instance is on and onscreen.
   useEffect(() => {
     if (!driverConfig) return;
     if (!(isActive || isFading) || !isVisible) return;
 
     const el = internalRef.current;
     if (!el) return;
-
-    if (
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    ) {
-      return;
-    }
 
     return registerPulseInstance(el, driverConfig);
   }, [driverConfig, isActive, isFading, isVisible]);

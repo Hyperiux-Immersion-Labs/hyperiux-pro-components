@@ -53,6 +53,20 @@ export default function DepthCardStackComp({ cards }) {
  const [isMobile, setIsMobile] = useState(false);
  const [isTablet, setIsTablet] = useState(false);
  const [isStackReady, setIsStackReady] = useState(false);
+ const [reduceMotion, setReduceMotion] = useState(
+  () =>
+   typeof window !== "undefined" &&
+   (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+ );
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const onChange = (event) => setReduceMotion(event.matches);
+    setReduceMotion(mq.matches);
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
 
   useEffect(() => {
     const check = () => {
@@ -233,6 +247,22 @@ export default function DepthCardStackComp({ cards }) {
  }, [navigate, autoplayResetKey]);
 
  useEffect(() => {
+ // Reduced-motion: no pointer tilt / texture reveal — reset any leftover transforms.
+ if (reduceMotion) {
+  isHoveredRef.current = false;
+  cardFaceRefs.current.forEach((face) => {
+   if (!face) return;
+   gsap.killTweensOf(face);
+   gsap.set(face, { rotateX: 0, rotateY: 0, x: 0, y: 0 });
+  });
+  textureRefs.current.forEach((textureEl) => {
+   if (!textureEl) return;
+   gsap.killTweensOf(textureEl);
+   gsap.set(textureEl, { opacity: 0, "--reveal-x": "50%", "--reveal-y": "50%" });
+  });
+  return;
+ }
+
  const cards = cardRefs.current;
  const handlers = [];
 
@@ -345,7 +375,7 @@ export default function DepthCardStackComp({ cards }) {
  if (raf) cancelAnimationFrame(raf);
  });
  };
- }, []);
+ }, [reduceMotion, isStackReady]);
 
  return (
  <section ref={sectionRef} className="flex flex-col items-center px-6 pt-20 max-md:pt-40 max-sm:pt-20 h-screen max-sm:w-screen max-sm:overflow-x-hidden pb-5 select-none bg-white max-sm:h-full max-sm:min-h-dvh">

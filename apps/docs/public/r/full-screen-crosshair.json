@@ -20,6 +20,11 @@
       "path": "useMouse.js",
       "type": "registry:component",
       "target": "components/hyperiux/useMouse.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

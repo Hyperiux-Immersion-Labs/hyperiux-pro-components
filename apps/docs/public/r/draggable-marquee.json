@@ -29,6 +29,11 @@
       "path": "DraggableMarqueeComp.jsx",
       "type": "registry:component",
       "target": "components/hyperiux/DraggableMarqueeComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "components/hyperiux/createSuspendedRaf.js"
     }
   ]
 }

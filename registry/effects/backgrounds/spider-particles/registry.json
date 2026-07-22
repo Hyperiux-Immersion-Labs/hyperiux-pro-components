@@ -26,5 +26,13 @@
       "target": "src/components/effects/spider-particles/createSuspendedRaf.js"
     }
   ],
-  "version": "1.0.0"
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ]
 }
