@@ -249,7 +249,7 @@ const Loader2 = () => {
       gsap.set(sequence, { x: 0 });
       gsap.set(progress, {
         x: 0,
-        y: parkedY,
+        // y: parkedY,
         scaleX: 0,
         transformOrigin: "left top",
       });
@@ -316,11 +316,15 @@ const Loader2 = () => {
       tl.to(
         progress,
         {
-          y: 0,
+          height:"100vh",
           delay: 0.6,
           duration: 0.4,
           ease: "power2.inOut",
           onComplete: () => {
+            gsap.set(progress,{
+               bottom:"auto",
+               top:"0%",
+            })
             gsap.set(root, { autoAlpha: 0, pointerEvents: "none" });
             signalLoaderComplete(false);
           },
@@ -341,7 +345,8 @@ const Loader2 = () => {
       }
 
       tl.to(progress, {
-        y: -root.clientHeight,
+        // y: -root.clientHeight,
+         height:"0vh",
         duration: 0.4,
         ease: "power2.inOut",
         onComplete: finishLoader,
@@ -391,7 +396,7 @@ const Loader2 = () => {
 
       <div
         ref={progressRef}
-        className="loader-progress pointer-events-none fixed top-0 left-0 z-1300 h-screen w-full origin-left bg-[linear-gradient(to_right,#f16b0d,#e61216)] will-change-transform"
+        className="loader-progress pointer-events-none h-[4vh] fixed bottom-0 left-0 z-1300 w-full origin-left bg-[linear-gradient(to_right,#f16b0d,#e61216)] will-change-transform"
       />
 
       <div

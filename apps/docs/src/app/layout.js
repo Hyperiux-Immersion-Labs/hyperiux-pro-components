@@ -1,6 +1,5 @@
 import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
-import Script from "next/script";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -61,9 +60,13 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <Script
+        {/* Plain script tag, not next/script: this layout is a Server
+            Component, so the tag ships in the SSR HTML and the browser
+            executes it during parse - before first paint. next/script is a
+            client component and triggers React's "scripts inside components
+            are never executed" warning for inline beforeInteractive code. */}
+        <script
           id="loader-first-visit-block"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }}
         />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
@@ -78,9 +81,8 @@ export default function RootLayout({ children }) {
             title="Google Tag Manager"
           />
         </noscript>
-        <Script
+        <script
           id="clear-stale-clerk-cookies"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
         {/* ClerkProvider deliberately absent here - it lives in

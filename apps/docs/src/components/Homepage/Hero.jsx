@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-// import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -85,6 +84,7 @@ export default function Hero() {
       gsap.set(descSplit.lines, { yPercent: 100, opacity: 0 });
       gsap.set(buttons, { yPercent: 100, opacity: 0 });
       gsap.set(shimmer, { yPercent: 100, opacity: 0 });
+      gsap.set(".hero-overlay",{opacity:0})
 
       let hasAnimated = false;
       let delayedCall;
@@ -271,6 +271,8 @@ export default function Hero() {
           </ShimmerText>
         </p>
       </div>
+      <div className="bg-[#0e0e0e] fixed inset-0 z-100 w-screen h-screen pointer-events-none hero-overlay" />
+
     </section>
   );
 }
