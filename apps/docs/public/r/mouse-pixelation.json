@@ -32,27 +32,27 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/mouse-pixelation/index.jsx"
     },
     {
       "path": "EnhancedPixelCube.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/EnhancedPixelCube.jsx"
+      "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.jsx"
     },
     {
       "path": "PixelCircle.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PixelCircle.jsx"
+      "target": "src/components/effects/mouse-pixelation/PixelCircle.jsx"
     },
     {
       "path": "PixelShift.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PixelShift.jsx"
+      "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
     }
   ]
 }

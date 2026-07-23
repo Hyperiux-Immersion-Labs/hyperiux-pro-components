@@ -38,6 +38,10 @@
     {
       "path": "TextHoverComp.jsx",
       "target": "src/components/effects/text-hover/TextHoverComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/text-hover/createSuspendedRaf.js"
     }
   ]
 }

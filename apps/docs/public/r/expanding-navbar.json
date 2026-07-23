@@ -30,32 +30,32 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/expanding-navbar/index.jsx"
     },
     {
       "path": "data.js",
       "type": "registry:component",
-      "target": "components/hyperiux/data.js"
+      "target": "src/components/effects/expanding-navbar/data.js"
     },
     {
       "path": "ExpandingNavbarDesktop.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ExpandingNavbarDesktop.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
     },
     {
       "path": "ExpandingNavbarMobile.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ExpandingNavbarMobile.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
     },
     {
       "path": "HoverFillLink.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/HoverFillLink.jsx"
+      "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
     },
     {
       "path": "useFocusTrap.js",
       "type": "registry:component",
-      "target": "components/hyperiux/useFocusTrap.js"
+      "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
     }
   ]
 }

@@ -21,22 +21,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/infinite-grid-gallery/index.jsx"
     },
     {
       "path": "InfiniteGrid.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InfiniteGrid.jsx"
+      "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx"
     },
     {
       "path": "util.js",
       "type": "registry:component",
-      "target": "components/hyperiux/util.js"
+      "target": "src/components/effects/infinite-grid-gallery/util.js"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
     }
   ]
 }

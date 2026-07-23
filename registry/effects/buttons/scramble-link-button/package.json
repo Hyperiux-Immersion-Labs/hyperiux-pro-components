@@ -1,10 +1,10 @@
 {
   "name": "@hyperiux/scramble-link-button",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Link button with text scramble effect on hover, optional underline and arrow",
-  "main": "scramble-link-button.jsx",
+  "main": "index.jsx",
   "files": [
-    "scramble-link-button.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

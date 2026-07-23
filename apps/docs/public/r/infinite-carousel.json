@@ -30,12 +30,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/infinite-carousel/index.jsx"
     },
     {
       "path": "InfiniteCarouselComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InfiniteCarouselComp.jsx"
+      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
     }
   ]
 }

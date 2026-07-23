@@ -1,10 +1,10 @@
 {
   "name": "@hyperiux/link-button",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Minimal link button with animated underline and rotating arrow icon",
-  "main": "link-button.jsx",
+  "main": "index.jsx",
   "files": [
-    "link-button.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

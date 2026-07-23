@@ -1,11 +1,11 @@
 {
   "name": "@hyperiux/scroll-stack",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Successive content cards that hand off focus and fade as the next section enters",
   "main": "index.jsx",
   "files": [
-    "ScrollStackComp.jsx",
     "index.jsx",
+    "ScrollStackComp.jsx",
     "registry.json"
   ],
   "keywords": [

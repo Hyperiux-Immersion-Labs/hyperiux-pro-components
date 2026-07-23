@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-tabs",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Animated tabs with a moving active indicator and panel transitions",
   "main": "index.jsx",
   "files": [

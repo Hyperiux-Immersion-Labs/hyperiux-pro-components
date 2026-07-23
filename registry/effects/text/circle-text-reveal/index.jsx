@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from'react';
+import { useState, useEffect, useRef } from'react';
 import { motion } from 'motion/react';
+import { createSuspendedRaf } from './createSuspendedRaf';
 
 function useMousePosition() {
  const [mousePosition, setMousePosition] = useState({ x: null, y: null });
@@ -56,6 +57,7 @@ export default function CircleTextReveal({
  circleColorBg ='#E76F2E',
  RevealedTextColor ='#fefefe'
 }) {
+ const sectionRef = useRef(null);
  const [isHovered, setIsHovered] = useState(false);
  const { x, y } = useMousePosition();
  const isPointerFine = useIsPointerFine();
@@ -68,12 +70,12 @@ export default function CircleTextReveal({
  useEffect(() => {
  if (!isPointerFine) return;
 
- let animationFrame;
-
  const lerp = (start, end, factor) => start + (end - start) * factor;
  const lerpFactor = prefersReducedMotion ? 1 : 0.15;
 
- const animate = () => {
+ const loop = createSuspendedRaf({
+ root: sectionRef.current,
+ onFrame: () => {
  setSmoothPos((prev) => {
  if (x === null || y === null) return prev;
  if (prev === null) return { x, y };
@@ -82,17 +84,16 @@ export default function CircleTextReveal({
  y: lerp(prev.y, y, lerpFactor),
  };
  });
+ },
+ });
 
- animationFrame = requestAnimationFrame(animate);
- };
+ loop.start();
 
- animate();
-
- return () => cancelAnimationFrame(animationFrame);
+ return () => loop.destroy();
  }, [x, y, isPointerFine, prefersReducedMotion]);
 
  return (
- <section className="w-screen h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] bg-[#fefefe] relative overflow-hidden">
+ <section ref={sectionRef} className="w-screen h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] bg-[#fefefe] relative overflow-hidden">
 
  {(!isPointerFine) && (
  <div className="absolute hidden max-md:flex max-sm:flex inset-0 z-20 top-[30%]  items-center justify-center px-8 text-center pointer-events-none">

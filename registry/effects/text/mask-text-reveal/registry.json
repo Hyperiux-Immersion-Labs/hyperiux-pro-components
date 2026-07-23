@@ -24,5 +24,15 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/mask-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "MaskTextReveal",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/mask-text-reveal/index.jsx"
+    }
+  ]
 }

@@ -1,10 +1,10 @@
 {
   "name": "@hyperiux/rectangular-text-reveal",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Text reveal animation with colored rectangles sliding across each line",
-  "main": "rectangular-text-reveal.jsx",
+  "main": "index.jsx",
   "files": [
-    "rectangular-text-reveal.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

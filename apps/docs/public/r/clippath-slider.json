@@ -29,12 +29,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/clippath-slider/index.jsx"
     },
     {
       "path": "ClippathSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ClippathSliderComp.jsx"
+      "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
     }
   ]
 }

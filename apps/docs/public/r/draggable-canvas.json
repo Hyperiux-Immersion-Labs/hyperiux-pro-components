@@ -29,22 +29,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/draggable-canvas/index.jsx"
     },
     {
       "path": "DragCursor.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/DragCursor.jsx"
+      "target": "src/components/effects/draggable-canvas/DragCursor.jsx"
     },
     {
       "path": "MaskedContainer.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MaskedContainer.jsx"
+      "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
     }
   ]
 }

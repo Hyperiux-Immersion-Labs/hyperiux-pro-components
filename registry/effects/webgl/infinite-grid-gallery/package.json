@@ -1,10 +1,13 @@
 {
   "name": "@hyperiux/infinite-grid-gallery",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
-  "main": "InfiniteGrid.jsx",
+  "main": "index.jsx",
   "files": [
+    "index.jsx",
     "InfiniteGrid.jsx",
+    "util.js",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

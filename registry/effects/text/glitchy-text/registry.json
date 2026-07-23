@@ -24,5 +24,15 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/glitchy-text",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "GlitchyText",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/glitchy-text/index.jsx"
+    }
+  ]
 }

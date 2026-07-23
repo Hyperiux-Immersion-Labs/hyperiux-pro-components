@@ -3,10 +3,50 @@
 import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { prefersReducedMotion } from '@/lib/motion'
 
-gsap.registerPlugin(DrawSVGPlugin)
+function hasDrawSVGPlugin() {
+  return Boolean(gsap.plugins?.drawSVG)
+}
+
+function getPathLength(path) {
+  return path?.getTotalLength?.() ?? 0
+}
+
+function setPathDrawState(path, drawSVGValue, strokeWidth) {
+  if (!path) return
+
+  if (hasDrawSVGPlugin()) {
+    gsap.set(path, { drawSVG: drawSVGValue, strokeWidth })
+    return
+  }
+
+  const length = getPathLength(path)
+  const isVisible = drawSVGValue === '100%'
+  const isHiddenAtEnd = drawSVGValue === '100% 100%'
+
+  gsap.set(path, {
+    strokeDasharray: length,
+    strokeDashoffset: isVisible ? 0 : isHiddenAtEnd ? -length : length,
+    strokeWidth,
+  })
+}
+
+function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
+  if (hasDrawSVGPlugin()) {
+    return { drawSVG: drawSVGValue, strokeWidth, ...tweenProps }
+  }
+
+  const length = getPathLength(path)
+  const isVisible = drawSVGValue === '100%'
+  const isHiddenAtEnd = drawSVGValue === '100% 100%'
+
+  return {
+    strokeDashoffset: isVisible ? 0 : isHiddenAtEnd ? -length : length,
+    strokeWidth,
+    ...tweenProps,
+  }
+}
 
 export default function SVGBrushTransition({
   children,
@@ -17,7 +57,7 @@ export default function SVGBrushTransition({
     duration: 1.5,
   },
 }) {
-  const { enableBlur, strokeColor, strokeWidth, duration } = config
+  const { enableBlur, strokeColor, strokeWidth, duration, drawSVGPlugin } = config
   const transitionOverlayRef = useRef(null)
   const svgPathDesktopRef = useRef(null)
   const svgPathMobileRef = useRef(null)
@@ -30,20 +70,19 @@ export default function SVGBrushTransition({
   }
 
   useEffect(() => {
+    if (drawSVGPlugin) {
+      gsap.registerPlugin(drawSVGPlugin)
+    }
+
     const initPaths = () => {
       ;[svgPathDesktopRef.current, svgPathMobileRef.current].forEach((path) => {
-        if (path) {
-          gsap.set(path, {
-            drawSVG: '0%',
-            strokeWidth: strokeWidth,
-          })
-        }
+        setPathDrawState(path, '0%', strokeWidth)
       })
     }
 
     initPaths()
     gsap.config({ force3D: true })
-  }, [strokeWidth])
+  }, [drawSVGPlugin, strokeWidth])
 
   return (
     <TransitionRouter
@@ -64,12 +103,10 @@ export default function SVGBrushTransition({
           ease: 'power2.inOut',
         }).to(
           activePath,
-          {
-            drawSVG: '100%',
-            strokeWidth: 300,
+          getPathDrawTween(activePath, '100%', 300, {
             duration: duration,
             ease: 'power2.inOut',
-          },
+          }),
           0
         )
 
@@ -84,12 +121,10 @@ export default function SVGBrushTransition({
           return () => tl.kill()
         }
 
-        tl.to(activePath, {
-          drawSVG: '100% 100%',
-          strokeWidth: strokeWidth,
+        tl.to(activePath, getPathDrawTween(activePath, '100% 100%', strokeWidth, {
           duration: duration,
           ease: 'power2.inOut',
-        })
+        }))
           .to(
             transitionOverlayRef.current,
             {
@@ -100,10 +135,7 @@ export default function SVGBrushTransition({
             },
             1
           )
-          .set(activePath, {
-            drawSVG: '0%',
-            strokeWidth: strokeWidth,
-          })
+          .call(() => setPathDrawState(activePath, '0%', strokeWidth))
 
         return () => tl.kill()
       }}

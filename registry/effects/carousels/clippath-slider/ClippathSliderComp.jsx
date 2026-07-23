@@ -439,6 +439,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
     });
 
     let currentSide = "right";
+    let cursorRafId = null;
 
     const handleMove = (e) => {
       const x = e.clientX;
@@ -553,7 +554,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         y: pos.current.y,
       });
 
-      requestAnimationFrame(render);
+      cursorRafId = requestAnimationFrame(render);
     };
 
     render();
@@ -561,6 +562,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
     return () => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
+      if (cursorRafId) cancelAnimationFrame(cursorRafId);
     };
   }, [reduceMotion]);
 

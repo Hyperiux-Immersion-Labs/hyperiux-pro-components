@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -58,7 +59,8 @@ export default function TextHoverComp({
   const labelRefs = useRef([]);
   const descriptionRefs = useRef([]);
 
-  const rafRef = useRef(null);
+  const refreshLoopRef = useRef(null);
+  const activationFrameRef = useRef(null);
   const refreshStartRef = useRef(null);
   const activeIndexRef = useRef(null);
 
@@ -180,28 +182,37 @@ export default function TextHoverComp({
 
   const startRefreshTracking = useCallback(
     (index) => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
 
       refreshStartRef.current = performance.now();
 
-      const tick = () => {
-        if (activeIndexRef.current !== index) return;
+      const loop = createSuspendedRaf({
+        root: sectionRef,
+        onFrame: () => {
+          if (activeIndexRef.current !== index) {
+            loop.destroy();
+            if (refreshLoopRef.current === loop) {
+              refreshLoopRef.current = null;
+            }
+            return;
+          }
 
-        moveHighlight(index, true);
+          moveHighlight(index, true);
 
-        const elapsed = performance.now() - refreshStartRef.current;
+          const elapsed = performance.now() - refreshStartRef.current;
 
-        if (elapsed < 520) {
-          rafRef.current = requestAnimationFrame(tick);
-        } else {
-          rafRef.current = null;
-        }
-      };
+          if (elapsed >= 520) {
+            loop.destroy();
+            if (refreshLoopRef.current === loop) {
+              refreshLoopRef.current = null;
+            }
+          }
+        },
+      });
 
-      rafRef.current = requestAnimationFrame(tick);
+      refreshLoopRef.current = loop;
+      loop.start();
     },
     [moveHighlight]
   );
@@ -211,7 +222,12 @@ export default function TextHoverComp({
       activeIndexRef.current = index;
       setActiveIndex(index);
 
-      requestAnimationFrame(() => {
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+      }
+
+      activationFrameRef.current = requestAnimationFrame(() => {
+        activationFrameRef.current = null;
         moveHighlight(index, false);
         startRefreshTracking(index);
       });
@@ -223,9 +239,12 @@ export default function TextHoverComp({
     activeIndexRef.current = null;
     setActiveIndex(null);
 
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+    refreshLoopRef.current?.destroy();
+    refreshLoopRef.current = null;
+
+    if (activationFrameRef.current) {
+      cancelAnimationFrame(activationFrameRef.current);
+      activationFrameRef.current = null;
     }
 
     if (highlightRef.current) {
@@ -308,9 +327,12 @@ export default function TextHoverComp({
       setActiveIndex(null);
       activeIndexRef.current = null;
 
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
+
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+        activationFrameRef.current = null;
       }
 
       if (highlightRef.current) {
@@ -348,8 +370,12 @@ export default function TextHoverComp({
 
   useEffect(() => {
     return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
+
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+        activationFrameRef.current = null;
       }
     };
   }, []);

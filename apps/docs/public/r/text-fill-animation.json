@@ -16,7 +16,7 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/text-fill-animation/index.jsx"
     }
   ]
 }

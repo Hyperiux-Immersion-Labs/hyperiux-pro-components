@@ -26,28 +26,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/hyperiux-glitter/index.jsx"
     },
     {
       "path": "MorphingParticleModelNew.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MorphingParticleModelNew.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MouseTrailParticles.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
-    },
-    {
-      "path": "assets/models/hyperiux-new-model.glb",
-      "type": "registry:asset",
-      "target": "public/assets/models/hyperiux-new-model.glb",
-      "source": "/assets/models/hyperiux-new-model.glb"
+      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
     }
   ]
 }

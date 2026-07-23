@@ -1,12 +1,12 @@
 {
   "name": "@hyperiux/3d-portfolio-slider",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "PortfolioSlider.jsx",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

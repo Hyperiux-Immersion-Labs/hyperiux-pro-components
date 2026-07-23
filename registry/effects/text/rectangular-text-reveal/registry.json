@@ -24,5 +24,15 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/rectangular-text-reveal",
-  "tier": "free"
+  "tier": "free",
+  "exportName": "RectangularTextReveal",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/rectangular-text-reveal/index.jsx"
+    }
+  ]
 }

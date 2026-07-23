@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
-const COMPACT_LAYOUT_BREAKPOINT = 1025;
+const COMPACT_LAYOUT_BREAKPOINT = 1280;
 const ANIMATION_DURATION_MS = 450;
 
 function ArrowFillButton({

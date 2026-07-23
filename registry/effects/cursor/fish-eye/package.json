@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/fish-eye",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
-  "main": "fish-eye.jsx",
+  "main": "index.jsx",
   "files": [
-    "fish-eye.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

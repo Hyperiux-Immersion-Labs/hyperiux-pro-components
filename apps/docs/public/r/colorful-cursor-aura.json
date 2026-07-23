@@ -29,12 +29,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/colorful-cursor-aura/index.jsx"
     },
     {
       "path": "ColorfulCursorAuraComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ColorfulCursorAuraComp.jsx"
+      "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
     }
   ]
 }

@@ -27,47 +27,47 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/interactive-arrows/index.jsx"
     },
     {
       "path": "arrows.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/arrows.jsx"
+      "target": "src/components/effects/interactive-arrows/arrows.jsx"
     },
     {
       "path": "ArrowsLimit.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ArrowsLimit.jsx"
+      "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
     },
     {
       "path": "ArrowsOpacity.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ArrowsOpacity.jsx"
+      "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
     },
     {
       "path": "ArrowsPlay.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ArrowsPlay.jsx"
+      "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
     },
     {
       "path": "lines.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/lines.jsx"
+      "target": "src/components/effects/interactive-arrows/lines.jsx"
     },
     {
       "path": "points.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/points.jsx"
+      "target": "src/components/effects/interactive-arrows/points.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
     },
     {
       "path": "utils.js",
       "type": "registry:component",
-      "target": "components/hyperiux/utils.js"
+      "target": "src/components/effects/interactive-arrows/utils.js"
     }
   ]
 }

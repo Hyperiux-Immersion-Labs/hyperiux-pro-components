@@ -25,5 +25,16 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/block-transition",
-  "tier": "free"
+  "tier": "free",
+  "subfolder": true,
+  "exportName": "BlockTransition",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/block-transition/index.jsx"
+    }
+  ]
 }

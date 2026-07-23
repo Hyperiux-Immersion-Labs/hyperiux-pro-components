@@ -17,17 +17,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/card-drift/index.jsx"
     },
     {
       "path": "CardDriftComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CardDriftComp.jsx"
+      "target": "src/components/effects/card-drift/CardDriftComp.jsx"
     },
     {
       "path": "NavigationButtons.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/NavigationButtons.jsx"
+      "target": "src/components/effects/card-drift/NavigationButtons.jsx"
     }
   ]
 }

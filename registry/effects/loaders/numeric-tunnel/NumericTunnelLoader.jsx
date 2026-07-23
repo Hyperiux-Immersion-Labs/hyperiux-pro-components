@@ -28,7 +28,7 @@ const TUNNEL_CONFIG = {
  backgroundColor:'#000000'
 }
 
-function TunnelRing({ index, loaderValue, tunnelPhase }) {
+function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  const groupRef = useRef()
  const ringContentRef = useRef()
  const textMaterialRef = useRef(null)
@@ -104,7 +104,7 @@ function TunnelRing({ index, loaderValue, tunnelPhase }) {
  else opacity = 0
 
  // Fade out rings as tunnelPhase progresses
- material.opacity = opacity * (1 - tunnelPhase)
+ material.opacity = opacity * (1 - tunnelPhaseRef.current)
  }
 
  // Reduced-motion: keep counter, skip ring rotation.
@@ -141,18 +141,18 @@ function TunnelRing({ index, loaderValue, tunnelPhase }) {
  )
 }
 
-function TunnelScene({ loaderValue, tunnelPhase }) {
+function TunnelScene({ loaderValue, tunnelPhaseRef }) {
  return (
  <>
  <color attach="background" args={[TUNNEL_CONFIG.backgroundColor]} />
  {Array.from({ length: TUNNEL_CONFIG.ringCount }).map((_, i) => (
- <TunnelRing key={i} index={i} loaderValue={loaderValue} tunnelPhase={tunnelPhase} />
+ <TunnelRing key={i} index={i} loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} />
  ))}
  </>
  )
 }
 
-function WholeSceneEffect({ children, active, tunnelPhase }) {
+function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  const { gl, camera, size, viewport } = useThree()
  const portalScene = useMemo(() => new THREE.Scene(), [])
  const fbo = useFBO(size.width, size.height, { samples: 0, depth: false })
@@ -267,11 +267,11 @@ function WholeSceneEffect({ children, active, tunnelPhase }) {
  if (!shaderMaterial) return
 
  shaderMaterial.uniforms.uTime.value = state.clock.getElapsedTime()
- shaderMaterial.uniforms.uTunnelPhase.value = tunnelPhase
+ shaderMaterial.uniforms.uTunnelPhase.value = tunnelPhaseRef.current
  // Reduced-motion: keep the crossfade, skip the warp/distortion strength ramp.
  shaderMaterial.uniforms.uStrength.value = reduceMotionRef.current
  ? 0
- : THREE.MathUtils.lerp(5.5, 1, tunnelPhase)
+ : THREE.MathUtils.lerp(5.5, 1, tunnelPhaseRef.current)
  })
 
  return (
@@ -295,7 +295,7 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  // Remove useState for canvasOpacity, use a ref instead
  const canvasRef = useRef(null)
  const didScheduleRef = useRef(false)
- const [tunnelPhase, setTunnelPhase] = useState(0)
+ const tunnelPhaseRef = useRef(0)
 
  useEffect(() => {
  let anim
@@ -307,7 +307,7 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  const duration = TUNNEL_CONFIG.crossfadeDuration
  const step = () => {
  t += 1 / 60
- setTunnelPhase(Math.min(t / duration, 1))
+ tunnelPhaseRef.current = Math.min(t / duration, 1)
  if (t < duration) {
  anim = requestAnimationFrame(step)
  } else {
@@ -347,8 +347,8 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  gl={{ powerPreference:'high-performance' }}
  >
  <color attach="background" args={[TUNNEL_CONFIG.backgroundColor]} />
- <WholeSceneEffect active={effectActive} tunnelPhase={tunnelPhase}>
- <TunnelScene loaderValue={loaderValue} tunnelPhase={tunnelPhase} />
+ <WholeSceneEffect active={effectActive} tunnelPhaseRef={tunnelPhaseRef}>
+ <TunnelScene loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} />
  </WholeSceneEffect>
  </Canvas>
  </div>

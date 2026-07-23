@@ -36,32 +36,32 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/hero-banner-animated/index.jsx"
     },
     {
       "path": "CustomGrainNoise.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CustomGrainNoise.jsx"
+      "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.jsx"
     },
     {
       "path": "EdgeBlurEffect.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/EdgeBlurEffect.jsx"
+      "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.jsx"
     },
     {
       "path": "RoomModel.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/RoomModel.jsx"
+      "target": "src/components/effects/hero-banner-animated/RoomModel.jsx"
     },
     {
       "path": "VideoUI.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/VideoUI.jsx"
+      "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
     }
   ]
 }

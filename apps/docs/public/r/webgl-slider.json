@@ -31,12 +31,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/webgl-slider/index.jsx"
     },
     {
       "path": "WebGLSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/WebGLSliderComp.jsx"
+      "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
     }
   ]
 }

@@ -26,6 +26,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/radial-slice-transition",
   "tier": "pro",
+  "subfolder": true,
   "main": "index.jsx",
   "exportName": "RadialSliceTransition",
   "exportKind": "default",

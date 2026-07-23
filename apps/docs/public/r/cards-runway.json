@@ -29,12 +29,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/cards-runway/index.jsx"
     },
     {
       "path": "CardsRunway.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CardsRunway.jsx"
+      "target": "src/components/effects/cards-runway/CardsRunway.jsx"
     }
   ]
 }

@@ -16,12 +16,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/video-player/index.jsx"
     },
     {
       "path": "VideoPlayerComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/VideoPlayerComp.jsx"
+      "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
     }
   ]
 }

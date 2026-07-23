@@ -24,5 +24,20 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/circle-text-reveal",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "CircleTextReveal",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/circle-text-reveal/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.js"
+    }
+  ]
 }

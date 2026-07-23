@@ -17,12 +17,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/circular-slider/index.jsx"
     },
     {
       "path": "CircularSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CircularSliderComp.jsx"
+      "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
     }
   ]
 }

@@ -8,7 +8,8 @@ const ROOT = path.resolve(__dirname, '..');
 const REGISTRY_DIR = path.join(ROOT, 'registry', 'effects');
 const DIST_DIR = path.join(ROOT, 'registry', 'dist');
 
-if (!fs.existsSync(DIST_DIR)) fs.mkdirSync(DIST_DIR, { recursive: true });
+fs.rmSync(DIST_DIR, { recursive: true, force: true });
+fs.mkdirSync(DIST_DIR, { recursive: true });
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -56,6 +57,40 @@ function ensurePackageForEffect(effectDir) {
     writeJson(pkgFile, pkg);
     console.log('wrote package.json for', name);
   }
+
+  const packageFiles = Array.isArray(meta.files) && meta.files.length
+    ? [...new Set([
+        ...(meta.main ? [meta.main] : []),
+        ...meta.files
+          .filter((file) => file.type !== 'registry:asset')
+          .map((file) => file.path),
+        'registry.json',
+      ])]
+    : pkg.files;
+
+  const dependencies = {};
+  if (Array.isArray(meta.dependencies)) {
+    meta.dependencies.forEach((dependency) => {
+      dependencies[dependency] = pkg.dependencies?.[dependency] || '*';
+    });
+  }
+
+  const nextPkg = {
+    ...pkg,
+    name,
+    version: meta.version || pkg.version || '0.0.1',
+    description: meta.description || meta.title || pkg.description || name,
+    main: meta.main || pkg.main,
+    files: packageFiles,
+    dependencies,
+  };
+
+  if (JSON.stringify(nextPkg, null, 2) !== JSON.stringify(pkg, null, 2)) {
+    pkg = nextPkg;
+    writeJson(pkgFile, pkg);
+    console.log('synced package.json for', name);
+  }
+
   return { pkg, pkgFile, meta };
 }
 
