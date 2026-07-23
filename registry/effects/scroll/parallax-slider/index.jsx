@@ -146,8 +146,8 @@ function ParallaxSlider({ images = [], bgColor = "#000000" }) {
                         const isWide = i % 2 === 0;
                         const width = isWide ? SLIDE_WIDE : SLIDE_NARROW;
                         const slideClass = isWide
-                            ? "max-sm:w-[80vw] max-sm:h-[50vh] w-[65vw] h-[43vw]"
-                            : "max-sm:w-[45vw] max-sm:h-[50vh] w-[33vw] h-[43vw]";
+                            ? "max-md:w-[80vw] max-md:h-[50vh] w-[65vw] h-[43vw]"
+                            : "max-md:w-[45vw] max-md:h-[50vh] w-[33vw] h-[43vw]";
 
                         return (
                             <div

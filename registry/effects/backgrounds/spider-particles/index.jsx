@@ -445,7 +445,7 @@ export default function SpiderParticles({
   return (
     <div
       ref={mountRef}
-      className="relative w-full h-screen bg-black overflow-hidden cursor-none max-sm:cursor-default"
+      className="relative w-full h-screen bg-black overflow-hidden cursor-none max-md:cursor-default"
     >
       <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-10">
 

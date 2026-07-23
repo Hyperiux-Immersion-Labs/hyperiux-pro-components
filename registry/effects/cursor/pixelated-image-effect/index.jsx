@@ -190,7 +190,7 @@ export default function PixelatedImageEffect({
 
       <div
         ref={imageRef}
-        className="relative h-[55vh] w-full max-sm:max-w-[90%] overflow-hidden max-xl:max-w-[90%] max-w-lg touch-none"
+        className="relative h-[55vh] w-full max-md:max-w-[90%] overflow-hidden max-xl:max-w-[90%] max-w-lg touch-none"
         style={{ filter: `url(#${pixelateFilterId})` }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

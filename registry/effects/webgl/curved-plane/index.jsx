@@ -43,7 +43,7 @@ export default function CurvedPlane({ variant = "horizontal", ...props }) {
 
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
-    <nav className="fixed bottom-8 h-fit  max-md:bottom-28 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-black/8 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
+    <nav className="fixed bottom-8 h-fit  max-xl:bottom-28 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-black/8 px-1.5 py-1.5 backdrop-blur-md  max-xl:px-3 max-xl:py-2  max-md:px-2 max-md:py-1.5">
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
 
@@ -52,7 +52,7 @@ function VersionNav({ activeVariant, onVariantChange }) {
             key={variant.value}
             type="button"
             onClick={() => onVariantChange(variant.value)}
-            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${
+            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-xl:text-lg max-md:text-sm ${
               isActive
                 ? "bg-black text-white"
                 : "text-black/65 hover:text-black"

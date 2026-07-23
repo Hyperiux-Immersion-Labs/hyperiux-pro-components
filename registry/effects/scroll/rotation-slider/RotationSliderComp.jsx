@@ -194,10 +194,10 @@ export function RotationSliderComp({ images }) {
                     ref={trackRef}
                     className="
             flex h-full items-center will-change-transform
-            gap-[5vw] max-md:gap-[8vw] max-sm:gap-[12vw]
+            gap-[5vw] max-xl:gap-[8vw] max-md:gap-[12vw]
             pl-[31vw] pr-[31vw]
-            max-md:pl-[22vw] max-md:pr-[22vw]
-            max-sm:pl-[12vw] max-sm:pr-[12.5vw]
+            max-xl:pl-[22vw] max-xl:pr-[22vw]
+            max-md:pl-[12vw] max-md:pr-[12.5vw]
           "
                     style={{ transformStyle: "preserve-3d" }}
                 >
@@ -209,10 +209,10 @@ export function RotationSliderComp({ images }) {
                             }}
                             className="
                 relative flex h-[45vh] w-[38vw] shrink-0 items-center justify-center
-                max-md:h-[40vh] max-md:w-[55vw]
-                max-sm:h-[35vh] max-sm:w-[75vw]
-                max-md:[&>div]:h-[40vh] max-md:[&>div]:w-[50vw]
-                max-sm:[&>div]:h-[35vh] max-sm:[&>div]:w-[75vw]
+                max-xl:h-[40vh] max-xl:w-[55vw]
+                max-md:h-[35vh] max-md:w-[75vw]
+                max-xl:[&>div]:h-[40vh] max-xl:[&>div]:w-[50vw]
+                max-md:[&>div]:h-[35vh] max-md:[&>div]:w-[75vw]
               "
                             style={{ transformStyle: "preserve-3d" }}
                         >
@@ -238,7 +238,7 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
     return (
         <div
             ref={ref}
-            className="absolute h-[45vh] w-[38vw] origin-right overflow-hidden opacity-0 max-sm:h-[35vh] max-sm:w-[75vw]"
+            className="absolute h-[45vh] w-[38vw] origin-right overflow-hidden opacity-0 max-md:h-[35vh] max-md:w-[75vw]"
             style={{
                 transformStyle: "preserve-3d",
                 zIndex: total - index,
@@ -259,7 +259,7 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
 
             {text && (
                 <div
-                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium text-white max-md:text-[2.4vw] max-sm:text-[4vw]"
+                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium text-white max-xl:text-[2.4vw] max-md:text-[4vw]"
                     style={{
                         textShadow:
                             "0 0.15vw 0.35vw rgba(0,0,0,0.35), 0 0.45vw 1.2vw rgba(0,0,0,0.35)",

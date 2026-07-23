@@ -178,7 +178,7 @@ export function ScrambleLinkButton({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
-      className={`group inline-flex cursor-pointer items-center gap-2  text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-lg:text-[3vw] max-sm:text-[4.2vw] ${className}`}
+      className={`group inline-flex cursor-pointer items-center gap-2  text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-lg:text-[3vw] max-md:text-[4.2vw] ${className}`}
       style={{ "--scramble-hover-color": hoverColor }}
     >
       <span className={innerClassName} style={activeLineStyle}>

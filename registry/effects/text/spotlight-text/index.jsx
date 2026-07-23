@@ -121,7 +121,7 @@ export default function SpotlightText({
  <section className={`w-full ${className}`}>
  <div
  ref={containerRef}
- className={`relative font-semibold max-sm:font-medium max-sm:text-[7vw]! ${size} ${alignment}`}
+ className={`relative font-semibold max-md:font-medium max-md:text-[7vw]! ${size} ${alignment}`}
  style={
  isMobile
  ? {}
@@ -133,7 +133,7 @@ export default function SpotlightText({
  }
  >
  {/* Dim text (mobile becomes fully visible) */}
- <p className="text-neutral-600 max-md:text-white max-md:opacity-90 leading-tight whitespace-pre-wrap">
+ <p className="text-neutral-600 max-xl:text-white max-xl:opacity-90 leading-tight whitespace-pre-wrap">
  {text}
  </p>
 

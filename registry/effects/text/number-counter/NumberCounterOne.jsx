@@ -72,11 +72,11 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
  const { prefix, value, suffix, superSuffix } = stat;
 
  return (
- <div className="flex gap-[2vw] h-fit w-fit max-md:gap-0 max-sm:flex-col">
- <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-sm:flex-row max-sm:justify-between max-sm:pl-[4vw] max-sm:gap-[4vw]">
+ <div className="flex gap-[2vw] h-fit w-fit max-xl:gap-0 max-md:flex-col">
+ <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-md:flex-row max-md:justify-between max-md:pl-[4vw] max-md:gap-[4vw]">
  <h3
  dir="ltr"
- className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-md:text-[7vw] max-sm:text-[12vw] ${textSize}`}
+ className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-xl:text-[7vw] max-md:text-[12vw] ${textSize}`}
  >
  {prefix && <span style={{ color: textColor }}>{prefix}</span>}
  {renderDigits(value, textColor, trigger, reducedMotion)}
@@ -109,7 +109,7 @@ export default function NumberCounterOne({
  return (
  <section id={sectionId} className="h-fit w-fit">
  <div className="p-[1vw]">
- <div className="flex text-center gap-[2vw] w-fit h-fit max-md:flex-wrap max-md:gap-x-0 max-md:gap-y-12 max-sm:flex-col max-sm:text-left">
+ <div className="flex text-center gap-[2vw] w-fit h-fit max-xl:flex-wrap max-xl:gap-x-0 max-xl:gap-y-12 max-md:flex-col max-md:text-left">
  {items.map((stat, index) => (
  <StatItem
  key={index}

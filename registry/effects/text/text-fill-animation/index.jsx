@@ -172,7 +172,7 @@ export default function TextFillAnimation({
        
 
         <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
-          <p className="text-sm leading-relaxed text-black/35 max-md:text-lg max-sm:text-sm">
+          <p className="text-sm leading-relaxed text-black/35 max-xl:text-lg max-md:text-sm">
             Less friction.
             <br />
             More building.
@@ -181,13 +181,13 @@ export default function TextFillAnimation({
 
         <div className="absolute bottom-[6vh] right-[5vw] text-right">
           <div className="space-y-1">
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-xl:text-lg max-md:text-sm">
               Systems
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-xl:text-lg max-md:text-sm">
               Motion
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-xl:text-lg max-md:text-sm">
               Clarity
             </p>
           </div>
