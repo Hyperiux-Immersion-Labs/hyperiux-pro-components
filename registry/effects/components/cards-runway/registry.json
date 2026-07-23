@@ -1,9 +1,25 @@
 {
   "name": "cards-runway",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added prefers-reduced-motion support: cards render in place instead of animating up from a y offset", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Desktop pin/scrub threshold raised from >1024px to >=1280px to match the max-xl CSS breakpoint; previously the 1025-1279px range ran the desktop timeline against the collapsed mobile layout.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added prefers-reduced-motion support: cards render in place instead of animating up from a y offset",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Cards Runway",

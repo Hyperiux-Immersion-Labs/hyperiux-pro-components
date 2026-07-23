@@ -10,8 +10,15 @@
   "exportName": "AnimatedForm",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-23",
+      "summary": "Phone validation now uses per-country national-number length ranges (with trunk-zero tolerance) instead of a flat 10-digit rule that rejected all valid numbers from Ireland, Australia, France, the UAE and Singapore.",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",

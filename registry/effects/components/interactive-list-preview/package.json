@@ -1,11 +1,11 @@
 {
   "name": "@hyperiux/interactive-list-preview",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
   "main": "index.jsx",
   "files": [
+    "InteractiveListPreviewComp.jsx",
     "index.jsx",
-    "ListHover.jsx",
     "registry.json"
   ],
   "keywords": [

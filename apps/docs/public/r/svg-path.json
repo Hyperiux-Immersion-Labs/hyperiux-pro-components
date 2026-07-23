@@ -39,7 +39,7 @@
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/svg-path/createSuspendedRaf.js"
     }
   ]
 }

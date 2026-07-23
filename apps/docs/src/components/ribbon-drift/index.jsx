@@ -11,7 +11,7 @@ const RibbonDrift = () => {
 
  return (
  <ReactLenis root>
- <section className="w-screen h-fit max-snm:h-full">
+ <section className="w-screen h-fit max-sm:h-full">
  <RibbonDriftComp images={IMAGE_POOL} projectNames={PROJECT_NAMES} />
  </section>
  {prefersReducedMotion && (

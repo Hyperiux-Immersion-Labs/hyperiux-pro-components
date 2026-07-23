@@ -11,8 +11,14 @@
   "exportName": "RibbonDrift",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Restored the mobile full-height wrapper rule (max-md:h-full) that was lost to a max-snm typo; docs copy typo corrected to max-sm.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",

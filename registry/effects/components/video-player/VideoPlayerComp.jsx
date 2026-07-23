@@ -52,7 +52,6 @@ const VideoPlayerComp = ({
   const videoRef = useRef(null);
   const progressBarRef = useRef(null);
   const hideControlsTimeoutRef = useRef(null);
-  const progressRafRef = useRef(null);
   const isDraggingRef = useRef(false);
   const hasInitializedRef = useRef(false);
 
@@ -62,6 +61,9 @@ const VideoPlayerComp = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // Mirrors isDraggingRef for rendering: cuts the progress-bar CSS
+  // transition while scrubbing so the knob tracks the pointer 1:1.
+  const [isScrubbing, setIsScrubbing] = useState(false);
 
   const progress = useMemo(() => {
     const safeDuration =
@@ -85,13 +87,6 @@ const VideoPlayerComp = ({
     }
   }, []);
 
-  const stopProgressLoop = useCallback(() => {
-    if (progressRafRef.current) {
-      cancelAnimationFrame(progressRafRef.current);
-      progressRafRef.current = null;
-    }
-  }, []);
-
   const syncVideoProgress = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -104,31 +99,6 @@ const VideoPlayerComp = ({
     setDuration(nextDuration);
     setCurrentTime(Math.min(nextCurrentTime, nextDuration || nextCurrentTime));
   }, []);
-
-  const startProgressLoop = useCallback(() => {
-    stopProgressLoop();
-
-    const tick = () => {
-      const video = videoRef.current;
-
-      if (!video) {
-        stopProgressLoop();
-        return;
-      }
-
-      if (!isDraggingRef.current) {
-        syncVideoProgress();
-      }
-
-      if (!video.paused && !video.ended) {
-        progressRafRef.current = requestAnimationFrame(tick);
-      } else {
-        stopProgressLoop();
-      }
-    };
-
-    progressRafRef.current = requestAnimationFrame(tick);
-  }, [stopProgressLoop, syncVideoProgress]);
 
   const startHideTimer = useCallback(() => {
     clearHideTimer();
@@ -160,14 +130,12 @@ const VideoPlayerComp = ({
       await video.play();
       setIsPlaying(true);
       syncVideoProgress();
-      startProgressLoop();
       return true;
     } catch {
       setIsPlaying(false);
-      stopProgressLoop();
       return false;
     }
-  }, [syncVideoProgress, startProgressLoop, stopProgressLoop]);
+  }, [syncVideoProgress]);
 
   const pauseVideo = useCallback(() => {
     const video = videoRef.current;
@@ -176,8 +144,7 @@ const VideoPlayerComp = ({
     video.pause();
     setIsPlaying(false);
     syncVideoProgress();
-    stopProgressLoop();
-  }, [syncVideoProgress, stopProgressLoop]);
+  }, [syncVideoProgress]);
 
   const resetVideoState = useCallback(() => {
     const video = videoRef.current;
@@ -332,22 +299,16 @@ const VideoPlayerComp = ({
 
     const handleSeeked = () => {
       syncVideoProgress();
-
-      if (!video.paused && !video.ended) {
-        startProgressLoop();
-      }
     };
 
     const handlePlay = () => {
       setIsPlaying(true);
       syncVideoProgress();
-      startProgressLoop();
     };
 
     const handlePause = () => {
       setIsPlaying(false);
       syncVideoProgress();
-      stopProgressLoop();
     };
 
     const handleEnded = () => {
@@ -358,7 +319,6 @@ const VideoPlayerComp = ({
       setCurrentTime(safeDuration || video.currentTime || 0);
       setShowControls(true);
       clearHideTimer();
-      stopProgressLoop();
     };
 
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
@@ -385,8 +345,6 @@ const VideoPlayerComp = ({
   }, [
     clearHideTimer,
     syncVideoProgress,
-    startProgressLoop,
-    stopProgressLoop,
   ]);
 
   useEffect(() => {
@@ -396,8 +354,6 @@ const VideoPlayerComp = ({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
-    stopProgressLoop();
 
     if (hasInitializedRef.current) {
       pauseVideo();
@@ -429,7 +385,6 @@ const VideoPlayerComp = ({
 
     return () => {
       clearHideTimer();
-      stopProgressLoop();
       video.pause();
     };
   }, [
@@ -441,7 +396,6 @@ const VideoPlayerComp = ({
     revealControls,
     clearHideTimer,
     syncVideoProgress,
-    stopProgressLoop,
   ]);
 
   useEffect(() => {
@@ -461,7 +415,6 @@ const VideoPlayerComp = ({
       }
 
       clearHideTimer();
-      stopProgressLoop();
       return;
     }
 
@@ -484,7 +437,6 @@ const VideoPlayerComp = ({
     revealControls,
     clearHideTimer,
     syncVideoProgress,
-    stopProgressLoop,
   ]);
 
   useEffect(() => {
@@ -492,7 +444,6 @@ const VideoPlayerComp = ({
 
     return () => {
       clearHideTimer();
-      stopProgressLoop();
 
       if (video) video.pause();
 
@@ -500,7 +451,7 @@ const VideoPlayerComp = ({
         document.exitFullscreen?.().catch?.(() => {});
       }
     };
-  }, [clearHideTimer, stopProgressLoop]);
+  }, [clearHideTimer]);
 
   const handleTogglePlay = async (event) => {
     event?.stopPropagation?.();
@@ -530,12 +481,6 @@ const VideoPlayerComp = ({
 
     updateVideoTimeFromClientX(event.clientX);
     revealControls();
-
-    const video = videoRef.current;
-
-    if (video && !video.paused && !video.ended) {
-      startProgressLoop();
-    }
   };
 
   const handlePointerDown = (event) => {
@@ -543,7 +488,7 @@ const VideoPlayerComp = ({
     event.stopPropagation();
 
     isDraggingRef.current = true;
-    stopProgressLoop();
+    setIsScrubbing(true);
     updateVideoTimeFromClientX(event.clientX);
     revealControls();
 
@@ -553,18 +498,12 @@ const VideoPlayerComp = ({
 
     const handlePointerUp = () => {
       isDraggingRef.current = false;
+      setIsScrubbing(false);
 
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
 
       syncVideoProgress();
-
-      const video = videoRef.current;
-
-      if (video && !video.paused && !video.ended) {
-        startProgressLoop();
-      }
-
       startHideTimer();
     };
 
@@ -665,12 +604,12 @@ const VideoPlayerComp = ({
             <div className="pointer-events-none absolute inset-x-0 h-[0.32vw] rounded-full bg-white/20 min-h-1 2xl:h-[0.25vw] max-xl:h-[0.45vw] max-md:h-[1vw]" />
 
             <div
-              className="pointer-events-none absolute left-0 h-[0.32vw] rounded-full bg-white min-h-1 2xl:h-[0.25vw] max-xl:h-[0.45vw] max-md:h-[1vw]"
+              className={`pointer-events-none absolute left-0 h-[0.32vw] rounded-full bg-white min-h-1 2xl:h-[0.25vw] max-xl:h-[0.45vw] max-md:h-[1vw] ${isScrubbing ? "" : "transition-[width] duration-300 ease-linear"}`}
               style={{ width: `${progress}%` }}
             />
 
             <div
-              className="pointer-events-none absolute top-1/2 h-[1vw] w-[1vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 2xl:h-[0.9vw] 2xl:w-[0.9vw] max-xl:h-[1.6vw] max-xl:w-[1.6vw] max-md:h-[3vw] max-md:w-[3vw]"
+              className={`pointer-events-none absolute top-1/2 h-[1vw] w-[1vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 2xl:h-[0.9vw] 2xl:w-[0.9vw] max-xl:h-[1.6vw] max-xl:w-[1.6vw] max-md:h-[3vw] max-md:w-[3vw] ${isScrubbing ? "" : "transition-[left] duration-300 ease-linear"}`}
               style={{ left: `${progress}%` }}
             />
           </div>

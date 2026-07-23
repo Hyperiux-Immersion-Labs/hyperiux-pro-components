@@ -1137,7 +1137,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedFAQ",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "animated-form",
@@ -1152,7 +1152,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedForm",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "animated-modal",
@@ -1167,7 +1167,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedModal",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "animated-tabs",
@@ -1226,7 +1226,7 @@
       "registryDependencies": [],
       "exportName": "CardsRunway",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "depth-card-stack",
@@ -1283,7 +1283,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveListPreview",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "ribbon-drift",
@@ -1299,7 +1299,7 @@
       "registryDependencies": [],
       "exportName": "RibbonDrift",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "testimonial-swiper",
@@ -1330,7 +1330,7 @@
       "registryDependencies": [],
       "exportName": "VideoPlayer",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "directional-menu",

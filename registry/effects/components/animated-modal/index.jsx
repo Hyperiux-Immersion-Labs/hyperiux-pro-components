@@ -76,7 +76,7 @@ export default function AnimatedModal() {
           cursor-pointer rounded-full border-0 bg-[#111111] px-[2vw] py-[1vw]
           text-white transition-all duration-300 hover:scale-[1.03]
           text-[1vw]
-          max-lg:px-[4vw] max-lg:py-[2vw] max-lg:text-[2.2vw]
+          max-xl:px-[4vw] max-xl:py-[2vw] max-xl:text-[2.2vw]
           max-md:px-[6vw] max-md:py-[3.5vw] max-md:text-[4vw]
         "
       >
