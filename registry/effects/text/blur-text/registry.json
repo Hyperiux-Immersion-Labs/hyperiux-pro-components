@@ -24,5 +24,15 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/blur-text",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "BlurText",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/blur-text/index.jsx"
+    }
+  ]
 }

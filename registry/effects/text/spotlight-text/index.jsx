@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 function usePrefersReducedMotion() {
  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
@@ -53,7 +54,6 @@ export default function SpotlightText({
  if (isMobile) return; //  disable effect on mobile
 
  const el = containerRef.current;
- let raf;
  const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
 
  const updateTarget = (e) => {
@@ -83,7 +83,9 @@ export default function SpotlightText({
  targetOpacity.current = 0;
  };
 
- const animate = () => {
+ const loop = createSuspendedRaf({
+ root: el,
+ onFrame: () => {
  current.current.x = lerp(current.current.x, target.current.x, positionLerpFactor);
  current.current.y = lerp(current.current.y, target.current.y, positionLerpFactor);
  currentOpacity.current = lerp(currentOpacity.current, targetOpacity.current, 0.12);
@@ -91,18 +93,17 @@ export default function SpotlightText({
  el.style.setProperty("--x", `${current.current.x}px`);
  el.style.setProperty("--y", `${current.current.y}px`);
  el.style.setProperty("--opacity", `${currentOpacity.current}`);
+ },
+ });
 
- raf = requestAnimationFrame(animate);
- };
-
- animate();
+ loop.start();
 
  el.addEventListener("mouseenter", handleEnter);
  el.addEventListener("mousemove", handleMove);
  el.addEventListener("mouseleave", handleLeave);
 
  return () => {
- cancelAnimationFrame(raf);
+ loop.destroy();
  el.removeEventListener("mouseenter", handleEnter);
  el.removeEventListener("mousemove", handleMove);
  el.removeEventListener("mouseleave", handleLeave);

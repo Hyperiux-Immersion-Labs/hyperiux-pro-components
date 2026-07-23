@@ -30,7 +30,7 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/svg-brush-transition/index.jsx"
     }
   ]
 }

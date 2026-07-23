@@ -29,17 +29,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/animated-modal/index.jsx"
     },
     {
       "path": "AnimatedModalContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/AnimatedModalContent.jsx"
+      "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
     },
     {
       "path": "ScrollablePopupContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ScrollablePopupContent.jsx"
+      "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
     }
   ]
 }

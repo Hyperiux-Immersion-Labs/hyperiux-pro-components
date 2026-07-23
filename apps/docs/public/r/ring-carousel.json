@@ -36,12 +36,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/ring-carousel/index.jsx"
     },
     {
       "path": "RingCarouselComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/RingCarouselComp.jsx"
+      "target": "src/components/effects/ring-carousel/RingCarouselComp.jsx"
     }
   ]
 }

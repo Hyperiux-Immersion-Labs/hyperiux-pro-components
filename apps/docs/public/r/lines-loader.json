@@ -24,22 +24,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/lines-loader/index.jsx"
     },
     {
       "path": "CenterLinesLoading.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CenterLinesLoading.jsx"
+      "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
     },
     {
       "path": "LinesLoading.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/LinesLoading.jsx"
+      "target": "src/components/effects/lines-loader/LinesLoading.jsx"
     },
     {
       "path": "utils.js",
       "type": "registry:component",
-      "target": "components/hyperiux/utils.js"
+      "target": "src/components/effects/lines-loader/utils.js"
     }
   ]
 }

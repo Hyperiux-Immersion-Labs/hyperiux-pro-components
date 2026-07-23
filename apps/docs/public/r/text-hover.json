@@ -29,12 +29,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/text-hover/index.jsx"
     },
     {
       "path": "TextHoverComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/TextHoverComp.jsx"
+      "target": "src/components/effects/text-hover/TextHoverComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-hover/createSuspendedRaf.js"
     }
   ]
 }

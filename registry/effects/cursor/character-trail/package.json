@@ -1,10 +1,12 @@
 {
   "name": "@hyperiux/character-trail",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Cursor wrapper that leaves a snake-like grid trail of character tiles as the mouse moves. Tiles snap to a 50px grid, cycle through a configurable alphabet and color palette, pop in with a spring animation, then stagger-fade out after the cursor idles.",
-  "main": "character-trail.jsx",
+  "main": "index.jsx",
   "files": [
-    "character-trail.jsx",
+    "index.jsx",
+    "CharacterTrailComp.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

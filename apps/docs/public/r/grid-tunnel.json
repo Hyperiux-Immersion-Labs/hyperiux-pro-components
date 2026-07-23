@@ -25,17 +25,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/grid-tunnel/index.jsx"
     },
     {
       "path": "GridTunnelComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/GridTunnelComp.jsx"
+      "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
     }
   ]
 }

@@ -21,22 +21,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/border-beam/index.jsx"
     },
     {
       "path": "BorderBeam.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/BorderBeam.jsx"
+      "target": "src/components/effects/border-beam/BorderBeam.jsx"
     },
     {
       "path": "PulseDriver.js",
       "type": "registry:component",
-      "target": "components/hyperiux/PulseDriver.js"
+      "target": "src/components/effects/border-beam/PulseDriver.js"
     },
     {
       "path": "styles.js",
       "type": "registry:component",
-      "target": "components/hyperiux/styles.js"
+      "target": "src/components/effects/border-beam/styles.js"
     }
   ]
 }

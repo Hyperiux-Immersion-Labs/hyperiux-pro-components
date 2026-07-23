@@ -24,5 +24,25 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/text-stream",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "useIsMobile",
+  "exportKind": "named",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "hooks.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-stream/hooks.js"
+    },
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/text-stream/index.jsx"
+    },
+    {
+      "path": "TextStreamComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/text-stream/TextStreamComp.jsx"
+    }
+  ]
 }

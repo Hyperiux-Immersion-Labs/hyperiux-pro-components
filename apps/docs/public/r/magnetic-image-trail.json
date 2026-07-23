@@ -27,17 +27,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/magnetic-image-trail/index.jsx"
     },
     {
       "path": "MagneticTrail.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/MagneticTrail.jsx"
+      "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.js"
     }
   ]
 }

@@ -1,10 +1,12 @@
 {
   "name": "@hyperiux/full-screen-crosshair",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
-  "main": "full-screen-crosshair.jsx",
+  "main": "index.jsx",
   "files": [
-    "full-screen-crosshair.jsx",
+    "index.jsx",
+    "useMouse.js",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

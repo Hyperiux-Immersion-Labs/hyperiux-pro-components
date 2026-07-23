@@ -29,12 +29,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/inertia-img/index.jsx"
     },
     {
       "path": "InertiaImgComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InertiaImgComp.jsx"
+      "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
     }
   ]
 }

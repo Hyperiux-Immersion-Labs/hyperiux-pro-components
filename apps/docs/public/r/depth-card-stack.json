@@ -24,17 +24,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/depth-card-stack/index.jsx"
     },
     {
       "path": "DepthCardStackComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/DepthCardStackComp.jsx"
+      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
     },
     {
       "path": "SliderCard.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/SliderCard.jsx"
+      "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
     }
   ]
 }

@@ -32,13 +32,19 @@ const ScrambleText = ({
 
  useEffect(() => {
  let isCancelled = false;
+ let fallbackRaf = null;
 
  const setup = async () => {
  try {
  if (document?.fonts?.ready) {
  await document.fonts.ready;
  } else {
- await new Promise((r) => requestAnimationFrame(() => r(null)));
+ await new Promise((r) => {
+ fallbackRaf = requestAnimationFrame(() => {
+ fallbackRaf = null;
+ r(null);
+ });
+ });
  }
  } catch {}
 
@@ -174,6 +180,11 @@ const ScrambleText = ({
  const clean = setup();
 
  return () => {
+ isCancelled = true;
+ if (fallbackRaf) {
+ cancelAnimationFrame(fallbackRaf);
+ fallbackRaf = null;
+ }
  (async () => {
  await clean;
  })();

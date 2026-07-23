@@ -16,12 +16,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/parallax-footer/index.jsx"
     },
     {
       "path": "ParallaxFooter.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ParallaxFooter.jsx"
+      "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
     }
   ]
 }

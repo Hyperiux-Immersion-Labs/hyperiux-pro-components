@@ -37,12 +37,6 @@
     {
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
-    },
-    {
-      "path": "assets/models/hyperiux-new-model.glb",
-      "type": "registry:asset",
-      "target": "public/assets/models/hyperiux-new-model.glb",
-      "source": "/assets/models/hyperiux-new-model.glb"
     }
   ],
   "changelog": [

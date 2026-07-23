@@ -10,8 +10,15 @@
     ],
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
-    "changelog": [],
+    "version": "1.0.1",
+    "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-07-22",
+        "summary": "Added a reduced-motion notice: this continuous scroll-driven 3D carousel is the navigation itself and can't be reduced without losing the ability to browse, so it now surfaces that instead of silently ignoring the preference.",
+        "breaking": false
+      }
+    ],
     "dependencies": [
       "three",
       "gsap",
@@ -28,17 +35,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/3d-portfolio-slider/index.jsx"
       },
       {
         "path": "PortfolioSlider.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.js"
       }
     ]
@@ -51,7 +55,6 @@
     "type": "registry:component",
     "tier": "free",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -68,7 +71,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-faq/index.jsx"
       }
     ]
@@ -81,7 +83,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "zod"
     ],
@@ -96,42 +97,34 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/index.jsx"
       },
       {
         "path": "Button.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/Button.jsx"
       },
       {
         "path": "Checkbox.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/Checkbox.jsx"
       },
       {
         "path": "ContactForm.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/ContactForm.jsx"
       },
       {
         "path": "Input.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/Input.jsx"
       },
       {
         "path": "PhoneInput.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/PhoneInput.jsx"
       },
       {
         "path": "Select.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/Select.jsx"
       },
       {
         "path": "Textarea.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-form/Textarea.jsx"
       }
     ]
@@ -144,7 +137,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "lucide-react"
     ],
@@ -159,17 +151,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-modal/index.jsx"
       },
       {
         "path": "AnimatedModalContent.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
       },
       {
         "path": "ScrollablePopupContent.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
       }
     ]
@@ -204,12 +193,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-tabs/index.jsx"
       },
       {
         "path": "AnimatedTabsComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
       }
     ]
@@ -248,22 +235,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-toggle/index.jsx"
       },
       {
         "path": "ChevronBird.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
       },
       {
         "path": "Cross.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-toggle/Cross.jsx"
       },
       {
         "path": "Plus.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/animated-toggle/Plus.jsx"
       }
     ]
@@ -305,7 +288,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/arrow-fill-button/index.jsx"
       }
     ]
@@ -338,7 +320,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/transitions/block-transition/registry.json",
-    "previewUrl": "/page-transitions/block",
+    "previewUrl": "/demo/block-transition",
+    "main": "index.jsx",
+    "exportName": "BlockTransition",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -374,7 +359,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/blur-text/registry.json",
-    "previewUrl": "/blur-text-reveal",
+    "previewUrl": "/demo/blur-text",
+    "main": "index.jsx",
+    "exportName": "BlurText",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -391,7 +379,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -411,37 +398,30 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/index.jsx"
       },
       {
         "path": "Book.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/Book.jsx"
       },
       {
         "path": "Experience.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/Experience.jsx"
       },
       {
         "path": "PageContext.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/PageContext.jsx"
       },
       {
         "path": "UI.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/UI.jsx"
       },
       {
         "path": "BookFlip.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/BookFlip.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/book-flip/createSuspendedRaf.js"
       }
     ]
@@ -474,22 +454,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/border-beam/index.jsx"
       },
       {
         "path": "BorderBeam.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/border-beam/BorderBeam.jsx"
       },
       {
         "path": "PulseDriver.js",
-        "type": "registry:component",
         "target": "src/components/effects/border-beam/PulseDriver.js"
       },
       {
         "path": "styles.js",
-        "type": "registry:component",
         "target": "src/components/effects/border-beam/styles.js"
       }
     ]
@@ -534,12 +510,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/butterfly-trail-cursor/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/butterfly-trail-cursor/createSuspendedRaf.js"
       }
     ]
@@ -552,7 +526,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -568,17 +541,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/card-drift/index.jsx"
       },
       {
         "path": "CardDriftComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/card-drift/CardDriftComp.jsx"
       },
       {
         "path": "NavigationButtons.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/card-drift/NavigationButtons.jsx"
       }
     ]
@@ -590,8 +560,21 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
-    "changelog": [],
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added prefers-reduced-motion support: cards render in place instead of animating up from a y offset",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
     "dependencies": [
       "gsap"
     ],
@@ -606,12 +589,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/cards-runway/index.jsx"
       },
       {
         "path": "CardsRunway.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/cards-runway/CardsRunway.jsx"
       }
     ]
@@ -652,7 +633,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/char-stagger-button/index.jsx"
       }
     ]
@@ -693,7 +673,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/char-stagger-primary-button/index.jsx"
       }
     ]
@@ -732,17 +711,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/character-trail/index.jsx"
       },
       {
         "path": "CharacterTrailComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/character-trail/createSuspendedRaf.js"
       }
     ]
@@ -787,7 +763,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/chess-grid-transition/index.jsx"
       }
     ]
@@ -819,12 +794,20 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/circle-text-reveal/registry.json",
-    "previewUrl": "/circle-reveal",
+    "previewUrl": "/demo/circle-text-reveal",
+    "main": "index.jsx",
+    "exportName": "CircleTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
         "type": "registry:component",
         "target": "src/components/effects/circle-text-reveal/index.jsx"
+      },
+      {
+        "path": "createSuspendedRaf.js",
+        "type": "registry:component",
+        "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.js"
       }
     ]
   },
@@ -836,7 +819,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -852,12 +834,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/circular-slider/index.jsx"
       },
       {
         "path": "CircularSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
       }
     ]
@@ -900,12 +880,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/circular-split-roll/index.jsx"
       },
       {
         "path": "CircularSplitRollComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.jsx"
       }
     ]
@@ -946,12 +924,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/clippath-slider/index.jsx"
       },
       {
         "path": "ClippathSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
       }
     ]
@@ -996,12 +972,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/coffee-bean-cursor/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.js"
       }
     ]
@@ -1014,7 +988,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -1036,12 +1009,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/colliding-models/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/colliding-models/createSuspendedRaf.js"
       }
     ]
@@ -1082,12 +1053,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/colorful-cursor-aura/index.jsx"
       },
       {
         "path": "ColorfulCursorAuraComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
       }
     ]
@@ -1128,7 +1097,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/cursor-move/index.jsx"
       }
     ]
@@ -1163,22 +1131,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/curved-plane/index.jsx"
       },
       {
         "path": "CurvedSwiperHorizontal.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.jsx"
       },
       {
         "path": "CurvedSwiperVertical.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/curved-plane/createSuspendedRaf.js"
       }
     ]
@@ -1214,17 +1178,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/depth-card-stack/index.jsx"
       },
       {
         "path": "DepthCardStackComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
       },
       {
         "path": "SliderCard.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
       }
     ]
@@ -1267,37 +1228,30 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/index.jsx"
       },
       {
         "path": "DirectionalMegaMenu.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/DirectionalMegaMenu.jsx"
       },
       {
         "path": "Menu1.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/Menu1.jsx"
       },
       {
         "path": "Menu2.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/Menu2.jsx"
       },
       {
         "path": "Menu3.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/Menu3.jsx"
       },
       {
         "path": "MobileDirectionalMenu.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/MobileDirectionalMenu.jsx"
       },
       {
         "path": "useFocusTrap.js",
-        "type": "registry:component",
         "target": "src/components/effects/directional-menu/useFocusTrap.js"
       }
     ]
@@ -1309,8 +1263,15 @@
     "category": "backgrounds",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
-    "changelog": [],
+    "version": "1.0.1",
+    "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-07-22",
+        "summary": "Added a reduced-motion notice: this effect is a continuous cursor-driven fluid distortion and can't be reduced without losing it entirely, so it now surfaces that instead of silently ignoring the preference.",
+        "breaking": false
+      }
+    ],
     "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json",
@@ -1323,12 +1284,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/dither-canvas/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
       }
     ]
@@ -1366,12 +1325,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/donut-particles/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/donut-particles/createSuspendedRaf.js"
       }
     ]
@@ -1410,7 +1367,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/dot-fill-button/index.jsx"
       }
     ]
@@ -1422,8 +1378,14 @@
     "category": "backgrounds",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-22",
+        "summary": "Added a reduced-motion notice alongside the existing static canvas fallback.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -1450,12 +1412,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/dotted-grid/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/dotted-grid/createSuspendedRaf.js"
       }
     ]
@@ -1468,7 +1428,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap"
     ],
@@ -1483,22 +1442,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-canvas/index.jsx"
       },
       {
         "path": "DragCursor.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-canvas/DragCursor.jsx"
       },
       {
         "path": "MaskedContainer.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
       }
     ]
@@ -1533,17 +1488,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-marquee/index.jsx"
       },
       {
         "path": "DraggableMarqueeComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/draggable-marquee/createSuspendedRaf.js"
       }
     ]
@@ -1586,22 +1538,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/elevate-navbar/index.jsx"
       },
       {
         "path": "ElevateMobileNav.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/elevate-navbar/ElevateMobileNav.jsx"
       },
       {
         "path": "ElevateDesktopNav.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx"
       },
       {
         "path": "useFocusTrap.js",
-        "type": "registry:component",
         "target": "src/components/effects/elevate-navbar/useFocusTrap.js"
       }
     ]
@@ -1643,32 +1591,26 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/index.jsx"
       },
       {
         "path": "ExpandingNavbarDesktop.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
       },
       {
         "path": "ExpandingNavbarMobile.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
       },
       {
         "path": "HoverFillLink.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
       },
       {
         "path": "data.js",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/data.js"
       },
       {
         "path": "useFocusTrap.js",
-        "type": "registry:component",
         "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
       }
     ]
@@ -1703,22 +1645,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/file-encryption/index.jsx"
       },
       {
         "path": "FileEncryptionComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/file-encryption/FileEncryptionComp.jsx"
       },
       {
         "path": "webgl-context-recovery.js",
-        "type": "registry:component",
         "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/file-encryption/createSuspendedRaf.js"
       }
     ]
@@ -1761,12 +1699,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/fish-eye/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/fish-eye/createSuspendedRaf.js"
       }
     ]
@@ -1802,12 +1738,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/fractal-glass/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/fractal-glass/createSuspendedRaf.js"
       }
     ]
@@ -1848,17 +1782,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/full-screen-crosshair/index.jsx"
       },
       {
         "path": "useMouse.js",
-        "type": "registry:component",
         "target": "src/components/effects/full-screen-crosshair/useMouse.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
       }
     ]
@@ -1890,7 +1821,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/glitchy-text/registry.json",
-    "previewUrl": "/glitchy-text",
+    "previewUrl": "/demo/glitchy-text",
+    "main": "index.jsx",
+    "exportName": "GlitchyText",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -1928,7 +1862,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/gooey-counter/index.jsx"
       }
     ]
@@ -1941,7 +1874,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "leva"
     ],
@@ -1956,12 +1888,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/grid-lift/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/grid-lift/createSuspendedRaf.js"
       }
     ]
@@ -1996,7 +1926,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/grid-scale/index.jsx"
       }
     ]
@@ -2033,17 +1962,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/grid-tunnel/index.jsx"
       },
       {
         "path": "GridTunnelComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
       }
     ]
@@ -2056,7 +1982,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap",
       "lenis"
@@ -2072,12 +1997,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/helix-slider/index.jsx"
       },
       {
         "path": "HelixSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
       }
     ]
@@ -2090,7 +2013,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "@react-three/fiber",
       "@react-three/drei",
@@ -2112,32 +2034,26 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/index.jsx"
       },
       {
         "path": "CustomGrainNoise.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.jsx"
       },
       {
         "path": "EdgeBlurEffect.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.jsx"
       },
       {
         "path": "RoomModel.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/RoomModel.jsx"
       },
       {
         "path": "VideoUI.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
       }
     ]
@@ -2179,12 +2095,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/horizontal-feature-reveal/index.jsx"
       },
       {
         "path": "HorizontalFeatureRevealComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.jsx"
       }
     ]
@@ -2220,17 +2134,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hover-slider/index.jsx"
       },
       {
         "path": "HoverSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
       }
     ]
@@ -2264,12 +2175,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hover-stack/index.jsx"
       },
       {
         "path": "HoverStackComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hover-stack/HoverStackComp.jsx"
       }
     ]
@@ -2309,29 +2218,19 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hyperiux-glitter/index.jsx"
       },
       {
         "path": "MorphingParticleModelNew.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
       },
       {
         "path": "MouseTrailParticles.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
-      },
-      {
-        "path": "assets/models/hyperiux-new-model.glb",
-        "type": "registry:asset",
-        "target": "public/assets/models/hyperiux-new-model.glb",
-        "source": "/assets/models/hyperiux-new-model.glb"
       }
     ]
   },
@@ -2372,22 +2271,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/immersive-full-screen-nav/index.jsx"
       },
       {
         "path": "CustomNavbar.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/immersive-full-screen-nav/CustomNavbar.jsx"
       },
       {
         "path": "FullscreenNav.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/immersive-full-screen-nav/FullscreenNav.jsx"
       },
       {
         "path": "useFocusTrap.js",
-        "type": "registry:component",
         "target": "src/components/effects/immersive-full-screen-nav/useFocusTrap.js"
       }
     ]
@@ -2428,12 +2323,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/inertia-img/index.jsx"
       },
       {
         "path": "InertiaImgComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
       }
     ]
@@ -2476,12 +2369,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-carousel/index.jsx"
       },
       {
         "path": "InfiniteCarouselComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
       }
     ]
@@ -2516,22 +2407,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-grid-gallery/index.jsx"
       },
       {
         "path": "InfiniteGrid.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx"
       },
       {
         "path": "util.js",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-grid-gallery/util.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
       }
     ]
@@ -2568,17 +2455,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-perspective-slider/index.jsx"
       },
       {
         "path": "InfinitePerspectiveSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.js"
       }
     ]
@@ -2617,47 +2501,38 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/index.jsx"
       },
       {
         "path": "arrows.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/arrows.jsx"
       },
       {
         "path": "ArrowsLimit.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
       },
       {
         "path": "ArrowsOpacity.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
       },
       {
         "path": "ArrowsPlay.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
       },
       {
         "path": "lines.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/lines.jsx"
       },
       {
         "path": "points.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/points.jsx"
       },
       {
         "path": "utils.js",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/utils.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
       }
     ]
@@ -2670,7 +2545,6 @@
     "type": "registry:component",
     "tier": "free",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/webgl/interactive-blur-reveal/registry.json",
@@ -2684,17 +2558,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-blur-reveal/index.jsx"
       },
       {
         "path": "webgl-context-recovery.js",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.js"
       }
     ]
@@ -2730,12 +2601,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-list-preview/index.jsx"
       },
       {
         "path": "ListHover.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/interactive-list-preview/ListHover.jsx"
       }
     ]
@@ -2771,22 +2640,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/lines-loader/index.jsx"
       },
       {
         "path": "LinesLoading.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/lines-loader/LinesLoading.jsx"
       },
       {
         "path": "CenterLinesLoading.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
       },
       {
         "path": "utils.js",
-        "type": "registry:component",
         "target": "src/components/effects/lines-loader/utils.js"
       }
     ]
@@ -2822,7 +2687,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/link-button/index.jsx"
       }
     ]
@@ -2863,12 +2727,10 @@
     "files": [
       {
         "path": "index.js",
-        "type": "registry:component",
         "target": "src/components/effects/liquid-glass-cursor/index.js"
       },
       {
         "path": "LiquidText.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
       }
     ]
@@ -2907,17 +2769,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/magnetic-image-trail/index.jsx"
       },
       {
         "path": "MagneticTrail.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.js"
       }
     ]
@@ -2949,7 +2808,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/mask-text-reveal/registry.json",
-    "previewUrl": "/mask-text-reveal",
+    "previewUrl": "/demo/mask-text-reveal",
+    "main": "index.jsx",
+    "exportName": "MaskTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -2995,22 +2857,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/milky-way/index.jsx"
       },
       {
         "path": "circular-text.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/milky-way/circular-text.jsx"
       },
       {
         "path": "edge-blur-effect.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/milky-way/edge-blur-effect.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/milky-way/createSuspendedRaf.js"
       }
     ]
@@ -3023,7 +2881,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -3041,27 +2898,22 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/mouse-pixelation/index.jsx"
       },
       {
         "path": "EnhancedPixelCube.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.jsx"
       },
       {
         "path": "PixelCircle.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/mouse-pixelation/PixelCircle.jsx"
       },
       {
         "path": "PixelShift.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
       }
     ]
@@ -3104,17 +2956,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/noise-ripple-cursor/index.jsx"
       },
       {
         "path": "2dCanvasTracker.js",
-        "type": "registry:component",
         "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
       }
     ]
@@ -3158,22 +3007,18 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/number-counter/index.jsx"
       },
       {
         "path": "NumberCounterOne.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/number-counter/NumberCounterOne.jsx"
       },
       {
         "path": "NumberCounterTwo.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/number-counter/NumberCounterTwo.jsx"
       },
       {
         "path": "NumberCounterThree.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/number-counter/NumberCounterThree.jsx"
       }
     ]
@@ -3212,12 +3057,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/numeric-tunnel/index.jsx"
       },
       {
         "path": "NumericTunnelLoader.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/numeric-tunnel/NumericTunnelLoader.jsx"
       }
     ]
@@ -3249,7 +3092,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/overflow-stagger-text/registry.json",
-    "previewUrl": "/overflow-stagger-text",
+    "previewUrl": "/demo/overflow-stagger-text",
+    "main": "index.jsx",
+    "exportName": "OverflowStaggerText",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3285,7 +3131,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/overflow-text-reveal/registry.json",
-    "previewUrl": "/overflow-text-reveal",
+    "previewUrl": "/demo/overflow-text-reveal",
+    "main": "index.jsx",
+    "exportName": "OverflowTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3322,9 +3171,12 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/transitions/page-flip-transition/registry.json",
-    "previewUrl": "/page-transitions/flip",
+    "previewUrl": "/demo/page-flip-transition",
     "coverImage": "page-flip-transition",
     "videoUrl": "page-flip-transition.mp4",
+    "main": "index.jsx",
+    "exportName": "FlipTransition",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3341,7 +3193,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "lucide-react"
     ],
@@ -3356,12 +3207,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-footer/index.jsx"
       },
       {
         "path": "ParallaxFooter.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
       }
     ]
@@ -3397,12 +3246,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-gallery/index.jsx"
       },
       {
         "path": "ParallaxGallery.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
       }
     ]
@@ -3437,7 +3284,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-image-animation/index.jsx"
       }
     ]
@@ -3472,7 +3318,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/parallax-slider/index.jsx"
       }
     ]
@@ -3504,7 +3349,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/perspective-text-reveal/registry.json",
-    "previewUrl": "/perspective-text-reveal",
+    "previewUrl": "/demo/perspective-text-reveal",
+    "main": "index.jsx",
+    "exportName": "PerspectiveTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3550,17 +3398,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/phantom-image-trail/index.jsx"
       },
       {
         "path": "useMouse.js",
-        "type": "registry:component",
         "target": "src/components/effects/phantom-image-trail/useMouse.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/phantom-image-trail/createSuspendedRaf.js"
       }
     ]
@@ -3601,17 +3446,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/pixel-bloom/index.jsx"
       },
       {
         "path": "2dcanvasTracker.js",
-        "type": "registry:component",
         "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/pixel-bloom/createSuspendedRaf.js"
       }
     ]
@@ -3644,7 +3486,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/transitions/pixel-transition/registry.json",
-    "previewUrl": "/page-transitions/pixels",
+    "previewUrl": "/demo/pixel-transition",
+    "main": "index.jsx",
+    "exportName": "PixelTransition",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3688,7 +3533,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/pixelated-image-effect/index.jsx"
       }
     ]
@@ -3729,62 +3573,50 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/index.jsx"
       },
       {
         "path": "CameraRig.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
       },
       {
         "path": "CircularText.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
       },
       {
         "path": "EdgeBlurEffect.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
       },
       {
         "path": "ExperienceComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
       },
       {
         "path": "FilmGrainEffect.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
       },
       {
         "path": "Flower.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
       },
       {
         "path": "useInput.js",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/useInput.js"
       },
       {
         "path": "useValleyData.js",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
       },
       {
         "path": "shaders.js",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/shaders.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
       },
       {
         "path": "prefersReducedMotion.js",
-        "type": "registry:component",
         "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
       }
     ]
@@ -3826,7 +3658,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/radial-slice-transition/index.jsx"
       }
     ]
@@ -3858,7 +3689,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/rectangular-text-reveal/registry.json",
-    "previewUrl": "/rectangular-text-reveal",
+    "previewUrl": "/demo/rectangular-text-reveal",
+    "main": "index.jsx",
+    "exportName": "RectangularTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -3898,12 +3732,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/ribbon-drift/index.jsx"
       },
       {
         "path": "RibbonDriftComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
       }
     ]
@@ -3915,8 +3747,14 @@
     "category": "carousels",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-22",
+        "summary": "Fixed reduced motion throttling live drag response to 35% strength, making the carousel feel unresponsive while grabbing - drag now tracks 1:1 as before, only momentum/inertia and animated snaps stay reduced",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -3946,12 +3784,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/ring-carousel/index.jsx"
       },
       {
         "path": "RingCarouselComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/ring-carousel/RingCarouselComp.jsx"
       }
     ]
@@ -3994,12 +3830,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/rope-cursor/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/rope-cursor/createSuspendedRaf.js"
       }
     ]
@@ -4036,12 +3870,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/rotation-slider/index.jsx"
       },
       {
         "path": "RotationSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/rotation-slider/RotationSliderComp.jsx"
       }
     ]
@@ -4054,7 +3886,6 @@
     "type": "registry:component",
     "tier": "free",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "lucide-react"
     ],
@@ -4070,7 +3901,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scramble-link-button/index.jsx"
       }
     ]
@@ -4102,7 +3932,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/scramble-text/registry.json",
-    "previewUrl": "/scramble-text",
+    "previewUrl": "/demo/scramble-text",
+    "main": "index.jsx",
+    "exportName": "ScrambleText",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -4144,12 +3977,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-distortion/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-distortion/createSuspendedRaf.js"
       }
     ]
@@ -4184,17 +4015,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
       },
       {
         "path": "ScrollShuffledCardsComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
       },
       {
         "path": "card.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
       }
     ]
@@ -4235,12 +4063,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-stack/index.jsx"
       },
       {
         "path": "ScrollStackComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
       }
     ]
@@ -4272,7 +4098,10 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/slide-text-reveal/registry.json",
-    "previewUrl": "/slide-text-reveal",
+    "previewUrl": "/demo/slide-text-reveal",
+    "main": "index.jsx",
+    "exportName": "SlideTextReveal",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
@@ -4312,12 +4141,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/spider-particles/index.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/spider-particles/createSuspendedRaf.js"
       }
     ]
@@ -4355,27 +4182,22 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/split-canvas/index.jsx"
       },
       {
         "path": "PixelScrollCanvas.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/split-canvas/PixelScrollCanvas.jsx"
       },
       {
         "path": "content.js",
-        "type": "registry:component",
         "target": "src/components/effects/split-canvas/content.js"
       },
       {
         "path": "pixel-transition.js",
-        "type": "registry:component",
         "target": "src/components/effects/split-canvas/pixel-transition.js"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/split-canvas/createSuspendedRaf.js"
       }
     ]
@@ -4405,12 +4227,20 @@
     "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/spotlight-text/registry.json",
-    "previewUrl": "/spotlight-text",
+    "previewUrl": "/demo/spotlight-text",
+    "main": "index.jsx",
+    "exportName": "SpotlightText",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
         "type": "registry:component",
         "target": "src/components/effects/spotlight-text/index.jsx"
+      },
+      {
+        "path": "createSuspendedRaf.js",
+        "type": "registry:component",
+        "target": "src/components/effects/spotlight-text/createSuspendedRaf.js"
       }
     ]
   },
@@ -4446,12 +4276,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/square-translate/index.jsx"
       },
       {
         "path": "SquareTranslateComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
       }
     ]
@@ -4487,7 +4315,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/stack-loader/index.jsx"
       }
     ]
@@ -4499,8 +4326,27 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
-    "changelog": [],
+    "version": "1.0.2",
+    "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-07-22",
+        "summary": "Fixed the outgoing card staying at full opacity behind the incoming one in reduced motion (only its tilt/scale/rotateX/image-zoom were skipped, not its opacity fade), which let it visibly bleed through above the current card. The opacity crossfade isn't spatial motion, so it now still runs in reduced motion.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.1",
+        "date": "2026-07-22",
+        "summary": "Fixed the last card not reaching full screen on mobile - the sticky pin container and scroll-space height used 100vh (largest possible mobile viewport) while the card content itself already used 100svh, so the container could render taller than what's actually visible when the browser's address bar is showing. Both now use svh consistently.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-07-21",
+        "summary": "Initial release with prefers-reduced-motion support for reduced scroll and card motion.",
+        "breaking": false
+      }
+    ],
     "dependencies": [
       "gsap",
       "lenis"
@@ -4516,12 +4362,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/stacking-cards/index.jsx"
       },
       {
         "path": "StackingCardComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
       }
     ]
@@ -4558,12 +4402,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/sticky-content-wrapper/index.jsx"
       },
       {
         "path": "StickyContentComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.jsx"
       }
     ]
@@ -4576,7 +4418,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "three"
     ],
@@ -4591,17 +4432,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/strip-slider/index.jsx"
       },
       {
         "path": "StripSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
       },
       {
         "path": "createSuspendedRaf.js",
-        "type": "registry:component",
         "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
       }
     ]
@@ -4645,7 +4483,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/svg-brush-transition/index.jsx"
       }
     ]
@@ -4658,7 +4495,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "motion"
     ],
@@ -4673,12 +4509,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/svg-path/index.jsx"
       },
       {
         "path": "SVGPathComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/svg-path/SVGPathComp.jsx"
       }
     ]
@@ -4691,7 +4525,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap"
     ],
@@ -4706,12 +4539,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/svg-pixel-reveal/index.jsx"
       },
       {
         "path": "PixelatedScgFilter.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
       }
     ]
@@ -4747,17 +4578,14 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/testimonial-swiper/index.jsx"
       },
       {
         "path": "NavigationButtons.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
       },
       {
         "path": "TestimonialComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
       }
     ]
@@ -4787,12 +4615,20 @@
     "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/text-cloning/registry.json",
-    "previewUrl": "/text-cloning",
+    "previewUrl": "/demo/text-cloning",
+    "main": "index.jsx",
+    "exportName": "TextCloning",
+    "exportKind": "default",
     "files": [
       {
         "path": "index.jsx",
         "type": "registry:component",
         "target": "src/components/effects/text-cloning/index.jsx"
+      },
+      {
+        "path": "createSuspendedRaf.js",
+        "type": "registry:component",
+        "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
       }
     ]
   },
@@ -4827,7 +4663,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-convergence/index.jsx"
       }
     ]
@@ -4840,7 +4675,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "gsap"
     ],
@@ -4855,7 +4689,6 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-fill-animation/index.jsx"
       }
     ]
@@ -4896,13 +4729,15 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-hover/index.jsx"
       },
       {
         "path": "TextHoverComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-hover/TextHoverComp.jsx"
+      },
+      {
+        "path": "createSuspendedRaf.js",
+        "target": "src/components/effects/text-hover/createSuspendedRaf.js"
       }
     ]
   },
@@ -4933,17 +4768,20 @@
     ],
     "registryDependencies": [],
     "registryPath": "registry/effects/text/text-stream/registry.json",
-    "previewUrl": "/text-stream",
+    "previewUrl": "/demo/text-stream",
+    "main": "index.jsx",
+    "exportName": "useIsMobile",
+    "exportKind": "named",
     "files": [
-      {
-        "path": "index.jsx",
-        "type": "registry:component",
-        "target": "src/components/effects/text-stream/index.jsx"
-      },
       {
         "path": "hooks.js",
         "type": "registry:component",
         "target": "src/components/effects/text-stream/hooks.js"
+      },
+      {
+        "path": "index.jsx",
+        "type": "registry:component",
+        "target": "src/components/effects/text-stream/index.jsx"
       },
       {
         "path": "TextStreamComp.jsx",
@@ -4960,7 +4798,6 @@
     "type": "registry:component",
     "tier": "pro",
     "version": "1.0.0",
-    "changelog": [],
     "dependencies": [
       "lucide-react"
     ],
@@ -4975,12 +4812,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/video-player/index.jsx"
       },
       {
         "path": "VideoPlayerComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
       }
     ]
@@ -5024,12 +4859,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/webgl-slider/index.jsx"
       },
       {
         "path": "WebGLSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
       }
     ]
@@ -5071,12 +4904,10 @@
     "files": [
       {
         "path": "index.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/zoom-slider/index.jsx"
       },
       {
         "path": "ZoomSliderComp.jsx",
-        "type": "registry:component",
         "target": "src/components/effects/zoom-slider/ZoomSliderComp.jsx"
       }
     ]

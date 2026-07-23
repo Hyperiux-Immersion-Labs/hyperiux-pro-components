@@ -24,17 +24,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/hover-slider/index.jsx"
     },
     {
       "path": "HoverSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/HoverSliderComp.jsx"
+      "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
     }
   ]
 }

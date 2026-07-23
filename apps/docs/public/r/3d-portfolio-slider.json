@@ -25,17 +25,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/3d-portfolio-slider/index.jsx"
     },
     {
       "path": "PortfolioSlider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PortfolioSlider.jsx"
+      "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.js"
     }
   ]
 }

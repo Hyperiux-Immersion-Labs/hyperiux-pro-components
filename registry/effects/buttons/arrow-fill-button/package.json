@@ -1,10 +1,10 @@
 {
   "name": "@hyperiux/arrow-fill-button",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Button with expanding circle fill and animated arrow icon on hover",
-  "main": "arrow-fill-button.jsx",
+  "main": "index.jsx",
   "files": [
-    "arrow-fill-button.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

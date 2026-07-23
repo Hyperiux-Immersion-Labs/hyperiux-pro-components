@@ -94,7 +94,7 @@ StatItem.displayName ="StatItem";
  * @param {Object[]} stats
  * @param {string} textColor
  * @param {string} textSize  * @param {string} fontWeight  */
-export default function CounterOne({
+export default function NumberCounterOne({
  stats = [],
  textColor ="black",
  textSize ="text-[5vw]",

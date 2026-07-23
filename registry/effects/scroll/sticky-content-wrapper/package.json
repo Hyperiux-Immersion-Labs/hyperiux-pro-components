@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/sticky-content-wrapper",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
-  "main": "sticky-content-wrapper.jsx",
+  "main": "index.jsx",
   "files": [
-    "sticky-content-wrapper.jsx",
+    "index.jsx",
+    "StickyContentComp.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -29,17 +29,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/noise-ripple-cursor/index.jsx"
     },
     {
       "path": "2dCanvasTracker.js",
       "type": "registry:component",
-      "target": "components/hyperiux/2dCanvasTracker.js"
+      "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
     }
   ]
 }

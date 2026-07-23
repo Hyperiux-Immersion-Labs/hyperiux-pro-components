@@ -1,3 +1,4 @@
+import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { Suspense } from "react";

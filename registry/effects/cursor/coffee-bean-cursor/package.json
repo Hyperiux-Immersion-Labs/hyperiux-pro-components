@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/coffee-bean-cursor",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Mouse-reactive 3D coffee bean flow with velocity-based lighting and fluid drift",
-  "main": "coffee-bean-cursor.jsx",
+  "main": "index.jsx",
   "files": [
-    "coffee-bean-cursor.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

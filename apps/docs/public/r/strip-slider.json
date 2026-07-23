@@ -29,17 +29,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/strip-slider/index.jsx"
     },
     {
       "path": "StripSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/StripSliderComp.jsx"
+      "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
     }
   ]
 }

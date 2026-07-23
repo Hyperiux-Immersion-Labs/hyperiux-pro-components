@@ -23,17 +23,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
     },
     {
       "path": "card.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/card.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
     },
     {
       "path": "ScrollShuffledCardsComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ScrollShuffledCardsComp.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
     }
   ]
 }

@@ -36,12 +36,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/stacking-cards/index.jsx"
     },
     {
       "path": "StackingCardComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/StackingCardComp.jsx"
+      "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
     }
   ]
 }

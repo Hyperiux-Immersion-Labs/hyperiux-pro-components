@@ -27,17 +27,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/full-screen-crosshair/index.jsx"
     },
     {
       "path": "useMouse.js",
       "type": "registry:component",
-      "target": "components/hyperiux/useMouse.js"
+      "target": "src/components/effects/full-screen-crosshair/useMouse.js"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
     }
   ]
 }

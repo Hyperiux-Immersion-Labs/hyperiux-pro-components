@@ -27,17 +27,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/character-trail/index.jsx"
     },
     {
       "path": "CharacterTrailComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CharacterTrailComp.jsx"
+      "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/character-trail/createSuspendedRaf.js"
     }
   ]
 }

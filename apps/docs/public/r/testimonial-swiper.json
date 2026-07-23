@@ -24,17 +24,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/testimonial-swiper/index.jsx"
     },
     {
       "path": "NavigationButtons.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/NavigationButtons.jsx"
+      "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
     },
     {
       "path": "TestimonialComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/TestimonialComp.jsx"
+      "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
     }
   ]
 }

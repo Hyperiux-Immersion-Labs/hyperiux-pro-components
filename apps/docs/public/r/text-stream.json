@@ -27,19 +27,19 @@
   ],
   "files": [
     {
-      "path": "hooks.js",
-      "type": "registry:component",
-      "target": "components/hyperiux/hooks.js"
-    },
-    {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/text-stream/index.jsx"
+    },
+    {
+      "path": "hooks.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-stream/hooks.js"
     },
     {
       "path": "TextStreamComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/TextStreamComp.jsx"
+      "target": "src/components/effects/text-stream/TextStreamComp.jsx"
     }
   ]
 }

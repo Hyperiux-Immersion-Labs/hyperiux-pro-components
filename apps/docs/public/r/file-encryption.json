@@ -23,22 +23,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/file-encryption/index.jsx"
     },
     {
       "path": "FileEncryptionComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/FileEncryptionComp.jsx"
+      "target": "src/components/effects/file-encryption/FileEncryptionComp.jsx"
     },
     {
       "path": "webgl-context-recovery.js",
       "type": "registry:component",
-      "target": "components/hyperiux/webgl-context-recovery.js"
+      "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/file-encryption/createSuspendedRaf.js"
     }
   ]
 }

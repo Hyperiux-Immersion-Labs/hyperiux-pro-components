@@ -27,17 +27,17 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/pixel-bloom/index.jsx"
     },
     {
       "path": "2dcanvasTracker.js",
       "type": "registry:component",
-      "target": "components/hyperiux/2dcanvasTracker.js"
+      "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
     },
     {
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
-      "target": "components/hyperiux/createSuspendedRaf.js"
+      "target": "src/components/effects/pixel-bloom/createSuspendedRaf.js"
     }
   ]
 }

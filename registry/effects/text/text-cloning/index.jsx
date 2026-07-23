@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 export default function TextCloning() {
     const canvasRef = useRef(null);
@@ -10,7 +11,6 @@ export default function TextCloning() {
         const ctx = canvas.getContext("2d");
 
         let w, h, dpr;
-        let raf;
 
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
@@ -84,19 +84,20 @@ export default function TextCloning() {
             }
         };
 
-        const render = () => {
-            mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
-            mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
+        const loop = createSuspendedRaf({
+            root: canvas,
+            onFrame: () => {
+                mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
+                mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
 
-            ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = "#101010";
-            ctx.fillRect(0, 0, w, h);
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = "#101010";
+                ctx.fillRect(0, 0, w, h);
 
-            drawStars();
-            drawClones();
-
-            raf = requestAnimationFrame(render);
-        };
+                drawStars();
+                drawClones();
+            },
+        });
 
         const onMove = (e) => {
             target.x = e.clientX;
@@ -111,7 +112,7 @@ export default function TextCloning() {
         };
 
         resize();
-        render();
+        loop.start();
 
         window.addEventListener("resize", resize);
         window.addEventListener("pointermove", onMove);
@@ -120,7 +121,7 @@ export default function TextCloning() {
         window.addEventListener("touchmove", onTouch, { passive: true });
 
         return () => {
-            cancelAnimationFrame(raf);
+            loop.destroy();
             window.removeEventListener("resize", resize);
             window.removeEventListener("pointermove", onMove);
             window.removeEventListener("pointerdown", onMove);

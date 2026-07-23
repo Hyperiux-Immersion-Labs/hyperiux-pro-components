@@ -1,10 +1,13 @@
 {
   "name": "@hyperiux/curved-plane",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
-  "main": "curved-plane.jsx",
+  "main": "index.jsx",
   "files": [
-    "curved-plane.jsx",
+    "index.jsx",
+    "CurvedSwiperHorizontal.jsx",
+    "CurvedSwiperVertical.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

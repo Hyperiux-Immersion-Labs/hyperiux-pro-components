@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/svg-path",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",
   "main": "index.jsx",
   "files": [

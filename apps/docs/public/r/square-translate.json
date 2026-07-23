@@ -23,12 +23,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/square-translate/index.jsx"
     },
     {
       "path": "SquareTranslateComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/SquareTranslateComp.jsx"
+      "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
     }
   ]
 }

@@ -25,5 +25,16 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/pixel-transition",
-  "tier": "pro"
+  "tier": "pro",
+  "subfolder": true,
+  "exportName": "PixelTransition",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/pixel-transition/index.jsx"
+    }
+  ]
 }

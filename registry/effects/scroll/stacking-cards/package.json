@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/stacking-cards",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
-  "main": "stacking-cards.jsx",
+  "main": "index.jsx",
   "files": [
-    "stacking-cards.jsx",
+    "index.jsx",
+    "StackingCardComp.jsx",
     "registry.json"
   ],
   "keywords": [

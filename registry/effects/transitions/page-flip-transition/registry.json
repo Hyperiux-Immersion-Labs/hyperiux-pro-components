@@ -27,5 +27,16 @@
   "previewUrl": "/demo/page-flip-transition",
   "coverImage": "page-flip-transition",
   "videoUrl": "page-flip-transition.mp4",
-  "tier": "pro"
+  "tier": "pro",
+  "subfolder": true,
+  "exportName": "FlipTransition",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/page-flip-transition/index.jsx"
+    }
+  ]
 }

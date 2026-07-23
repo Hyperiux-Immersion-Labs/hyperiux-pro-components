@@ -28,6 +28,7 @@
   "coverImage": "svg-brush-transition",
   "videoUrl": "svg-brush-transition.mp4",
   "tier": "pro",
+  "subfolder": true,
   "main": "index.jsx",
   "exportName": "SVGBrushTransition",
   "exportKind": "default",

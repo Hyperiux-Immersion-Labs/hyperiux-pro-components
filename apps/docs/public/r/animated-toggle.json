@@ -27,22 +27,22 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/animated-toggle/index.jsx"
     },
     {
       "path": "ChevronBird.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ChevronBird.jsx"
+      "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
     },
     {
       "path": "Cross.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Cross.jsx"
+      "target": "src/components/effects/animated-toggle/Cross.jsx"
     },
     {
       "path": "Plus.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Plus.jsx"
+      "target": "src/components/effects/animated-toggle/Plus.jsx"
     }
   ]
 }

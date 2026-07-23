@@ -22,5 +22,20 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/text-cloning",
-  "tier": "pro"
+  "tier": "pro",
+  "exportName": "TextCloning",
+  "exportKind": "default",
+  "main": "index.jsx",
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/text-cloning/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
+    }
+  ]
 }

@@ -254,7 +254,6 @@ export default function FullscreenNav({
         <button
           ref={toggleButtonRef}
           onClick={onToggleMenu}
-          onTouchStart={onToggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
           className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5 max-md:size-14 max-sm:size-10"
