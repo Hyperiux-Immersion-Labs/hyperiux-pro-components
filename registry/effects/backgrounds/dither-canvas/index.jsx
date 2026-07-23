@@ -884,7 +884,7 @@ export default function DitherCanvas({
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-md:text-sm max-xl:text-lg text-white/50 max-xl:block">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-xl:text-sm max-xl:text-lg text-white/50 max-xl:block">
           Open on desktop for the full experience - cursor effect included.
         </p>
       )}
@@ -894,7 +894,7 @@ export default function DitherCanvas({
           aria-live="polite"
           className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-xl:text-[2vw] leading-none text-[#111111]">
             This effect can&apos;t be reduced.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

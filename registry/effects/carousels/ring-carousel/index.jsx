@@ -70,7 +70,7 @@ export default function RingCarousel({
  }, []);
 
  return (
- <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-md:px-0  pb-8 max-md:pt-10 max-md:pb-8 max-sm:px-0 max-sm:pt-6 max-sm:pb-4 ${className}`}>
+ <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-xl:px-0  pb-8 max-xl:pt-10 max-xl:pb-8 max-md:px-0 max-md:pt-6 max-md:pb-4 ${className}`}>
  <div className="relative w-full">
  <RingCarouselComp
  items={items}

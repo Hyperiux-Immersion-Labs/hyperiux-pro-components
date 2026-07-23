@@ -200,17 +200,17 @@ export default function CardDriftComp({
 function Card({ item, cardBg, cardTextColor, barBg }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
- <div className={`w-96 max-sm:w-42 max-xl:w-60 ${cardBg} ${cardTextColor}`}>
+ <div className={`w-96 max-md:w-42 max-xl:w-60 ${cardBg} ${cardTextColor}`}>
  {/* Top bar */}
  <div
- className={`flex justify-between text-xs px-3 max-sm:px-2 py-1 ${barBg}`}
+ className={`flex justify-between text-xs px-3 max-md:px-2 py-1 ${barBg}`}
  >
  <span>{item.year}</span>
  <span>{item.tag}</span>
  </div>
 
  {/* Content */}
- <div className="p-6 max-xl:p-3  text-lg max-xl:text-lg max-sm:text-base leading-none font-light">
+ <div className="p-6 max-xl:p-3  text-lg max-xl:text-lg max-md:text-base leading-none font-light">
  {item.text}
  </div>
  </div>

@@ -72,7 +72,7 @@ export default function MousePixelation({
       {prefersReducedMotion && (
          <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-28 right-12 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          className="pointer-events-none fixed bottom-28 right-12 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-xl:hidden"
         >
           <h2 className="text-sm leading-none text-white">
             The pixels keep shifting.
@@ -90,7 +90,7 @@ export default function MousePixelation({
 
 function CursorMoveCue() {
   return (
-    <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 max-md:hidden backdrop-blur-md max-sm:bottom-5 max-sm:text-xs">
+    <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 max-xl:hidden backdrop-blur-md max-md:bottom-5 max-md:text-xs">
      
       <span>Move your cursor to see the pixelated effects</span>
     </div>
@@ -101,7 +101,7 @@ export { PixelCircle, PixelShift, EnhancedPixelCube };
 
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
-    <nav className="fixed top-4 max-md:top-5 max-sm:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-md:px-3 max-md:py-2  max-sm:px-2 max-sm:py-1.5">
+    <nav className="fixed top-4 max-xl:top-5 max-md:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-xl:px-3 max-xl:py-2  max-md:px-2 max-md:py-1.5">
       {VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
 
@@ -110,7 +110,7 @@ function VersionNav({ activeVariant, onVariantChange }) {
             key={variant.value}
             type="button"
             onClick={() => onVariantChange(variant.value)}
-            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${
+            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-xl:text-lg max-md:text-sm ${
               isActive
                 ? "bg-white text-black"
                 : "text-white/70 hover:text-white"

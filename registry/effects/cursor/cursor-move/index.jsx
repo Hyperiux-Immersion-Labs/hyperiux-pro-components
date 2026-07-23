@@ -174,7 +174,7 @@ export default function CursorMove({
   cursorDotStyle = {},
   text = "hello!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
-  textClassName = "text-9xl max-md:text-6xl max-sm:text-5xl text-orange-500 select-none leading-none",
+  textClassName = "text-9xl max-xl:text-6xl max-md:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",
   fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
@@ -184,7 +184,7 @@ export default function CursorMove({
   skewXRange = { min: 0, max: -20 },
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
-  coordinatesTextClassName = "text-xs max-md:text-sm text-white/40 tabular-nums",
+  coordinatesTextClassName = "text-xs max-xl:text-sm text-white/40 tabular-nums",
 }) {
   const containerRef = useRef(null);
   const { x, y, isDesktop } = useMousePosition(containerRef);
@@ -273,7 +273,7 @@ export default function CursorMove({
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-xl:hidden"
         >
           <h2 className="text-sm leading-none text-white">
             The letters keep bending.

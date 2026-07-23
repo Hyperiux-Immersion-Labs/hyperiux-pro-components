@@ -334,7 +334,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  <div
  ref={textContainerRef}
  data-active-text={items[0].description}
- className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-md:h-9 max-md:w-70 max-md:text-xl max-sm:h-12 max-sm:w-[84vw] max-sm:text-base"
+ className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-xl:h-9 max-xl:w-70 max-xl:text-xl max-md:h-12 max-md:w-[84vw] max-md:text-base"
  >
  <div ref={activeTextRef} className="absolute w-full h-full flex items-center justify-center">
  {items[0].description}
@@ -348,7 +348,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  return (
  <div
  key={i}
- className="absolute h-9 w-7 -ml-3.5 -mt-4.5 max-md:h-12 max-md:w-9 max-md:-ml-4.5 max-md:-mt-6 max-sm:h-9 max-sm:w-7 max-sm:-ml-3.5 max-sm:-mt-4.5"
+ className="absolute h-9 w-7 -ml-3.5 -mt-4.5 max-xl:h-12 max-xl:w-9 max-xl:-ml-4.5 max-xl:-mt-6 max-md:h-9 max-md:w-7 max-md:-ml-3.5 max-md:-mt-4.5"
  style={{
 transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
 }}
@@ -364,7 +364,7 @@ transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${
  aria-live="polite"
  className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
  >
- <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+ <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-xl:text-[2vw] leading-none text-[#111111]">
  This effect can&apos;t be reduced.
  </h2>
  <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

@@ -67,7 +67,7 @@ DigitScroller.displayName ='DigitScroller';
 
 const NumberCounterTwo = ({
  value ='0',
- textSize ='text-[8vw] max-md:text-[7vw] max-sm:text-[12vw]',
+ textSize ='text-[8vw] max-xl:text-[7vw] max-md:text-[12vw]',
  color ='#111111',
  fontWeight ='normal',
  reducedMotion = false, }) => {
@@ -75,7 +75,7 @@ const NumberCounterTwo = ({
  const cleanValue = value.replace('+','');
 
  return (
- <div ref={containerRef} className="flex items-end gap-[2vw] w-fit max-md:gap-0">
+ <div ref={containerRef} className="flex items-end gap-[2vw] w-fit max-xl:gap-0">
  <div
  className={`flex items-end font-display leading-none ${textSize} ${FONT_WEIGHTS[fontWeight] ||'font-normal'}`}
  style={{ color }}

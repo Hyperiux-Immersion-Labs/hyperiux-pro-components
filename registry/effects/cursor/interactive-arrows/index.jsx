@@ -65,14 +65,14 @@ const InteractiveArrows = () => {
 
   return (
     <div className="min-h-screen w-full overflow-hidden bg-white text-black">
-      <div className="flex min-h-screen flex-col px-8 py-8 max-sm:px-6 max-sm:py-6">
+      <div className="flex min-h-screen flex-col px-8 py-8 max-md:px-6 max-md:py-6">
         <div className="mx-auto flex w-full max-w-350 justify-center">
           <div className="inline-flex flex-wrap  relative z-400 justify-center gap-2 rounded-full border p-2 backdrop-blur-sm border-black/10 bg-black/5">
             {variations.map((variation) => (
               <button
                 key={variation.id}
                 onClick={() => setActive(variation.id)}
-                className={`cursor-pointer rounded-full px-5 py-2 text-sm transition-all duration-200 max-sm:px-4 ${
+                className={`cursor-pointer rounded-full px-5 py-2 text-sm transition-all duration-200 max-md:px-4 ${
                   active === variation.id
                     ? "bg-black text-white"
                     : "bg-transparent text-black/60 hover:text-black"
@@ -84,7 +84,7 @@ const InteractiveArrows = () => {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center py-8 max-sm:py-6">
+        <div className="flex flex-1 items-center justify-center py-8 max-md:py-6">
           <div
             className={`h-[78vh] w-full max-w-350 overflow-hidden rounded-[28px] border transition-colors duration-300 ${activeVariation.frameClassName}`}
           >
