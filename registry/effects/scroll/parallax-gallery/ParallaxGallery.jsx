@@ -146,7 +146,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  delay: 0,
  inertia: false,
  onStart: () => {
- lenis.stop();
+ lenis?.stop();
  },
  onComplete: () => {
  lenis?.start();

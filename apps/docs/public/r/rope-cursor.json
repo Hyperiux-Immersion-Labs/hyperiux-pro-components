@@ -3,15 +3,19 @@
   "type": "registry:component",
   "title": "Rope Cursor",
   "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": [],
   "registryDependencies": [],
   "exportName": "RopeCursor",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Rope physics now use direct time-based smoothing per frame instead of allocating a new gsap tween per segment per frame (~480 tweens/sec); gsap dependency removed entirely.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",

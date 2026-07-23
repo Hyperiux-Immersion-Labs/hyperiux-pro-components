@@ -61,13 +61,27 @@ function useMousePosition(containerRef) {
       return;
     }
 
+    // Coalesce mousemove bursts to one state update (and one rect read)
+    // per animation frame instead of re-rendering on every raw event.
+    let frameId = null;
+    let lastClientX = 0;
+    let lastClientY = 0;
+
     const onMove = (e) => {
-      const nextRect = el.getBoundingClientRect();
-      setPos({
-        x: e.clientX - nextRect.left,
-        y: e.clientY - nextRect.top,
-        width: nextRect.width,
-        height: nextRect.height,
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+
+      if (frameId !== null) return;
+
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        const nextRect = el.getBoundingClientRect();
+        setPos({
+          x: lastClientX - nextRect.left,
+          y: lastClientY - nextRect.top,
+          width: nextRect.width,
+          height: nextRect.height,
+        });
       });
     };
 
@@ -88,6 +102,7 @@ function useMousePosition(containerRef) {
     el.addEventListener("mousemove", onMove);
     return () => {
       el.removeEventListener("mousemove", onMove);
+      if (frameId !== null) cancelAnimationFrame(frameId);
       ro?.disconnect?.();
     };
   }, [containerRef, isDesktop]);

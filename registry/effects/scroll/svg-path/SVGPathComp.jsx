@@ -8,6 +8,7 @@ import {
   useTransform,
   useVelocity,
 } from "motion/react";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 // Custom wrap function
 const wrap = (min, max, value) => {
@@ -255,8 +256,26 @@ const SVGPathComp = ({
     { clamp: false }
   )
 
+  // Suspend marquee work while the component is offscreen or the tab is
+  // hidden - useAnimationFrame keeps firing, so the gate ref is what stops
+  // the per-frame offset/style writes from running unseen.
+  const isVisibleRef = useRef(true)
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: container.current,
+      onChange: (active) => {
+        isVisibleRef.current = active
+      },
+    })
+    isVisibleRef.current = gate.isActive
+    return () => gate.destroy()
+  }, [])
+
   // Animation frame handler
   useAnimationFrame((_, delta) => {
+    if (!isVisibleRef.current) return
+
     if (isDragging.current && draggable) {
       baseOffset.set(baseOffset.get() + dragVelocity.current)
 

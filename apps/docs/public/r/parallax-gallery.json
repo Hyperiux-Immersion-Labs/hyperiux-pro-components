@@ -11,8 +11,14 @@
   "exportName": "ParallaxGallery",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Fixed crash in scroll-snap onStart: lenis.stop() now uses optional chaining so consumers without a Lenis provider no longer throw a TypeError on every snap",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",

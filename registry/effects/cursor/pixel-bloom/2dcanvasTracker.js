@@ -89,11 +89,9 @@ function updateHoverAndNotify() {
 
  if (newHoveredTarget !== hoveredTarget) {
  if (hoveredTarget) {
- console.log('[2dCanvasTracker] Leave detected:', hoveredTarget.el)
  handlersByEl.get(hoveredTarget.el)?.onLeave?.()
  }
  if (newHoveredTarget) {
- console.log('[2dCanvasTracker] Enter detected:', newHoveredTarget.el)
  handlersByEl.get(newHoveredTarget.el)?.onEnter?.()
  }
  hoveredTarget = newHoveredTarget
@@ -138,7 +136,6 @@ function attachListenersOnce() {
 
 export function registerFxTarget(el, handlers = {}) {
  if (!el) return
- console.log('[2dCanvasTracker] Registered target:', el)
  handlersByEl.set(el, handlers)
  attachListenersOnce()
  scheduleRefreshTargets()
@@ -146,7 +143,6 @@ export function registerFxTarget(el, handlers = {}) {
 
 export function unregisterFxTarget(el) {
  if (!el) return
- console.log('[2dCanvasTracker] Unregistered target:', el)
  handlersByEl.delete(el)
  // Hover may be stale; refresh the cached targets on the next frame.
  scheduleRefreshTargets()

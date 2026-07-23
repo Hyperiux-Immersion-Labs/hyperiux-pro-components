@@ -2,9 +2,9 @@
   "name": "@hyperiux/cursor-move",
   "version": "0.0.1",
   "description": "Fullscreen cursor-follow crosshair + cursor dot with variable font axis mapping and coordinate readout.",
-  "main": "cursor-move.jsx",
+  "main": "index.jsx",
   "files": [
-    "cursor-move.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

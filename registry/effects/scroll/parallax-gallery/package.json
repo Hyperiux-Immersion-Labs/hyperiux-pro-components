@@ -2,9 +2,10 @@
   "name": "@hyperiux/parallax-gallery",
   "version": "0.0.1",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
-  "main": "parallax-gallery.jsx",
+  "main": "index.jsx",
   "files": [
-    "parallax-gallery.jsx",
+    "ParallaxGallery.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

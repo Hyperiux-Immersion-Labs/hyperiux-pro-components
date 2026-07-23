@@ -4,8 +4,9 @@
   "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "SVGPathComp.jsx",
+    "createSuspendedRaf.js",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -45,7 +45,7 @@
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "grid-scale",
@@ -60,7 +60,7 @@
       "registryDependencies": [],
       "exportName": "GridScale",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "helix-slider",
@@ -137,7 +137,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxGallery",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "parallax-image-animation",
@@ -308,7 +308,7 @@
       "registryDependencies": [],
       "exportName": "SVGPath",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "svg-pixel-reveal",
@@ -368,7 +368,7 @@
       "registryDependencies": [],
       "exportName": "CharacterTrail",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "coffee-bean-cursor",
@@ -413,7 +413,7 @@
       "registryDependencies": [],
       "exportName": "CursorMove",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "fish-eye",
@@ -442,8 +442,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "FullScreenCrosshair",
-      "exportKind": "named",
-      "version": "1.1.0"
+      "exportKind": "default",
+      "version": "1.1.1"
     },
     {
       "name": "inertia-img",
@@ -514,7 +514,7 @@
       "registryDependencies": [],
       "exportName": "NoiseRippleCursor",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "phantom-image-trail",
@@ -529,7 +529,7 @@
       "registryDependencies": [],
       "exportName": "PhantomImageTrail",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "pixel-bloom",
@@ -542,7 +542,7 @@
       "registryDependencies": [],
       "exportName": "PixelBloom",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "pixelated-image-effect",
@@ -564,13 +564,11 @@
       "categories": [
         "cursor"
       ],
-      "dependencies": [
-        "gsap"
-      ],
+      "dependencies": [],
       "registryDependencies": [],
       "exportName": "RopeCursor",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "dither-canvas",
@@ -1462,7 +1460,7 @@
       "registryDependencies": [],
       "exportName": "PortfolioSlider3D",
       "exportKind": "default",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     {
       "name": "book-flip",
@@ -1750,7 +1748,7 @@
       "registryDependencies": [],
       "exportName": "ProgressiveBloomValley",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.1.1"
     },
     {
       "name": "strip-slider",

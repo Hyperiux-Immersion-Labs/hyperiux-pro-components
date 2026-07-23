@@ -286,6 +286,16 @@ export default function PortfolioSlider({ items }) {
       gate.destroy();
       if (snapTimeout) clearTimeout(snapTimeout);
       gsap.killTweensOf(snapObj);
+      // renderer.dispose() does not free per-mesh GPU resources - each
+      // plane's geometry, shader material, and texture must go explicitly
+      // or they leak on every unmount.
+      planes.forEach((plane) => {
+        plane.geometry.dispose();
+        plane.material.uniforms.uTexture.value?.dispose?.();
+        plane.material.dispose();
+        scene.remove(plane);
+      });
+      planes = [];
       renderer.dispose();
       container.removeChild(renderer.domElement);
       lenis.destroy();

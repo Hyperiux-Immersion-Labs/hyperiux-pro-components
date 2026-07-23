@@ -255,20 +255,24 @@ const DraggableMarqueeComp = ({
 
         gsap.ticker.add(update);
 
-        // Pause the marquee ticker when the section is offscreen or the tab is hidden.
-        // Always wake on teardown so we never leave the global ticker sleeping.
+        // Pause only this marquee's ticker callback when the section is
+        // offscreen or the tab is hidden - never sleep the global gsap.ticker,
+        // which is shared by every other GSAP animation on the page.
+        let tickerAttached = true;
+        const setTickerAttached = (active) => {
+            if (active === tickerAttached) return;
+            tickerAttached = active;
+            if (active) gsap.ticker.add(update);
+            else gsap.ticker.remove(update);
+        };
         const gate = createVisibilityGate({
             root,
-            onChange: (active) => {
-                if (active) gsap.ticker.wake();
-                else gsap.ticker.sleep();
-            },
+            onChange: setTickerAttached,
         });
-        if (!gate.isActive) gsap.ticker.sleep();
+        setTickerAttached(gate.isActive);
 
         return () => {
             gate.destroy();
-            gsap.ticker.wake();
 
             window.removeEventListener("resize", handleResize);
 

@@ -168,7 +168,7 @@ tl.fromTo(
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: `#${sectionId}`,
-          start: '% top',
+          start: 'top top',
           end: '100% bottom',
           scrub: true,
           markers: false,

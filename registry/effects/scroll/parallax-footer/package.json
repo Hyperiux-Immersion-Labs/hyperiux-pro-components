@@ -2,9 +2,10 @@
   "name": "@hyperiux/parallax-footer",
   "version": "0.0.1",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
-  "main": "parallax-footer.jsx",
+  "main": "index.jsx",
   "files": [
-    "parallax-footer.jsx",
+    "ParallaxFooter.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

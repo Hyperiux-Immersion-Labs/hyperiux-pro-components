@@ -2,9 +2,13 @@
   "name": "@hyperiux/split-canvas",
   "version": "0.0.1",
   "description": "Scroll-synced canvas transition that reveals images through sliced pixel-grid shutters",
-  "main": "split-canvas.jsx",
+  "main": "index.jsx",
   "files": [
-    "split-canvas.jsx",
+    "PixelScrollCanvas.jsx",
+    "content.js",
+    "createSuspendedRaf.js",
+    "index.jsx",
+    "pixel-transition.js",
     "registry.json"
   ],
   "keywords": [

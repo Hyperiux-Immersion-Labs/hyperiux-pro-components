@@ -10,8 +10,14 @@
   "exportName": "PhantomImageTrail",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "useMouse no longer calls setState every animation frame; movement values moved to refs, eliminating 60-120 wasted re-renders/sec. Returned scalar fields are now non-reactive snapshots - use the refs for live values.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",
@@ -36,7 +42,7 @@
       "path": "useMouse.js",
       "type": "registry:component",
       "target": "components/hyperiux/phantom-image-trail/useMouse.js",
-      "content": "\"use client\";\nimport { useEffect, useRef, useState } from\"react\";\nimport { createSuspendedRaf } from\"./createSuspendedRaf\";\n\nconst lerp = (a, b, n) => (1 - n) * a + n * b;\n\nexport const useMouse = ({\n smooth = true,\n lerpFactor = 0.1,\n} = {}) => {\n const mouse = useRef({ x: 0, y: 0 });\n const lastMouse = useRef({ x: 0, y: 0 });\n const smoothMouse = useRef({ x: 0, y: 0 });\n\n // Optional state (only if you want re-renders)\n const [state, setState] = useState({\n x: 0,\n y: 0,\n smoothX: 0,\n smoothY: 0,\n dx: 0,\n dy: 0,\n distance: 0,\n });\n\n useEffect(() => {\n const handleMouseMove = (e) => {\n mouse.current = {\n x: e.clientX,\n y: e.clientY,\n };\n };\n\n const loop = createSuspendedRaf({\n root: null,\n observeOffscreen: false,\n onFrame: () => {\n const { x, y } = mouse.current;\n const { x: lx, y: ly } = lastMouse.current;\n\n const dx = x - lx;\n const dy = y - ly;\n const distance = Math.hypot(dx, dy);\n\n // Smooth interpolation\n if (smooth) {\n smoothMouse.current.x = lerp(smoothMouse.current.x, x, lerpFactor);\n smoothMouse.current.y = lerp(smoothMouse.current.y, y, lerpFactor);\n } else {\n smoothMouse.current.x = x;\n smoothMouse.current.y = y;\n }\n\n // Update state (if used)\n setState({\n x,\n y,\n smoothX: smoothMouse.current.x,\n smoothY: smoothMouse.current.y,\n dx,\n dy,\n distance,\n });\n\n lastMouse.current = { x, y };\n },\n });\n\n window.addEventListener(\"mousemove\", handleMouseMove);\n loop.start();\n\n return () => {\n window.removeEventListener(\"mousemove\", handleMouseMove);\n loop.destroy();\n };\n }, [lerpFactor, smooth]);\n\n return {\n // RAW values\n x: state.x,\n y: state.y,\n\n // SMOOTH values (important for animations)\n smoothX: state.smoothX,\n smoothY: state.smoothY,\n\n // MOVEMENT\n dx: state.dx,\n dy: state.dy,\n distance: state.distance,\n\n // REFS (for performance-heavy GSAP usage)\n mouse,\n smoothMouse,\n };\n};\n"
+      "content": "\"use client\";\nimport { useEffect, useRef } from \"react\";\nimport { createSuspendedRaf } from \"./createSuspendedRaf\";\n\nconst lerp = (a, b, n) => (1 - n) * a + n * b;\n\nexport const useMouse = ({\n smooth = true,\n lerpFactor = 0.1,\n} = {}) => {\n const mouse = useRef({ x: 0, y: 0 });\n const lastMouse = useRef({ x: 0, y: 0 });\n const smoothMouse = useRef({ x: 0, y: 0 });\n // Per-frame movement metrics. Kept in a ref - not state - so the frame\n // loop never re-renders the consuming component.\n const movement = useRef({ dx: 0, dy: 0, distance: 0 });\n\n useEffect(() => {\n const handleMouseMove = (e) => {\n mouse.current = {\n x: e.clientX,\n y: e.clientY,\n };\n };\n\n const loop = createSuspendedRaf({\n root: null,\n observeOffscreen: false,\n onFrame: () => {\n const { x, y } = mouse.current;\n const { x: lx, y: ly } = lastMouse.current;\n\n const dx = x - lx;\n const dy = y - ly;\n\n movement.current.dx = dx;\n movement.current.dy = dy;\n movement.current.distance = Math.hypot(dx, dy);\n\n // Smooth interpolation\n if (smooth) {\n smoothMouse.current.x = lerp(smoothMouse.current.x, x, lerpFactor);\n smoothMouse.current.y = lerp(smoothMouse.current.y, y, lerpFactor);\n } else {\n smoothMouse.current.x = x;\n smoothMouse.current.y = y;\n }\n\n lastMouse.current = { x, y };\n },\n });\n\n window.addEventListener(\"mousemove\", handleMouseMove);\n loop.start();\n\n return () => {\n window.removeEventListener(\"mousemove\", handleMouseMove);\n loop.destroy();\n };\n }, [lerpFactor, smooth]);\n\n return {\n // Snapshot values - read once per render, NOT reactive. Use the refs\n // below inside rAF/GSAP loops for live per-frame values.\n x: mouse.current.x,\n y: mouse.current.y,\n smoothX: smoothMouse.current.x,\n smoothY: smoothMouse.current.y,\n dx: movement.current.dx,\n dy: movement.current.dy,\n distance: movement.current.distance,\n\n // REFS (for performance-heavy GSAP usage)\n mouse,\n smoothMouse,\n movement,\n };\n};\n"
     },
     {
       "path": "createSuspendedRaf.js",

@@ -8,8 +8,14 @@
   "exportName": "CharacterTrail",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Replaced Next.js-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",

@@ -10,8 +10,14 @@
   "exportName": "NoiseRippleCursor",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Removed debug console.log calls that fired on every pointer enter/leave and target register/unregister.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",

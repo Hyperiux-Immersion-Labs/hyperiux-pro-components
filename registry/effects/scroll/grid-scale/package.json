@@ -2,9 +2,9 @@
   "name": "@hyperiux/grid-scale",
   "version": "0.0.1",
   "description": "Scroll-driven animation where a centered clip-path panel expands to fullscreen while corner boxes fly in, grid lines dissolve, and floating keyword pills converge to the center.",
-  "main": "grid-scale.jsx",
+  "main": "index.jsx",
   "files": [
-    "grid-scale.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

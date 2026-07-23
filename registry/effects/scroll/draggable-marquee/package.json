@@ -2,9 +2,11 @@
   "name": "@hyperiux/draggable-marquee",
   "version": "0.0.1",
   "description": "Infinite horizontal marquee with drag interaction and momentum physics",
-  "main": "draggable-marquee.jsx",
+  "main": "index.jsx",
   "files": [
-    "draggable-marquee.jsx",
+    "DraggableMarqueeComp.jsx",
+    "createSuspendedRaf.js",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

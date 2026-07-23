@@ -1,9 +1,25 @@
 {
   "name": "pixel-bloom",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Added gridImageUrls prop to self-host bloom tile images; component now falls back to showing the media directly if tile images fail to load instead of rendering invisibly; removed debug console.log calls from the canvas tracker.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Pixel Bloom",

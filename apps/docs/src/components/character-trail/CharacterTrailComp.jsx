@@ -253,7 +253,7 @@ export default function CharacterTrailComp({ children }) {
 
  {children}
 
- <style jsx global>{`
+ <style>{`
  @keyframes charTrailPop {
  from {
  transform: scale(0);

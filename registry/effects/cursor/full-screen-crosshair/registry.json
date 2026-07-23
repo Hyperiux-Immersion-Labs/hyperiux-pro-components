@@ -1,9 +1,25 @@
 {
   "name": "full-screen-crosshair",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.jsx.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Full Screen Crosshair",
@@ -17,7 +33,7 @@
   "tier": "pro",
   "main": "index.jsx",
   "exportName": "FullScreenCrosshair",
-  "exportKind": "named",
+  "exportKind": "default",
   "importPath": "@/components/effects/full-screen-crosshair",
   "target": "src/components/effects/full-screen-crosshair",
   "files": [
