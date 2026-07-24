@@ -19,8 +19,8 @@ function usePrefersReducedMotion() {
 const Content = () => (
   <main className="relative min-h-screen max-md:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute max-md:bottom-30 max-xl:bottom-30 max-xl:left-1/2 max-xl:-translate-x-1/2  hidden  max-md:w-full max-xl:w-[50%] mx-auto  max-xl:flex h-fit w-[90%] px-6 text-center text-white">
-      <p className="rounded-full bg-black/10 px-5 py-3 leading-[1.2] max-md:text-base max-xl:text-xl text-black backdrop-blur-sm">
+    <div className="absolute max-md:bottom-30 max-[1025px]:bottom-30 max-[1025px]:left-1/2 max-[1025px]:-translate-x-1/2  hidden  max-md:w-full max-[1025px]:w-[50%] mx-auto  max-[1025px]:flex h-fit w-[90%] px-6 text-center text-white">
+      <p className="rounded-full bg-black/10 px-5 py-3 leading-[1.2] max-md:text-base max-[1025px]:text-xl text-black backdrop-blur-sm">
         Not just something to watch, something to move. Open on desktop
       </p>
     </div>
@@ -28,17 +28,17 @@ const Content = () => (
     {/* content */}
     <section className="flex min-h-screen items-center justify-center px-8 pb-8">
       <div>
-        <h1 className="font-mono text-[12vh] max-xl:text-[13vw] max-md:w-full max-xl:w-[90%] max-md:text-[15vw] leading-[1.2]  font-black uppercase">
+        <h1 className="font-mono text-[12vh] max-[1025px]:text-[13vw] max-md:w-full max-[1025px]:w-[90%] max-md:text-[15vw] leading-[1.2]  font-black uppercase">
           Snake Cursor Trail
         </h1>
 
-        <p className="mt-6 font-mono text-sm max-md:text-xs max-xl:text-sm text-center uppercase tracking-[0.25em] text-black/40">
+        <p className="mt-6 font-mono text-sm max-md:text-xs max-[1025px]:text-sm text-center uppercase tracking-[0.25em] text-black/40">
           Sequential · Reactive · Grid Based
         </p>
       </div>
     </section>
 
-    <p className="absolute bottom-8 right-8 max-w-105 text-right font-mono text-sm leading-relaxed text-black/55 max-xl:hidden">
+    <p className="absolute bottom-8 right-8 max-w-105 text-right font-mono text-sm leading-relaxed text-black/55 max-[1025px]:hidden">
       Wake the grid with your cursor. Draw slow corners, quick turns,
       little loops - the letters will stitch your path into a living trail.
     </p>
@@ -72,7 +72,7 @@ const CharacterTrail = () => {
       {!isMobile && prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed top-25 right-8 z-50000 w-fit max-w-65 rounded-md border bg-white/10 border-black/10 backdrop-blur-sm  p-3 text-center max-xl:hidden"
+          className="pointer-events-none fixed top-25 right-8 z-50000 w-fit max-w-65 rounded-md border bg-white/10 border-black/10 backdrop-blur-sm  p-3 text-center max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-[#111111]">
             The characters keep trailing.

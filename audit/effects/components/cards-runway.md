@@ -2,7 +2,7 @@
 
 ## Summary
 
-`cards-runway` is a GSAP ScrollTrigger-driven horizontal "runway" of cards: on desktop it pins the runway and scrubs cards in from below while translating the whole row sideways as the user scrolls through a 350vh section; on narrow viewports it swaps to a simple fade-up reveal and lets the row scroll horizontally by touch. The registry copy is structurally sound (correct `registry.json` schema, proper `gsap.context`/`ctx.revert()` cleanup, scoped selector text), but a Tailwind breakpoint rename introduced when the source was copied from `apps/docs/src/components/cards-runway/` into `registry/effects/components/cards-runway/` has desynced the CSS "mobile layout" threshold (now `1280px` via `max-xl:`) from the JS branch threshold (`1024px`, [CardsRunway.jsx#L21](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L21)), producing a viewport band (~1025–1279px) where the desktop pin/scrub script runs against a DOM that's been laid out for the mobile fallback. The demo page users evaluate the component on does not exhibit this bug because it renders the *legacy* copy, not the registry copy that CLI installs actually ship.
+`cards-runway` is a GSAP ScrollTrigger-driven horizontal "runway" of cards: on desktop it pins the runway and scrubs cards in from below while translating the whole row sideways as the user scrolls through a 350vh section; on narrow viewports it swaps to a simple fade-up reveal and lets the row scroll horizontally by touch. The registry copy is structurally sound (correct `registry.json` schema, proper `gsap.context`/`ctx.revert()` cleanup, scoped selector text), but a Tailwind breakpoint rename introduced when the source was copied from `apps/docs/src/components/cards-runway/` into `registry/effects/components/cards-runway/` has desynced the CSS "mobile layout" threshold (now `1280px` via `max-[1025px]:`) from the JS branch threshold (`1024px`, [CardsRunway.jsx#L21](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L21)), producing a viewport band (~1025–1279px) where the desktop pin/scrub script runs against a DOM that's been laid out for the mobile fallback. The demo page users evaluate the component on does not exhibit this bug because it renders the *legacy* copy, not the registry copy that CLI installs actually ship.
 
 ## Implementation overview
 
@@ -25,22 +25,22 @@
 
 ### 1. CSS/JS breakpoint desync breaks the pin/scrub layout for ~1025–1279px viewports — **Critical**
 
-The JS branch that decides which GSAP timeline to build switches at `innerWidth > 1024` ([CardsRunway.jsx#L21](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L21)). But every Tailwind class that switches the section from the desktop pin/scrub layout to the mobile fallback layout uses `max-xl:`, and this codebase's `xl` breakpoint is the Tailwind v4 default of **1280px** (not overridden — only `--breakpoint-sm: 768px` and `--breakpoint-md: 1025px` are customized in [apps/docs/src/app/globals.css#L86-L87](../../../apps/docs/src/app/globals.css#L86-L87)). Concretely:
+The JS branch that decides which GSAP timeline to build switches at `innerWidth > 1024` ([CardsRunway.jsx#L21](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L21)). But every Tailwind class that switches the section from the desktop pin/scrub layout to the mobile fallback layout uses `max-[1025px]:`, and this codebase's `xl` breakpoint is the Tailwind v4 default of **1280px** (not overridden — only `--breakpoint-sm: 768px` and `--breakpoint-md: 1025px` are customized in [apps/docs/src/app/globals.css#L86-L87](../../../apps/docs/src/app/globals.css#L86-L87)). Concretely:
 
-- Section height: `h-[350vh]` is overridden by `max-xl:h-screen` ([CardsRunway.jsx#L65](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L65)) at any width below 1280px, collapsing the ScrollTrigger's trigger element from a 350vh scroll runway down to a single viewport.
-- Pinning: `sticky` is overridden by `max-xl:static` ([CardsRunway.jsx#L68](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L68)) below 1280px, so the visual "pin" (achieved via CSS `position: sticky`, not GSAP `pin:true`) is lost.
-- `overflow-hidden` is overridden by `max-xl:overflow-x-scroll` below 1280px, enabling native horizontal scroll on the same container GSAP is about to apply `translateX: -38%` to.
+- Section height: `h-[350vh]` is overridden by `max-[1025px]:h-screen` ([CardsRunway.jsx#L65](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L65)) at any width below 1280px, collapsing the ScrollTrigger's trigger element from a 350vh scroll runway down to a single viewport.
+- Pinning: `sticky` is overridden by `max-[1025px]:static` ([CardsRunway.jsx#L68](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L68)) below 1280px, so the visual "pin" (achieved via CSS `position: sticky`, not GSAP `pin:true`) is lost.
+- `overflow-hidden` is overridden by `max-[1025px]:overflow-x-scroll` below 1280px, enabling native horizontal scroll on the same container GSAP is about to apply `translateX: -38%` to.
 
-For any width from 1025px to 1279px (common laptop/tablet-landscape range, e.g. an 11" iPad Pro in landscape at 1194px, or a non-maximized browser window), the JS reads `innerWidth > 1024` as **true** and builds the full desktop scrub/pin timeline, while the DOM it's animating has already switched to the collapsed-height, non-sticky, native-horizontal-scroll "mobile" layout via `max-xl:`. The scrub range GSAP computes will be based on a ~100vh trigger instead of 350vh, so the staggered reveal + horizontal translate compresses into a very short scroll distance, and the GSAP `translateX` transform will fight the native `overflow-x-scroll` behavior on the same element.
+For any width from 1025px to 1279px (common laptop/tablet-landscape range, e.g. an 11" iPad Pro in landscape at 1194px, or a non-maximized browser window), the JS reads `innerWidth > 1024` as **true** and builds the full desktop scrub/pin timeline, while the DOM it's animating has already switched to the collapsed-height, non-sticky, native-horizontal-scroll "mobile" layout via `max-[1025px]:`. The scrub range GSAP computes will be based on a ~100vh trigger instead of 350vh, so the staggered reveal + horizontal translate compresses into a very short scroll distance, and the GSAP `translateX` transform will fight the native `overflow-x-scroll` behavior on the same element.
 
-This is confirmed by directly diffing against the working legacy copy at `apps/docs/src/components/cards-runway/CardsRunway.jsx`, which the live demo actually renders: it uses `max-md:` (1025px — matching the JS 1024 threshold) and `max-sm:` (768px) everywhere the registry copy uses `max-xl:`/`max-md:` respectively. The full diff:
+This is confirmed by directly diffing against the working legacy copy at `apps/docs/src/components/cards-runway/CardsRunway.jsx`, which the live demo actually renders: it uses `max-md:` (1025px — matching the JS 1024 threshold) and `max-sm:` (768px) everywhere the registry copy uses `max-[1025px]:`/`max-md:` respectively. The full diff:
 
 ```
 < max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%]      (legacy - CardsRunway.jsx#L65)
-> max-xl:overflow-hidden max-xl:h-screen max-md:py-[25%] max-xl:py-[12%]   (registry - CardsRunway.jsx#L65)
+> max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%]   (registry - CardsRunway.jsx#L65)
 
 < max-md:h-fit max-md:static ... max-md:mt-[40vw] ... max-md:overflow-x-scroll ... max-md:pr-[7vw]   (legacy #L68)
-> max-xl:h-fit max-xl:static ... max-xl:mt-[40vw] ... max-xl:overflow-x-scroll ... max-xl:pr-[7vw]    (registry #L68)
+> max-[1025px]:h-fit max-[1025px]:static ... max-[1025px]:mt-[40vw] ... max-[1025px]:overflow-x-scroll ... max-[1025px]:pr-[7vw]    (registry #L68)
 
 (same max-md→max-xl / max-sm→max-md rename repeats at #L69, #L74, #L79, #L85, #L87-89)
 ```
@@ -57,7 +57,7 @@ The entire scroll-scrub/pin experience (and the mobile fade-up fallback) runs un
 
 ### 4. `cardWidth` prop is silently ignored below the `xl` breakpoint — **Medium**
 
-`cardWidth` is applied as an inline `style` on the card wrapper ([CardsRunway.jsx#L73](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L73)), but `max-md:w-[70vw]!` and `max-xl:w-[45vw]!` on the same element ([#L74](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L74)) use Tailwind's `!important` modifier, which always wins over an inline style at those widths. A user who passes a custom `cardWidth` will only see it take effect at ≥1280px viewport width; below that it's silently overridden with no indication in props or docs that this is intentional.
+`cardWidth` is applied as an inline `style` on the card wrapper ([CardsRunway.jsx#L73](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L73)), but `max-md:w-[70vw]!` and `max-[1025px]:w-[45vw]!` on the same element ([#L74](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L74)) use Tailwind's `!important` modifier, which always wins over an inline style at those widths. A user who passes a custom `cardWidth` will only see it take effect at ≥1280px viewport width; below that it's silently overridden with no indication in props or docs that this is intentional.
 
 ### 5. `.mobile-scrollbar` class has no matching CSS rule anywhere in the repo — **Low**
 
@@ -98,7 +98,7 @@ The entire scroll-scrub/pin experience (and the mobile fade-up fallback) runs un
 
 - File structure roughly follows `CODING_STANDARDS.md` §1 (imports → component → effects → return), though there are no section comments inside the `useEffect` (`CODING_STANDARDS.md` recommends short comments like `// Desktop timeline` / `// Mobile fallback` for effects with internal branches this long) — minor, **Low**.
 - No dead code, no unused imports, no `console.log` present.
-- Double space typo in the className string at [CardsRunway.jsx#L68](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L68) (`pb-5  max-xl:mt-[40vw]`) — trivial, **Low**, also present in the legacy copy so not a regression specific to the registry version.
+- Double space typo in the className string at [CardsRunway.jsx#L68](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L68) (`pb-5  max-[1025px]:mt-[40vw]`) — trivial, **Low**, also present in the legacy copy so not a regression specific to the registry version.
 - The registry copy and the docs-site copy (`apps/docs/src/components/cards-runway/CardsRunway.jsx`) have drifted from each other (Issue 1's diff) — per `developer-new-component.md`, the registry copy is supposed to be a straight copy of the working docs-site source, not a re-authored variant. This drift is the direct root cause of Issue 1 and also means the two copies will diverge further over time if either is edited independently without the other being updated.
 - `gsap/dist/ScrollTrigger` import path ([CardsRunway.jsx#L4](../../../registry/effects/components/cards-runway/CardsRunway.jsx#L4)) resolves correctly per the installed `gsap@3.15.0` package's `exports` map (verified: both `gsap/ScrollTrigger` and `gsap/dist/ScrollTrigger` are valid subpaths), so this is a style nit at most, not a defect.
 
@@ -130,7 +130,7 @@ The entire scroll-scrub/pin experience (and the mobile fade-up fallback) runs un
 
 No code was changed as part of this audit, per `CHANGE_GUIDELINES.md`. If addressed, any fix must be re-verified against desktop pin/scrub behavior, the mobile fade/drag fallback, and the exact 1025–1279px band before merging, since that band is precisely where Issue 1 lives.
 
-1. **Priority 1 (Critical):** Re-sync the registry copy's Tailwind breakpoints with the JS `innerWidth > 1024` threshold — either revert the `max-xl:`/`max-md:` classes back to `max-md:`/`max-sm:` (matching the working legacy copy and this codebase's `--breakpoint-md: 1025px`), or change the JS threshold to match whatever breakpoint is intentionally chosen. Whichever direction is chosen, the two must agree.
+1. **Priority 1 (Critical):** Re-sync the registry copy's Tailwind breakpoints with the JS `innerWidth > 1024` threshold — either revert the `max-[1025px]:`/`max-md:` classes back to `max-md:`/`max-sm:` (matching the working legacy copy and this codebase's `--breakpoint-md: 1025px`), or change the JS threshold to match whatever breakpoint is intentionally chosen. Whichever direction is chosen, the two must agree.
 2. **Priority 2 (Medium):** Add a `prefers-reduced-motion` check that swaps to (or skips into) the simple fade-up fallback regardless of viewport width.
 3. **Priority 2 (Medium):** Add a `className` prop on the root `<section>`, per the authoring guide's requirement.
 4. **Priority 2 (Medium):** Either make `cardWidth` respect all breakpoints (drop the `!important` overrides, or fold `cardWidth` into the responsive classes) or document that it's desktop-only.

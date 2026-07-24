@@ -98,13 +98,13 @@ export default function DraggableCanvas() {
     <div className="relative w-full h-screen overflow-hidden  bg-black">
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
-        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-xl:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-xl:text-center max-xl:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-xl:text-base max-md:text-sm z-99999 max-md:bottom-18">
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-[1025px]:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-[1025px]:text-center max-[1025px]:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-[1025px]:text-base max-md:text-sm z-99999 max-md:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
         {prefersReducedMotion && (
          <div
             aria-live="polite"
-            className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-xl:hidden"
+            className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
           >
             <h2 className="text-sm leading-none text-white">
               The canvas keep drifting.

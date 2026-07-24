@@ -453,17 +453,17 @@ export default function InfiniteCarouselComp({
  };
 
  return (
- <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-xl:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
+ <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-[1025px]:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
  <div className="sr-only" aria-live="polite" aria-atomic="true">
  {slideAnnouncement}
  </div>
  {showNav && !isWrapMode && (
  <div
- className={`flex w-[95%] items-center justify-end gap-4 max-xl:w-full max-xl:justify-center max-xl:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
+ className={`flex w-[95%] items-center justify-end gap-4 max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
  style={controlsStyle}
  >
  <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-xl:size-14 max-md:size-14 ${prevBtnClassName}`}
+ className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${prevBtnClassName}`}
  style={prevBtnStyle}
  onClick={handlePrev}
  type="button"
@@ -472,7 +472,7 @@ export default function InfiniteCarouselComp({
  </button>
 
  <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-xl:size-14 max-md:size-14 ${nextBtnClassName}`}
+ className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${nextBtnClassName}`}
  style={nextBtnStyle}
  onClick={handleNext}
  type="button"
@@ -484,13 +484,13 @@ export default function InfiniteCarouselComp({
 
  <div
  ref={wrapperRef}
- className={`relative flex min-h-25 max-xl:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
+ className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
  isWrapMode
- ? "flex-wrap justify-center gap-4 overflow-visible max-xl:gap-3.5 max-md:gap-3"
+ ? "flex-wrap justify-center gap-4 overflow-visible max-[1025px]:gap-3.5 max-md:gap-3"
  : ""
  } ${
  isSwiperMode
- ? "gap-3.5 overflow-x-auto overflow-y-hidden px-3 [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden max-xl:gap-3 max-xl:px-3 max-md:gap-2.5 max-md:px-2"
+ ? "gap-3.5 overflow-x-auto overflow-y-hidden px-3 [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden max-[1025px]:gap-3 max-[1025px]:px-3 max-md:gap-2.5 max-md:px-2"
  : ""
  } ${wrapperClassName}`}
  style={wrapperStyle}

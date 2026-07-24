@@ -879,12 +879,12 @@ export default function DitherCanvas({
         className={`absolute inset-0 block h-full w-full bg-black ${className}`.trim()}
       />
 
-      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-xl:hidden">
+      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-[1025px]:hidden">
         {cursorHint}
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-xl:text-sm max-xl:text-lg text-white/50 max-xl:block">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-[1025px]:text-sm max-[1025px]:text-lg text-white/50 max-[1025px]:block">
           Open on desktop for the full experience - cursor effect included.
         </p>
       )}
@@ -894,7 +894,7 @@ export default function DitherCanvas({
           aria-live="polite"
           className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-xl:text-[2vw] leading-none text-[#111111]">
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
             This effect can&apos;t be reduced.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

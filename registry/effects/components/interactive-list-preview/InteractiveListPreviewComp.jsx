@@ -278,7 +278,7 @@ export default function InteractiveListPreviewComp({ items }) {
   return (
     <>
       <div
-        className="relative min-h-[50vh] w-full overflow-hidden bg-neutral-900 font-mono text-white max-xl:hidden"
+        className="relative min-h-[50vh] w-full overflow-hidden bg-neutral-900 font-mono text-white max-[1025px]:hidden"
         onMouseMove={onMouseMove}
       >
         <div
@@ -354,22 +354,22 @@ export default function InteractiveListPreviewComp({ items }) {
         </div>
       </div>
 
-      <div className="hidden w-full bg-neutral-900 font-mono text-white max-xl:block">
+      <div className="hidden w-full bg-neutral-900 font-mono text-white max-[1025px]:block">
         {items.map((item, index) => (
           <div key={`${item.client}-${index}`} className="flex border-b border-white/10">
             <div className="flex w-1/2 flex-col justify-between gap-3 p-4">
               <div className="flex flex-col gap-1">
-                <p className="font-bold uppercase tracking-widest max-md:text-sm max-xl:text-xl">
+                <p className="font-bold uppercase tracking-widest max-md:text-sm max-[1025px]:text-xl">
                   {item.client}
                 </p>
 
                 {item.platform && (
-                  <p className="uppercase tracking-widest text-white/60 max-md:text-xs max-xl:text-lg">
+                  <p className="uppercase tracking-widest text-white/60 max-md:text-xs max-[1025px]:text-lg">
                     {item.platform}
                   </p>
                 )}
 
-                <p className="leading-relaxed text-white/50 max-md:text-xs max-xl:text-base">
+                <p className="leading-relaxed text-white/50 max-md:text-xs max-[1025px]:text-base">
                   {item.services}
                 </p>
               </div>
@@ -377,7 +377,7 @@ export default function InteractiveListPreviewComp({ items }) {
              
             </div>
 
-            <div className="relative aspect-3/4 h-full w-1/2 max-xl:h-[30vh]">
+            <div className="relative aspect-3/4 h-full w-1/2 max-[1025px]:h-[30vh]">
               <img
                 src={item.img}
                 alt={item.client}

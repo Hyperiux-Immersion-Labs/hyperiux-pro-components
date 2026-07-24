@@ -132,7 +132,7 @@ const ScrollShuffledCardsComp = ({
       <div className="sticky top-0 flex h-screen w-screen items-center justify-center overflow-hidden">
         <div
           ref={containerRef}
-          className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-xl:gap-[4vw] max-md:gap-[3vw]"
+          className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-[1025px]:gap-[4vw] max-md:gap-[3vw]"
           style={{ gap: cardsGap }}
         >
           {randomizedCards.map((card, index) => (
@@ -145,31 +145,31 @@ const ScrollShuffledCardsComp = ({
               <Card
                 radius={cardRadius}
                 padding={cardPadding}
-                className={`h-[30vw]! w-[25vw]! shrink-0 overflow-hidden max-xl:h-[55vw]! max-xl:w-[45vw]! max-md:h-[78vw]! max-md:w-[62vw]! max-[540px]:h-[90vw]! max-[540px]:w-[72vw]! ${card.bgOuter || ""}`}
+                className={`h-[30vw]! w-[25vw]! shrink-0 overflow-hidden max-[1025px]:h-[55vw]! max-[1025px]:w-[45vw]! max-md:h-[78vw]! max-md:w-[62vw]! max-[540px]:h-[90vw]! max-[540px]:w-[72vw]! ${card.bgOuter || ""}`}
                 style={{
                   width: cardWidth,
                   height: cardHeight,
                 }}
               >
                 <div
-                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-xl:px-[2vw] max-xl:pb-[1.8vw] max-xl:pt-[3vw] max-md:px-[4vw] max-md:pb-[3vw] max-md:pt-[4.5vw] ${card.bgInner || ""} ${card.text || ""}`}
+                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-[1025px]:px-[2vw] max-[1025px]:pb-[1.8vw] max-[1025px]:pt-[3vw] max-md:px-[4vw] max-md:pb-[3vw] max-md:pt-[4.5vw] ${card.bgInner || ""} ${card.text || ""}`}
                 >
-                  <div className="flex flex-col gap-[1.2vw] max-xl:gap-[5vw] max-md:gap-[6vw]">
+                  <div className="flex flex-col gap-[1.2vw] max-[1025px]:gap-[5vw] max-md:gap-[6vw]">
                     {card.eyebrow && (
-                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-xl:text-[2.5vw] max-md:text-[4vw]">
+                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
                         {card.eyebrow}
                       </span>
                     )}
 
                     {card.description && (
-                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-xl:w-[92%] max-xl:text-[2.5vw] max-md:w-full max-md:text-[4vw]">
+                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-[1025px]:w-[92%] max-[1025px]:text-[2.5vw] max-md:w-full max-md:text-[4vw]">
                         {card.description}
                       </p>
                     )}
                   </div>
 
                   {card.title && (
-                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-xl:text-[6vw] max-md:text-[9vw] max-md:leading-[0.86]">
+                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-[1025px]:text-[6vw] max-md:text-[9vw] max-md:leading-[0.86]">
                       {card.title}
                     </h2>
                   )}
@@ -180,7 +180,7 @@ const ScrollShuffledCardsComp = ({
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-xl:text-[7.5vw] max-md:px-[4vw] max-md:text-[10vw]">
+          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-[1025px]:text-[7.5vw] max-md:px-[4vw] max-md:text-[10vw]">
             {heading}
           </h1>
         </div>

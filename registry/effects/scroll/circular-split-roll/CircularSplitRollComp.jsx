@@ -322,7 +322,7 @@ export function CircularSplitRollComp({
     >
       <div
         ref={stickyRef}
-        className="relative h-screen w-full overflow-hidden max-xl:hidden"
+        className="relative h-screen w-full overflow-hidden max-[1025px]:hidden"
       >
         <div className="relative mx-auto flex h-full w-full">
           <div className="relative flex h-full w-[50vw] translate-x-[-60%] items-center justify-center">
@@ -360,7 +360,7 @@ export function CircularSplitRollComp({
         </div>
       </div>
 
-      <div className="hidden w-full px-5 py-10 max-xl:block max-md:px-4 max-md:py-8">
+      <div className="hidden w-full px-5 py-10 max-[1025px]:block max-md:px-4 max-md:py-8">
         <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-5 max-md:grid-cols-2 max-md:gap-4">
           {safeItems.map((item) => (
             <article
@@ -393,7 +393,7 @@ export function CircularSplitRollComp({
           aria-live="polite"
           className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+          <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
             This effect can&apos;t be reduced.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black">

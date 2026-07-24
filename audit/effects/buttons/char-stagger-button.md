@@ -130,7 +130,7 @@ index.jsx#L139: `height: "1.5px"` for the underline. `CODING_STANDARDS.md` §5 "
 
 ## Responsive / mobile / touch behavior assessment
 
-- Layout uses `max-xl:` responsive text sizing on the registry source's default class (`max-xl:text-[3vw]`, index.jsx#L129) and the demo further layers `max-md:`/`max-sm:` overrides via `textClassName` — consistent with `CODING_STANDARDS.md`'s documented `max-sm:`/`max-md:` breakpoint convention.
+- Layout uses `max-[1025px]:` responsive text sizing on the registry source's default class (`max-[1025px]:text-[3vw]`, index.jsx#L129) and the demo further layers `max-md:`/`max-sm:` overrides via `textClassName` — consistent with `CODING_STANDARDS.md`'s documented `max-sm:`/`max-md:` breakpoint convention.
 - Touch handling has the functional defect covered in Finding 2 (High): the "preview on first tap" gesture doesn't actually block navigation, and there's no outside-tap reset, both of which a sibling component (`char-stagger-primary-button`) already solves correctly.
 - No `dvh`/`svh` or other viewport-unit hazards found; the one inline `1.5px` value (Finding 9) is cosmetic, not a responsive-breakage risk.
 

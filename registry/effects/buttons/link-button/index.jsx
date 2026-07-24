@@ -12,7 +12,7 @@ export default function LinkButton({
   className = "",
   linkProps = {},
   icon: Icon = ArrowRight,
-  iconClassName = "max-md:size-[6vw] max-xl:size-[4vw]",
+  iconClassName = "max-md:size-[6vw] max-[1025px]:size-[4vw]",
   disableNavigation = false,
   onClick,
   ...props
@@ -47,7 +47,7 @@ export default function LinkButton({
 
   const iconClassNames = `${isIconRotated ? "motion-safe:-rotate-45" : ""} ${
     !isCompactViewport ? "motion-safe:group-hover:-rotate-45" : ""
-  } size-[1.1vw] max-xl:size-[2vw] max-md:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
+  } size-[1.1vw] max-[1025px]:size-[2vw] max-md:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function LinkButton({
         {...linkProps}
         {...props}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 max-xl:text-[4vw] max-md:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 max-[1025px]:text-[4vw] max-md:text-[5.5vw] ${className}`}
       >
         <div className="flex items-center justify-start gap-2">
           <span

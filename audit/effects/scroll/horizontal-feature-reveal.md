@@ -41,7 +41,7 @@ The component converts normal vertical scroll into horizontal movement by transl
 
 ## Responsive / mobile / touch behavior assessment
 - **Desktop (>= 1025px):** Panoramic horizontal gallery track with beautiful split staggered entry reveals.
-- **Mobile/Tablet (< 1025px):** Intentionally bypasses GSAP timelines and wraps slides into a traditional vertical stack (`max-xl:static`, `max-xl:h-fit`). This is a functional safety fallback, but it means mobile users lose all transition effects.
+- **Mobile/Tablet (< 1025px):** Intentionally bypasses GSAP timelines and wraps slides into a traditional vertical stack (`max-[1025px]:static`, `max-[1025px]:h-fit`). This is a functional safety fallback, but it means mobile users lose all transition effects.
 
 ## Maintainability and code-quality assessment
 - Code structure is clean, with visual content configured in a modular `PROPERTIES_DATA` list.

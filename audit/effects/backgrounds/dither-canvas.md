@@ -49,8 +49,8 @@ I traced whether this actually reaches installers, and it does not for this comp
 ### 3. Medium — demo page renders a docs-site copy that has diverged from the registry copy
 
 The demo route imports from `@/components/dither-canvas` ([`page.js#L2`](<../../../apps/docs/src/app/(marketing)/demo/dither-canvas/page.js#L2>)), i.e. [`apps/docs/src/components/dither-canvas/index.jsx`](../../../apps/docs/src/components/dither-canvas/index.jsx), *not* the registry source that CLI installs pull from. `diff` between the two shows the `createSuspendedRaf.js` copies are byte-identical, but `index.jsx` has drifted in two places:
-- Cursor-hint pill breakpoint: registry uses `max-xl:hidden`, docs-site copy uses `max-md:hidden`.
-- Mobile fallback message: registry uses `bottom-4 ... max-md:text-sm max-xl:text-lg ... max-xl:block`; docs-site copy uses `bottom-20 ... max-sm:text-sm max-md:text-lg ... max-md:block max-sm:w-[60vw]!`.
+- Cursor-hint pill breakpoint: registry uses `max-[1025px]:hidden`, docs-site copy uses `max-md:hidden`.
+- Mobile fallback message: registry uses `bottom-4 ... max-md:text-sm max-[1025px]:text-lg ... max-[1025px]:block`; docs-site copy uses `bottom-20 ... max-sm:text-sm max-md:text-lg ... max-md:block max-sm:w-[60vw]!`.
 
 So the breakpoint at which visitors see the "open on desktop" message and where the cursor-hint pill hides differs between what the public demo page shows and what a CLI install actually produces. Functionally the effect itself (shader, fluid sim, rAF suspension) is identical between the two copies.
 

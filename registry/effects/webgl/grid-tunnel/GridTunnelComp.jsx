@@ -653,7 +653,7 @@ export default function GridTunnelComp({ images = [] }) {
           aria-live="polite"
           className="pointer-events-none absolute bottom-6 right-6 z-40 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+          <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
             Tunnel navigation is instant.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black">

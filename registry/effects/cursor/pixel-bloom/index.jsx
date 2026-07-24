@@ -384,7 +384,7 @@ export default function PixelBloom({
   return (
     <div
       ref={containerRef}
-      className={`fx-target relative overflow-hidden rounded-2xl max-xl:rounded-sm max-md:rounded-lg ${className}`}
+      className={`fx-target relative overflow-hidden rounded-2xl max-[1025px]:rounded-sm max-md:rounded-lg ${className}`}
     >
       {type === "video" ? (
         <video

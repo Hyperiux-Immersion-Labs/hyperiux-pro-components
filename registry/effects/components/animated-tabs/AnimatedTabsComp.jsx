@@ -182,9 +182,9 @@ const AnimatedTabsComp = ({
  if (!tabs.length) return null;
 
  return (
- <div className={`h-full w-full px-[7vw] py-[7vw] max-xl:p-[6vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}>
+ <div className={`h-full w-full px-[7vw] py-[7vw] max-[1025px]:p-[6vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}>
  <div className="relative border-b  border-b-black/10">
- <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-xl:gap-[3vw] max-md:gap-[4vw]">
+ <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-[1025px]:gap-[3vw] max-md:gap-[4vw]">
  {tabs.map((tab, index) => (
  <button
  key={tab.id || index}
@@ -196,14 +196,14 @@ const AnimatedTabsComp = ({
  tabIndex={activeTab === index ? 0 : -1}
  onClick={() => handleTabClick(index)}
  onKeyDown={(event) => handleTabKeyDown(event, index)}
- className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-xl:px-[2.5vw] max-xl:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw] ${
+ className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-[1025px]:px-[2.5vw] max-[1025px]:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw] ${
  activeTab === index
  ?"text-[#ff6b00]"
  :"text-black/50"
  }`}
  type="button"
  >
- <span className="text-[1.2vw] font-medium max-xl:text-[2.2vw] max-md:text-[4vw]">{tab.label}</span>
+ <span className="text-[1.2vw] font-medium max-[1025px]:text-[2.2vw] max-md:text-[4vw]">{tab.label}</span>
  </button>
  ))}
  </div>
@@ -211,7 +211,7 @@ const AnimatedTabsComp = ({
  <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-md:h-[0.4vw]" />
  </div>
 
- <div className="relative min-h-[24vw] w-full max-md:overflow-hidden pt-[2vw] max-xl:min-h-[32vw] max-xl:pt-[4vw] max-md:min-h-[48vw] max-md:pt-[5vw]">
+ <div className="relative min-h-[24vw] w-full max-md:overflow-hidden pt-[2vw] max-[1025px]:min-h-[32vw] max-[1025px]:pt-[4vw] max-md:min-h-[48vw] max-md:pt-[5vw]">
  {tabs.map((tab, index) => (
  <div
  key={tab.id || index}

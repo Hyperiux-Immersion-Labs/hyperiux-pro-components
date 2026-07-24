@@ -20,7 +20,7 @@ function usePrefersReducedMotion() {
 const Content = () => (
   <main className="relative min-h-screen max-md:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-xl:flex -translate-x-1/2 -translate-y-1/2 h-fit max-md:w-[70%] px-6 text-center">
+    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-[1025px]:flex -translate-x-1/2 -translate-y-1/2 h-fit max-md:w-[70%] px-6 text-center">
       <p className="rounded-xl bg-black/10 px-5 py-3 leading-[1.2] text-base text-black backdrop-blur-sm">
         Follow the motion. <br />
         Open on desktop for the full magnetic effect
@@ -71,7 +71,7 @@ export default function MagneticImageTrail() {
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-xl:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-[#111111]">
             The images keep pulling.

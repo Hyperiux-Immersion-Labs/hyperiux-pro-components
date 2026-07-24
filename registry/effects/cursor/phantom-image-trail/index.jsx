@@ -465,14 +465,14 @@ export function PhantomImageTrail({
             src={image.src}
             alt={image.alt}
             draggable={false}
-            className={`pointer-events-none absolute left-0 top-0 h-[18vw] w-[17vw] max-w-none rounded-[0.7vw] object-cover opacity-0 will-change-[transform,opacity] max-xl:h-[24vh] max-xl:w-[24vw] max-xl:rounded-[1.2vw] max-md:size-[38vw] max-md:rounded-[3vw] ${imageClassName}`}
+            className={`pointer-events-none absolute left-0 top-0 h-[18vw] w-[17vw] max-w-none rounded-[0.7vw] object-cover opacity-0 will-change-[transform,opacity] max-[1025px]:h-[24vh] max-[1025px]:w-[24vw] max-[1025px]:rounded-[1.2vw] max-md:size-[38vw] max-md:rounded-[3vw] ${imageClassName}`}
           />
         );
       })}
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-xl:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-black">
             The trail keeps spawning.

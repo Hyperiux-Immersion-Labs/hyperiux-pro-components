@@ -40,7 +40,7 @@ The component uses GSAP and `ScrollTrigger` to calculate coordinates along a cir
 
 ## Responsive / mobile / touch behavior assessment
 - **Desktop (>= 1280px):** Premium circular sliding interface.
-- **Mobile/Tablet (< 1280px):** Drops the circular carousel completely, hiding the wheel (`max-xl:hidden`) and rendering a flat vertical column. This is a functional safety fallback, but misses any transition or interactive slider gesture.
+- **Mobile/Tablet (< 1280px):** Drops the circular carousel completely, hiding the wheel (`max-[1025px]:hidden`) and rendering a flat vertical column. This is a functional safety fallback, but misses any transition or interactive slider gesture.
 
 ## Maintainability and code-quality assessment
 - Code organization is clean and complies with the directory sitemap.
