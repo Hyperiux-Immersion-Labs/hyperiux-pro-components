@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
