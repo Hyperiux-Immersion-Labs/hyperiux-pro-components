@@ -72,7 +72,7 @@ export function ScrambleLinkButton({
 
   const innerClassName = `relative inline-block ${
     showLine
-      ? `w-fit after:absolute after:left-0 after:bottom-[-4%] after:h-[1.5px] after:w-full after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-[450ms] after:ease-[cubic-bezier(0.625,0.05,0,1)] after:content-[''] group-hover:after:origin-left group-hover:after:scale-x-100 group-data-[pressed=true]:after:origin-left group-data-[pressed=true]:after:scale-x-100 ${lineClassName}`
+      ? `w-fit after:absolute after:left-0 after:bottom-[-4%] after:h-[1.5px] after:w-full after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-[450ms] after:ease-[cubic-bezier(0.625,0.05,0,1)] after:content-[''] motion-reduce:after:transition-none motion-safe:group-hover:after:origin-left motion-safe:group-hover:after:scale-x-100 motion-safe:group-data-[pressed=true]:after:origin-left motion-safe:group-data-[pressed=true]:after:scale-x-100 ${lineClassName}`
       : ""
   }`;
 
@@ -114,6 +114,11 @@ export function ScrambleLinkButton({
     const element = scrambleRef.current;
 
     if (!element || !btnText.length) {
+      return;
+    }
+
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+      element.textContent = btnText;
       return;
     }
 
@@ -178,7 +183,7 @@ export function ScrambleLinkButton({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
-      className={`group inline-flex cursor-pointer items-center gap-2  text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-lg:text-[3vw] max-md:text-[4.2vw] ${className}`}
+      className={`group inline-flex cursor-pointer items-center gap-2  text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out motion-reduce:transition-none hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-lg:text-[3vw] max-md:text-[4.2vw] ${className}`}
       style={{ "--scramble-hover-color": hoverColor }}
     >
       <span className={innerClassName} style={activeLineStyle}>
@@ -203,7 +208,7 @@ export function ScrambleLinkButton({
         <span
           className={`inline-flex items-center justify-center ${iconClassName}`}
         >
-          <Icon className="transition-transform duration-300 ease-in-out group-hover:-rotate-45 group-data-[pressed=true]:-rotate-45" />
+          <Icon className="transition-transform duration-300 ease-in-out motion-reduce:rotate-0 motion-reduce:transition-none motion-safe:group-hover:-rotate-45 motion-safe:group-data-[pressed=true]:-rotate-45" />
         </span>
       )}
     </a>
