@@ -4,9 +4,9 @@
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "GridTunnelComp.jsx",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

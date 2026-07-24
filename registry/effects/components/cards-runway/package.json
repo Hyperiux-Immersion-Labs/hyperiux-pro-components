@@ -4,8 +4,8 @@
   "description": "A horizontal runway of cards that animates as you scroll",
   "main": "index.jsx",
   "files": [
-    "CardsRunway.jsx",
     "index.jsx",
+    "CardsRunway.jsx",
     "registry.json"
   ],
   "keywords": [

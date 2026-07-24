@@ -4,8 +4,8 @@
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
   "main": "index.jsx",
   "files": [
-    "CircularSliderComp.jsx",
     "index.jsx",
+    "CircularSliderComp.jsx",
     "registry.json"
   ],
   "keywords": [

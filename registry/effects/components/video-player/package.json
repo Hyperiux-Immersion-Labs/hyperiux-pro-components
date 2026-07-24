@@ -4,8 +4,8 @@
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
   "main": "index.jsx",
   "files": [
-    "VideoPlayerComp.jsx",
     "index.jsx",
+    "VideoPlayerComp.jsx",
     "registry.json"
   ],
   "keywords": [

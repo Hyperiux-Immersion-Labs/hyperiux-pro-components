@@ -4,9 +4,9 @@
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "CardDriftComp.jsx",
     "NavigationButtons.jsx",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

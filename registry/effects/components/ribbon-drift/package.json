@@ -4,8 +4,8 @@
   "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
   "main": "index.jsx",
   "files": [
-    "RibbonDriftComp.jsx",
     "index.jsx",
+    "RibbonDriftComp.jsx",
     "registry.json"
   ],
   "keywords": [
