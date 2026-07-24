@@ -36,7 +36,7 @@ Circle Text Reveal is an interactive, cursor-following mask effect that reveals 
 ## Responsive / mobile / touch behavior assessment
 
 - Seamless fallback for non-coarse pointer devices (mobile) prevents active rendering issues on touch screens.
-- Breakpoint mismatch (max-xl vs max-md) causes layout gaps on tablets.
+- Breakpoint mismatch (max-[1025px] vs max-md) causes layout gaps on tablets.
 
 ## Maintainability and code-quality assessment
 

@@ -16,7 +16,7 @@ Spotlight Text tracks mouse movements to sweep a high-intensity bright text spot
 ## Risks and issues
 
 1. **[High] Raw `requestAnimationFrame` loop.** The spotlight tracks mouse movement via continuous RAF ticks in [index.jsx#L70](../../../registry/effects/text/spotlight-text/index.jsx) without wrapping them in suspension gates, consuming processing power in background tabs.
-2. **[Medium] Major code drift.** Mismatched text sizes (`max-sm:text-[7vw]!` in production vs standard classes in registry) and differing responsive breakpoints (`max-xl` in registry vs `max-md` in production) exist, leading to layout breaks if copied.
+2. **[Medium] Major code drift.** Mismatched text sizes (`max-sm:text-[7vw]!` in production vs standard classes in registry) and differing responsive breakpoints (`max-[1025px]` in registry vs `max-md` in production) exist, leading to layout breaks if copied.
 
 ## Accessibility assessment
 

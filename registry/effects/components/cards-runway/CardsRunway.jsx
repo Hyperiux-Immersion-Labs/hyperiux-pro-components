@@ -22,7 +22,7 @@ export default function CardsRunway({
 
   useEffect(() => {
     let ctx = gsap.context(() => {
-      // Must match the CSS max-xl breakpoint (1280px under default
+      // Must match the CSS max-[1025px] breakpoint (1280px under default
       // Tailwind): below it the section collapses to the static
       // horizontal-scroll layout, so the pin/scrub timeline only exists
       // at xl and up.

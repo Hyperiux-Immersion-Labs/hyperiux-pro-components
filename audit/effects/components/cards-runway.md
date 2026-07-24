@@ -42,7 +42,7 @@ This is confirmed by directly diffing against the working legacy copy at `apps/d
 < max-md:h-fit max-md:static ... max-md:mt-[40vw] ... max-md:overflow-x-scroll ... max-md:pr-[7vw]   (legacy #L68)
 > max-[1025px]:h-fit max-[1025px]:static ... max-[1025px]:mt-[40vw] ... max-[1025px]:overflow-x-scroll ... max-[1025px]:pr-[7vw]    (registry #L68)
 
-(same max-md→max-xl / max-sm→max-md rename repeats at #L69, #L74, #L79, #L85, #L87-89)
+(same max-md→max-[1025px] / max-sm→max-md rename repeats at #L69, #L74, #L79, #L85, #L87-89)
 ```
 
 In other words: the registry (CLI-shipped) copy is not merely stale relative to the demo copy — it has been actively re-authored with a shifted breakpoint scheme that breaks the intended alignment between the script's device-class check and the CSS layout it depends on, while the copy customers actually preview via the demo page still works correctly. Because this only reproduces in a specific viewport band, I did not visually confirm the exact on-screen glitch in a browser — the above is derived directly from the code and from GSAP ScrollTrigger's documented behavior (scrub range and pin fidelity are a function of the trigger element's actual layout box). Recommend a manual QA pass at 1025–1279px widths before flagging this as fixed.

@@ -79,7 +79,7 @@ The audit discovered that **50% of the text components contain file drift** betw
 The types of drift vary in severity:
 1. **Import and Tooling Drift:** `blur-text` imports from `framer-motion` in the registry, but `motion/react` in docs.
 2. **Prop Interface Drift:** `blur-text` hardcodes `once: true` in the registry, while the docs version supports a customizable `once` prop.
-3. **Responsive Breakpoint Drift:** `spotlight-text` uses different media queries (`max-xl` in registry vs `max-md` in docs), changing the hidden threshold of the spotlight overlay on tablets.
+3. **Responsive Breakpoint Drift:** `spotlight-text` uses different media queries (`max-[1025px]` in registry vs `max-md` in docs), changing the hidden threshold of the spotlight overlay on tablets.
 4. **HTML Semantic Drift:** `text-fill-animation` uses `<h2>` headings in the registry, but `<h1>` in docs, causing unexpected SEO outlines when components are installed via CLI.
 
 ---

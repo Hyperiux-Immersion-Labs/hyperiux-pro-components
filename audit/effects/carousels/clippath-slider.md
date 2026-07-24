@@ -113,7 +113,7 @@ No code was changed as part of this audit, per instructions. Suggested order of 
 1. Fix the uncancelled cursor rAF loop — capture the frame ID in `rafRef` and call `cancelAnimationFrame(rafRef.current)` in the effect's cleanup (High finding #1). This is a correctness bug, not a design choice, and should be safe to fix without visual impact.
 2. Make slide navigation keyboard/screen-reader operable — e.g. real `<button>` hit-targets (can remain visually invisible/full-bleed) with `aria-label`s for "previous slide"/"next slide", reachable via Tab and operable via Enter/Space, and consider arrow-key support (High finding #2).
 3. Add a `prefers-reduced-motion` check that shortens/disables the sweep and cross-fade durations and optionally disables autoplay (Medium finding #3).
-4. Reconcile the registry copy and the docs demo copy so they're byte-identical again, per the documented "copy, don't diverge" workflow (Medium finding #5) — decide which breakpoint convention (`max-sm`/`max-md` per `CODING_STANDARDS.md`, or `max-md`/`max-xl`) is canonical and apply it consistently to both.
+4. Reconcile the registry copy and the docs demo copy so they're byte-identical again, per the documented "copy, don't diverge" workflow (Medium finding #5) — decide which breakpoint convention (`max-sm`/`max-md` per `CODING_STANDARDS.md`, or `max-md`/`max-[1025px]`) is canonical and apply it consistently to both.
 5. Fix `package.json`'s `main`/`files` to point at the real files, and move `gsap`/`react` into `peerDependencies` per the documented schema (Medium finding #6).
 6. Lower-priority cleanup: remove the unused `nextSlideIndex` state, extract magic numbers to named constants, and add `cursor: none` where the custom cursor is active (Low findings #7–#9).
 

@@ -42,7 +42,7 @@ Comparing `registry/effects/navigation/directional-menu/index.jsx` with `apps/do
   - The registry version uses **fully inline SVG assets** for the logo and wordmark. This is an exceptional practice! It ensures that when external developers install this component via CLI or manual copy, they get a fully working, self-contained layout without missing file assets or rendering broken images.
 - **Responsive Breakpoint Drift**:
   - The docs version simplifies breakpoints to `max-md` and `max-sm`.
-  - The registry version has a more refined multi-breakpoint responsiveness curve using `max-xl` for desktop nav collapse and `max-md` for the mobile wrapper block.
+  - The registry version has a more refined multi-breakpoint responsiveness curve using `max-[1025px]` for desktop nav collapse and `max-md` for the mobile wrapper block.
 
 ---
 

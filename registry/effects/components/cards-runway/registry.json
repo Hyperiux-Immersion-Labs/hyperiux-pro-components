@@ -5,7 +5,7 @@
     {
       "version": "1.1.1",
       "date": "2026-07-23",
-      "summary": "Desktop pin/scrub threshold raised from >1024px to >=1280px to match the max-xl CSS breakpoint; previously the 1025-1279px range ran the desktop timeline against the collapsed mobile layout.",
+      "summary": "Desktop pin/scrub threshold raised from >1024px to >=1280px to match the max-[1025px] CSS breakpoint; previously the 1025-1279px range ran the desktop timeline against the collapsed mobile layout.",
       "breaking": false
     },
     {

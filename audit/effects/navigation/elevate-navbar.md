@@ -37,7 +37,7 @@ Comparing `registry/effects/navigation/elevate-navbar/index.jsx` with `apps/docs
   - The docs version imports `DemoHeader` from `../WebsiteComps/DemoHeader` to display the site-wide documentation navigation.
   - The registry version removes this import and its corresponding JSX element. This is an expected and correct separation, preventing compilation crashes for external developers copy-pasting the clean effect.
 - **Breakpoints**:
-  - Small adjustments to screen breakpoint boundaries inside responsive text scale calculations (e.g., `max-xl` and `max-md` in registry vs. `max-md` and `max-sm` in docs).
+  - Small adjustments to screen breakpoint boundaries inside responsive text scale calculations (e.g., `max-[1025px]` and `max-md` in registry vs. `max-md` and `max-sm` in docs).
 
 ---
 
