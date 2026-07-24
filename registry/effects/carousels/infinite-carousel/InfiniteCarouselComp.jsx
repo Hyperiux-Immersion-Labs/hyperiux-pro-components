@@ -453,7 +453,7 @@ export default function InfiniteCarouselComp({
  };
 
  return (
- <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-xl:gap-4 max-md:gap-3 max-md:pb-0 ${pageClassName}`} style={pageStyle}>
+ <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-xl:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
  <div className="sr-only" aria-live="polite" aria-atomic="true">
  {slideAnnouncement}
  </div>

@@ -9,7 +9,7 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
-export default function FlipTransition({
+export default function PageFlipTransition({
   children,
   duration = 0.9,
   bgColor = '#ff5f00',

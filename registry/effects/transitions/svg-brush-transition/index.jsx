@@ -56,7 +56,7 @@ export default function SVGBrushTransition({
   children,
   config = {
     enableBlur: false,
-    strokeColor: '#ffffff',
+    strokeColor: '#82A0FF',
     strokeWidth: 2,
     duration: 1.5,
   },

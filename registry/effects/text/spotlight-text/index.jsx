@@ -19,7 +19,7 @@ function usePrefersReducedMotion() {
 }
 
 export default function SpotlightText({
- text ="",
+ text ="Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
  className ="",
  size ="text-3xl md:text-5xl",
  align ="center",

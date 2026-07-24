@@ -197,7 +197,7 @@ const GlitchyText = ({
         },
       });
     } else {
-      runAnimation(initialDelay);
+      runAnimation(prefersReducedMotion ? 0 : initialDelay);
     }
 
     return () => {

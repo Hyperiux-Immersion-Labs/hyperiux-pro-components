@@ -31,7 +31,6 @@ function usePrefersReducedMotion() {
   );
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -48,7 +47,6 @@ const GRAY_DISPERSE_TIME = 0.9; // trail lingers ~2s
 const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME + GRAY_DISPERSE_TIME;
 const TOTAL_SHAPES = 5;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const lerp     = (a, b, t) => a + (b - a) * t;
 const clamp01  = (v) => Math.max(0, Math.min(1, v));
@@ -56,8 +54,6 @@ const smoothstep = (e0, e1, v) => {
   const t = clamp01((v - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
 };
-
-// ─── Pure Shape Math ──────────────────────────────────────────────────────────
 
 const getStarStrength = (x, y, time, width, height) => {
   const cx = width / 2;
@@ -148,9 +144,8 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
   return getTriangleStrength(x, y, time, width, height);
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
-export function DottedGrid() {
+export default function DottedGrid() {
   const canvasRef  = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
@@ -187,7 +182,6 @@ export function DottedGrid() {
       }
     };
 
-    // ─── Dot Setup ─────────────────────────────────────────────────────────────
 
     const createDots = () => {
       dots = [];
@@ -220,7 +214,6 @@ export function DottedGrid() {
       createDots();
     };
 
-    // ─── Event Handlers ────────────────────────────────────────────────────────
 
     const handlePointerMove = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -245,7 +238,6 @@ export function DottedGrid() {
       patternRef.current.transitionStartTime = reduceMotion ? null : performance.now() * 0.001;
     };
 
-    // ─── Transition / Shape Interpolator ───────────────────────────────────────
 
     const getShapeData = (x, y, time) => {
       const { currentShapeIndex, transitionStartTime } = patternRef.current;
@@ -297,8 +289,6 @@ export function DottedGrid() {
       };
     };
 
-    // ─── Drawing Utilities ─────────────────────────────────────────────────────
-
     const drawDot = (x, y, radius, brightness, grayDisperseStrength, trailStrength, mouseStrength) => {
       const mouseFade = mouseStrength * mouseStrength * 0.72;
       const trailFade = trailStrength * 0.38;
@@ -321,7 +311,6 @@ export function DottedGrid() {
       ctx.fill();
     };
 
-    // ─── Main Draw Loop ────────────────────────────────────────────────────────
 
     const loop = createSuspendedRaf({
       root: canvas,
@@ -420,7 +409,6 @@ export function DottedGrid() {
       },
     });
 
-    // ─── Listeners & Boot ──────────────────────────────────────────────────────
 
     resize();
     window.addEventListener("resize", resize);
