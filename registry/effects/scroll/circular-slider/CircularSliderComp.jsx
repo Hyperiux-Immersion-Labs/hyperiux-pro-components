@@ -1,14 +1,29 @@
 'use client'
-import  { useEffect, useRef } from"react";
-import { gsap } from"gsap";
-import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
+import  { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener("change", update);
+ return () => mediaQuery.removeEventListener("change", update);
+ }, []);
+
+ return prefersReducedMotion;
+}
+
 const CircularSliderComp = ({ heading, para, data = [] }) => {
  const outerRef = useRef(null);
  const wheelRef = useRef(null);
+ const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -132,6 +147,22 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  {para}
  </p>
  </section>
+
+ {reducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
+ >
+ <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+ This effect can&apos;t be reduced.
+ </h2>
+ <p className="mx-auto mt-4 text-sm leading-6 text-black">
+ Reduced motion is enabled, but this effect relies on continuous
+ scroll-driven rotation around the wheel, and can&apos;t be
+ simplified to a fade without losing the effect entirely.
+ </p>
+ </div>
+ )}
  </>
  );
 };

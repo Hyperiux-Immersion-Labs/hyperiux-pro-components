@@ -5,30 +5,36 @@
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
   "dependencies": [
     "gsap",
-    "lucide-react",
-    "next"
+    "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "TestimonialSwiper",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Under reduced motion, use opacity fade instead of SplitText slides",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/testimonial-swiper/index.jsx"
     },
     {
       "path": "NavigationButtons.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/NavigationButtons.jsx"
+      "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
     },
     {
       "path": "TestimonialComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/TestimonialComp.jsx"
+      "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
     }
   ]
 }

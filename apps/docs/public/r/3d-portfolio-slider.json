@@ -12,18 +12,36 @@
   "exportName": "PortfolioSlider3D",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.2",
+  "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-07-23",
+      "summary": "Unmount cleanup now disposes each plane's geometry, shader material, and texture (renderer.dispose() alone leaked them), fixing a GPU memory leak on remount.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.1",
+      "date": "2026-07-22",
+      "summary": "Added a reduced-motion notice: this continuous scroll-driven 3D carousel is the navigation itself and can't be reduced without losing the ability to browse, so it now surfaces that instead of silently ignoring the preference.",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/3d-portfolio-slider/index.jsx"
     },
     {
       "path": "PortfolioSlider.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PortfolioSlider.jsx"
+      "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.js"
     }
   ]
 }

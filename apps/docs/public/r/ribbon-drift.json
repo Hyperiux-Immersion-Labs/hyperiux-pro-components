@@ -11,18 +11,43 @@
   "exportName": "RibbonDrift",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.3.0",
+  "changelog": [
+    {
+      "version": "1.3.0",
+      "date": "2026-07-24",
+      "summary": "Removed the reduced-motion animation branching entirely - the scroll-driven reveal, hover splits, and strip transitions now always run identically to the default; only the reduced-motion notice remains conditional.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Synced the docs-mirror RibbonDriftComp with the registry copy's full prefers-reduced-motion support (static layout, X-only strip exits, fade-based intro/hover transitions) - the mirror was missing all of it.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Restored the mobile full-height wrapper rule (max-md:h-full) that was lost to a max-snm typo; docs copy typo corrected to max-sm.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/ribbon-drift/index.jsx"
     },
     {
       "path": "RibbonDriftComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/RibbonDriftComp.jsx"
+      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
     }
   ]
 }

@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
 <LenisSmoothScroll />
-<DemoHeader/>  
+<DemoHeader/>
 <CharacterTrail/>
     </>
   )

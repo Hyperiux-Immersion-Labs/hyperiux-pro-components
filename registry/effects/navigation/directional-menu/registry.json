@@ -1,6 +1,10 @@
 {
   "name": "directional-menu",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: mega menu open/close panel animations use a reduced-motion-safe fade instead of the full height/slide tween", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Directional Menu",
   "description": "Mega menu with directional content transitions using GSAP",

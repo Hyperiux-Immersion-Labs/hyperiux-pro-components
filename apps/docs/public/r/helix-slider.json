@@ -11,18 +11,31 @@
   "exportName": "HelixSlider",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-24",
+      "summary": "Added prefers-reduced-motion support (ported from the docs copy): shows a notice explaining the continuous scroll-driven rotation can't be reduced to a static fade.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/helix-slider/index.jsx"
     },
     {
       "path": "HelixSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/HelixSliderComp.jsx"
+      "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
     }
   ]
 }

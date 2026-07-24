@@ -8,7 +8,7 @@ export default function Page() {
     return (
 
         <>
-        <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+        <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
         
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
@@ -19,11 +19,11 @@ export default function Page() {
                     <h1 className="text-5xl font-medium max-sm:text-4xl">Scramble Link Button</h1>
                 </div>
 
-                <div className="">
+                <div>
                     <ScrambleLinkButton
                         href="#"
                         text="Hover me"
-                        showLine={true}
+                        showLine
                         stepMs={50}
                         className="text-[2vw] max-sm:text-[4.5vw]"
                     />

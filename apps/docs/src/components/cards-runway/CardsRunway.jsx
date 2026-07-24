@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { prefersReducedMotion } from '@/lib/motion'
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -19,7 +20,10 @@ export default function CardsRunway({
   useEffect(() => {
     let ctx = gsap.context(() => {
       if (globalThis.innerWidth > 1024) {
-        gsap.set(".cards-runway-card", { y: "37vw", opacity: 1 });
+        gsap.set(".cards-runway-card", {
+          y: prefersReducedMotion() ? "0vw" : "37vw",
+          opacity: 1,
+        });
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root.current,

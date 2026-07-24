@@ -11,6 +11,25 @@ const POLL_INTERVAL_MS = 100;
 const QUIET_MS = 250;
 const FADE_MS = 500;
 
+// Pages with their own custom page-transition effect double up with this
+// overlay, so they opt out.
+const EXCLUDED_PATHS = new Set([
+  "/demo/block-transition",
+  "/demo/block-transition/page2",
+  "/demo/chess-grid-transition",
+  "/demo/chess-grid-transition/page2",
+  "/demo/page-flip-transition",
+  "/demo/page-flip-transition/page2",
+  "/demo/pixel-transition",
+  "/demo/pixel-transition/page2",
+  "/demo/radial-slice-transition",
+  "/demo/radial-slice-transition/page2",
+  "/demo/svg-brush-transition",
+  "/demo/svg-brush-transition/page2",
+  "/demo/lines-loader",
+  "/demo/number-counter"
+]);
+
 function formatLabel(pathname) {
   const slug = pathname.split("/").filter(Boolean).pop() || "effect";
 
@@ -212,6 +231,10 @@ function DemoSubpageOverlay({ pathname }) {
 
 export default function DemoSubpageLoader({ children }) {
   const pathname = usePathname();
+
+  if (EXCLUDED_PATHS.has(pathname)) {
+    return children;
+  }
 
   return (
     <>

@@ -113,9 +113,24 @@ export function FAQWrapper({
   const contentOuterRef = useRef(null);
   const contentInnerRef = useRef(null);
   const openHeightRef = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+  );
 
   const contentId = useId();
   const buttonId = useId();
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const onChange = (event) => {
+      reduceMotionRef.current = event.matches;
+    };
+    reduceMotionRef.current = mq.matches;
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
 
   const handleToggle = () => {
     if (group) {
@@ -161,6 +176,8 @@ export function FAQWrapper({
 
     gsap.killTweensOf([outer, inner]);
 
+    const tweenDuration = reduceMotionRef.current ? 0 : duration;
+
     if (isOpen) {
       gsap.set(outer, {
         overflow: "hidden",
@@ -176,7 +193,7 @@ export function FAQWrapper({
         { height: 0 },
         {
           height: targetHeight,
-          duration,
+          duration: tweenDuration,
           ease: "power3.out",
           onComplete: () => {
             gsap.set(outer, {
@@ -194,7 +211,7 @@ export function FAQWrapper({
         { height: openHeightRef.current },
         {
           height: 0,
-          duration,
+          duration: tweenDuration,
           ease: "power3.out",
         }
       );
@@ -253,7 +270,7 @@ export function FAQTitle({
         <ChevronRight
           size={iconSize}
           strokeWidth={iconStrokeWidth}
-          className={`transition-transform duration-300 ease-out ${
+          className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
             isOpen ? "rotate-90" : "rotate-0"
           }`}
           aria-hidden="true"
@@ -262,7 +279,7 @@ export function FAQTitle({
         <ChevronDown
           size={iconSize}
           strokeWidth={iconStrokeWidth}
-          className={`transition-transform duration-300 ease-out ${
+          className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
             isOpen ? "rotate-180" : "rotate-0"
           }`}
           aria-hidden="true"

@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/scroll-distortion",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
-  "main": "scroll-distortion.jsx",
+  "main": "index.jsx",
   "files": [
-    "scroll-distortion.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [
@@ -13,7 +14,6 @@
   ],
   "dependencies": {
     "gsap": "*",
-    "lenis": "*",
     "three": "*"
   }
 }

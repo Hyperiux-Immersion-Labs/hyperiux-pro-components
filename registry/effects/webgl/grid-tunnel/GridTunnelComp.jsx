@@ -26,6 +26,20 @@ const SCROLL_DAMPING = 7; // higher = stops sooner
 const CAMERA_FOLLOW = 10; // higher = follows target more tightly
 const MAX_SCROLL_VELOCITY = 2.0;
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 function seededRandom(seed) {
   let value = seed;
 
@@ -287,6 +301,10 @@ function InfiniteScrollCamera() {
   const cameraRef = useRef(null);
   const targetZ = useRef(CAMERA_START_Z);
   const scrollVelocity = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
   const touchState = useRef({
     active: false,
     lastY: 0,
@@ -297,20 +315,45 @@ function InfiniteScrollCamera() {
   }, [camera]);
 
   useEffect(() => {
-    const preventPageScroll = (event) => {
-      event.preventDefault();
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
 
-      // Accumulate velocity for a smoother inertial scroll feel.
-      scrollVelocity.current += -event.deltaY * SCROLL_SPEED;
-      scrollVelocity.current = THREE.MathUtils.clamp(
-        scrollVelocity.current,
-        -MAX_SCROLL_VELOCITY,
-        MAX_SCROLL_VELOCITY
-      );
+    const onChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        scrollVelocity.current = 0;
+      }
+    };
+
+    reduceMotionRef.current = mq.matches;
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const applyDelta = (delta) => {
+      if (reduceMotionRef.current) {
+        // Reduced-motion: move instantly — no velocity coast.
+        scrollVelocity.current = 0;
+        targetZ.current += delta;
+      } else {
+        scrollVelocity.current += delta;
+        scrollVelocity.current = THREE.MathUtils.clamp(
+          scrollVelocity.current,
+          -MAX_SCROLL_VELOCITY,
+          MAX_SCROLL_VELOCITY
+        );
+      }
 
       if (targetZ.current > CAMERA_START_Z) {
         targetZ.current = CAMERA_START_Z;
+        scrollVelocity.current = 0;
       }
+    };
+
+    const preventPageScroll = (event) => {
+      event.preventDefault();
+      applyDelta(-event.deltaY * SCROLL_SPEED);
     };
 
     const onTouchStart = (event) => {
@@ -329,16 +372,7 @@ function InfiniteScrollCamera() {
       const deltaY = touch.clientY - touchState.current.lastY;
       touchState.current.lastY = touch.clientY;
 
-      scrollVelocity.current += deltaY * SCROLL_SPEED;
-      scrollVelocity.current = THREE.MathUtils.clamp(
-        scrollVelocity.current,
-        -MAX_SCROLL_VELOCITY,
-        MAX_SCROLL_VELOCITY
-      );
-
-      if (targetZ.current > CAMERA_START_Z) {
-        targetZ.current = CAMERA_START_Z;
-      }
+      applyDelta(deltaY * SCROLL_SPEED);
     };
 
     const onTouchEnd = () => {
@@ -360,12 +394,51 @@ function InfiniteScrollCamera() {
     };
   }, []);
 
+  const lastFrameTimeRef = useRef(
+    typeof performance !== "undefined" ? performance.now() : 0
+  );
+
   useFrame((_, delta) => {
     const cam = cameraRef.current;
     if (!cam) return;
 
     cam.position.x = 0;
     cam.position.y = 0;
+
+    // The canvas' frameloop is suspended while the tab is hidden or the
+    // effect is offscreen (see createVisibilityGate below), which pauses
+    // this callback entirely. THREE's clock keeps real wall-clock time
+    // while paused, so the first frame after resuming can report a delta
+    // of several seconds. Detect that gap directly (independent of R3F's
+    // own delta) and resync state instead of letting a stale/huge delta
+    // feed into the lerp math below and displace the camera.
+    const now = typeof performance !== "undefined" ? performance.now() : 0;
+    const wallClockGap = now - lastFrameTimeRef.current;
+    lastFrameTimeRef.current = now;
+    const resumedFromPause = wallClockGap > 250;
+
+    if (reduceMotionRef.current) {
+      // Snap camera to target — no inertia / follow lerp.
+      scrollVelocity.current = 0;
+      if (resumedFromPause) {
+        // Camera position didn't move while paused - keep the target in
+        // sync with it so we don't re-apply any stale offset in one jump.
+        targetZ.current = cam.position.z;
+      }
+      if (targetZ.current > CAMERA_START_Z) {
+        targetZ.current = CAMERA_START_Z;
+      }
+      cam.position.z = targetZ.current;
+      cam.lookAt(0, 0, cam.position.z - 12);
+      return;
+    }
+
+    if (resumedFromPause) {
+      scrollVelocity.current = 0;
+      targetZ.current = cam.position.z;
+      cam.lookAt(0, 0, cam.position.z - 12);
+      return;
+    }
 
     // Decay velocity so the tunnel eases out after scrolling stops.
     const damping = Math.exp(-SCROLL_DAMPING * delta);
@@ -422,6 +495,7 @@ function FooterMark() {
 export default function GridTunnelComp({ images = [] }) {
   const rootRef = useRef(null);
   const [frameloop, setFrameloop] = useState("always");
+  const reducedMotion = usePrefersReducedMotion();
   const fallbackImages = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
@@ -573,6 +647,22 @@ export default function GridTunnelComp({ images = [] }) {
         <Preload all />
       </Canvas>
        <FooterMark />
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none absolute bottom-6 right-6 z-40 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+            Tunnel navigation is instant.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black">
+            Reduced motion is enabled: scroll and touch move the camera
+            directly with no momentum or easing, instead of coasting
+            smoothly through the tunnel.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

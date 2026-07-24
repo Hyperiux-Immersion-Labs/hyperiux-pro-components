@@ -4,15 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-
+//  Constants
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 
 const LERP_SPEED = 0.1;
 const FADE_SPEED = 0.04;
 
-// ─── GLSL Shaders ─────────────────────────────────────────────────────────────
+const REDUCED_MOTION_FACTOR = 0.6;
+
+// GLSL Shaders 
 
 const PARTICLE_VERT = /* glsl */ `
   uniform float uSize;
@@ -66,8 +67,7 @@ const POINT_FRAG = /* glsl */ `
   }
 `;
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
+// Component 
 export default function SpiderParticles({
   particleCount = 180,
   gridGap = 0,
@@ -96,7 +96,7 @@ export default function SpiderParticles({
     const _webColor      = new THREE.Color(webColor);
     const _centerColor   = new THREE.Color(centerColor);
 
-    // ─── Renderer & Scene ──────────────────────────────────────────────────────
+   
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -110,8 +110,7 @@ export default function SpiderParticles({
     );
     camera.position.z = 1;
 
-    // ─── Mouse State ───────────────────────────────────────────────────────────
-
+    // Mouse State
     const mouse       = new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
     const smoothMouse = new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
     let mouseEntryAlpha = 0;
@@ -177,7 +176,7 @@ export default function SpiderParticles({
     mount.addEventListener("touchmove", onTouch,      { passive: true });
     mount.addEventListener("touchend",  onTouchEnd);
 
-    // ─── Grid Layout ───────────────────────────────────────────────────────────
+    // Grid Layout 
 
     let cols, rows, actualCount, spacingX, spacingY;
 
@@ -207,7 +206,7 @@ export default function SpiderParticles({
       positions[i * 3 + 2] = 0;
     }
 
-    // ─── Particle Points ───────────────────────────────────────────────────────
+    //  Particle Points 
 
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -232,7 +231,7 @@ export default function SpiderParticles({
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // ─── Cursor Dot ────────────────────────────────────────────────────────────
+    // Cursor Dot 
 
     const cursorGeo = new THREE.BufferGeometry();
     cursorGeo.setAttribute(
@@ -258,8 +257,7 @@ export default function SpiderParticles({
     const cursorPoint = new THREE.Points(cursorGeo, cursorMat);
     scene.add(cursorPoint);
 
-    // ─── Web Lines ─────────────────────────────────────────────────────────────
-
+    //Web Lines 
     const mouseLinePositions = new Float32Array(actualCount * 6);
     const mouseLineColors    = new Float32Array(actualCount * 6);
 
@@ -278,7 +276,7 @@ export default function SpiderParticles({
     const mouseLines = new THREE.LineSegments(mouseLineGeo, mouseLineMat);
     scene.add(mouseLines);
 
-    // ─── Resize ────────────────────────────────────────────────────────────────
+    // Resize 
 
     const onResize = () => {
       width  = mount.clientWidth;
@@ -292,93 +290,111 @@ export default function SpiderParticles({
     };
     window.addEventListener("resize", onResize);
 
-    // ─── Animation Loop ────────────────────────────────────────────────────────
+    let reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    );
+    const onReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+    };
+    reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
+
+    //  Animation Loop 
 
     const loop = createSuspendedRaf({
       root: mount,
       onFrame: () => {
-        // Fade the entire effect in/out as cursor enters or leaves
-        mouseEntryAlpha = mousePresent
-          ? Math.min(1, mouseEntryAlpha + FADE_SPEED)
-          : Math.max(0, mouseEntryAlpha - FADE_SPEED);
+    
+      const lerpSpeed   = reduceMotion ? LERP_SPEED * REDUCED_MOTION_FACTOR       : LERP_SPEED;
+      const fadeSpeed   = reduceMotion ? FADE_SPEED * REDUCED_MOTION_FACTOR       : FADE_SPEED;
+      const spotlightR  = reduceMotion ? spotlightRadius * REDUCED_MOTION_FACTOR  : spotlightRadius;
+      const connectDist = reduceMotion ? mouseConnectDist * REDUCED_MOTION_FACTOR : mouseConnectDist;
 
-        // Snap smoothMouse on the first frame, lerp every frame after
-        if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
-          if (mouseJustEntered) {
-            smoothMouse.copy(mouse); // instant snap — avoids lerp drift from previous position
-            mouseJustEntered = false;
-          } else {
-            smoothMouse.x += (mouse.x - smoothMouse.x) * LERP_SPEED;
-            smoothMouse.y += (mouse.y - smoothMouse.y) * LERP_SPEED;
-          }
-        } else if (!mousePresent && mouseEntryAlpha <= 0) {
-          smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
-        }
+      // Fade the entire effect in/out as cursor enters or leaves
+      mouseEntryAlpha = mousePresent
+        ? Math.min(1, mouseEntryAlpha + fadeSpeed)
+        : Math.max(0, mouseEntryAlpha - fadeSpeed);
 
-        // Sync uniforms
-        particleMat.uniforms.uMouse.value.copy(smoothMouse);
-        particleMat.uniforms.uAlpha.value = mouseEntryAlpha;
-        cursorMat.uniforms.uAlpha.value   = mouseEntryAlpha;
-
-        // Move cursor dot
-        if (smoothMouse.x > MOUSE_THRESHOLD) {
-          cursorPoint.position.set(smoothMouse.x, smoothMouse.y, 0);
-          cursorPoint.visible = true;
+      // Snap smoothMouse on the first frame, lerp every frame after
+      if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
+        if (mouseJustEntered) {
+          smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
+          mouseJustEntered = false;
         } else {
-          cursorPoint.visible = false;
+          smoothMouse.x += (mouse.x - smoothMouse.x) * lerpSpeed;
+          smoothMouse.y += (mouse.y - smoothMouse.y) * lerpSpeed;
         }
+      } else if (!mousePresent && mouseEntryAlpha <= 0) {
+        smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
+      }
 
-        // Build web lines — one segment per nearby particle
-        let mIdx = 0;
+      // Sync uniforms
+      particleMat.uniforms.uMouse.value.copy(smoothMouse);
+      particleMat.uniforms.uAlpha.value = mouseEntryAlpha;
+      cursorMat.uniforms.uAlpha.value   = mouseEntryAlpha;
+      particleMat.uniforms.uSpotlightRadius.value = spotlightR;
 
-        if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
-          for (let i = 0; i < actualCount; i++) {
-            const px = positions[i * 3];
-            const py = positions[i * 3 + 1];
-            const dx = px - smoothMouse.x;
-            const dy = py - smoothMouse.y;
-            const d  = Math.sqrt(dx * dx + dy * dy);
+      // Move cursor dot
+      if (smoothMouse.x > MOUSE_THRESHOLD) {
+        cursorPoint.position.set(smoothMouse.x, smoothMouse.y, 0);
+        cursorPoint.visible = true;
+      } else {
+        cursorPoint.visible = false;
+      }
 
-            if (d >= mouseConnectDist) continue; // outside web radius, skip
+      // Build web lines - one segment per nearby particle
+      let mIdx = 0;
 
-            const alpha = (1 - d / mouseConnectDist) * 0.85 * mouseEntryAlpha;
-            const si    = mIdx * 6;
+      if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
+        for (let i = 0; i < actualCount; i++) {
+          const px = positions[i * 3];
+          const py = positions[i * 3 + 1];
+          const dx = px - smoothMouse.x;
+          const dy = py - smoothMouse.y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
 
-            // Line start = cursor position
-            mouseLinePositions[si]     = smoothMouse.x;
-            mouseLinePositions[si + 1] = smoothMouse.y;
-            mouseLinePositions[si + 2] = 0;
+          if (d >= connectDist) continue; // outside web radius, skip
 
-            // Line end = particle position
-            mouseLinePositions[si + 3] = px;
-            mouseLinePositions[si + 4] = py;
-            mouseLinePositions[si + 5] = 0;
+          const alpha = (1 - d / connectDist) * 0.85 * mouseEntryAlpha;
+          const si    = mIdx * 6;
 
-            // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
-            mouseLineColors[si]     = _webColor.r;
-            mouseLineColors[si + 1] = _webColor.g;
-            mouseLineColors[si + 2] = _webColor.b;
-            mouseLineColors[si + 3] = _webColor.r * alpha;
-            mouseLineColors[si + 4] = _webColor.g * alpha;
-            mouseLineColors[si + 5] = _webColor.b * alpha;
+          // Line start = cursor position
+          mouseLinePositions[si]     = smoothMouse.x;
+          mouseLinePositions[si + 1] = smoothMouse.y;
+          mouseLinePositions[si + 2] = 0;
 
-            mIdx++;
-          }
+          // Line end = particle position
+          mouseLinePositions[si + 3] = px;
+          mouseLinePositions[si + 4] = py;
+          mouseLinePositions[si + 5] = 0;
+
+          // Alpha is encoded per-vertex in RGB (additive blending, no real alpha channel)
+          mouseLineColors[si]     = _webColor.r;
+          mouseLineColors[si + 1] = _webColor.g;
+          mouseLineColors[si + 2] = _webColor.b;
+          mouseLineColors[si + 3] = _webColor.r * alpha;
+          mouseLineColors[si + 4] = _webColor.g * alpha;
+          mouseLineColors[si + 5] = _webColor.b * alpha;
+
+          mIdx++;
         }
+      }
 
-        mouseLineGeo.setDrawRange(0, mIdx * 2);
-        mouseLineGeo.attributes.position.needsUpdate = true;
-        mouseLineGeo.attributes.color.needsUpdate    = true;
+      mouseLineGeo.setDrawRange(0, mIdx * 2);
+      mouseLineGeo.attributes.position.needsUpdate = true;
+      mouseLineGeo.attributes.color.needsUpdate    = true;
 
-        renderer.render(scene, camera);
+      renderer.render(scene, camera);
       },
     });
 
     loop.start();
 
-    // ─── Cleanup ───────────────────────────────────────────────────────────────
+    //  Cleanup 
 
     return () => {
+      reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
       loop.destroy();
       window.removeEventListener("resize", onResize);
       if (mount) {
@@ -412,7 +428,7 @@ export default function SpiderParticles({
     centerColor,
   ]);
 
-  // ─── UI ───────────────────────────────────────────────────────────────────────
+  // UI 
 
   const stats = [
     { label: "Particles", value: particleCount },
@@ -423,7 +439,7 @@ export default function SpiderParticles({
   return (
     <div
       ref={mountRef}
-      className="relative w-full h-screen bg-black overflow-hidden cursor-none max-sm:cursor-default"
+      className="relative w-full h-screen bg-black overflow-hidden cursor-none max-md:cursor-default"
     >
       <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-10">
 
@@ -466,7 +482,7 @@ export default function SpiderParticles({
           </div>
         </div>
 
-        {/* Mobile overlay — desktop-only effect notice */}
+        {/* Mobile overlay - desktop-only effect notice */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 pointer-events-none select-none z-20 hidden max-xl:flex w-full px-14 text-center">
           <p className="text-white text-3xl font-light tracking-tight">
             Open on desktop

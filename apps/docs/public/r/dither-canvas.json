@@ -8,13 +8,25 @@
   "exportName": "DitherCanvas",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-22",
+      "summary": "Added a reduced-motion notice: this effect is a continuous cursor-driven fluid distortion and can't be reduced without losing it entirely, so it now surfaces that instead of silently ignoring the preference.",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/dither-canvas/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
     }
   ]
 }

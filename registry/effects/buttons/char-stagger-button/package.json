@@ -1,10 +1,10 @@
 {
   "name": "@hyperiux/char-stagger-button",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Link button with staggered character animation on hover",
-  "main": "char-stagger-button.jsx",
+  "main": "index.jsx",
   "files": [
-    "char-stagger-button.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

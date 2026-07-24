@@ -12,13 +12,37 @@
   "exportName": "FishEye",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.2.0",
+  "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/fish-eye/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/fish-eye/createSuspendedRaf.js"
     }
   ]
 }

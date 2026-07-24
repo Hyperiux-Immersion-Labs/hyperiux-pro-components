@@ -15,5 +15,5 @@ const page = () => {
 
 export default page
 export async function generateMetadata() {
-  return getDemoPageMetadata("counter");
+  return getDemoPageMetadata("number-counter");
 }

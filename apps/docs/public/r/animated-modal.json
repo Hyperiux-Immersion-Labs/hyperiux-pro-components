@@ -10,23 +10,42 @@
   "exportName": "AnimatedModal",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Trigger button responsive classes corrected from max-lg to max-xl, matching the max-xl/max-md convention used by the rest of the modal (tablet styling was switching at 1024px on the button but 1280px on the modal chrome).",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/animated-modal/index.jsx"
     },
     {
       "path": "AnimatedModalContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/AnimatedModalContent.jsx"
+      "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
     },
     {
       "path": "ScrollablePopupContent.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ScrollablePopupContent.jsx"
+      "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
     }
   ]
 }

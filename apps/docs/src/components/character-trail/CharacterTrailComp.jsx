@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from"react";
-import { createSuspendedRaf } from"./createSuspendedRaf";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const CELL_SIZE = 50;
 const MAX_TRAIL = 25;
@@ -253,7 +253,7 @@ export default function CharacterTrailComp({ children }) {
 
  {children}
 
- <style jsx global>{`
+ <style>{`
  @keyframes charTrailPop {
  from {
  transform: scale(0);

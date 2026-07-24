@@ -1,6 +1,6 @@
-import { useRef } from"react";
-import { UseCanvas, ScrollScene } from"@14islands/r3f-scroll-rig";
-import { WebGLText } from"@14islands/r3f-scroll-rig/powerups";
+import { useRef } from "react";
+import { UseCanvas, ScrollScene } from "@14islands/r3f-scroll-rig";
+import { WebGLText } from "@14islands/r3f-scroll-rig/powerups";
 
 export default function UseWebGLText({ children, font, as: Tag ="span", className ="", positionConfig = { fontOffsetX: 0, fontOffsetY: 0, letterSpacing: 0 } }) {
  const el = useRef();

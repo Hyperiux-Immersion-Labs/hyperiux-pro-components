@@ -10,18 +10,42 @@
   "exportName": "NoiseRippleCursor",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.2.0",
+  "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Removed debug console.log calls that fired on every pointer enter/leave and target register/unregister.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/noise-ripple-cursor/index.jsx"
     },
     {
       "path": "2dCanvasTracker.js",
       "type": "registry:component",
-      "target": "components/hyperiux/2dCanvasTracker.js"
+      "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
     }
   ]
 }

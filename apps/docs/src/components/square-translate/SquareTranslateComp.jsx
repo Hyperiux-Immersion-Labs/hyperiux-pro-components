@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -31,13 +32,19 @@ export default function SquareTranslateComp({
     const containerRef = useRef(null)
     const squareRef = useRef(null)
     const itemRefs = useRef([])
+    const textRefs = useRef([])
 
     useEffect(() => {
         const container = containerRef.current
         const square = squareRef.current
         const itemEls = itemRefs.current.filter(Boolean)
+        const textEls = textRefs.current.filter(Boolean)
+        const reducedMotion = prefersReducedMotion()
+        // Reduced motion: shift only the text (li), not the row (ul) that
+        // carries the border - the divider line stays put.
+        const targetEls = reducedMotion ? textEls : itemEls
         // Enable GPU acceleration
-        gsap.set([square, ...itemEls], { willChange: 'transform', force3D: true })
+        gsap.set([square, ...itemEls, ...textEls], { willChange: 'transform', force3D: true })
         gsap.set(square, { scale: 0, y: 0, rotation: 0 })
 
         // Scale phase: 0-10% of scroll
@@ -78,21 +85,28 @@ export default function SquareTranslateComp({
                     overwrite: true,
                 })
 
-                itemEls.forEach((item, i) => {
-                    const distance = Math.min(Math.abs(i - currentIndex) / totalTranslateImpact, 1)
-                    gsap.to(item, {
-                        x: translateValue * (1 - distance), duration: 0.4, ease: "power2.out",
+                targetEls.forEach((target, i) => {
+                    // Reduced motion: only the item the cube is currently
+                    // aligned with shifts - everything else stays at its
+                    // initial position, no falloff ripple across neighbors.
+                    // The shift also targets the text (li), not the row
+                    // (ul) that carries the border, so the divider stays put.
+                    const x = reducedMotion
+                        ? (i === Math.round(currentIndex) ? translateValue : 0)
+                        : translateValue * (1 - Math.min(Math.abs(i - currentIndex) / totalTranslateImpact, 1))
+                    gsap.to(target, {
+                        x, duration: 0.4, ease: "power2.out",
                         overwrite: true,
                     })
                 })
             },
-            onLeave: () => gsap.to(itemEls, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
-            onLeaveBack: () => gsap.to(itemEls, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
+            onLeave: () => gsap.to(targetEls, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
+            onLeaveBack: () => gsap.to(targetEls, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
         })
 
         return () => {
             trigger.kill()
-            gsap.set([square, ...itemEls], { clearProps: 'willChange' })
+            gsap.set([square, ...itemEls, ...textEls], { clearProps: 'willChange' })
         }
     }, [items, translateValue, totalTranslateImpact])
 
@@ -105,7 +119,7 @@ export default function SquareTranslateComp({
                     ref={el => itemRefs.current[i] = el}
                     className={`list-none py-[.8vw] max-sm:py-[2vw] ${textColor} ${i > 0 ? `border-t ${borderColor}` : ''} ${i === items.length - 1 ? '' : ''}`}
                 >
-                    <li className={textClassName}>{item}</li>
+                    <li ref={el => textRefs.current[i] = el} className={textClassName}>{item}</li>
                 </ul>
             ))}
         </div>

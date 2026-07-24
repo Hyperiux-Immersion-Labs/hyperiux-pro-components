@@ -8,18 +8,42 @@
   "exportName": "CharacterTrail",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Replaced Next.js-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/character-trail/index.jsx"
     },
     {
       "path": "CharacterTrailComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CharacterTrailComp.jsx"
+      "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/character-trail/createSuspendedRaf.js"
     }
   ]
 }

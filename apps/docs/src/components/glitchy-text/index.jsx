@@ -36,20 +36,47 @@ const GlitchyText = ({
   const text4Ref = useRef(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (event) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const runAnimation = useCallback((delay = 0.2) => {
     const { splitText, split2, split3, split4 } = splitRef.current;
 
-    if (!splitText || !split2 || !split3 || !split4) return;
+    if (!splitText) return;
 
     animationTimelineRef.current?.kill();
 
     gsap.killTweensOf([
       ...splitText.chars,
-      ...split2.chars,
-      ...split3.chars,
-      ...split4.chars,
+      ...(split2?.chars ?? []),
+      ...(split3?.chars ?? []),
+      ...(split4?.chars ?? []),
     ]);
+
+    if (prefersReducedMotion) {
+      gsap.set(splitText.chars, { yPercent: 100 });
+
+      const tl = gsap.timeline({ delay });
+      animationTimelineRef.current = tl;
+
+      tl.to(splitText.chars, {
+        yPercent: 0,
+        duration: 0.6,
+        ease: "power2.out",
+      });
+
+      return;
+    }
+
+    if (!split2 || !split3 || !split4) return;
 
     resetSplitPositions({ splitText, split2, split3, split4 });
 
@@ -95,7 +122,7 @@ const GlitchyText = ({
       },
       0.23
     );
-  }, []);
+  }, [prefersReducedMotion]);
 
   const handleReplay = () => {
     if (isDisabled) return;
@@ -119,20 +146,24 @@ const GlitchyText = ({
       linesClass: "lines",
     });
 
-    const split2 = SplitText.create(text2Ref.current, {
-      type: "chars,lines",
-      linesClass: "lines",
-    });
+    let split2, split3, split4;
 
-    const split3 = SplitText.create(text3Ref.current, {
-      type: "chars,lines",
-      linesClass: "lines",
-    });
+    if (!prefersReducedMotion) {
+      split2 = SplitText.create(text2Ref.current, {
+        type: "chars,lines",
+        linesClass: "lines",
+      });
 
-    const split4 = SplitText.create(text4Ref.current, {
-      type: "chars,lines",
-      linesClass: "lines",
-    });
+      split3 = SplitText.create(text3Ref.current, {
+        type: "chars,lines",
+        linesClass: "lines",
+      });
+
+      split4 = SplitText.create(text4Ref.current, {
+        type: "chars,lines",
+        linesClass: "lines",
+      });
+    }
 
     splitRef.current = {
       splitText,
@@ -141,7 +172,11 @@ const GlitchyText = ({
       split4,
     };
 
-    resetSplitPositions({ splitText, split2, split3, split4 });
+    if (prefersReducedMotion) {
+      gsap.set(splitText.chars, { yPercent: 100 });
+    } else {
+      resetSplitPositions({ splitText, split2, split3, split4 });
+    }
 
     if (runOnScroll) {
       const triggerElement = document.getElementById(triggerId) || root;
@@ -162,7 +197,7 @@ const GlitchyText = ({
         },
       });
     } else {
-      runAnimation(initialDelay);
+      runAnimation(prefersReducedMotion ? 0 : initialDelay);
     }
 
     return () => {
@@ -170,9 +205,9 @@ const GlitchyText = ({
       scrollTriggerRef.current?.kill();
 
       splitText.revert();
-      split2.revert();
-      split3.revert();
-      split4.revert();
+      split2?.revert();
+      split3?.revert();
+      split4?.revert();
 
       splitRef.current = {};
       animationTimelineRef.current = null;
@@ -188,6 +223,7 @@ const GlitchyText = ({
     markers,
     initialDelay,
     text,
+    prefersReducedMotion,
   ]);
 
   return (
@@ -204,23 +240,27 @@ const GlitchyText = ({
             </span>
           </p>
 
-          <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
-            <span ref={text3Ref} className="block">
-              {text}
-            </span>
-          </p>
+          {!prefersReducedMotion && (
+            <>
+              <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+                <span ref={text3Ref} className="block">
+                  {text}
+                </span>
+              </p>
 
-          <p className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
-            <span ref={text2Ref} className="block">
-              {text}
-            </span>
-          </p>
+              <p className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
+                <span ref={text2Ref} className="block">
+                  {text}
+                </span>
+              </p>
 
-          <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
-            <span ref={text4Ref} className="block">
-              {text}
-            </span>
-          </p>
+              <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+                <span ref={text4Ref} className="block">
+                  {text}
+                </span>
+              </p>
+            </>
+          )}
         </div>
       </div>
 

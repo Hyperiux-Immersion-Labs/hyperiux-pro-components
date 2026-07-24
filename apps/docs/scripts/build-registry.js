@@ -236,10 +236,16 @@ async function buildRegistry() {
       }
 
       // Find component files (JS/JSX and CSS)
-      const files = fs
+      const discoveredFiles = fs
         .readdirSync(effectPath)
         .filter((f) => f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
         .filter((f) => f !== "registry.json");
+      const registryFileEntries = Array.isArray(registryJson.files)
+        ? registryJson.files.filter((file) => file.type !== "registry:asset")
+        : [];
+      const files = registryFileEntries.length
+        ? registryFileEntries.map((file) => file.path)
+        : discoveredFiles;
 
       const useSubfolder = registryJson.subfolder === true;
       const subfolderPrefix = useSubfolder ? `${registryJson.name}/` : "";
@@ -249,15 +255,16 @@ async function buildRegistry() {
         const content = fs.readFileSync(filePath, "utf-8");
         const isCss = fileName.endsWith(".css");
         const isModuleCss = fileName.endsWith(".module.css");
+        const registryFile = registryFileEntries.find((file) => file.path === fileName);
 
         return {
           path: fileName,
-          type: isCss ? "registry:style" : "registry:component",
-          target: isCss
+          type: registryFile?.type || (isCss ? "registry:style" : "registry:component"),
+          target: registryFile?.target || (isCss
             ? isModuleCss
               ? `components/hyperiux/${subfolderPrefix}${fileName}`
               : `styles/${fileName}`
-            : `components/hyperiux/${subfolderPrefix}${fileName}`,
+            : `components/hyperiux/${subfolderPrefix}${fileName}`),
           content,
         };
       });
@@ -278,14 +285,9 @@ async function buildRegistry() {
           const overlap = baseName
             .split("-")
             .filter((part) => nameParts.has(part)).length;
-          // This scoring pass runs detectExport against every file in the
-          // effect directory, not just the eventual entry file - a helper
-          // file with genuinely ambiguous exports (e.g. a styles.js with
-          // several named exports) must not abort the whole build here.
-          // Treat "ambiguous" the same as "no confident match" for sorting
-          // purposes; the entry file actually chosen below still throws for
-          // real if it can't be resolved.
-          let hasExport;
+          // Helper files (e.g. createSuspendedRaf) can have multiple named
+          // exports that don't match the effect — treat as non-entry, don't throw.
+          let hasExport = 20;
           try {
             hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
           } catch {
@@ -318,7 +320,12 @@ async function buildRegistry() {
         );
       }
 
-      const assetFiles = collectPublicAssets(fileContents);
+      const registryAssetFiles = Array.isArray(registryJson.files)
+        ? registryJson.files.filter((file) => file.type === "registry:asset")
+        : [];
+      const assetFiles = registryFileEntries.length
+        ? registryAssetFiles
+        : collectPublicAssets(fileContents);
 
       // Resolve categories: support both legacy `category` string and new `categories` array
       const primaryCategory = registryJson.category || category;

@@ -4,7 +4,12 @@ import { TransitionRouter } from 'next-transition-router'
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-export default function FlipTransition({
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
+
+export default function PageFlipTransition({
   children,
   duration = 0.9,
   bgColor = '#ff5f00',
@@ -39,6 +44,14 @@ export default function FlipTransition({
       auto
       leave={(next) => {
         const tl = gsap.timeline({ onComplete: next })
+
+        if (prefersReducedMotion()) {
+          tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)
+          tl.set(enterOverlayRef.current, { rotation: -90, transformOrigin: 'bottom right' }, 0)
+          tl.set(boxesRef.current.children, { scaleY: 0 }, 0)
+          tl.to(wrapperRef.current, { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0)
+          return () => tl.kill()
+        }
 
         // Fade + shift old content out
         tl.to(wrapperRef.current, {
@@ -77,6 +90,18 @@ export default function FlipTransition({
             next()
           },
         })
+
+        if (prefersReducedMotion()) {
+          tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)
+          tl.set(enterOverlayRef.current, { rotation: -90, transformOrigin: 'bottom right' }, 0)
+          tl.set(boxesRef.current.children, { scaleY: 0 }, 0)
+          tl.fromTo(wrapperRef.current,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.25, ease: 'power1.out', clearProps: 'all' },
+            0
+          )
+          return () => tl.kill()
+        }
 
         // Snap exit overlay away
         tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)

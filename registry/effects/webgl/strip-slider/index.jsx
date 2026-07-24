@@ -1,5 +1,21 @@
-import React from'react'
+"use client";
+
+import React, { useEffect, useState } from'react'
 import StripSliderComp from './StripSliderComp';
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+ const update = () => setPrefersReducedMotion(mediaQuery.matches)
+ update()
+ mediaQuery.addEventListener('change', update)
+ return () => mediaQuery.removeEventListener('change', update)
+ }, [])
+
+ return prefersReducedMotion
+}
 
 const items = [
  { id:'item-0',  url:'https://picsum.photos/seed/strip0/600/900',  text:'Nature 1',  atlasIndex: 0,  colors: ['#333','#aaa'] },
@@ -26,9 +42,28 @@ const items = [
 ];
 
 const StripSlider = () => {
+ const prefersReducedMotion = usePrefersReducedMotion();
+
  return (
  <div className="w-full h-screen bg-black">
  <StripSliderComp items={items} />
+
+ {prefersReducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+ <h2 className="text-sm leading-none text-white">
+ The strip keeps sliding.
+ </h2>
+ <p className="mt-2 text-xs leading-5 text-white/65">
+ Strip Slider ties its horizontal motion to scroll position via
+ smooth-scroll physics. Since the animation is driven by scroll
+ motion itself, it can&apos;t be reduced without removing the
+ effect.
+ </p>
+ </div>
+ )}
  </div>
  )
 }

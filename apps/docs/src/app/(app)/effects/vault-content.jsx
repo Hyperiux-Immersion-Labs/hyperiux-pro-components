@@ -27,7 +27,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
-import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { useFadeUp, useFadeIn } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
@@ -177,6 +177,9 @@ const routeKey = `${pathname}${
 
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
+
+  useFadeUp(categoryPageRef, [routeKey]);
+  useFadeIn(categoryPageRef, [routeKey]);
 
   // testing purpose - set to 0 in production, any positive ms to show skeleton
   const TEST_SKELETON_DELAY = 0;
@@ -592,7 +595,10 @@ const routeKey = `${pathname}${
           </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-sm:px-0 max-md:pt-10">
-            <div className="relative max-md:w-full fadeup flex items-end gap-4">
+            <div
+              className="relative max-md:w-full flex items-end gap-4 fadein"
+              data-fadein-delay="1"
+            >
               <div className="relative min-w-0 flex-1">
               <div
                 className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-md:block"
@@ -605,7 +611,7 @@ const routeKey = `${pathname}${
 
                 <div
                   className={[
-                    "category-fadeup fadeup flex items-center gap-2.5",
+                    "category-fadeup flex items-center gap-2.5",
                     "flex-wrap",
                     "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
                     "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
@@ -614,6 +620,7 @@ const routeKey = `${pathname}${
                     "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
                     "max-md:pb-3",
                   ].join(" ")}
+                  
                 >
                   {/* Filter dropdown: featured / free / pro */}
                   <FilterMenu
@@ -852,6 +859,9 @@ const routeKey = `${pathname}${
 }
 
 const BATCH_SIZE = 12;
+// Keeps the cards' entrance well behind the heading/description (delay 0.3s)
+// so they clearly follow it rather than firing at the same time.
+const CARD_ENTRANCE_BASE_DELAY = 1;
 
 // Inner component - keyed by filteredEffectsKey so state resets automatically on filter change
 function EffectsGridInner({
@@ -911,7 +921,10 @@ function EffectsGridInner({
     if (!cards.length) return;
 
     cards.forEach((card, i) => {
-      card.style.setProperty("--card-delay", `${(i % BATCH_SIZE) * 0.06}s`);
+      card.style.setProperty(
+        "--card-delay",
+        `${CARD_ENTRANCE_BASE_DELAY + (i % BATCH_SIZE) * 0.06}s`
+      );
     });
 
     const raf = requestAnimationFrame(() => {

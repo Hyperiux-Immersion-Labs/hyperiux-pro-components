@@ -8,7 +8,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
 
       <div className="absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] px-[5vw] pt-[7%] max-md:pt-[15%] max-sm:pt-[30%]">
         <HeadAnim>

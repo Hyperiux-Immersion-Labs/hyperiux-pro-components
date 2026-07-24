@@ -10,23 +10,30 @@
   "exportName": "ScrollShuffledCards",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: cards stay at their resting position with 0 rotation instead of shuffling; the container's overall scroll slide is unaffected",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
     },
     {
       "path": "card.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/card.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
     },
     {
       "path": "ScrollShuffledCardsComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ScrollShuffledCardsComp.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
     }
   ]
 }

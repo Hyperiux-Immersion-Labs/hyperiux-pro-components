@@ -7,21 +7,21 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
     return (
         <>
-        <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+        <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
-                    <h1 className="text-xs max-sm:text-sm max-md:text-base uppercase tracking-[0.4em] text-white/60">
+                    <p className="text-xs max-sm:text-sm max-md:text-base uppercase tracking-[0.4em] text-white/60">
                         Hyperiux Button Demo
-                    </h1>
-                    <p className="text-5xl font-medium max-sm:text-4xl">Link Button</p>
+                    </p>
+                    <h1 className="text-5xl font-medium max-sm:text-4xl">Link Button</h1>
                 </div>
 
                 <div className="w-fit mx-auto">
                     <LinkButton
                         text="Hover me"
                         href="#"
-                        iconClassName="size-[2vw] mt-[0.2vw] max-sm:size-[4vw]"
+                        iconClassName="size-[2vw] mt-[0.2vw] max-md:size-[3vw] max-sm:size-[4vw]"
                         className="text-[2vw] hover:text-[#ff6b00] max-sm:text-[4.5vw]"
                     />
                 </div>

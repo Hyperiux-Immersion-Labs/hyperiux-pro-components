@@ -1,6 +1,10 @@
 {
   "name": "strip-slider",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Strip Slider",
   "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",

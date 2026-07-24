@@ -14,6 +14,7 @@ export default function DraggableCanvas() {
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [containerPositions, setContainerPositions] = useState({
     large: { x: 0, y: 0 },
     medium: { x: 0, y: 0 },
@@ -26,6 +27,19 @@ export default function DraggableCanvas() {
   const setVideoRef = useCallback((node) => {
     videoRef.current = node;
     setVideoElement(node);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    const syncReducedMotion = (event) => {
+      setPrefersReducedMotion("matches" in event ? event.matches : mediaQuery.matches);
+    };
+
+    syncReducedMotion(mediaQuery);
+    mediaQuery.addEventListener("change", syncReducedMotion);
+    return () => mediaQuery.removeEventListener("change", syncReducedMotion);
   }, []);
 
   useEffect(() => {
@@ -84,9 +98,24 @@ export default function DraggableCanvas() {
     <div className="relative w-full h-screen overflow-hidden  bg-black">
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
-        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-md:max-w-[55vw] max-sm:max-w-[85vw] px-6 text-right max-md:text-center max-md:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-md:text-base max-sm:text-sm z-99999 max-sm:bottom-18">
+        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-xl:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-xl:text-center max-xl:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-xl:text-base max-md:text-sm z-99999 max-md:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
+        {prefersReducedMotion && (
+         <div
+            aria-live="polite"
+            className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-xl:hidden"
+          >
+            <h2 className="text-sm leading-none text-white">
+              The canvas keep drifting.
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-white/65">
+              Draggable Canvas is built on continuous drag and inertia
+              physics. Since the motion is the entire effect, reduced motion
+              can&apos;t be applied here.
+            </p>
+          </div>
+        )}
       {/* Hidden video element - single source for all masks */}
       <video
         ref={setVideoRef}
@@ -117,7 +146,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="medium"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[17vw] h-[9vw] max-sm:h-[35vw] max-sm:top-[30%] absolute top-[8%] left-[5vw]"
+          className="w-[17vw] h-[9vw] max-md:h-[35vw] max-md:top-[30%] absolute top-[8%] left-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -131,7 +160,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra1"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[35vw] h-[19vw] max-sm:h-[50vw] absolute top-[8vh] max-sm:top-[25vh] right-[5vw]"
+          className="w-[35vw] h-[19vw] max-md:h-[50vw] absolute top-[8vh] max-md:top-[25vh] right-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -155,7 +184,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="extra3"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[25vw] h-[14vw] max-sm:h-[25vh] absolute bottom-[20%] right-[10vw]"
+          className="w-[25vw] h-[14vw] max-md:h-[25vh] absolute bottom-[20%] right-[10vw]"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}
@@ -166,7 +195,7 @@ export default function DraggableCanvas() {
         <MaskedContainer
           size="small"
           initialPosition={{ x: 0, y: 0 }}
-          className="w-[22vw] max-sm:w-[45vw] max-sm:h-[20vh] h-[12vw] absolute bottom-[15vh] max-sm:left-[40%] left-1/2 -translate-x-1/2"
+          className="w-[22vw] max-md:w-[45vw] max-md:h-[20vh] h-[12vw] absolute bottom-[15vh] max-md:left-[40%] left-1/2 -translate-x-1/2"
           video={videoElement}
           canvasSize={canvasSize}
           onPositionUpdate={handlePositionUpdate}

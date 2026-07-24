@@ -5,6 +5,7 @@ import * as THREE from "three";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 function getViewportConfig() {
   const width = window.innerWidth;
@@ -28,6 +29,7 @@ export default function PortfolioSlider({ items }) {
   const textContainerRef = useRef(null);
   const activeTextRef = useRef(null);
   const prevRawIndexRef = useRef(0);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     let scene, camera, renderer;
@@ -284,6 +286,16 @@ export default function PortfolioSlider({ items }) {
       gate.destroy();
       if (snapTimeout) clearTimeout(snapTimeout);
       gsap.killTweensOf(snapObj);
+      // renderer.dispose() does not free per-mesh GPU resources - each
+      // plane's geometry, shader material, and texture must go explicitly
+      // or they leak on every unmount.
+      planes.forEach((plane) => {
+        plane.geometry.dispose();
+        plane.material.uniforms.uTexture.value?.dispose?.();
+        plane.material.dispose();
+        scene.remove(plane);
+      });
+      planes = [];
       renderer.dispose();
       container.removeChild(renderer.domElement);
       lenis.destroy();
@@ -323,6 +335,22 @@ export default function PortfolioSlider({ items }) {
             );
           })}
         </div>
+
+        {reducedMotion && (
+          <div
+            aria-live="polite"
+            className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+          >
+            <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+              This effect can&apos;t be reduced.
+            </h2>
+            <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+              Reduced motion is enabled, but this continuous scroll-driven
+              3D carousel is the navigation itself, and can&apos;t be
+              simplified to a fade without losing the ability to browse.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

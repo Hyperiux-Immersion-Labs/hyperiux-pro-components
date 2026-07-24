@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect } from"react";
+import React, { useEffect } from "react";
 import { useMouse } from "./useMouse";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const FullScreenCrosshair = ({
  color ="#ffffff",
@@ -20,6 +21,7 @@ const FullScreenCrosshair = ({
  smooth,
  lerpFactor,
  });
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  if (!hideNativeCursor) return undefined;
@@ -62,6 +64,21 @@ const FullScreenCrosshair = ({
  {centerContent}
  </div>
  </div>
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The crosshair keeps tracking.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Full Screen Crosshair follows your cursor continuously across the
+     screen. Since tracking motion is the entire effect, reduced motion
+     can&apos;t be applied here.
+   </p>
+ </div>
+ )}
  </div>
  );
 };

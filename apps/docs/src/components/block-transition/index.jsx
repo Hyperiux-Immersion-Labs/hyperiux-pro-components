@@ -4,6 +4,10 @@ import { TransitionRouter } from "next-transition-router";
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 const ROWS = 5;
 const COLOR = "#000000";
@@ -103,6 +107,11 @@ export default function BlockTransition({
       leave={(next) => {
         const timeline = gsap.timeline({ onComplete: next });
 
+        if (prefersReducedMotion()) {
+          timeline.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: "power1.out" }, 0);
+          return () => timeline.kill();
+        }
+
         if (enableContentShift) {
           timeline.fromTo(
             wrapperRef.current,
@@ -124,6 +133,11 @@ export default function BlockTransition({
       }}
       enter={(next) => {
         const timeline = gsap.timeline({ onComplete: next });
+
+        if (prefersReducedMotion()) {
+          timeline.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: "power1.out", clearProps: "all" }, 0);
+          return () => timeline.kill();
+        }
 
         if (enableContentShift) {
           timeline.fromTo(

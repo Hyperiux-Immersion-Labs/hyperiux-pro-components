@@ -9,6 +9,10 @@ import { useFocusTrap } from "./useFocusTrap";
 
 gsap.registerPlugin(CustomEase);
 
+const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
 function animateColumnIn(colRef) {
     if (!colRef.current) return;
     const items = Array.from(colRef.current.children).slice(1);
@@ -49,8 +53,17 @@ export function ExpandingNavbarDesktop() {
         if (!square || !items.length) return;
 
         if (activeMainIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -91,8 +104,17 @@ export function ExpandingNavbarDesktop() {
         const items = children.slice(1);
 
         if (activeSubIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -133,8 +155,17 @@ export function ExpandingNavbarDesktop() {
         const items = children.slice(1);
 
         if (activeNestedIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -179,6 +210,9 @@ export function ExpandingNavbarDesktop() {
         CustomEase.create("menuEase", "0.625,0.05,0,1");
         const tl = gsap.timeline({ paused: true });
 
+        const menuDuration = prefersReducedMotion() ? 0.5 : 1;
+        const lineDuration = prefersReducedMotion() ? 0.25 : 0.5;
+
         gsap.set(backgroundOverlayRef.current, { opacity: 0 });
         gsap.set(menuWrapperRef.current, { width: "55vw" });
         gsap.set(menuContentRef.current, {
@@ -193,7 +227,7 @@ export function ExpandingNavbarDesktop() {
             backgroundOverlayRef.current,
             {
                 opacity: 1,
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
                 pointerEvents: "auto",
             },
@@ -204,7 +238,7 @@ export function ExpandingNavbarDesktop() {
             menuWrapperRef.current,
             {
                 width: "98vw",
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
             },
             0.1,
@@ -213,7 +247,7 @@ export function ExpandingNavbarDesktop() {
         tl.to(menuContentRef.current, {
             clipPath: "inset(0% 0% 0% 0%)",
             WebkitClipPath: "inset(0% 0% 0% 0%)",
-            duration: 1,
+            duration: menuDuration,
             ease: "menuEase",
         },"<+.35");
 
@@ -221,7 +255,7 @@ export function ExpandingNavbarDesktop() {
             seprationLineRef.current,
             {
                 opacity: 1,
-                duration: 0.5,
+                duration: lineDuration,
                 ease: "menuEase",
             },
             "<",
@@ -442,11 +476,11 @@ export function ExpandingNavbarDesktop() {
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
+                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] motion-reduce:bg-transparent motion-reduce:transition-none p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
                     >
                         <div className="w-[1.5vw] h-[1vw] relative flex items-center justify-center">
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
                         </div>
                     </button>
                 </header>

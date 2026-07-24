@@ -20,9 +20,6 @@ export default function Page() {
 
       <main className="min-h-screen overflow-hidden bg-white text-black">
         <section className="relative flex min-h-screen w-full items-center px-[6vw] pt-[6vw] max-md:px-[7vw] max-md:py-[12vw] max-sm:px-[6vw] max-sm:py-[16vw]">
-          {/* <div className="absolute left-1/2 top-[16%] h-[30vw] w-[30vw] -translate-x-1/2 rounded-full bg-[#1d4ed8]/20 blur-[8vw] max-md:h-[54vw] max-md:w-[54vw] max-sm:h-[72vw] max-sm:w-[72vw]" />
-          <div className="absolute right-[8vw] top-[24%] h-[18vw] w-[18vw] rounded-full bg-[#ff5a7a]/14 blur-[7vw] max-md:hidden" /> */}
-
           <div className="relative z-10 mx-auto grid w-full max-w-[88vw] grid-cols-[0.9fr_1.1fr] items-center gap-[5vw] max-md:max-w-full max-md:grid-cols-1 max-md:gap-[10vw]">
             <div className="max-w-[30vw] max-md:max-w-full">
               <h1 className="text-[0.8vw] uppercase tracking-[0.32em] text-black/45 max-md:text-[1.8vw] max-sm:text-[3vw]">

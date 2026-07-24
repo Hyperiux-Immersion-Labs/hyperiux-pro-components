@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "motion/react";
 
 const variantMap = {
   fade: { x: 0, y: 0 },
@@ -11,6 +11,8 @@ const variantMap = {
   down: { x: 0, y: 40 },
 };
 
+const REDUCED_MOTION_Y_OFFSET = 20;
+
 export default function BlurText({
   children,
   delay = 0,
@@ -18,24 +20,37 @@ export default function BlurText({
   blur = 10,
   className = "",
   variant = "fade",
+  once = true,
 }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once, margin: "-100px" });
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (event) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   const { x, y } = variantMap[variant] ?? variantMap.fade;
   const words = typeof children === "string" ? children.split(" ") : [children];
+
+  const hiddenState = prefersReducedMotion
+    ? { opacity: 0, filter: "blur(0px)", x: 0, y: REDUCED_MOTION_Y_OFFSET }
+    : { opacity: 0, filter: `blur(${blur}px)`, x, y };
+
+  const shownState = { opacity: 1, filter: "blur(0px)", x: 0, y: 0 };
 
   return (
     <span ref={ref} className={className}>
       {words.map((word, index) => (
         <motion.span
           key={index}
-          initial={{ opacity: 0, filter: `blur(${blur}px)`, x, y }}
-          animate={
-            isInView
-              ? { opacity: 1, filter: "blur(0px)", x: 0, y: 0 }
-              : { opacity: 0, filter: `blur(${blur}px)`, x, y }
-          }
+          initial={hiddenState}
+          animate={isInView ? shownState : hiddenState}
           transition={{
             duration,
             delay: delay + index * 0.1,

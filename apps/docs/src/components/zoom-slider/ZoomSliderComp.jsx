@@ -9,12 +9,20 @@ gsap.registerPlugin(SplitText);
 
 const SCROLL_PER_PX = 1.0;
 const LERP_FACTOR = 0.08;
+
 const DRAG_LERP_FACTOR = 0.22;
 const MOMENTUM_FRICTION = 0.92;
 const MIN_MOMENTUM = 0.1;
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1025;
 const SLIDER_BOTTOM_OFFSET = 0;
+
+const REDUCED_MOTION_LERP_FACTOR = 1;
+const REDUCED_MOTION_FADE_DURATION = 0.18;
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
 
 const lerp = (a, b, n) => a + (b - a) * n;
 
@@ -32,6 +40,7 @@ export function ZoomSliderComp({
 
   const [viewportWidth, setViewportWidth] = useState(1440);
   const [viewportHeight, setViewportHeight] = useState(900);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   const isMobile = viewportWidth < MOBILE_BREAKPOINT;
   const isTablet =
@@ -67,6 +76,24 @@ export function ZoomSliderComp({
     window.addEventListener('resize', onResize);
 
     return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)'
+    );
+
+    const syncReducedMotion = (event) => {
+      setReduceMotion(
+        'matches' in event ? event.matches : prefersReducedMotion()
+      );
+    };
+
+    if (!mediaQuery) return;
+
+    syncReducedMotion(mediaQuery);
+    mediaQuery.addEventListener('change', syncReducedMotion);
+    return () => mediaQuery.removeEventListener('change', syncReducedMotion);
   }, []);
 
   const positionCards = useCallback(
@@ -128,8 +155,13 @@ export function ZoomSliderComp({
     const loopWidth = images.length * cardStep;
 
     const tick = () => {
-      // Momentum glide after the finger/pointer is released.
-      if (!state.isDragging && Math.abs(state.velocity) > MIN_MOMENTUM) {
+      // Momentum glide after the finger/pointer is released. Reduced motion
+      // skips the coast entirely so the slider stops as soon as input does.
+      if (
+        !reduceMotion &&
+        !state.isDragging &&
+        Math.abs(state.velocity) > MIN_MOMENTUM
+      ) {
         state.target += state.velocity;
         state.velocity *= MOMENTUM_FRICTION;
       } else if (!state.isDragging) {
@@ -137,7 +169,12 @@ export function ZoomSliderComp({
       }
 
       // Track tightly while actively dragging, glide smoothly otherwise.
-      const lerpFactor = state.isDragging ? DRAG_LERP_FACTOR : LERP_FACTOR;
+      // Reduced motion collapses this to a direct 1:1 follow (no glide).
+      const lerpFactor = reduceMotion
+        ? REDUCED_MOTION_LERP_FACTOR
+        : state.isDragging
+          ? DRAG_LERP_FACTOR
+          : LERP_FACTOR;
       state.current = lerp(state.current, state.target, lerpFactor);
 
       if (Math.abs(state.current - state.target) < 0.01) {
@@ -230,7 +267,7 @@ export function ZoomSliderComp({
       window.removeEventListener('touchend', onTouchEnd);
       window.removeEventListener('touchcancel', onTouchEnd);
     };
-  }, [cardStep, images, positionCards]);
+  }, [cardStep, images, positionCards, reduceMotion]);
 
   useEffect(() => {
     if (!images.length) return;
@@ -267,6 +304,17 @@ export function ZoomSliderComp({
       }
 
       const onEnter = () => {
+        if (reduceMotion) {
+          gsap.killTweensOf([textElement, split.lines]);
+          gsap.set(split.lines, { yPercent: 0 });
+          gsap.to(textElement, {
+            autoAlpha: 1,
+            duration: REDUCED_MOTION_FADE_DURATION,
+            ease: 'power2.out',
+          });
+          return;
+        }
+
         gsap
           .timeline()
           .set(textElement, { autoAlpha: 1 })
@@ -287,6 +335,17 @@ export function ZoomSliderComp({
       };
 
       const onLeave = () => {
+        if (reduceMotion) {
+          gsap.killTweensOf([textElement, split.lines]);
+          gsap.to(textElement, {
+            autoAlpha: 0,
+            duration: REDUCED_MOTION_FADE_DURATION,
+            ease: 'power2.out',
+            onComplete: () => gsap.set(split.lines, { yPercent: 100 }),
+          });
+          return;
+        }
+
         gsap.to(split.lines, {
           yPercent: 100,
           duration: 0.28,
@@ -315,7 +374,7 @@ export function ZoomSliderComp({
     });
 
     return () => cleanups.forEach((cleanup) => cleanup());
-  }, [images]);
+  }, [images, reduceMotion]);
 
   const activeItem = images[activeIndex];
   const slideAnnouncement = images.length

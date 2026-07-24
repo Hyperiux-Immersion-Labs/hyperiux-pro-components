@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from'react'
-import gsap from'gsap'
 import { createSuspendedRaf } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 export default function RopeCursor({
 	ropeColor ='#bda985',
@@ -17,6 +17,7 @@ export default function RopeCursor({
 	const mousePosition = useRef({ x: null, y: null })
 	const [isVisible, setIsVisible] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
+	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -52,16 +53,19 @@ export default function RopeCursor({
  }
  }
 
- const updateLeadingSegment = (segments, targetX, targetY) => {
- gsap.to(segments[0], {
- x: targetX,
- y: targetY,
- duration: 0.05,
- ease:'power2.out'
- })
+ // Time-based smoothing factor equivalent to the settle time of a short
+ // eased tween, applied directly each frame instead of allocating a new
+ // gsap tween per segment per frame (previously ~480 tweens/sec).
+ const smoothingAmount = (durationSeconds, deltaSeconds) =>
+ 1 - Math.exp((-3 * deltaSeconds) / durationSeconds)
+
+ const updateLeadingSegment = (segments, targetX, targetY, deltaSeconds) => {
+ const amount = smoothingAmount(0.05, deltaSeconds)
+ segments[0].x += (targetX - segments[0].x) * amount
+ segments[0].y += (targetY - segments[0].y) * amount
  }
 
- const updateFollowingSegments = (segments) => {
+ const updateFollowingSegments = (segments, deltaSeconds) => {
  for (let i = 1; i < segmentCount; i++) {
  const previousSegment = segments[i - 1]
  const currentSegment = segments[i]
@@ -75,12 +79,9 @@ export default function RopeCursor({
  const constrainedX = previousSegment.x - Math.cos(angleToTarget) * segmentLength
  const constrainedY = previousSegment.y - Math.sin(angleToTarget) * segmentLength
 
- gsap.to(currentSegment, {
- x: constrainedX,
- y: constrainedY,
- duration: 0.15 + i * 0.01,
- ease:'power2.out'
- })
+ const amount = smoothingAmount(0.15 + i * 0.01, deltaSeconds)
+ currentSegment.x += (constrainedX - currentSegment.x) * amount
+ currentSegment.y += (constrainedY - currentSegment.y) * amount
  }
  }
  }
@@ -100,18 +101,25 @@ export default function RopeCursor({
  return pathData
  }
 
+ let lastFrameTime = null
+
  const loop = createSuspendedRaf({
  root: svgRef.current,
- onFrame: () => {
+ onFrame: (time) => {
  const segments = ropeSegments.current
  const mouse = mousePosition.current
+
+ // Clamp delta so a resume after suspension doesn't snap the rope.
+ const deltaSeconds =
+ lastFrameTime === null ? 1 / 60 : Math.min((time - lastFrameTime) / 1000, 1 / 30)
+ lastFrameTime = time
 
  if (!isInitialized || mouse.x === null) {
  return
  }
 
- updateLeadingSegment(segments, mouse.x, mouse.y)
- updateFollowingSegments(segments)
+ updateLeadingSegment(segments, mouse.x, mouse.y, deltaSeconds)
+ updateFollowingSegments(segments, deltaSeconds)
 
  if (pathRef.current) {
  pathRef.current.setAttribute('d', generateSmoothPath(segments))
@@ -131,6 +139,7 @@ export default function RopeCursor({
 	if (isMobile) return null
 
 	return (
+ <>
  <svg
  ref={svgRef}
  className="w-full h-full absolute inset-0"
@@ -146,5 +155,21 @@ export default function RopeCursor({
  opacity={ropeOpacity}
  />
  </svg>
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-black">
+     The rope keeps swinging.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-black">
+     Rope Cursor is a live trail of your cursor&apos;s movement. The
+     motion is the entire effect, so it can&apos;t be swapped for a
+     reduced motion alternative.
+   </p>
+ </div>
+ )}
+ </>
 	)
 }

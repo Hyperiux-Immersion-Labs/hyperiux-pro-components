@@ -16,12 +16,12 @@
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/svg-pixel-reveal/index.jsx"
     },
     {
       "path": "PixelatedScgFilter.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PixelatedScgFilter.jsx"
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
     }
   ]
 }

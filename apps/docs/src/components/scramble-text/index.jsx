@@ -8,6 +8,9 @@ import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
+
 const ScrambleText = ({
   text,
   speed = 0.6,
@@ -47,6 +50,33 @@ const ScrambleText = ({
 
  const ctx = gsap.context(() => {
  const el = elRef.current;
+
+ const prefersReduced =
+ window.matchMedia &&
+ window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+ if (prefersReduced) {
+ gsap.set(el, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+ const tl = gsap.timeline({ paused: true });
+ tlRef.current = tl;
+
+ tl.to(el, {
+ opacity: 1,
+ y: 0,
+ duration: REDUCED_MOTION_FADE_DURATION,
+ ease:'power2.out',
+ });
+
+ ScrollTrigger.create({
+ trigger: el,
+ start,
+ once: true,
+ onEnter: () => tl.play(),
+ });
+
+ return;
+ }
 
  // Lock height before split to prevent layout shift
  const originalHeight = el.offsetHeight;

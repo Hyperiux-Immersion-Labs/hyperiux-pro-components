@@ -1,6 +1,6 @@
 {
   "name": "card-drift",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
@@ -29,6 +29,14 @@
     {
       "path": "NavigationButtons.jsx",
       "target": "src/components/effects/card-drift/NavigationButtons.jsx"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-24",
+      "summary": "Added a prefers-reduced-motion notice explaining that dragging stays fully interactive since it is a direct, user-initiated action.",
+      "breaking": false
     }
   ]
 }

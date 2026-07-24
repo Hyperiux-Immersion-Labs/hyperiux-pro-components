@@ -1,8 +1,25 @@
 "use client";
-import { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+ () => typeof window !== 'undefined'
+ && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+ );
+
+ useEffect(() => {
+ const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+ const handler = (e) => setPrefersReducedMotion(e.matches);
+ mq.addEventListener('change', handler);
+ return () => mq.removeEventListener('change', handler);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 export default function SpotlightText({
- text ="this is sample text",
+ text ="Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
  className ="",
  size ="text-3xl md:text-5xl",
  align ="center",
@@ -16,6 +33,7 @@ export default function SpotlightText({
  const isInside = useRef(false);
 
  const [isMobile, setIsMobile] = useState(false);
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  const lerp = (start, end, factor) => start + (end - start) * factor;
 
@@ -36,7 +54,7 @@ export default function SpotlightText({
  if (isMobile) return; //  disable effect on mobile
 
  const el = containerRef.current;
- let raf;
+ const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
 
  const updateTarget = (e) => {
  const rect = el.getBoundingClientRect();
@@ -65,31 +83,32 @@ export default function SpotlightText({
  targetOpacity.current = 0;
  };
 
- const animate = () => {
- current.current.x = lerp(current.current.x, target.current.x, 0.08);
- current.current.y = lerp(current.current.y, target.current.y, 0.08);
+ const loop = createSuspendedRaf({
+ root: el,
+ onFrame: () => {
+ current.current.x = lerp(current.current.x, target.current.x, positionLerpFactor);
+ current.current.y = lerp(current.current.y, target.current.y, positionLerpFactor);
  currentOpacity.current = lerp(currentOpacity.current, targetOpacity.current, 0.12);
 
  el.style.setProperty("--x", `${current.current.x}px`);
  el.style.setProperty("--y", `${current.current.y}px`);
  el.style.setProperty("--opacity", `${currentOpacity.current}`);
+ },
+ });
 
- raf = requestAnimationFrame(animate);
- };
-
- animate();
+ loop.start();
 
  el.addEventListener("mouseenter", handleEnter);
  el.addEventListener("mousemove", handleMove);
  el.addEventListener("mouseleave", handleLeave);
 
  return () => {
- cancelAnimationFrame(raf);
+ loop.destroy();
  el.removeEventListener("mouseenter", handleEnter);
  el.removeEventListener("mousemove", handleMove);
  el.removeEventListener("mouseleave", handleLeave);
  };
- }, [isMobile]);
+ }, [isMobile, prefersReducedMotion]);
 
  const alignment =
  align ==="center"
@@ -102,7 +121,7 @@ export default function SpotlightText({
  <section className={`w-full ${className}`}>
  <div
  ref={containerRef}
- className={`relative font-semibold ${size} ${alignment}`}
+ className={`relative font-semibold max-md:font-medium max-md:text-[7vw]! ${size} ${alignment}`}
  style={
  isMobile
  ? {}

@@ -1,13 +1,13 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from"react";
-import * as THREE from"three";
-import { Canvas } from"@react-three/fiber";
-import { EffectComposer, Vignette } from"@react-three/postprocessing";
-import FilmGrainEffect from"./FilmGrainEffect";
-import EdgeBlurEffect from"./EdgeBlurEffect";
+import { Suspense, useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
+import FilmGrainEffect from "./FilmGrainEffect";
+import EdgeBlurEffect from "./EdgeBlurEffect";
 import Experience from "./ExperienceComp";
-import { createVisibilityGate } from"./createSuspendedRaf";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 export default function ProgressiveBloomValley() {
  const rootRef = useRef(null);

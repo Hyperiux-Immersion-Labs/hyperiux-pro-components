@@ -10,7 +10,7 @@ const page = () => {
   return (
     <>
       <ReactLenis root>
-        <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+        <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
         <section className="w-screen h-screen bg-black text-white flex flex-col gap-[7vw] max-sm:gap-[12vw] items-center justify-center">
 
           <HeadAnim>

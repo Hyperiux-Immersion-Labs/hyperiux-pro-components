@@ -6,7 +6,7 @@ import React from'react'
 const page = () => {
  return (
  <>
- <DemoHeader logoColor='#ffffff' textColor='#ffffff'  />
+ <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'  />
  <GridLift/>
  </>
   )

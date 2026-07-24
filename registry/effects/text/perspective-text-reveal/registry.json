@@ -1,6 +1,20 @@
 {
   "name": "perspective-text-reveal",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion perspective reveal.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Perspective Text Reveal",
   "description": "3D perspective rotation text reveal with lines flipping into view on scroll",
@@ -11,14 +25,13 @@
   "registryDependencies": [],
   "previewUrl": "/demo/perspective-text-reveal",
   "tier": "pro",
-  "main": "index.jsx",
   "exportName": "PerspectiveTextReveal",
   "exportKind": "default",
-  "importPath": "@/components/effects/perspective-text-reveal",
-  "target": "src/components/effects/perspective-text-reveal",
+  "main": "index.jsx",
   "files": [
     {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/perspective-text-reveal/index.jsx"
     }
   ]

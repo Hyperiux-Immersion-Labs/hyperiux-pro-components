@@ -1,6 +1,7 @@
-import { useMemo, useEffect, useRef } from"react";
-import { Effect } from"postprocessing";
-import { Uniform, Vector2 } from"three";
+import { useMemo, useEffect} from "react";
+import { Effect } from "postprocessing";
+import { Uniform, Vector2 } from "three";
+import { prefersReducedMotion } from "./prefersReducedMotion";
 
 /**
  * Fix for stretched film grain:
@@ -65,6 +66,15 @@ class FilmGrainEffectImpl extends Effect {
  }
 
  update(renderer, _inputBuffer, deltaTime) {
+ if (this._reduceMotion) {
+ // Keep grain static — still sync resolution for aspect-correct dots.
+ if (renderer && renderer.getSize) {
+ const size = renderer.getSize(new Vector2());
+ this.setResolution(size.x, size.y);
+ }
+ return;
+ }
+
  this._time += deltaTime;
  // Wrap time to prevent float precision loss - keeps grain as dots, not rain streaks
  if (this._time > 1000) this._time -= 1000;
@@ -89,6 +99,22 @@ export default function FilmGrainEffect({ amount = 0.12, scale = 900, opacity = 
  }
  return new FilmGrainEffectImpl({ amount, scale, opacity, resolution: [width, height] });
  }, [amount, scale, opacity]);
+
+ useEffect(() => {
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ if (!mq) {
+ effect._reduceMotion = prefersReducedMotion();
+ return;
+ }
+
+ const apply = (enabled) => {
+ effect._reduceMotion = enabled;
+ };
+ apply(mq.matches);
+ const onChange = (event) => apply(event.matches);
+ mq.addEventListener?.("change", onChange);
+ return () => mq.removeEventListener?.("change", onChange);
+ }, [effect]);
 
  // If client, keep uResolution uniform in sync with window resize
  useEffect(() => {

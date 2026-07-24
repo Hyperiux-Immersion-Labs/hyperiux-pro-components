@@ -1,8 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-
 const PRODUCT_LINKS = [
   { label: "Overview", href: "#" },
   { label: "Pricing", href: "#" },
@@ -38,16 +35,16 @@ export function Menu1() {
 
         <div className="flex flex-col max-md:flex-wrap gap-4">
           {PRODUCT_LINKS.map((item) => (
-            <Link
+            <a
               key={item.label}
               href={item.href}
-              className="flex flex-col gap-1 rounded-lg border border-neutral-200 p-4 transition-colors duration-200 hover:bg-neutral-100"
+              className="flex flex-col gap-1 rounded-lg border border-neutral-200 p-4 transition-colors duration-200 hover:bg-neutral-100 motion-reduce:bg-transparent motion-reduce:transition-none"
             >
               <div className="text-lg font-medium text-neutral-700 max-xl:text-2xl max-md:text-xl">{item.label}</div>
               <div className="text-sm text-neutral-600 max-xl:text-lg max-md:text-base">
                 Learn more about {item.label.toLowerCase()}.
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -58,7 +55,7 @@ export function Menu1() {
             key={image.src}
             className={`${image.heightClassName} overflow-hidden rounded-lg `}
           >
-            <Image
+            <img
               src={image.src}
               alt={image.alt}
               width={600}

@@ -1,6 +1,6 @@
 {
   "name": "lines-loader",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Lines Loader",
   "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
@@ -33,6 +33,14 @@
     {
       "path": "utils.js",
       "target": "src/components/effects/lines-loader/utils.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support: hero text fades in as a single block instead of a per-letter stagger",
+      "breaking": false
     }
   ]
 }

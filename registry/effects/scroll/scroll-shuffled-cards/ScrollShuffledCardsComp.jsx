@@ -7,6 +7,13 @@ import Card from "./card";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
 const getRandomInRange = (min, max) => Math.random() * (max - min) + min;
 
 const ScrollShuffledCardsComp = ({
@@ -56,6 +63,7 @@ const ScrollShuffledCardsComp = ({
 
   useEffect(() => {
     cardRefs.current = cardRefs.current.slice(0, randomizedCards.length);
+    const reducedMotion = prefersReducedMotion();
 
     const ctx = gsap.context(() => {
       const cardElements = cardRefs.current.filter(Boolean);
@@ -65,12 +73,15 @@ const ScrollShuffledCardsComp = ({
         xPercent: initialContainerXPercent,
       });
 
+      // Reduced motion: cards sit at their resting position with no
+      // shuffle offset or rotation - only the container's overall scroll
+      // slide stays in motion.
       cardElements.forEach((cardEl, index) => {
         gsap.set(cardEl, {
-          x: `${randomizedCards[index].startX}vw`,
-          y: `${randomizedCards[index].startY}vw`,
-          rotation: randomizedCards[index].startRotate,
-          opacity: 1, 
+          x: reducedMotion ? 0 : `${randomizedCards[index].startX}vw`,
+          y: reducedMotion ? 0 : `${randomizedCards[index].startY}vw`,
+          rotation: reducedMotion ? 0 : randomizedCards[index].startRotate,
+          opacity: 1,
         });
       });
 
@@ -96,9 +107,9 @@ const ScrollShuffledCardsComp = ({
         tl.to(
           cardEl,
           {
-            x: `${randomizedCards[index].endX}vw`,
-            y: `${randomizedCards[index].endY}vw`,
-            rotation: randomizedCards[index].endRotate,
+            x: reducedMotion ? 0 : `${randomizedCards[index].endX}vw`,
+            y: reducedMotion ? 0 : `${randomizedCards[index].endY}vw`,
+            rotation: reducedMotion ? 0 : randomizedCards[index].endRotate,
             ease: "none",
           },
           0
@@ -121,7 +132,7 @@ const ScrollShuffledCardsComp = ({
       <div className="sticky top-0 flex h-screen w-screen items-center justify-center overflow-hidden">
         <div
           ref={containerRef}
-          className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-md:gap-[4vw] max-sm:gap-[3vw]"
+          className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-xl:gap-[4vw] max-md:gap-[3vw]"
           style={{ gap: cardsGap }}
         >
           {randomizedCards.map((card, index) => (
@@ -134,31 +145,31 @@ const ScrollShuffledCardsComp = ({
               <Card
                 radius={cardRadius}
                 padding={cardPadding}
-                className={`h-[30vw]! w-[25vw]! shrink-0 overflow-hidden max-md:h-[55vw]! max-md:w-[45vw]! max-sm:h-[78vw]! max-sm:w-[62vw]! max-[540px]:h-[90vw]! max-[540px]:w-[72vw]! ${card.bgOuter || ""}`}
+                className={`h-[30vw]! w-[25vw]! shrink-0 overflow-hidden max-xl:h-[55vw]! max-xl:w-[45vw]! max-md:h-[78vw]! max-md:w-[62vw]! max-[540px]:h-[90vw]! max-[540px]:w-[72vw]! ${card.bgOuter || ""}`}
                 style={{
                   width: cardWidth,
                   height: cardHeight,
                 }}
               >
                 <div
-                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-md:px-[2vw] max-md:pb-[1.8vw] max-md:pt-[3vw] max-sm:px-[4vw] max-sm:pb-[3vw] max-sm:pt-[4.5vw] ${card.bgInner || ""} ${card.text || ""}`}
+                  className={`flex h-full w-full flex-col justify-between px-[1.5vw] pb-[1.2vw] pt-[2.5vw] max-xl:px-[2vw] max-xl:pb-[1.8vw] max-xl:pt-[3vw] max-md:px-[4vw] max-md:pb-[3vw] max-md:pt-[4.5vw] ${card.bgInner || ""} ${card.text || ""}`}
                 >
-                  <div className="flex flex-col gap-[1.2vw] max-md:gap-[5vw] max-sm:gap-[6vw]">
+                  <div className="flex flex-col gap-[1.2vw] max-xl:gap-[5vw] max-md:gap-[6vw]">
                     {card.eyebrow && (
-                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-md:text-[2.5vw] max-sm:text-[4vw]">
+                      <span className="text-[0.85vw] font-semibold leading-none tracking-[0.2em] uppercase max-xl:text-[2.5vw] max-md:text-[4vw]">
                         {card.eyebrow}
                       </span>
                     )}
 
                     {card.description && (
-                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-md:w-[92%] max-md:text-[2.5vw] max-sm:w-full max-sm:text-[4vw]">
+                      <p className="w-[85%] text-[1.05vw] leading-[1.35] max-xl:w-[92%] max-xl:text-[2.5vw] max-md:w-full max-md:text-[4vw]">
                         {card.description}
                       </p>
                     )}
                   </div>
 
                   {card.title && (
-                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-md:text-[6vw] max-sm:text-[9vw] max-sm:leading-[0.86]">
+                    <h2 className="text-[4.6vw] leading-[0.78] font-semibold max-xl:text-[6vw] max-md:text-[9vw] max-md:leading-[0.86]">
                       {card.title}
                     </h2>
                   )}
@@ -169,7 +180,7 @@ const ScrollShuffledCardsComp = ({
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-md:text-[7.5vw] max-sm:px-[4vw] max-sm:text-[10vw]">
+          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-xl:text-[7.5vw] max-md:px-[4vw] max-md:text-[10vw]">
             {heading}
           </h1>
         </div>

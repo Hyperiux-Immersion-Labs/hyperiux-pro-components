@@ -1,12 +1,23 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
-import { Inter } from "next/font/google";
-
-// Inter is a variable font exposing a `wght` axis, which the cursor-driven
-// weight morph below animates. It's loaded here so the component is fully
-const cursorMoveFont = Inter({ subsets: ["latin"], display: "swap" });
+const CURSOR_MOVE_FONT_FAMILY =
+  'var(--cursor-move-font-family, Inter, ui-sans-serif, system-ui, sans-serif)';
 
 const DESKTOP_CURSOR_MOVE_QUERY = "(min-width: 1025px) and (pointer: fine)";
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
 
 function mapRange(value, inMin, inMax, outMin, outMax) {
   const clamped = Math.min(Math.max(value, inMin), inMax);
@@ -50,13 +61,27 @@ function useMousePosition(containerRef) {
       return;
     }
 
+    // Coalesce mousemove bursts to one state update (and one rect read)
+    // per animation frame instead of re-rendering on every raw event.
+    let frameId = null;
+    let lastClientX = 0;
+    let lastClientY = 0;
+
     const onMove = (e) => {
-      const nextRect = el.getBoundingClientRect();
-      setPos({
-        x: e.clientX - nextRect.left,
-        y: e.clientY - nextRect.top,
-        width: nextRect.width,
-        height: nextRect.height,
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+
+      if (frameId !== null) return;
+
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        const nextRect = el.getBoundingClientRect();
+        setPos({
+          x: lastClientX - nextRect.left,
+          y: lastClientY - nextRect.top,
+          width: nextRect.width,
+          height: nextRect.height,
+        });
       });
     };
 
@@ -77,6 +102,7 @@ function useMousePosition(containerRef) {
     el.addEventListener("mousemove", onMove);
     return () => {
       el.removeEventListener("mousemove", onMove);
+      if (frameId !== null) cancelAnimationFrame(frameId);
       ro?.disconnect?.();
     };
   }, [containerRef, isDesktop]);
@@ -113,6 +139,7 @@ function VariableFontAndCursor({
       className={className}
       style={{
         fontVariationSettings,
+        fontFamily: CURSOR_MOVE_FONT_FAMILY,
         transform: `skewX(${skewX}deg)`,
         transition,
         transformOrigin,
@@ -147,7 +174,7 @@ export default function CursorMove({
   cursorDotStyle = {},
   text = "hello!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
-  textClassName = "text-9xl max-md:text-6xl max-sm:text-5xl text-orange-500 select-none leading-none",
+  textClassName = "text-9xl max-xl:text-6xl max-md:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",
   fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
@@ -157,10 +184,11 @@ export default function CursorMove({
   skewXRange = { min: 0, max: -20 },
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
-  coordinatesTextClassName = "text-xs max-md:text-sm text-white/40 tabular-nums",
+  coordinatesTextClassName = "text-xs max-xl:text-sm text-white/40 tabular-nums",
 }) {
   const containerRef = useRef(null);
   const { x, y, isDesktop } = useMousePosition(containerRef);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const isPatternCrosshair = crosshairVariant === "dotted" || crosshairVariant === "dashed";
   const patternLength =
@@ -225,7 +253,7 @@ export default function CursorMove({
         <VariableFontAndCursor
           containerRef={containerRef}
           fontVariationMapping={fontVariationMapping}
-          className={`${cursorMoveFont.className} ${textClassName}`}
+          className={textClassName}
           as={textAs}
           transition={variableTextTransition}
           transformOrigin={variableTextTransformOrigin}
@@ -241,6 +269,22 @@ export default function CursorMove({
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>
         </div>
       ) : null}
+
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-xl:hidden"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The letters keep bending.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/65">
+            Cursor Move warps text and tracks coordinates live as you move
+            the cursor. The animation is the interaction itself, so it
+            can&apos;t be reduced.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

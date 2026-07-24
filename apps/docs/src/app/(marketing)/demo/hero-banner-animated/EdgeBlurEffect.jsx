@@ -1,6 +1,6 @@
-import { useMemo, useEffect } from"react";
-import { Effect } from"postprocessing";
-import { Uniform, Vector2 } from"three";
+import { useMemo, useEffect } from "react";
+import { Effect } from "postprocessing";
+import { Uniform, Vector2 } from "three";
 
 /**
  * Both shaders share the same blur logic, but the output differs:

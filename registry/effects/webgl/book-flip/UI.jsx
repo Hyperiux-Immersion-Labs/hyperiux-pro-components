@@ -1,6 +1,6 @@
 'use client'
-import { useEffect } from"react";
-import { usePage } from"./PageContext";
+import { useEffect } from "react";
+import { usePage } from "./PageContext";
 
 export const UI = ({ images = [] }) => {
  const { page, setPage } = usePage();

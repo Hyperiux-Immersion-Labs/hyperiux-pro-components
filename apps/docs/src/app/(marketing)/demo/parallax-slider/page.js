@@ -9,7 +9,7 @@ import ParallaxSlider from '@/components/parallax-slider';
 const page = () => {
  return (
  <>
- <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+ <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
  <LenisSmoothScroll />
  <h1 className="sr-only">Parallax Slider</h1>
  <ParallaxSlider images={[

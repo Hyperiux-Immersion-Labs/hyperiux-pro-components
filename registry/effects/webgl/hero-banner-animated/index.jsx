@@ -12,8 +12,21 @@ import VideoUI from'./VideoUI'
 import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
-import Link from 'next/link'
 import { createVisibilityGate } from './createSuspendedRaf'
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setPrefersReducedMotion(mediaQuery.matches)
+    update()
+    mediaQuery.addEventListener('change', update)
+    return () => mediaQuery.removeEventListener('change', update)
+  }, [])
+
+  return prefersReducedMotion
+}
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -154,6 +167,7 @@ export default function HeroBannerAnimated() {
   const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
   const isMobile = deviceType === 'mobile'
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const gate = createVisibilityGate({
@@ -241,9 +255,9 @@ export default function HeroBannerAnimated() {
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
   className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-xl:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
+  <a href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </Link>
+  </a>
 
   <Play className='w-4 h-4 max-xl:hidden' fill='#ECE4B4' />
 </motion.p>
@@ -306,6 +320,23 @@ export default function HeroBannerAnimated() {
                 For the full room, video, and immersive motion experience, view this scene on a larger screen.
               </p>
             </div>
+          </div>
+        )}
+
+        {prefersReducedMotion && (
+           <div
+            aria-live="polite"
+            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          >
+            <h2 className="text-sm leading-none text-white">
+              The light keeps tracking.
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-white/65">
+              Hero Banner Animated moves light with your cursor in
+              real time and zooms the scene on click. Since that tracking
+              motion is continuous, reduced motion can&apos;t be applied
+              here.
+            </p>
           </div>
         )}
       </section>

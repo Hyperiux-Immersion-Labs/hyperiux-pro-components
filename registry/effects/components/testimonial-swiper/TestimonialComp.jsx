@@ -24,17 +24,71 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     const prevCurrentRef = useRef(null);
     const pendingDirectionRef = useRef("next");
     const isAnimatingRef = useRef(false);
+    const reduceMotionRef = useRef(
+        typeof window !== "undefined" &&
+            (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+    );
 
     const total = testimonials.length;
     const pad = (n) => String(n).padStart(2, "0");
 
-    const animateIn = useCallback((direction) => {
-        const yFrom = direction === "next" ? 110 : -110;
+    useEffect(() => {
+        const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+        if (!mq) return;
+        const onChange = (event) => {
+            reduceMotionRef.current = event.matches;
+        };
+        reduceMotionRef.current = mq.matches;
+        mq.addEventListener?.("change", onChange);
+        return () => mq.removeEventListener?.("change", onChange);
+    }, []);
 
+    const animateIn = useCallback((direction) => {
         if (splitRef.current) {
             splitRef.current.revert();
             splitRef.current = null;
         }
+
+        const meta = [
+            desktopImageRef.current,
+            mobileImageRef.current,
+            nameRef.current,
+            titleRef.current,
+            mobileNameRef.current,
+            mobileTitleRef.current,
+            quoteMarkRef.current,
+        ];
+
+        const onDone = () => {
+            setIsAnimating(false);
+            isAnimatingRef.current = false;
+        };
+
+        // Reduced-motion: skip SplitText / Y slides — opacity fade only.
+        if (reduceMotionRef.current) {
+            gsap.set(quoteRef.current, { autoAlpha: 0 });
+            gsap.set(meta, { autoAlpha: 0 });
+
+            const tl = gsap.timeline({ onComplete: onDone });
+            tl.to(quoteRef.current, {
+                autoAlpha: 1,
+                duration: 0.5,
+                ease: "power2.out",
+            }).to(
+                meta,
+                {
+                    autoAlpha: 1,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    stagger: 0.08,
+                },
+                "<0.15"
+            );
+            return;
+        }
+
+        const yFrom = direction === "next" ? 110 : -110;
+
         gsap.set(quoteRef.current, { autoAlpha: 1 });
 
         splitRef.current = new SplitText(quoteRef.current, {
@@ -53,24 +107,11 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
         });
 
         gsap.set(lines, { yPercent: yFrom });
-        gsap.set([
-            desktopImageRef.current,
-            mobileImageRef.current,
-            nameRef.current,
-            titleRef.current,
-            mobileNameRef.current,
-            mobileTitleRef.current,
-            quoteMarkRef.current,
-        ], {
+        gsap.set(meta, {
             autoAlpha: 0,
         });
 
-        const tl = gsap.timeline({
-            onComplete: () => {
-                setIsAnimating(false);
-                isAnimatingRef.current = false;
-            },
-        });
+        const tl = gsap.timeline({ onComplete: onDone });
 
         tl.to(lines, {
             yPercent: 0,
@@ -81,15 +122,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                 from: direction === "next" ? "start" : "end",
             },
         }).to(
-            [
-                desktopImageRef.current,
-                mobileImageRef.current,
-                nameRef.current,
-                titleRef.current,
-                mobileNameRef.current,
-                mobileTitleRef.current,
-                quoteMarkRef.current,
-            ],
+            meta,
             {
                 autoAlpha: 1,
                 y: 0,

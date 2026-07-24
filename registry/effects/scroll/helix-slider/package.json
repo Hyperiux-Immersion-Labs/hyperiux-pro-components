@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/helix-slider",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
-  "main": "helix-slider.jsx",
+  "main": "index.jsx",
   "files": [
-    "helix-slider.jsx",
+    "index.jsx",
+    "HelixSliderComp.jsx",
     "registry.json"
   ],
   "keywords": [
@@ -12,6 +13,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*"
+    "gsap": "*",
+    "lenis": "*"
   }
 }

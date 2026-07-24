@@ -1,9 +1,9 @@
 'use client'
-import { useTexture } from"@react-three/drei";
-import { useFrame } from"@react-three/fiber";
-import { easing } from"maath";
-import { usePage } from"./PageContext";
-import { useEffect, useMemo, useRef, useState } from"react";
+import { useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { usePage } from "./PageContext";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
  Bone,
  BoxGeometry,
@@ -16,8 +16,8 @@ import {
  SRGBColorSpace,
  Uint16BufferAttribute,
  Vector3,
-} from"three";
-import { degToRad } from"three/src/math/MathUtils.js";
+} from "three";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 
 const EASING_FACTOR = 0.5; 

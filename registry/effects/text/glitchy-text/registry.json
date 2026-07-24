@@ -1,6 +1,20 @@
 {
   "name": "glitchy-text",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion glitch playback.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Glitchy Text",
   "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
@@ -11,14 +25,13 @@
   "registryDependencies": [],
   "previewUrl": "/demo/glitchy-text",
   "tier": "pro",
-  "main": "index.jsx",
   "exportName": "GlitchyText",
   "exportKind": "default",
-  "importPath": "@/components/effects/glitchy-text",
-  "target": "src/components/effects/glitchy-text",
+  "main": "index.jsx",
   "files": [
     {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/glitchy-text/index.jsx"
     }
   ]

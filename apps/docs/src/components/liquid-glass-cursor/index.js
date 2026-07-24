@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useId, useRef } from"react";
-import gsap from"gsap";
+import React, { useEffect, useId, useRef } from "react";
+import gsap from "gsap";
 
 import { LIQUID_TEXTURE } from "./LiquidText";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 export default function LiquidGlassCursor({
  baseSize = 40,
@@ -21,6 +22,7 @@ export default function LiquidGlassCursor({
  const cursorRef = useRef(null);
  const innerRef = useRef(null);
  const textRef = useRef(null);
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  // Hide default cursor
@@ -218,6 +220,21 @@ export default function LiquidGlassCursor({
  ></span>
   </div>
  </div>
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center "
+ >
+   <h2 className="text-sm leading-none text-[#111111]">
+     The glass keeps flowing.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-black/65">
+     Liquid Glass Cursor&apos;s ripple follows your pointer in real
+     time. Since the distortion is the interaction itself, reduced
+     motion can&apos;t be applied here.
+   </p>
+ </div>
+ )}
  </>
  );
 }

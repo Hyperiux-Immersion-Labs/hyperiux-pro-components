@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useRef } from"react";
-import { gsap } from"gsap";
-import { InertiaPlugin } from"gsap/InertiaPlugin";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(InertiaPlugin);
 
@@ -127,7 +127,8 @@ function InertiaImageComp({ images = [] }) {
  key={i}
  className="media-item relative h-[12vw] w-[12vw] max-xl:h-[22vw] max-xl:w-[22vw] max-md:h-[35vw] max-md:w-[35vw]"
  >
- <img src={src} alt="asset-image" className="absolute inset-0 h-full w-full object-cover pointer-events-none block rounded-[4%]  will-change-transform" />
+ {/* eslint-disable-next-line @next/next/no-img-element */}
+ <img src={src} alt="asset-image" className="absolute inset-0 pointer-events-none block rounded-[4%] object-contain will-change-transform" />
  </div>
  ))}
  </div>

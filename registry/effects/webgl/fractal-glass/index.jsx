@@ -1,8 +1,22 @@
 'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { createSuspendedRaf } from "./createSuspendedRaf";
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
 
 const vertexShader = `
  varying vec2 vUv;
@@ -162,6 +176,7 @@ export default function FractalGlass({
 }) {
   const mountRef = useRef(null);
   const videoRef = useRef(null); // keeps reference to video element for cleanup
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = mountRef.current;
@@ -346,6 +361,22 @@ export default function FractalGlass({
       >
         Works best on desktop
       </div>
+
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The glass keeps shifting.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/65">
+            Fractal Glass distorts the image based on cursor and touch
+            position in real time. Since the distortion is driven entirely
+            by motion, reduced motion can&apos;t be applied here.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

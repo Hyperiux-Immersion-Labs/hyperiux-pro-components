@@ -1,6 +1,10 @@
 {
   "name": "colliding-models",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Colliding Models",
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
@@ -11,8 +15,7 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "maath",
-    "next"
+    "maath"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/colliding-models",

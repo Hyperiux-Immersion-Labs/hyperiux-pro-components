@@ -10,6 +10,13 @@ import { createSuspendedRaf } from './createSuspendedRaf';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+ if (typeof window === 'undefined') return false;
+ return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+}
+
 // Load SVG as image and render to canvas for proper texture
 const loadSvgAsCanvas = (src, size) => {
  return new Promise((resolve, reject) => {
@@ -61,6 +68,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
 
  const canvasSize = getCanvasSize();
  const numSlices = 32;
+ const reducedMotion = prefersReducedMotion();
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 
@@ -92,6 +100,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  u_numSlices: { value: numSlices },
  u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },
  u_gridSize: { value: 16.0 }, // Grid cell size in pixels
+ u_reducedMotion: { value: reducedMotion ? 1 : 0 },
  },
  vertexShader: PixelTransitionVertex,
  fragmentShader: PixelTransitionFragment,
@@ -228,7 +237,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  return (
  <div
  ref={containerRef}
- className="h-[599px] w-[599px] max-md:h-[420px] max-md:w-[420px] max-sm:h-[320px] max-sm:w-[320px] max-sm:-translate-y-20 border-r border-t border-black/20"
+ className="h-[599px] w-[599px] max-xl:h-[420px] max-xl:w-[420px] max-md:h-[320px] max-md:w-[320px] max-md:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }

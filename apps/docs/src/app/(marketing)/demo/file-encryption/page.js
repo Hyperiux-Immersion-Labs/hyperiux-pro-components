@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
   return (
     <>
-    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
     <FileEncryption/>
     
     </>

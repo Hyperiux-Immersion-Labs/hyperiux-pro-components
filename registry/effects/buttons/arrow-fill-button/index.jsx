@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
-const COMPACT_LAYOUT_BREAKPOINT = 1025;
+const COMPACT_LAYOUT_BREAKPOINT = 1280;
 const ANIMATION_DURATION_MS = 450;
 
 function ArrowFillButton({
@@ -123,7 +122,7 @@ function ArrowFillButton({
   };
 
   return (
-    <Link
+    <a
       href={href}
       {...props}
       data-pressed={isPressed ? "true" : "false"}
@@ -151,7 +150,7 @@ function ArrowFillButton({
         aria-hidden="true"
         className={`pointer-events-none absolute z-2 rounded-full bg-(--btn-fill-bg) inset-[var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle))] ${
           isReady
-            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:inset-0 group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:inset-0"
+            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:bg-(--btn-fill-bg-hover) group-hover:inset-0 group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:inset-0"
             : ""
         }`}
       />
@@ -160,7 +159,7 @@ function ArrowFillButton({
         aria-hidden="true"
         className={`pointer-events-none absolute inset-0 z-2 flex items-center px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] text-(--btn-fill-text) [clip-path:inset(var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle)))] max-xl:px-[5vw] max-xl:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] ${
           isReady
-            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_0_0_0)] group-data-[pressed=true]:text-(--btn-fill-text-hover) group-data-[pressed=true]:[clip-path:inset(0_0_0_0)]"
+            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_0_0_0)] group-data-[pressed=true]:text-(--btn-fill-text-hover) group-data-[pressed=true]:[clip-path:inset(0_0_0_0)]"
             : ""
         }`}
       >
@@ -170,7 +169,7 @@ function ArrowFillButton({
       <span
         className={`pointer-events-none absolute right-[var(--icon-right)] top-1/2 z-3 inline-flex h-[var(--icon-circle)] w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow) ${
           isReady
-            ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover) group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:text-(--btn-arrow-hover)"
+            ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover) group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:text-(--btn-arrow-hover)"
             : ""
         }`}
         style={{
@@ -182,7 +181,7 @@ function ArrowFillButton({
           <ArrowRight
             className={`absolute left-1/2 top-1/2 size-[1.5vw] max-xl:size-[4vw] max-md:size-[5vw] translate-x-[-170%] -translate-y-1/2 origin-center scale-0 text-current ${
               isReady
-                ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100 group-data-[pressed=true]:-translate-x-1/2 group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-100"
+                ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100 group-data-[pressed=true]:-translate-x-1/2 group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-100"
                 : ""
             }`}
             strokeWidth={1.8}
@@ -191,13 +190,13 @@ function ArrowFillButton({
           <ArrowRight
             className={`absolute left-1/2 top-1/2 size-[1.5vw] max-xl:size-[4vw] max-md:size-[5vw] -translate-x-1/2 -translate-y-1/2 origin-center text-current ${
               isReady
-                ? "transition-transform duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0 group-data-[pressed=true]:translate-x-[70%] group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-0"
+                ? "transition-transform duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0 group-data-[pressed=true]:translate-x-[70%] group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-0"
                 : ""
             }`}
             strokeWidth={1.8}
           />
         </span>
-    </Link>
+    </a>
   );
 }
 

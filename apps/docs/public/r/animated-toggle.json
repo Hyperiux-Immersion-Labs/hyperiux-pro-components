@@ -8,28 +8,41 @@
   "exportName": "AnimatedToggle",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: toggle icon transitions respect the user's reduced-motion preference",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/animated-toggle/index.jsx"
     },
     {
       "path": "ChevronBird.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ChevronBird.jsx"
+      "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
     },
     {
       "path": "Cross.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Cross.jsx"
+      "target": "src/components/effects/animated-toggle/Cross.jsx"
     },
     {
       "path": "Plus.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Plus.jsx"
+      "target": "src/components/effects/animated-toggle/Plus.jsx"
     }
   ]
 }

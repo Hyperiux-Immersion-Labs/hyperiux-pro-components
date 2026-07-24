@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 export default function TextCloning() {
     const canvasRef = useRef(null);
@@ -10,10 +11,16 @@ export default function TextCloning() {
         const ctx = canvas.getContext("2d");
 
         let w, h, dpr;
-        let raf;
 
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
+
+        const prefersReducedMotion =
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
+        const layerCount = prefersReducedMotion ? 3 : 9;
 
         const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -49,7 +56,7 @@ export default function TextCloning() {
             const depthX = dx * 220;
             const depthY = dy * 220;
 
-            const layers = 9;
+            const layers = layerCount;
             const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42);
 
             for (let i = layers; i >= 0; i--) {
@@ -77,19 +84,20 @@ export default function TextCloning() {
             }
         };
 
-        const render = () => {
-            mouse.x = lerp(mouse.x, target.x, 0.08);
-            mouse.y = lerp(mouse.y, target.y, 0.08);
+        const loop = createSuspendedRaf({
+            root: canvas,
+            onFrame: () => {
+                mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
+                mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
 
-            ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = "#101010";
-            ctx.fillRect(0, 0, w, h);
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = "#101010";
+                ctx.fillRect(0, 0, w, h);
 
-            drawStars();
-            drawClones();
-
-            raf = requestAnimationFrame(render);
-        };
+                drawStars();
+                drawClones();
+            },
+        });
 
         const onMove = (e) => {
             target.x = e.clientX;
@@ -104,7 +112,7 @@ export default function TextCloning() {
         };
 
         resize();
-        render();
+        loop.start();
 
         window.addEventListener("resize", resize);
         window.addEventListener("pointermove", onMove);
@@ -113,7 +121,7 @@ export default function TextCloning() {
         window.addEventListener("touchmove", onTouch, { passive: true });
 
         return () => {
-            cancelAnimationFrame(raf);
+            loop.destroy();
             window.removeEventListener("resize", resize);
             window.removeEventListener("pointermove", onMove);
             window.removeEventListener("pointerdown", onMove);
@@ -128,7 +136,7 @@ export default function TextCloning() {
                 value={text}
                 onChange={(e) => setText(e.target.value || "")}
                 placeholder="Type text"
-               className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-md:px-[5vw] max-sm:py-[3vw] max-md:py-[2vw] max-md:text-[3vw]! max-sm:text-[4vw]! text-center"
+               className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-xl:px-[5vw] max-md:py-[3vw] max-xl:py-[2vw] max-xl:text-[3vw]! max-md:text-[4vw]! text-center"
             />
 
 

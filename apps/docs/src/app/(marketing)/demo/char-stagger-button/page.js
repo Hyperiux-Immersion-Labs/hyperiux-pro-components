@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
     return (
         <>
-            <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+            <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
@@ -17,13 +17,13 @@ export default function Page() {
                     <h1 className="text-5xl font-medium max-sm:text-4xl">Character Stagger Button</h1>
                 </div>
 
-                <div className="">
+                <div>
                     <CharStaggerButton
                         href="#"
                         showLine
                         text="Hover me"
                         hoverColor="#ff6b00"
-                        className="  scale-150"
+                        className="scale-150"
                         textClassName="text-[2vw] max-md:text-[3vw] max-sm:text-[4.5vw]"
                     />
                 </div>

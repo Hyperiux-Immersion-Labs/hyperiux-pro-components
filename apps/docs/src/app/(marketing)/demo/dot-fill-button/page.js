@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
     return (
         <>
-       <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+       <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
@@ -17,9 +17,8 @@ export default function Page() {
                     <h1 className="text-5xl font-medium max-sm:text-4xl">Dot Fill Button</h1>
                 </div>
 
-                <div className="">
+                <div>
                     <DotFillBtn
-                    className=""
                         href="#"
                         btnText="Try demo"
                         bgColor="#ff6b00"

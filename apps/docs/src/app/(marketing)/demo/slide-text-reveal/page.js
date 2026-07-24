@@ -8,7 +8,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
    <>
-   <DemoHeader textColor='#ffffff' logoColor='#ffffff' />
+   <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
     <SlideTextWrapper />
     <ScrollBottom />
    </>

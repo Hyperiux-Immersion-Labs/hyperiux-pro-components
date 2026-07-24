@@ -4,10 +4,13 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { HoverFillLink } from "./HoverFillLink";
 import { navigationData } from "./data";
-import Link from "next/link";
 import { useFocusTrap } from "./useFocusTrap";
 
 gsap.registerPlugin(CustomEase);
+
+const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
 function animateColumnIn(colRef) {
     if (!colRef.current) return;
@@ -49,8 +52,17 @@ export function ExpandingNavbarDesktop() {
         if (!square || !items.length) return;
 
         if (activeMainIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -91,8 +103,17 @@ export function ExpandingNavbarDesktop() {
         const items = children.slice(1);
 
         if (activeSubIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -133,8 +154,17 @@ export function ExpandingNavbarDesktop() {
         const items = children.slice(1);
 
         if (activeNestedIndex === null) {
+            if (prefersReducedMotion()) {
+                gsap.set(square, { scale: 0, opacity: 0 });
+                return;
+            }
             gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
             gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            return;
+        }
+
+        if (prefersReducedMotion()) {
+            gsap.set(square, { scale: 0, opacity: 0 });
             return;
         }
 
@@ -179,6 +209,9 @@ export function ExpandingNavbarDesktop() {
         CustomEase.create("menuEase", "0.625,0.05,0,1");
         const tl = gsap.timeline({ paused: true });
 
+        const menuDuration = prefersReducedMotion() ? 0.5 : 1;
+        const lineDuration = prefersReducedMotion() ? 0.25 : 0.5;
+
         gsap.set(backgroundOverlayRef.current, { opacity: 0 });
         gsap.set(menuWrapperRef.current, { width: "55vw" });
         gsap.set(menuContentRef.current, {
@@ -193,7 +226,7 @@ export function ExpandingNavbarDesktop() {
             backgroundOverlayRef.current,
             {
                 opacity: 1,
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
                 pointerEvents: "auto",
             },
@@ -204,7 +237,7 @@ export function ExpandingNavbarDesktop() {
             menuWrapperRef.current,
             {
                 width: "98vw",
-                duration: 1,
+                duration: menuDuration,
                 ease: "menuEase",
             },
             0.1,
@@ -213,7 +246,7 @@ export function ExpandingNavbarDesktop() {
         tl.to(menuContentRef.current, {
             clipPath: "inset(0% 0% 0% 0%)",
             WebkitClipPath: "inset(0% 0% 0% 0%)",
-            duration: 1,
+            duration: menuDuration,
             ease: "menuEase",
         },"<+.35");
 
@@ -221,7 +254,7 @@ export function ExpandingNavbarDesktop() {
             seprationLineRef.current,
             {
                 opacity: 1,
-                duration: 0.5,
+                duration: lineDuration,
                 ease: "menuEase",
             },
             "<",
@@ -391,7 +424,7 @@ export function ExpandingNavbarDesktop() {
                                     autoPlay
                                     loop
                                     muted
-                                    src="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
+                                    src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4"
                                 />
                             </div>
                             <p>Show Reel</p>
@@ -415,7 +448,7 @@ export function ExpandingNavbarDesktop() {
                         ref={seprationLineRef}
                         className="block w-full h-0.5 absolute top-[-.5vw] left-1/2 -translate-x-1/2 bg-[#1A1A1A] transition-all duration-300 opacity-0"
                     />
-                    <Link prefetch={false} href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
+                    <a href="https://vault.hyperiux.com/" target="_blank" className="flex items-center gap-2">
                         <svg className="w-[8vw] h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
                             <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
                             <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>
@@ -434,7 +467,7 @@ export function ExpandingNavbarDesktop() {
                             <rect x="35.5166" width="6.62183" height="42.1389" fill="white"/>
                             <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
                         </svg>
-                    </Link>
+                    </a>
 
                     <button
                         ref={toggleButtonRef}
@@ -442,11 +475,11 @@ export function ExpandingNavbarDesktop() {
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
+                        className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] motion-reduce:bg-transparent motion-reduce:transition-none p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
                     >
                         <div className="w-[1.5vw] h-[1vw] relative flex items-center justify-center">
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
                         </div>
                     </button>
                 </header>

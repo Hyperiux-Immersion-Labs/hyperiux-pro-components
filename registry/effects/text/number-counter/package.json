@@ -1,10 +1,13 @@
 {
-  "name": "@hyperiux/counter",
-  "version": "0.0.1",
+  "name": "@hyperiux/number-counter",
+  "version": "1.1.0",
   "description": "Scroll-triggered number counters with digit rolling animations (multiple variants).",
-  "main": "CounterOne.jsx",
+  "main": "index.jsx",
   "files": [
-    "CounterOne.jsx",
+    "index.jsx",
+    "NumberCounterOne.jsx",
+    "NumberCounterTwo.jsx",
+    "NumberCounterThree.jsx",
     "registry.json"
   ],
   "keywords": [

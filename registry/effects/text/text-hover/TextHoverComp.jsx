@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +26,25 @@ const CornerSVG = ({ className, style }) => (
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
+const REDUCED_MOTION_MOVE_DURATION = 0.08;
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleChange = (event) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 export default function TextHoverComp({
   data = [],
   bgColor = "#0a0a0a",
@@ -39,12 +59,14 @@ export default function TextHoverComp({
   const labelRefs = useRef([]);
   const descriptionRefs = useRef([]);
 
-  const rafRef = useRef(null);
+  const refreshLoopRef = useRef(null);
+  const activationFrameRef = useRef(null);
   const refreshStartRef = useRef(null);
   const activeIndexRef = useRef(null);
 
   const [activeIndex, setActiveIndex] = useState(null);
   const [isCompact, setIsCompact] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const getCompact = useCallback(() => {
     if (typeof window === "undefined") return false;
@@ -146,38 +168,51 @@ export default function TextHoverComp({
         opacity: 1,
         scale: 1,
         filter: "blur(0px)",
-        duration: instant ? 0.22 : 0.35,
+        duration: prefersReducedMotion
+          ? REDUCED_MOTION_MOVE_DURATION
+          : instant
+          ? 0.22
+          : 0.35,
         ease: "power3.out",
         overwrite: "auto",
       });
     },
-    [measureHighlight]
+    [measureHighlight, prefersReducedMotion]
   );
 
   const startRefreshTracking = useCallback(
     (index) => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
-      }
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
 
       refreshStartRef.current = performance.now();
 
-      const tick = () => {
-        if (activeIndexRef.current !== index) return;
+      const loop = createSuspendedRaf({
+        root: sectionRef,
+        onFrame: () => {
+          if (activeIndexRef.current !== index) {
+            loop.destroy();
+            if (refreshLoopRef.current === loop) {
+              refreshLoopRef.current = null;
+            }
+            return;
+          }
 
-        moveHighlight(index, true);
+          moveHighlight(index, true);
 
-        const elapsed = performance.now() - refreshStartRef.current;
+          const elapsed = performance.now() - refreshStartRef.current;
 
-        if (elapsed < 520) {
-          rafRef.current = requestAnimationFrame(tick);
-        } else {
-          rafRef.current = null;
-        }
-      };
+          if (elapsed >= 520) {
+            loop.destroy();
+            if (refreshLoopRef.current === loop) {
+              refreshLoopRef.current = null;
+            }
+          }
+        },
+      });
 
-      rafRef.current = requestAnimationFrame(tick);
+      refreshLoopRef.current = loop;
+      loop.start();
     },
     [moveHighlight]
   );
@@ -187,7 +222,12 @@ export default function TextHoverComp({
       activeIndexRef.current = index;
       setActiveIndex(index);
 
-      requestAnimationFrame(() => {
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+      }
+
+      activationFrameRef.current = requestAnimationFrame(() => {
+        activationFrameRef.current = null;
         moveHighlight(index, false);
         startRefreshTracking(index);
       });
@@ -199,9 +239,12 @@ export default function TextHoverComp({
     activeIndexRef.current = null;
     setActiveIndex(null);
 
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
+    refreshLoopRef.current?.destroy();
+    refreshLoopRef.current = null;
+
+    if (activationFrameRef.current) {
+      cancelAnimationFrame(activationFrameRef.current);
+      activationFrameRef.current = null;
     }
 
     if (highlightRef.current) {
@@ -209,12 +252,12 @@ export default function TextHoverComp({
         opacity: 0,
         scale: 1.14,
         filter: "blur(8px)",
-        duration: 0.2,
+        duration: prefersReducedMotion ? REDUCED_MOTION_MOVE_DURATION : 0.2,
         ease: "power3.out",
         overwrite: "auto",
       });
     }
-  }, []);
+  }, [prefersReducedMotion]);
 
   const handleDesktopHover = useCallback(
     (index) => {
@@ -284,9 +327,12 @@ export default function TextHoverComp({
       setActiveIndex(null);
       activeIndexRef.current = null;
 
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
+
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+        activationFrameRef.current = null;
       }
 
       if (highlightRef.current) {
@@ -324,8 +370,12 @@ export default function TextHoverComp({
 
   useEffect(() => {
     return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+      refreshLoopRef.current?.destroy();
+      refreshLoopRef.current = null;
+
+      if (activationFrameRef.current) {
+        cancelAnimationFrame(activationFrameRef.current);
+        activationFrameRef.current = null;
       }
     };
   }, []);
@@ -362,7 +412,9 @@ export default function TextHoverComp({
                   className={[
                     "group grid w-full text-center",
                     "px-10 max-xl:px-6 max-md:px-2",
-                    "transition-[padding,grid-template-rows] duration-500",
+                    prefersReducedMotion
+                      ? "transition-[padding,grid-template-rows] duration-100"
+                      : "transition-[padding,grid-template-rows] duration-500",
                     isActive
                       ? "grid-rows-[auto_1fr] py-5 max-xl:py-7 max-md:py-8"
                       : "grid-rows-[auto_0fr] py-5 max-xl:py-7 max-md:py-8",
@@ -395,8 +447,15 @@ export default function TextHoverComp({
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
                           "text-2xl max-xl:text-[4vw] max-md:text-[4.5vw]",
                           "text-neutral-400",
-                          "transition-transform duration-500",
-                          isActive ? "-translate-y-full" : "translate-y-0",
+                          prefersReducedMotion
+                            ? [
+                                "transition-opacity duration-300",
+                                isActive ? "opacity-0" : "opacity-100",
+                              ].join(" ")
+                            : [
+                                "transition-transform duration-500",
+                                isActive ? "-translate-y-full" : "translate-y-0",
+                              ].join(" "),
                         ].join(" ")}
                       >
                         {item.label}
@@ -407,8 +466,15 @@ export default function TextHoverComp({
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
                           "text-3xl max-xl:text-[4.8vw] max-md:text-[6vw]",
-                          "transition-transform duration-500",
-                          isActive ? "translate-y-0" : "translate-y-full",
+                          prefersReducedMotion
+                            ? [
+                                "transition-opacity duration-300",
+                                isActive ? "opacity-100" : "opacity-0",
+                              ].join(" ")
+                            : [
+                                "transition-transform duration-500",
+                                isActive ? "translate-y-0" : "translate-y-full",
+                              ].join(" "),
                         ].join(" ")}
                         style={{ color: textColor }}
                       >
@@ -425,7 +491,14 @@ export default function TextHoverComp({
                       ref={(el) => {
                         descriptionRefs.current[i] = el;
                       }}
-                      className="max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide text-neutral-400 max-xl:max-w-[64vw] max-xl:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]"
+                      className={[
+                        "max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide text-neutral-400 max-xl:max-w-[64vw] max-xl:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]",
+                        prefersReducedMotion
+                          ? `transition-opacity duration-300 ${
+                              isActive ? "opacity-100" : "opacity-0"
+                            }`
+                          : "",
+                      ].join(" ")}
                     >
                       {item.description}
                     </p>

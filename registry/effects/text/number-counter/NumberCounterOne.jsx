@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useId, useRef, memo } from"react";
-import gsap from"gsap";
-import { ScrollTrigger } from"gsap/dist/ScrollTrigger";
+import { useEffect, useId, useRef, memo } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,10 +14,11 @@ const FONT_WEIGHTS = {
  bold:"font-bold",
 };
 
-const DigitScroller = memo(({ digit, duration = 2, color, trigger }) => {
+const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion = false }) => {
  const containerRef = useRef(null);
 
  useEffect(() => {
+ if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
  const ctx = gsap.context(() => {
  gsap.to(containerRef.current, {
  y: `-${parseInt(digit, 10) * 10}%`,
@@ -30,7 +31,15 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger }) => {
  });
  });
  return () => ctx.revert();
- }, [digit, duration, trigger]);
+ }, [digit, duration, reducedMotion, trigger]);
+
+ if (reducedMotion) {
+ return (
+ <span style={{ color }} className="inline-block w-[0.64em] text-center leading-none">
+ {digit}
+ </span>
+ );
+ }
 
  return (
  <div
@@ -50,27 +59,27 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger }) => {
 
 DigitScroller.displayName ="DigitScroller";
 
-const renderDigits = (value, color, trigger) =>
+const renderDigits = (value, color, trigger, reducedMotion) =>
  value.split("").map((char, i) =>
  /\d/.test(char) ? (
- <DigitScroller key={i} digit={char} color={color} trigger={trigger} />
+ <DigitScroller key={i} digit={char} color={color} trigger={trigger} reducedMotion={reducedMotion} />
  ) : (
  <span key={i} style={{ color }}>{char}</span>
  )
  );
 
-const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger }) => {
+const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reducedMotion }) => {
  const { prefix, value, suffix, superSuffix } = stat;
 
  return (
- <div className="flex gap-[2vw] h-fit w-fit max-md:gap-0 max-sm:flex-col">
- <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-sm:flex-row max-sm:justify-between max-sm:pl-[4vw] max-sm:gap-[4vw]">
+ <div className="flex gap-[2vw] h-fit w-fit max-xl:gap-0 max-md:flex-col">
+ <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-md:flex-row max-md:justify-between max-md:pl-[4vw] max-md:gap-[4vw]">
  <h3
  dir="ltr"
- className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-md:text-[7vw] max-sm:text-[12vw] ${textSize}`}
+ className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-xl:text-[7vw] max-md:text-[12vw] ${textSize}`}
  >
  {prefix && <span style={{ color: textColor }}>{prefix}</span>}
- {renderDigits(value, textColor, trigger)}
+ {renderDigits(value, textColor, trigger, reducedMotion)}
  {suffix && <span style={{ color: textColor }}>{suffix}</span>}
  {superSuffix && <sup style={{ color: textColor }}>{superSuffix}</sup>}
  </h3>
@@ -90,6 +99,7 @@ export default function NumberCounterOne({
  textColor ="black",
  textSize ="text-[5vw]",
  fontWeight ="normal",
+ reducedMotion = false,
 }) {
  const uid = useId().replace(/:/g, "");
  const sectionId = `stats-${uid}`;
@@ -99,7 +109,7 @@ export default function NumberCounterOne({
  return (
  <section id={sectionId} className="h-fit w-fit">
  <div className="p-[1vw]">
- <div className="flex text-center gap-[2vw] w-fit h-fit max-md:flex-wrap max-md:gap-x-0 max-md:gap-y-12 max-sm:flex-col max-sm:text-left">
+ <div className="flex text-center gap-[2vw] w-fit h-fit max-xl:flex-wrap max-xl:gap-x-0 max-xl:gap-y-12 max-md:flex-col max-md:text-left">
  {items.map((stat, index) => (
  <StatItem
  key={index}
@@ -108,6 +118,7 @@ export default function NumberCounterOne({
  textSize={textSize}
  fontWeight={fontWeight}
  trigger={trigger}
+ reducedMotion={reducedMotion}
  />
  ))}
  </div>

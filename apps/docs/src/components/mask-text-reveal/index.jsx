@@ -84,13 +84,9 @@ export default function MaskTextReveal({
 
             if (!linesRef.current.length) return;
 
+            // The mask-position wipe is a clip reveal, not a translate/scale/
+            // parallax motion - subtle enough to keep for reduced motion too.
             gsap.set(el, { opacity: 1 });
-
-            if (prefersReduced) {
-                gsap.set(linesRef.current, { maskPosition: "0% 100%" });
-                elements.forEach(forceAriaVisible);
-                return;
-            }
 
             gsap.set(linesRef.current, {
                 maskPosition: "100% 100%",
@@ -105,13 +101,19 @@ export default function MaskTextReveal({
             };
 
             if (animateOnScroll) {
+                // Reduced motion: always play once and never scrub - scrub
+                // ties the reveal continuously to scroll position, which is
+                // the kind of motion reduced-motion should still avoid, even
+                // though the mask wipe itself is subtle enough to keep.
+                const effectiveScrub = prefersReduced ? false : scrub;
+
                 const tween = gsap.to(linesRef.current, {
                     ...animationProps,
                     scrollTrigger: {
                         trigger: el,
                         start: "top 80%",
-                        once: scrub ? false : true,
-                        scrub,
+                        once: effectiveScrub ? false : true,
+                        scrub: effectiveScrub,
                         onEnter: () => elements.forEach(forceAriaVisible),
                     },
                 });

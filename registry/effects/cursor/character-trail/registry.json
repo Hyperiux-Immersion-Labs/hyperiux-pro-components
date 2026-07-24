@@ -1,6 +1,26 @@
 {
   "name": "character-trail",
-  "version": "1.0.0",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Replaced Next.js-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Character Trail",
   "description": "Cursor wrapper that leaves a snake-like grid trail of character tiles as the mouse moves. Tiles snap to a 50px grid, cycle through a configurable alphabet and color palette, pop in with a spring animation, then stagger-fade out after the cursor idles.",

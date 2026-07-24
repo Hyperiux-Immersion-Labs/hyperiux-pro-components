@@ -1,10 +1,12 @@
 {
   "name": "@hyperiux/infinite-perspective-slider",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Looping perspective gallery with wheel and drag input plus split-text hover reveals",
-  "main": "infinite-perspective-slider.jsx",
+  "main": "index.jsx",
   "files": [
-    "infinite-perspective-slider.jsx",
+    "index.jsx",
+    "InfinitePerspectiveSliderComp.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

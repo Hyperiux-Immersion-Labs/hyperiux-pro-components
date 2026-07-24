@@ -12,6 +12,20 @@ const FADE_DURATION = 0.5
 const MAX_BUTTERFLIES = 200
 const SPAWN_THROTTLE = 120
 
+function usePrefersReducedMotion() {
+	const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+		const update = () => setPrefersReducedMotion(mediaQuery.matches)
+		update()
+		mediaQuery.addEventListener('change', update)
+		return () => mediaQuery.removeEventListener('change', update)
+	}, [])
+
+	return prefersReducedMotion
+}
+
 function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 	const poolRef = useRef([])
 	const activeCountRef = useRef(0)
@@ -184,6 +198,7 @@ useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.
 export default function ButterflyTrailCursor() {
 	const rootRef = useRef(null)
 	const [frameloop, setFrameloop] = useState('always')
+	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {
 		const gate = createVisibilityGate({
@@ -215,6 +230,21 @@ export default function ButterflyTrailCursor() {
 				<ButterflyTrail />
 			</Canvas>
 
+			{prefersReducedMotion && (
+				<div
+					aria-live="polite"
+					className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-sm p-3 text-center max-md:hidden"
+				>
+					<h2 className="text-sm leading-none text-[#111111]">
+						The butterflies keep drifting.
+					</h2>
+					<p className="mt-2 text-xs leading-5 text-black/65">
+						These butterflies are animated purely by cursor movement. Pausing
+						that motion would remove the effect, so reduced motion isn&apos;t
+						supported here.
+					</p>
+				</div>
+			)}
 		</div>
 	)
 }

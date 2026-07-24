@@ -1,9 +1,36 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function getServerReducedMotionSnapshot() {
+  return false;
+}
+
+// React hook form, for JSX output that depends on the preference (not just
+// the imperative reduceMotion flag already used inside the draw loop below).
+// Safe to call during render - returns false on the server.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot
+  );
+}
+
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -20,7 +47,6 @@ const GRAY_DISPERSE_TIME = 0.9; // trail lingers ~2s
 const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME + GRAY_DISPERSE_TIME;
 const TOTAL_SHAPES = 5;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const lerp     = (a, b, t) => a + (b - a) * t;
 const clamp01  = (v) => Math.max(0, Math.min(1, v));
@@ -28,8 +54,6 @@ const smoothstep = (e0, e1, v) => {
   const t = clamp01((v - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
 };
-
-// ─── Pure Shape Math ──────────────────────────────────────────────────────────
 
 const getStarStrength = (x, y, time, width, height) => {
   const cx = width / 2;
@@ -120,10 +144,10 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
   return getTriangleStrength(x, y, time, width, height);
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
-export function DottedGrid() {
+export default function DottedGrid() {
   const canvasRef  = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
     currentShapeIndex: 0,
     transitionStartTime: null,
@@ -145,8 +169,19 @@ export function DottedGrid() {
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let dots = [];
+    let reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotionMq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
-    // ─── Dot Setup ─────────────────────────────────────────────────────────────
+    const handleReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+      if (reduceMotion) {
+        mouseRef.current.active = false;
+        mouseRef.current.trail = [];
+        patternRef.current.transitionStartTime = null;
+      }
+    };
+
 
     const createDots = () => {
       dots = [];
@@ -179,7 +214,6 @@ export function DottedGrid() {
       createDots();
     };
 
-    // ─── Event Handlers ────────────────────────────────────────────────────────
 
     const handlePointerMove = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -201,10 +235,9 @@ export function DottedGrid() {
 
     const handleClick = () => {
       patternRef.current.currentShapeIndex = (patternRef.current.currentShapeIndex + 1) % TOTAL_SHAPES;
-      patternRef.current.transitionStartTime = performance.now() * 0.001;
+      patternRef.current.transitionStartTime = reduceMotion ? null : performance.now() * 0.001;
     };
 
-    // ─── Transition / Shape Interpolator ───────────────────────────────────────
 
     const getShapeData = (x, y, time) => {
       const { currentShapeIndex, transitionStartTime } = patternRef.current;
@@ -256,8 +289,6 @@ export function DottedGrid() {
       };
     };
 
-    // ─── Drawing Utilities ─────────────────────────────────────────────────────
-
     const drawDot = (x, y, radius, brightness, grayDisperseStrength, trailStrength, mouseStrength) => {
       const mouseFade = mouseStrength * mouseStrength * 0.72;
       const trailFade = trailStrength * 0.38;
@@ -280,7 +311,6 @@ export function DottedGrid() {
       ctx.fill();
     };
 
-    // ─── Main Draw Loop ────────────────────────────────────────────────────────
 
     const loop = createSuspendedRaf({
       root: canvas,
@@ -297,6 +327,21 @@ export function DottedGrid() {
         ctx.fillRect(0, 0, width, height);
 
         for (const dot of dots) {
+          if (reduceMotion) {
+            const shapeStrength = getRawShapeStrength(
+              patternRef.current.currentShapeIndex,
+              dot.x,
+              dot.y,
+              0,
+              width,
+              height
+            );
+            const brightness = clamp01(0.16 + shapeStrength * 0.84);
+            const radius = BASE_RADIUS + shapeStrength * 1.25;
+            drawDot(dot.x, dot.y, radius, brightness, 0, 0, 0);
+            continue;
+          }
+
           const { shapeStrength, randomStrength, grayDisperseStrength } = getShapeData(dot.x, dot.y, time);
 
           dot.currentShapeStrength = lerp(dot.currentShapeStrength, shapeStrength, 0.12);
@@ -364,10 +409,10 @@ export function DottedGrid() {
       },
     });
 
-    // ─── Listeners & Boot ──────────────────────────────────────────────────────
 
     resize();
     window.addEventListener("resize", resize);
+    reduceMotionMq?.addEventListener?.("change", handleReduceMotionChange);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
@@ -375,6 +420,7 @@ export function DottedGrid() {
 
     return () => {
       window.removeEventListener("resize", resize);
+      reduceMotionMq?.removeEventListener?.("change", handleReduceMotionChange);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
@@ -394,7 +440,23 @@ export function DottedGrid() {
         Works best on desktop  <br />
         Here, tap & drag to explore
       </div>
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-xl:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            ambient dot-grid animation with cursor-driven distortion, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
+      )}
     </section>
   );
 }
-

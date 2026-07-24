@@ -16,83 +16,81 @@
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Removed five stale kebab-case duplicate files (camera-rig, film-grain-effect, edge-blur-effect, use-input, use-valley-data) that had diverged from the camelCase originals and were being shipped to installers.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
-    },
-    {
-      "path": "use-valley-data.js",
-      "type": "registry:component",
-      "target": "components/hyperiux/use-valley-data.js"
-    },
-    {
-      "path": "camera-rig.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/camera-rig.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/index.jsx"
     },
     {
       "path": "CameraRig.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CameraRig.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
     },
     {
       "path": "CircularText.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/CircularText.jsx"
-    },
-    {
-      "path": "edge-blur-effect.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/edge-blur-effect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
     },
     {
       "path": "EdgeBlurEffect.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/EdgeBlurEffect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
     },
     {
       "path": "ExperienceComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ExperienceComp.jsx"
-    },
-    {
-      "path": "film-grain-effect.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/film-grain-effect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
     },
     {
       "path": "FilmGrainEffect.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/FilmGrainEffect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
     },
     {
       "path": "Flower.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Flower.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
     },
     {
-      "path": "use-input.js",
+      "path": "prefersReducedMotion.js",
       "type": "registry:component",
-      "target": "components/hyperiux/use-input.js"
+      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
     },
     {
       "path": "useInput.js",
       "type": "registry:component",
-      "target": "components/hyperiux/useInput.js"
+      "target": "src/components/effects/progressive-bloom-valley/useInput.js"
     },
     {
       "path": "useValleyData.js",
       "type": "registry:component",
-      "target": "components/hyperiux/useValleyData.js"
+      "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
     },
     {
       "path": "shaders.js",
       "type": "registry:component",
-      "target": "components/hyperiux/shaders.js"
+      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
     }
   ]
 }

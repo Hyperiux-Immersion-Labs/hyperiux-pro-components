@@ -1,5 +1,5 @@
-import { useMemo } from"react";
-import * as THREE from"three";
+import { useMemo } from "react";
+import * as THREE from "three";
 
 function clampVal(v, lo, hi) {
  return Math.max(lo, Math.min(hi, v));

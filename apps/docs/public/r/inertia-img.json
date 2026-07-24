@@ -10,18 +10,31 @@
   "exportName": "InertiaImage",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/inertia-img/index.jsx"
     },
     {
       "path": "InertiaImgComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InertiaImgComp.jsx"
+      "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
     }
   ]
 }

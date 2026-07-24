@@ -8,23 +8,35 @@
   "exportName": "InfiniteGridGallery",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/infinite-grid-gallery/index.jsx"
     },
     {
       "path": "InfiniteGrid.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/InfiniteGrid.jsx"
+      "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx"
     },
     {
       "path": "util.js",
       "type": "registry:component",
-      "target": "components/hyperiux/util.js"
+      "target": "src/components/effects/infinite-grid-gallery/util.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
     }
   ]
 }

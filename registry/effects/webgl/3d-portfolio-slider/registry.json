@@ -1,6 +1,20 @@
 {
   "name": "3d-portfolio-slider",
-  "version": "1.0.0",
+  "version": "1.0.2",
+  "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-07-23",
+      "summary": "Unmount cleanup now disposes each plane's geometry, shader material, and texture (renderer.dispose() alone leaked them), fixing a GPU memory leak on remount.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.1",
+      "date": "2026-07-22",
+      "summary": "Added a reduced-motion notice: this continuous scroll-driven 3D carousel is the navigation itself and can't be reduced without losing the ability to browse, so it now surfaces that instead of silently ignoring the preference.",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "3D Portfolio Slider",
   "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",

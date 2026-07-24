@@ -6,6 +6,7 @@ import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
 import { createVisibilityGate } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
@@ -129,6 +130,7 @@ export default function FishEye({ src }) {
   const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(pointer: coarse)')
@@ -193,6 +195,21 @@ export default function FishEye({ src }) {
     >
       <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
     </Canvas>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-black">
+            The lens keeps bending.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black">
+            Fish Eye distorts the image as your cursor moves across it.
+            Since the warp is driven entirely by motion, there&apos;s no
+            reduced motion version to fall back on.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

@@ -9,7 +9,7 @@ export default function Page() {
     return (
        
   <>
-    <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+    <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
   
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
@@ -20,7 +20,7 @@ export default function Page() {
                     <h1 className="text-5xl font-medium max-sm:text-4xl">Arrow Fill Button</h1>
                 </div>
 
-                <div className="">
+                <div>
                     <ArrowFillButton
                         className="bg-linear-to-r from-[#ff6b00] to-[#ff5f00]"
                         href="#"

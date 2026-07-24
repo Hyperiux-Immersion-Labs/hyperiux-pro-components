@@ -337,16 +337,58 @@ export default function LinesLoading({ onComplete } = {}) {
     gsap.set(allTextEls, { opacity: 0, y: 8, filter: "blur(14px)" });
 
     if (prefersReducedMotion()) {
-      gsap.set(darkContentRef.current, { opacity: 1 });
-      gsap.set(lightLayerRef.current, {
-        opacity: 1,
-        clipPath: "inset(0% 0 0 0)",
+      // Lines already at final layout — smooth opacity only (no scale morph / wipe).
+      gsap.set(darkLineEls, {
+        y: (i) => flatY[i],
+        scaleX: 1,
+        opacity: 0,
       });
-      gsap.set(darkLineEls, { y: (i) => flatY[i], scaleX: 1 });
-      gsap.set(lightLineEls, { opacity: 1, y: (i) => flatY[i], scaleX: 1 });
-      gsap.set(allTextEls, { opacity: 1, y: 0, filter: "blur(0px)" });
-      setDone(true);
-      onComplete?.();
+      gsap.set(lightLineEls, {
+        y: (i) => flatY[i],
+        scaleX: 1,
+        opacity: 0,
+      });
+      gsap.set(lightLayerRef.current, {
+        clipPath: "inset(0% 0 0 0)",
+        opacity: 0,
+      });
+      gsap.set(darkContentRef.current, { opacity: 0 });
+      gsap.set(allTextEls, { opacity: 0, y: 0, filter: "blur(0px)" });
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power2.inOut" },
+        onComplete: () => {
+          setDone(true);
+          onComplete?.();
+        },
+      });
+      tlRef.current = tl;
+
+      tl.to(lightLayerRef.current, { opacity: 1, duration: 0.65 });
+      tl.to(darkContentRef.current, { opacity: 1, duration: 0.65 }, "<");
+      tl.to(
+        darkLineEls,
+        {
+          opacity: 1,
+          duration: 0.7,
+          stagger: { each: 0.035, from: "start" },
+        },
+        "<"
+      );
+      tl.to(
+        lightLineEls,
+        {
+          opacity: 1,
+          duration: 0.7,
+          stagger: { each: 0.035, from: "start" },
+        },
+        "<"
+      );
+      tl.to(
+        allTextEls,
+        { opacity: 1, duration: 0.55 },
+        "-=0.3"
+      );
       return;
     }
 

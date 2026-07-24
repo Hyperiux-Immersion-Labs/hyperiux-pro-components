@@ -481,7 +481,7 @@ export default function CodeBlockWorkflow() {
 
                 {/* app/ */}
                 <TreeFolder label="app" depth={0} />
-                <div className="">
+                <div>
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-md:ml-1.5 max-md:pl-3">
                     <div className="flex items-center gap-3 text-white/80">
                       <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
@@ -495,7 +495,7 @@ export default function CodeBlockWorkflow() {
 
                 {/* components/ */}
                 <TreeFolder label="components" depth={0} />
-                <div className="">
+                <div>
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ - hidden until animation */}

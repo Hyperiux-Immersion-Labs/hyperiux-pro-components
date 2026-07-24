@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
-import Link from "next/link";
 import Option1 from "./LinesLoading";
 import Option2 from "./CenterLinesLoading";
 import { ArrowUpRight } from "lucide-react";
@@ -93,13 +92,13 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
           : "translate-y-4 opacity-0 pointer-events-none"
       }`}
     >
-        <Link
+        <a
           href="/effects"
           className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors"
         >
           Explore all effects
           <ArrowUpRight className="size-4" />
-        </Link>
+        </a>
       <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-xl:px-3 max-xl:py-2 max-md:px-2 max-md:py-1.5">
         {VERSIONS.map((variant) => {
           const isActive = activeVariant === variant.value;

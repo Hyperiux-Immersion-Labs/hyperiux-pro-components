@@ -1,6 +1,7 @@
 'use client'
 import { useRef, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 // Inter is a variable font exposing a `wght` axis, which the cursor-driven
 // weight morph below animates. It's loaded here so the component is fully
@@ -52,13 +53,27 @@ function useMousePosition(containerRef) {
       return;
     }
 
+    // Coalesce mousemove bursts to one state update (and one rect read)
+    // per animation frame instead of re-rendering on every raw event.
+    let frameId = null;
+    let lastClientX = 0;
+    let lastClientY = 0;
+
     const onMove = (e) => {
-      const nextRect = el.getBoundingClientRect();
-      setPos({
-        x: e.clientX - nextRect.left,
-        y: e.clientY - nextRect.top,
-        width: nextRect.width,
-        height: nextRect.height,
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+
+      if (frameId !== null) return;
+
+      frameId = requestAnimationFrame(() => {
+        frameId = null;
+        const nextRect = el.getBoundingClientRect();
+        setPos({
+          x: lastClientX - nextRect.left,
+          y: lastClientY - nextRect.top,
+          width: nextRect.width,
+          height: nextRect.height,
+        });
       });
     };
 
@@ -79,6 +94,7 @@ function useMousePosition(containerRef) {
     el.addEventListener("mousemove", onMove);
     return () => {
       el.removeEventListener("mousemove", onMove);
+      if (frameId !== null) cancelAnimationFrame(frameId);
       ro?.disconnect?.();
     };
   }, [containerRef, isDesktop]);
@@ -163,6 +179,7 @@ export default function CursorMove({
 }) {
   const containerRef = useRef(null);
   const { x, y, isDesktop } = useMousePosition(containerRef);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const isPatternCrosshair = crosshairVariant === "dotted" || crosshairVariant === "dashed";
   const patternLength =
@@ -243,6 +260,22 @@ export default function CursorMove({
           <span className={coordinatesTextClassName}>y: {Math.round(y)}</span>
         </div>
       ) : null}
+
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The letters keep bending.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/65">
+            Cursor Move warps text and tracks coordinates live as you move
+            the cursor. The animation is the interaction itself, so it
+            can&apos;t be reduced.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

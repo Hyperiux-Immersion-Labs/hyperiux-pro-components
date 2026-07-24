@@ -52,7 +52,6 @@ export default function InfiniteCarousel() {
                         borderRadius: "999px",
                         padding: "0.85rem 1rem",
                     }}
-                    itemClassName=""
                     draggable={true}
                     mobileBreakpoint={640}
                 >

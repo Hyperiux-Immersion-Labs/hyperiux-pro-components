@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/butterfly-trail-cursor",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "3D butterfly swarm that spawns around the pointer and fades through space",
-  "main": "butterfly-trail-cursor.jsx",
+  "main": "index.jsx",
   "files": [
-    "butterfly-trail-cursor.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

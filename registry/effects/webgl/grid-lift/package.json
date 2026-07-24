@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/grid-lift",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
-  "main": "grid-lift.jsx",
+  "main": "index.jsx",
   "files": [
-    "grid-lift.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

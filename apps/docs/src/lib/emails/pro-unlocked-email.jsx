@@ -94,7 +94,7 @@ export function ProUnlockedEmail({ planLabel = "Vault Pro", isAdminGrant = false
               <Section className="p-4">
                 <Img
                   src={`${baseUrl}/emails/invite-email-img.jpg`}
-                  alt=""
+                  alt="email-icon"
                   width={560}
                   className="block h-auto w-full rounded-[9px]"
                 />

@@ -1,17 +1,16 @@
 {
   "name": "@hyperiux/rope-cursor",
-  "version": "0.0.1",
+  "version": "1.3.0",
   "description": "Soft trailing rope that lags behind the pointer with a smooth SVG path",
-  "main": "rope-cursor.jsx",
+  "main": "index.jsx",
   "files": [
-    "rope-cursor.jsx",
+    "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [
     "cursor",
     "hyperiux"
   ],
-  "dependencies": {
-    "gsap": "*"
-  }
+  "dependencies": {}
 }

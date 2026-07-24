@@ -77,7 +77,6 @@ export function DashboardShell({ children }) {
           <Button
             href="/effects"
             text={"Browse Effects"}
-            className=""
          />
             
         </div>

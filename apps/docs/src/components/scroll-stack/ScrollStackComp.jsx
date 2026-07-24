@@ -29,13 +29,19 @@ const ScrollStackComp = ({ cards = [] }) => {
         }
 
         const ctx = gsap.context(() => {
+            const reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
             const currentCards = cardRefs.current.filter(Boolean);
             const currentRows = rowRefs.current.filter(Boolean);
 
             currentCards.forEach((card, index) => {
                 gsap.set(card, {
                     autoAlpha: 1,
-                    scale: index === 0 ? 1 : 1.1,
+                    // Reduced motion: skip the oversized starting scale, so
+                    // there's no scale-down-while-stacking effect to animate.
+                    scale: reduceMotion || index === 0 ? 1 : 1.1,
                     transformOrigin: "center center",
                 });
             });
@@ -56,14 +62,16 @@ const ScrollStackComp = ({ cards = [] }) => {
                     },
                 });
 
-                handoff.to(
-                    nextCard,
-                    {
-                        scale: 1,
-                        ease: "none",
-                    },
-                    0
-                );
+                if (!reduceMotion) {
+                    handoff.to(
+                        nextCard,
+                        {
+                            scale: 1,
+                            ease: "none",
+                        },
+                        0
+                    );
+                }
 
                 gsap.to(card, {
                     autoAlpha: 0,

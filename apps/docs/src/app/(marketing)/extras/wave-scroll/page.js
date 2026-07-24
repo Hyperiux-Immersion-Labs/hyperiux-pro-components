@@ -1,5 +1,5 @@
-import InfiniteScroller from"@/components/WaveMediaPipe/InfiniteScroller";
-import { ReactLenis } from"lenis/react";
+import InfiniteScroller from "@/components/WaveMediaPipe/InfiniteScroller";
+import { ReactLenis } from "lenis/react";
 
 const images = [
 "/img/1.png",

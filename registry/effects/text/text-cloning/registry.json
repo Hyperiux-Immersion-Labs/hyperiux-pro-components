@@ -1,6 +1,20 @@
 {
   "name": "text-cloning",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion cloning movement.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Text Cloning",
   "description": "Canvas 2D effect that renders 9 depth-layered clones of any text string, offset by mouse parallax to create a 3D depth illusion. Includes a live text input and a subtle star-field background.",
@@ -9,15 +23,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/text-cloning",
   "tier": "pro",
-  "main": "index.jsx",
   "exportName": "TextCloning",
   "exportKind": "default",
-  "importPath": "@/components/effects/text-cloning",
-  "target": "src/components/effects/text-cloning",
+  "main": "index.jsx",
   "files": [
     {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/text-cloning/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
     }
   ]
 }

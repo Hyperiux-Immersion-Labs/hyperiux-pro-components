@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 export function PixelateSvgFilter({
   id: idProp,
@@ -130,6 +131,7 @@ export default function PixelatedImageEffect({
   const isTouching = useRef(false);
   const [pixelSize, setPixelSize] = useState(16);
   const pixelateFilterId = `pixelate-filter-${useId().replace(/:/g, "")}`;
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const updatePixel = (event) => {
     if (!imageRef.current) return;
@@ -189,6 +191,21 @@ export default function PixelatedImageEffect({
           className={`object-cover absolute inset-0 ${imageClassName}`.trim()}
         />
       </div>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center  backdrop-blur-sm max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-white">
+            The pixels keep shifting.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-white/65">
+            Pixelated Image Effect changes pixelation based on cursor
+            position in real time. Since the transition is driven entirely by
+            motion, reduced motion can&apos;t be applied here.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,20 +4,26 @@
   "title": "Parallax Slider",
   "description": "Pinned horizontal gallery with clip-path reveals and image parallax",
   "dependencies": [
-    "gsap",
-    "next"
+    "gsap"
   ],
   "registryDependencies": [],
   "exportName": "ParallaxSlider",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: per-image parallax range and scale are reduced to 25% strength, and the clip-path reveal loses its eased curve; main horizontal navigation is unaffected",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/parallax-slider/index.jsx"
     }
   ]
 }

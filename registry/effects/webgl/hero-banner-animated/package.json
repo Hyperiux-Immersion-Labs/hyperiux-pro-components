@@ -1,10 +1,15 @@
 {
   "name": "@hyperiux/hero-banner-animated",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Immersive WebGL hero with a 3D room, interactive TV screen with pixelated video transition, mouse-tracked lighting, edge blur, and film grain post-processing.",
-  "main": "custom-grain-noise.jsx",
+  "main": "index.jsx",
   "files": [
-    "custom-grain-noise.jsx",
+    "index.jsx",
+    "CustomGrainNoise.jsx",
+    "EdgeBlurEffect.jsx",
+    "RoomModel.jsx",
+    "VideoUI.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [
@@ -17,6 +22,8 @@
     "@react-three/postprocessing": "*",
     "postprocessing": "*",
     "gsap": "*",
-    "three": "*"
+    "three": "*",
+    "motion": "*",
+    "lucide-react": "*"
   }
 }

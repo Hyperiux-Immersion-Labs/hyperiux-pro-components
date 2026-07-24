@@ -212,7 +212,7 @@ export function EffectCard({
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-md:pt-8 max-sm:gap-3 max-sm:px-2 max-sm:pt-7">
         <div className="flex min-w-0 flex-col gap-0.5">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white max-sm:text-base">
-            <span className="">
+            <span>
               {effect.title}
             </span>
           </h3>

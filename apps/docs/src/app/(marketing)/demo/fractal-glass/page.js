@@ -12,7 +12,7 @@ const images = {
 export default function Home() {
   return (
     <>
-    <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
       <FractalGlass
         imageSrc={images.blob}
         stripesFrequency={40}

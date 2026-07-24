@@ -5,40 +5,57 @@
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
   "dependencies": [
     "gsap",
-    "next",
     "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: column/square expand animations are set instantly instead of tweened when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/expanding-navbar/index.jsx"
     },
     {
       "path": "data.js",
       "type": "registry:component",
-      "target": "components/hyperiux/data.js"
+      "target": "src/components/effects/expanding-navbar/data.js"
     },
     {
       "path": "ExpandingNavbarDesktop.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ExpandingNavbarDesktop.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
     },
     {
       "path": "ExpandingNavbarMobile.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/ExpandingNavbarMobile.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
     },
     {
       "path": "HoverFillLink.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/HoverFillLink.jsx"
+      "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+    },
+    {
+      "path": "useFocusTrap.js",
+      "type": "registry:component",
+      "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
     }
   ]
 }

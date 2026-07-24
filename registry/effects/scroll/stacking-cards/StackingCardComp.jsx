@@ -1,9 +1,9 @@
 "use client";
 
-import { useLayoutEffect, useRef } from"react";
-import gsap from"gsap";
-import ScrollTrigger from"gsap/ScrollTrigger";
-import { useLenis } from"lenis/react";
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +19,10 @@ export default function StackingCardComp({ data = [] }) {
  cardsRef.current = cardsRef.current.slice(0, data.length);
 
  const ctx = gsap.context(() => {
+ const reduceMotion = window.matchMedia(
+ "(prefers-reduced-motion: reduce)"
+ ).matches;
+
  const cards = cardsRef.current.filter(Boolean);
  const numCards = cards.length;
 
@@ -38,7 +42,7 @@ export default function StackingCardComp({ data = [] }) {
 
  const firstImage = cards[0]?.querySelector(".card-image");
 
- if (firstImage) {
+ if (firstImage && !reduceMotion) {
  gsap.fromTo(
  firstImage,
  { scale: 1.5 },
@@ -67,7 +71,6 @@ export default function StackingCardComp({ data = [] }) {
  });
 
  for (let i = 1; i < numCards; i++) {
- const rotateDir = (i - 1) % 2 === 0 ? -5 : 5;
  const segmentStart = i - 1;
 
  tl.to(
@@ -79,6 +82,26 @@ export default function StackingCardComp({ data = [] }) {
  },
  segmentStart
  );
+
+ // Reduced motion: the outgoing card still fades out (a crossfade,
+ // not spatial motion) so it doesn't sit at full opacity behind the
+ // incoming one indefinitely - without this, any tiny viewport/
+ // positioning edge case lets it bleed through above the current
+ // card. Everything actually spatial (tilt, scale, rotateX,
+ // border-radius morph, image zoom) is still skipped.
+ if (reduceMotion) {
+ tl.to(
+ cards[i - 1],
+ {
+ opacity: 0,
+ ease:"none",
+ duration: 0.25,
+ },
+ segmentStart + 0.4
+ );
+
+ continue;
+ }
 
  const currentImage = cards[i].querySelector(".card-image");
 
@@ -94,6 +117,8 @@ export default function StackingCardComp({ data = [] }) {
  segmentStart
  );
  }
+
+ const rotateDir = (i - 1) % 2 === 0 ? -5 : 5;
 
  tl.to(
  cards[i - 1],
@@ -126,11 +151,11 @@ export default function StackingCardComp({ data = [] }) {
  return (
  <section
  className="relative z-0 h-[var(--stack-height)] w-full"
- style={{"--stack-height": `${data.length * 100}vh` }}
+ style={{"--stack-height": `${data.length * 100}svh` }}
  >
  <div
  ref={containerRef}
- className="sticky top-0 h-screen w-screen overflow-hidden bg-black"
+ className="sticky top-0 h-screen max-md:h-svh w-screen overflow-hidden bg-black"
  style={{ perspective:"1200px" }}
  >
  {data.map((item, i) => (
@@ -160,51 +185,51 @@ const SliderCard = ({
  return (
  <div
  className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center ${backgroundColor}
- max-md:min-h-svh max-xl:flex-col max-xl:justify-start max-md:py-8`}
+ max-xl:min-h-svh max-xl:flex-col max-xl:justify-start max-xl:py-8`}
  >
  <div
  className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-xl:py-28
- max-xl:w-full   max-md:px-5 max-md:py-6"
+ max-xl:w-full   max-xl:px-5 max-xl:py-6"
  >
  <div>
  <h2
  className="mb-[2vw] text-[7vw] text-black font-third
- max-md:mb-4 max-md:text-[12vw] max-md:leading-none"
+ max-xl:mb-4 max-xl:text-[12vw] max-xl:leading-none"
  >
  {category}
  </h2>
  </div>
 
  <div className="mb-6 hidden h-[42svh] w-full max-xl:block">
- <div className="h-full max-md:w-full overflow-hidden max-xl:w-[80%] max-xl:mx-auto max-md:rounded-[6vw] max-xl:rounded-[3vw]">
+ <div className="h-full max-xl:w-full overflow-hidden max-xl:w-[80%] max-xl:mx-auto max-xl:rounded-[6vw] max-xl:rounded-[3vw]">
  <img src={image} alt={title} className="h-full w-full object-cover" />
  </div>
  </div>
 
  <div
- className="flex justify-between max-xl:px-8 max-md:px-0 gap-[12vw]
- max-md:flex-col max-md:gap-5"
+ className="flex justify-between max-xl:px-8 max-xl:px-0 gap-[12vw]
+ max-xl:flex-col max-xl:gap-5"
  >
  <div
  className="mb-[3vw] w-fit text-[8vw] leading-none text-black
- max-md:mb-0 max-md:text-[14vw]"
+ max-xl:mb-0 max-xl:text-[14vw]"
  >
  {id}
  </div>
 
  <div
  className="flex flex-grow flex-col justify-center space-y-[2vw]
- max-md:space-y-3"
+ max-xl:space-y-3"
  >
  <h3
  className="font-display text-[2.5vw] text-black leading-[1.2]
- max-md:text-[7vw] max-xl:text-[4.5vw]"
+ max-xl:text-[7vw] max-xl:text-[4.5vw]"
  >
  {title}
  </h3>
  <p
  className="text-[1.4vw] leading-[1.2] text-gray-700
- max-md:text-[4.2vw] max-xl:text-[3.5vw] max-md:leading-[1.45]"
+ max-xl:text-[4.2vw] max-xl:text-[3.5vw] max-xl:leading-[1.45]"
  >
  {description}
  </p>

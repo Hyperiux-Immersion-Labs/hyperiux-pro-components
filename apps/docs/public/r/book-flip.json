@@ -13,44 +13,56 @@
   "exportName": "BookFlip",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/book-flip/index.jsx"
     },
     {
       "path": "Book.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Book.jsx"
+      "target": "src/components/effects/book-flip/Book.jsx"
     },
     {
       "path": "BookFlip.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/BookFlip.jsx"
+      "target": "src/components/effects/book-flip/BookFlip.jsx"
     },
     {
       "path": "Experience.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/Experience.jsx"
+      "target": "src/components/effects/book-flip/Experience.jsx"
     },
     {
       "path": "UI.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/UI.jsx"
+      "target": "src/components/effects/book-flip/UI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/book-flip/createSuspendedRaf.js"
     },
     {
       "path": "PageContext.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/PageContext.jsx"
-    },
-    {
-      "path": "assets/audio/page-flip-01a.mp3",
-      "type": "registry:asset",
-      "target": "public/assets/audio/page-flip-01a.mp3",
-      "source": "/assets/audio/page-flip-01a.mp3"
+      "target": "src/components/effects/book-flip/PageContext.jsx"
     }
   ]
 }

@@ -1,10 +1,12 @@
 {
   "name": "@hyperiux/grid-tunnel",
-  "version": "0.0.1",
+  "version": "1.2.0",
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
-  "main": "grid-tunnel.jsx",
+  "main": "index.jsx",
   "files": [
-    "grid-tunnel.jsx",
+    "index.jsx",
+    "GridTunnelComp.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

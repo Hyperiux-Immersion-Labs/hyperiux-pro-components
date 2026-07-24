@@ -3,8 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Minus, Plus } from "lucide-react";
 import { navigationData } from "./data";
-import Link from "next/link";
 import { useFocusTrap } from "./useFocusTrap";
+
+const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
 function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/50" }) {
     return (
@@ -46,6 +49,9 @@ export function ExpandingNavbarMobile() {
     useEffect(() => {
         const tl = gsap.timeline({ paused: true });
 
+        const overlayDuration = prefersReducedMotion() ? 0.3 : 0.6;
+        const contentDuration = prefersReducedMotion() ? 0.35 : 0.7;
+
         gsap.set(overlayRef.current, { opacity: 0, pointerEvents: "none" });
         gsap.set(contentRef.current, {
             clipPath: "inset(100% 0% 0% 0%)",
@@ -58,7 +64,7 @@ export function ExpandingNavbarMobile() {
         tl.to(overlayRef.current, {
             opacity: 1,
             pointerEvents: "auto",
-            duration: 0.6,
+            duration: overlayDuration,
             ease: menuEase,
         }, 0);
 
@@ -67,7 +73,7 @@ export function ExpandingNavbarMobile() {
             clipPath: "inset(0% 0% 0% 0%)",
             WebkitClipPath: "inset(0% 0% 0% 0%)",
             pointerEvents: "auto",
-            duration: 0.7,
+            duration: contentDuration,
             ease: menuEase,
         }, 0.1);
 
@@ -91,7 +97,7 @@ export function ExpandingNavbarMobile() {
         if (isMenuOpen) {
             gsap.fromTo(items,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: menuEase, delay: 0.3 }
+                { opacity: 1, y: 0, duration: prefersReducedMotion() ? 0.25 : 0.5, stagger: 0.06, ease: menuEase, delay: prefersReducedMotion() ? 0.15 : 0.3 }
             );
         }
     }, [isMenuOpen]);
@@ -166,19 +172,19 @@ export function ExpandingNavbarMobile() {
                                     className="flex items-center justify-between cursor-pointer active:opacity-70 transition-opacity"
                                     onClick={() => item.sublinks ? toggleMain(mainIndex) : null}
                                 >
-                                    <Link
+                                    <a
                                         href={item.href}
                                         className="text-3xl max-md:text-3xl max-xl:text-4xl font-medium tracking-tight text-white"
                                     >
                                         {item.name}
-                                    </Link>
+                                    </a>
                                     {item.sublinks && <ExpandToggle expanded={expandedMain === mainIndex} />}
                                 </div>
 
                                 {/* Sublinks - grid 0fr→1fr for smooth height */}
                                 {item.sublinks && (
                                     <div
-                                        className={`grid transition-[grid-template-rows] duration-500 ${
+                                        className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
                                             expandedMain === mainIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                         }`}
                                         style={{ transitionTimingFunction: menuEase }}
@@ -195,12 +201,12 @@ export function ExpandingNavbarMobile() {
                                                             className="flex items-center justify-between cursor-pointer active:opacity-70 transition-opacity"
                                                             onClick={() => sub.nestedLinks ? toggleSub(subIndex) : null}
                                                         >
-                                                            <Link
+                                                            <a
                                                                 href={sub.href}
                                                                 className="max-md:text-xl text-2xl text-white/80"
                                                             >
                                                                 {sub.name}
-                                                            </Link>
+                                                            </a>
                                                             {sub.nestedLinks && (
                                                                 <ExpandToggle
                                                                     expanded={expandedSub === subIndex}
@@ -212,7 +218,7 @@ export function ExpandingNavbarMobile() {
 
                                                         {sub.nestedLinks && (
                                                             <div
-                                                                className={`grid transition-[grid-template-rows] duration-500 ${
+                                                                className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
                                                                     expandedSub === subIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                                                 }`}
                                                                 style={{ transitionTimingFunction: menuEase }}
@@ -225,12 +231,12 @@ export function ExpandingNavbarMobile() {
                                                                     <div className="pl-4 mt-2 space-y-2">
                                                                         {sub.nestedLinks.map((nested, nIndex) => (
                                                                             <div key={nIndex}>
-                                                                                <Link
+                                                                                <a
                                                                                     href={nested.href}
                                                                                     className="text-lg text-white/60 block active:text-white transition-colors"
                                                                                 >
                                                                                     {nested.name}
-                                                                                </Link>
+                                                                                </a>
                                                                             </div>
                                                                         ))}
                                                                     </div>

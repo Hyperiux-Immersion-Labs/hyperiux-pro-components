@@ -96,13 +96,69 @@ export default function CenterLinesLoading(
         });
 
         if (prefersReducedMotion()) {
-            gsap.set(lines, { scaleX: 1 });
-            gsap.set(linesWrapRef.current, { opacity: 0 });
-            gsap.set(revealPanelRef.current, { scaleY: 1 });
-            gsap.set(wordEls, { opacity: 1, y: 0, filter: "blur(0px)" });
-            gsap.set(heroSubtitleRef.current, { opacity: 1, y: 0, filter: "blur(0px)" });
-            setDone(true);
-            onComplete?.();
+            // Lines already at full width — smooth opacity only (no scale morph / pair wipe).
+            gsap.set(lines, {
+                scaleX: 1,
+                opacity: 0,
+                y: (i) => y[i],
+            });
+            gsap.set(linesWrapRef.current, { opacity: 1 });
+            gsap.set(revealPanelRef.current, {
+                scaleY: 1,
+                opacity: 0,
+                transformOrigin: "50% 50%",
+            });
+            gsap.set(blackPanelRef.current, { opacity: 1 });
+            gsap.set(wordEls, { opacity: 0, y: 0, filter: "blur(0px)" });
+            gsap.set(heroSubtitleRef.current, {
+                opacity: 0,
+                y: 0,
+                filter: "blur(0px)",
+            });
+
+            const tl = gsap.timeline({
+                defaults: { ease: "power2.inOut" },
+                onComplete: () => {
+                    setDone(true);
+                    onComplete?.();
+                },
+            });
+            tlRef.current = tl;
+
+            tl.to(lines, {
+                opacity: 1,
+                duration: 0.65,
+                stagger: { each: 0.02, from: "center" },
+            });
+            tl.to(
+                lines,
+                {
+                    opacity: 0,
+                    duration: 0.45,
+                    stagger: { each: 0.015, from: "edges" },
+                },
+                "+=0.35"
+            );
+            tl.to(linesWrapRef.current, { opacity: 0, duration: 0.35 }, "<");
+            tl.to(
+                revealPanelRef.current,
+                { opacity: 1, duration: 0.55 },
+                "-=0.2"
+            );
+            tl.to(blackPanelRef.current, { opacity: 0, duration: 0.55 }, "<");
+            tl.to(
+                wordEls,
+                {
+                    opacity: 1,
+                    duration: 0.5,
+                },
+                "-=0.2"
+            );
+            tl.to(
+                heroSubtitleRef.current,
+                { opacity: 1, duration: 0.45 },
+                "-=0.25"
+            );
             return;
         }
 

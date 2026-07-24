@@ -10,18 +10,42 @@
   "exportName": "SVGPath",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.0",
-  "changelog": [],
+  "version": "1.2.0",
+  "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Ported prefers-reduced-motion support from the docs copy: static scroll-tracked positioning instead of spring/lerp smoothing, and dragging disabled while reduced motion is active.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-23",
+      "summary": "Marquee now suspends its per-frame work while offscreen or in a hidden tab via the shared createSuspendedRaf visibility gate",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/svg-path/index.jsx"
     },
     {
       "path": "SVGPathComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/SVGPathComp.jsx"
+      "target": "src/components/effects/svg-path/SVGPathComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/svg-path/createSuspendedRaf.js"
     }
   ]
 }

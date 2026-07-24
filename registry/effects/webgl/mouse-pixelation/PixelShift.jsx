@@ -341,8 +341,8 @@ export default function PixelShift({
 
   return (
     <div ref={rootRef} className="relative h-screen w-full">
-      <div className="pointer-events-none absolute left-1/2 top-40 z-10 hidden w-full -translate-x-1/2 px-5 max-md:flex max-md:justify-center max-sm:left-0 max-sm:block max-sm:translate-x-0 max-sm:pt-5">
-        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-md:w-[80%] max-md:text-center max-md:text-[2.8vw] max-sm:w-full max-sm:text-[3.5vw]">
+      <div className="pointer-events-none absolute left-1/2 top-40 z-10 hidden w-full -translate-x-1/2 px-5 max-xl:flex max-xl:justify-center max-md:left-0 max-md:block max-md:translate-x-0 max-md:pt-5">
+        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-xl:w-[80%] max-xl:text-center max-xl:text-[2.8vw] max-md:w-full max-md:text-[3.5vw]">
           {notice}
         </p>
       </div>

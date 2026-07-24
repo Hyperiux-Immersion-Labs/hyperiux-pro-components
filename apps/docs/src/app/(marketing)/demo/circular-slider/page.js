@@ -11,7 +11,7 @@ const Page = () => {
  <>
 
  <ReactLenis root>
-    <DemoHeader textColor='#ffffff' logoColor='#ffffff' />
+    <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
 <CircularSlider/>
 <ScrollBottom className="bottom-[3.5%]" />
  </ReactLenis>

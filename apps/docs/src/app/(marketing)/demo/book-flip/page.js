@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <DemoHeader textColor='#fffff' logoColor='#ffffff' />
+    <DemoHeader textColor='#fffff' logoColor='#FFFFFF' />
       <BookFlip />
     </>
   )

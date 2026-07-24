@@ -79,11 +79,10 @@ export default function DemoHeader({
     };
   }, [demoSlug, href]);
 
-  const resolvedTextColor = textColor;
 
   return (
     <>
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out  ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out max-sm:pt-4 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -144,15 +143,6 @@ export default function DemoHeader({
           <div className="min-w-0 text-right flex items-center justify-center gap-3">
             {showText ? (
               <>
-                {/* <ArrowFillButton
-                  href={href}
-                  btnText={text}
-                  textColor="#ffffff"
-                  hoverFillTextColor="#ff6b00"
-                  arrowColor="#ff6b00"
-                  hoverArrowColor="#ff6b00"
-                  className="scale-[0.8] max-md:hidden origin-right text-[1.2vw] transition-transform duration-200 "
-                /> */}
                 <Button
                                 text="Read Article"
                                 href={readArticleHref}
@@ -169,8 +159,8 @@ export default function DemoHeader({
                   href={href}
                   text={text}
                   mobileText={text}
-                  textColor={resolvedTextColor}
-                  clickedColor={resolvedTextColor}
+                  textColor={textColor}
+                  clickedColor={textColor}
                   className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-md:block max-sm:block"
                   iconClassName="h-5 w-5 max-md:h-6 max-md:w-6 max-sm:h-6 max-sm:w-6"
                 />

@@ -7,6 +7,10 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
 }
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
 export default function CardsRunway({
   data = [],
   accentColor = "#ff5f00",
@@ -18,8 +22,15 @@ export default function CardsRunway({
 
   useEffect(() => {
     let ctx = gsap.context(() => {
-      if (globalThis.innerWidth > 1024) {
-        gsap.set(".cards-runway-card", { y: "37vw", opacity: 1 });
+      // Must match the CSS max-xl breakpoint (1280px under default
+      // Tailwind): below it the section collapses to the static
+      // horizontal-scroll layout, so the pin/scrub timeline only exists
+      // at xl and up.
+      if (globalThis.innerWidth >= 1280) {
+        gsap.set(".cards-runway-card", {
+          y: prefersReducedMotion() ? "0vw" : "37vw",
+          opacity: 1,
+        });
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root.current,

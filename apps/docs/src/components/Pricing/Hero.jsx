@@ -12,7 +12,7 @@ const Hero = () => {
         <section className="relative z-20 pointer-events-none self-padd h-screen flex items-center w-full">
             <Image
         src="/landing-page/hero-bg.webp"
-        alt=""
+        alt="hero-background image"
         aria-hidden="true"
         fill
         sizes="100vw"

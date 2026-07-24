@@ -3,6 +3,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,6 +37,7 @@ export default function HelixSliderComp({
 }) {
     const sectionRef = useRef(null);
     const cardRefs = useRef([]);
+    const reducedMotion = usePrefersReducedMotion();
 
     const repeatedItems = useMemo(() => {
         return [...items, ...items, ...items];
@@ -184,6 +186,23 @@ export default function HelixSliderComp({
                     ))}
                 </div>
             </div>
+
+            {reducedMotion && (
+                <div
+                    aria-live="polite"
+                    className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+                >
+                    <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+                        This effect can't be reduced.
+                    </h2>
+                    <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+                        Reduced motion is enabled, but this effect relies on
+                        continuous scroll-driven rotation and can&apos;t be
+                        reduced to a simple fade without losing the effect
+                        entirely.
+                    </p>
+                </div>
+            )}
         </section>
     );
 }

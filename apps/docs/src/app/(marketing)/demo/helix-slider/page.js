@@ -8,7 +8,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <DemoHeader logoColor="#ffffff" textColor='#ffffff'  />
+    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'  />
    <HelixSlider />
    <ScrollBottom className='z-90 bottom-[5%] gap-[0.5vw] ' textColor={'text-white'} />
     </>
