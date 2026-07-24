@@ -27,6 +27,7 @@ const EXCLUDED_PATHS = new Set([
   "/demo/svg-brush-transition",
   "/demo/svg-brush-transition/page2",
   "/demo/lines-loader",
+  "/demo/number-counter"
 ]);
 
 function formatLabel(pathname) {
