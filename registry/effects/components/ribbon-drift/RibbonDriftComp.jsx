@@ -31,15 +31,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 		const ctx = gsap.context(() => {
 			const mm = gsap.matchMedia();
 
-			mm.add(
-				{
-					isDesktop: "(min-width: 1025px)",
-					reduceMotion: "(prefers-reduced-motion: reduce)",
-				},
-				(context) => {
-					const { isDesktop, reduceMotion } = context.conditions;
-					if (!isDesktop) return;
-
+			mm.add("(min-width: 1025px)", () => {
 					const headingSplit = new SplitText(headingRef.current, {
 						type: "chars,lines",
 						linesClass: "split-line",
@@ -85,40 +77,27 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						},
 					});
 
-					if (reduceMotion) {
-						// No Y exit — fade copy out instead.
-						introTl.to(
-							[headingRef.current, paragraphRef.current],
-							{
-								opacity: 0,
-								duration: 1.2,
-								ease: "power3.inOut",
-							},
-							0,
-						);
-					} else {
-						introTl.to(
-							headingSplit.chars,
-							{
-								yPercent: -100,
-								duration: 1.2,
-								stagger: 0.02,
-								ease: "power3.inOut",
-							},
-							0,
-						);
+					introTl.to(
+						headingSplit.chars,
+						{
+							yPercent: -100,
+							duration: 1.2,
+							stagger: 0.02,
+							ease: "power3.inOut",
+						},
+						0,
+					);
 
-						introTl.to(
-							paragraphSplit.lines,
-							{
-								yPercent: -100,
-								duration: 1.2,
-								stagger: 0.06,
-								ease: "power3.inOut",
-							},
-							0.1,
-						);
-					}
+					introTl.to(
+						paragraphSplit.lines,
+						{
+							yPercent: -100,
+							duration: 1.2,
+							stagger: 0.06,
+							ease: "power3.inOut",
+						},
+						0.1,
+					);
 
 					hoverSplitsRef.current = allTitles.map((el) => {
 						const split = new SplitText(el, {
@@ -128,7 +107,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 						gsap.set(allTitles, { opacity: 1 });
 						gsap.set(split.chars, {
-							yPercent: reduceMotion ? 0 : 120,
+							yPercent: 120,
 							opacity: 0,
 							force3D: true,
 						});
@@ -136,16 +115,9 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						return split;
 					});
 
-					if (reduceMotion) {
-						// Settled vertical layout — only X pans animate below.
-						gsap.set(".mid-strip", { yPercent: -4.5, scale: 1 });
-						gsap.set(".left-strip", { yPercent: -77, scale: 1 });
-						gsap.set(".right-strip", { yPercent: -77, scale: 1 });
-					} else {
-						gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
-						gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
-						gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
-					}
+					gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
+					gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
+					gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
 
 					cards.forEach((card, index) => {
 						const split = hoverSplitsRef.current[index];
@@ -162,16 +134,6 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						const onEnter = () => {
 							gsap.killTweensOf(image);
 							gsap.killTweensOf(split.chars);
-							if (reduceMotion) {
-								gsap.to(split.chars, {
-									opacity: 1,
-									stagger: 0.02,
-									duration: 0.45,
-									ease: "power3.out",
-									overwrite: true,
-								});
-								return;
-							}
 							gsap.to(split.chars, {
 								yPercent: 0,
 								opacity: 1,
@@ -185,16 +147,6 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						const onLeave = () => {
 							gsap.killTweensOf(image);
 							gsap.killTweensOf(split.chars);
-							if (reduceMotion) {
-								gsap.to(split.chars, {
-									opacity: 0,
-									stagger: 0.015,
-									duration: 0.35,
-									ease: "power3.in",
-									overwrite: true,
-								});
-								return;
-							}
 							gsap.to(split.chars, {
 								yPercent: 120,
 								opacity: 0,
@@ -221,31 +173,25 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						},
 					});
 
-					if (reduceMotion) {
-						// X-only strip exit at normal scrub speed.
-						tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, 0);
-						tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, 0);
-					} else {
-						tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
-						tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
-						tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
-						tl.to(".card-1", {
-							yPercent: -100,
+					tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
+					tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
+					tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
+					tl.to(".card-1", {
+						yPercent: -100,
+						duration: 0.3,
+						ease: "power3.inOut",
+					});
+					tl.to(
+						".card-2",
+						{
+							yPercent: 100,
 							duration: 0.3,
 							ease: "power3.inOut",
-						});
-						tl.to(
-							".card-2",
-							{
-								yPercent: 100,
-								duration: 0.3,
-								ease: "power3.inOut",
-							},
-							"<",
-						);
-						tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, "<");
-						tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, "<");
-					}
+						},
+						"<",
+					);
+					tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, "<");
+					tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, "<");
 
 					const sectionBreakTl = gsap.timeline({
 						scrollTrigger: {
@@ -257,7 +203,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 					});
 
 					sectionBreakTl.from(".section-break-wrapper", {
-						scale: reduceMotion ? 1 : 0.7,
+						scale: 0.7,
 						opacity: 0,
 						duration: 3,
 						ease: "power3.inOut",
@@ -285,8 +231,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						paragraphSplit.revert();
 						sectionBreakSplit.revert();
 					};
-				},
-			);
+			});
 
 			return () => {
 				mm.revert();
