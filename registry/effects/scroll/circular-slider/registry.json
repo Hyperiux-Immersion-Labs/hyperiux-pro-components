@@ -1,6 +1,6 @@
 {
   "name": "circular-slider",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Rotating Carousel",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
@@ -25,6 +25,14 @@
     {
       "path": "CircularSliderComp.jsx",
       "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-24",
+      "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+      "breaking": false
     }
   ]
 }

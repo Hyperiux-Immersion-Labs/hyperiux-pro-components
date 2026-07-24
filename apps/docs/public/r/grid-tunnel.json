@@ -12,8 +12,14 @@
   "exportName": "GridTunnel",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Added a prefers-reduced-motion notice, and hardened camera-frame timing so a long tab-hidden pause no longer displaces the camera (and by extension the recycled tunnel chunks) on resume.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",

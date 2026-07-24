@@ -12,8 +12,14 @@
   "exportName": "FishEye",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",

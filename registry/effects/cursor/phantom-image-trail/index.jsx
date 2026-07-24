@@ -472,12 +472,12 @@ export function PhantomImageTrail({
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 backdrop-blur-sm right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center max-xl:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-xl:hidden"
         >
-          <h2 className="text-sm leading-none text-[#111111]">
+          <h2 className="text-sm leading-none text-black">
             The trail keeps spawning.
           </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
+          <p className="mt-2 text-xs leading-5 text-black">
             Phantom Image Trail spawns images as the cursor moves. The
             motion is the effect itself, so there&apos;s no static
             fallback for reduced motion preferences.

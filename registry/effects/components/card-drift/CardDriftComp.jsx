@@ -1,10 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 
 gsap.registerPlugin(Draggable);
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener("change", update);
+ return () => mediaQuery.removeEventListener("change", update);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 export default function CardDriftComp({
  data = [],
@@ -15,6 +29,7 @@ export default function CardDriftComp({
  bgTextColor ="text-white/10",
 }) {
  const containerRef = useRef(null);
+ const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -192,6 +207,22 @@ export default function CardDriftComp({
  barBg={barBg}
  />
  ))}
+
+ {reducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
+ >
+ <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+ This effect can&apos;t be reduced.
+ </h2>
+ <p className="mx-auto mt-4 text-sm leading-6 text-black">
+ The scattered cards only move when you drag them - dragging
+ stays fully interactive since it&apos;s a direct, user-initiated
+ action, not automatic motion.
+ </p>
+ </div>
+ )}
  </div>
  );
 }

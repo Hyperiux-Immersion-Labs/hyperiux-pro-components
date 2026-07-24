@@ -10,8 +10,14 @@
   "exportName": "SVGPath",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Ported prefers-reduced-motion support from the docs copy: static scroll-tracked positioning instead of spring/lerp smoothing, and dragging disabled while reduced motion is active.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-23",

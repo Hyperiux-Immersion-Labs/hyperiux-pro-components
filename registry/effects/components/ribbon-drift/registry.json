@@ -1,6 +1,6 @@
 {
   "name": "ribbon-drift",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "type": "registry:component",
   "title": "Ribbon Drift",
   "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
@@ -28,6 +28,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-24",
+      "summary": "Synced the docs-mirror RibbonDriftComp with the registry copy's full prefers-reduced-motion support (static layout, X-only strip exits, fade-based intro/hover transitions) - the mirror was missing all of it.",
+      "breaking": false
+    },
     {
       "version": "1.1.1",
       "date": "2026-07-23",

@@ -198,12 +198,12 @@ export default function FishEye({ src }) {
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white/20 backdrop-blur-md p-3 text-center max-md:hidden"
+          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
         >
-          <h2 className="text-sm leading-none text-[#111111]">
+          <h2 className="text-sm leading-none text-black">
             The lens keeps bending.
           </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
+          <p className="mt-2 text-xs leading-5 text-black">
             Fish Eye distorts the image as your cursor moves across it.
             Since the warp is driven entirely by motion, there&apos;s no
             reduced motion version to fall back on.
