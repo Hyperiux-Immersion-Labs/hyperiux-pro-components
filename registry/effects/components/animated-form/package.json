@@ -4,6 +4,7 @@
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "Button.jsx",
     "Checkbox.jsx",
     "ContactForm.jsx",
@@ -11,7 +12,6 @@
     "PhoneInput.jsx",
     "Select.jsx",
     "Textarea.jsx",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/noise-ripple-cursor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
   "main": "index.jsx",
   "files": [

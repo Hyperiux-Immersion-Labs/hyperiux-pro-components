@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/grid-lift",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
   "main": "index.jsx",
   "files": [

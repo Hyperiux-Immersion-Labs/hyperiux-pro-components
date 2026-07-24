@@ -4,9 +4,9 @@
   "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
   "main": "index.jsx",
   "files": [
-    "createSuspendedRaf.js",
     "index.jsx",
     "useMouse.js",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

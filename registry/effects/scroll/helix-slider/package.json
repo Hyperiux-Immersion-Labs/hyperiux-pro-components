@@ -4,8 +4,8 @@
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
   "main": "index.jsx",
   "files": [
-    "HelixSliderComp.jsx",
     "index.jsx",
+    "HelixSliderComp.jsx",
     "registry.json"
   ],
   "keywords": [

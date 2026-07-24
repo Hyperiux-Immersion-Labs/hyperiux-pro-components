@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/pixel-bloom",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
   "main": "index.jsx",
   "files": [

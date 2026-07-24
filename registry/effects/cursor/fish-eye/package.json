@@ -4,8 +4,8 @@
   "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
   "main": "index.jsx",
   "files": [
-    "createSuspendedRaf.js",
     "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [
