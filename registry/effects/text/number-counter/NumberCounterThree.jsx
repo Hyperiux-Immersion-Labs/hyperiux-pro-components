@@ -65,7 +65,7 @@ const NumberCounterThree = ({
  duration = 1.5,
  fontWeight = 600,
  textColor ='#FF5100',
- textSize ='text-[5vw] max-xl:text-[7vw] max-md:text-[12vw]',
+ textSize ='text-[5vw] max-[1025px]:text-[7vw] max-md:text-[12vw]',
  trigger,
  suffix ='',
  reducedMotion = false,
@@ -96,7 +96,7 @@ const NumberCounterThree = ({
 
  return (
  <div
- className={`flex items-end gap-[0.05em] max-xl:gap-0 ${textSize}`}
+ className={`flex items-end gap-[0.05em] max-[1025px]:gap-0 ${textSize}`}
  style={{
  fontWeight,
  color: textColor,

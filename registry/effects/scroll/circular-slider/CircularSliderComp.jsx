@@ -79,7 +79,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 
  <section
  ref={outerRef}
- className="max-xl:hidden relative h-[250vh]"
+ className="max-[1025px]:hidden relative h-[250vh]"
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
@@ -123,15 +123,15 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </section>
 
  {/* Mobile / Tablet */}
- <section className="hidden max-xl:block py-[15vw] px-[5vw]">
- <h2 className="text-center max-xl:text-[3.5vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
+ <section className="hidden max-[1025px]:block py-[15vw] px-[5vw]">
+ <h2 className="text-center max-[1025px]:text-[3.5vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {heading}
  </h2>
  <div className="flex flex-col items-center gap-[5vw] max-md:gap-[10vw]">
  {data.map((product, i) => (
  <div
  key={i}
- className="w-[85vw] max-xl:w-full rounded-[5vw] overflow-hidden"
+ className="w-[85vw] max-[1025px]:w-full rounded-[5vw] overflow-hidden"
  >
  <SliderCard
  heading={product.heading}
@@ -143,7 +143,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </div>
  ))}
  </div>
- <p className="text-center font-light uppercase tracking-widest max-xl:text-[2.5vw] max-md:text-[6vw] mt-[10vw]">
+ <p className="text-center font-light uppercase tracking-widest max-[1025px]:text-[2.5vw] max-md:text-[6vw] mt-[10vw]">
  {para}
  </p>
  </section>
@@ -153,7 +153,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  aria-live="polite"
  className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
  >
- <h2 className="text-[1.15vw] max-xl:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+ <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
  This effect can&apos;t be reduced.
  </h2>
  <p className="mx-auto mt-4 text-sm leading-6 text-black">
@@ -173,7 +173,7 @@ export default CircularSliderComp;
 const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  const cardContent = (
  <div
- className="w-full h-full max-xl:h-auto rounded-[1.5vw] max-xl:rounded-[5vw] max-md:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-xl:gap-8 max-md:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-xl:px-[8%] max-md:px-6 py-20 max-xl:py-12 max-md:py-10"
+ className="w-full h-full max-[1025px]:h-auto rounded-[1.5vw] max-[1025px]:rounded-[5vw] max-md:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-[1025px]:gap-8 max-md:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-[1025px]:px-[8%] max-md:px-6 py-20 max-[1025px]:py-12 max-md:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
@@ -181,13 +181,13 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  >
  <div className="flex flex-col items-center gap-4 max-md:gap-4 justify-center">
  <h2
- className="text-center font-medium text-[1.8vw] max-xl:text-3xl max-md:text-2xl uppercase"
+ className="text-center font-medium text-[1.8vw] max-[1025px]:text-3xl max-md:text-2xl uppercase"
  style={{ color: textColor ||"inherit" }}
  >
  {heading}
  </h2>
  <p
- className="text-[1.15vw] max-md:text-lg max-xl:text-xl text-center mt-[0.5vw] max-md:mt-1"
+ className="text-[1.15vw] max-md:text-lg max-[1025px]:text-xl text-center mt-[0.5vw] max-md:mt-1"
  style={{ color: textColor ||"inherit" }}
  >
  {text}
@@ -196,7 +196,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
 
  <div className="mt-[1vw] max-md:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-md:gap-2 group/btn">
  <span
- className="text-[1vw] max-md:text-xs max-xl:text-lg uppercase tracking-widest"
+ className="text-[1vw] max-md:text-xs max-[1025px]:text-lg uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}
  >
  See More
@@ -211,7 +211,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  }
 
  return (
- <a href={link} className="block w-full h-full max-xl:h-auto">
+ <a href={link} className="block w-full h-full max-[1025px]:h-auto">
  {cardContent}
  </a>
  );

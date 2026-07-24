@@ -59,7 +59,7 @@
 
 - The `1025px` breakpoint switch to a fully stacked, non-hover-dependent card list ([HoverStackComp.jsx#L23-L24](registry/effects/components/hover-stack/HoverStackComp.jsx#L23-L24), [HoverStackComp.jsx#L107-L146](registry/effects/components/hover-stack/HoverStackComp.jsx#L107-L146)) is a correct approach for touch devices — it does not rely on `:hover` at all below that width, avoiding the common "sticky hover state" bug on touch.
 - Breakpoint detection is `window.innerWidth`-based via a `resize` listener rather than a CSS media query / `matchMedia`, so it will not react to viewport changes that don't fire `resize` in the same way (e.g. some devtools device-emulation edge cases) — a minor implementation-choice note, not a defect.
-- The demo page's hardcoded `index.jsx` uses viewport-unit (`vw`) typography (`text-[5.5vw] max-md:text-[9vw] max-xl:text-[7vw]`, [index.jsx#L62](registry/effects/components/hover-stack/index.jsx#L62)) which scales continuously but has no clamp/min-max bound visible in this file — cannot confirm actual rendered size at extreme viewport widths without a browser check, which was out of scope for this static audit.
+- The demo page's hardcoded `index.jsx` uses viewport-unit (`vw`) typography (`text-[5.5vw] max-md:text-[9vw] max-[1025px]:text-[7vw]`, [index.jsx#L62](registry/effects/components/hover-stack/index.jsx#L62)) which scales continuously but has no clamp/min-max bound visible in this file — cannot confirm actual rendered size at extreme viewport widths without a browser check, which was out of scope for this static audit.
 
 ## Maintainability and code-quality assessment
 

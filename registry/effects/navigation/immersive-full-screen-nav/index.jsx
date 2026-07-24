@@ -60,12 +60,12 @@ export default function ImmersiveFullscreenNav({
           </h1>
 
           {/* Subtext */}
-          <p className="mt-8 text-[1.4vw] max-md:text-[4.5vw] max-xl:text-[3vw]">
+          <p className="mt-8 text-[1.4vw] max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
             Click on the hamburger to open the navigation
           </p>
 
           {/* Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-md:text-[4.5vw] max-xl:text-[3vw]">
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
             <button className=" rounded-full max-md:min-w-[45vw] bg-black text-white font-medium ">
               <a href={"/effects/navigation/immersive-full-screen-nav"} className="px-7 py-3 block w-full">
               Read Article

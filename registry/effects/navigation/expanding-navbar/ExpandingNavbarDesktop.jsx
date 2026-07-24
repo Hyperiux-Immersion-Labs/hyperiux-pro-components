@@ -297,7 +297,7 @@ export function ExpandingNavbarDesktop() {
     });
 
     return (
-        <div ref={containerRef} className="max-xl:hidden">
+        <div ref={containerRef} className="max-[1025px]:hidden">
             <div
                 onClick={closeMenu}
                 ref={backgroundOverlayRef}

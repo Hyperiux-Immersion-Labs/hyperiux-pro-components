@@ -247,7 +247,7 @@ export default function ContactForm({
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
- className="space-y-[1.2vw] max-md:space-y-[4vw] max-xl:space-y-[4vw]"
+ className="space-y-[1.2vw] max-md:space-y-[4vw] max-[1025px]:space-y-[4vw]"
  onSubmit={handleSubmit}
  >
  {fields.map((field) => renderField(field))}
@@ -257,7 +257,7 @@ export default function ContactForm({
  type="submit"
  isLoading={isLoading}
  loadingText={loadingLabel}
- className="mt-[3vw]  max-md:mt-0 max-xl:mt-[3vw]"
+ className="mt-[3vw]  max-md:mt-0 max-[1025px]:mt-[3vw]"
  >
  {submitLabel}
  </Button>

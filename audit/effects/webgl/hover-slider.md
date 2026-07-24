@@ -23,7 +23,7 @@ The `hover-slider` component is an exceptional WebGL-powered list-slider compone
 
 ### Medium Severity
 - **Data Source Drift:** The mock portfolio items array in `registry/effects/webgl/hover-slider/index.jsx#L15-L167` hardcodes generic unoptimized `picsum.photos` seed URLs. In contrast, the documentation page uses secure local API-mediated cloud proxy endpoints (`/api/media-proxy?url=...`). If Picsum experiences standard rate-limiting or outages during initial user testing of the imported module, image loading will fail.
-- **Arbitrary Tailwind Class Hardcoding:** Under `registry/effects/webgl/hover-slider/HoverSliderComp.jsx#L647-L656` multiple breakpoints are drifted between the documentation component and the registry source (e.g., mismatch of `max-xl:hidden` vs `max-md:hidden`, or `max-sm:hidden` vs `max-md:hidden`).
+- **Arbitrary Tailwind Class Hardcoding:** Under `registry/effects/webgl/hover-slider/HoverSliderComp.jsx#L647-L656` multiple breakpoints are drifted between the documentation component and the registry source (e.g., mismatch of `max-[1025px]:hidden` vs `max-md:hidden`, or `max-sm:hidden` vs `max-md:hidden`).
 
 ### Low Severity
 - **Redundant Layout Calculations:** Recalculates canvas size and camera bounds multiple times inside the initial mount lifecycle instead of chaining layout states in a single clean pass.

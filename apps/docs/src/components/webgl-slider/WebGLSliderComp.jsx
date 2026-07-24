@@ -597,7 +597,7 @@ function WebGLSliderComp({ images = [] }) {
             className="absolute top-0 left-0 hidden will-change-transform"
           >
             <div className="flex origin-center -translate-x-1/2 -translate-y-1/2 flex-col">
-              <p className="whitespace-pre-wrap text-[6.5vw] font-bold leading-[0.85] tracking-tighter max-xl:text-[7.6vw] max-md:text-[9.4vw]">
+              <p className="whitespace-pre-wrap text-[6.5vw] font-bold leading-[0.85] tracking-tighter max-[1025px]:text-[7.6vw] max-md:text-[9.4vw]">
                 {img.text}
               </p>
             </div>

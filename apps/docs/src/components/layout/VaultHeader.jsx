@@ -209,7 +209,7 @@ export function VaultHeader({
                   <span className="text-sm max-md:hidden">Search</span>
                 </div>
 
-                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-xl:hidden">
+                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
                   ⌘K
                 </kbd>
               </button>

@@ -565,8 +565,8 @@ export default function EnhancedPixelCube({
 
   return (
     <div ref={rootRef} style={{ width: "100vw", height: "100vh", background: "#000" }}>
-      <div className="pointer-events-none absolute left-1/2 top-30 z-10 hidden w-full -translate-x-1/2 px-5 pt-5 max-xl:flex max-xl:justify-center max-md:left-0 max-md:block max-md:translate-x-0">
-        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-xl:text-center max-xl:text-[2.8vw] max-md:text-[3.5vw]">
+      <div className="pointer-events-none absolute left-1/2 top-30 z-10 hidden w-full -translate-x-1/2 px-5 pt-5 max-[1025px]:flex max-[1025px]:justify-center max-md:left-0 max-md:block max-md:translate-x-0">
+        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-[1025px]:text-center max-[1025px]:text-[2.8vw] max-md:text-[3.5vw]">
           {notice}
         </p>
       </div>

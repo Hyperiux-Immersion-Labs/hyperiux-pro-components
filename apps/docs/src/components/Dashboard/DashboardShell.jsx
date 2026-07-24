@@ -47,7 +47,7 @@ export function DashboardShell({ children }) {
           </p>
         </div>
 
-        <div className="flex items-center justify-between gap-4 mb-12 max-xl:flex-col max-xl:items-start">
+        <div className="flex items-center justify-between gap-4 mb-12 max-[1025px]:flex-col max-[1025px]:items-start">
           <div className="flex gap-3 overflow-x-auto max-w-full max-sm:pb-[4vw] max-sm:flex-wrap">
             {tabs.map((tab) => {
               const active =

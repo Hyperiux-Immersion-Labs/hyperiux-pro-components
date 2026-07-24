@@ -33,8 +33,8 @@ const ColorfulCursorAura = () => {
       />
 
       {/* Mobile only notice */}
-      <div className="hidden max-xl:block absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-        <p className="text-zinc-700 max-xl:text-[3vw] max-md:text-[4vw] leading-[1.2] font-medium">
+      <div className="hidden max-[1025px]:block absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <p className="text-zinc-700 max-[1025px]:text-[3vw] max-md:text-[4vw] leading-[1.2] font-medium">
            Open on desktop to experience the effect
         </p>
       </div>
@@ -42,7 +42,7 @@ const ColorfulCursorAura = () => {
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center  max-xl:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center  max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-[#111111]">
             The aura keeps glowing.

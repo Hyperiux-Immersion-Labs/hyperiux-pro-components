@@ -436,7 +436,7 @@ export default function DottedGrid() {
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/4 via-transparent to-black/40" />
       <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.95)]" />
-      <div className="hidden max-xl:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm leading-tight pointer-events-none">
+      <div className="hidden max-[1025px]:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm leading-tight pointer-events-none">
         Works best on desktop  <br />
         Here, tap & drag to explore
       </div>
@@ -446,7 +446,7 @@ export default function DottedGrid() {
           aria-live="polite"
           className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-xl:text-[2vw] leading-none text-[#111111]">
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
             This effect can&apos;t be reduced.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

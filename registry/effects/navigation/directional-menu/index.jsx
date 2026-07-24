@@ -30,7 +30,7 @@ export default function DirectionalMenu() {
     <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
-        <div className="max-w-7xl mx-auto max-xl:hidden h-19 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto max-[1025px]:hidden h-19 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <a href="/" className="flex items-center gap-3 cursor-pointer">
@@ -69,8 +69,8 @@ export default function DirectionalMenu() {
           <DirectionalMegaMenu
             items={menuItems}
             closeDelay={80}
-            navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-xl:translate-x-10 max-md:translate-x-0 "
-            contentWrapperClassName="p-8 bg-white border border-white/10 rounded-3xl max-md:h-[92vh] max-xl:h-[75vh]"
+            navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-[1025px]:translate-x-10 max-md:translate-x-0 "
+            contentWrapperClassName="p-8 bg-white border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]"
             animation={{
               duration: 0.35,
               ease: "power2.inOut",

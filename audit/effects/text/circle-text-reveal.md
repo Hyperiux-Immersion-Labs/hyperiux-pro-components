@@ -17,7 +17,7 @@ Circle Text Reveal is an interactive, cursor-following mask effect that reveals 
 ## Risks and issues
 
 1. **[High] Raw `requestAnimationFrame` without suspension.** The mouse tracker in [index.jsx#L42](../../../registry/effects/text/circle-text-reveal/index.jsx) runs a continuous frame tick. If multiple instances are rendered or left running in background tabs, they degrade CPU performance because they are not paused by visibility gates or the shared `createSuspendedRaf` utility.
-2. **[Medium] Code drift in headings and breakpoints.** The registry code uses `<h2> select-none` [index.jsx#L117](../../../registry/effects/text/circle-text-reveal/index.jsx), while the live docs copy uses `<h1> select-none`. The mobile hidden overlay class is also mismatched (`max-xl:flex` vs `max-md:flex`), breaking responsive behaviors when copied directly.
+2. **[Medium] Code drift in headings and breakpoints.** The registry code uses `<h2> select-none` [index.jsx#L117](../../../registry/effects/text/circle-text-reveal/index.jsx), while the live docs copy uses `<h1> select-none`. The mobile hidden overlay class is also mismatched (`max-[1025px]:flex` vs `max-md:flex`), breaking responsive behaviors when copied directly.
 
 ## Accessibility assessment
 

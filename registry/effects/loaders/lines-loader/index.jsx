@@ -86,7 +86,7 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
 function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
   return (
     <div
-      className={`fixed bottom-30 max-md:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-md:gap-4 transition-all duration-500 max-xl:bottom-35  ${
+      className={`fixed bottom-30 max-md:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-md:gap-4 transition-all duration-500 max-[1025px]:bottom-35  ${
         isCompleted
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none"
@@ -99,7 +99,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
           Explore all effects
           <ArrowUpRight className="size-4" />
         </a>
-      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-xl:px-3 max-xl:py-2 max-md:px-2 max-md:py-1.5">
+      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-[1025px]:px-3 max-[1025px]:py-2 max-md:px-2 max-md:py-1.5">
         {VERSIONS.map((variant) => {
           const isActive = activeVariant === variant.value;
           const btnClass = isCompleted
@@ -111,7 +111,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
               key={variant.value}
               type="button"
               onClick={() => onVariantChange(variant.value)}
-              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-xl:text-lg max-md:text-sm ${btnClass}`}
+              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-[1025px]:text-lg max-md:text-sm ${btnClass}`}
             >
               {variant.label}
             </button>

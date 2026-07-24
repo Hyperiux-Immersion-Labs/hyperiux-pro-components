@@ -237,7 +237,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  return (
  <div
  ref={containerRef}
- className="h-[599px] w-[599px] max-xl:h-[420px] max-xl:w-[420px] max-md:h-[320px] max-md:w-[320px] max-md:-translate-y-20 border-r border-t border-black/20"
+ className="h-[599px] w-[599px] max-[1025px]:h-[420px] max-[1025px]:w-[420px] max-md:h-[320px] max-md:w-[320px] max-md:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }
