@@ -33,15 +33,15 @@ export default function Page() {
             </div>
 
             <div className='h-[30vw] w-[30vw] max-md:hidden relative'>
-                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg" />
+                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg" className="h-full w-full" />
             </div>
 
             <div className='h-[45vw] w-[30vw] max-md:hidden relative'>
-                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg" />
+                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg" className="h-full w-full" />
             </div>
 
             <div className='size-[25vw] mt-auto max-md:hidden relative'>
-                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg" />
+                <FishEye src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg" className="h-full w-full" />
             </div>
 
             <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">

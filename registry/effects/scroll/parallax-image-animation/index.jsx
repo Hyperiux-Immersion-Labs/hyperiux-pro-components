@@ -18,6 +18,8 @@ function prefersReducedMotion() {
 // Reduced motion: keep the parallax, just much weaker - "reduce", not
 // remove. Applies to both the translateY shift and the optional scale range.
 const REDUCED_MOTION_FACTOR = 0.25;
+const DEFAULT_SRC =
+ "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg";
 
 function reduceOffset(value, factor) {
  if (typeof value !== "string") return value;
@@ -33,9 +35,9 @@ function reduceScale(value, factor) {
 }
 
 const ParallaxImageAnimation = ({
- src,
+ src = DEFAULT_SRC,
  alt ="parallax-img",
- wrapperClassName ="",
+ wrapperClassName ="h-[50vh] w-[50vw]",
  imageClassName ="",
  width = 700,
  height = 1000,

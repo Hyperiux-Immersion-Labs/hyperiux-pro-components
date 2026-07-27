@@ -7,8 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
+
 export default function PerspectiveTextReveal({
- children,
+ children = DEFAULT_TEXT,
  animateOnScroll = true,
  delay = 0,
  className = "",

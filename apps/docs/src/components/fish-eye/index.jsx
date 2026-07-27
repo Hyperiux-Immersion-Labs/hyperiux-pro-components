@@ -125,7 +125,11 @@ function ImageNodeMaterial({ src, isMobile }) {
   )
 }
 
-export default function FishEye({ src }) {
+const DEFAULT_SRC =
+  'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
+const DEFAULT_CLASS_NAME = 'h-[50vh] w-[50vw]'
+
+export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_NAME }) {
   const rootRef = useRef(null)
   const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
@@ -170,7 +174,7 @@ export default function FishEye({ src }) {
   if (!objectUrl) return null
 
   return (
-    <div ref={rootRef} className="h-full w-full">
+    <div ref={rootRef} className={className}>
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0, 5], fov: 45 }}

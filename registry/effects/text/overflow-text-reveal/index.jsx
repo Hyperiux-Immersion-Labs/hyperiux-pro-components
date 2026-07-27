@@ -20,9 +20,10 @@ const DIRECTION_INITIAL = {
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
+const DEFAULT_TEXT = <p>Characters rise from below.</p>;
 
 export default function OverflowTextReveal({
-  children,
+  children = DEFAULT_TEXT,
   animateOnScroll = true,
   delay = 0,
   className = "",

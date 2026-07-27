@@ -24,7 +24,18 @@ const REDUCED_MOTION_FACTOR = 0.25;
 const GAP = 1.6;
 const PAD_X = "5vw";
 
-function ParallaxSlider({ images = [], bgColor = "#000000" }) {
+const DEFAULT_IMAGES = [
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+];
+
+function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#000000" }) {
     const outerRef = useRef(null);
     const trackRef = useRef(null);
 

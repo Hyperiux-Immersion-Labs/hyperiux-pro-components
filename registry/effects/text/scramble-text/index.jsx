@@ -12,9 +12,10 @@ gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
+const DEFAULT_TEXT = 'Signal appears when the noise decides to leave.';
 
 const ScrambleText = ({
-  text,
+  text = DEFAULT_TEXT,
   speed = 0.6,
   charType = 'lowercase',
   textSize = 'text-base',

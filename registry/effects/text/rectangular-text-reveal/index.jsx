@@ -11,6 +11,7 @@ import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText, CustomEase, ScrollTrigger);
 
 const DEFAULT_TAG = "div";
+const DEFAULT_TEXT = "Rectangular text reveal in motion.";
 const DEFAULT_BASE_COLOR = "#ea580c";
 const DEFAULT_OVERLAY_COLOR = "#ffffff";
 const DEFAULT_STAGGER = 0.2;
@@ -91,7 +92,7 @@ function createRevealRect({
 }
 
 export default function RectangularTextReveal({
-  children,
+  children = DEFAULT_TEXT,
   as: Tag = DEFAULT_TAG,
   className = "",
   baseColor = DEFAULT_BASE_COLOR,
