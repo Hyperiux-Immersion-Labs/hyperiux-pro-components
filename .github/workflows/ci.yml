@@ -30,6 +30,9 @@ jobs:
       - run: npm run build
         working-directory: apps/docs
         env:
+          # Next.js build (115 effects, WebGL/Three.js) exceeds the default
+          # heap on GitHub's standard 7GB runner without this.
+          NODE_OPTIONS: --max-old-space-size=6144
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
