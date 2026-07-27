@@ -550,6 +550,10 @@ export function EffectDetailContent({
                 />
               </div>
 
+              <div className="max-sm:px-[7vw] max-md:px-[6vw]">
+                <EffectChangelogSection changelog={safeEffect.changelog} />
+              </div>
+
               {safeRelatedEffects?.length > 0 && (
                 <section
                   ref={relatedEffectsRef}
@@ -742,6 +746,81 @@ function EffectCtaSection({ cta, sectionRef }) {
           </CustomAnimationFormTrigger>
         </div>
       </div>
+    </section>
+  );
+}
+
+function formatChangelogDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function EffectChangelogSection({ changelog = [] }) {
+  if (!changelog?.length) return null;
+
+  return (
+    <section className={`fadeup ${styles.faqAccordion}`}>
+      <h2 className={styles.changelogTitle}>Changelog</h2>
+
+      <FAQGroup
+        allowMultiple={false}
+        defaultOpenItems={changelog[0]?.version ? [changelog[0].version] : []}
+      >
+        <div className={styles.faqAccordionItems}>
+          {changelog.map((entry, index) => {
+            const itemId = entry.version || `changelog-${index}`;
+
+            return (
+              <FAQWrapper
+                key={itemId}
+                itemId={itemId}
+                className={styles.faqAccordionItem}
+                titleClassName={styles.faqAccordionQuestion}
+                iconClassName={styles.faqAccordionIcon}
+                iconSize={18}
+                iconStrokeWidth={1.8}
+              >
+                <FAQTitle
+                  className="pb-0 justify-start gap-3"
+                  iconPosition="left"
+                  iconMode="rotate-left-down"
+                >
+                  <div className={styles.changelogRow}>
+                    <h3 className={styles.changelogVersion}>
+                      v{entry.version}
+                    </h3>
+                    {entry.date && (
+                      <span className={styles.changelogDate}>
+                        {formatChangelogDate(entry.date)}
+                      </span>
+                    )}
+                    {entry.breaking && (
+                      <span className={styles.changelogBreaking}>
+                        Breaking
+                      </span>
+                    )}
+                  </div>
+                </FAQTitle>
+
+                {entry.summary && (
+                  <FAQContent className={`${styles.changelogSummary} pl-10`}>
+                    {entry.summary}
+                  </FAQContent>
+                )}
+              </FAQWrapper>
+            );
+          })}
+        </div>
+      </FAQGroup>
     </section>
   );
 }
