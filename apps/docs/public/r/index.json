@@ -321,8 +321,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "SvgPixelReveal",
-      "exportKind": "named",
+      "exportName": "SVGPixelReveal",
+      "exportKind": "default",
       "version": "1.0.0"
     },
     {

@@ -12,8 +12,8 @@
   "previewUrl": "/demo/svg-pixel-reveal",
   "tier": "pro",
   "main": "index.jsx",
-  "exportName": "SvgPixelReveal",
-  "exportKind": "named",
+  "exportName": "SVGPixelReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/svg-pixel-reveal",
   "target": "src/components/effects/svg-pixel-reveal",
   "files": [
@@ -22,8 +22,8 @@
       "target": "src/components/effects/svg-pixel-reveal/index.jsx"
     },
     {
-      "path": "PixelatedScgFilter.jsx",
-      "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
+      "path": "PixelatedSvgFilter.jsx",
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.jsx"
     }
   ]
 }
