@@ -10,8 +10,8 @@ import {
   FAQWrapper,
 } from "@/components/animated-faq";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import RemixerPanel from "@/components/ui/RemixerPanel";
-import remixerStyles from "@/components/ui/remixer-panel.module.css";
+import RemixerPanel from "@/components/remixer-panel/RemixerPanel";
+import remixerStyles from "@/components/remixer-panel/remixer-panel.module.css";
 
 const panelTransition = { duration: 0.6, ease: [0.62, 0.05, 0.01, 0.99] };
 

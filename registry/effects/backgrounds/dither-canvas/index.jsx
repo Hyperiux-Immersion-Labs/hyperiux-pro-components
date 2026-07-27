@@ -519,7 +519,36 @@ export default function DitherCanvas({
   className = "",
 }) {
   const ref = useRef(null);
+  const configRef = useRef({
+    charColumns,
+    colorizeFromVideo,
+    videoZoom,
+    charZoom,
+    spellBrightChars,
+    colorBoost,
+    disableMobileCursor,
+  });
   const reducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    configRef.current = {
+      charColumns,
+      colorizeFromVideo,
+      videoZoom,
+      charZoom,
+      spellBrightChars,
+      colorBoost,
+      disableMobileCursor,
+    };
+  }, [
+    charColumns,
+    colorizeFromVideo,
+    videoZoom,
+    charZoom,
+    spellBrightChars,
+    colorBoost,
+    disableMobileCursor,
+  ]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -640,11 +669,11 @@ export default function DitherCanvas({
     gl.uniform1i(loc("uFluid"), 1);
     gl.uniform1i(loc("uAtlas"), 2);
 
-    gl.uniform1f(loc("uVideoZoom"), videoZoom);
-    gl.uniform1f(loc("uCharZoom"), charZoom);
-    gl.uniform1f(loc("uColorBoost"), colorBoost);
-    gl.uniform1i(loc("uColorizeFromVideo"), colorizeFromVideo ? 1 : 0);
-    gl.uniform1i(loc("uSpellBrightChars"), spellBrightChars ? 1 : 0);
+    gl.uniform1f(loc("uVideoZoom"), configRef.current.videoZoom);
+    gl.uniform1f(loc("uCharZoom"), configRef.current.charZoom);
+    gl.uniform1f(loc("uColorBoost"), configRef.current.colorBoost);
+    gl.uniform1i(loc("uColorizeFromVideo"), configRef.current.colorizeFromVideo ? 1 : 0);
+    gl.uniform1i(loc("uSpellBrightChars"), configRef.current.spellBrightChars ? 1 : 0);
 
     const fluid = createFluid();
     const fluidData = new Float32Array(FN * 2);
@@ -662,7 +691,7 @@ export default function DitherCanvas({
     const isMobile = () => window.matchMedia("(max-width: 639px)").matches;
 
     const onMove = (event) => {
-      if (disableMobileCursor && isMobile()) return;
+      if (configRef.current.disableMobileCursor && isMobile()) return;
 
       const previousX = mouse.x;
       const previousY = mouse.y;
@@ -718,7 +747,10 @@ export default function DitherCanvas({
       height = canvas.height = window.innerHeight;
 
       gl.viewport(0, 0, width, height);
-      gl.uniform1f(loc("uCharColumns"), getResponsiveCharColumns(width, charColumns));
+      gl.uniform1f(
+        loc("uCharColumns"),
+        getResponsiveCharColumns(width, configRef.current.charColumns),
+      );
     };
 
     resize();
@@ -743,6 +775,7 @@ export default function DitherCanvas({
       root: canvas,
       onFrame: () => {
       if (video.readyState >= 2) {
+        const config = configRef.current;
         const timestamp = now();
 
         const { fb, fss, ffm, fir, firl } = TRAIL_CFG;
@@ -835,6 +868,12 @@ export default function DitherCanvas({
         gl.uniform1i(uTrailN, trail.length);
         gl.uniform2f(uRes, width, height);
         gl.uniform1i(uPhase, phase);
+        gl.uniform1f(loc("uCharColumns"), getResponsiveCharColumns(width, config.charColumns));
+        gl.uniform1f(loc("uVideoZoom"), config.videoZoom);
+        gl.uniform1f(loc("uCharZoom"), config.charZoom);
+        gl.uniform1f(loc("uColorBoost"), config.colorBoost);
+        gl.uniform1i(loc("uColorizeFromVideo"), config.colorizeFromVideo ? 1 : 0);
+        gl.uniform1i(loc("uSpellBrightChars"), config.spellBrightChars ? 1 : 0);
 
         gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -865,13 +904,6 @@ export default function DitherCanvas({
     };
   }, [
     videoSrc,
-    charColumns,
-    colorizeFromVideo,
-    videoZoom,
-    charZoom,
-    spellBrightChars,
-    colorBoost,
-    disableMobileCursor,
   ]);
 
   return (
@@ -910,5 +942,3 @@ export default function DitherCanvas({
     </>
   );
 }
-
-

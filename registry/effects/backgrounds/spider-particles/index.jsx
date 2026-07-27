@@ -10,9 +10,6 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 
-const LERP_SPEED = 0.1;
-const FADE_SPEED = 0.04;
-
 const REDUCED_MOTION_FACTOR = 0.6;
 
 // GLSL Shaders 
@@ -76,6 +73,9 @@ export default function SpiderParticles({
   particleSize = 20.0,
   mouseConnectDist = 160,
   spotlightRadius = 300,
+  lerpSpeed = 0.1,
+  fadeSpeed = 0.04,
+  showWeb = true,
   particlesGlow = false,
   glowColor = 0xffffff,
   particleColor = 0xffffff,
@@ -308,15 +308,15 @@ export default function SpiderParticles({
       root: mount,
       onFrame: () => {
     
-      const lerpSpeed   = reduceMotion ? LERP_SPEED * REDUCED_MOTION_FACTOR       : LERP_SPEED;
-      const fadeSpeed   = reduceMotion ? FADE_SPEED * REDUCED_MOTION_FACTOR       : FADE_SPEED;
+      const effectiveLerpSpeed   = reduceMotion ? lerpSpeed * REDUCED_MOTION_FACTOR       : lerpSpeed;
+      const effectiveFadeSpeed   = reduceMotion ? fadeSpeed * REDUCED_MOTION_FACTOR       : fadeSpeed;
       const spotlightR  = reduceMotion ? spotlightRadius * REDUCED_MOTION_FACTOR  : spotlightRadius;
       const connectDist = reduceMotion ? mouseConnectDist * REDUCED_MOTION_FACTOR : mouseConnectDist;
 
       // Fade the entire effect in/out as cursor enters or leaves
       mouseEntryAlpha = mousePresent
-        ? Math.min(1, mouseEntryAlpha + fadeSpeed)
-        : Math.max(0, mouseEntryAlpha - fadeSpeed);
+        ? Math.min(1, mouseEntryAlpha + effectiveFadeSpeed)
+        : Math.max(0, mouseEntryAlpha - effectiveFadeSpeed);
 
       // Snap smoothMouse on the first frame, lerp every frame after
       if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
@@ -324,8 +324,8 @@ export default function SpiderParticles({
           smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
           mouseJustEntered = false;
         } else {
-          smoothMouse.x += (mouse.x - smoothMouse.x) * lerpSpeed;
-          smoothMouse.y += (mouse.y - smoothMouse.y) * lerpSpeed;
+          smoothMouse.x += (mouse.x - smoothMouse.x) * effectiveLerpSpeed;
+          smoothMouse.y += (mouse.y - smoothMouse.y) * effectiveLerpSpeed;
         }
       } else if (!mousePresent && mouseEntryAlpha <= 0) {
         smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);
@@ -348,7 +348,7 @@ export default function SpiderParticles({
       // Build web lines - one segment per nearby particle
       let mIdx = 0;
 
-      if (smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
+      if (showWeb && smoothMouse.x > MOUSE_THRESHOLD && mouseEntryAlpha > 0) {
         for (let i = 0; i < actualCount; i++) {
           const px = positions[i * 3];
           const py = positions[i * 3 + 1];
@@ -423,6 +423,9 @@ export default function SpiderParticles({
     particleSize,
     mouseConnectDist,
     spotlightRadius,
+    lerpSpeed,
+    fadeSpeed,
+    showWeb,
     particlesGlow,
     glowColor,
     particleColor,

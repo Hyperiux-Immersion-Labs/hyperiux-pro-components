@@ -65,6 +65,8 @@ async function copyTextToClipboard(text) {
 
 function ControlField({ control, value, onChange, delay = 0 }) {
   const formattedValue = control.format ? control.format(value) : value;
+  const textValue = value ?? "";
+  const colorValue = normalizeColorInputValue(value);
 
   if (control.type === "toggle" || control.type === "checkbox") {
     const isCheckbox = control.type === "checkbox";
@@ -93,11 +95,11 @@ function ControlField({ control, value, onChange, delay = 0 }) {
         <div className={styles.colorRow}>
           <input
             type="color"
-            value={value}
+            value={colorValue}
             onChange={(event) => onChange(event.target.value)}
             className={styles.colorInput}
           />
-          <span className={styles.colorText}>{value}</span>
+          <span className={styles.colorText}>{colorValue}</span>
         </div>
       </div>
     );
@@ -161,6 +163,109 @@ function ControlField({ control, value, onChange, delay = 0 }) {
     );
   }
 
+  if (control.type === "text" || control.type === "string") {
+    return (
+      <label className={styles.field} style={{ "--item-delay": `${delay}ms` }}>
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          <span className={styles.fieldValue}>{formattedValue}</span>
+        </div>
+        {control.description ? (
+          <p className={styles.fieldDescription}>{control.description}</p>
+        ) : null}
+        <input
+          type="text"
+          value={textValue}
+          onChange={(event) => onChange(event.target.value)}
+          className={styles.textInput}
+          placeholder={control.placeholder}
+        />
+      </label>
+    );
+  }
+
+  if (
+    control.type === "textarea" ||
+    control.type === "json" ||
+    control.type === "json/list" ||
+    control.type === "asset-list/json"
+  ) {
+    return (
+      <label className={styles.field} style={{ "--item-delay": `${delay}ms` }}>
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          <span className={styles.fieldValue}>{control.type}</span>
+        </div>
+        {control.description ? (
+          <p className={styles.fieldDescription}>{control.description}</p>
+        ) : null}
+        <textarea
+          value={typeof textValue === "string" ? textValue : JSON.stringify(textValue, null, 2)}
+          onChange={(event) => {
+            if (control.type === "textarea") {
+              onChange(event.target.value);
+              return;
+            }
+
+            try {
+              onChange(JSON.parse(event.target.value));
+            } catch {
+              onChange(event.target.value);
+            }
+          }}
+          className={`${styles.textInput} ${styles.textareaInput}`}
+          placeholder={control.placeholder}
+        />
+      </label>
+    );
+  }
+
+  if (control.type === "number") {
+    return (
+      <label className={styles.field} style={{ "--item-delay": `${delay}ms` }}>
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          <span className={styles.fieldValue}>{formattedValue}</span>
+        </div>
+        {control.description ? (
+          <p className={styles.fieldDescription}>{control.description}</p>
+        ) : null}
+        <input
+          type="number"
+          min={control.min}
+          max={control.max}
+          step={control.step ?? 1}
+          value={value ?? ""}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className={styles.textInput}
+        />
+      </label>
+    );
+  }
+
+  if (control.type === "range" || control.type === "slider") {
+    return (
+      <label className={styles.field} style={{ "--item-delay": `${delay}ms` }}>
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          <span className={styles.fieldValue}>{formattedValue}</span>
+        </div>
+        {control.description ? (
+          <p className={styles.fieldDescription}>{control.description}</p>
+        ) : null}
+        <input
+          type="range"
+          min={control.min}
+          max={control.max}
+          step={control.step ?? 1}
+          value={value}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className={styles.range}
+        />
+      </label>
+    );
+  }
+
   return (
     <label className={styles.field} style={{ "--item-delay": `${delay}ms` }}>
       <div className={styles.fieldRow}>
@@ -171,16 +276,29 @@ function ControlField({ control, value, onChange, delay = 0 }) {
         <p className={styles.fieldDescription}>{control.description}</p>
       ) : null}
       <input
-        type="range"
-        min={control.min}
-        max={control.max}
-        step={control.step ?? 1}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className={styles.range}
+        type="text"
+        value={textValue}
+        onChange={(event) => onChange(event.target.value)}
+        className={styles.textInput}
       />
     </label>
   );
+}
+
+function normalizeColorInputValue(value) {
+  if (typeof value === "number") {
+    return `#${value.toString(16).padStart(6, "0").slice(-6)}`;
+  }
+
+  if (typeof value === "string" && /^0x[0-9a-f]{6}$/i.test(value)) {
+    return `#${value.slice(2)}`;
+  }
+
+  if (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)) {
+    return value;
+  }
+
+  return "#ffffff";
 }
 
 export default function RemixerPanel({
@@ -246,7 +364,7 @@ export default function RemixerPanel({
 
   const handleReset = () => {
     setResetSpin(true);
-    onReset();
+    onReset?.();
     window.setTimeout(() => setResetSpin(false), 420);
   };
 

@@ -8,9 +8,6 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 
-const LERP_SPEED = 0.1;
-const FADE_SPEED = 0.04;
-
 // Reduced motion: spread (spotlight radius, web reach) and speed (lerp/fade)
 // are scaled down, not frozen — matches the convention used elsewhere in
 // this repo (parallax-slider, text-convergence, parallax-gallery).
@@ -321,15 +318,15 @@ export default function SpiderParticles({
       onFrame: () => {
       // Reduced motion: scale down speed (lerp/fade) and spread (spotlight
       // radius, web reach) rather than freezing the effect outright.
-      const lerpSpeed   = reduceMotion ? LERP_SPEED * REDUCED_MOTION_FACTOR       : LERP_SPEED;
-      const fadeSpeed   = reduceMotion ? FADE_SPEED * REDUCED_MOTION_FACTOR       : FADE_SPEED;
+      const effectiveLerpSpeed   = reduceMotion ? lerpSpeed * REDUCED_MOTION_FACTOR       : lerpSpeed;
+      const effectiveFadeSpeed   = reduceMotion ? fadeSpeed * REDUCED_MOTION_FACTOR       : fadeSpeed;
       const spotlightR  = reduceMotion ? spotlightRadius * REDUCED_MOTION_FACTOR  : spotlightRadius;
       const connectDist = reduceMotion ? mouseConnectDist * REDUCED_MOTION_FACTOR : mouseConnectDist;
 
       // Fade the entire effect in/out as cursor enters or leaves
       mouseEntryAlpha = mousePresent
-        ? Math.min(1, mouseEntryAlpha + fadeSpeed)
-        : Math.max(0, mouseEntryAlpha - fadeSpeed);
+        ? Math.min(1, mouseEntryAlpha + effectiveFadeSpeed)
+        : Math.max(0, mouseEntryAlpha - effectiveFadeSpeed);
 
       // Snap smoothMouse on the first frame, lerp every frame after
       if (mousePresent && mouse.x > MOUSE_THRESHOLD) {
@@ -337,8 +334,8 @@ export default function SpiderParticles({
           smoothMouse.copy(mouse); // instant snap - avoids lerp drift from previous position
           mouseJustEntered = false;
         } else {
-          smoothMouse.x += (mouse.x - smoothMouse.x) * lerpSpeed;
-          smoothMouse.y += (mouse.y - smoothMouse.y) * lerpSpeed;
+          smoothMouse.x += (mouse.x - smoothMouse.x) * effectiveLerpSpeed;
+          smoothMouse.y += (mouse.y - smoothMouse.y) * effectiveLerpSpeed;
         }
       } else if (!mousePresent && mouseEntryAlpha <= 0) {
         smoothMouse.set(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN);

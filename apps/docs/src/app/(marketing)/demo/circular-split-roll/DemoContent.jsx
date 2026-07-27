@@ -6,8 +6,8 @@ import { PanelLeft } from "lucide-react";
 import CircularSplitRoll from "@/components/circular-split-roll";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
-import RemixerPanel from "@/components/ui/RemixerPanel";
-import remixerStyles from "@/components/ui/remixer-panel.module.css";
+import RemixerPanel from "@/components/remixer-panel/RemixerPanel";
+import remixerStyles from "@/components/remixer-panel/remixer-panel.module.css";
 
 const panelTransition = { duration: 0.6, ease: [0.62, 0.05, 0.01, 0.99] };
 

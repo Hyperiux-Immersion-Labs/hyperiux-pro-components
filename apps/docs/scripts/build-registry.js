@@ -365,6 +365,10 @@ async function buildRegistry() {
         tier,
         version: registryJson.version || "1.0.0",
         changelog: registryJson.changelog || [],
+        ...(Array.isArray(registryJson.props) && registryJson.props.length
+          ? { props: registryJson.props }
+          : {}),
+        ...(registryJson.remixer ? { remixer: registryJson.remixer } : {}),
         files: publicFiles,
       };
 

@@ -4,9 +4,9 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { PanelLeft } from "lucide-react";
 import Link from "next/link";
-import RemixerPanel from "@/components/ui/RemixerPanel";
-import remixerStyles from "@/components/ui/remixer-panel.module.css";
-import ImmersiveFullscreenNav from "@/components/immersive-full-screen-navigation";
+import RemixerPanel from "@/components/remixer-panel/RemixerPanel";
+import remixerStyles from "@/components/remixer-panel/remixer-panel.module.css";
+import ImmersiveFullscreenNav from "@/components/immersive-full-screen-nav";
 
 const panelTransition = { duration: 0.6, ease: [0.62, 0.05, 0.01, 0.99] };
 
@@ -148,7 +148,7 @@ function buildImmersiveFullscreenNavCode(values) {
  * - socialOffsetY: ${values.socialOffsetY}
  */
 
-import ImmersiveFullscreenNav from "@/components/immersive-full-screen-navigation";
+import ImmersiveFullscreenNav from "@/components/immersive-full-screen-nav";
 
 const navConfig = {
   overlayBg: "${values.overlayBg}",

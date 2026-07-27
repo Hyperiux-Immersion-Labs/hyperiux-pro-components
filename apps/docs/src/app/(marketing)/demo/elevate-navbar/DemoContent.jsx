@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { PanelLeft } from "lucide-react";
-import RemixerPanel from "@/components/ui/RemixerPanel";
-import remixerStyles from "@/components/ui/remixer-panel.module.css";
+import RemixerPanel from "@/components/remixer-panel/RemixerPanel";
+import remixerStyles from "@/components/remixer-panel/remixer-panel.module.css";
 import ElevateNavbar from "@/components/elevate-navbar";
 
 const panelTransition = { duration: 0.6, ease: [0.62, 0.05, 0.01, 0.99] };
