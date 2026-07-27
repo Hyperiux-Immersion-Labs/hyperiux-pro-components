@@ -3,8 +3,16 @@
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 gsap.registerPlugin(Draggable);
+
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 const DraggableMarqueeComp = ({
     items = [],
@@ -51,6 +59,10 @@ const DraggableMarqueeComp = ({
 
         let wrapValue = (value) => value;
         let resizeRaf = null;
+
+        // Reduced motion: keep the marquee draggable (user-initiated, not
+        // imposed motion) but stop the automatic continuous auto-scroll.
+        const reducedMotion = prefersReducedMotion();
 
         const observers = [];
         const setX = gsap.quickSetter(track, "x", "px");
@@ -134,7 +146,7 @@ const DraggableMarqueeComp = ({
 
         const update = () => {
             if (!isDragging) {
-                if (!(pauseOnHover && isPointerOver)) {
+                if (!reducedMotion && !(pauseOnHover && isPointerOver)) {
                     x -= speed;
                 }
 
@@ -175,13 +187,20 @@ const DraggableMarqueeComp = ({
                 this.x = x;
 
                 if (dt > 0) {
-                    const sampledVelocity = (dx / dt) * 36.67;
+                    // Reduced motion: dragging itself stays 1:1 (direct,
+                    // user-initiated), but no momentum carries past release -
+                    // it stops exactly where you let go instead of sliding on.
+                    if (reducedMotion) {
+                        throwVelocity = 0;
+                    } else {
+                        const sampledVelocity = (dx / dt) * 36.67;
 
-                    throwVelocity = gsap.utils.clamp(
-                        -maxThrowVelocity,
-                        maxThrowVelocity,
-                        sampledVelocity * throwMultiplier
-                    );
+                        throwVelocity = gsap.utils.clamp(
+                            -maxThrowVelocity,
+                            maxThrowVelocity,
+                            sampledVelocity * throwMultiplier
+                        );
+                    }
                 }
 
                 lastDragX = this.x;
@@ -242,7 +261,25 @@ const DraggableMarqueeComp = ({
 
         gsap.ticker.add(update);
 
+        // Pause only this marquee's ticker callback when the section is
+        // offscreen or the tab is hidden - never sleep the global gsap.ticker,
+        // which is shared by every other GSAP animation on the page.
+        let tickerAttached = true;
+        const setTickerAttached = (active) => {
+            if (active === tickerAttached) return;
+            tickerAttached = active;
+            if (active) gsap.ticker.add(update);
+            else gsap.ticker.remove(update);
+        };
+        const gate = createVisibilityGate({
+            root,
+            onChange: setTickerAttached,
+        });
+        setTickerAttached(gate.isActive);
+
         return () => {
+            gate.destroy();
+
             window.removeEventListener("resize", handleResize);
 
             if (pauseOnHover) {

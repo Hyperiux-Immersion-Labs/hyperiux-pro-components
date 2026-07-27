@@ -30,7 +30,7 @@ const ScrambleTextWrapper = () => {
               />
               <SplitLine>
 
-              <p className="max-w-xl text-lg leading-[1.2] text-black/60 max-sm:text-base max-sm:leading-[1.4] max-md:leadng-[1.2]">
+              <p className="max-w-xl text-lg leading-[1.2] text-black/60 max-sm:text-base max-sm:leading-[1.4] max-md:leading-[1.2]">
                 A minimal scroll reveal for headlines that should feel like they are decoding themselves in real time.
               </p>
               </SplitLine>

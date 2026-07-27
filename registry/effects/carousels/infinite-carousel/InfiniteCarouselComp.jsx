@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from"react";
-import gsap from"gsap";
-import { Draggable } from"gsap/Draggable";
-import { InertiaPlugin } from"gsap/InertiaPlugin";
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
+
+const prefersReducedMotion = () =>
+ typeof window !=="undefined" &&
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
+const REDUCED_MOTION_NAV_DURATION = 0.15;
 
 function horizontalLoop(items, config = {}) {
  items[0].getBoundingClientRect();
@@ -102,6 +108,7 @@ function horizontalLoop(items, config = {}) {
  }
 
  curIndex = newIndex;
+ config.onIndexChange?.(newIndex);
  vars.overwrite = true;
  return tl.tweenTo(time, vars);
  }
@@ -111,7 +118,8 @@ function horizontalLoop(items, config = {}) {
  tl.current = () => curIndex;
  tl.toIndex = (index, vars) => toIndex(index, vars);
  tl.updateIndex = () => {
- curIndex = Math.round(tl.progress() * length);
+ curIndex = gsap.utils.wrap(0, length, Math.round(tl.progress() * length));
+ config.onIndexChange?.(curIndex);
  };
  tl.times = times;
 
@@ -158,7 +166,9 @@ function horizontalLoop(items, config = {}) {
  },
  onDrag: align,
  onThrowUpdate: align,
- inertia: true,
+ // Reduced motion drops the post-release momentum coast entirely, so the
+ // carousel stops exactly where the drag ends instead of gliding on.
+ inertia: !config.reduceMotion,
  snap: (value) => {
  const n =
  Math.round(parseFloat(value) / dragSnap) * dragSnap * roundFactor;
@@ -209,6 +219,8 @@ export default function InfiniteCarouselComp({
  const isAdjustingScrollRef = useRef(false);
 
  const [isMobile, setIsMobile] = useState(false);
+ const [activeIndex, setActiveIndex] = useState(0);
+ const [reduceMotion, setReduceMotion] = useState(false);
 
  const childArray = useMemo(() => {
  return Array.isArray(children)
@@ -217,6 +229,19 @@ export default function InfiniteCarouselComp({
  ? [children]
  : [];
  }, [children]);
+
+ const slideCount = childArray.length;
+ const activeChild = slideCount ? childArray[activeIndex] : null;
+ const identifyingText =
+ activeChild?.props?.title ||
+ activeChild?.props?.["aria-label"] ||
+ activeChild?.props?.alt ||
+ null;
+ const slideAnnouncement = slideCount
+ ? identifyingText
+ ? `${identifyingText}, slide ${activeIndex + 1} of ${slideCount}`
+ : `Slide ${activeIndex + 1} of ${slideCount}`
+ :"";
 
  const isWrapMode = isMobile && mobileMode ==="wrap";
  const isSwiperMode = isMobile && mobileMode ==="swiper";
@@ -238,6 +263,20 @@ export default function InfiniteCarouselComp({
  }, [mobileBreakpoint]);
 
  useEffect(() => {
+ const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+ const syncReducedMotion = (event) => {
+ setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
+ };
+
+ if (!mediaQuery) return;
+
+ syncReducedMotion(mediaQuery);
+ mediaQuery.addEventListener("change", syncReducedMotion);
+ return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+ }, []);
+
+ useEffect(() => {
  itemRefs.current = itemRefs.current.slice(0, childArray.length);
  mobileCardRefs.current = mobileCardRefs.current.slice(0, mobileLoopItems.length);
  }, [childArray.length, mobileLoopItems.length]);
@@ -257,7 +296,9 @@ export default function InfiniteCarouselComp({
 
  const loop = horizontalLoop(items, {
  draggable,
+ reduceMotion,
  wrapperEl: wrapperRef.current,
+ onIndexChange: setActiveIndex,
  });
 
  if (!loop) {
@@ -269,6 +310,7 @@ export default function InfiniteCarouselComp({
  }
 
  loopRef.current = loop;
+ setActiveIndex(loop.current());
  }
 
  const raf = requestAnimationFrame(tryInit);
@@ -280,7 +322,7 @@ export default function InfiniteCarouselComp({
  loopRef.current = null;
  attemptsRef.current = 0;
  };
- }, [childArray.length, draggable, isMobile]);
+ }, [childArray.length, draggable, isMobile, reduceMotion]);
 
  useEffect(() => {
  if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
@@ -329,6 +371,24 @@ export default function InfiniteCarouselComp({
  isAdjustingScrollRef.current = false;
  });
  }
+
+ if (!childArray.length) return;
+
+ const center = wrapper.scrollLeft + wrapper.clientWidth / 2;
+ let closestIndex = 0;
+ let closestDistance = Infinity;
+
+ mobileCardRefs.current.forEach((el, i) => {
+ if (!el) return;
+ const cardCenter = el.offsetLeft + el.offsetWidth / 2;
+ const distance = Math.abs(cardCenter - center);
+ if (distance < closestDistance) {
+ closestDistance = distance;
+ closestIndex = i % childArray.length;
+ }
+ });
+
+ setActiveIndex(closestIndex);
  };
 
  wrapper.addEventListener("scroll", handleScroll, { passive: true });
@@ -358,7 +418,7 @@ export default function InfiniteCarouselComp({
 
  wrapperRef.current.scrollBy({
  left: direction * amount,
- behavior:"smooth",
+ behavior: reduceMotion ?"auto" :"smooth",
  });
  };
 
@@ -370,7 +430,11 @@ export default function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.next({ duration: 0.4, ease:"power1.inOut" });
+ loopRef.current?.next(
+ reduceMotion
+ ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
+ : { duration: 0.4, ease:"power1.inOut" }
+ );
  };
 
  const handlePrev = () => {
@@ -381,18 +445,25 @@ export default function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.previous({ duration: 0.4, ease:"power1.inOut" });
+ loopRef.current?.previous(
+ reduceMotion
+ ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
+ : { duration: 0.4, ease:"power1.inOut" }
+ );
  };
 
  return (
- <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-xl:gap-4 max-md:gap-3 max-md:pb-0 ${pageClassName}`} style={pageStyle}>
+ <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-[1025px]:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
+ <div className="sr-only" aria-live="polite" aria-atomic="true">
+ {slideAnnouncement}
+ </div>
  {showNav && !isWrapMode && (
  <div
- className={`flex w-[95%] items-center justify-end gap-4 max-xl:w-full max-xl:justify-center max-xl:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
+ className={`flex w-[95%] items-center justify-end gap-4 max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
  style={controlsStyle}
  >
  <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-xl:size-14 max-md:size-14 ${prevBtnClassName}`}
+ className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${prevBtnClassName}`}
  style={prevBtnStyle}
  onClick={handlePrev}
  type="button"
@@ -401,7 +472,7 @@ export default function InfiniteCarouselComp({
  </button>
 
  <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-xl:size-14 max-md:size-14 ${nextBtnClassName}`}
+ className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${nextBtnClassName}`}
  style={nextBtnStyle}
  onClick={handleNext}
  type="button"
@@ -413,13 +484,13 @@ export default function InfiniteCarouselComp({
 
  <div
  ref={wrapperRef}
- className={`relative flex min-h-25 max-xl:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
+ className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
  isWrapMode
- ? "flex-wrap justify-center gap-4 overflow-visible max-xl:gap-3.5 max-md:gap-3"
+ ? "flex-wrap justify-center gap-4 overflow-visible max-[1025px]:gap-3.5 max-md:gap-3"
  : ""
  } ${
  isSwiperMode
- ? "gap-3.5 overflow-x-auto overflow-y-hidden px-3 [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden max-xl:gap-3 max-xl:px-3 max-md:gap-2.5 max-md:px-2"
+ ? "gap-3.5 overflow-x-auto overflow-y-hidden px-3 [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden max-[1025px]:gap-3 max-[1025px]:px-3 max-md:gap-2.5 max-md:px-2"
  : ""
  } ${wrapperClassName}`}
  style={wrapperStyle}

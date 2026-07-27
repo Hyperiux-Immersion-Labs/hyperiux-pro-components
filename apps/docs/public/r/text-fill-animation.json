@@ -8,13 +8,15 @@
   ],
   "registryDependencies": [],
   "exportName": "TextFillAnimation",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [],
   "files": [
     {
-      "path": "text-fill-animation.jsx",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/text-fill-animation.jsx"
+      "target": "src/components/effects/text-fill-animation/index.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

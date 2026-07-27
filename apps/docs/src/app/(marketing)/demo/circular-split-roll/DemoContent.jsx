@@ -217,58 +217,18 @@ export default function DemoContent() {
 
   return (
     <>
-      <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
+    <div className="max-md:block flex flex-col justify-center items-center gap-[2vw] text-center max-sm:pt-[18vw] pt-[10vw] sr-only">
+      <h1 className="text-[7vw] max-sm:text-[11vw]">
+        Circular Split Roll
+      </h1>
+      <p>
+        Open in desktop for the better experience
+      </p>
 
-      <div className="hidden max-md:block flex flex-col justify-center items-center gap-[2vw] text-center max-sm:pt-[18vw]  pt-[10vw]">
-        <h1 className="text-[7vw] max-sm:text-[11vw]">Circular Split Roll</h1>
-        <p>Open in desktop for the better experience</p>
-      </div>
-
-      <CircularSplitRoll config={controls} />
-
-      <ScrollBottom />
-
-      <div className="pointer-events-none fixed inset-0 z-80 hidden xl:block">
-        <motion.button
-          type="button"
-          onClick={() => setIsPanelExpanded((current) => !current)}
-          animate={{ x: isPanelExpanded ? -140 : 0 }}
-          transition={panelTransition}
-          style={{
-            transition:
-              "background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease",
-          }}
-          className={`${remixerStyles.footerButton} pointer-events-auto absolute! right-10! top-30 z-50 w-auto min-h-0! flex-none rounded-full! border! border-white/50! bg-[#0e0e0e]! px-[1.2vw]! py-[.8vw]! text-[1.15vw]! tracking-wide`}
-        >
-          <PanelLeft
-            className={`${remixerStyles.actionIcon} transition-transform duration-300 ${
-              isPanelExpanded ? "" : "scale-x-[-1]"
-            }`}
-          />
-          <span className={`${remixerStyles.footerButtonText} text-[1.1vw] tracking-wide`}>Controls</span>
-        </motion.button>
-
-        <motion.div
-          initial={false}
-          animate={{ x: isPanelExpanded ? "0%" : "104%" }}
-          transition={panelTransition}
-          className={`absolute right-2 rounded-md top-42 h-[75vh] w-86 bg-[#0e0e0e] ${
-            isPanelExpanded ? "pointer-events-auto" : "pointer-events-none"
-          }`}
-        >
-          <div className="h-full py-4">
-            <RemixerPanel
-              isExpanded={isPanelExpanded}
-              groups={controlGroups}
-              values={controls}
-              onChange={updateControl}
-              onCopyCode={() => buildCircularSplitRollCode(controls)}
-              onReset={resetControls}
-              defaultOpenGroupId="layout"
-            />
-          </div>
-        </motion.div>
-      </div>
+    </div>
+      <CircularSplitRoll />
+      <ScrollBottom/>
     </>
   );
 }

@@ -40,7 +40,7 @@ function DemoContent({
 
   const navItems = useMemo(
     () => [
-      { left: <span className="font-bold tracking-tighter max-xl:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
+      { left: <span className="font-bold tracking-tighter max-[1025px]:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
@@ -134,7 +134,7 @@ function DemoContent({
 
   const rowCount = lineCount - 1;
 
-  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-xl:flex max-xl:justify-between";
+  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-[1025px]:flex max-[1025px]:justify-between";
 
   return (
     <div
@@ -174,7 +174,7 @@ function DemoContent({
                     : isDark
                       ? "text-white/55"
                       : "text-black/55",
-                  idx > 0 && idx < 6 ? "max-xl:hidden" : "",
+                  idx > 0 && idx < 6 ? "max-[1025px]:hidden" : "",
                 ].join(" ")}
               >
                 {item.left || item.center || item.right}
@@ -206,19 +206,19 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-xl:w-full max-xl:whitespace-nowrap max-xl:text-[1.5vw] max-md:text-[4vw]",
+                    "col-span-2 max-[1025px]:w-full max-[1025px]:whitespace-nowrap max-[1025px]:text-[1.5vw] max-md:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >
                   {cells[0]}
                 </div>
-                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-xl:hidden"].join(" ")}>
+                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-[1025px]:hidden"].join(" ")}>
                   {cells[1]}
                 </div>
-                <div className="max-xl:hidden">{cells[2]}</div>
-                <div className="max-xl:hidden">{cells[3]}</div>
-                <div className="justify-self-start max-xl:hidden">{cells[4]}</div>
-                <div className="max-xl:hidden"></div>
+                <div className="max-[1025px]:hidden">{cells[2]}</div>
+                <div className="max-[1025px]:hidden">{cells[3]}</div>
+                <div className="justify-self-start max-[1025px]:hidden">{cells[4]}</div>
+                <div className="max-[1025px]:hidden"></div>
               </div>
             ))}
           </div>
@@ -337,16 +337,58 @@ export default function LinesLoading({ onComplete } = {}) {
     gsap.set(allTextEls, { opacity: 0, y: 8, filter: "blur(14px)" });
 
     if (prefersReducedMotion()) {
-      gsap.set(darkContentRef.current, { opacity: 1 });
-      gsap.set(lightLayerRef.current, {
-        opacity: 1,
-        clipPath: "inset(0% 0 0 0)",
+      // Lines already at final layout — smooth opacity only (no scale morph / wipe).
+      gsap.set(darkLineEls, {
+        y: (i) => flatY[i],
+        scaleX: 1,
+        opacity: 0,
       });
-      gsap.set(darkLineEls, { y: (i) => flatY[i], scaleX: 1 });
-      gsap.set(lightLineEls, { opacity: 1, y: (i) => flatY[i], scaleX: 1 });
-      gsap.set(allTextEls, { opacity: 1, y: 0, filter: "blur(0px)" });
-      setDone(true);
-      onComplete?.();
+      gsap.set(lightLineEls, {
+        y: (i) => flatY[i],
+        scaleX: 1,
+        opacity: 0,
+      });
+      gsap.set(lightLayerRef.current, {
+        clipPath: "inset(0% 0 0 0)",
+        opacity: 0,
+      });
+      gsap.set(darkContentRef.current, { opacity: 0 });
+      gsap.set(allTextEls, { opacity: 0, y: 0, filter: "blur(0px)" });
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power2.inOut" },
+        onComplete: () => {
+          setDone(true);
+          onComplete?.();
+        },
+      });
+      tlRef.current = tl;
+
+      tl.to(lightLayerRef.current, { opacity: 1, duration: 0.65 });
+      tl.to(darkContentRef.current, { opacity: 1, duration: 0.65 }, "<");
+      tl.to(
+        darkLineEls,
+        {
+          opacity: 1,
+          duration: 0.7,
+          stagger: { each: 0.035, from: "start" },
+        },
+        "<"
+      );
+      tl.to(
+        lightLineEls,
+        {
+          opacity: 1,
+          duration: 0.7,
+          stagger: { each: 0.035, from: "start" },
+        },
+        "<"
+      );
+      tl.to(
+        allTextEls,
+        { opacity: 1, duration: 0.55 },
+        "-=0.3"
+      );
       return;
     }
 
@@ -524,7 +566,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-xl:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-xl:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
+          className="absolute bottom-7 max-[1025px]:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-[1025px]:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>

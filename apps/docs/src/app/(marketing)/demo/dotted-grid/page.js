@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const Page = () => {
     return (
         <>
-        <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+        <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
         <DottedGrid />
         </>
     )

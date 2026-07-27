@@ -1,5 +1,20 @@
 {
   "name": "text-stream",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion stream movement.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Text Stream",
   "description": "Infinite vertical text marquee that accelerates and reverses direction based on scroll velocity, with a hard-edge mask and static prefix label",
@@ -8,23 +23,26 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/text-stream",
+  "previewUrl": "/demo/text-stream",
   "tier": "pro",
+  "exportName": "useIsMobile",
+  "exportKind": "named",
   "main": "index.jsx",
-  "importPath": "@/components/effects/text-stream",
-  "target": "src/components/effects/text-stream",
   "files": [
     {
+      "path": "hooks.js",
+      "type": "registry:component",
+      "target": "src/components/effects/text-stream/hooks.js"
+    },
+    {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/text-stream/index.jsx"
     },
     {
       "path": "TextStreamComp.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/text-stream/TextStreamComp.jsx"
-    },
-    {
-      "path": "hooks.js",
-      "target": "src/components/effects/text-stream/hooks.js"
     }
   ]
 }

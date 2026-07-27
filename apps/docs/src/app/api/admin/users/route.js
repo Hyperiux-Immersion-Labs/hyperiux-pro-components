@@ -1,21 +1,7 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hitesh@weareenigma.com";
-
-async function assertAdmin() {
-  const { userId } = await auth();
-  if (!userId) return false;
-
-  const clerk = await clerkClient();
-  const user = await clerk.users.getUser(userId);
-
-  return (
-    user?.publicMetadata?.role === "admin" ||
-    user?.emailAddresses?.[0]?.emailAddress === ADMIN_EMAIL
-  );
-}
+import { assertAdmin } from "@/lib/admin";
 
 export async function GET(request) {
   if (!(await assertAdmin())) {

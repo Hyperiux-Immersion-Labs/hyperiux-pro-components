@@ -9,13 +9,39 @@
   ],
   "registryDependencies": [],
   "exportName": "RingCarousel",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.1",
+  "changelog": [
     {
-      "path": "ring-carousel.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/ring-carousel.jsx"
+      "version": "1.1.1",
+      "date": "2026-07-22",
+      "summary": "Fixed reduced motion throttling live drag response to 35% strength, making the carousel feel unresponsive while grabbing - drag now tracks 1:1 as before, only momentum/inertia and animated snaps stay reduced",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: rotation/drag animations are replaced with a reduced-motion-safe fade and drag sensitivity/momentum are scaled down",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/ring-carousel/index.jsx"
+    },
+    {
+      "path": "RingCarouselComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/ring-carousel/RingCarouselComp.jsx"
+    }
+  ]
 }

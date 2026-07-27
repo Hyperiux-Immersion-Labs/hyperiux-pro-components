@@ -1,5 +1,5 @@
-import React from"react";
-import { ReactLenis } from"lenis/react";
+import React from "react";
+import { ReactLenis } from "lenis/react";
 import RectangularTextReveal from "@/components/rectangular-text-reveal";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";

@@ -1,10 +1,12 @@
 {
   "name": "@hyperiux/depth-card-stack",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
-  "main": "depth-card-stack.jsx",
+  "main": "index.jsx",
   "files": [
-    "depth-card-stack.jsx",
+    "index.jsx",
+    "DepthCardStackComp.jsx",
+    "SliderCard.jsx",
     "registry.json"
   ],
   "keywords": [
@@ -12,6 +14,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*"
+    "gsap": "*",
+    "lucide-react": "*"
   }
 }

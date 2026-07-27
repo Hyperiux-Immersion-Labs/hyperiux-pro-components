@@ -1,5 +1,26 @@
 {
   "name": "full-screen-crosshair",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.jsx.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Full Screen Crosshair",
   "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
@@ -8,9 +29,11 @@
   "registryDependencies": [],
   "coverImage": "full-screen-crosshair",
   "videoUrl": "full-screen-crosshair.mp4",
-  "previewUrl": "/full-screen-crosshair",
+  "previewUrl": "/demo/full-screen-crosshair",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "FullScreenCrosshair",
+  "exportKind": "default",
   "importPath": "@/components/effects/full-screen-crosshair",
   "target": "src/components/effects/full-screen-crosshair",
   "files": [
@@ -21,6 +44,10 @@
     {
       "path": "useMouse.js",
       "target": "src/components/effects/full-screen-crosshair/useMouse.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
     }
   ]
 }

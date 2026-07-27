@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useId, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ScrollStackComp = ({ cards = [] }) => {
+    const uid = useId().replace(/:/g, "");
+    const sectionId = `state-${uid}`;
     const sectionRef = useRef(null);
     const rowRefs = useRef([]);
     const cardRefs = useRef([]);
@@ -27,13 +29,19 @@ const ScrollStackComp = ({ cards = [] }) => {
         }
 
         const ctx = gsap.context(() => {
+            const reduceMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
             const currentCards = cardRefs.current.filter(Boolean);
             const currentRows = rowRefs.current.filter(Boolean);
 
             currentCards.forEach((card, index) => {
                 gsap.set(card, {
                     autoAlpha: 1,
-                    scale: index === 0 ? 1 : 1.1,
+                    // Reduced motion: skip the oversized starting scale, so
+                    // there's no scale-down-while-stacking effect to animate.
+                    scale: reduceMotion || index === 0 ? 1 : 1.1,
                     transformOrigin: "center center",
                 });
             });
@@ -54,14 +62,16 @@ const ScrollStackComp = ({ cards = [] }) => {
                     },
                 });
 
-                handoff.to(
-                    nextCard,
-                    {
-                        scale: 1,
-                        ease: "none",
-                    },
-                    0
-                );
+                if (!reduceMotion) {
+                    handoff.to(
+                        nextCard,
+                        {
+                            scale: 1,
+                            ease: "none",
+                        },
+                        0
+                    );
+                }
 
                 gsap.to(card, {
                     autoAlpha: 0,
@@ -86,7 +96,7 @@ const ScrollStackComp = ({ cards = [] }) => {
 
     return (
         <section
-            id="state"
+            id={sectionId}
             ref={sectionRef}
             className={`main bg-white py-[7%] max-md:py-[15%] max-sm:py-[15%]`}
         >

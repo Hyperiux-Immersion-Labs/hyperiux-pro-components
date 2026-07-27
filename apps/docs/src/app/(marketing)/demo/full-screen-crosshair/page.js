@@ -8,7 +8,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
   return (
     <main className="h-screen w-screen relative bg-[#211951] text-[#826fffaa]">
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
       <FullScreenCrosshair
         lineSize={1500}
         thickness={0.5}

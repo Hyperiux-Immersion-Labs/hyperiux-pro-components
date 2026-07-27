@@ -1,5 +1,6 @@
 {
   "name": "parallax-footer",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Parallax Footer",
   "description": "Fixed footer that reveals with a parallax scrolling effect",
@@ -8,9 +9,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-footer",
+  "previewUrl": "/demo/parallax-footer",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxFooter",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-footer",
   "target": "src/components/effects/parallax-footer",
   "files": [

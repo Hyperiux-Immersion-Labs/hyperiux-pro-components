@@ -1,86 +1,135 @@
-import { useEffect, useRef } from"react";
-import { useThree } from"@react-three/fiber";
+import { useEffect, useRef } from "react";
+import { useThree } from "@react-three/fiber";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+import { prefersReducedMotion } from "./prefersReducedMotion";
 
 export default function useInput({
- scrollIntensity = 1,
- autoSpeed = 0.00004,
- damping = 0.5,
- loopPoint = 0.85,
+  scrollIntensity = 1,
+  autoSpeed = 0.00004,
+  damping = 0.5,
+  loopPoint = 0.85,
 } = {}) {
- const { gl } = useThree();
- const mouse = useRef({ x: 0, y: 0 });
- const scroll = useRef(0);
- const velocity = useRef(0);
+  const { gl } = useThree();
+  const mouse = useRef({ x: 0, y: 0 });
+  const scroll = useRef(0);
+  const velocity = useRef(0);
+  const reduceMotionRef = useRef(prefersReducedMotion());
 
- useEffect(() => {
- const el = gl.domElement;
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
 
- const onWheel = (e) => {
- e.preventDefault();
- velocity.current += e.deltaY * 0.00008 * scrollIntensity;
- };
+    const onChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        velocity.current = 0;
+      }
+    };
 
- let lastTouchY = 0;
- const onTouchStart = (e) => {
- lastTouchY = e.touches[0].clientY;
- };
- const onTouchMove = (e) => {
- const dy = e.touches[0].clientY - lastTouchY;
- lastTouchY = e.touches[0].clientY;
- velocity.current -= dy * 0.00015 * scrollIntensity;
- };
+    reduceMotionRef.current = mq.matches;
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
 
- const onMouseMove = (e) => {
- mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
- mouse.current.y = (e.clientY / window.innerHeight) * 2 - 1;
- };
+  useEffect(() => {
+    const el = gl.domElement;
 
- el.addEventListener("wheel", onWheel, { passive: false });
- el.addEventListener("touchstart", onTouchStart, { passive: true });
- el.addEventListener("touchmove", onTouchMove, { passive: true });
- window.addEventListener("mousemove", onMouseMove);
+    const wrapScroll = () => {
+      if (scroll.current >= loopPoint) {
+        scroll.current = 0;
+        velocity.current = 0;
+      }
+      if (scroll.current < 0) {
+        scroll.current = loopPoint - 0.001;
+        velocity.current = 0;
+      }
+    };
 
- return () => {
- el.removeEventListener("wheel", onWheel);
- el.removeEventListener("touchstart", onTouchStart);
- el.removeEventListener("touchmove", onTouchMove);
- window.removeEventListener("mousemove", onMouseMove);
- };
- }, [gl.domElement, scrollIntensity]);
+    const onWheel = (e) => {
+      e.preventDefault();
 
- useEffect(() => {
- let running = true;
+      // Reduced-motion: apply scroll instantly (no velocity coast / autoplay feel).
+      if (reduceMotionRef.current) {
+        scroll.current += e.deltaY * 0.00008 * scrollIntensity;
+        velocity.current = 0;
+        wrapScroll();
+        return;
+      }
 
- const update = () => {
- if (!running) return;
+      velocity.current += e.deltaY * 0.00008 * scrollIntensity;
+    };
 
- // damping
- velocity.current *= damping;
+    let lastTouchY = 0;
+    const onTouchStart = (e) => {
+      lastTouchY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e) => {
+      const dy = e.touches[0].clientY - lastTouchY;
+      lastTouchY = e.touches[0].clientY;
 
- // clamp velocity
- const MAX_VEL = 0.005;
- velocity.current = Math.max(-MAX_VEL, Math.min(MAX_VEL, velocity.current));
+      if (reduceMotionRef.current) {
+        scroll.current -= dy * 0.00015 * scrollIntensity;
+        velocity.current = 0;
+        wrapScroll();
+        return;
+      }
 
- // update scroll
- scroll.current += velocity.current + autoSpeed;
+      velocity.current -= dy * 0.00015 * scrollIntensity;
+    };
 
- // Reset at loopPoint - the second valley copy fills the visual gap
- if (scroll.current >= loopPoint) {
- scroll.current = 0;
- velocity.current = 0;
- }
- if (scroll.current < 0) {
- scroll.current = loopPoint - 0.001;
- velocity.current = 0;
- }
+    const onMouseMove = (e) => {
+      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = (e.clientY / window.innerHeight) * 2 - 1;
+    };
 
- requestAnimationFrame(update);
- };
- update();
- return () => {
- running = false;
- };
- }, [autoSpeed, damping, loopPoint]);
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("mousemove", onMouseMove);
 
- return { mouse, scroll };
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
+  }, [gl.domElement, scrollIntensity, loopPoint]);
+
+  useEffect(() => {
+    const loop = createSuspendedRaf({
+      root: gl.domElement,
+      onFrame: () => {
+        if (reduceMotionRef.current) {
+          // No auto-scroll / velocity coast — user wheel/touch already snaps scroll.
+          velocity.current = 0;
+          return;
+        }
+
+        // damping
+        velocity.current *= damping;
+
+        // clamp velocity
+        const MAX_VEL = 0.005;
+        velocity.current = Math.max(-MAX_VEL, Math.min(MAX_VEL, velocity.current));
+
+        // update scroll
+        scroll.current += velocity.current + autoSpeed;
+
+        // Reset at loopPoint - the second valley copy fills the visual gap
+        if (scroll.current >= loopPoint) {
+          scroll.current = 0;
+          velocity.current = 0;
+        }
+        if (scroll.current < 0) {
+          scroll.current = loopPoint - 0.001;
+          velocity.current = 0;
+        }
+      },
+    });
+
+    loop.start();
+    return () => loop.destroy();
+  }, [gl.domElement, autoSpeed, damping, loopPoint]);
+
+  return { mouse, scroll };
 }

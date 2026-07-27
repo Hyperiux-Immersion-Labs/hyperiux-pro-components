@@ -9,13 +9,27 @@
   ],
   "registryDependencies": [],
   "exportName": "DonutParticles",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "donut-particles.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/donut-particles.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/donut-particles/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/donut-particles/createSuspendedRaf.js"
+    }
+  ]
 }

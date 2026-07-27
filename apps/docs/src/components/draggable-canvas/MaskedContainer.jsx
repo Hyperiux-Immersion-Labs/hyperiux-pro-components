@@ -3,6 +3,7 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
@@ -17,7 +18,6 @@ export default function MaskedContainer({
 }) {
   const maskRef = useRef(null);
   const canvasRef = useRef(null);
-  const animationFrameRef = useRef(null);
   const [position, setPosition] = useState(initialPosition);
 
   // Canvas drawing function for individual mask
@@ -53,24 +53,20 @@ export default function MaskedContainer({
     ctx.restore();
   }, [video, canvasSize]);
 
-  // Animation loop for individual mask
-  const animate = useCallback(function drawFrame() {
-    drawMaskedVideo();
-    animationFrameRef.current = requestAnimationFrame(drawFrame);
-  }, [drawMaskedVideo]);
-
   // Start animation when video is available
   useEffect(() => {
-    if (video) {
-      animate();
-    }
+    if (!video) return;
 
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [video, animate]);
+    const loop = createSuspendedRaf({
+      root: maskRef.current,
+      onFrame: () => {
+        drawMaskedVideo();
+      },
+    });
+    loop.start();
+
+    return () => loop.destroy();
+  }, [video, drawMaskedVideo]);
 
   // GSAP Draggable functionality
   useEffect(() => {
@@ -115,7 +111,7 @@ export default function MaskedContainer({
         <p>Y:{position.y.toFixed(2)}</p>
       </div>
       {/* Canvas for rendering masked video */}
-      <canvas ref={canvasRef} className="w-full h-full" />
+      <canvas ref={canvasRef} className="w-full h-full" aria-hidden="true" />
     </div>
   );
 }

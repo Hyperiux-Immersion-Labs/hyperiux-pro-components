@@ -2,7 +2,17 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
-import { createWelcomeEmail } from "@/lib/emails/welcome-email";
+import { renderWelcomeEmail, welcomeSubject, welcomeText } from "@/lib/emails/welcome-email";
+import {
+  renderResetPasswordEmail,
+  resetPasswordSubject,
+  resetPasswordText,
+} from "@/lib/emails/reset-password-email";
+import {
+  renderPasswordChangedEmail,
+  passwordChangedSubject,
+  passwordChangedText,
+} from "@/lib/emails/password-changed-email";
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
@@ -36,10 +46,9 @@ export async function POST(request) {
   }
 
   if (event.type === "user.created") {
-    const { id: clerkUserId, email_addresses, first_name, last_name, created_at } = event.data;
+    const { id: clerkUserId, email_addresses, created_at } = event.data;
 
     const email = email_addresses?.[0]?.email_address;
-    const name = [first_name, last_name].filter(Boolean).join(" ") || "there";
 
     // Provision a free subscription row in Supabase
     const { error: upsertError } = await supabase
@@ -61,13 +70,67 @@ export async function POST(request) {
 
     // Send welcome email
     if (email) {
-      const { subject, html, text } = createWelcomeEmail({ name });
       await sendEmail({
         to: email,
-        subject,
-        html,
-        text,
+        subject: welcomeSubject,
+        react: renderWelcomeEmail(),
+        text: welcomeText(),
         emailType: "welcome",
+      });
+    }
+  } else if (event.type === "email.created") {
+    // Fires for any Clerk system email whose "Delivered by Clerk" toggle is
+    // off (currently: reset-password-code and password-changed - see
+    // Dashboard > Customization > Emails). delivered_by_clerk is false only
+    // for those, so gating on it (rather than guessing each template's
+    // internal slug string) is what tells us Clerk expects us to send this
+    // one ourselves instead of just logging/ignoring the event.
+    const { to_email_address: toEmail, delivered_by_clerk: deliveredByClerk, slug, data } = event.data;
+
+    if (deliveredByClerk !== false || !toEmail) {
+      return NextResponse.json({ received: true });
+    }
+
+    // TODO: once a real delivery has been inspected in the Clerk Dashboard's
+    // Webhooks > Logs tab, replace this data-shape guess with a direct
+    // `slug === "..."` check for each template - more robust than inferring
+    // from which fields happen to be present.
+    console.log("CLERK_EMAIL_CREATED_SLUG:", slug);
+
+    const otpCode = data?.otp_code;
+
+    if (otpCode) {
+      await sendEmail({
+        to: toEmail,
+        subject: resetPasswordSubject,
+        react: renderResetPasswordEmail({
+          otpCode,
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        text: resetPasswordText({
+          otpCode,
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        emailType: "reset_password_code",
+      });
+    } else {
+      // No otp_code means this isn't the reset-password-code email - with
+      // only two templates currently disabled, the other one is
+      // password-changed.
+      await sendEmail({
+        to: toEmail,
+        subject: passwordChangedSubject,
+        react: renderPasswordChangedEmail({
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        text: passwordChangedText({
+          requestedFrom: data?.requested_from,
+          requestedAt: data?.requested_at,
+        }),
+        emailType: "password_changed",
       });
     }
   }

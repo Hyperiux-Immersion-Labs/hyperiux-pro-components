@@ -69,7 +69,10 @@ export default function DashboardPage() {
 
   const [now, setNow] = useState(null);
 
+  // Date.now() must not run during render - it would differ between the
+  // server render and the client, causing a hydration mismatch.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNow(Date.now());
   }, []);
 
@@ -81,7 +84,7 @@ export default function DashboardPage() {
     if (Number.isNaN(end)) return null;
 
     return Math.max(0, Math.ceil((end - now) / (1000 * 60 * 60 * 24)));
-  }, [data?.planValidUntil, now]);
+  }, [data, now]);
 
   if (!data) {
     return (

@@ -1,5 +1,10 @@
 {
   "name": "hero-banner-animated",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Hero Banner Animated",
   "description": "Immersive WebGL hero with a 3D room, interactive TV screen with pixelated video transition, mouse-tracked lighting, edge blur, and film grain post-processing.",
@@ -15,9 +20,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/hero-banner-animated",
+  "previewUrl": "/demo/hero-banner-animated",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HeroBannerAnimated",
+  "exportKind": "default",
   "importPath": "@/components/effects/hero-banner-animated",
   "target": "src/components/effects/hero-banner-animated",
   "files": [
@@ -40,6 +47,10 @@
     {
       "path": "VideoUI.jsx",
       "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
     }
   ]
 }

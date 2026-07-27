@@ -8,19 +8,28 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "RotatingCarousel",
-  "exportKind": "named",
+  "exportName": "CircularSlider",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-24",
+      "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/index.jsx"
+      "target": "src/components/effects/circular-slider/index.jsx"
     },
     {
       "path": "CircularSliderComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/circular-slider/CircularSliderComp.jsx"
+      "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

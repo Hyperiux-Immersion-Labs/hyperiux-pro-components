@@ -1,5 +1,10 @@
 {
   "name": "char-stagger-primary-button",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: the hover character-stagger animation is skipped when the user has reduced motion enabled", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Character Stagger Primary Button",
   "description": "Primary button with staggered character animation on hover",
@@ -8,9 +13,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/buttons/char-stagger-primary-button",
+  "previewUrl": "/demo/char-stagger-primary-button",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CharStaggerPrimaryButton",
+  "exportKind": "default",
   "importPath": "@/components/effects/char-stagger-primary-button",
   "target": "src/components/effects/char-stagger-primary-button",
   "files": [

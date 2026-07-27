@@ -4,24 +4,42 @@
   "title": "Strip Slider",
   "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
   "dependencies": [
-    "three",
-    "gsap"
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "StripSlider",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "strip-slider.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/strip-slider.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
     },
     {
-      "path": "assets/nature/nature01.png",
-      "type": "registry:asset",
-      "target": "public/assets/nature/nature01.png",
-      "source": "/assets/nature/nature01.png"
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/strip-slider/index.jsx"
+    },
+    {
+      "path": "StripSliderComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
+    }
+  ]
 }

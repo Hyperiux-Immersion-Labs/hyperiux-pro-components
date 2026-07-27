@@ -10,12 +10,12 @@ const Page = () => {
         iChannel0="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
         iChannel1="/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png"
       />
-      <DemoHeader logoColor={"#ffffff"} textColor='#ffffff' />
+      <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
       {/* Overlay copy (matches reference layout) */}
       <div className="pointer-events-none fixed inset-0 z-10 h-screen w-screen">
 
         <section className="flex h-full w-full flex-col items-start justify-center px-10">
-          <div className="">
+          <div>
             <h1 className="max-w-[60vw] text-[7vw] font-light leading-[0.9] tracking-tighter max-sm:max-w-full max-sm:text-[10vw]">
               Design that feels discovered,
               <br /> not displayed.

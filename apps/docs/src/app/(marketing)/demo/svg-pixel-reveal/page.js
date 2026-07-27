@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
       <LenisSmoothScroll />
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff"/>
       <main className="h-full bg-neutral-950 text-white">
         <section className="flex min-h-[40vh] max-sm:h-[30vh] items-center justify-center px-6">
           <div className="w-fit text-center space-y-[1vw]">

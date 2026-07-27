@@ -1,0 +1,89 @@
+{
+  "name": "progressive-bloom-valley",
+  "version": "1.1.1",
+  "type": "registry:component",
+  "title": "Progressive Bloom Valley",
+  "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
+  "category": "webgl",
+  "dependencies": [
+    "@react-three/fiber",
+    "@react-three/drei",
+    "@react-three/postprocessing",
+    "three",
+    "postprocessing",
+    "gsap",
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/progressive-bloom-valley",
+  "tier": "pro",
+  "main": "index.jsx",
+  "exportName": "ProgressiveBloomValley",
+  "exportKind": "default",
+  "importPath": "@/components/effects/progressive-bloom-valley",
+  "target": "src/components/effects/progressive-bloom-valley",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+    },
+    {
+      "path": "CameraRig.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+    },
+    {
+      "path": "CircularText.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+    },
+    {
+      "path": "EdgeBlurEffect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+    },
+    {
+      "path": "ExperienceComp.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
+    },
+    {
+      "path": "FilmGrainEffect.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+    },
+    {
+      "path": "Flower.jsx",
+      "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
+    },
+    {
+      "path": "useInput.js",
+      "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+    },
+    {
+      "path": "useValleyData.js",
+      "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+    },
+    {
+      "path": "shaders.js",
+      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
+    },
+    {
+      "path": "prefersReducedMotion.js",
+      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Removed five stale kebab-case duplicate files (camera-rig, film-grain-effect, edge-blur-effect, use-input, use-valley-data) that had diverged from the camelCase originals and were being shipped to installers.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ]
+}

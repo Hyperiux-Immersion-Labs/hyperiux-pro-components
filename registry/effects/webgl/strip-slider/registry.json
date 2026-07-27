@@ -1,17 +1,23 @@
 {
   "name": "strip-slider",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Strip Slider",
   "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
   "category": "webgl",
   "dependencies": [
-    "three",
-    "gsap"
+    "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/strip-slider",
+  "previewUrl": "/demo/strip-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "StripSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/strip-slider",
   "target": "src/components/effects/strip-slider",
   "files": [
@@ -22,6 +28,10 @@
     {
       "path": "StripSliderComp.jsx",
       "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
     }
   ]
 }

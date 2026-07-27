@@ -11,7 +11,7 @@ const page = () => {
   return (
     <>
     <LenisSmoothScroll />
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
 
       <div className="pointer-events-none fixed  inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] max-md:gap-[4vw] px-[5vw] pt-[6%] max-md:pt-[15%] max-sm:pt-[30%]">
         <HeadAnim>

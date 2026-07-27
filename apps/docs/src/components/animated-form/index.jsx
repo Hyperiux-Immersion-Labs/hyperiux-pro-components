@@ -30,6 +30,38 @@ const FIELDS = [
 // Strip the leading dial code so we count only the national number's digits.
 const nationalDigits = (val) => val.replace(/^\+\d+\s*/, "").replace(/\D/g, "");
 
+// Valid national-number digit ranges per dial code (E.164, trunk prefix
+// excluded). A single "exactly 10" rule rejects every valid number from
+// Ireland, Australia, France, the UAE and Singapore.
+const NATIONAL_LENGTH_BY_DIAL = {
+ "+91": [10, 10], // India
+ "+353": [7, 9], // Ireland
+ "+1": [10, 10], // US / Canada
+ "+44": [9, 10], // United Kingdom
+ "+61": [9, 9], // Australia
+ "+49": [7, 11], // Germany
+ "+33": [9, 9], // France
+ "+971": [8, 9], // United Arab Emirates
+ "+65": [8, 8], // Singapore
+};
+
+// Countries where people habitually type the leading trunk "0"
+// (e.g. UK 07123 456789) - drop it before checking the length.
+const TRUNK_ZERO_DIALS = new Set(["+44", "+353", "+61", "+49", "+33", "+971"]);
+
+const isValidPhone = (val) => {
+ const dial = val.match(/^(\+\d+)\s/)?.[1];
+ let digits = nationalDigits(val);
+
+ if (dial && TRUNK_ZERO_DIALS.has(dial) && digits.startsWith("0")) {
+ digits = digits.slice(1);
+ }
+
+ // Unknown dial code (custom countries prop): fall back to E.164 bounds.
+ const [min, max] = NATIONAL_LENGTH_BY_DIAL[dial] ?? [6, 14];
+ return digits.length >= min && digits.length <= max;
+};
+
 const contactSchema = z.object({
  name: z
  .string()
@@ -45,8 +77,8 @@ const contactSchema = z.object({
  .string()
  .trim()
  .min(1, "Phone is required.")
- .refine((val) => nationalDigits(val).length === 10, {
- message: "Phone number must be 10 digits.",
+ .refine(isValidPhone, {
+ message: "Please enter a valid phone number for the selected country.",
  }),
  topic: z.enum(["general", "partnership"], {
  message: "Please select a topic.",

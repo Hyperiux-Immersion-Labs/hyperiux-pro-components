@@ -24,7 +24,7 @@ export function WorkWithHyperiuxEmail({ name, email, number, message }) {
           <Heading style={heading}>New work enquiry</Heading>
 
           <Text style={intro}>
-            Someone submitted the "Work with Hyperiux" form from the website.
+            Someone submitted the &quot;Work with Hyperiux&quot; form from the website.
           </Text>
 
           <Section style={card}>

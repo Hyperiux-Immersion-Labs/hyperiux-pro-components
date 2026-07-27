@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from"react";
-import * as THREE from"three";
-import { useGLTF, useTexture } from"@react-three/drei";
-import CameraRig from"./CameraRig";
-import useValleyData from"./useValleyData";
+import { useEffect, useMemo } from "react";
+import * as THREE from "three";
+import { useGLTF, useTexture } from "@react-three/drei";
+import CameraRig from "./CameraRig";
+import useValleyData from "./useValleyData";
 import Flower from "./Flower";
 
 // Tweak these values to change the look of the valley

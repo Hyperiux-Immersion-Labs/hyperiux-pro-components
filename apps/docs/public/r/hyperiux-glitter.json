@@ -7,34 +7,41 @@
     "three",
     "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/postprocessing",
-    "postprocessing"
+    "@react-three/postprocessing"
   ],
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/index.jsx"
+      "target": "src/components/effects/hyperiux-glitter/index.jsx"
     },
     {
       "path": "MorphingParticleModelNew.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/MorphingParticleModelNew.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
     },
     {
       "path": "MouseTrailParticles.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/hyperiux-glitter/MouseTrailParticles.jsx"
+      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
     },
     {
-      "path": "assets/models/hyperiux-new-model.glb",
-      "type": "registry:asset",
-      "target": "public/assets/models/hyperiux-new-model.glb",
-      "source": "/assets/models/hyperiux-new-model.glb"
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
     }
-  ],
-  "tier": "pro"
+  ]
 }

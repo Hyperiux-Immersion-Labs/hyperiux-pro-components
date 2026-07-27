@@ -1,5 +1,10 @@
 {
   "name": "mouse-pixelation",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Mouse Pixelation",
   "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
@@ -11,9 +16,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/mouse-pixelation",
+  "previewUrl": "/demo/mouse-pixelation",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "MousePixelation",
+  "exportKind": "default",
   "importPath": "@/components/effects/mouse-pixelation",
   "target": "src/components/effects/mouse-pixelation",
   "files": [
@@ -32,6 +39,10 @@
     {
       "path": "PixelShift.jsx",
       "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
     }
   ]
 }

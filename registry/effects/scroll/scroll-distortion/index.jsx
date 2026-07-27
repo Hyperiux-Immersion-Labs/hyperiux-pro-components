@@ -3,6 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 const ImageDistortionVertex = `
   varying vec2 vUv;
@@ -241,9 +249,16 @@ export default function ScrollDistortion({
       return undefined;
     }
 
+    const reducedMotion = prefersReducedMotion();
+
     const config = {
       ...DEFAULT_SHADER_CONFIG,
       ...shaderConfig,
+      // Reduced motion: zero out the displacement/RGB-shift/scale warp -
+      // the shader still runs the same u_progress tween, but with these at
+      // 0 the distortion terms drop out and it's left with a plain
+      // mix(tex0, tex1, smoothstep(progress)) crossfade.
+      ...(reducedMotion ? { strength: 0, rgbShift: 0, scale: 0 } : {}),
     };
 
     const width = window.innerWidth;
@@ -358,8 +373,10 @@ export default function ScrollDistortion({
       gsap.killTweensOf(allChars);
       gsap.set(".text-container", { opacity: 1 });
 
+      // Reduced motion: no vertical slide at all - chars stay put, only
+      // autoAlpha (opacity) ever changes.
       gsap.set(allChars, {
-        yPercent: 100,
+        yPercent: reducedMotion ? 0 : 100,
         autoAlpha: 0,
         visibility: "hidden",
         force3D: true,
@@ -396,7 +413,7 @@ export default function ScrollDistortion({
       });
 
       gsap.set(otherChars, {
-        yPercent: 100,
+        yPercent: reducedMotion ? 0 : 100,
         autoAlpha: 0,
         visibility: "hidden",
         force3D: true,
@@ -410,8 +427,8 @@ export default function ScrollDistortion({
       });
 
       gsap.set(toChars, {
-        yPercent: incomingY,
-        autoAlpha: 1,
+        yPercent: reducedMotion ? 0 : incomingY,
+        autoAlpha: reducedMotion ? 0 : 1,
         visibility: "visible",
         force3D: true,
       });
@@ -436,33 +453,40 @@ export default function ScrollDistortion({
         },
       });
 
-      timeline.to(
-        fromChars,
-        {
-          yPercent: outgoingY,
-          autoAlpha: 0,
-          duration: TEXT_DURATION,
-          stagger: {
-            each: TEXT_STAGGER,
-            from: "start",
+      // Reduced motion: plain crossfade, no vertical slide and no
+      // per-char stagger.
+      if (reducedMotion) {
+        timeline.to(fromChars, { autoAlpha: 0, duration: TEXT_DURATION }, 0);
+        timeline.to(toChars, { autoAlpha: 1, duration: TEXT_DURATION }, 0);
+      } else {
+        timeline.to(
+          fromChars,
+          {
+            yPercent: outgoingY,
+            autoAlpha: 0,
+            duration: TEXT_DURATION,
+            stagger: {
+              each: TEXT_STAGGER,
+              from: "start",
+            },
           },
-        },
-        0
-      );
+          0
+        );
 
-      timeline.to(
-        toChars,
-        {
-          yPercent: 0,
-          autoAlpha: 1,
-          duration: TEXT_DURATION,
-          stagger: {
-            each: TEXT_STAGGER,
-            from: "start",
+        timeline.to(
+          toChars,
+          {
+            yPercent: 0,
+            autoAlpha: 1,
+            duration: TEXT_DURATION,
+            stagger: {
+              each: TEXT_STAGGER,
+              from: "start",
+            },
           },
-        },
-        0.06
-      );
+          0.06
+        );
+      }
 
       textTimelineRef.current = timeline;
 
@@ -582,14 +606,14 @@ export default function ScrollDistortion({
       touchStartYRef.current = currentY;
     };
 
-    let animationFrameId = 0;
+    const loop = createSuspendedRaf({
+      root: containerElement,
+      onFrame: () => {
+        renderer.render(scene, camera);
+      },
+    });
 
-    const renderScene = () => {
-      renderer.render(scene, camera);
-      animationFrameId = window.requestAnimationFrame(renderScene);
-    };
-
-    renderScene();
+    loop.start();
     setIsSceneReady(true);
 
     const onResize = () => {
@@ -624,7 +648,7 @@ export default function ScrollDistortion({
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
 
-      window.cancelAnimationFrame(animationFrameId);
+      loop.destroy();
 
       textTimelineRef.current?.kill();
       textTimelineRef.current = null;

@@ -1,5 +1,10 @@
 {
   "name": "book-flip",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
@@ -7,14 +12,17 @@
   "dependencies": [
     "three",
     "@react-three/fiber",
-    "@react-three/drei"
+    "@react-three/drei",
+    "maath"
   ],
   "registryDependencies": [],
-  "previewUrl": "/book-flip",
+  "previewUrl": "/demo/book-flip",
   "coverImage": "book-flip",
   "videoUrl": "book-flip.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "BookFlip",
+  "exportKind": "default",
   "importPath": "@/components/effects/book-flip",
   "target": "src/components/effects/book-flip",
   "files": [
@@ -41,6 +49,10 @@
     {
       "path": "BookFlip.jsx",
       "target": "src/components/effects/book-flip/BookFlip.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/book-flip/createSuspendedRaf.js"
     }
   ]
 }

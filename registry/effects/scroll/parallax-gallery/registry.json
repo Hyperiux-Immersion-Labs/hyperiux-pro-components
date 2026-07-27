@@ -1,16 +1,34 @@
 {
   "name": "parallax-gallery",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Fixed crash in scroll-snap onStart: lenis.stop() now uses optional chaining so consumers without a Lenis provider no longer throw a TypeError on every snap",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: off-center item rotation and scale are reduced to 25% strength instead of full parallax",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Parallax Gallery",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "category": "scroll",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/parallax-gallery",
+  "previewUrl": "/demo/parallax-gallery",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ParallaxGallery",
+  "exportKind": "default",
   "importPath": "@/components/effects/parallax-gallery",
   "target": "src/components/effects/parallax-gallery",
   "files": [

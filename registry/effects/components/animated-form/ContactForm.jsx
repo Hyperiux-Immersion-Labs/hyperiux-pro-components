@@ -30,13 +30,13 @@
 
  */
 
-import React, { useState, useCallback } from"react";
-import Input from"./Input";
-import Textarea from"./Textarea";
-import Select from"./Select";
-import PhoneInput from"./PhoneInput";
-import Checkbox from"./Checkbox";
-import Button from"./Button";
+import React, { useState, useCallback, useId } from "react";
+import Input from "./Input";
+import Textarea from "./Textarea";
+import Select from "./Select";
+import PhoneInput from "./PhoneInput";
+import Checkbox from "./Checkbox";
+import Button from "./Button";
 
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,6 +79,8 @@ export default function ContactForm({
  const [isLoading, setIsLoading] = useState(false);
  const [submitted, setSubmitted] = useState(false);
  const [failed, setFailed] = useState(false);
+ const uid = useId().replace(/:/g, "");
+ const sectionId = `contact-form-${uid}`;
 
  // ── value helpers ──
  const setValue = useCallback((name, value) => {
@@ -240,22 +242,22 @@ export default function ContactForm({
  };
 
  return (
- <section className="h-full w-full" id="contact-form">
+ <section className="h-full w-full" id={sectionId}>
  <div className="w-full h-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
- className="space-y-[1.2vw] max-sm:space-y-[4vw] max-md:space-y-[4vw]"
+ className="space-y-[1.2vw] max-md:space-y-[4vw] max-[1025px]:space-y-[4vw]"
  onSubmit={handleSubmit}
  >
  {fields.map((field) => renderField(field))}
 
- <div className="flex items-center justify-start  max-sm:mt-[10vw]">
+ <div className="flex items-center justify-start  max-md:mt-[10vw]">
  <Button
  type="submit"
  isLoading={isLoading}
  loadingText={loadingLabel}
- className="mt-[3vw]  max-sm:mt-0 max-md:mt-[3vw]"
+ className="mt-[3vw]  max-md:mt-0 max-[1025px]:mt-[3vw]"
  >
  {submitLabel}
  </Button>

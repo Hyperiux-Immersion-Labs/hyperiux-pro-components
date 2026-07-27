@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 /* ── constants  */
 const FC = 80;
@@ -488,6 +490,7 @@ export default function DitherCanvas({
   className = "",
 }) {
   const ref = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const canvas = ref.current;
@@ -704,12 +707,13 @@ export default function DitherCanvas({
 
     let phase = 0;
     let frame = 0;
-    let rafId = 0;
 
     const tpBuf = new Float32Array(TM * 4);
     const tlBuf = new Float32Array(TM);
 
-    const render = () => {
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: () => {
       if (video.readyState >= 2) {
         const timestamp = now();
 
@@ -808,18 +812,17 @@ export default function DitherCanvas({
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
+      },
+    });
 
-      rafId = requestAnimationFrame(render);
-    };
-
-    render();
+    loop.start();
 
     return () => {
       isDisposed = true;
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
 
-      cancelAnimationFrame(rafId);
+      loop.destroy();
 
       video.pause();
       video.removeAttribute("src");
@@ -858,6 +861,23 @@ export default function DitherCanvas({
         <p className="pointer-events-none absolute bottom-20 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-sm:text-sm max-md:text-lg text-white/50 max-md:block max-sm:w-[60vw]!">
           Open on desktop for the full experience - cursor effect included.
         </p>
+      )}
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            cursor-driven fluid distortion rendered every frame, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
       )}
     </>
   );

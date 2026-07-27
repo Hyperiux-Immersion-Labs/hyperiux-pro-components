@@ -4,6 +4,11 @@ import { TransitionRouter } from'next-transition-router'
 import { useEffect, useRef } from'react'
 import gsap from'gsap'
 
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
+
 const COLS = 30
 const ROWS = 40
 const COLOR ='#111111'
@@ -85,7 +90,7 @@ export default function PixelTransition({
  const resizeCanvas = () => {
  const canvas = canvasRef.current
  if (!canvas) return
- const dpr = window.devicePixelRatio || 1
+ const dpr = Math.min(window.devicePixelRatio || 1, 2)
  const w = window.innerWidth
  const h = window.innerHeight
  canvas.width = Math.ceil(w * dpr)
@@ -136,6 +141,11 @@ export default function PixelTransition({
  leave={(next) => {
  const timeline = gsap.timeline()
 
+ if (prefersReducedMotion()) {
+ timeline.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out', onComplete: next })
+ return () => timeline.kill()
+ }
+
  if (enableContentShift) {
  timeline.fromTo(
  wrapperRef.current,
@@ -157,6 +167,11 @@ export default function PixelTransition({
  }}
  enter={(next) => {
  const timeline = gsap.timeline()
+
+ if (prefersReducedMotion()) {
+ timeline.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all', onComplete: next })
+ return () => timeline.kill()
+ }
 
  if (enableContentShift) {
  timeline.fromTo(

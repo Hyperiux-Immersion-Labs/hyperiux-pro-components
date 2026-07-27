@@ -1,5 +1,20 @@
 {
   "name": "text-hover",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion hover interactions.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Text Hover",
   "description": "Expandable text list with hover/click to reveal descriptions and animated corner brackets",
@@ -8,9 +23,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/text-hover",
+  "previewUrl": "/demo/text-hover",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "TextHover",
+  "exportKind": "default",
   "importPath": "@/components/effects/text-hover",
   "target": "src/components/effects/text-hover",
   "files": [
@@ -21,6 +38,10 @@
     {
       "path": "TextHoverComp.jsx",
       "target": "src/components/effects/text-hover/TextHoverComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/text-hover/createSuspendedRaf.js"
     }
   ]
 }

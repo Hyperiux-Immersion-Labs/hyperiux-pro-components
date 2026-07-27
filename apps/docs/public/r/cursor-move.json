@@ -6,13 +6,34 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "CursorMove",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.2.0",
+  "changelog": [
     {
-      "path": "cursor-move.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/cursor-move.jsx"
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Mousemove handling is now rAF-throttled: bursts of events coalesce into one rect read and one state update per frame instead of re-rendering per raw event.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/cursor-move/index.jsx"
+    }
+  ]
 }

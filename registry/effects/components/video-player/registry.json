@@ -1,5 +1,6 @@
 {
   "name": "video-player",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Custom Video Player",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
@@ -8,9 +9,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/video-player",
+  "previewUrl": "/demo/video-player",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "VideoPlayer",
+  "exportKind": "default",
   "importPath": "@/components/effects/video-player",
   "target": "src/components/effects/video-player",
   "files": [
@@ -21,6 +24,14 @@
     {
       "path": "VideoPlayerComp.jsx",
       "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-23",
+      "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate events with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
+      "breaking": false
     }
   ]
 }

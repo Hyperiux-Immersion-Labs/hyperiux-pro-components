@@ -5,6 +5,7 @@ import { Suspense, useState, useEffect, useRef } from "react";
 import { Experience } from "./Experience";
 import { UI } from "./UI";
 import { PageProvider } from "./PageContext";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 function useAssetsReady() {
     const { active } = useProgress();
@@ -36,6 +37,8 @@ export const BookFlipp = ({ images = [],
     showUI = true,
     ...props
 }) => {
+    const rootRef = useRef(null);
+    const [frameloop, setFrameloop] = useState("always");
     const [cameraZ, setCameraZ] = useState(cameraDistance.mobile);
     const ready = useAssetsReady();
 
@@ -50,6 +53,15 @@ export const BookFlipp = ({ images = [],
     };
 
     useEffect(() => {
+        const gate = createVisibilityGate({
+            root: rootRef,
+            onChange: (active) => setFrameloop(active ? "always" : "never"),
+        });
+        setFrameloop(gate.isActive ? "always" : "never");
+        return () => gate.destroy();
+    }, []);
+
+    useEffect(() => {
         const handleResize = () => {
             setCameraZ(window.innerWidth > 800 ? cameraDistance.desktop : cameraDistance.mobile);
         };
@@ -62,11 +74,11 @@ export const BookFlipp = ({ images = [],
         <PageProvider>
             
             {showUI && <UI images={images} />}
-            <div style={{
+            <div ref={rootRef} style={{
                 width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0,
                 backgroundColor: bgColor,
             }}>
-                <Canvas camera={{
+                <Canvas aria-hidden="true" frameloop={frameloop} camera={{
                     position: [-0.5, 1, cameraZ],
                     fov: 45,
                 }}>

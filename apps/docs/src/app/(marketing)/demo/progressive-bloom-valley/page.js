@@ -8,7 +8,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function page() {
  return (
  <>
- <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+ <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
 <ProgressiveBloomValley/>
 <h1 className="sr-only">Progressive Bloom Valley</h1>
  <ScrollBottom/>

@@ -1,3 +1,5 @@
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
 export default class InfiniteGrid {
     constructor({ el, sources, data, originalSize, onItemClick }) {
         this.$container = el;
@@ -38,6 +40,29 @@ export default class InfiniteGrid {
 
         this.items = [];
 
+        this.reduceMotion =
+            typeof window !== "undefined" &&
+            (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ??
+                false);
+        this._onReduceMotionChange = (event) => {
+            this.reduceMotion = event.matches;
+            if (event.matches) {
+                this.scroll.current.x = this.scroll.target.x;
+                this.scroll.current.y = this.scroll.target.y;
+                this.scroll.last.x = this.scroll.current.x;
+                this.scroll.last.y = this.scroll.current.y;
+                this.scroll.delta.x.t = this.scroll.delta.x.c = 0;
+                this.scroll.delta.y.t = this.scroll.delta.y.c = 0;
+            }
+        };
+        this._reduceMotionMq = window.matchMedia?.(
+            "(prefers-reduced-motion: reduce)"
+        );
+        this._reduceMotionMq?.addEventListener?.(
+            "change",
+            this._onReduceMotionChange
+        );
+
         this.onResize = this.onResize.bind(this);
         this.onWheel = this.onWheel.bind(this);
         this.onPointerMove = this.onPointerMove.bind(this);
@@ -53,8 +78,13 @@ export default class InfiniteGrid {
         window.addEventListener('pointercancel', this.onPointerUp);
         this.$container.style.touchAction = 'none';
 
+        this._loop = createSuspendedRaf({
+            root: this.$container,
+            onFrame: this.render,
+        });
+
         this.onResize();
-        this.render();
+        this._loop.start();
     }
 
     onResize() {
@@ -290,16 +320,27 @@ export default class InfiniteGrid {
     }
 
     render() {
-        this.scroll.current.x += (this.scroll.target.x - this.scroll.current.x) * this.scroll.ease;
-        this.scroll.current.y += (this.scroll.target.y - this.scroll.current.y) * this.scroll.ease;
+        if (this.reduceMotion) {
+            // Snap pan — no ease / coast between target and current.
+            this.scroll.current.x = this.scroll.target.x;
+            this.scroll.current.y = this.scroll.target.y;
+            this.scroll.delta.x.t = this.scroll.delta.x.c = 0;
+            this.scroll.delta.y.t = this.scroll.delta.y.c = 0;
+            this.mouse.x.c = this.mouse.x.t;
+            this.mouse.y.c = this.mouse.y.t;
+            this.mouse.press.c = this.mouse.press.t;
+        } else {
+            this.scroll.current.x += (this.scroll.target.x - this.scroll.current.x) * this.scroll.ease;
+            this.scroll.current.y += (this.scroll.target.y - this.scroll.current.y) * this.scroll.ease;
 
-        this.scroll.delta.x.t = this.scroll.current.x - this.scroll.last.x;
-        this.scroll.delta.y.t = this.scroll.current.y - this.scroll.last.y;
-        this.scroll.delta.x.c += (this.scroll.delta.x.t - this.scroll.delta.x.c) * 0.04;
-        this.scroll.delta.y.c += (this.scroll.delta.y.t - this.scroll.delta.y.c) * 0.04;
-        this.mouse.x.c += (this.mouse.x.t - this.mouse.x.c) * 0.04;
-        this.mouse.y.c += (this.mouse.y.t - this.mouse.y.c) * 0.04;
-        this.mouse.press.c += (this.mouse.press.t - this.mouse.press.c) * 0.04;
+            this.scroll.delta.x.t = this.scroll.current.x - this.scroll.last.x;
+            this.scroll.delta.y.t = this.scroll.current.y - this.scroll.last.y;
+            this.scroll.delta.x.c += (this.scroll.delta.x.t - this.scroll.delta.x.c) * 0.04;
+            this.scroll.delta.y.c += (this.scroll.delta.y.t - this.scroll.delta.y.c) * 0.04;
+            this.mouse.x.c += (this.mouse.x.t - this.mouse.x.c) * 0.04;
+            this.mouse.y.c += (this.mouse.y.t - this.mouse.y.c) * 0.04;
+            this.mouse.press.c += (this.mouse.press.t - this.mouse.press.c) * 0.04;
+        }
 
         const dirX = this.scroll.current.x > this.scroll.last.x ? 'right' : 'left';
         const dirY = this.scroll.current.y > this.scroll.last.y ? 'down' : 'up';
@@ -333,11 +374,15 @@ export default class InfiniteGrid {
 
         this.scroll.last.x = this.scroll.current.x;
         this.scroll.last.y = this.scroll.current.y;
-
-        requestAnimationFrame(this.render);
     }
 
     destroy() {
+        this._loop?.destroy();
+        this._loop = null;
+        this._reduceMotionMq?.removeEventListener?.(
+            "change",
+            this._onReduceMotionChange
+        );
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('wheel', this.onWheel);
         window.removeEventListener('pointermove', this.onPointerMove);

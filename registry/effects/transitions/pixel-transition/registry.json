@@ -1,5 +1,20 @@
 {
   "name": "pixel-transition",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion route fallback with short opacity fades.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Pixel Transition",
   "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
@@ -9,14 +24,16 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/page-transitions/pixels",
+  "previewUrl": "/demo/pixel-transition",
   "tier": "pro",
+  "subfolder": true,
+  "exportName": "PixelTransition",
+  "exportKind": "default",
   "main": "index.jsx",
-  "importPath": "@/components/effects/pixel-transition",
-  "target": "src/components/effects/pixel-transition",
   "files": [
     {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/pixel-transition/index.jsx"
     }
   ]

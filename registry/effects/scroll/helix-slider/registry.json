@@ -1,5 +1,20 @@
 {
   "name": "helix-slider",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-24",
+      "summary": "Added prefers-reduced-motion support (ported from the docs copy): shows a notice explaining the continuous scroll-driven rotation can't be reduced to a static fade.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Helix Slider",
   "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
@@ -9,9 +24,11 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "previewUrl": "/cylindrical-scroll",
+  "previewUrl": "/demo/helix-slider",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HelixSlider",
+  "exportKind": "default",
   "importPath": "@/components/effects/helix-slider",
   "target": "src/components/effects/helix-slider",
   "files": [

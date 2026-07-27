@@ -4,48 +4,41 @@
   "title": "Curved Plane",
   "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
   "dependencies": [
-    "three",
-    "gsap"
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "CurvedPlane",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "curved-plane.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/curved-plane.jsx"
-    },
-    {
-      "path": "assets/img/image01.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image01.webp",
-      "source": "/assets/img/image01.webp"
-    },
-    {
-      "path": "assets/img/image02.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image02.webp",
-      "source": "/assets/img/image02.webp"
-    },
-    {
-      "path": "assets/img/image03.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image03.webp",
-      "source": "/assets/img/image03.webp"
-    },
-    {
-      "path": "assets/img/image04.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image04.png",
-      "source": "/assets/img/image04.png"
-    },
-    {
-      "path": "assets/img/image05.png",
-      "type": "registry:asset",
-      "target": "public/assets/img/image05.png",
-      "source": "/assets/img/image05.png"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/curved-plane/index.jsx"
+    },
+    {
+      "path": "CurvedSwiperHorizontal.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.jsx"
+    },
+    {
+      "path": "CurvedSwiperVertical.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/curved-plane/createSuspendedRaf.js"
+    }
+  ]
 }

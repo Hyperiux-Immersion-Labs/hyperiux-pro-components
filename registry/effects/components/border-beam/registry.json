@@ -1,12 +1,13 @@
 {
   "name": "border-beam",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Border Beam",
   "description": "Animated border beam effect for cards and surfaces",
   "category": "components",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/border-beam",
+  "previewUrl": "/demo/border-beam",
   "tier": "pro",
   "main": "index.jsx",
   "exportName": "BorderBeam",
@@ -29,6 +30,14 @@
     {
       "path": "styles.js",
       "target": "src/components/effects/border-beam/styles.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Slow border-beam animations ~3x under prefers-reduced-motion",
+      "breaking": false
     }
   ]
 }

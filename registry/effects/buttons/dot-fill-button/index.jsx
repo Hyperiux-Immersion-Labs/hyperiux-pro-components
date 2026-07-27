@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from"react";
-import Link from"next/link";
+import { useEffect, useRef, useState } from "react";
 
+const MOBILE_BREAKPOINT = 640;
+const MOBILE_HOLD_MS = 1000;
+const DEFAULT_HREF = "#";
 
 const DotFillBtn = ({
  btnText ="",
+ href = DEFAULT_HREF,
  className ="",
  textClassName ="",
  staggerStep = 0.01,
@@ -18,6 +21,9 @@ const DotFillBtn = ({
 }) => {
  const textRef = useRef(null);
  const [hovered, setHovered] = useState(false);
+ const [isMobile, setIsMobile] = useState(false);
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+ const releaseTimeoutRef = useRef(null);
 
  useEffect(() => {
  const el = textRef.current;
@@ -29,7 +35,7 @@ const DotFillBtn = ({
  [...sourceText].forEach((char, index) => {
  const span = document.createElement("span");
  span.textContent = char;
- span.style.transitionDelay = `${index * staggerStep}s`;
+ span.style.transitionDelay = prefersReducedMotion ? "0s" : `${index * staggerStep}s`;
 
  if (char ===" ") {
  span.style.whiteSpace ="pre";
@@ -37,7 +43,7 @@ const DotFillBtn = ({
 
  el.appendChild(span);
  });
- }, [btnText, staggerStep]);
+ }, [btnText, staggerStep, prefersReducedMotion]);
 
 	useEffect(() => {
 		const el = textRef.current;
@@ -49,13 +55,53 @@ const DotFillBtn = ({
 			span.style.position = "relative";
 			span.style.textShadow = "0px 1.3em currentColor";
 			span.style.transform = "translateY(0em) rotate(0.001deg)";
-			span.style.transition =
-				"transform 0.6s cubic-bezier(0.625, 0.05, 0, 1), color 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
+			span.style.transition = prefersReducedMotion
+				? "none"
+				: "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1), color 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
 			span.style.willChange = "transform";
 		});
-	}, [btnText, staggerStep]);
+	}, [btnText, staggerStep, prefersReducedMotion]);
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+		const syncReducedMotion = (event) => {
+			const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+			setPrefersReducedMotion(matches);
+		};
+
+		if (mediaQuery) {
+			syncReducedMotion(mediaQuery);
+			mediaQuery.addEventListener("change", syncReducedMotion);
+		}
+
+		return () => mediaQuery?.removeEventListener("change", syncReducedMotion);
+	}, []);
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+		const syncIsMobile = (event) => {
+			const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+			setIsMobile(matches);
+		};
+
+		syncIsMobile(mediaQuery);
+		mediaQuery.addEventListener("change", syncIsMobile);
+
+		return () => mediaQuery.removeEventListener("change", syncIsMobile);
+	}, []);
+
+	useEffect(() => {
+		return () => {
+			if (releaseTimeoutRef.current) {
+				window.clearTimeout(releaseTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	const handleMouseEnter = () => {
+		if (isMobile) return;
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
@@ -66,6 +112,7 @@ const DotFillBtn = ({
 	};
 
 	const handleMouseLeave = () => {
+		if (isMobile) return;
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
@@ -75,20 +122,59 @@ const DotFillBtn = ({
 		setHovered(false);
 	};
 
+	const handlePointerDown = (event) => {
+		props.onPointerDown?.(event);
+
+		if (!isMobile || event.pointerType === "mouse") {
+			return;
+		}
+
+		if (releaseTimeoutRef.current) {
+			window.clearTimeout(releaseTimeoutRef.current);
+		}
+
+		const el = textRef.current;
+		if (el) {
+			Array.from(el.children).forEach((span) => {
+				span.style.transform = "translateY(-1.3em) rotate(0.001deg)";
+			});
+		}
+		setHovered(true);
+
+		releaseTimeoutRef.current = window.setTimeout(() => {
+			const currentEl = textRef.current;
+			if (currentEl) {
+				Array.from(currentEl.children).forEach((span) => {
+					span.style.transform = "translateY(0em) rotate(0.001deg)";
+				});
+			}
+			setHovered(false);
+			releaseTimeoutRef.current = null;
+		}, MOBILE_HOLD_MS);
+	};
+
 	return (
-		<Link
+		<a
+			href={href}
 			{...props}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
-			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] ${className} max-xl:h-[9vw] max-xl:pl-[7.6vw] max-xl:pr-[4vw] max-xl:text-[3vw] max-xl:font-normal max-md:h-[15vw] max-md:pl-[11.8vw] max-md:pr-[6vw] max-md:text-[4.2vw]`}
-			style={{ background: bgColor, color: hovered ? hoverTextColor : textColor }}
+			onPointerDown={handlePointerDown}
+			className={`group relative flex w-fit mx-auto items-center justify-center h-[4.2vw] pl-[3.1vw] pr-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors duration-500 motion-reduce:transition-none max-[1025px]:h-[9vw] max-[1025px]:pl-[7.6vw] max-[1025px]:pr-[4vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[15vw] max-md:pl-[11.8vw] max-md:pr-[6vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${className}`}
+			style={{
+				background: bgColor,
+				color: hovered ? hoverTextColor : textColor,
+			}}
 		>
 			<span
 				aria-hidden
-				className={`absolute left-[1.7vw] top-[55%] max-xl:top-[57%] w-[0.5vw] h-[0.5vw] rounded-full z-10 transform -translate-y-1/2 transition-transform duration-500 max-xl:left-[3.5vw] max-xl:w-[1.5vw] max-xl:h-[1.5vw] max-md:left-[6vw] max-md:w-[2.3vw] max-md:h-[2.3vw]`}
+				className={`absolute left-[1.7vw] top-[55%] max-[1025px]:top-[57%] w-[0.5vw] h-[0.5vw] rounded-full z-10 transform -translate-y-1/2 transition-transform duration-500 motion-reduce:transition-none max-[1025px]:left-[3.5vw] max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw] max-[1025px]:motion-reduce:transition-none max-md:left-[6vw] max-md:w-[2.3vw] max-md:h-[2.3vw] max-md:motion-reduce:transition-none`}
 				style={{
 					background: dotColor || fillColor,
-					transform: hovered ? "translateY(-50%) scale(120)" : "translateY(-50%) scale(1)",
+					transform:
+						hovered
+							? "translateY(-50%) scale(120)"
+							: "translateY(-50%) scale(1)",
 					transitionTimingFunction: "cubic-bezier(0.785, 0.135, 0.15, 0.86)",
 				}}
 			/>
@@ -102,7 +188,7 @@ const DotFillBtn = ({
 					{btnText}
 				</span>
 			</span>
-		</Link>
+		</a>
 	);
 };
 

@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/circular-split-roll",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
-  "main": "circular-split-roll.jsx",
+  "main": "index.jsx",
   "files": [
-    "circular-split-roll.jsx",
+    "index.jsx",
+    "CircularSplitRollComp.jsx",
     "registry.json"
   ],
   "keywords": [
@@ -12,6 +13,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*"
+    "gsap": "*",
+    "lenis": "*"
   }
 }

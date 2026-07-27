@@ -7,6 +7,11 @@ const __dirname = path.dirname(__filename);
 
 const REGISTRY_PATH = path.join(__dirname, "../../../registry/effects");
 const OUTPUT_PATH = path.join(__dirname, "../public/r");
+// Same filesystem as OUTPUT_PATH (both under public/) so the final swap can
+// use fs.renameSync, which is atomic on POSIX - a crash mid-build leaves
+// this directory behind (cleaned up at the start of the next run) but never
+// leaves OUTPUT_PATH itself in a partial state.
+const TMP_OUTPUT_PATH = path.join(__dirname, "../public/r.tmp");
 const PUBLIC_PATH = path.join(__dirname, "../public");
 const PUBLIC_ASSET_REGEX =
   /(?<![\w])["'`]((?:\/(?:assets|models|valley|601|svgs|img)\/[^"'`)\s]+)|(?:\/(?:showreel|eye-loop|hyperiux-wordmark|hyperiux)\.(?:mp4|svg)))["'`]/g;
@@ -43,12 +48,28 @@ function detectExport(content, preferredName) {
     /export\s+default\s+(?:function|class)\s+([A-Za-z_$][\w$]*)/
   );
 
+  // export default SomeIdentifier; -- a component declared earlier in the
+  // file (const/function) and re-exported as default by reference, rather
+  // than inline. Missing this pattern was the root cause of the
+  // animated-faq mis-detection (it picked up an unrelated helper export
+  // instead).
+  const defaultIdentifier = content.match(
+    /export\s+default\s+([A-Za-z_$][\w$]*)\s*;/
+  );
+
+  const preferredLower = preferredName?.toLowerCase();
+  const namedMatch = namedExports.find(
+    (name) => name.toLowerCase() === preferredLower
+  );
+
   // A named export matching the effect's own name wins outright, even if a
   // default export also exists elsewhere in the file (helper exports are
-  // common alongside the main component).
-  if (namedExports.includes(preferredName)) {
+  // common alongside the main component). Case-insensitive so acronym
+  // casing (e.g. source "AnimatedFAQ" vs toPascalCase's "AnimatedFaq")
+  // still matches instead of silently falling through.
+  if (namedMatch) {
     return {
-      exportName: preferredName,
+      exportName: namedMatch,
       exportKind: "named",
     };
   }
@@ -60,10 +81,10 @@ function detectExport(content, preferredName) {
     };
   }
 
-  if (namedExports.length > 0) {
+  if (defaultIdentifier) {
     return {
-      exportName: namedExports[0],
-      exportKind: "named",
+      exportName: defaultIdentifier[1],
+      exportKind: "default",
     };
   }
 
@@ -81,14 +102,44 @@ function detectExport(content, preferredName) {
       .map((entry) => entry.trim().split(/\s+as\s+/).pop()?.trim())
       .filter(Boolean);
 
-    if (exportedNames.length > 0) {
-      return {
-        exportName: exportedNames.includes(preferredName)
-          ? preferredName
-          : exportedNames[0],
-        exportKind: "named",
-      };
+    const listMatch = exportedNames.find(
+      (name) => name.toLowerCase() === preferredLower
+    );
+
+    if (listMatch) {
+      return { exportName: listMatch, exportKind: "named" };
     }
+
+    if (exportedNames.length === 1) {
+      return { exportName: exportedNames[0], exportKind: "named" };
+    }
+
+    if (exportedNames.length > 1) {
+      throw new Error(
+        `Ambiguous export for "${preferredName}": "export { ... }" lists multiple ` +
+          `names [${exportedNames.join(", ")}] and none match the expected export ` +
+          `name. Add exportName/exportKind explicitly to this effect's registry.json.`
+      );
+    }
+  }
+
+  // Exactly one named export with no preferred-name match is unambiguous --
+  // there's only one thing it could be. More than one is a guess, so fail
+  // the build instead of silently picking namedExports[0] (the bug that
+  // shipped animated-faq with exportName "FAQGroup" instead of "AnimatedFAQ").
+  if (namedExports.length === 1) {
+    return {
+      exportName: namedExports[0],
+      exportKind: "named",
+    };
+  }
+
+  if (namedExports.length > 1) {
+    throw new Error(
+      `Ambiguous export for "${preferredName}": found multiple named exports ` +
+        `[${namedExports.join(", ")}] and none match the expected export name ` +
+        `"${preferredName}". Add exportName/exportKind explicitly to this effect's registry.json.`
+    );
   }
 
   return null;
@@ -122,16 +173,11 @@ function collectPublicAssets(fileContents) {
 async function buildRegistry() {
   console.log("Building registry...");
 
-  // Ensure output directory exists
-  if (!fs.existsSync(OUTPUT_PATH)) {
-    fs.mkdirSync(OUTPUT_PATH, { recursive: true });
-  }
-
-  for (const fileName of fs.readdirSync(OUTPUT_PATH)) {
-    if (fileName.endsWith(".json")) {
-      fs.rmSync(path.join(OUTPUT_PATH, fileName));
-    }
-  }
+  // Clear any stale temp dir left behind by a previously killed/failed run,
+  // then build entirely into it. OUTPUT_PATH itself is untouched until the
+  // atomic swap at the very end of a fully successful run.
+  fs.rmSync(TMP_OUTPUT_PATH, { recursive: true, force: true });
+  fs.mkdirSync(TMP_OUTPUT_PATH, { recursive: true });
 
   const index = {
     items: [],
@@ -178,11 +224,28 @@ async function buildRegistry() {
       // Read registry metadata
       const registryJson = JSON.parse(fs.readFileSync(registryJsonPath, "utf-8"));
 
+      // previewUrl must always resolve to the effect's real demo route.
+      // Catches drift like "/border-beam" or "/webgl/fractal-glass" before
+      // it ships, instead of leaving a 404'ing link live.
+      const expectedPreviewUrl = `/demo/${registryJson.name}`;
+      if (registryJson.previewUrl && registryJson.previewUrl !== expectedPreviewUrl) {
+        throw new Error(
+          `Invalid previewUrl for "${registryJson.name}" in ${registryJsonPath}: ` +
+            `found "${registryJson.previewUrl}", expected "${expectedPreviewUrl}".`
+        );
+      }
+
       // Find component files (JS/JSX and CSS)
-      const files = fs
+      const discoveredFiles = fs
         .readdirSync(effectPath)
         .filter((f) => f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
         .filter((f) => f !== "registry.json");
+      const registryFileEntries = Array.isArray(registryJson.files)
+        ? registryJson.files.filter((file) => file.type !== "registry:asset")
+        : [];
+      const files = registryFileEntries.length
+        ? registryFileEntries.map((file) => file.path)
+        : discoveredFiles;
 
       const useSubfolder = registryJson.subfolder === true;
       const subfolderPrefix = useSubfolder ? `${registryJson.name}/` : "";
@@ -192,15 +255,16 @@ async function buildRegistry() {
         const content = fs.readFileSync(filePath, "utf-8");
         const isCss = fileName.endsWith(".css");
         const isModuleCss = fileName.endsWith(".module.css");
+        const registryFile = registryFileEntries.find((file) => file.path === fileName);
 
         return {
           path: fileName,
-          type: isCss ? "registry:style" : "registry:component",
-          target: isCss
+          type: registryFile?.type || (isCss ? "registry:style" : "registry:component"),
+          target: registryFile?.target || (isCss
             ? isModuleCss
               ? `components/hyperiux/${subfolderPrefix}${fileName}`
               : `styles/${fileName}`
-            : `components/hyperiux/${subfolderPrefix}${fileName}`,
+            : `components/hyperiux/${subfolderPrefix}${fileName}`),
           content,
         };
       });
@@ -221,7 +285,14 @@ async function buildRegistry() {
           const overlap = baseName
             .split("-")
             .filter((part) => nameParts.has(part)).length;
-          const hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          // Helper files (e.g. createSuspendedRaf) can have multiple named
+          // exports that don't match the effect — treat as non-entry, don't throw.
+          let hasExport = 20;
+          try {
+            hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;
+          } catch {
+            hasExport = 20;
+          }
 
           return hasExport - overlap;
         };
@@ -231,9 +302,15 @@ async function buildRegistry() {
       });
 
       const entryFile = fileContents.find((file) => file.type === "registry:component");
-      const exportInfo = entryFile
-        ? detectExport(entryFile.content, preferredExportName)
-        : null;
+      // registry.json's own exportName/exportKind override short-circuits
+      // before detectExport ever runs, so an effect that already declares
+      // its export explicitly never depends on the entry file being
+      // unambiguous (avoids the same throw-before-override-checked bug the
+      // scoring pass above has).
+      const exportInfo =
+        !registryJson.exportName && entryFile
+          ? detectExport(entryFile.content, preferredExportName)
+          : null;
       const exportName = registryJson.exportName || exportInfo?.exportName;
       const exportKind = registryJson.exportKind || exportInfo?.exportKind;
 
@@ -243,7 +320,12 @@ async function buildRegistry() {
         );
       }
 
-      const assetFiles = collectPublicAssets(fileContents);
+      const registryAssetFiles = Array.isArray(registryJson.files)
+        ? registryJson.files.filter((file) => file.type === "registry:asset")
+        : [];
+      const assetFiles = registryFileEntries.length
+        ? registryAssetFiles
+        : collectPublicAssets(fileContents);
 
       // Resolve categories: support both legacy `category` string and new `categories` array
       const primaryCategory = registryJson.category || category;
@@ -251,7 +333,13 @@ async function buildRegistry() {
         ? registryJson.categories
         : [primaryCategory];
 
-      const tier = registryJson.tier || "free";
+      if (!("tier" in registryJson) || registryJson.tier == null || registryJson.tier === "") {
+        throw new Error(
+          `Missing required "tier" field in ${registryJsonPath}. Every effect registry.json must declare an explicit tier.`
+        );
+      }
+
+      const tier = registryJson.tier;
       const isPro = tier === "pro" || tier === "paid";
 
       // For pro effects, strip file content from the public JSON.
@@ -261,7 +349,10 @@ async function buildRegistry() {
         : [...fileContents, ...assetFiles];
 
       // title and description kept as fallbacks for the detail page when Sanity content is absent.
-      // All other display fields (tier, coverImage, videoUrl, previewUrl, addedAt) now live in Sanity.
+      // coverImage/videoUrl/previewUrl/addedAt now live in Sanity, but `tier` and `version` must
+      // stay here: the CLI's fetchPublicEffect() reads `tier` straight off this file to decide
+      // whether to fall through to the authenticated pro route (content is stripped above when
+      // isPro), and reads `version`/`changelog` for `hyperiux outdated`/`diff`/`update`.
       const registryItem = {
         name: registryJson.name,
         type: registryJson.type || "registry:component",
@@ -271,11 +362,14 @@ async function buildRegistry() {
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
+        tier,
+        version: registryJson.version || "1.0.0",
+        changelog: registryJson.changelog || [],
         files: publicFiles,
       };
 
       // Write individual effect JSON
-      const outputFile = path.join(OUTPUT_PATH, `${registryJson.name}.json`);
+      const outputFile = path.join(TMP_OUTPUT_PATH, `${registryJson.name}.json`);
       fs.writeFileSync(outputFile, JSON.stringify(registryItem, null, 2));
       console.log(`  Created ${registryJson.name}.json`);
 
@@ -291,16 +385,27 @@ async function buildRegistry() {
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
+        version: registryJson.version || "1.0.0",
       });
     }
   }
 
   // Write index
-  const indexFile = path.join(OUTPUT_PATH, "index.json");
+  const indexFile = path.join(TMP_OUTPUT_PATH, "index.json");
   fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
   console.log("  Created index.json");
+
+  // Atomic swap - only reached if every effect above processed without
+  // throwing. OUTPUT_PATH is replaced in one rename, so readers never see a
+  // partial mix of old and new output, and a crash before this point leaves
+  // the previous OUTPUT_PATH completely untouched.
+  fs.rmSync(OUTPUT_PATH, { recursive: true, force: true });
+  fs.renameSync(TMP_OUTPUT_PATH, OUTPUT_PATH);
 
   console.log(`\nRegistry built successfully! ${index.items.length} effects.`);
 }
 
-buildRegistry().catch(console.error);
+buildRegistry().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

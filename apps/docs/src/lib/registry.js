@@ -197,24 +197,86 @@ export function getRegistryIndex() {
   return JSON.parse(content);
 }
 
-export function getEffectBySlug(slug) {
+// Metadata only - never reads Pro source file contents off disk. Safe to
+// call before any auth/plan check (e.g. generateMetadata, or to compute
+// isLocked before deciding whether the caller is even allowed to see source).
+export function getEffectMetadata(slug) {
   const privateMatch = findPrivateRegistryPath(slug);
   const publicEffect = getPublicEffectBySlug(slug);
 
   if (privateMatch) {
     const privateEffect = readJson(privateMatch.registryPath);
-    const effect = {
+    return {
       ...publicEffect,
       ...privateEffect,
       categories: privateEffect.categories || publicEffect?.categories,
       coverImage: privateEffect.coverImage ?? publicEffect?.coverImage,
       videoUrl: privateEffect.videoUrl ?? publicEffect?.videoUrl,
     };
-
-    return attachPrivateFileContent(effect, privateMatch.effectDir);
   }
 
   return publicEffect;
+}
+
+// Attaches Pro source file contents - only call this after confirming the
+// requester is authorized (isLocked === false). Never pass this result to a
+// client component prop for a locked/unauthorized request.
+export function getEffectSource(slug) {
+  const privateMatch = findPrivateRegistryPath(slug);
+
+  if (!privateMatch) {
+    return getPublicEffectBySlug(slug);
+  }
+
+  const publicEffect = getPublicEffectBySlug(slug);
+  const privateEffect = readJson(privateMatch.registryPath);
+  const effect = {
+    ...publicEffect,
+    ...privateEffect,
+    categories: privateEffect.categories || publicEffect?.categories,
+    coverImage: privateEffect.coverImage ?? publicEffect?.coverImage,
+    videoUrl: privateEffect.videoUrl ?? publicEffect?.videoUrl,
+  };
+
+  return attachPrivateFileContent(effect, privateMatch.effectDir);
+}
+
+// Single content-shaping function for both Pro-effect delivery APIs (CLI
+// route and web route) - parameterize on slug only, since both callers need
+// the identical response shape. Auth is the caller's job (getEffectAccessDecision
+// in effect-access.js); call this only after confirming access.
+export function buildEffectDeliveryPayload(slug) {
+  const effect = getEffectSource(slug);
+
+  if (!effect) return null;
+
+  return {
+    name: effect.name,
+    type: effect.type,
+    title: effect.title,
+    description: effect.description,
+    category: effect.category,
+    categories: effect.categories || [effect.category || "components"],
+    tier: effect.tier || "free",
+    version: effect.version || "1.0.0",
+    changelog: effect.changelog || [],
+    dependencies: effect.dependencies || [],
+    registryDependencies: effect.registryDependencies || [],
+    exportName: effect.exportName,
+    exportKind: effect.exportKind || "named",
+    previewUrl: effect.previewUrl,
+    coverImage: effect.coverImage,
+    videoUrl: effect.videoUrl,
+    files: (effect.files || []).map((file) => ({
+      path: file.path,
+      target: file.target,
+      targetPath: file.target || file.targetPath || file.path,
+      type: file.type,
+      source: file.source,
+      encoding: file.encoding,
+      content: file.content,
+    })),
+  };
 }
 
 export function getPublicEffectBySlug(slug) {
@@ -257,7 +319,7 @@ export function getEffectsByCategory() {
 }
 
 export function getEffectCode(slug) {
-  const effect = getEffectBySlug(slug);
+  const effect = getEffectSource(slug);
 
   if (!effect || !effect.files || effect.files.length === 0) {
     return null;

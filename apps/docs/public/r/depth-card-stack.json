@@ -4,27 +4,37 @@
   "title": "Depth Card Stack",
   "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
   "dependencies": [
-    "gsap"
+    "gsap",
+    "lucide-react"
   ],
   "registryDependencies": [],
   "exportName": "DepthCardStack",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Disable pointer tilt and texture reveal under reduced motion",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/index.jsx"
+      "target": "src/components/effects/depth-card-stack/index.jsx"
     },
     {
       "path": "DepthCardStackComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/DepthCardStackComp.jsx"
+      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
     },
     {
       "path": "SliderCard.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/depth-card-stack/SliderCard.jsx"
+      "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

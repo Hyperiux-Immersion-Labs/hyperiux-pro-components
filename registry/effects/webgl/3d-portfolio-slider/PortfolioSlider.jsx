@@ -1,9 +1,37 @@
 "use client";
 
-import { useEffect, useRef } from"react";
-import * as THREE from"three";
-import Lenis from"lenis";
-import gsap from"gsap";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import * as THREE from "three";
+import Lenis from "lenis";
+import gsap from "gsap";
+import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function getServerReducedMotionSnapshot() {
+  return false;
+}
+
+// React hook form, for JSX output that depends on the preference. Safe to
+// call during render - returns false on the server.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot
+  );
+}
 
 function getViewportConfig() {
   const width = window.innerWidth;
@@ -27,11 +55,11 @@ export default function PortfolioSlider({ items }) {
  const textContainerRef = useRef(null);
  const activeTextRef = useRef(null);
  const prevRawIndexRef = useRef(0);
+ const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  let scene, camera, renderer;
  let planes = [];
- let rafId;
 
  let currentRadius = getViewportConfig().initialRadius;
 
@@ -56,6 +84,7 @@ export default function PortfolioSlider({ items }) {
  renderer.setSize(width, height);
  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+ renderer.domElement.setAttribute("aria-hidden", "true");
  container.appendChild(renderer.domElement);
 
  // IMAGE SETUP
@@ -123,8 +152,12 @@ const speedFactor = 0.01;
  let snapTimeout = null;
  let snapObj = { offset: 0 };
 
- // COMBINED RAF + RENDER LOOP
- function raf(time) {
+ // COMBINED RAF + RENDER LOOP (visibility-gated)
+ const loop = createSuspendedRaf({
+ root: null,
+ observeTab: false,
+ observeOffscreen: false,
+ onFrame: (time) => {
  lenis.raf(time);
 
  // Delta
@@ -163,7 +196,9 @@ const speedFactor = 0.01;
  },
  onComplete: () => {
  isSnapping = false;
+ if (gate.isActive) {
  lenis.start();
+ }
  }
  });
  }
@@ -246,15 +281,45 @@ plane.material.uniforms.uZoom.value = targetZoom;
  });
 
  renderer.render(scene, camera);
- rafId = requestAnimationFrame(raf);
+ },
+ });
+
+ const gate = createVisibilityGate({
+ root: container,
+ onChange: (active) => {
+ if (active) {
+ if (!isSnapping) {
+ lenis?.start?.();
+ }
+ loop.start();
+ } else {
+ lenis?.stop?.();
+ loop.stop();
+ }
+ },
+ });
+
+ if (gate.isActive) {
+ loop.start();
+ } else {
+ lenis?.stop?.();
  }
 
- rafId = requestAnimationFrame(raf);
-
  return () => {
- cancelAnimationFrame(rafId);
+ loop.destroy();
+ gate.destroy();
  if (snapTimeout) clearTimeout(snapTimeout);
  gsap.killTweensOf(snapObj);
+ // renderer.dispose() does not free per-mesh GPU resources - each
+ // plane's geometry, shader material, and texture must go explicitly
+ // or they leak on every unmount.
+ planes.forEach((plane) => {
+ plane.geometry.dispose();
+ plane.material.uniforms.uTexture.value?.dispose?.();
+ plane.material.dispose();
+ scene.remove(plane);
+ });
+ planes = [];
  renderer.dispose();
  container.removeChild(renderer.domElement);
  lenis.destroy();
@@ -269,7 +334,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  <div
  ref={textContainerRef}
  data-active-text={items[0].description}
- className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-md:h-9 max-md:w-70 max-md:text-xl max-sm:h-12 max-sm:w-[84vw] max-sm:text-base"
+ className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-[1025px]:h-9 max-[1025px]:w-70 max-[1025px]:text-xl max-md:h-12 max-md:w-[84vw] max-md:text-base"
  >
  <div ref={activeTextRef} className="absolute w-full h-full flex items-center justify-center">
  {items[0].description}
@@ -283,7 +348,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  return (
  <div
  key={i}
- className="absolute h-9 w-7 -ml-3.5 -mt-4.5 max-md:h-12 max-md:w-9 max-md:-ml-4.5 max-md:-mt-6 max-sm:h-9 max-sm:w-7 max-sm:-ml-3.5 max-sm:-mt-4.5"
+ className="absolute h-9 w-7 -ml-3.5 -mt-4.5 max-[1025px]:h-12 max-[1025px]:w-9 max-[1025px]:-ml-4.5 max-[1025px]:-mt-6 max-md:h-9 max-md:w-7 max-md:-ml-3.5 max-md:-mt-4.5"
  style={{
 transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
 }}
@@ -293,6 +358,22 @@ transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${
  );
  })}
  </div>
+
+ {reducedMotion && (
+ <div
+ aria-live="polite"
+ className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+ >
+ <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
+ This effect can&apos;t be reduced.
+ </h2>
+ <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+ Reduced motion is enabled, but this continuous scroll-driven
+ 3D carousel is the navigation itself, and can&apos;t be
+ simplified to a fade without losing the ability to browse.
+ </p>
+ </div>
+ )}
  </div>
  </div>
  );

@@ -1,0 +1,42 @@
+{
+  "name": "hover-slider",
+  "version": "1.1.0",
+  "type": "registry:component",
+  "title": "Hover Slider",
+  "description": "WebGL-powered list where hovering a row reveals a vertically-scrolling image stack with circular-arc curvature, velocity-based elastic snap, and GSAP-driven fade/curve transitions.",
+  "category": "webgl",
+  "dependencies": [
+    "three",
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/hover-slider",
+  "tier": "pro",
+  "main": "index.jsx",
+  "exportName": "HoverSlider",
+  "exportKind": "default",
+  "importPath": "@/components/effects/hover-slider",
+  "target": "src/components/effects/hover-slider",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/hover-slider/index.jsx"
+    },
+    {
+      "path": "HoverSliderComp.jsx",
+      "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    }
+  ]
+}

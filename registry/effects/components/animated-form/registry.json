@@ -1,14 +1,19 @@
 {
   "name": "animated-form",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Animated Form",
   "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
   "category": "components",
-  "dependencies": [],
+  "dependencies": [
+    "zod"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/animated-form",
+  "previewUrl": "/demo/animated-form",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedForm",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-form",
   "target": "src/components/effects/animated-form",
   "files": [
@@ -43,6 +48,14 @@
     {
       "path": "Textarea.jsx",
       "target": "src/components/effects/animated-form/Textarea.jsx"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-23",
+      "summary": "Phone validation now uses per-country national-number length ranges (with trunk-zero tolerance) instead of a flat 10-digit rule that rejected all valid numbers from Ireland, Australia, France, the UAE and Singapore.",
+      "breaking": false
     }
   ]
 }

@@ -1,5 +1,26 @@
 {
   "name": "animated-modal",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Trigger button responsive classes corrected from max-lg to max-[1025px], matching the max-[1025px]/max-md convention used by the rest of the modal (tablet styling was switching at 1024px on the button but 1280px on the modal chrome).",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Animated Modal",
   "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
@@ -8,9 +29,11 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/animated-modal",
+  "previewUrl": "/demo/animated-modal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "AnimatedModal",
+  "exportKind": "default",
   "importPath": "@/components/effects/animated-modal",
   "target": "src/components/effects/animated-modal",
   "files": [

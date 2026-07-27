@@ -1,18 +1,33 @@
 {
   "name": "scroll-stack",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: cards no longer scale down while stacking (stays at scale 1), remaining crossfade keeps a linear (none) ease", "breaking": false },
+    { "version": "1.0.0", "date": "2026-02-10", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Scroll Stack",
   "description": "Successive content cards that hand off focus and fade as the next section enters",
   "category": "scroll",
-  "dependencies": ["gsap"],
+  "dependencies": [
+    "gsap"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/stacked-card",
+  "previewUrl": "/demo/scroll-stack",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ScrollStack",
+  "exportKind": "default",
   "importPath": "@/components/effects/scroll-stack",
   "target": "src/components/effects/scroll-stack",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/scroll-stack/index.jsx" },
-    { "path": "ScrollStackComp.jsx", "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/scroll-stack/index.jsx"
+    },
+    {
+      "path": "ScrollStackComp.jsx",
+      "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
+    }
   ]
 }

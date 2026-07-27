@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from"react";
-import gsap from"gsap";
+import { useEffect, useMemo, useRef, useState } from  "react";
+import gsap from "gsap";
+import { attachWebGLContextRecovery } from "./webgl-context-recovery";
+import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 const CARD_W = 380;
 const CARD_H = 240;
@@ -208,12 +210,28 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
  if (!gl) return;
 
- const prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
+ const [r, g, b] = hexToRgb(primaryColor);
+
+ let loop = null;
+ let prog;
+ let buf;
+ let reduceMotion =
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotion = event.matches;
+ };
+ mq?.addEventListener?.("change", onReduceMotionChange);
+
+ // Build (or rebuild) the GPU program, buffer, and uniform wiring, then start
+ // the render loop. Extracted so it can re-run after WebGL context restore.
+ const setup = () => {
+ prog = buildProgram(gl, BEAM_VERT, BEAM_FRAG);
  gl.useProgram(prog);
  gl.clearColor(0.0, 0.0, 0.0, 0.0);
 
  // full-screen quad
- const buf = gl.createBuffer();
+ buf = gl.createBuffer();
  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
  const loc = gl.getAttribLocation(prog,"a_pos");
@@ -228,9 +246,6 @@ function useWebGLBeam(canvasRef, primaryColor) {
  const uCardTop = gl.getUniformLocation(prog,"u_cardTop");
  const uCardBottom = gl.getUniformLocation(prog,"u_cardBottom");
 
- const [r, g, b] = hexToRgb(primaryColor);
-
- let raf;
  let seeded = false;
  const smoothed = {
  card: 0,
@@ -255,13 +270,12 @@ function useWebGLBeam(canvasRef, primaryColor) {
  // (a full-height, near-white core) across a card already sitting on it.
  if (!ready) {
  gl.clear(gl.COLOR_BUFFER_BIT);
- raf = requestAnimationFrame(tick);
  return;
  }
 
  const targetCard = hasCard ? 1 : 0;
 
- if (!seeded) {
+ if (!seeded || reduceMotion) {
  seeded = true;
  smoothed.card = targetCard;
  smoothed.top = cardTop;
@@ -279,17 +293,46 @@ function useWebGLBeam(canvasRef, primaryColor) {
 
  gl.clear(gl.COLOR_BUFFER_BIT);
  gl.uniform2f(uRes, w, h);
- gl.uniform1f(uTime, ts);
+ // Freeze beam flicker/shimmer under reduced motion.
+ gl.uniform1f(uTime, reduceMotion ? 0 : ts);
  gl.uniform3f(uColor, r, g, b);
  gl.uniform1f(uCard, smoothed.card);
  gl.uniform1f(uSplit, splitNorm);
  gl.uniform1f(uCardTop, smoothed.top);
  gl.uniform1f(uCardBottom, smoothed.bottom);
  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
- raf = requestAnimationFrame(tick);
  };
- raf = requestAnimationFrame(tick);
- return () => cancelAnimationFrame(raf);
+
+ loop?.destroy();
+ loop = createSuspendedRaf({
+ root: canvas,
+ onFrame: tick,
+ });
+ loop.start();
+ };
+
+ // A raw WebGL context gets no automatic recovery (unlike THREE.WebGLRenderer).
+ // On loss, stop the loop and release the invalidated program/buffer; on
+ // restore, rebuild them and resume.
+ const teardown = () => {
+ loop?.destroy();
+ loop = null;
+ if (buf) { gl.deleteBuffer(buf); buf = null; }
+ if (prog) { gl.deleteProgram(prog); prog = null; }
+ };
+
+ setup();
+
+ const detachRecovery = attachWebGLContextRecovery(canvas, {
+ onLost: teardown,
+ onRestored: setup,
+ });
+
+ return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
+ detachRecovery();
+ teardown();
+ };
  }, [canvasRef, primaryColor]);
 
  return stateRef;
@@ -317,7 +360,14 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  const ctx = canvas.getContext("2d");
  if (!ctx) return;
 
- let raf;
+ let reduceMotion =
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotion = event.matches;
+ };
+ mq?.addEventListener?.("change", onReduceMotionChange);
+
  const visibleState = {
  alpha: 0,
  splitNorm: 0.5,
@@ -342,6 +392,9 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
  ctx.clearRect(0, 0, width, height);
 
+ // Reduced-motion: skip animated particle scatter.
+ if (reduceMotion) return;
+
  const state = beamStateRef.current;
  const targetAlpha = state.hasCard ? 1 : 0;
  const blend = 1 - Math.exp(-frameDelta * (state.hasCard ? 0.012 : 0.006));
@@ -356,7 +409,6 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  }
 
  if (visibleState.alpha < 0.01) {
- raf = requestAnimationFrame(draw);
  return;
  }
 
@@ -408,11 +460,17 @@ const fade =
  }
 
  ctx.restore();
- raf = requestAnimationFrame(draw);
  };
 
- raf = requestAnimationFrame(draw);
- return () => cancelAnimationFrame(raf);
+ const loop = createSuspendedRaf({
+ root: canvas,
+ onFrame: draw,
+ });
+ loop.start();
+ return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
+ loop.destroy();
+ };
  }, [beamStateRef, canvasRef, particles]);
 }
 
@@ -496,6 +554,7 @@ function AsciiFace({ card, beamLit }) {
 
  useEffect(() => {
  if (!beamLit) return;
+ if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
  const interval = setInterval(() => {
  const rand = randRef.current;
  setGrid(prev =>
@@ -590,6 +649,10 @@ export function FileEncryptionComp({ cards = [] }) {
  const beamCanvasRef = useRef(null);
  const particleCanvasRef = useRef(null);
  const settersRef = useRef({});
+ const reduceMotionRef = useRef(
+ typeof window !== "undefined" &&
+ window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+ );
 
  const allCards = useMemo(() => {
  if (!cards.length) return [];
@@ -635,6 +698,16 @@ export function FileEncryptionComp({ cards = [] }) {
  const track = trackRef.current;
  if (!root || !track) return;
 
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ const onReduceMotionChange = (event) => {
+ reduceMotionRef.current = event.matches;
+ if (event.matches) dragRef.current.velocity = 0;
+ };
+ if (mq) {
+ reduceMotionRef.current = mq.matches;
+ mq.addEventListener?.("change", onReduceMotionChange);
+ }
+
  if (xRef.current === null) xRef.current = -singleGroupWidth;
 
  const onDown = (e) => {
@@ -648,11 +721,12 @@ export function FileEncryptionComp({ cards = [] }) {
  const cx = e.clientX ?? e.touches?.[0]?.clientX;
  const dx = cx - dragRef.current.lastX;
  dragRef.current.lastX = cx;
- dragRef.current.velocity = dx;
+ dragRef.current.velocity = reduceMotionRef.current ? 0 : dx;
  xRef.current += dx;
  };
  const onUp = () => {
  dragRef.current.active = false;
+ if (reduceMotionRef.current) dragRef.current.velocity = 0;
  root.style.cursor ="grab";
  };
 
@@ -665,10 +739,15 @@ export function FileEncryptionComp({ cards = [] }) {
  const dt = Math.min(delta, 50);
 
  if (!dragRef.current.active) {
+ if (reduceMotionRef.current) {
+ // No auto-scroll / inertia — drag still moves cards directly.
+ dragRef.current.velocity = 0;
+ } else {
  xRef.current += (AUTO_SPEED * dt) / 1000;
  if (Math.abs(dragRef.current.velocity) > 0.5) {
  xRef.current += dragRef.current.velocity * 0.4;
  dragRef.current.velocity *= 0.88;
+ }
  }
  }
 
@@ -727,7 +806,24 @@ export function FileEncryptionComp({ cards = [] }) {
  };
 
  gsap.ticker.add(update);
+
+ // Pause the marquee ticker when the section is offscreen or the tab is hidden.
+ // Beam/particle loops self-suspend via createSuspendedRaf; sleep/wake the shared
+ // GSAP ticker here so auto-scroll stops with them. Always wake on teardown so we
+ // never leave the global ticker sleeping for the rest of the page.
+ const gate = createVisibilityGate({
+ root,
+ onChange: (active) => {
+ if (active) gsap.ticker.wake();
+ else gsap.ticker.sleep();
+ },
+ });
+ if (!gate.isActive) gsap.ticker.sleep();
+
  return () => {
+ mq?.removeEventListener?.("change", onReduceMotionChange);
+ gate.destroy();
+ gsap.ticker.wake();
  gsap.ticker.remove(update);
  root.removeEventListener("pointerdown", onDown);
  window.removeEventListener("pointermove", onMove);
@@ -748,6 +844,7 @@ export function FileEncryptionComp({ cards = [] }) {
  {/* WebGL beam canvas - full section coverage, screen blend */}
  <canvas
  ref={beamCanvasRef}
+ aria-hidden="true"
  className="pointer-events-none absolute inset-0 z-40"
  style={{
  width:"100%",
@@ -757,6 +854,7 @@ export function FileEncryptionComp({ cards = [] }) {
  />
  <canvas
  ref={particleCanvasRef}
+ aria-hidden="true"
  className="pointer-events-none absolute inset-0 z-50"
  style={{
  width:"100%",

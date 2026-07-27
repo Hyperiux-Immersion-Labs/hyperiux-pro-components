@@ -8,13 +8,33 @@
   ],
   "registryDependencies": [],
   "exportName": "ScrollStack",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "scroll-stack.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/scroll-stack.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: cards no longer scale down while stacking (stays at scale 1), remaining crossfade keeps a linear (none) ease",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/scroll-stack/index.jsx"
+    },
+    {
+      "path": "ScrollStackComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
+    }
+  ]
 }

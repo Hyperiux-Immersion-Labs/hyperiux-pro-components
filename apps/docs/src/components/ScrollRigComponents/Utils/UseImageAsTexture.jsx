@@ -1,8 +1,8 @@
 "use client"
-import { ScrollScene, UseCanvas, useImageAsTexture } from"@14islands/r3f-scroll-rig";
-import Image from"next/image";
+import { ScrollScene, UseCanvas, useImageAsTexture } from "@14islands/r3f-scroll-rig";
+import Image from "next/image";
 
-import React, { useRef } from"react";
+import React, { useRef } from "react";
 
 export function WebGLImagePlane({ trackedImageRef, sceneProps, materialProps }) {
  const textureRef = useImageAsTexture(trackedImageRef);

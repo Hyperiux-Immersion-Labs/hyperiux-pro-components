@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import InfiniteGrid from "./InfiniteGrid";
 
 const OVERLAY_ASPECT_RATIO = 16 / 9;
@@ -68,12 +67,22 @@ export default function InfiniteGridGallery() {
   const [displayIndex, setDisplayIndex] = useState(null);
   const [slide, setSlide] = useState(null);
   const [isThumbDragging, setIsThumbDragging] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   const closeTimerRef = useRef(null);
   const slideTimerRef = useRef(null);
 
-  const slideDurationMs = 600;
-  const openCloseDurationMs = 750;
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  const slideDurationMs = reduceMotion ? 0 : 600;
+  const openCloseDurationMs = reduceMotion ? 0 : 750;
   const isAnimating = isOpening || isClosing || Boolean(slide);
 
   const unsplashPool = useMemo(
@@ -305,7 +314,7 @@ export default function InfiniteGridGallery() {
     if (isAnimating) return;
 
     if (nextIndex === expanded.index) {
-      centerActiveThumb(nextIndex, "smooth");
+      centerActiveThumb(nextIndex, reduceMotion ? "auto" : "smooth");
       return;
     }
 
@@ -324,7 +333,7 @@ export default function InfiniteGridGallery() {
       setDisplayIndex(nextIndex);
       setSlide(null);
     }, slideDurationMs);
-  }, [centerActiveThumb, expanded, isAnimating, sources.length, slideDurationMs]);
+  }, [centerActiveThumb, expanded, isAnimating, sources.length, slideDurationMs, reduceMotion]);
 
   const closeExpanded = useCallback(() => {
     if (!expanded || isClosing) return;
@@ -356,9 +365,9 @@ export default function InfiniteGridGallery() {
     if (!expanded) return;
 
     requestAnimationFrame(() => {
-      centerActiveThumb(expanded.index, "smooth");
+      centerActiveThumb(expanded.index, reduceMotion ? "auto" : "smooth");
     });
-  }, [centerActiveThumb, expanded]);
+  }, [centerActiveThumb, expanded, reduceMotion]);
 
   useEffect(() => {
     return () => {
@@ -462,7 +471,7 @@ export default function InfiniteGridGallery() {
 
         {active && expanded && display ? (
           <div
-            className={`fixed inset-0 z-60 cursor-default bg-white transition-opacity duration-750 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isOpening ? "opacity-0" : ""
+            className={`fixed inset-0 z-60 cursor-default bg-white transition-opacity duration-750 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none motion-reduce:duration-0 ${isOpening ? "opacity-0" : ""
               } ${isClosing ? "opacity-0" : ""
               } ${!isOpening && !isClosing ? "opacity-100" : ""}`}
             role="dialog"
@@ -492,33 +501,29 @@ export default function InfiniteGridGallery() {
                       }px) scale(${expanded.rect.width / expanded.target.width}, ${expanded.rect.height / expanded.target.height
                       })`
                       : "translate(0px, 0px) scale(1, 1)",
-                  transition: "transform 750ms cubic-bezier(0.785, 0.135, 0.15, 0.86)",
+                  transition: reduceMotion
+                    ? "none"
+                    : "transform 750ms cubic-bezier(0.785, 0.135, 0.15, 0.86)",
                 }}
               >
                 {slide ? (
                   <>
-                    <Image
+                    <img
                       className={`absolute inset-0 block h-full w-full object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-from"
                         : "infinite-grid-gallery-slide-right-from"
                         }`}
                       src={sources[slide.from].src}
                       alt={sources[slide.from].caption}
-                      fill
-                      sizes="70vw"
-                      priority
                     />
 
-                    <Image
+                    <img
                       className={`absolute inset-0 block h-full w-full object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-to"
                         : "infinite-grid-gallery-slide-right-to"
                         }`}
                       src={sources[slide.to].src}
                       alt={sources[slide.to].caption}
-                      fill
-                      sizes="70vw"
-                      priority
                     />
                   </>
                 ) : (
@@ -532,7 +537,7 @@ export default function InfiniteGridGallery() {
 
               <button
                 type="button"
-                className="fixed left-(--nav-left) top-(--nav-top) z-4 grid h-13.5 w-13.5  -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:left-[calc(50%-70px)] max-md:top-auto max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:translate-y-0 max-md:text-2xl max-sm:left-[calc(50%-70px)] max-sm:bottom-[calc(var(--thumbsH)+55px)] max-sm:h-15 max-sm:w-15 max-sm:text-xl"
+                className="fixed left-(--nav-left) top-(--nav-top) z-4 grid h-13.5 w-13.5  -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-[1025px]:left-[calc(50%-70px)] max-[1025px]:top-auto max-[1025px]:bottom-[calc(var(--thumbsH)+55px)] max-[1025px]:h-15 max-[1025px]:w-15 max-[1025px]:translate-y-0 max-[1025px]:text-2xl max-md:left-[calc(50%-70px)] max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:text-xl"
                 style={{
                   "--nav-left": `${Math.max(16, expanded.target.left - 72)}px`,
                   "--nav-top": `${expanded.target.top + expanded.target.height / 2}px`,
@@ -549,7 +554,7 @@ export default function InfiniteGridGallery() {
 
               <button
                 type="button"
-                className="fixed right-(--nav-right) top-(--nav-top) z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-md:right-[calc(50%-70px)] max-md:top-auto max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:translate-y-0 max-md:text-2xl max-sm:right-[calc(50%-70px)] max-sm:bottom-[calc(var(--thumbsH)+55px)] max-sm:h-15 max-sm:w-15 max-sm:text-xl"
+                className="fixed right-(--nav-right) top-(--nav-top) z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-[1025px]:right-[calc(50%-70px)] max-[1025px]:top-auto max-[1025px]:bottom-[calc(var(--thumbsH)+55px)] max-[1025px]:h-15 max-[1025px]:w-15 max-[1025px]:translate-y-0 max-[1025px]:text-2xl max-md:right-[calc(50%-70px)] max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:text-xl"
                 style={{
                   "--nav-right": `${Math.max(
                     16,
@@ -566,17 +571,17 @@ export default function InfiniteGridGallery() {
               </button>
 
               <div
-                className="fixed inset-x-0 bottom-0 grid h-(--thumbsH) grid-cols-1 items-center gap-3 bg-white px-3.5 pb-3.5 max-md:gap-2.5 max-md:px-3 max-md:pb-3 max-sm:px-2.5 max-sm:pb-2.5 max-sm:gap-2"
+                className="fixed inset-x-0 bottom-0 grid h-(--thumbsH) grid-cols-1 items-center gap-3 bg-white px-3.5 pb-3.5 max-[1025px]:gap-2.5 max-[1025px]:px-3 max-[1025px]:pb-3 max-md:px-2.5 max-md:pb-2.5 max-md:gap-2"
                 aria-label="All images"
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-center pt-2.5" aria-hidden="true">
-                  <h2 className="mt-[0%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black select-none max-md:max-w-[92vw] max-md:text-2xl max-sm:max-w-[94vw] max-sm:text-lg">
+                  <h2 className="mt-[0%] max-w-[min(860px,calc(100vw-40px))] overflow-hidden text-ellipsis whitespace-nowrap px-0 py-1.5 text-center text-[30px] font-medium leading-[1.1] tracking-tighter text-black select-none max-[1025px]:max-w-[92vw] max-[1025px]:text-2xl max-md:max-w-[94vw] max-md:text-lg">
                     {display.caption}
                   </h2>
                 </div>
                 <div
-                  className={`relative w-full border-t border-black/12 pt-3 select-none max-md:pt-2.5 max-sm:pt-2 ${isThumbDragging ? "cursor-grabbing" : "cursor-grab"
+                  className={`relative w-full border-t border-black/12 pt-3 select-none max-[1025px]:pt-2.5 max-md:pt-2 ${isThumbDragging ? "cursor-grabbing" : "cursor-grab"
                     }`}
                   onPointerDown={onThumbPointerDown}
                   onPointerMove={onThumbPointerMove}
@@ -587,7 +592,7 @@ export default function InfiniteGridGallery() {
                 >
                   <div
                     ref={expandThumbsRef}
-                    className={`flex gap-2.5 overflow-x-auto  px-1 scrollbar-none  overscroll-x-contain [touch-action:pan-x] max-md:gap-[1vw] max-md:px-0.5 max-sm:gap-[2vw] max-sm:px-0 ${isThumbDragging ? "cursor-grabbing scroll-auto" : "cursor-grab scroll-smooth"
+                    className={`flex gap-2.5 overflow-x-auto  px-1 scrollbar-none  overscroll-x-contain [touch-action:pan-x] max-[1025px]:gap-[1vw] max-[1025px]:px-0.5 max-md:gap-[2vw] max-md:px-0 ${isThumbDragging ? "cursor-grabbing scroll-auto" : "cursor-grab scroll-smooth"
                       }`}
                     role="list"
                     aria-label="All images"
@@ -601,7 +606,7 @@ export default function InfiniteGridGallery() {
                           type="button"
                           role="listitem"
                           data-thumb-index={idx}
-                          className={`relative box-border h-17.5 w-22.5 shrink-0 overflow-hidden border bg-black/4 p-0 transition-all duration-400 ease-out   max-md:h-15 max-md:w-20 max-sm:h-12 max-sm:w-18 ${isActive ? "border-black" : "border-transparent"
+                          className={`relative box-border h-17.5 w-22.5 shrink-0 overflow-hidden border bg-black/4 p-0 transition-all duration-400 ease-out   max-[1025px]:h-15 max-[1025px]:w-20 max-md:h-12 max-md:w-18 ${isActive ? "border-black" : "border-transparent"
                             }`}
                           ref={(el) => {
                             expandThumbRefs.current[idx] = el;
@@ -766,6 +771,33 @@ export default function InfiniteGridGallery() {
    }
    to {
      transform: translate3d(0%, 0, 0);
+   }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+   .infinite-grid-gallery-images .item-image,
+   .infinite-grid-gallery-images .item-image img,
+   .infinite-grid-gallery-images .caption {
+     transition: none !important;
+   }
+
+   .infinite-grid-gallery-images .item:hover .item-image {
+     transform: none;
+   }
+
+   .infinite-grid-gallery-images .item:hover .caption {
+     transform: none;
+   }
+
+   .infinite-grid-gallery-closing-media {
+     transition-duration: 0ms !important;
+   }
+
+   .infinite-grid-gallery-slide-left-from,
+   .infinite-grid-gallery-slide-left-to,
+   .infinite-grid-gallery-slide-right-from,
+   .infinite-grid-gallery-slide-right-to {
+     animation: none !important;
    }
  }
  `}</style>

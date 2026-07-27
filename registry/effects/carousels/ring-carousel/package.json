@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/ring-carousel",
-  "version": "0.0.1",
+  "version": "1.1.1",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
-  "main": "ring-carousel.jsx",
+  "main": "index.jsx",
   "files": [
-    "ring-carousel.jsx",
+    "index.jsx",
+    "RingCarouselComp.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -1,64 +1,56 @@
 import { NextResponse } from "next/server";
-import { getEffectBySlug } from "@/lib/registry";
-import { getCliTokenFromRequest, verifyCliToken } from "@/lib/cli-auth";
+import { getEffectMetadata, buildEffectDeliveryPayload } from "@/lib/registry";
+import { getCliTokenFromRequest } from "@/lib/cli-auth";
+import { getEffectAccessDecision } from "@/lib/effect-access";
 
-function normalizeFiles(effect) {
-  return (effect.files || []).map((file) => ({
-    path: file.path,
-    target: file.target,
-    targetPath: file.target || file.targetPath || file.path,
-    type: file.type,
-    source: file.source,
-    encoding: file.encoding,
-    content: file.content,
-  }));
-}
+// See docs/effect-access.md for how this route relates to
+// /api/effects/[slug] (the legacy web route) and the effect detail page.
+
+const REASON_STATUS = {
+  "invalid-credential": 401,
+  anonymous: 401,
+  revoked: 403,
+  "no-subscription": 403,
+  expired: 403,
+  error: 500,
+};
+
+const REASON_MESSAGE = {
+  "invalid-credential": "Invalid CLI token.",
+  anonymous: "Missing CLI token.",
+  revoked: "This CLI token has been revoked.",
+  "no-subscription": "This token does not belong to an active Pro account.",
+  expired: "Your Pro subscription has expired.",
+  error: "Unable to verify CLI token.",
+};
 
 export async function GET(request, { params }) {
   const { effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
+  const effectMeta = getEffectMetadata(effectSlug);
 
-  if (!effect) {
+  if (!effectMeta) {
+    return NextResponse.json({ error: "Effect not found." }, { status: 404 });
+  }
+
+  const effectTier = effectMeta.tier || "free";
+  const cliToken = getCliTokenFromRequest(request);
+
+  const access = await getEffectAccessDecision({ effectTier, cliToken });
+
+  if (!access.allowed) {
     return NextResponse.json(
-      { error: "Effect not found." },
-      { status: 404 }
+      {
+        error: REASON_MESSAGE[access.reason] || "Access denied.",
+        reason: access.reason,
+        requiresPro: true,
+      },
+      { status: REASON_STATUS[access.reason] || 403 }
     );
   }
 
-  const effectTier = effect.tier || "free";
-  const isProEffect = effectTier === "pro" || effectTier === "paid";
+  // Content is only read from disk after the access decision above.
+  const payload = buildEffectDeliveryPayload(effectSlug);
 
-  if (isProEffect) {
-    const token = getCliTokenFromRequest(request);
-    const verification = await verifyCliToken(token);
-
-    if (!verification.valid) {
-      return NextResponse.json(
-        {
-          error: verification.reason,
-          requiresPro: true,
-        },
-        { status: verification.status || 403 }
-      );
-    }
-  }
-
-  return NextResponse.json({
-    name: effect.name,
-    type: effect.type,
-    title: effect.title,
-    description: effect.description,
-    category: effect.category,
-    categories: effect.categories || [effect.category || "components"],
-    tier: effectTier,
-    dependencies: effect.dependencies || [],
-    registryDependencies: effect.registryDependencies || [],
-    exportName: effect.exportName,
-    exportKind: effect.exportKind || "named",
-    previewUrl: effect.previewUrl,
-    coverImage: effect.coverImage,
-    videoUrl: effect.videoUrl,
-    files: normalizeFiles(effect),
-  });
+  return NextResponse.json({ ...payload, tier: effectTier });
 }

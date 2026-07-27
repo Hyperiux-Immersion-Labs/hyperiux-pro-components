@@ -9,7 +9,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-      <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
       <WebGLSlider />
       <div className='w-fit fixed left-[3%] top-1/2 -translate-y-1/2  max-md:top-[30%] max-md:left-1/2 max-md:-translate-x-1/2  max-md:w-full max-md:text-center'>
         <HeadAnim>

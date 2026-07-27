@@ -24,17 +24,71 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     const prevCurrentRef = useRef(null);
     const pendingDirectionRef = useRef("next");
     const isAnimatingRef = useRef(false);
+    const reduceMotionRef = useRef(
+        typeof window !== "undefined" &&
+            (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+    );
 
     const total = testimonials.length;
     const pad = (n) => String(n).padStart(2, "0");
 
-    const animateIn = useCallback((direction) => {
-        const yFrom = direction === "next" ? 110 : -110;
+    useEffect(() => {
+        const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+        if (!mq) return;
+        const onChange = (event) => {
+            reduceMotionRef.current = event.matches;
+        };
+        reduceMotionRef.current = mq.matches;
+        mq.addEventListener?.("change", onChange);
+        return () => mq.removeEventListener?.("change", onChange);
+    }, []);
 
+    const animateIn = useCallback((direction) => {
         if (splitRef.current) {
             splitRef.current.revert();
             splitRef.current = null;
         }
+
+        const meta = [
+            desktopImageRef.current,
+            mobileImageRef.current,
+            nameRef.current,
+            titleRef.current,
+            mobileNameRef.current,
+            mobileTitleRef.current,
+            quoteMarkRef.current,
+        ];
+
+        const onDone = () => {
+            setIsAnimating(false);
+            isAnimatingRef.current = false;
+        };
+
+        // Reduced-motion: skip SplitText / Y slides — opacity fade only.
+        if (reduceMotionRef.current) {
+            gsap.set(quoteRef.current, { autoAlpha: 0 });
+            gsap.set(meta, { autoAlpha: 0 });
+
+            const tl = gsap.timeline({ onComplete: onDone });
+            tl.to(quoteRef.current, {
+                autoAlpha: 1,
+                duration: 0.5,
+                ease: "power2.out",
+            }).to(
+                meta,
+                {
+                    autoAlpha: 1,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    stagger: 0.08,
+                },
+                "<0.15"
+            );
+            return;
+        }
+
+        const yFrom = direction === "next" ? 110 : -110;
+
         gsap.set(quoteRef.current, { autoAlpha: 1 });
 
         splitRef.current = new SplitText(quoteRef.current, {
@@ -53,24 +107,11 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
         });
 
         gsap.set(lines, { yPercent: yFrom });
-        gsap.set([
-            desktopImageRef.current,
-            mobileImageRef.current,
-            nameRef.current,
-            titleRef.current,
-            mobileNameRef.current,
-            mobileTitleRef.current,
-            quoteMarkRef.current,
-        ], {
+        gsap.set(meta, {
             autoAlpha: 0,
         });
 
-        const tl = gsap.timeline({
-            onComplete: () => {
-                setIsAnimating(false);
-                isAnimatingRef.current = false;
-            },
-        });
+        const tl = gsap.timeline({ onComplete: onDone });
 
         tl.to(lines, {
             yPercent: 0,
@@ -81,15 +122,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                 from: direction === "next" ? "start" : "end",
             },
         }).to(
-            [
-                desktopImageRef.current,
-                mobileImageRef.current,
-                nameRef.current,
-                titleRef.current,
-                mobileNameRef.current,
-                mobileTitleRef.current,
-                quoteMarkRef.current,
-            ],
+            meta,
             {
                 autoAlpha: 1,
                 y: 0,
@@ -180,17 +213,17 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black py-5 max-xl:px-6 max-md:px-2"
+        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black py-5 max-[1025px]:px-6 max-md:px-2"
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
-            <div className="flex items-start justify-between px-8 py-5 max-xl:px-6 max-xl:py-4 max-md:px-5 max-md:py-3">
-                <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-xl:w-full max-md:w-full max-md:justify-between">
-                    <div className="flex items-center gap-2 text-[0.8vw] max-xl:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
-                        <span className="text-[9px] max-xl:text-[12px] max-md:text-[15px]">◆</span>
+            <div className="flex items-start justify-between px-8 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
+                <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
+                    <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
+                        <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px]">◆</span>
                         <span>Client Stories</span>
                     </div>
-                    <span className="text-[13px] max-xl:text-[12px] max-xl:hidden max-md:pl-4 text-neutral-700 tabular-nums">
+                    <span className="text-[13px] max-[1025px]:text-[12px] max-[1025px]:hidden max-md:pl-4 text-neutral-700 tabular-nums">
                         {pad(current + 1)}&nbsp;/&nbsp;{pad(total)}
                     </span>
                 </div>
@@ -203,9 +236,9 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
             </div>
 
             {/* Body */}
-            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-xl:flex-col max-xl:items-start max-xl:gap-10 max-xl:px-6 max-xl:py-10 max-md:px-5 max-md:py-4 max-md:gap-6">
+            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-10 max-[1025px]:px-6 max-[1025px]:py-10 max-md:px-5 max-md:py-4 max-md:gap-6">
 
-                <div className="shrink-0 max-xl:hidden max-md:hidden">
+                <div className="shrink-0 max-[1025px]:hidden max-md:hidden">
                     <div ref={desktopImageRef} className="relative w-40 h-50">
                         <img
                             src={displayItem.image}
@@ -219,24 +252,24 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                 {/* Quote area */}
                 <div className="flex-1 flex flex-col relative">
                     <span
-                        className="absolute -top-1.5 font-serif font-bold leading-none max-xl:top-[-3vw] text-[48px] max-xl:text-[5vw] max-md:text-[40px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-2"
+                        className="absolute -top-1.5 font-serif font-bold leading-none max-[1025px]:top-[-3vw] text-[48px] max-[1025px]:text-[5vw] max-md:text-[40px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-2"
                         style={{ left: 0 }}
                         ref={quoteMarkRef}
                     >
                         &quot;
                     </span>
 
-                    <div className="flex flex-col pl-13 w-[95%] max-xl:pl-0 max-xl:w-full max-md:pl-0 max-md:w-full">
+                    <div className="flex flex-col pl-13 w-[95%] max-[1025px]:pl-0 max-[1025px]:w-full max-md:pl-0 max-md:w-full">
                         <blockquote
                             ref={quoteRef}
-                            className="m-0 mb-10 p-0 text-[4vw] max-md:min-h-0 max-xl:min-h-[30vh] leading-[1.1] max-xl:mb-8 max-xl:w-full max-xl:max-w-full max-xl:text-[clamp(2.4rem,5vw,3.6rem)] max-xl:leading-[1.08] max-md:max-w-full max-md:text-[7.5vw] max-md:mb-4"
+                            className="m-0 mb-10 p-0 text-[4vw] max-md:min-h-0 max-[1025px]:min-h-[30vh] leading-[1.1] max-[1025px]:mb-8 max-[1025px]:w-full max-[1025px]:max-w-full max-[1025px]:text-[clamp(2.4rem,5vw,3.6rem)] max-[1025px]:leading-[1.08] max-md:max-w-full max-md:text-[7.5vw] max-md:mb-4"
                         >
                             {displayItem.quote}
                         </blockquote>
 
                         
-                        <div className="hidden max-xl:flex items-center gap-4 mt-6 max-xl:gap-5 max-md:mt-3 max-md:gap-6">
-                            <div ref={mobileImageRef} className="relative max-xl:w-30 max-xl:h-36 max-md:w-22 max-md:h-26 shrink-0">
+                        <div className="hidden max-[1025px]:flex items-center gap-4 mt-6 max-[1025px]:gap-5 max-md:mt-3 max-md:gap-6">
+                            <div ref={mobileImageRef} className="relative max-[1025px]:w-30 max-[1025px]:h-36 max-md:w-22 max-md:h-26 shrink-0">
                                 <img
                                     src={displayItem.image}
                                     alt={displayItem.name}
@@ -258,13 +291,13 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                         </div>
 
                         {/* Desktop: name/title */}
-                        <div className="flex flex-col gap-1 mt-2 max-xl:hidden max-md:hidden">
-                            <p ref={nameRef} className="m-0 text-xl max-xl:text-lg font-normal">
+                        <div className="flex flex-col gap-1 mt-2 max-[1025px]:hidden max-md:hidden">
+                            <p ref={nameRef} className="m-0 text-xl max-[1025px]:text-lg font-normal">
                                 {displayItem.name}
                             </p>
                             <p
                                 ref={titleRef}
-                                className="m-0 text-[11px] max-xl:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
+                                className="m-0 text-[11px] max-[1025px]:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
                             >
                                 {displayItem.title}
                             </p>

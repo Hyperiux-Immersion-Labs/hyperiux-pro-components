@@ -9,7 +9,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 export default function Page() {
   return (
     <>
-    <DemoHeader textColor="white" logoColor="white" />
+    <DemoHeader textColor="white" logoColor='#FFFFFF' />
       <section className="min-h-dvh w-full flex items-center relative justify-center">
         <div className="z-1 space-y-[4vw] max-md:px-[7vw] max-md:space-y-[10vw]">
           <div className="flex flex-col items-center justify-center gap-[1vw] text-center max-md:gap-[3vw]">

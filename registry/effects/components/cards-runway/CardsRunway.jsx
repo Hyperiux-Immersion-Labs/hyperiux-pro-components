@@ -7,6 +7,10 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
 }
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+
 export default function CardsRunway({
   data = [],
   accentColor = "#ff5f00",
@@ -18,8 +22,15 @@ export default function CardsRunway({
 
   useEffect(() => {
     let ctx = gsap.context(() => {
-      if (globalThis.innerWidth > 1024) {
-        gsap.set(".cards-runway-card", { y: "37vw", opacity: 1 });
+      // Must match the CSS max-[1025px] breakpoint (1280px under default
+      // Tailwind): below it the section collapses to the static
+      // horizontal-scroll layout, so the pin/scrub timeline only exists
+      // at xl and up.
+      if (globalThis.innerWidth >= 1280) {
+        gsap.set(".cards-runway-card", {
+          y: prefersReducedMotion() ? "0vw" : "37vw",
+          opacity: 1,
+        });
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root.current,
@@ -62,31 +73,31 @@ export default function CardsRunway({
   return (
     <section
       ref={root}
-      className="w-full h-[350vh] text-white bg-black max-xl:overflow-hidden max-xl:h-screen max-md:py-[25%] max-xl:py-[12%] relative z-20"
+      className="w-full h-[350vh] text-white bg-black max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%] relative z-20"
     >
       {/* Cards Runway */}
-      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-xl:h-fit max-xl:static pb-5  max-xl:mt-[40vw] max-xl:pb-[4vw] max-xl:overflow-x-scroll mobile-scrollbar max-xl:pr-[7vw] z-15">
+      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15">
         <div className="w-fit h-full flex gap-[3vw] max-md:gap-[6vw] items-end cards-runway-container">
           {data.map((card) => (
             <div
               key={card.id}
               style={{ width: cardWidth }}
-              className="h-fit flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-xl:w-[45vw]! opacity-0"
+              className="h-fit flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-[1025px]:w-[45vw]! opacity-0"
             >
               {/* Always visible top accent bar */}
               <div
                 style={{ backgroundColor: accentColor }}
-                className="w-full h-[0.5vw] max-xl:h-[1vw] max-md:h-[1.5vw] shrink-0"
+                className="w-full h-[0.5vw] max-[1025px]:h-[1vw] max-md:h-[1.5vw] shrink-0"
               />
 
               {/* Card content */}
               <div
                 style={{ backgroundColor: cardColor }}
-                className="w-full h-[37vw] cards-runway-content overflow-hidden max-md:h-[40vh] max-xl:h-[55vw]"
+                className="w-full h-[37vw] cards-runway-content overflow-hidden max-md:h-[40vh] max-[1025px]:h-[55vw]"
               >
-                <div className="p-[2vw] flex flex-col justify-between h-full max-xl:p-[5vw]">
-                  <h3 className="text-[2.8vw] leading-[1.2] max-md:text-[6vw] max-xl:text-[4vw] max-md:w-[80%]">{card.title}</h3>
-                  <p className="text-[1.25vw] max-xl:text-[2.6vw] max-md:text-[4.4vw] max-md:leading-[1.2]">{card.text}</p>
+                <div className="p-[2vw] flex flex-col justify-between h-full max-[1025px]:p-[5vw]">
+                  <h3 className="text-[2.8vw] leading-[1.2] max-md:text-[6vw] max-[1025px]:text-[4vw] max-md:w-[80%]">{card.title}</h3>
+                  <p className="text-[1.25vw] max-[1025px]:text-[2.6vw] max-md:text-[4.4vw] max-md:leading-[1.2]">{card.text}</p>
                 </div>
               </div>
             </div>

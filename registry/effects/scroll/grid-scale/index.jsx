@@ -1,8 +1,15 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
+
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
 
 const floatingWords = [
   { text: 'MOTION', color: 'bg-sky-300', start: { top: '6%', left: '10%', xPercent: -50, yPercent: -50 } },
@@ -41,11 +48,16 @@ const floatingWords = [
 ]
 
 export default function GridScale() {
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `grid-scale-${uid}`;
   const centeredTextRef = useRef(null);
   const ideaTextRef = useRef(null);
 
   useEffect(() => {
     const isMobile = window.innerWidth < 640
+    const reducedMotion = prefersReducedMotion()
+    const ease = reducedMotion ? 'none' : 'power2.out'
+    const easeOut4 = reducedMotion ? 'none' : 'power4.out'
 
     const clipFrom = isMobile
       ? 'inset(25% 18% 25% 18% round 0%)'
@@ -53,12 +65,12 @@ export default function GridScale() {
 
     // Set the initial clip-path via GSAP before the timeline runs
     gsap.set('.clip-path', { clipPath: clipFrom })
- 
+
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#grid-scale',
+          trigger: `#${sectionId}`,
           start: 'top top',
           end: '40% bottom',
           scrub: true,
@@ -67,7 +79,7 @@ export default function GridScale() {
 
       tl.fromTo(ideaTextRef.current, { opacity: 1 }, {
         opacity: 0,
-        ease: 'power4.out',
+        ease: easeOut4,
         duration: 0.1,
       });
 
@@ -76,7 +88,7 @@ export default function GridScale() {
         { clipPath: clipFrom },
         {
           clipPath: 'inset(0% 0% 0% 0% round 0%)',
-          ease: 'power2.out',
+          ease,
         },
         0
       )
@@ -112,49 +124,51 @@ gsap.set('.br-box', {
 tl.fromTo(
   '.tl-box',
   { top: blockTop, left: blockSide },
-  { top: '0%', left: '0%', ease: 'power2.out' },
+  { top: '0%', left: '0%', ease },
   0
 )
 
 tl.fromTo(
   '.tr-box',
   { top: blockTop, right: blockSide },
-  { top: '0%', right: '0%', ease: 'power2.out' },
+  { top: '0%', right: '0%', ease },
   0
 )
 
 tl.fromTo(
   '.bl-box',
   { bottom: blockTop, left: blockSide },
-  { bottom: '0%', left: '0%', ease: 'power2.out' },
+  { bottom: '0%', left: '0%', ease },
   0
 )
 
 tl.fromTo(
   '.br-box',
   { bottom: blockTop, right: blockSide },
-  { bottom: '0%', right: '0%', ease: 'power2.out' },
+  { bottom: '0%', right: '0%', ease },
   0
 )
 
-      tl.fromTo('.grid-line-t', { top: '20%', scaleX: 1 }, { top: '0%', scaleX: 0, ease: 'power2.out' }, 0)
-      tl.fromTo('.grid-line-b', { top: '80%', scaleX: 1 }, { top: '100%', scaleX: 0, ease: 'power2.out' }, 0)
-      tl.fromTo('.grid-line-l', { left: '35%', scaleY: 1 }, { left: '0%', scaleY: 0, ease: 'power2.out' }, 0)
-      tl.fromTo('.grid-line-r', { right: '35%', scaleY: 1 }, { right: '0%', scaleY: 0, ease: 'power2.out' }, 0)
+      tl.fromTo('.grid-line-t', { top: '20%', scaleX: 1 }, { top: '0%', scaleX: 0, ease }, 0)
+      tl.fromTo('.grid-line-b', { top: '80%', scaleX: 1 }, { top: '100%', scaleX: 0, ease }, 0)
+      tl.fromTo('.grid-line-l', { left: '35%', scaleY: 1 }, { left: '0%', scaleY: 0, ease }, 0)
+      tl.fromTo('.grid-line-r', { right: '35%', scaleY: 1 }, { right: '0%', scaleY: 0, ease }, 0)
     })
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionId])
 
   useEffect(() => {
     const isMobile = window.innerWidth < 640
+    const reducedMotion = prefersReducedMotion()
+    const converge = reducedMotion ? 'none' : 'power2.inOut'
     const floatingWordSelectors = floatingWords.map((_, i) => `.floating-word-${i}`)
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: '#grid-scale',
-          start: '% top',
+          trigger: `#${sectionId}`,
+          start: 'top top',
           end: '100% bottom',
           scrub: true,
           markers: false,
@@ -181,12 +195,11 @@ tl.fromTo(
       tl.to(
         floatingWords.map((_, i) => `.floating-word-${i}`),
         {
-          top: '50%',
-          left: '50%',
-          xPercent: -50,
-          yPercent: -50,
+          // Reduced motion: fade out in place - no converging-to-center
+          // movement, just an opacity drop at each word's own position.
+          ...(reducedMotion ? {} : { top: '50%', left: '50%', xPercent: -50, yPercent: -50 }),
           opacity: 0,
-          ease: 'power2.inOut',
+          ease: converge,
           stagger: {
             amount: 0.7,
             each: 0.1,
@@ -199,21 +212,21 @@ tl.fromTo(
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [sectionId]);
 
   return (
     <>
-      <section id='grid-scale' className='h-[400vh] w-full bg-[#242424]'>
+      <section id={sectionId} className='h-[400vh] w-full bg-[#242424]'>
         <div className='h-screen w-full sticky top-0 overflow-hidden'>
           <div
             className="clip-path flex items-center justify-center z-200 absolute top-0 left-0 w-full h-screen bg-white"
           >
-            <p ref={centeredTextRef} className='text-[#242424] opacity-0 w-[60vw] text-center leading-[1.1] text-[3.5vw] max-sm:text-[4.5vw]'>
+            <p ref={centeredTextRef} className='text-[#242424] opacity-0 w-[60vw] text-center leading-[1.1] text-[3.5vw] max-md:text-[4.5vw]'>
               Building futuristic interfaces
               <br />
               with motion, interaction, and depth.
             </p>
-            <p ref={ideaTextRef} className='text-[#242424] max-md:w-[20vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-md:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
+            <p ref={ideaTextRef} className='text-[#242424] max-[1025px]:w-[20vw] absolute top-1/2 left-1/2 text-center -translate-x-1/2 -translate-y-1/2 leading-[1.1] max-[1025px]:text-[5vw] text-[2.2vw]'>Need immersive UI?<br /> Hyperiux makes it <br /> move.</p>
           </div>
 
           {/* Corner Boxes */}
@@ -230,7 +243,7 @@ tl.fromTo(
           {floatingWords.map((word, i) => (
             <div
               key={i}
-              className={`floating-word-${i} z-300 absolute opacity-0 px-4 py-1 font-bold text-sm max-md:text-[2vw] max-sm:text-[2.5vw] uppercase tracking-wider ${word.color}`}
+              className={`floating-word-${i} z-300 absolute opacity-0 px-4 py-1 font-bold text-sm max-[1025px]:text-[2vw] max-md:text-[2.5vw] uppercase tracking-wider ${word.color}`}
             >
               <p className='mix-blend-difference text-white'> {word.text}</p>
             </div>

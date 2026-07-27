@@ -1,10 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from"react";
-import gsap from"gsap";
-import { Draggable } from"gsap/Draggable";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
 
 gsap.registerPlugin(Draggable);
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener("change", update);
+ return () => mediaQuery.removeEventListener("change", update);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 export default function CardDriftComp({
  data = [],
@@ -15,6 +29,7 @@ export default function CardDriftComp({
  bgTextColor ="text-white/10",
 }) {
  const containerRef = useRef(null);
+ const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -177,7 +192,7 @@ export default function CardDriftComp({
  >
 
  <h1
- className={`absolute inset-0 flex items-center justify-center text-9xl max-xl:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
+ className={`absolute inset-0 flex items-center justify-center text-9xl max-[1025px]:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
  >
  Draggable <br /> Testimonial
  </h1>
@@ -192,6 +207,22 @@ export default function CardDriftComp({
  barBg={barBg}
  />
  ))}
+
+ {reducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
+ >
+ <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+ This effect can&apos;t be reduced.
+ </h2>
+ <p className="mx-auto mt-4 text-sm leading-6 text-black">
+ The scattered cards only move when you drag them - dragging
+ stays fully interactive since it&apos;s a direct, user-initiated
+ action, not automatic motion.
+ </p>
+ </div>
+ )}
  </div>
  );
 }
@@ -200,17 +231,17 @@ export default function CardDriftComp({
 function Card({ item, cardBg, cardTextColor, barBg }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
- <div className={`w-96 max-sm:w-42 max-xl:w-60 ${cardBg} ${cardTextColor}`}>
+ <div className={`w-96 max-md:w-42 max-[1025px]:w-60 ${cardBg} ${cardTextColor}`}>
  {/* Top bar */}
  <div
- className={`flex justify-between text-xs px-3 max-sm:px-2 py-1 ${barBg}`}
+ className={`flex justify-between text-xs px-3 max-md:px-2 py-1 ${barBg}`}
  >
  <span>{item.year}</span>
  <span>{item.tag}</span>
  </div>
 
  {/* Content */}
- <div className="p-6 max-xl:p-3  text-lg max-xl:text-lg max-sm:text-base leading-none font-light">
+ <div className="p-6 max-[1025px]:p-3  text-lg max-[1025px]:text-lg max-md:text-base leading-none font-light">
  {item.text}
  </div>
  </div>

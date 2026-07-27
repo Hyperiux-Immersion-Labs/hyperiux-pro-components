@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
-import { LevaPanel, useControls } from"leva";
+import React, { useEffect, useRef, useState } from "react";
+import { LevaPanel, useControls } from "leva";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
@@ -68,6 +70,7 @@ function GridLiftDesktop() {
  const fileInputRef = useRef(null);
  const isDesktop = true;
  const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
+ const prefersReducedMotion = usePrefersReducedMotion();
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef([]);
@@ -216,7 +219,7 @@ useEffect(() => {
  const maskCanvas = document.createElement("canvas");
  const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
 
- let width = 0, height = 0, dpr = 1, animationFrame;
+ let width = 0, height = 0, dpr = 1;
 
  const createTextMask = () => {
  maskCtx.clearRect(0, 0, width, height);
@@ -382,12 +385,14 @@ useEffect(() => {
  ctx.restore();
  };
 
- const render = () => {
- updateCells();
- ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
- drawBaseGrid(); drawRaisedMaskGrid();
- animationFrame = requestAnimationFrame(render);
- };
+ const loop = createSuspendedRaf({
+  root: canvas,
+  onFrame: () => {
+    updateCells();
+    ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
+    drawBaseGrid(); drawRaisedMaskGrid();
+  },
+ });
 
  const onPointerMove = (e) => {
   if (!isDesktop) return;
@@ -397,7 +402,7 @@ useEffect(() => {
  };
  const onPointerLeave = () => { mouseRef.current.active = false; };
 
- resize(); render();
+ resize(); loop.start();
  window.addEventListener("resize", resize);
  // Only attach pointer listeners on desktop-capable devices
  if (isDesktop) {
@@ -409,7 +414,7 @@ useEffect(() => {
  }
 
  return () => {
- cancelAnimationFrame(animationFrame);
+ loop.destroy();
   window.removeEventListener("resize", resize);
   if (isDesktop) {
     window.removeEventListener("pointermove", onPointerMove);
@@ -486,6 +491,7 @@ useEffect(() => {
  </div>
  <canvas
  ref={canvasRef}
+ aria-hidden="true"
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />
@@ -516,6 +522,22 @@ useEffect(() => {
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
+ </div>
+ )}
+
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The grid keeps lifting.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Grid Lift raises the mask grid wherever your cursor drifts, in
+     real time. Since the motion is the entire effect, reduced motion
+     can&apos;t be applied here.
+   </p>
  </div>
  )}
 

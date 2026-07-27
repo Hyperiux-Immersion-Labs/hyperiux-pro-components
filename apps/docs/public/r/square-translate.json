@@ -8,13 +8,27 @@
   ],
   "registryDependencies": [],
   "exportName": "SquareTranslate",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "square-translate.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/square-translate.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: only the item currently aligned with the cube shifts (other items stay at their initial position instead of rippling), and the shift moves only the row's text, not its border",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/square-translate/index.jsx"
+    },
+    {
+      "path": "SquareTranslateComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
+    }
+  ]
 }

@@ -1,20 +1,55 @@
 {
   "name": "noise-ripple-cursor",
+  "version": "1.2.0",
+  "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Removed debug console.log calls that fired on every pointer enter/leave and target register/unregister.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Noise Ripple Cursor",
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
   "category": "cursor",
-  "dependencies": ["three"],
+  "dependencies": [
+    "three"
+  ],
   "registryDependencies": [],
-  "previewUrl": "/cursors/noiseripple",
+  "previewUrl": "/demo/noise-ripple-cursor",
   "coverImage": "noise-ripple-cursor",
   "videoUrl": "noise-ripple-cursor",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "NoiseRippleCursor",
+  "exportKind": "default",
   "importPath": "@/components/effects/noise-ripple-cursor",
   "target": "src/components/effects/noise-ripple-cursor",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/noise-ripple-cursor/index.jsx" },
-    { "path": "2dCanvasTracker.js", "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/noise-ripple-cursor/index.jsx"
+    },
+    {
+      "path": "2dCanvasTracker.js",
+      "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
+    }
   ]
 }

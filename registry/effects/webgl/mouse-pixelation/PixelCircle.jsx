@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -128,7 +129,7 @@ const DEFAULT_SECOND_LINE = {
   prefix: "Shipping ",
   highlight: "Experiences.",
   highlightClassName: "font-medium",
-  className: "text-right font-light max-sm:text-left",
+  className: "text-right font-light max-md:text-left",
 };
 
 const DEFAULT_MOBILE_NOTICE =
@@ -249,18 +250,30 @@ export default function Pixelation({
   mobileNotice = DEFAULT_MOBILE_NOTICE,
   description = DEFAULT_DESCRIPTION,
 }) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
+
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
+    <div ref={rootRef} className="relative h-screen w-screen overflow-hidden">
       <div className="fixed left-0 top-0 h-full w-full overflow-hidden">
-        <Canvas>
+        <Canvas aria-hidden="true" frameloop={frameloop}>
           <PixelCirclesPlane />
         </Canvas>
       </div>
 
       <section
-        className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[12vw] px-[5vw] max-md:h-[90vh] max-md:gap-[7vw] max-sm:h-[90vh] max-sm:gap-[7vw]"
+        className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[12vw] px-[5vw] max-[1025px]:h-[90vh] max-[1025px]:gap-[7vw] max-md:h-[90vh] max-md:gap-[7vw]"
       >
-        <h1 className="mt-[4vw] flex flex-col text-[8vw] font-medium leading-[1.2] text-white max-md:text-[12vw] max-sm:text-[15vw]">
+        <h1 className="mt-[4vw] flex flex-col text-[8vw] font-medium leading-[1.2] text-white max-[1025px]:text-[12vw] max-md:text-[15vw]">
           <span className={`${firstLine.className} opacity-0`}>
             {firstLine.prefix}
             <span className={firstLine.highlightClassName}>
@@ -275,11 +288,11 @@ export default function Pixelation({
           </span>
         </h1>
 
-        <p className="hidden font-medium tracking-wide text-white/70 max-md:block max-md:text-[3vw] max-sm:text-[4vw]">
+        <p className="hidden font-medium tracking-wide text-white/70 max-[1025px]:block max-[1025px]:text-[3vw] max-md:text-[4vw]">
           {mobileNotice}
         </p>
 
-        <p className="w-[30%] text-[1.5vw] text-white max-md:mt-[5vw] max-md:w-[80%] max-md:text-[3vw] max-sm:w-[90%] max-sm:text-[5vw]">
+        <p className="w-[30%] text-[1.5vw] text-white max-[1025px]:mt-[5vw] max-[1025px]:w-[80%] max-[1025px]:text-[3vw] max-md:w-[90%] max-md:text-[5vw]">
           {description}
         </p>
       </section>

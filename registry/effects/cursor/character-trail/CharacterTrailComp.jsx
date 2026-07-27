@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from"react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const CELL_SIZE = 50;
 const MAX_TRAIL = 25;
@@ -34,7 +35,6 @@ export default function CharacterTrailComp({ children }) {
  const fadingRef = useRef(false);
  const mouseTarget = useRef(null);
  const mouseFollower = useRef(null);
- const animationFrame = useRef(null);
 
 
  const getNextTrailCell = useCallback((col, row) => {
@@ -171,23 +171,21 @@ export default function CharacterTrailComp({ children }) {
  appendCells(cells);
  }, [appendCells, getLineCells]);
 
- const animateMouseFollower = useCallback(function animate() {
+ const updateMouseFollower = useCallback(() => {
  if (!mouseTarget.current || !mouseFollower.current) return;
+
+ const dx = Math.abs(mouseTarget.current.x - mouseFollower.current.x);
+ const dy = Math.abs(mouseTarget.current.y - mouseFollower.current.y);
+
+ if (dx <= 0.5 && dy <= 0.5) {
+ mouseFollower.current = { ...mouseTarget.current };
+ return;
+ }
 
  mouseFollower.current.x += (mouseTarget.current.x - mouseFollower.current.x) * MOUSE_LERP;
  mouseFollower.current.y += (mouseTarget.current.y - mouseFollower.current.y) * MOUSE_LERP;
 
  updateTrailPosition(mouseFollower.current.x, mouseFollower.current.y);
-
- if (
- Math.abs(mouseTarget.current.x - mouseFollower.current.x) > 0.5 ||
- Math.abs(mouseTarget.current.y - mouseFollower.current.y) > 0.5
- ) {
- animationFrame.current = requestAnimationFrame(animate);
- } else {
- mouseFollower.current = { ...mouseTarget.current };
- animationFrame.current = null;
- }
  }, [updateTrailPosition]);
 
  const handleMouseMove = useCallback((e) => {
@@ -196,23 +194,25 @@ export default function CharacterTrailComp({ children }) {
  if (!mouseFollower.current) {
  mouseFollower.current = { ...mouseTarget.current };
  updateTrailPosition(mouseFollower.current.x, mouseFollower.current.y);
- return;
  }
-
- if (!animationFrame.current) {
- animationFrame.current = requestAnimationFrame(animateMouseFollower);
- }
- }, [animateMouseFollower, updateTrailPosition]);
+ }, [updateTrailPosition]);
 
  useEffect(() => {
+ const loop = createSuspendedRaf({
+ root: null,
+ observeOffscreen: false,
+ onFrame: updateMouseFollower,
+ });
+ loop.start();
+
  window.addEventListener("mousemove", handleMouseMove);
  return () => {
  window.removeEventListener("mousemove", handleMouseMove);
  clearTimeout(idleTimer.current);
  clearTimeout(clearTimer.current);
- cancelAnimationFrame(animationFrame.current);
+ loop.destroy();
  };
- }, [handleMouseMove]);
+ }, [handleMouseMove, updateMouseFollower]);
 
  return (
  <div className="relative w-full min-h-screen" >
@@ -253,7 +253,7 @@ export default function CharacterTrailComp({ children }) {
 
  {children}
 
- <style jsx global>{`
+ <style>{`
  @keyframes charTrailPop {
  from {
  transform: scale(0);

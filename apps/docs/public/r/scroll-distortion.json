@@ -5,42 +5,31 @@
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
   "dependencies": [
     "gsap",
-    "lenis",
     "three"
   ],
   "registryDependencies": [],
   "exportName": "ScrollDistortion",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "scroll-distortion.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/scroll-distortion.jsx"
-    },
-    {
-      "path": "assets/img/image01.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image01.webp",
-      "source": "/assets/img/image01.webp"
-    },
-    {
-      "path": "assets/img/image02.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image02.webp",
-      "source": "/assets/img/image02.webp"
-    },
-    {
-      "path": "assets/img/image03.webp",
-      "type": "registry:asset",
-      "target": "public/assets/img/image03.webp",
-      "source": "/assets/img/image03.webp"
-    },
-    {
-      "path": "assets/img/distortion.jpg",
-      "type": "registry:asset",
-      "target": "public/assets/img/distortion.jpg",
-      "source": "/assets/img/distortion.jpg"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: the WebGL image transition drops its displacement/RGB-shift warp for a plain crossfade, and the text transition fades instead of sliding",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/scroll-distortion/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/scroll-distortion/createSuspendedRaf.js"
+    }
+  ]
 }

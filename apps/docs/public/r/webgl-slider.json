@@ -9,14 +9,34 @@
     "lenis"
   ],
   "registryDependencies": [],
-  "exportName": "WebglSlider",
-  "exportKind": "named",
-  "files": [
+  "exportName": "WebGLSlider",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "webgl-slider.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/webgl-slider.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: scroll-snap animations are skipped/shortened when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/webgl-slider/index.jsx"
+    },
+    {
+      "path": "WebGLSliderComp.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
+    }
+  ]
 }

@@ -12,7 +12,9 @@ import VideoUI from'./VideoUI'
 import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
+import { createVisibilityGate } from './createSuspendedRaf'
 import Link from 'next/link'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -147,10 +149,23 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 }
 
 export default function HeroBannerAnimated() {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const [isZoomed, setIsZoomed] = useState(false)
   const [deviceType, setDeviceType] = useState('desktop')
   const videoRef = useRef(null)
   const isMobile = deviceType === 'mobile'
+  const prefersReducedMotion = usePrefersReducedMotion()
+
+
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
 
   useEffect(() => {
     const tabletMq = window.matchMedia('(max-width: 1025px)')
@@ -183,7 +198,7 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section className="w-full h-screen bg-black relative">
+      <section ref={rootRef} className="w-full h-screen overflow-hidden bg-black relative">
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -193,12 +208,12 @@ export default function HeroBannerAnimated() {
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
               className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
             >
-              <div className='flex items-start pt-[5vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
+              <div className='flex items-start max-sm:hidden pt-[2vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
                 <motion.h1
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                  className='text-[20vw] font-semibold leading-1 tracking-tight max-sm:text-[28vw]'
+                  className='text-[15vw] font-semibold leading-[0.6]! tracking-tight max-sm:text-[28vw]'
                 >
                   HXR
                 </motion.h1>
@@ -218,7 +233,7 @@ export default function HeroBannerAnimated() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className='text-[20vw] font-semibold tracking-tight text-right w-full max-sm:text-[28vw]'
+                className='text-[15vw] max-sm:hidden max-sm:pt-auto pt-[30vh] max-sm:pt-[50vh] font-semibold tracking-tight text-right w-full max-sm:text-[28vw]'
               >
                 UI
               </motion.p>
@@ -260,8 +275,10 @@ export default function HeroBannerAnimated() {
         {!isMobile && (
           <>
             <Canvas
+              aria-hidden="true"
               dpr={[1, 2]}
               camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }}
+              frameloop={frameloop}
             >
               <Center>
                 <SceneContent
@@ -296,6 +313,23 @@ export default function HeroBannerAnimated() {
                 For the full room, video, and immersive motion experience, view this scene on a larger screen.
               </p>
             </div>
+          </div>
+        )}
+
+        {prefersReducedMotion && (
+          <div
+            aria-live="polite"
+            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+          >
+            <h2 className="text-sm leading-none text-white">
+              The light keeps tracking.
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-white/65">
+              Hero Banner Animated moves light with your cursor in
+              real time and zooms the scene on click. Since that tracking
+              motion is continuous, reduced motion can&apos;t be applied
+              here.
+            </p>
           </div>
         )}
       </section>

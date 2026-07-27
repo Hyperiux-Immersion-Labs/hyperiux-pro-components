@@ -143,7 +143,7 @@ function EffectDetailMainSkeleton() {
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`related-effect-skeleton-${index}`}
-                className="min-w-[31vw] max-xl:min-w-[44vw] max-md:min-w-[55vw] max-sm:min-w-full"
+                className="min-w-[31vw] max-[1025px]:min-w-[44vw] max-md:min-w-[55vw] max-sm:min-w-full"
               >
                 <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-md:p-5 max-sm:p-5">
                   <div className="flex h-full w-full items-center justify-center">
@@ -623,7 +623,7 @@ export function EffectDetailContent({
                           onClick={(event) =>
                             handleRelatedCardClick(event, relatedEffect)
                           }
-                          className="min-w-[31vw] cursor-pointer max-sm:px-[7vw] max-md:px-[6vw] snap-start max-xl:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
+                          className="min-w-[31vw] cursor-pointer max-sm:px-[7vw] max-md:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-md:min-w-[55vw]! max-sm:min-w-full!"
                         >
                           <EffectCard
                             effect={relatedEffect}
@@ -792,7 +792,14 @@ function SanityBodyBlock({ block, isLocked = false }) {
     return (
       <figure className="fadeup">
         <div className={styles.imageFrame}>
-          <img src={block.url} alt={block.alt || ""} className={styles.image} />
+          <Image
+            src={block.url}
+            alt={block.alt || ""}
+            width={1600}
+            height={900}
+            sizes="(max-width: 768px) 100vw, 800px"
+            className={styles.image}
+          />
         </div>
 
         {block.caption && (
@@ -970,7 +977,7 @@ function LockedCodePlaceholder({ filename }) {
   ];
 
   const subtitle =
-    "You can preview it now. Pro install access opens next week for Founding Access users.";
+    "You can preview it now. Upgrade to Pro for instant install access.";
 
   return (
     <section className="fadeup relative min-h-[40vh] max-sm:min-h-[40vh] max-md:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">

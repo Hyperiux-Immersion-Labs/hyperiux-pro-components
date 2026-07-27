@@ -1,8 +1,8 @@
 "use client";
-import React from"react";
-import Scene3 from"./Scene3";
-import Scene2 from"./Scene2";
-import FrostedTransition from"./Transition";
+import React from "react";
+import Scene3 from "./Scene3";
+import Scene2 from "./Scene2";
+import FrostedTransition from "./Transition";
 
 
 export default function WholeExperience() {

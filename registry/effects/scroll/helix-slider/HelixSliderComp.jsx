@@ -1,10 +1,24 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function usePrefersReducedMotion() {
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const update = () => setPrefersReducedMotion(mediaQuery.matches);
+        update();
+        mediaQuery.addEventListener("change", update);
+        return () => mediaQuery.removeEventListener("change", update);
+    }, []);
+
+    return prefersReducedMotion;
+}
 
 const DEFAULT_ITEMS = [
   { id: 1, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg", title: "Card 1" },
@@ -36,6 +50,7 @@ export default function HelixSliderComp({
 }) {
     const sectionRef = useRef(null);
     const cardRefs = useRef([]);
+    const reducedMotion = usePrefersReducedMotion();
 
     const repeatedItems = useMemo(() => {
         return [...items, ...items, ...items];
@@ -146,7 +161,7 @@ export default function HelixSliderComp({
     return (
         <section
             ref={sectionRef}
-            className={`relative h-screen w-full overflow-hidden bg-[#020202] before:pointer-events-none before:absolute before:left-0 before:top-0 before:z-20 before:h-[14%] before:w-full before:bg-[linear-gradient(to_bottom,#020202_0%,rgba(2,2,2,0)_100%)] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:z-20 after:h-[14%] after:w-full after:bg-[linear-gradient(to_top,#020202_0%,rgba(2,2,2,0)_100%)] max-md:[--card-height:245px] max-md:[--card-width:180px] max-sm:[--card-height:190px] max-sm:[--card-width:140px] ${className}`}
+            className={`relative h-screen w-full overflow-hidden bg-[#020202] before:pointer-events-none before:absolute before:left-0 before:top-0 before:z-20 before:h-[14%] before:w-full before:bg-[linear-gradient(to_bottom,#020202_0%,rgba(2,2,2,0)_100%)] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:z-20 after:h-[14%] after:w-full after:bg-[linear-gradient(to_top,#020202_0%,rgba(2,2,2,0)_100%)] max-[1025px]:[--card-height:245px] max-[1025px]:[--card-width:180px] max-md:[--card-height:190px] max-md:[--card-width:140px] ${className}`}
             style={{
                 "--card-width": `${cardWidth}px`,
                 "--card-height": `${cardHeight}px`,
@@ -182,6 +197,23 @@ export default function HelixSliderComp({
                     ))}
                 </div>
             </div>
+
+            {reducedMotion && (
+                <div
+                    aria-live="polite"
+                    className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+                >
+                    <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+                        This effect can't be reduced.
+                    </h2>
+                    <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+                        Reduced motion is enabled, but this effect relies on
+                        continuous scroll-driven rotation and can&apos;t be
+                        reduced to a simple fade without losing the effect
+                        entirely.
+                    </p>
+                </div>
+            )}
         </section>
     );
 }

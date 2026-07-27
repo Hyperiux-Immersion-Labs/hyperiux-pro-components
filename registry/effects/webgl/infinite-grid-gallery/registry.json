@@ -1,16 +1,19 @@
 {
   "name": "infinite-grid-gallery",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Infinite Grid Gallery",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
   "category": "webgl",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/infinite-grid-gallery",
+  "previewUrl": "/demo/infinite-grid-gallery",
   "coverImage": "infinite-grid-gallery",
   "videoUrl": "infinite-grid-gallery.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "InfiniteGridGallery",
+  "exportKind": "default",
   "importPath": "@/components/effects/infinite-grid-gallery",
   "target": "src/components/effects/infinite-grid-gallery",
   "files": [
@@ -25,6 +28,18 @@
     {
       "path": "util.js",
       "target": "src/components/effects/infinite-grid-gallery/util.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ]
 }

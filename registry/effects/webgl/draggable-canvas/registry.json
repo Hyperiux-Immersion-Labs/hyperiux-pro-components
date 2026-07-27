@@ -1,5 +1,10 @@
 {
   "name": "draggable-canvas",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added a prefers-reduced-motion notice on the left side, informing users the drag/inertia animation may not honor their reduced-motion preference", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Draggable Canvas",
   "description": "Six independently draggable Canvas 2D windows that each reveal a different cropped region of a shared video, creating a parallax masking illusion. GSAP Draggable with InertiaPlugin gives each window smooth throw physics. Includes a minimal coordinate-display cursor.",
@@ -8,9 +13,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/webgl/draggable-canvas",
+  "previewUrl": "/demo/draggable-canvas",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DraggableCanvas",
+  "exportKind": "default",
   "importPath": "@/components/effects/draggable-canvas",
   "target": "src/components/effects/draggable-canvas",
   "files": [
@@ -25,6 +32,10 @@
     {
       "path": "MaskedContainer.jsx",
       "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
     }
   ]
 }

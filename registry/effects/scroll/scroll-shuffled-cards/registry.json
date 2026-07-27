@@ -1,5 +1,14 @@
 {
   "name": "scroll-shuffled-cards",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: cards stay at their resting position with 0 rotation instead of shuffling; the container's overall scroll slide is unaffected",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Scroll Shuffled Cards",
   "description": "Pinned scroll section that drifts a shuffled stack of editorial cards across the viewport",
@@ -8,9 +17,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/scroll-shuffled-cards",
+  "previewUrl": "/demo/scroll-shuffled-cards",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ScrollShuffledCards",
+  "exportKind": "default",
   "importPath": "@/components/effects/scroll-shuffled-cards",
   "target": "src/components/effects/scroll-shuffled-cards",
   "files": [

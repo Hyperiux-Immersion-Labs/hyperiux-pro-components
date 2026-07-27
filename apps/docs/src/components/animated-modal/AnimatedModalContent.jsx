@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
 const AnimatedModalContent = ({
@@ -14,28 +14,86 @@ const AnimatedModalContent = ({
   closeOnBackdrop = true,
   closeOnEsc = true,
   closeButtonClassName = "",
+  ariaLabel = "Dialog",
+  ariaLabelledby,
 }) => {
+  const containerRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   useEffect(() => {
     if (!isOpen) return;
+
+    const container = containerRef.current;
+
+    // Remember where focus was so we can restore it when the modal closes.
+    previousFocusRef.current = document.activeElement;
+
+    const getFocusable = () => {
+      if (!container) return [];
+      return Array.from(
+        container.querySelectorAll(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    };
+
+    // Move focus into the dialog on open (announces the dialog + its label).
+    container?.focus();
 
     const handleKeyDown = (e) => {
       if (closeOnEsc && e.key === "Escape") {
         onClose?.();
+        return;
+      }
+
+      if (e.key !== "Tab") return;
+
+      // Trap focus: keep Tab / Shift+Tab cycling within the modal only.
+      const items = getFocusable();
+      if (items.length === 0) {
+        e.preventDefault();
+        container?.focus();
+        return;
+      }
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      const inside = container?.contains(active);
+
+      if (e.shiftKey && (active === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !inside)) {
+        e.preventDefault();
+        first.focus();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
+
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      // Return focus to whatever triggered the modal.
+      previousFocusRef.current?.focus?.();
     };
   }, [isOpen, onClose, closeOnEsc]);
 
   return (
     <div
+      ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={ariaLabelledby ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      tabIndex={-1}
       data-lenis-prevent
+
+      {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
         duration-500

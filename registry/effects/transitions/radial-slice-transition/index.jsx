@@ -4,6 +4,11 @@ import React, { useRef } from 'react'
 import gsap from 'gsap'
 import { TransitionRouter } from 'next-transition-router'
 
+function prefersReducedMotion() {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
+
 export default function RadialSliceTransition({
     children,
     config = { duration: 4, color: '#0F2854' },
@@ -73,6 +78,12 @@ export default function RadialSliceTransition({
                 applySlice(0, 0)
 
                 const tl = gsap.timeline({ onComplete: next })
+
+                if (prefersReducedMotion()) {
+                    tl.to(contentRef.current, { opacity: 0.7, duration: 0.2, ease: 'power1.out' }, 0)
+                    return () => tl.kill()
+                }
+
                 const tExit = (duration - DELAY) / 2
 
                 tl.to(contentRef.current, {
@@ -111,6 +122,12 @@ export default function RadialSliceTransition({
                         next()
                     }
                 })
+
+                if (prefersReducedMotion()) {
+                    tl.to(contentRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
+                    return () => tl.kill()
+                }
+
                 const tExit = (duration - DELAY) / 2
                 const tEnter = tExit
 

@@ -1,5 +1,6 @@
 {
   "name": "svg-pixel-reveal",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "SVG Pixel Reveal",
   "description": "Scroll-driven image that transitions from pixelated to crisp using an SVG filter and GSAP ScrollTrigger",
@@ -8,9 +9,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/svg-pixel-reveal",
+  "previewUrl": "/demo/svg-pixel-reveal",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "SvgPixelReveal",
+  "exportKind": "named",
   "importPath": "@/components/effects/svg-pixel-reveal",
   "target": "src/components/effects/svg-pixel-reveal",
   "files": [

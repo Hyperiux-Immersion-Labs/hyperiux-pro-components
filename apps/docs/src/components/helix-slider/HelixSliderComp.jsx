@@ -3,6 +3,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,6 +37,7 @@ export default function HelixSliderComp({
 }) {
     const sectionRef = useRef(null);
     const cardRefs = useRef([]);
+    const reducedMotion = usePrefersReducedMotion();
 
     const repeatedItems = useMemo(() => {
         return [...items, ...items, ...items];
@@ -163,6 +165,7 @@ export default function HelixSliderComp({
                         >
                             <div className="relative h-full w-full transform-3d">
                                 <div className="absolute inset-0 h-full w-full overflow-hidden bg-[#f2eee2] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(0deg)_translateZ(1px)]">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={item.image}
                                         alt={item.title || `Card ${index + 1}`}
@@ -171,6 +174,7 @@ export default function HelixSliderComp({
                                 </div>
 
                                 <div className="absolute inset-0 flex h-full w-full items-center justify-center overflow-hidden bg-[#111111] shadow-[0_18px_40px_rgba(0,0,0,0.22),0_4px_12px_rgba(0,0,0,0.16)] backface-hidden [-webkit-backface-visibility:hidden] transform-[rotateY(180deg)_translateZ(1px)]">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={item.image}
                                         alt={`${item.title || `Card ${index + 1}`} back`}
@@ -182,6 +186,23 @@ export default function HelixSliderComp({
                     ))}
                 </div>
             </div>
+
+            {reducedMotion && (
+                <div
+                    aria-live="polite"
+                    className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+                >
+                    <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+                        This effect can't be reduced.
+                    </h2>
+                    <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+                        Reduced motion is enabled, but this effect relies on
+                        continuous scroll-driven rotation and can&apos;t be
+                        reduced to a simple fade without losing the effect
+                        entirely.
+                    </p>
+                </div>
+            )}
         </section>
     );
 }

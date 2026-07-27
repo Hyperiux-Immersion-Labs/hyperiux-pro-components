@@ -1,21 +1,37 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { assertAdmin } from "@/lib/admin";
+import { sendEmail } from "@/lib/resend";
+import {
+  renderProUnlockedEmail,
+  proUnlockedSubject,
+  proUnlockedText,
+} from "@/lib/emails/pro-unlocked-email";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hitesh@weareenigma.com";
+// Manually-granted pro (no real Razorpay subscription behind it) has no
+// webhook to ever expire it - it must carry its own period_end so
+// getUserPlan()/getEffectAccessDecision() cut it off on their own, the same
+// way they already do for real subscriptions.
+function computePeriodEnd(billingInterval) {
+  const end = new Date();
 
-async function assertAdmin() {
-  const { userId } = await auth();
-  if (!userId) return false;
+  if (billingInterval === "monthly") {
+    end.setMonth(end.getMonth() + 1);
+  } else {
+    end.setFullYear(end.getFullYear() + 1);
+  }
 
-  const clerk = await clerkClient();
-  const user = await clerk.users.getUser(userId);
-
-  return (
-    user?.publicMetadata?.role === "admin" ||
-    user?.emailAddresses?.[0]?.emailAddress === ADMIN_EMAIL
-  );
+  return end.toISOString();
 }
+
+// Matches the "Vault Pro Monthly" / "Vault Pro Annual" wording pro-access.js
+// uses for real Razorpay plan_ids - a manual grant has no plan_id to derive
+// this from, so it's built directly from the chosen interval instead.
+const PLAN_LABELS = {
+  monthly: "Vault Pro Monthly",
+  yearly: "Vault Pro Annual",
+};
 
 export async function POST(request) {
   if (!(await assertAdmin())) {
@@ -23,7 +39,7 @@ export async function POST(request) {
   }
 
   try {
-    const { clerkUserId, plan } = await request.json();
+    const { clerkUserId, plan, billingInterval } = await request.json();
 
     if (!clerkUserId || !["free", "pro"].includes(plan)) {
       return NextResponse.json(
@@ -32,7 +48,15 @@ export async function POST(request) {
       );
     }
 
+    if (plan === "pro" && !["monthly", "yearly"].includes(billingInterval)) {
+      return NextResponse.json(
+        { error: "billingInterval (monthly|yearly) is required when granting pro." },
+        { status: 400 }
+      );
+    }
+
     const newStatus = plan === "pro" ? "active" : "inactive";
+    const currentPeriodEnd = plan === "pro" ? computePeriodEnd(billingInterval) : null;
 
     // Downgrading to free must kill any existing CLI token outright, not
     // just rely on verifyCliToken's plan check - otherwise a later
@@ -54,6 +78,8 @@ export async function POST(request) {
           clerk_user_id: clerkUserId,
           plan,
           status: newStatus,
+          billing_interval: plan === "pro" ? billingInterval : null,
+          current_period_end: currentPeriodEnd,
           updated_at: new Date().toISOString(),
           ...revokeFields,
         },
@@ -65,16 +91,49 @@ export async function POST(request) {
       return NextResponse.json({ error: supabaseError.message }, { status: 500 });
     }
 
-    // Update Clerk publicMetadata
+    // Update Clerk publicMetadata - mirrors the shape markUserProFromSubscription
+    // writes for real subscriptions, so both grant paths look the same downstream.
     const clerk = await clerkClient();
     await clerk.users.updateUserMetadata(clerkUserId, {
       publicMetadata: {
         plan,
         proAccess: plan === "pro",
+        billingInterval: plan === "pro" ? billingInterval : null,
+        currentPeriodEnd,
       },
     });
 
-    return NextResponse.json({ success: true, plan, status: newStatus });
+    // Same welcome email a real first purchase sends - never blocks the
+    // actual grant if it fails, matching sendInvoiceEmail's posture in
+    // pro-access.js.
+    if (plan === "pro") {
+      try {
+        const clerkUser = await clerk.users.getUser(clerkUserId);
+        const email = clerkUser?.emailAddresses?.[0]?.emailAddress;
+
+        if (email) {
+          const planLabel = PLAN_LABELS[billingInterval] || "Vault Pro";
+
+          await sendEmail({
+            to: email,
+            subject: proUnlockedSubject,
+            react: renderProUnlockedEmail({ planLabel, isAdminGrant: true }),
+            text: proUnlockedText({ planLabel, isAdminGrant: true }),
+            emailType: "pro_unlocked",
+          });
+        }
+      } catch (emailError) {
+        console.error("ADMIN_UPDATE_PLAN_EMAIL_ERROR:", emailError);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      plan,
+      status: newStatus,
+      billingInterval: plan === "pro" ? billingInterval : null,
+      currentPeriodEnd,
+    });
   } catch (error) {
     console.error("ADMIN_UPDATE_PLAN_ERROR:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

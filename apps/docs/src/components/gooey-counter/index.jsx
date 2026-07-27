@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 const COLS = 22;
 const ROWS = 13;
@@ -175,6 +175,7 @@ function drawCapsule(ctx, x1, y1, x2, y2, r) {
 export default function GooeyCounter() {
  const canvasRef = useRef(null);
  const stateRef = useRef(null);
+ const gooeyFilterId = `gooey-${useId().replace(/:/g, "")}`;
 
  useEffect(() => {
   // Canvas setup
@@ -182,6 +183,17 @@ export default function GooeyCounter() {
   const ctx = canvas.getContext("2d");
   let offscreen = new OffscreenCanvas(1, 1);
   let offCtx = offscreen.getContext("2d");
+  const filterUrl = `url(#${gooeyFilterId})`;
+
+  let reduceMotion =
+   window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+  const reduceMotionMq = window.matchMedia?.(
+   "(prefers-reduced-motion: reduce)"
+  );
+  const onReduceMotionChange = (event) => {
+   reduceMotion = event.matches;
+  };
+  reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
 
   // Simulation state
   const sim = {
@@ -191,9 +203,18 @@ export default function GooeyCounter() {
   };
   stateRef.current = sim;
 
+  const transitionMs = () => (reduceMotion ? 0 : TRANSITION_MS);
+
   // Animation helpers
   function beginTransition(dur, onDone) {
    for (const b of sim.blocks) { b.sr = b.cr; b.sc = b.cc; }
+   // Duration 0 under reduced motion → snap to targets (no morph lerp).
+   if (dur <= 0) {
+    for (const b of sim.blocks) { b.cr = b.tr; b.cc = b.tc; }
+    sim.transition = null;
+    onDone?.();
+    return;
+   }
    sim.transition = { start: performance.now(), duration: dur, onDone };
   }
 
@@ -204,17 +225,26 @@ export default function GooeyCounter() {
     sim.blocks.push({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: true });
    }
    assignTargets(sim.blocks, targets);
-   beginTransition(TRANSITION_MS, onDone);
+   beginTransition(transitionMs(), onDone);
   }
 
   function goToRandom(onDone) {
    const targets = randomLayout(sim.maxBlocks, sim.activeRows);
    sim.blocks.forEach((b, i) => { b.tr = targets[i][0]; b.tc = targets[i][1]; b.idle = false; });
-   beginTransition(TRANSITION_MS, onDone);
+   beginTransition(transitionMs(), onDone);
   }
 
   function loop() {
    clearTimeout(sim.timer);
+   // Reduced-motion: skip random scatter — step number → number with snaps.
+   if (reduceMotion) {
+    sim.timer = setTimeout(() => {
+     const n = sim.nextNumber;
+     sim.nextNumber = n >= RANGE_MAX ? RANGE_MIN : n + 1;
+     goToNumber(n, loop);
+    }, NUMBER_DWELL_MS);
+    return;
+   }
    sim.timer = setTimeout(() => {
     goToRandom(() => {
      sim.timer = setTimeout(() => {
@@ -229,8 +259,20 @@ export default function GooeyCounter() {
   function start() {
    clearTimeout(sim.timer);
    sim.blocks = []; sim.nextNumber = RANGE_MIN + 1; sim.transition = null;
-   const rpos = randomLayout(sim.maxBlocks, sim.activeRows);
    const firstTargets = getNumberCells(RANGE_MIN, sim.activeRows, sim.viewportWidth);
+   if (reduceMotion) {
+    // Land on 0 immediately — no opening scatter morph.
+    sim.blocks = firstTargets.map(([r, c]) => ({
+     cr: r, cc: c, tr: r, tc: c, sr: r, sc: c, idle: false,
+    }));
+    while (sim.blocks.length < sim.maxBlocks) {
+     const p = firstTargets[Math.floor(Math.random() * firstTargets.length)];
+     sim.blocks.push({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: true });
+    }
+    beginTransition(0, loop);
+    return;
+   }
+   const rpos = randomLayout(sim.maxBlocks, sim.activeRows);
    sim.blocks = rpos.map(p => ({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: false }));
    assignTargets(sim.blocks, firstTargets);
    beginTransition(TRANSITION_MS, loop);
@@ -239,7 +281,7 @@ export default function GooeyCounter() {
 
   // Layout
   function resize() {
-   const dpr = window.devicePixelRatio || 1;
+   const dpr = Math.min(window.devicePixelRatio || 1, 2);
    const vw = window.innerWidth, vh = window.innerHeight;
    const newRows = getRowsForWidth(vw);
    const widthChanged = vw !== sim.viewportWidth;
@@ -321,7 +363,7 @@ export default function GooeyCounter() {
    }
 
    ctx.save();
-   ctx.filter = "url(#gooey)";
+   ctx.filter = filterUrl;
    ctx.drawImage(offscreen, 0, 0, vw, vh);
    ctx.restore();
 
@@ -347,8 +389,9 @@ export default function GooeyCounter() {
    cancelAnimationFrame(sim.raf);
    clearTimeout(sim.timer);
    window.removeEventListener("resize", resize);
+   reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
   };
- }, []);
+ }, [gooeyFilterId]);
 
  return (
   <div style={{ position: "fixed", inset: 0, background: BG }}>
@@ -362,7 +405,7 @@ export default function GooeyCounter() {
     </div>
    <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute" }}>
     <defs>
-     <filter id="gooey" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
+     <filter id={gooeyFilterId} x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
       <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
       <feColorMatrix in="blur" mode="matrix"
        values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="goo"/>

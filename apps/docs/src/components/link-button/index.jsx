@@ -76,17 +76,16 @@ export default function LinkButton({
     ...customStyle,
     ...clickedStyle,
   };
-  // Marked important so it wins over the inline `color` set by textColor.
-  const hoverColorClass = hoverColor
-    ? "hover:[color:var(--link-hover-color)]!"
-    : "";
-  const iconClassNames = `${
-    isIconRotated ? "[transform:rotate(var(--icon-rotation))]" : ""
-  } ${
-    !isCompactViewport && rotateIconOnHover
-      ? "group-hover:[transform:rotate(var(--icon-rotation))]"
-      : ""
-  } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-(--transition-duration) ${iconClassName}`;
+  const iconClassNames = `${isIconRotated ? "motion-safe:-rotate-45" : ""} ${
+    !isCompactViewport ? "motion-safe:group-hover:-rotate-45" : ""
+  } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
+  const underlineClassNames = `btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[1.5px] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] motion-reduce:after:transition-none ${
+    hasMeasuredViewport && isCompactViewport
+      ? isIconRotated
+        ? "after:origin-right after:scale-x-0 motion-safe:after:origin-left motion-safe:after:scale-x-100"
+        : "after:origin-right after:scale-x-0"
+      : "after:origin-right after:scale-x-0 motion-safe:group-hover:after:origin-left motion-safe:group-hover:after:scale-x-100"
+  }`;
 
   return (
     <>
@@ -100,15 +99,7 @@ export default function LinkButton({
       >
         <div className="flex items-center justify-start gap-2">
           <span
-            className={`btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-(--underline-height) after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-(--transition-duration) after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] ${
-              hasMeasuredViewport && isCompactViewport
-                ? isIconRotated && underlineOnHover
-                  ? "after:origin-left after:scale-x-100"
-                  : "after:origin-right after:scale-x-0"
-                : underlineOnHover
-                  ? "after:origin-right after:scale-x-0 group-hover:after:origin-left group-hover:after:scale-x-100"
-                  : "after:origin-right after:scale-x-0"
-            }`}
+            className={underlineClassNames}
             style={{
               visibility: hasMeasuredViewport ? "visible" : "hidden",
             }}

@@ -5,19 +5,19 @@ import InfiniteCarouselComp from "./InfiniteCarouselComp";
 
 function CarouselCard({ title, subtitle, description, themeClass, points }) {
     return (
-        <div className="w-lg px-3 max-xl:w-md max-xl:min-w-md max-xl:max-w-[calc(100vw-5.5rem)] max-xl:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2">
+        <div className="h-full w-lg px-3 max-[1025px]:w-md max-[1025px]:min-w-md max-[1025px]:max-w-[calc(100vw-5.5rem)] max-[1025px]:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2">
             <div
-                className={`flex flex-col gap-[1.2vw] border max-xl:gap-[2vw] max-md:w-full max-md:gap-[4vw] p-[2vw] max-xl:p-[3vw] max-md:px-6 max-md:py-10 min-h-120 w-full overflow-hidden rounded-4xl max-xl:min-h-128 max-md:min-h-100 max-md:rounded-2xl ${themeClass}`}
+                className={`flex h-full min-h-[52vh] w-full flex-col gap-[1.2vw] border max-[1025px]:min-h-[58vh] max-[1025px]:gap-[2vw] max-md:min-h-[50vh] max-md:w-full max-md:gap-[4vw] p-[2vw] max-[1025px]:p-[3vw] max-md:px-6 max-md:py-10 overflow-hidden rounded-4xl max-md:rounded-2xl ${themeClass}`}
                 style={{ borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
             >
                 <div className="flex h-full flex-col gap-5">
                     <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-md:text-[0.68rem]">{subtitle}</span>
-                    <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-xl:text-[1.75rem] max-md:text-[1.45rem]">{title}</h2>
-                    <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-xl:max-w-full max-xl:text-[0.92rem] max-md:text-[0.88rem]">{description}</p>
+                    <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-[1025px]:text-[1.75rem] max-md:text-[1.45rem]">{title}</h2>
+                    <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-[1025px]:max-w-full max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">{description}</p>
 
                     <div className="mt-auto flex flex-col gap-3.5">
                         {points.map((point, pointIndex) => (
-                            <p key={pointIndex} className="m-0 border-t border-current pt-3.5 text-[0.96rem] leading-[1.45] max-xl:text-[0.92rem] max-md:text-[0.88rem]">
+                            <p key={pointIndex} className="m-0 border-t border-current pt-3.5 text-[0.96rem] leading-[1.45] max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">
                                 {point}
                             </p>
                         ))}
@@ -30,18 +30,18 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 
 export default function InfiniteCarousel() {
     return (
-        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-xl:pt-6 max-xl:pb-12 max-md:min-h-0 max-md:h-auto max-md:pb-0">
+        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:min-h-0 max-md:h-auto max-md:pb-0">
           
 
             <div className="w-full">
                 <InfiniteCarouselComp
-                    controlsClassName="pl-8 max-xl:px-3 max-md:px-2"
+                    controlsClassName="pl-8 max-[1025px]:px-3 max-md:px-2"
                     wrapperStyle={{
                         width: "100%",
                         minHeight: "auto",
                         alignItems: "stretch",
                     }}
-                    pageClassName="gap-8 max-xl:gap-6 max-md:gap-4"
+                    pageClassName="gap-8 max-[1025px]:gap-6 max-md:gap-4"
                     prevLabel={<ArrowLeft />}
                     nextLabel={<ArrowRight />}
                     prevBtnStyle={{
@@ -52,7 +52,6 @@ export default function InfiniteCarousel() {
                         borderRadius: "999px",
                         padding: "0.85rem 1rem",
                     }}
-                    itemClassName=""
                     draggable={true}
                     mobileBreakpoint={640}
                 >

@@ -11,7 +11,7 @@ const page = () => {
   return (
     <>
 
-    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
     <div className='h-full relative'>
 
    

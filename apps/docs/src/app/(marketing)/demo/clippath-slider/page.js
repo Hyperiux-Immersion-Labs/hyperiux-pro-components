@@ -6,7 +6,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const Page = () => {
  return (
  <>
- <DemoHeader logoColor='white' textColor='white' />
+ <DemoHeader logoColor='#FFFFFF' textColor='white' />
  <ClipPathSlider/>
  </>
  )

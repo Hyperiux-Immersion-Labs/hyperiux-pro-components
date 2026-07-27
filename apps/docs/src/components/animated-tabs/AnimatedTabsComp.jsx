@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from"react";
-import gsap from"gsap";
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 const AnimatedTabsComp = ({
  tabs = [],
@@ -19,6 +19,22 @@ const AnimatedTabsComp = ({
  const labelRefs = useRef([]);
  const contentRefs = useRef([]);
  const activeLineRef = useRef(null);
+ const reduceMotionRef = useRef(
+ typeof window !=="undefined" &&
+ (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+ );
+ const baseId = useId();
+
+ useEffect(() => {
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ if (!mq) return;
+ const onChange = (event) => {
+ reduceMotionRef.current = event.matches;
+ };
+ reduceMotionRef.current = mq.matches;
+ mq.addEventListener?.("change", onChange);
+ return () => mq.removeEventListener?.("change", onChange);
+ }, []);
 
  const moveActiveLine = (index) => {
  const activeLabel = labelRefs.current[index];
@@ -41,10 +57,13 @@ const AnimatedTabsComp = ({
  if (!currentContent || !nextContent || currentIndex === nextIndex) return;
 
  const direction = nextIndex > currentIndex ? 1 : -1;
+ // Reduced-motion: opacity fade only — no X slide.
+ const useSlide =
+ animationType ==="slide" && !reduceMotionRef.current;
 
  gsap.killTweensOf([currentContent, nextContent]);
 
- if (animationType ==="slide") {
+ if (useSlide) {
  gsap.to(currentContent, {
  opacity: 0,
  x: -direction * slideDistance,
@@ -81,12 +100,14 @@ const AnimatedTabsComp = ({
  gsap.set(currentContent, {
  display:"none",
  pointerEvents:"none",
+ x: 0,
  });
 
  gsap.set(nextContent, {
  display:"block",
  pointerEvents:"auto",
  opacity: 0,
+ x: 0,
  });
 
  gsap.to(nextContent, {
@@ -105,6 +126,32 @@ const AnimatedTabsComp = ({
  animateContent(activeTab, index);
  moveActiveLine(index);
  setActiveTab(index);
+ };
+
+ const handleTabKeyDown = (event, index) => {
+ const count = tabs.length;
+ let nextIndex;
+
+ switch (event.key) {
+ case"ArrowRight":
+ nextIndex = (index + 1) % count;
+ break;
+ case"ArrowLeft":
+ nextIndex = (index - 1 + count) % count;
+ break;
+ case"Home":
+ nextIndex = 0;
+ break;
+ case"End":
+ nextIndex = count - 1;
+ break;
+ default:
+ return;
+ }
+
+ event.preventDefault();
+ labelRefs.current[nextIndex]?.focus();
+ handleTabClick(nextIndex);
  };
 
  useLayoutEffect(() => {
@@ -137,12 +184,18 @@ const AnimatedTabsComp = ({
  return (
  <div className={`h-full w-full px-[7vw] py-[7vw] max-md:p-[6vw] max-sm:px-[5vw] max-sm:py-[8vw] ${className}`}>
  <div className="relative border-b  border-b-black/10">
- <div className="flex gap-[2vw] overflow-x-auto max-md:gap-[3vw] max-sm:gap-[4vw]">
+ <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-md:gap-[3vw] max-sm:gap-[4vw]">
  {tabs.map((tab, index) => (
  <button
  key={tab.id || index}
  ref={(el) => (labelRefs.current[index] = el)}
+ role="tab"
+ id={`${baseId}-tab-${index}`}
+ aria-selected={activeTab === index}
+ aria-controls={`${baseId}-panel-${index}`}
+ tabIndex={activeTab === index ? 0 : -1}
  onClick={() => handleTabClick(index)}
+ onKeyDown={(event) => handleTabKeyDown(event, index)}
  className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-md:px-[2.5vw] max-md:py-[1.5vw] max-sm:px-[3vw] max-sm:py-[2.5vw] ${
  activeTab === index
  ?"text-[#ff6b00]"
@@ -163,6 +216,10 @@ const AnimatedTabsComp = ({
  <div
  key={tab.id || index}
  ref={(el) => (contentRefs.current[index] = el)}
+ role="tabpanel"
+ id={`${baseId}-panel-${index}`}
+ aria-labelledby={`${baseId}-tab-${index}`}
+ tabIndex={0}
  className="h-full w-full"
  style={{
  display: index === safeDefaultIndex ?"block" :"none",

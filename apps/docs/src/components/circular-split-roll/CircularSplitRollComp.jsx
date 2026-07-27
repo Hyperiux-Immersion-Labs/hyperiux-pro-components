@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const DESKTOP_WIDTH = 1200;
 const TABLET_MIN_WIDTH = 768;
@@ -92,6 +93,7 @@ export function CircularSplitRollComp({
   const rootRef = useRef(null);
   const stickyRef = useRef(null);
   const progressRef = useRef(0);
+  const reducedMotion = usePrefersReducedMotion();
 
   const safeItems = useMemo(() => {
     return items.map((item, index) => ({
@@ -331,6 +333,7 @@ export function CircularSplitRollComp({
                   className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center opacity-0 will-change-[transform,opacity]"
                 >
                   <div className="relative h-full w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_30px_60px_rgba(0,0,0,0.28),0_8px_20px_rgba(0,0,0,0.16)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.image}
                       alt={item.alt}
@@ -355,6 +358,7 @@ export function CircularSplitRollComp({
               <div
                 className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-sm:rounded-[14px] ${gridImageClassName}`}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.image}
                   alt={item.alt}
@@ -372,6 +376,22 @@ export function CircularSplitRollComp({
           ))}
         </div>
       </div>
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect relies on continuous
+            rotation around a circular path as you scroll, and can&apos;t be
+            simplified to a fade without losing the effect entirely.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

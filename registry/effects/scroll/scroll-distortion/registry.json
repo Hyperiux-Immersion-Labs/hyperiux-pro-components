@@ -1,26 +1,40 @@
 {
   "name": "scroll-distortion",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: the WebGL image transition drops its displacement/RGB-shift warp for a plain crossfade, and the text transition fades instead of sliding",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Scroll Distortion",
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
   "category": "scroll",
   "dependencies": [
     "gsap",
-    "lenis",
     "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/scroll-distortion",
+  "previewUrl": "/demo/scroll-distortion",
   "coverImage": "scroll-distortion",
   "videoUrl": "scroll-distortion.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "ScrollDistortion",
+  "exportKind": "default",
   "importPath": "@/components/effects/scroll-distortion",
   "target": "src/components/effects/scroll-distortion",
   "files": [
     {
       "path": "index.jsx",
       "target": "src/components/effects/scroll-distortion/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/scroll-distortion/createSuspendedRaf.js"
     }
   ]
 }

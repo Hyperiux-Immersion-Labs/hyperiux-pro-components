@@ -8,58 +8,60 @@
     "@react-three/drei",
     "@react-three/postprocessing",
     "postprocessing",
-    "lucide-react",
-    "motion",
     "gsap",
-    "three"
+    "three",
+    "motion",
+    "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "HeroBanner",
-  "exportKind": "named",
-  "files": [
+  "exportName": "HeroBannerAnimated",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "hero-banner.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/hero-banner.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
     },
     {
-      "path": "custom-grain-noise.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/custom-grain-noise.jsx"
-    },
-    {
-      "path": "edge-blur-effect.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/edge-blur-effect.jsx"
-    },
-    {
-      "path": "room-model.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/room-model.jsx"
-    },
-    {
-      "path": "video-ui.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/video-ui.jsx"
-    },
-    {
-      "path": "601/finall.glb",
-      "type": "registry:asset",
-      "target": "public/601/finall.glb",
-      "source": "/601/finall.glb"
-    },
-    {
-      "path": "601/tvtexture.png",
-      "type": "registry:asset",
-      "target": "public/601/tvtexture.png",
-      "source": "/601/tvtexture.png"
-    },
-    {
-      "path": "601/normal.webp",
-      "type": "registry:asset",
-      "target": "public/601/normal.webp",
-      "source": "/601/normal.webp"
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/index.jsx"
+    },
+    {
+      "path": "CustomGrainNoise.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.jsx"
+    },
+    {
+      "path": "EdgeBlurEffect.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.jsx"
+    },
+    {
+      "path": "RoomModel.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/RoomModel.jsx"
+    },
+    {
+      "path": "VideoUI.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
+    }
+  ]
 }

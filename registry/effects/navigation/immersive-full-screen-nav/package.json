@@ -1,10 +1,13 @@
 {
-  "name": "@hyperiux/immersive-full-screen-navigation",
-  "version": "0.0.1",
+  "name": "@hyperiux/immersive-full-screen-nav",
+  "version": "1.1.0",
   "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
-  "main": "char-stagger-button.jsx",
+  "main": "index.jsx",
   "files": [
-    "char-stagger-button.jsx",
+    "index.jsx",
+    "CustomNavbar.jsx",
+    "FullscreenNav.jsx",
+    "useFocusTrap.js",
     "registry.json"
   ],
   "keywords": [
@@ -12,7 +15,6 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*",
-    "lucide-react": "*"
+    "gsap": "*"
   }
 }

@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-      <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+      <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
         <CursorMove
           text="Hello!"
           textAs="h1"

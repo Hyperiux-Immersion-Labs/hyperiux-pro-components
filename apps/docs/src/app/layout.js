@@ -1,3 +1,4 @@
+import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import "./globals.css";
@@ -59,7 +60,15 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <script dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }} />
+        {/* Plain script tag, not next/script: this layout is a Server
+            Component, so the tag ships in the SSR HTML and the browser
+            executes it during parse - before first paint. next/script is a
+            client component and triggers React's "scripts inside components
+            are never executed" warning for inline beforeInteractive code. */}
+        <script
+          id="loader-first-visit-block"
+          dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }}
+        />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
@@ -73,6 +82,7 @@ export default function RootLayout({ children }) {
           />
         </noscript>
         <script
+          id="clear-stale-clerk-cookies"
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
         />
         {/* ClerkProvider deliberately absent here - it lives in

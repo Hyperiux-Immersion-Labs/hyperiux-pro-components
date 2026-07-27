@@ -3,6 +3,8 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import { prefersReducedMotion } from "@/lib/motion";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(SplitText);
 
@@ -105,7 +107,6 @@ export function InfinitePerspectiveSliderComp({
   const stateRef = useRef({
     current: 0,
     target: 0,
-    raf: null,
     velocity: 0,
     smoothVelocity: 0,
     rotationVelocity: 0,
@@ -217,37 +218,47 @@ export function InfinitePerspectiveSliderComp({
     if (!images.length) return;
 
     const state = stateRef.current;
+    const loopWidth = images.length * cardStep;
+    const reducedMotion = prefersReducedMotion();
 
     initSetters();
 
     const tick = () => {
-      const config = configRef.current;
-      const loopWidth = images.length * config.cardStep;
+      // Reduced motion: snap straight to the target (no lerp smoothing) and
+      // never build up rotation velocity, so cards never tilt while
+      // scrolling or dragging - they just track the pointer/wheel directly.
+      if (reducedMotion) {
+        state.current = state.target;
+        state.velocity = 0;
+        state.smoothVelocity = 0;
+        state.rotationVelocity = 0;
+        state.currentRotation = 0;
+      } else {
+        state.current = lerp(state.current, state.target, LERP);
+        state.velocity = state.target - state.current;
 
-      state.current = lerp(state.current, state.target, config.scrollLerp);
-      state.velocity = state.target - state.current;
+        state.smoothVelocity = lerp(
+          state.smoothVelocity,
+          state.velocity,
+          VELOCITY_LERP
+        );
 
-      state.smoothVelocity = lerp(
-        state.smoothVelocity,
-        state.velocity,
-        config.velocityLerp
-      );
+        state.rotationVelocity = lerp(
+          state.rotationVelocity,
+          state.velocity,
+          ROTATION_DAMP
+        );
 
-      state.rotationVelocity = lerp(
-        state.rotationVelocity,
-        state.velocity,
-        config.rotationDamp
-      );
+        const absVel = Math.abs(state.rotationVelocity);
+        const sign = Math.sign(state.rotationVelocity);
+        const targetRotation = sign * absVel * ROTATION_SENSITIVITY;
 
-      const absVel = Math.abs(state.rotationVelocity);
-      const sign = Math.sign(state.rotationVelocity);
-      const targetRotation = sign * absVel * config.rotationSensitivity;
-
-      state.currentRotation = lerp(
-        state.currentRotation,
-        targetRotation,
-        config.rotationLerp
-      );
+        state.currentRotation = lerp(
+          state.currentRotation,
+          targetRotation,
+          ROTATION_LERP
+        );
+      }
 
       const finalRotation = clamp(
         state.currentRotation,
@@ -263,8 +274,6 @@ export function InfinitePerspectiveSliderComp({
       }
 
       positionCards(state.current, finalRotation);
-
-      state.raf = requestAnimationFrame(tick);
     };
 
     const onWheel = (event) => {
@@ -334,7 +343,11 @@ export function InfinitePerspectiveSliderComp({
     positionCards(0, 0);
     gsap.set(cardRefs.current, { opacity: 1 });
 
-    state.raf = requestAnimationFrame(tick);
+    const loop = createSuspendedRaf({
+      root: stripRef,
+      onFrame: tick,
+    });
+    loop.start();
 
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("resize", onResize);
@@ -348,7 +361,7 @@ export function InfinitePerspectiveSliderComp({
     window.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      cancelAnimationFrame(state.raf);
+      loop.destroy();
 
       if (scrollStopTimerRef.current) {
         window.clearTimeout(scrollStopTimerRef.current);
@@ -604,6 +617,7 @@ export function InfinitePerspectiveSliderComp({
                   }}
                   className="relative h-[50vh] w-full overflow-hidden bg-white max-md:h-[45vh] max-sm:h-[40vh]"
                 >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={src}
                     alt={`slide-${index}`}

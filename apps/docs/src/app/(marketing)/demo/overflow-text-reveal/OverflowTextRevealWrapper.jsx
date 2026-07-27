@@ -8,12 +8,19 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 
+
+const stats = [
+  { value: "04", label: "Variants" },
+  { value: "Direction", label: "Available" },
+  { value: "∞", label: "Possibilities" },
+];
+
 const OverflowTextRevealWrapper = () => {
   const [replayKey, setReplayKey] = useState(0);
 
   return (
     <ReactLenis root key={replayKey}>
-      <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+      <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
       <ScrollBottom textColor="#ffffff" />
 
       {/* SECTION 1 - direction: bottom (default) */}
@@ -37,7 +44,7 @@ const OverflowTextRevealWrapper = () => {
           </button>
 
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-smd:text-sm">
+            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-sm:text-sm">
               direction - bottom (default)
             </p>
           </SplitLine>
@@ -85,18 +92,20 @@ const OverflowTextRevealWrapper = () => {
             </p>
           </OverflowTextReveal>
 
-          <div className="flex gap-12 max-md:gap-5 max-sm:gap-3 py-4">
-            {["04", "Dirn", "∞"].map((stat, i) => (
-              <OverflowTextReveal key={i} direction="top" scrub={true} delay={i * 0.05}>
-                <div className="flex flex-col gap-1">
-                  <span className="text-5xl font-black text-[#2c1810] tabular-nums max-sm:text-4xl">{stat}</span>
-                  <span className="text-xs max-md:text-sm tracking-[0.22rem] text-[#8c7b6b] uppercase max-sm:text-xs">
-                    {["Variants", "Available", "Possibilities"][i]}
-                  </span>
-                </div>
-              </OverflowTextReveal>
-            ))}
-          </div>
+         <div className="flex gap-12 max-md:gap-5 max-sm:gap-3 py-4 max-md:flex-col">
+  {stats.map(({ value, label }, i) => (
+    <OverflowTextReveal key={label} direction="top" scrub={true} delay={i * 0.05}>
+      <div className="flex flex-col gap-1">
+        <span className="text-5xl font-black text-[#2c1810] tabular-nums max-sm:text-4xl">
+          {value}
+        </span>
+        <span className="text-xs max-md:text-sm tracking-[0.22rem] text-[#8c7b6b] uppercase max-sm:text-xs">
+          {label}
+        </span>
+      </div>
+    </OverflowTextReveal>
+  ))}
+</div>
         </div>
       </section>
 

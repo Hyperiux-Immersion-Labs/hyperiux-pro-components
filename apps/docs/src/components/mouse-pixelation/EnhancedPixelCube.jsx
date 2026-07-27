@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const INITIAL_POINTER = 0.5;
 const MOVEMENT_THRESHOLD = 0.001;
@@ -547,12 +548,23 @@ export default function EnhancedPixelCube({
   notice = DEFAULT_NOTICE_TEXT,
   colorOptions = DEFAULT_COLOR_OPTIONS,
 }) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
   const mousePositionRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const mouseVelocityRef = useRef({ x: 0, y: 0 });
   const trailStrengthRef = useRef(0);
 
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
+
   return (
-    <div style={{ width: "100vw", height: "100vh", background: "#000" }}>
+    <div ref={rootRef} style={{ width: "100vw", height: "100vh", background: "#000" }}>
       <div className="pointer-events-none absolute left-1/2 top-30 z-10 hidden w-full -translate-x-1/2 px-5 pt-5 max-md:flex max-md:justify-center max-sm:left-0 max-sm:block max-sm:translate-x-0">
         <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-md:text-center max-md:text-[2.8vw] max-sm:text-[3.5vw]">
           {notice}
@@ -560,8 +572,10 @@ export default function EnhancedPixelCube({
       </div>
 
       <Canvas
+        aria-hidden="true"
         camera={{ position: [0, 0, 4], fov: 75 }}
         gl={{ antialias: true }}
+        frameloop={frameloop}
         onCreated={({ gl, camera }) => {
           gl.setClearColor("#000000");
           camera.layers.enable(1);

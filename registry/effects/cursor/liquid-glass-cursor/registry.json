@@ -1,5 +1,10 @@
 {
   "name": "liquid-glass-cursor",
+  "version": "1.1.0",
+  "changelog": [
+    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
+    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Liquid Glass Cursor",
   "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
@@ -8,9 +13,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/liquid-glass-cursor",
+  "previewUrl": "/demo/liquid-glass-cursor",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.js",
+  "exportName": "LiquidGlassCursor",
+  "exportKind": "default",
   "importPath": "@/components/effects/liquid-glass-cursor",
   "target": "src/components/effects/liquid-glass-cursor",
   "files": [

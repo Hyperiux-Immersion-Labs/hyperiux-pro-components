@@ -1,5 +1,6 @@
 {
   "name": "hyperiux-glitter",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
@@ -8,15 +9,16 @@
     "three",
     "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/postprocessing",
-    "postprocessing"
+    "@react-three/postprocessing"
   ],
   "registryDependencies": [],
-  "previewUrl": "/hyperiux-glitter",
+  "previewUrl": "/demo/hyperiux-glitter",
   "coverImage": "hyperiux-glitter",
   "videoUrl": "/hyperiux-glitter.mp4",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "HyperiuxGlitter",
+  "exportKind": "default",
   "importPath": "@/components/effects/hyperiux-glitter",
   "target": "src/components/effects/hyperiux-glitter",
   "files": [
@@ -33,10 +35,16 @@
       "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
     },
     {
-      "path": "assets/models/hyperiux-new-model.glb",
-      "type": "registry:asset",
-      "target": "public/assets/models/hyperiux-new-model.glb",
-      "source": "/assets/models/hyperiux-new-model.glb"
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ]
 }

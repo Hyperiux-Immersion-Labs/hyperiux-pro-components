@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef } from"react";
-import gsap from"gsap";
-import ScrollTrigger from"gsap/dist/ScrollTrigger";
+import React, { useEffect, useId, useRef } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ScrollStackComp = ({cards = [] }) => {
+ const uid = useId().replace(/:/g, "");
+ const sectionId = `state-${uid}`;
  const sectionRef = useRef(null);
  const rowRefs = useRef([]);
  const cardRefs = useRef([]);
@@ -27,13 +29,15 @@ const ScrollStackComp = ({cards = [] }) => {
  }
 
  const ctx = gsap.context(() => {
+ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
  const currentCards = cardRefs.current.filter(Boolean);
  const currentRows = rowRefs.current.filter(Boolean);
 
  currentCards.forEach((card, index) => {
  gsap.set(card, {
  autoAlpha: 1,
- scale: index === 0 ? 1 : 1.1,
+ scale: reduceMotion || index === 0 ? 1 : 1.1,
  transformOrigin:"center center",
  });
  });
@@ -54,6 +58,7 @@ const ScrollStackComp = ({cards = [] }) => {
  },
  });
 
+ if (!reduceMotion) {
  handoff.to(
  nextCard,
  {
@@ -62,6 +67,7 @@ const ScrollStackComp = ({cards = [] }) => {
  },
  0
  );
+ }
 
  gsap.to(card, {
  autoAlpha: 0,
@@ -86,12 +92,12 @@ const ScrollStackComp = ({cards = [] }) => {
 
  return (
  <section
- id="state"
+ id={sectionId}
  ref={sectionRef}
- className={`main bg-white py-[7%] max-xl:py-[15%] max-md:py-[15%]`}
+ className={`main bg-white py-[7%] max-[1025px]:py-[15%] max-md:py-[15%]`}
  >
 
-    <h1 className="text-center text-[4vw] max-xl:text-[5vw] max-md:text-[6.5vw] text-black">
+    <h1 className="text-center text-[4vw] max-[1025px]:text-[5vw] max-md:text-[6.5vw] text-black">
         Scroll Stack
     </h1>
  <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw] max-md:gap-[6vw]">
@@ -132,21 +138,21 @@ const Card = ({ title, description, bgColor, textColor, cardRef }) => {
  return (
  <div
  ref={cardRef}
- className="fadeUp mx-auto flex min-h-[32vw] max-xl:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-xl:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-xl:flex-col max-md:rounded-[9vw] "
+ className="fadeUp mx-auto flex min-h-[32vw] max-[1025px]:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-[1025px]:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-[1025px]:flex-col max-md:rounded-[9vw] "
  style={{ backgroundColor: bgColor }}
  >
- <div className="w-[48%] tablet:w-full max-md:w-full max-xl:w-[80%] max-xl:mx-auto">
+ <div className="w-[48%] tablet:w-full max-md:w-full max-[1025px]:w-[80%] max-[1025px]:mx-auto">
  <h2
- className="para-animation max-xl:text-center w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-md:text-[10vw]"
+ className="para-animation max-[1025px]:text-center w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-md:text-[10vw]"
  style={{ color: textColor }}
  >
  {title}
  </h2>
  </div>
 
- <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-md:w-full max-xl:w-[90%] max-xl:mx-auto max-md:gap-[7vw]">
+ <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:gap-[7vw]">
  <p
- className="w-full text-justify text-[1.3vw] leading-normal max-xl:leading-[1.2] tablet:text-[2.2vw] max-md:w-full max-xl:text-center max-md:text-[4.5vw] max-xl:text-[3vw]"
+ className="w-full text-justify text-[1.3vw] leading-normal max-[1025px]:leading-[1.2] tablet:text-[2.2vw] max-md:w-full max-[1025px]:text-center max-md:text-[4.5vw] max-[1025px]:text-[3vw]"
  style={{ color: textColor }}
  >
  {description}

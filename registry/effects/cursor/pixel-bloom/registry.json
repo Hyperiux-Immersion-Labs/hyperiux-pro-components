@@ -1,20 +1,53 @@
 {
   "name": "pixel-bloom",
+  "version": "1.2.0",
+  "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-23",
+      "summary": "Added gridImageUrls prop to self-host bloom tile images; component now falls back to showing the media directly if tile images fail to load instead of rendering invisibly; removed debug console.log calls from the canvas tracker.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Pixel Bloom",
   "description": "Cursor-reactive media grid that swaps nearby cells into a textured ASCII collage",
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/cursors/pixel-bloom",
+  "previewUrl": "/demo/pixel-bloom",
   "coverImage": "pixel-bloom",
   "videoUrl": "pixel-bloom",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "PixelBloom",
+  "exportKind": "default",
   "importPath": "@/components/effects/pixel-bloom",
   "target": "src/components/effects/pixel-bloom",
   "files": [
-    { "path": "index.jsx", "target": "src/components/effects/pixel-bloom/index.jsx" },
-    { "path": "2dcanvasTracker.js", "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js" }
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/pixel-bloom/index.jsx"
+    },
+    {
+      "path": "2dcanvasTracker.js",
+      "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/pixel-bloom/createSuspendedRaf.js"
+    }
   ]
 }

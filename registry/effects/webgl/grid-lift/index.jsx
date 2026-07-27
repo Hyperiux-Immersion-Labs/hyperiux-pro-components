@@ -1,7 +1,22 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from"react";
-import { LevaPanel, useControls } from"leva";
+import React, { useEffect, useRef, useState } from "react";
+import { LevaPanel, useControls } from "leva";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener("change", update);
+ return () => mediaQuery.removeEventListener("change", update);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
@@ -67,6 +82,7 @@ function GridLiftDesktop() {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
  const isDesktop = true;
+ const prefersReducedMotion = usePrefersReducedMotion();
  const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
@@ -216,7 +232,7 @@ useEffect(() => {
  const maskCanvas = document.createElement("canvas");
  const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
 
- let width = 0, height = 0, dpr = 1, animationFrame;
+ let width = 0, height = 0, dpr = 1;
 
  const createTextMask = () => {
  maskCtx.clearRect(0, 0, width, height);
@@ -382,12 +398,14 @@ useEffect(() => {
  ctx.restore();
  };
 
- const render = () => {
- updateCells();
- ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
- drawBaseGrid(); drawRaisedMaskGrid();
- animationFrame = requestAnimationFrame(render);
- };
+ const loop = createSuspendedRaf({
+  root: canvas,
+  onFrame: () => {
+    updateCells();
+    ctx.fillStyle = backgroundColor; ctx.fillRect(0, 0, width, height);
+    drawBaseGrid(); drawRaisedMaskGrid();
+  },
+ });
 
  const onPointerMove = (e) => {
   if (!isDesktop) return;
@@ -397,7 +415,7 @@ useEffect(() => {
  };
  const onPointerLeave = () => { mouseRef.current.active = false; };
 
- resize(); render();
+ resize(); loop.start();
  window.addEventListener("resize", resize);
  // Only attach pointer listeners on desktop-capable devices
  if (isDesktop) {
@@ -409,7 +427,7 @@ useEffect(() => {
  }
 
  return () => {
- cancelAnimationFrame(animationFrame);
+  loop.destroy();
   window.removeEventListener("resize", resize);
   if (isDesktop) {
     window.removeEventListener("pointermove", onPointerMove);
@@ -429,7 +447,7 @@ useEffect(() => {
  <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
  {isDesktop && (
  <>
- <div className="fixed max-xl:hidden left-4 top-25 z-50 pointer-events-auto max-xl:bottom-3 max-xl:left-3 max-xl:right-3 max-xl:top-auto">
+ <div className="fixed max-[1025px]:hidden left-4 top-25 z-50 pointer-events-auto max-[1025px]:bottom-3 max-[1025px]:left-3 max-[1025px]:right-3 max-[1025px]:top-auto">
  <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-md:w-full max-md:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
   <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
@@ -486,6 +504,7 @@ useEffect(() => {
  </div>
  <canvas
  ref={canvasRef}
+ aria-hidden="true"
  className="fixed inset-0 block h-screen w-screen cursor-crosshair"
  style={{ background: backgroundColor }}
  />
@@ -512,10 +531,26 @@ useEffect(() => {
  
  {/* Creative clue hint */}
  {isDesktop && (
- <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-xl:bottom-4 max-xl:hidden">
+ <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:bottom-4 max-[1025px]:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
+ </div>
+ )}
+
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The grid keeps lifting.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Grid Lift raises the mask grid wherever your cursor drifts, in
+     real time. Since the motion is the entire effect, reduced motion
+     can&apos;t be applied here.
+   </p>
  </div>
  )}
 
@@ -678,7 +713,7 @@ export default function GridLift() {
 
  if (!isDesktop) {
   return (
-   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-xl:pt-28">
+   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-[1025px]:pt-28">
     <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-white">
      <p className="text-[11vw] font-light leading-none tracking-tight uppercase">
       Open on desktop

@@ -118,6 +118,22 @@ const MorphingParticleModel = ({
   const { scene } = useGLTF(url);
   const { pointer, camera } = useThree();
 
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const onChange = (event) => {
+      reduceMotionRef.current = event.matches;
+    };
+    reduceMotionRef.current = mq.matches;
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
   const particleBuffersRef = useRef(null);
   const [particleBuffers, setParticleBuffers] = useState(null);
 
@@ -321,39 +337,50 @@ const MorphingParticleModel = ({
     pointsRef.current.material.uniforms.uTime.value = state.clock.elapsedTime;
 
     if (groupRef.current) {
-      parallaxTarget.current.set(
-        pointer.x * parallaxStrength,
-        pointer.y * parallaxStrength,
-        0
-      );
-      parallaxCurrent.current.lerp(parallaxTarget.current, parallaxLerp);
+      if (reduceMotionRef.current) {
+        // Reduced-motion: freeze mouse parallax / tilt at rest.
+        parallaxTarget.current.set(0, 0, 0);
+        parallaxCurrent.current.set(0, 0, 0);
+        rotationTarget.current.set(0, 0, 0);
+        rotationCurrent.current.set(0, 0, 0);
+        groupRef.current.position.x = 0;
+        groupRef.current.position.y = 0;
+        groupRef.current.rotation.set(0, 0, 0);
+      } else {
+        parallaxTarget.current.set(
+          pointer.x * parallaxStrength,
+          pointer.y * parallaxStrength,
+          0
+        );
+        parallaxCurrent.current.lerp(parallaxTarget.current, parallaxLerp);
 
-      groupRef.current.position.x = parallaxCurrent.current.x;
-      groupRef.current.position.y = parallaxCurrent.current.y;
+        groupRef.current.position.x = parallaxCurrent.current.x;
+        groupRef.current.position.y = parallaxCurrent.current.y;
 
-      rotationTarget.current.x = -pointer.y * rotationStrengthX;
-      rotationTarget.current.y = pointer.x * rotationStrengthY;
-      rotationTarget.current.z = pointer.x * rotationStrengthZ;
+        rotationTarget.current.x = -pointer.y * rotationStrengthX;
+        rotationTarget.current.y = pointer.x * rotationStrengthY;
+        rotationTarget.current.z = pointer.x * rotationStrengthZ;
 
-      rotationCurrent.current.x = THREE.MathUtils.lerp(
-        rotationCurrent.current.x,
-        rotationTarget.current.x,
-        rotationLerp
-      );
-      rotationCurrent.current.y = THREE.MathUtils.lerp(
-        rotationCurrent.current.y,
-        rotationTarget.current.y,
-        rotationLerp
-      );
-      rotationCurrent.current.z = THREE.MathUtils.lerp(
-        rotationCurrent.current.z,
-        rotationTarget.current.z,
-        rotationLerp
-      );
+        rotationCurrent.current.x = THREE.MathUtils.lerp(
+          rotationCurrent.current.x,
+          rotationTarget.current.x,
+          rotationLerp
+        );
+        rotationCurrent.current.y = THREE.MathUtils.lerp(
+          rotationCurrent.current.y,
+          rotationTarget.current.y,
+          rotationLerp
+        );
+        rotationCurrent.current.z = THREE.MathUtils.lerp(
+          rotationCurrent.current.z,
+          rotationTarget.current.z,
+          rotationLerp
+        );
 
-      groupRef.current.rotation.x = rotationCurrent.current.x;
-      groupRef.current.rotation.y = rotationCurrent.current.y;
-      groupRef.current.rotation.z = rotationCurrent.current.z;
+        groupRef.current.rotation.x = rotationCurrent.current.x;
+        groupRef.current.rotation.y = rotationCurrent.current.y;
+        groupRef.current.rotation.z = rotationCurrent.current.z;
+      }
     }
 
     groupRef.current.updateWorldMatrix(true, false);
@@ -375,7 +402,10 @@ const MorphingParticleModel = ({
     let hasPlaneHit = false;
     let isActivelyMoving = false;
 
-    if (raycasterRef.current.ray.intersectPlane(plane, hitPointWorldRef.current)) {
+    if (
+      !reduceMotionRef.current &&
+      raycasterRef.current.ray.intersectPlane(plane, hitPointWorldRef.current)
+    ) {
       hitPointLocalRef.current.copy(hitPointWorldRef.current);
       groupRef.current.worldToLocal(hitPointLocalRef.current);
 

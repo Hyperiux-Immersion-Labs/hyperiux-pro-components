@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 // GLSL Shaders
 const vertexShader = `
@@ -104,6 +105,8 @@ function lerp(a, b, t) {
 }
 
 const CurvedPlaneVertical = ({ routes }) => {
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `curved-swiper-vertical-${uid}`;
   const containerRef = useRef(null);
   const sceneRef = useRef();
   const cameraRef = useRef();
@@ -119,6 +122,10 @@ const CurvedPlaneVertical = ({ routes }) => {
   const dragging = useRef(false);
   const lastY = useRef(0);
   const lastTime = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -147,6 +154,21 @@ const CurvedPlaneVertical = ({ routes }) => {
   useEffect(() => {
     if (!imagesLoaded) return;
 
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const onReduceMotionChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+      }
+    };
+    if (mq) {
+      reduceMotionRef.current = mq.matches;
+      mq.addEventListener?.("change", onReduceMotionChange);
+    }
+
     const container = containerRef.current;
     const viewHeight = window.innerHeight;
     const viewWidth = window.innerWidth;
@@ -163,6 +185,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     renderer.setSize(viewWidth, viewHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.domElement.style.cursor = "grab";
+    renderer.domElement.setAttribute("aria-hidden", "true");
     container.appendChild(renderer.domElement);
 
     sceneRef.current = scene;
@@ -260,35 +283,48 @@ const CurvedPlaneVertical = ({ routes }) => {
       });
     };
 
-    const animate = () => {
-      if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-        targetOffsetRef.current += velocityRef.current;
-        velocityRef.current *= MOMENTUM_FRICTION;
-      }
+    const loop = createSuspendedRaf({
+      root: container,
+      onFrame: () => {
+        if (reduceMotionRef.current) {
+          // Snap columns — no inertia or curve deformation.
+          velocityRef.current = 0;
+          targetDeformationRef.current = 0;
+          deformationRef.current = 0;
+          offsetRef.current = targetOffsetRef.current;
+          updateMeshes();
+          renderer.render(scene, camera);
+          return;
+        }
 
-      const now = Date.now();
-      const isRecentlyScrolled = now - lastScrollTime.current < 100;
+        if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
+          targetOffsetRef.current += velocityRef.current;
+          velocityRef.current *= MOMENTUM_FRICTION;
+        }
 
-      if (!dragging.current && !isRecentlyScrolled) {
-        targetDeformationRef.current = 0;
-      }
+        const now = Date.now();
+        const isRecentlyScrolled = now - lastScrollTime.current < 100;
 
-      offsetRef.current = lerp(
-        offsetRef.current,
-        targetOffsetRef.current,
-        SCROLL_SMOOTHNESS
-      );
-      deformationRef.current = lerp(
-        deformationRef.current,
-        targetDeformationRef.current,
-        DEFORMATION_SMOOTHNESS
-      );
+        if (!dragging.current && !isRecentlyScrolled) {
+          targetDeformationRef.current = 0;
+        }
 
-      updateMeshes();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
+        offsetRef.current = lerp(
+          offsetRef.current,
+          targetOffsetRef.current,
+          SCROLL_SMOOTHNESS
+        );
+        deformationRef.current = lerp(
+          deformationRef.current,
+          targetDeformationRef.current,
+          DEFORMATION_SMOOTHNESS
+        );
+
+        updateMeshes();
+        renderer.render(scene, camera);
+      },
+    });
+    loop.start();
 
     const onResize = () => {
       const viewHeight = window.innerHeight;
@@ -321,6 +357,17 @@ const CurvedPlaneVertical = ({ routes }) => {
       const delta = (dy / SPACING_Y) * DRAG_SENSITIVITY;
       targetOffsetRef.current -= delta;
 
+      if (reduceMotionRef.current) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        lastY.current = currentY;
+        lastTime.current = currentTime;
+        e.preventDefault();
+        return;
+      }
+
       const instantVelocity = dy / dt;
       velocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY,
@@ -348,6 +395,15 @@ const CurvedPlaneVertical = ({ routes }) => {
       const delta = e.deltaY / 100;
       targetOffsetRef.current += delta * 0.12;   // reduced from 0.25
 
+      if (reduceMotionRef.current) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        lastScrollTime.current = Date.now();
+        return;
+      }
+
       velocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY,
         Math.min(MAX_SCROLL_VELOCITY, delta * 0.15)  // reduced from 0.4
@@ -373,6 +429,8 @@ const CurvedPlaneVertical = ({ routes }) => {
     dom.addEventListener("wheel", onWheel);
 
     return () => {
+      loop.destroy();
+      mq?.removeEventListener?.("change", onReduceMotionChange);
       window.removeEventListener("resize", onResize);
       dom.removeEventListener("mousedown", onPointerDown);
       dom.removeEventListener("mousemove", onPointerMove);
@@ -395,7 +453,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     <main
       ref={containerRef}
       className="w-screen h-screen relative overflow-hidden flex items-center justify-center"
-      id="curved-swiper-vertical"
+      id={sectionId}
       style={{ background: "white", touchAction: "none" }}
     >
 {!imagesLoaded && (

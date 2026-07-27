@@ -1,7 +1,7 @@
 "use client";
 
-import Image from"next/image";
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from"react";
+import Image from "next/image";
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import"./InfiniteScrollSlider.css";
 
 const defaultImages = [

@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { ReactLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const LenisSmoothScroll = ({
   duration = 1.35,
@@ -22,6 +23,15 @@ const LenisSmoothScroll = ({
 
     return () => gsap.ticker.remove(update);
   }, []);
+
+  // Reduced motion: don't mount Lenis at all - lerp tuning still routes
+  // wheel/touch input through Lenis's own virtual-scroll interpolation,
+  // which isn't identical to native scrolling. Rendering nothing here means
+  // the page falls back to plain native scroll, exactly as if this
+  // component weren't present.
+  if (prefersReducedMotion()) {
+    return null;
+  }
 
   return (
     <ReactLenis

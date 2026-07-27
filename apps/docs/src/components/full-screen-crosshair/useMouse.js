@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from"react";
+import { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 
@@ -10,8 +11,6 @@ export const useMouse = ({
  const mouse = useRef({ x: 0, y: 0 });
  const lastMouse = useRef({ x: 0, y: 0 });
  const smoothMouse = useRef({ x: 0, y: 0 });
-
- const rafRef = useRef(null);
 
  // Optional state (only if you want re-renders)
  const [state, setState] = useState({
@@ -32,7 +31,10 @@ export const useMouse = ({
  };
  };
 
- const loop = () => {
+ const loop = createSuspendedRaf({
+ root: null,
+ observeOffscreen: false,
+ onFrame: () => {
  const { x, y } = mouse.current;
  const { x: lx, y: ly } = lastMouse.current;
 
@@ -61,16 +63,15 @@ export const useMouse = ({
  });
 
  lastMouse.current = { x, y };
-
- rafRef.current = requestAnimationFrame(loop);
- };
+ },
+ });
 
  window.addEventListener("mousemove", handleMouseMove);
- rafRef.current = requestAnimationFrame(loop);
+ loop.start();
 
  return () => {
  window.removeEventListener("mousemove", handleMouseMove);
- if (rafRef.current) cancelAnimationFrame(rafRef.current);
+ loop.destroy();
  };
  }, [lerpFactor, smooth]);
 

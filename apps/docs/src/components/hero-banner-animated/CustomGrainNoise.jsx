@@ -1,6 +1,6 @@
-import { useMemo, useEffect } from"react";
-import { Effect } from"postprocessing";
-import { Uniform, Vector2 } from"three";
+import { useMemo, useEffect } from "react";
+import { Effect } from "postprocessing";
+import { Uniform, Vector2 } from "three";
 
 /**
  * Fix for stretched film grain:

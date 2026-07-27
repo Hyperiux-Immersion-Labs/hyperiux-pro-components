@@ -7,7 +7,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 const page = () => {
   return (
     <>
-    <DemoHeader textColor='#ffffff' logoColor='#ffffff' />
+    <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
      <p className="pointer-events-none absolute bottom-8 max-md:hidden left-1/2 z-10  max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-[#ffd4a3]/80 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] ">
        Stir the air with your cursor - the beans drift, and the light follows like warm espresso steam.
      </p>

@@ -1,16 +1,8 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hitesh@weareenigma.com";
+import { requireAdmin } from "@/lib/admin";
 
 export default async function AdminLayout({ children }) {
-  const user = await currentUser();
-
-  const isAdmin =
-    user?.publicMetadata?.role === "admin" ||
-    user?.emailAddresses?.[0]?.emailAddress === ADMIN_EMAIL;
-
-  if (!isAdmin) {
+  if (!(await requireAdmin())) {
     redirect("/dashboard");
   }
 

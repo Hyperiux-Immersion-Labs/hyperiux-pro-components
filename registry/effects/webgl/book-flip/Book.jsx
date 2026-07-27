@@ -1,9 +1,9 @@
 'use client'
-import { useTexture } from"@react-three/drei";
-import { useFrame } from"@react-three/fiber";
-import { easing } from"maath";
-import { usePage } from"./PageContext";
-import { useEffect, useMemo, useRef, useState } from"react";
+import { useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { usePage } from "./PageContext";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
  Bone,
  BoxGeometry,
@@ -16,8 +16,8 @@ import {
  SRGBColorSpace,
  Uint16BufferAttribute,
  Vector3,
-} from"three";
-import { degToRad } from"three/src/math/MathUtils.js";
+} from "three";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 /**
  * CONFIG CONSTANTS - Adjust these to customize the book appearance and animation
@@ -221,6 +221,24 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  mesh.bind(skeleton); // Bind skeleton to mesh
   return mesh;
  }, [picture, picture2]);
+
+ /**
+ * RESOURCE DISPOSAL
+ * Release this page's GPU resources when it unmounts. The cloned textures,
+ * the two textured materials (indexes 4 and 5), and the skeleton are created
+ * per page and must be disposed explicitly. The shared module-level
+ * pageGeometry and pageMaterials (indexes 0-3) are intentionally left intact.
+ */
+ useEffect(() => {
+ return () => {
+ picture.dispose();
+ picture2.dispose();
+ const materials = manualSkinnedMesh.material;
+ materials[4]?.dispose();
+ materials[5]?.dispose();
+ manualSkinnedMesh.skeleton?.dispose();
+ };
+ }, [picture, picture2, manualSkinnedMesh]);
 
  /**
  * ANIMATION LOOP

@@ -1,12 +1,14 @@
 import React, { useRef, useEffect } from'react';
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const VideoUI = ({ isZoomed, setIsZoomed, videoRef }) => {
  const progressRef = useRef(null);
 
  useEffect(() => {
- let rafId;
-
- const tick = () => {
+ const loop = createSuspendedRaf({
+ root: null,
+ observeOffscreen: false,
+ onFrame: () => {
  const video = videoRef?.current;
  const bar = progressRef.current;
 
@@ -14,12 +16,11 @@ const VideoUI = ({ isZoomed, setIsZoomed, videoRef }) => {
  const pct = (video.currentTime / video.duration) * 100;
  bar.style.width = `${pct}%`;
  }
+ },
+ });
 
- rafId = requestAnimationFrame(tick);
- };
-
- rafId = requestAnimationFrame(tick);
- return () => cancelAnimationFrame(rafId);
+ loop.start();
+ return () => loop.destroy();
  }, [videoRef]);
 
  return (

@@ -96,13 +96,69 @@ export default function CenterLinesLoading(
         });
 
         if (prefersReducedMotion()) {
-            gsap.set(lines, { scaleX: 1 });
-            gsap.set(linesWrapRef.current, { opacity: 0 });
-            gsap.set(revealPanelRef.current, { scaleY: 1 });
-            gsap.set(wordEls, { opacity: 1, y: 0, filter: "blur(0px)" });
-            gsap.set(heroSubtitleRef.current, { opacity: 1, y: 0, filter: "blur(0px)" });
-            setDone(true);
-            onComplete?.();
+            // Lines already at full width — smooth opacity only (no scale morph / pair wipe).
+            gsap.set(lines, {
+                scaleX: 1,
+                opacity: 0,
+                y: (i) => y[i],
+            });
+            gsap.set(linesWrapRef.current, { opacity: 1 });
+            gsap.set(revealPanelRef.current, {
+                scaleY: 1,
+                opacity: 0,
+                transformOrigin: "50% 50%",
+            });
+            gsap.set(blackPanelRef.current, { opacity: 1 });
+            gsap.set(wordEls, { opacity: 0, y: 0, filter: "blur(0px)" });
+            gsap.set(heroSubtitleRef.current, {
+                opacity: 0,
+                y: 0,
+                filter: "blur(0px)",
+            });
+
+            const tl = gsap.timeline({
+                defaults: { ease: "power2.inOut" },
+                onComplete: () => {
+                    setDone(true);
+                    onComplete?.();
+                },
+            });
+            tlRef.current = tl;
+
+            tl.to(lines, {
+                opacity: 1,
+                duration: 0.65,
+                stagger: { each: 0.02, from: "center" },
+            });
+            tl.to(
+                lines,
+                {
+                    opacity: 0,
+                    duration: 0.45,
+                    stagger: { each: 0.015, from: "edges" },
+                },
+                "+=0.35"
+            );
+            tl.to(linesWrapRef.current, { opacity: 0, duration: 0.35 }, "<");
+            tl.to(
+                revealPanelRef.current,
+                { opacity: 1, duration: 0.55 },
+                "-=0.2"
+            );
+            tl.to(blackPanelRef.current, { opacity: 0, duration: 0.55 }, "<");
+            tl.to(
+                wordEls,
+                {
+                    opacity: 1,
+                    duration: 0.5,
+                },
+                "-=0.2"
+            );
+            tl.to(
+                heroSubtitleRef.current,
+                { opacity: 1, duration: 0.45 },
+                "-=0.25"
+            );
             return;
         }
 
@@ -242,7 +298,7 @@ export default function CenterLinesLoading(
             />
             <div className="absolute inset-0 z-50 flex items-center justify-center">
                 <div className="px-6 text-center">
-                    <h1 className="select-none font-mono text-[3.5vw] max-xl:text-[5vw] max-md:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
+                    <h1 className="select-none font-mono text-[3.5vw] max-[1025px]:text-[5vw] max-md:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
                         {words.map((word, wordIdx) => (
                             <span key={`${word}-${wordIdx}`}>
                                 <span className="inline-block whitespace-nowrap">
@@ -285,7 +341,7 @@ export default function CenterLinesLoading(
             {done && (
                 <button
                     onClick={run}
-                    className="absolute bottom-7 max-xl:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-xl:text-base max-md:text-sm tracking-widest text-black/70 backdrop-blur max-md:bottom-20"
+                    className="absolute bottom-7 max-[1025px]:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-[1025px]:text-base max-md:text-sm tracking-widest text-black/70 backdrop-blur max-md:bottom-20"
                 >
                     Replay
                 </button>

@@ -1,9 +1,10 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from"@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from"react";
-import * as THREE from"three";
-import { degToRad } from"three/src/math/MathUtils";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
+import { degToRad } from "three/src/math/MathUtils";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const PARTICLE_SIZES = [0.08, 0.09, 0.1, 0.2,0.4,0.6 ];
 const OFFSCREEN = 9999;
@@ -36,6 +37,10 @@ function DonutParticle({
  const mouseVelocity = useRef(new THREE.Vector3());
  const smoothMouseVelocity = useRef(new THREE.Vector3());
  const motionActivity = useRef(0);
+ const reduceMotionRef = useRef(
+ typeof window !== "undefined" &&
+ (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+ );
  const localMouse = useMemo(() => new THREE.Vector3(), []);
  const localVelocity = useMemo(() => new THREE.Vector3(), []);
  const mouseNdc = useMemo(() => new THREE.Vector2(), []);
@@ -46,6 +51,25 @@ function DonutParticle({
  const worldIntersection = useMemo(() => new THREE.Vector3(), []);
 
  useEffect(() => {
+ const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+ if (!mq) return;
+ const onChange = (event) => {
+ reduceMotionRef.current = event.matches;
+ if (event.matches) {
+ mouse3D.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ smoothMouse.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ prevSmoothMouse.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
+ mouseVelocity.current.set(0, 0, 0);
+ smoothMouseVelocity.current.set(0, 0, 0);
+ motionActivity.current = 0;
+ }
+ };
+ reduceMotionRef.current = mq.matches;
+ mq.addEventListener?.("change", onChange);
+ return () => mq.removeEventListener?.("change", onChange);
+ }, []);
+
+ useEffect(() => {
  if (!interactive) {
  mouse3D.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
  smoothMouse.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
@@ -54,6 +78,7 @@ function DonutParticle({
  }
 
  const handleMouseMove = (event) => {
+ if (reduceMotionRef.current) return;
  if (!pointsRef.current) {
  return;
  }
@@ -385,8 +410,46 @@ function DonutParticle({
 
  const { base, velocities } = simulation;
 
- pointsRef.current.material.uniforms.time.value = time;
  pointsRef.current.material.uniforms.uDpr.value = gl.getPixelRatio();
+
+ // Reduced-motion: freeze spin / waves / mouse stretch — hold constrained torus.
+ if (reduceMotionRef.current) {
+ pointsRef.current.material.uniforms.time.value = 0;
+ const majorRadius = TORUS_MAJOR_RADIUS;
+ const outerMinorRadius = TORUS_OUTER_RADIUS;
+ const innerMinorRadius = TORUS_INNER_RADIUS;
+
+ for (let i = 0; i < count; i += 1) {
+ const index = i * 3;
+ const particle = base[i];
+ velocities[index] = 0;
+ velocities[index + 1] = 0;
+ velocities[index + 2] = 0;
+
+ // Base samples a fat torus; project onto the same tube used while animating.
+ const radial = Math.hypot(particle.x, particle.y) || 0.0001;
+ const dirX = particle.x / radial;
+ const dirY = particle.y / radial;
+ const tubeOffset = radial - majorRadius;
+ const tubeDistance =
+ Math.sqrt(tubeOffset * tubeOffset + particle.z * particle.z) ||
+ 0.0001;
+ const targetDistance = THREE.MathUtils.clamp(
+ tubeDistance,
+ innerMinorRadius,
+ outerMinorRadius
+ );
+ const scale = targetDistance / tubeDistance;
+
+ positionsArray[index] = dirX * (majorRadius + tubeOffset * scale);
+ positionsArray[index + 1] = dirY * (majorRadius + tubeOffset * scale);
+ positionsArray[index + 2] = particle.z * scale;
+ }
+ pointsRef.current.geometry.attributes.position.needsUpdate = true;
+ return;
+ }
+
+ pointsRef.current.material.uniforms.time.value = time;
 
  pointsRef.current.rotation.z += 0.00095;
 
@@ -584,7 +647,18 @@ export default function DonutParticles({
  cameraFov = 50,
  dpr = [1, 2],
 }) {
+ const rootRef = useRef(null);
+ const [frameloop, setFrameloop] = useState("always");
  const [viewportWidth, setViewportWidth] = useState(1280);
+
+ useEffect(() => {
+ const gate = createVisibilityGate({
+ root: rootRef,
+ onChange: (active) => setFrameloop(active ? "always" : "never"),
+ });
+ setFrameloop(gate.isActive ? "always" : "never");
+ return () => gate.destroy();
+ }, []);
 
  useEffect(() => {
  const updateViewportWidth = () => {
@@ -613,8 +687,8 @@ export default function DonutParticles({
  : donutPosition;
 
  return (
- <div className={`h-screen w-full bg-black ${className}`}>
- <Canvas className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr}>
+ <div ref={rootRef} className={`h-screen w-full bg-black ${className}`}>
+ <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr} frameloop={frameloop}>
  <DonutParticle
  position={responsivePosition}
  scale={responsiveScale}

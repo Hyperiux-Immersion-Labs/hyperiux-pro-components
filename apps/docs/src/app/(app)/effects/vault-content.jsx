@@ -26,11 +26,13 @@ import {
 import HeadAnim from "@/components/Animations/HeadAnim";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import Button from "@/components/WebsiteComps/Button";
-import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import LinkButton from "@/components/WebsiteComps/LinkButton";
+import { useFadeUp, useFadeIn } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
 import FAQs from "@/components/Homepage/FAQs";
+import { FilterMenu, FILTER_OPTIONS } from "./FilterMenu";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -176,6 +178,9 @@ const routeKey = `${pathname}${
   const categoryPageRef = useRef(null);
   const routeTweenRef = useRef(null);
 
+  useFadeUp(categoryPageRef, [routeKey]);
+  useFadeIn(categoryPageRef, [routeKey]);
+
   // testing purpose - set to 0 in production, any positive ms to show skeleton
   const TEST_SKELETON_DELAY = 0;
   const [hasPassedSkeletonDelay, setHasPassedSkeletonDelay] = useState(
@@ -206,52 +211,7 @@ const routeKey = `${pathname}${
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
-  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const filterMenuRef = useRef(null);
-  const filterButtonRef = useRef(null);
-  const filterMenuPanelRef = useRef(null);
-  // On mobile/tablet the category row is a horizontal scroll container, which
-  // clips an absolutely-positioned dropdown. When set, the menu is portaled to
-  // <body> with these fixed viewport coords so it renders on top instead.
-  const [filterMenuPos, setFilterMenuPos] = useState(null);
   const [gridColumns, setGridColumns] = useState(3);
-
-  // featured/free/pro are filters (not real categories); they live behind the
-  // filter icon dropdown. Everything else renders inline as category chips.
-  const FILTER_OPTIONS = ["featured", "free", "pro"];
-
-  useEffect(() => {
-    if (!filterMenuOpen) return;
-
-    const handlePointerDown = (event) => {
-      if (
-        !filterMenuRef.current?.contains(event.target) &&
-        !filterMenuPanelRef.current?.contains(event.target)
-      ) {
-        setFilterMenuOpen(false);
-      }
-    };
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") setFilterMenuOpen(false);
-    };
-
-    // The mobile/tablet panel is portaled with fixed coords, so close it on
-    // scroll/resize rather than let it float detached from its button.
-    const handleReposition = () => setFilterMenuOpen(false);
-
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("scroll", handleReposition, true);
-    window.addEventListener("resize", handleReposition);
-
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("scroll", handleReposition, true);
-      window.removeEventListener("resize", handleReposition);
-    };
-  }, [filterMenuOpen]);
 
   const featuredEffects = useMemo(
     () => getFeaturedEffects(safeEffects),
@@ -635,7 +595,10 @@ const routeKey = `${pathname}${
           </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-sm:px-0 max-md:pt-10">
-            <div className="relative max-md:w-full fadeup flex items-end gap-4">
+            <div
+              className="relative max-md:w-full flex items-end gap-4 fadein"
+              data-fadein-delay="1"
+            >
               <div className="relative min-w-0 flex-1">
               <div
                 className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-md:block"
@@ -648,7 +611,7 @@ const routeKey = `${pathname}${
 
                 <div
                   className={[
-                    "category-fadeup fadeup flex items-center gap-2.5",
+                    "category-fadeup flex items-center gap-2.5",
                     "flex-wrap",
                     "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
                     "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
@@ -657,125 +620,15 @@ const routeKey = `${pathname}${
                     "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
                     "max-md:pb-3",
                   ].join(" ")}
+                  
                 >
                   {/* Filter dropdown: featured / free / pro */}
-                  <div ref={filterMenuRef} className="relative shrink-0">
-                    <button
-                      ref={filterButtonRef}
-                      type="button"
-                      onClick={() =>
-                        setFilterMenuOpen((open) => {
-                          const next = !open;
-
-                          if (
-                            next &&
-                            typeof window !== "undefined" &&
-                            window.innerWidth < 768
-                          ) {
-                            const rect =
-                              filterButtonRef.current?.getBoundingClientRect();
-
-                            if (rect) {
-                              setFilterMenuPos({
-                                top: rect.bottom + 8,
-                                left: rect.left,
-                              });
-                            }
-                          } else {
-                            setFilterMenuPos(null);
-                          }
-
-                          return next;
-                        })
-                      }
-                      aria-haspopup="menu"
-                      aria-expanded={filterMenuOpen}
-                      aria-label="Filter effects"
-                      className={`
-                        px-6 py-2.5 text-md relative rounded-full max-sm:px-5 max-sm:py-2
-                        backdrop-blur-[6px] font-sans flex items-center gap-2 cursor-pointer
-                        transition-colors duration-300 max-sm:text-lg text20
-                        ${activeFilter
-                          ? "bg-white text-[#111111] hover:bg-white"
-                          : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
-                        }
-                      `}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="shrink-0"
-                      >
-                        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-                      </svg>
-                      <span className="leading-none">
-                        {activeFilter ? getQuickCategoryLabel(activeFilter) : ""}
-                      </span>
-                    </button>
-
-                    {filterMenuOpen &&
-                      (() => {
-                        const panel = (
-                          <div
-                            ref={filterMenuPanelRef}
-                            role="menu"
-                            style={
-                              filterMenuPos
-                                ? {
-                                    top: filterMenuPos.top,
-                                    left: filterMenuPos.left,
-                                  }
-                                : undefined
-                            }
-                            className={[
-                              "space-y-1.5 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5",
-                              filterMenuPos
-                                ? "fixed z-[9999]"
-                                : "absolute left-0 top-full mt-2 z-30",
-                            ].join(" ")}
-                          >
-                            {FILTER_OPTIONS.map((cat) => {
-                              const isSelected = categoryFilter === cat;
-
-                              return (
-                                <button
-                                  key={cat}
-                                  type="button"
-                                  role="menuitem"
-                                  onClick={() => {
-                                    handleCategoryLinkClick(cat);
-                                    setFilterMenuOpen(false);
-                                  }}
-                                  className={`
-                                flex w-full items-center rounded-full px-4 py-2.5 hover:bg-white text-left text20
-                                 duration-300! transition-colors cursor-pointer
-                                ${isSelected
-                                      ? "bg-white text-[#111111]"
-                                      : "text-foreground hover:bg-white hover:text-black"
-                                    }
-                              `}
-                                >
-                                  <span className="leading-none">
-                                    {getQuickCategoryLabel(cat)}
-                                  </span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        );
-
-                        return filterMenuPos && mounted
-                          ? createPortal(panel, document.body)
-                          : panel;
-                      })()}
-                  </div>
+                  <FilterMenu
+                    activeFilter={activeFilter}
+                    categoryFilter={categoryFilter}
+                    getLabel={getQuickCategoryLabel}
+                    onSelect={handleCategoryLinkClick}
+                  />
 
                   {/* Divider between filters and categories */}
                   <span
@@ -814,7 +667,14 @@ const routeKey = `${pathname}${
               </div>
 
               {/* Grid density viewer: 2 or 3 cards per row */}
-              <div className="shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+              <div className="relative shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1 left-1 h-8 w-10 rounded-sm bg-white transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translateX(${gridColumns === 3 ? "calc(2.5rem + 0.25rem)" : "0"})`,
+                  }}
+                />
                 {[2, 3].map((cols) => {
                   const isActive = gridColumns === cols;
 
@@ -826,10 +686,10 @@ const routeKey = `${pathname}${
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}
                       className={`
-                        flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
+                        relative z-10 flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
                         transition-colors duration-300 cursor-pointer
                         ${isActive
-                          ? "bg-white text-[#111111]"
+                          ? "text-[#111111]"
                           : "text-foreground hover:text-white"
                         }
                       `}
@@ -999,6 +859,9 @@ const routeKey = `${pathname}${
 }
 
 const BATCH_SIZE = 12;
+// Keeps the cards' entrance well behind the heading/description (delay 0.3s)
+// so they clearly follow it rather than firing at the same time.
+const CARD_ENTRANCE_BASE_DELAY = 1;
 
 // Inner component - keyed by filteredEffectsKey so state resets automatically on filter change
 function EffectsGridInner({
@@ -1014,17 +877,27 @@ function EffectsGridInner({
   const gridRef = useRef(null);
   const sentinelRef = useRef(null);
 
+  // TEMP DEBUG for F-014 - remove once root cause is confirmed. Deliberately
+  // mount-only (empty deps) - the whole point is detecting unwanted remounts.
+  useEffect(() => {
+    console.log("[F-014 debug] EffectsGridInner mounted, visibleCount reset to", BATCH_SIZE, "filteredEffects.length =", filteredEffects.length);
+  }, []);
+
   // Load next batch when the sentinel enters the viewport
   useEffect(() => {
     const sentinel = sentinelRef.current;
+    console.log("[F-014 debug] observer effect ran, sentinel =", sentinel, "filteredEffects.length =", filteredEffects.length);
     if (!sentinel) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        console.log("[F-014 debug] observer fired, isIntersecting =", entry.isIntersecting);
         if (entry.isIntersecting) {
-          setVisibleCount((prev) =>
-            Math.min(prev + BATCH_SIZE, filteredEffects.length)
-          );
+          setVisibleCount((prev) => {
+            const next = Math.min(prev + BATCH_SIZE, filteredEffects.length);
+            console.log("[F-014 debug] setVisibleCount", prev, "->", next);
+            return next;
+          });
         }
       },
       { rootMargin: "400px" }
@@ -1048,7 +921,10 @@ function EffectsGridInner({
     if (!cards.length) return;
 
     cards.forEach((card, i) => {
-      card.style.setProperty("--card-delay", `${(i % BATCH_SIZE) * 0.06}s`);
+      card.style.setProperty(
+        "--card-delay",
+        `${CARD_ENTRANCE_BASE_DELAY + (i % BATCH_SIZE) * 0.06}s`
+      );
     });
 
     const raf = requestAnimationFrame(() => {
@@ -1095,6 +971,21 @@ function EffectsGridInner({
 
       {/* Sentinel - 400px ahead of viewport triggers the next batch before user reaches bottom */}
       {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+
+      {/* Manual fallback - covers slow IntersectionObserver support or scroll
+          that never reaches the sentinel (short viewports, trackpads, etc). */}
+      {hasMore && (
+        <div className="flex justify-center pt-10">
+          <LinkButton
+            text="Load More"
+            shimmer
+            tilted={false}
+            onClick={() =>
+              setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, filteredEffects.length))
+            }
+          />
+        </div>
+      )}
     </>
   );
 }

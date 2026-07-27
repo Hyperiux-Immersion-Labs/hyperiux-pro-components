@@ -4,6 +4,11 @@ import gsap from "gsap";
 import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { navigationData } from "./data";
+import { useFocusTrap } from "./useFocusTrap";
+
+const prefersReducedMotion = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
 function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/50" }) {
     return (
@@ -38,10 +43,15 @@ export function ExpandingNavbarMobile() {
     const contentRef = useRef(null);
     const menuTimeline = useRef(null);
     const mainItemRefs = useRef([]);
+    const containerRef = useRef(null);
+    const toggleButtonRef = useRef(null);
     const menuEase = "cubic-bezier(0.625, 0.05, 0, 1)";
 
     useEffect(() => {
         const tl = gsap.timeline({ paused: true });
+
+        const overlayDuration = prefersReducedMotion() ? 0.3 : 0.6;
+        const contentDuration = prefersReducedMotion() ? 0.35 : 0.7;
 
         gsap.set(overlayRef.current, { opacity: 0, pointerEvents: "none" });
         gsap.set(contentRef.current, {
@@ -55,7 +65,7 @@ export function ExpandingNavbarMobile() {
         tl.to(overlayRef.current, {
             opacity: 1,
             pointerEvents: "auto",
-            duration: 0.6,
+            duration: overlayDuration,
             ease: menuEase,
         }, 0);
 
@@ -64,7 +74,7 @@ export function ExpandingNavbarMobile() {
             clipPath: "inset(0% 0% 0% 0%)",
             WebkitClipPath: "inset(0% 0% 0% 0%)",
             pointerEvents: "auto",
-            duration: 0.7,
+            duration: contentDuration,
             ease: menuEase,
         }, 0.1);
 
@@ -88,7 +98,7 @@ export function ExpandingNavbarMobile() {
         if (isMenuOpen) {
             gsap.fromTo(items,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: menuEase, delay: 0.3 }
+                { opacity: 1, y: 0, duration: prefersReducedMotion() ? 0.25 : 0.5, stagger: 0.06, ease: menuEase, delay: prefersReducedMotion() ? 0.15 : 0.3 }
             );
         }
     }, [isMenuOpen]);
@@ -114,6 +124,14 @@ export function ExpandingNavbarMobile() {
         setExpandedSub(null);
     };
 
+    // Trap focus across the toggle + panel while open, restore it on close.
+    useFocusTrap({
+        active: isMenuOpen,
+        containerRef,
+        initialFocusRef: toggleButtonRef,
+        onEscape: closeMenu,
+    });
+
     const toggleMain = (index) => {
         if (expandedMain === index) {
             setExpandedMain(null);
@@ -129,7 +147,7 @@ export function ExpandingNavbarMobile() {
     };
 
     return (
-        <div className="hidden max-md:block">
+        <div ref={containerRef} className="hidden max-md:block">
             {/* Background Overlay */}
             <div
                 ref={overlayRef}
@@ -167,7 +185,7 @@ export function ExpandingNavbarMobile() {
                                 {/* Sublinks - grid 0fr→1fr for smooth height */}
                                 {item.sublinks && (
                                     <div
-                                        className={`grid transition-[grid-template-rows] duration-500 ${
+                                        className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
                                             expandedMain === mainIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                         }`}
                                         style={{ transitionTimingFunction: menuEase }}
@@ -201,7 +219,7 @@ export function ExpandingNavbarMobile() {
 
                                                         {sub.nestedLinks && (
                                                             <div
-                                                                className={`grid transition-[grid-template-rows] duration-500 ${
+                                                                className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
                                                                     expandedSub === subIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                                                 }`}
                                                                 style={{ transitionTimingFunction: menuEase }}
@@ -259,6 +277,7 @@ export function ExpandingNavbarMobile() {
                     </svg>
 
                     <button
+                        ref={toggleButtonRef}
                         type="button"
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}

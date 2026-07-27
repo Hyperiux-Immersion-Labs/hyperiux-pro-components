@@ -1,8 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScrollablePopupContent from "./ScrollablePopupContent";
 import AnimatedModalContent from "./AnimatedModalContent";
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
 
 const popupSections = [
   {
@@ -49,6 +63,7 @@ const popupSections = [
 
 export default function AnimatedModal() {
   const [isContentOpen, setIsContentOpen] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <>
@@ -61,7 +76,7 @@ export default function AnimatedModal() {
           cursor-pointer rounded-full border-0 bg-[#111111] px-[2vw] py-[1vw]
           text-white transition-all duration-300 hover:scale-[1.03]
           text-[1vw]
-          max-lg:px-[4vw] max-lg:py-[2vw] max-lg:text-[2.2vw]
+          max-[1025px]:px-[4vw] max-[1025px]:py-[2vw] max-[1025px]:text-[2.2vw]
           max-md:px-[6vw] max-md:py-[3.5vw] max-md:text-[4vw]
         "
       >
@@ -79,6 +94,22 @@ export default function AnimatedModal() {
           sections={popupSections}
         />
       </AnimatedModalContent>
+
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center"
+        >
+          <h2 className="text-sm leading-none text-[#111111]">
+            The modal fades, not slides.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black/65">
+            Animated Modal already keeps its open and close transition to a
+            simple opacity fade, so it stays comfortable with reduced motion
+            enabled.
+          </p>
+        </div>
+      )}
     </>
   );
 }

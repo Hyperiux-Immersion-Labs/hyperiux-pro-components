@@ -1,5 +1,20 @@
 {
   "name": "slide-text-reveal",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion slide reveal.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Slide Text Reveal",
   "description": "Characters slide in from the right with staggered fade animation on scroll",
@@ -8,14 +23,15 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/slide-text-reveal",
+  "previewUrl": "/demo/slide-text-reveal",
   "tier": "pro",
+  "exportName": "SlideTextReveal",
+  "exportKind": "default",
   "main": "index.jsx",
-  "importPath": "@/components/effects/slide-text-reveal",
-  "target": "src/components/effects/slide-text-reveal",
   "files": [
     {
       "path": "index.jsx",
+      "type": "registry:component",
       "target": "src/components/effects/slide-text-reveal/index.jsx"
     }
   ]

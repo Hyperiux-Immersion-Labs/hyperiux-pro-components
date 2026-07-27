@@ -7,6 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
+
 export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
@@ -29,6 +32,10 @@ export default function PerspectiveTextReveal({
  ? Array.from(containerRef.current.children)
  : [containerRef.current];
 
+ const prefersReduced =
+ window.matchMedia &&
+ window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
  let ctx;
 
  const init = async () => {
@@ -45,6 +52,35 @@ export default function PerspectiveTextReveal({
  splitRefs.current.push(split);
  linesRef.current.push(...split.lines);
  });
+
+ if (prefersReduced) {
+ gsap.set(linesRef.current, { yPercent: 0, rotateX: 0, opacity: 1 });
+ gsap.set(containerRef.current, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+ const fadeUpProps = {
+ opacity: 1,
+ y: 0,
+ duration: REDUCED_MOTION_FADE_DURATION,
+ ease:"power2.out",
+ delay,
+ };
+
+ if (animateOnScroll) {
+ gsap.to(containerRef.current, {
+ ...fadeUpProps,
+ scrollTrigger: {
+ trigger: containerRef.current,
+ start:"top 90%",
+ end,
+ scrub,
+ },
+ });
+ } else {
+ gsap.to(containerRef.current, fadeUpProps);
+ }
+
+ return;
+ }
 
  gsap.set(linesRef.current, {
  yPercent: -100,

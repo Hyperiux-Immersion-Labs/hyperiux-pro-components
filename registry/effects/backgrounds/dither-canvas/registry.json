@@ -1,20 +1,30 @@
 {
   "name": "dither-canvas",
+  "version": "1.0.1",
+  "changelog": [
+    { "version": "1.0.1", "date": "2026-07-22", "summary": "Added a reduced-motion notice: this effect is a continuous cursor-driven fluid distortion and can't be reduced without losing it entirely, so it now surfaces that instead of silently ignoring the preference.", "breaking": false }
+  ],
   "type": "registry:component",
   "title": "Dither Canvas",
   "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
   "category": "backgrounds",
   "dependencies": [],
   "registryDependencies": [],
-  "previewUrl": "/binary-effect",
+  "previewUrl": "/demo/dither-canvas",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "DitherCanvas",
+  "exportKind": "default",
   "importPath": "@/components/effects/dither-canvas",
   "target": "src/components/effects/dither-canvas",
   "files": [
     {
       "path": "index.jsx",
       "target": "src/components/effects/dither-canvas/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
     }
   ]
 }

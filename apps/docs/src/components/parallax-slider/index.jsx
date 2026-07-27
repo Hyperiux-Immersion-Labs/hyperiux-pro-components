@@ -3,8 +3,15 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Reduced motion: the main horizontal track scroll stays untouched (it's the
+// functional mechanism for navigating slides, not decorative). The per-image
+// parallax (x shift + scale) is reduced, not removed, and the one-time
+// clip-path reveal loses its eased curve in favor of a linear one.
+const REDUCED_MOTION_FACTOR = 0.25;
 
 // vw units
 const SLIDE_WIDE = 65;
@@ -46,8 +53,11 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
     const track = trackRef.current;
     if (!outer || !track) return;
 
+    const reducedMotion = prefersReducedMotion();
+
     const ctx = gsap.context(() => {
-      /** Main horizontal animation */
+      /** Main horizontal animation - functional navigation, untouched by
+       * reduced motion. */
       const horizontalTween = gsap.to(track, {
         x: () => -(track.scrollWidth - window.innerWidth),
         ease: "none",
@@ -68,7 +78,7 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
         { clipPath: "inset(0 100% 0 0)" },
         {
           clipPath: "inset(0 0% 0 0)",
-          ease: "power3.inOut",
+          ease: reducedMotion ? "none" : "power3.inOut",
           duration: 0.6,
           scrollTrigger: {
             trigger: outer,
@@ -79,16 +89,21 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
         },
       );
 
-      /** Individual parallax per image */
+      /** Individual parallax per image - reduced, not removed, for
+       * reduced motion. */
       const slides = gsap.utils.toArray(".parallax-img");
+      const parallaxRange = reducedMotion ? 25 * REDUCED_MOTION_FACTOR : 25;
+      const parallaxScale = reducedMotion
+        ? 1 + (1.25 - 1) * REDUCED_MOTION_FACTOR
+        : 1.25;
 
       slides.forEach((el) => {
         gsap.fromTo(
           el,
-          { x: "-25%", scale: 1.25 },
+          { x: `-${parallaxRange}%`, scale: parallaxScale },
           {
-            x: "25%",
-            scale: 1.25,
+            x: `${parallaxRange}%`,
+            scale: parallaxScale,
             ease: "none",
             scrollTrigger: {
               trigger: el,
@@ -137,6 +152,7 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
                   clipPath: "inset(0 100% 0 0)",
                 }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`Slide ${i + 1}`}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 const SPACING = 24;
 const BASE_RADIUS = 7.2;
@@ -117,6 +119,7 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 
 export default function DottedGrid() {
   const canvasRef = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
     currentShapeIndex: 0,
     transitionStartTime: null,
@@ -139,8 +142,7 @@ export default function DottedGrid() {
 
     let width = 0;
     let height = 0;
-    let dpr = window.devicePixelRatio || 1;
-    let animationId;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let dots = [];
 
 
@@ -168,7 +170,7 @@ export default function DottedGrid() {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      dpr = window.devicePixelRatio || 1;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -268,7 +270,9 @@ export default function DottedGrid() {
     };
 
 
-    const animate = (ms) => {
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: (ms) => {
       const time = ms * 0.001;
       const mouse = mouseRef.current;
       const now = performance.now();
@@ -345,9 +349,8 @@ export default function DottedGrid() {
 
         drawDot(dot.x, dot.y, radius, brightness, grayDisperseBlink, dot.currentTrailStrength, dot.currentMouseStrength);
       }
-
-      animationId = requestAnimationFrame(animate);
-    };
+      },
+    });
 
 
     resize();
@@ -355,14 +358,14 @@ export default function DottedGrid() {
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
-    animationId = requestAnimationFrame(animate);
+    loop.start();
 
     return () => {
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
-      cancelAnimationFrame(animationId);
+      loop.destroy();
     };
   }, []);
 
@@ -381,6 +384,23 @@ export default function DottedGrid() {
         Works best on desktop  <br />
         Here, tap & drag to explore
       </div>
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            ambient dot-grid animation with cursor-driven distortion, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

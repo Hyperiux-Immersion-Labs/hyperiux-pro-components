@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useRef } from"react";
-import { gsap } from"gsap";
-import { InertiaPlugin } from"gsap/InertiaPlugin";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(InertiaPlugin);
 
@@ -121,13 +121,14 @@ function InertiaImageComp({ images = [] }) {
  ref={rootRef}
  className="relative grid min-h-[50vh] w-full place-items-center "
  >
- <div className="grid grid-cols-4 gap-[1vw] max-xl:gap-[8vw] max-md:gap-[5vw] max-xl:grid-cols-3 max-md:grid-cols-2">
+ <div className="grid grid-cols-4 gap-[1vw] max-[1025px]:gap-[8vw] max-md:gap-[5vw] max-[1025px]:grid-cols-3 max-md:grid-cols-2">
  {images.map((src, i) => (
  <div
  key={i}
- className="media-item relative h-[12vw] w-[12vw] max-xl:h-[22vw] max-xl:w-[22vw] max-md:h-[35vw] max-md:w-[35vw]"
+ className="media-item relative h-[12vw] w-[12vw] max-[1025px]:h-[22vw] max-[1025px]:w-[22vw] max-md:h-[35vw] max-md:w-[35vw]"
  >
- <img src={src} alt="asset-image" className="absolute inset-0 h-full w-full object-cover pointer-events-none block rounded-[4%]  will-change-transform" />
+ {/* eslint-disable-next-line @next/next/no-img-element */}
+ <img src={src} alt="asset-image" className="absolute inset-0 pointer-events-none block rounded-[4%] object-contain will-change-transform" />
  </div>
  ))}
  </div>

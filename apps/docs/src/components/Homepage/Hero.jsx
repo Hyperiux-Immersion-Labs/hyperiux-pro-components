@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { useFadeUp } from "../Animations/gsapAnimations";
@@ -13,7 +12,7 @@ import ShimmerText from "../WebsiteComps/ShimmerText";
 import { LOADER_STORAGE_KEY } from "./Loader";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(SplitText, useGSAP);
+  gsap.registerPlugin(SplitText);
 }
 
 const HERO_ANIMATION_DELAY_AFTER_LOADER = 0.15;
@@ -51,7 +50,7 @@ export default function Hero() {
 
   useFadeUp();
 
-  useGSAP(
+  useEffect(
     () => {
       if (shouldBypassHeroIntroForAudit()) return;
 
@@ -85,6 +84,7 @@ export default function Hero() {
       gsap.set(descSplit.lines, { yPercent: 100, opacity: 0 });
       gsap.set(buttons, { yPercent: 100, opacity: 0 });
       gsap.set(shimmer, { yPercent: 100, opacity: 0 });
+      gsap.set(".hero-overlay",{opacity:0})
 
       let hasAnimated = false;
       let delayedCall;
@@ -189,14 +189,14 @@ export default function Hero() {
         descSplit.revert();
       };
     },
-    { scope: containerRef }
+    []
   );
 
   return (
     <section className="pointer-events-none relative z-20 flex h-screen w-full max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
-        alt=""
+        alt="hero-background image"
         aria-hidden
         fill
         priority
@@ -264,13 +264,15 @@ export default function Hero() {
           <ShimmerText
             baseColor="#939393"
             shimmerColor="#ffffff"
-            className="max-sm:text-[3.5vw] leading-[1.2]"
+            className="max-sm:text-[3.5vw] capitalize leading-[1.2]"
           >
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install ·
             Source-first code
           </ShimmerText>
         </p>
       </div>
+      <div className="bg-[#0e0e0e] fixed inset-0 z-100 w-screen h-screen pointer-events-none hero-overlay" />
+
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import HeadAnim from "@/components/Animations/HeadAnim";
 import ArrowFillButton from "@/components/arrow-fill-button";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import React from "react";
 
 export default function page() {
@@ -31,4 +32,8 @@ export default function page() {
       </div>
     </section>
   );
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("radial-slice-transition");
 }

@@ -1,10 +1,11 @@
 {
-  "name": "@hyperiux/rotating-carousel",
-  "version": "0.0.1",
+  "name": "@hyperiux/circular-slider",
+  "version": "1.1.0",
   "description": "Scroll-driven circular carousel that rotates a ring of editorial cards through view",
-  "main": "rotating-carousel.jsx",
+  "main": "index.jsx",
   "files": [
-    "rotating-carousel.jsx",
+    "index.jsx",
+    "CircularSliderComp.jsx",
     "registry.json"
   ],
   "keywords": [

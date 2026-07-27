@@ -197,12 +197,14 @@ const PhoneInput = forwardRef(function PhoneInput(
             "h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-700 placeholder:text-sm",
             inputClassName
           )}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
           {...rest}
         />
       </div>
 
       {error && (
-        <p className={joinClasses("ml-4 mt-1 text-xs text-red-500", errorClassName)}>
+        <p id={`${id}-error`} className={joinClasses("ml-4 mt-1 text-xs text-red-500", errorClassName)}>
           {error}
         </p>
       )}

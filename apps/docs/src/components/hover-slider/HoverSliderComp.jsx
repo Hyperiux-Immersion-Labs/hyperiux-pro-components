@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const vertexShader = /* glsl */ `
 uniform vec2 uVelocity;
@@ -151,6 +152,7 @@ export default function HoverSliderComp({ items = [] }) {
       pointerEvents: "none",
     });
 
+    renderer.domElement.setAttribute("aria-hidden", "true");
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -292,7 +294,6 @@ export default function HoverSliderComp({ items = [] }) {
 
     let floatIdx = 0;
     let prevFloat = 0;
-    let raf = 0;
 
     const vel = new THREE.Vector2(0, 0);
 
@@ -304,7 +305,64 @@ export default function HoverSliderComp({ items = [] }) {
       return lerp(SOFT_CURVE, ACTIVE_CURVE, eased);
     };
 
+    const reduceMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    );
+    let reduceMotion = reduceMotionMq?.matches ?? false;
+
+    const snapStack = (targetIdx = stateRef.current.activeIndex) => {
+      curveAnim.value = 0;
+      curveAnim.zoom = 1.06;
+      floatIdx = targetIdx;
+      prevFloat = floatIdx;
+      vel.set(0, 0);
+    };
+
+    // Reduced-motion: swap images with opacity instead of sliding the stack.
+    const fadeToIndex = (targetIdx) => {
+      gsap.killTweensOf(curveAnim);
+
+      const reveal = () => {
+        snapStack(targetIdx);
+        gsap.killTweensOf(anim);
+        gsap.to(anim, {
+          alpha: 1,
+          duration: 0.28,
+          ease: "power2.out",
+        });
+      };
+
+      if (anim.alpha <= 0.01) {
+        reveal();
+        return;
+      }
+
+      gsap.killTweensOf(anim);
+      gsap.to(anim, {
+        alpha: 0,
+        duration: 0.16,
+        ease: "power2.in",
+        onComplete: reveal,
+      });
+    };
+
+    const onReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+
+      if (reduceMotion) {
+        gsap.killTweensOf(curveAnim);
+        snapStack(stateRef.current.activeIndex);
+      }
+    };
+
+    reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
+
     const releaseCurve = (targetIdx = stateRef.current.activeIndex) => {
+      if (reduceMotion) {
+        fadeToIndex(targetIdx);
+        return;
+      }
+
       const peakCurve = getCurveForTravel(targetIdx);
 
       gsap.killTweensOf(curveAnim);
@@ -328,6 +386,11 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     const show = (targetIdx) => {
+      if (reduceMotion) {
+        fadeToIndex(targetIdx);
+        return;
+      }
+
       gsap.killTweensOf(anim);
 
       gsap.to(anim, {
@@ -340,6 +403,18 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     const hide = () => {
+      if (reduceMotion) {
+        gsap.killTweensOf(curveAnim);
+        snapStack(stateRef.current.activeIndex);
+        gsap.killTweensOf(anim);
+        gsap.to(anim, {
+          alpha: 0,
+          duration: 0.22,
+          ease: "power2.out",
+        });
+        return;
+      }
+
       gsap.killTweensOf(anim);
       gsap.killTweensOf(curveAnim);
 
@@ -409,69 +484,86 @@ export default function HoverSliderComp({ items = [] }) {
       show(0);
     }
 
-    const tick = () => {
-      raf = requestAnimationFrame(tick);
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
+        const targetIdx = stateRef.current.activeIndex;
 
-      const targetIdx = stateRef.current.activeIndex;
-      const diff = targetIdx - floatIdx;
-      const distToTarget = Math.abs(diff);
+        if (reduceMotion) {
+          floatIdx = targetIdx;
+          prevFloat = floatIdx;
+          vel.set(0, 0);
+          curveAnim.value = 0;
+          curveAnim.zoom = 1.06;
+        } else {
+          const diff = targetIdx - floatIdx;
+          const distToTarget = Math.abs(diff);
+          const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
 
-      const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
+          floatIdx += diff * t;
 
-      floatIdx += diff * t;
+          const delta = floatIdx - prevFloat;
 
-      const delta = floatIdx - prevFloat;
+          vel.y = lerp(vel.y, delta * 60, 0.16);
+          vel.x = lerp(vel.x, 0, 0.14);
 
-      vel.y = lerp(vel.y, delta * 60, 0.16);
-      vel.x = lerp(vel.x, 0, 0.14);
-
-      prevFloat = floatIdx;
-
-      const centreInt = Math.round(floatIdx);
-      const drift = floatIdx - centreInt;
-
-      for (let i = 0; i < VISIBLE; i++) {
-        const offset = i - HALF;
-
-        const itemIdx =
-          ((centreInt + offset) % items.length + items.length) % items.length;
-
-        const posY = (-offset + drift) * (CH + GAP);
-        const dist = Math.abs(offset - drift);
-
-        const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
-
-        const sw = CW;
-        const sh = CH * scaleH;
-
-        const baseOpacity = 0.88;
-        const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
-
-        const wantTex = getTexture(items[itemIdx].img);
-
-        if (wantTex && meshes[i].material.uniforms.uTexture.value !== wantTex) {
-          meshes[i].material.uniforms.uTexture.value = wantTex;
+          prevFloat = floatIdx;
         }
 
-        syncImageSize(meshes[i]);
+        const centreInt = Math.round(floatIdx);
+        const drift = floatIdx - centreInt;
 
-        meshes[i].position.set(0, posY, i);
-        meshes[i].scale.set(sw, sh, 1);
-        meshes[i].rotation.z = 0;
+        for (let i = 0; i < VISIBLE; i++) {
+          const offset = i - HALF;
 
-        meshes[i].material.uniforms.uVelocity.value.set(vel.x, vel.y * 0.28);
-        meshes[i].material.uniforms.uAlpha.value = opacity;
-        meshes[i].material.uniforms.uZoom.value =
-          curveAnim.zoom - clamp(1.0 - dist, 0, 1) * 0.04;
-        meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
-        meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
-        meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
-      }
+          // Reduced-motion: only the active (center) card — hide the stack above/below.
+          if (reduceMotion && offset !== 0) {
+            meshes[i].material.uniforms.uAlpha.value = 0;
+            meshes[i].position.set(0, 0, i);
+            meshes[i].scale.set(CW, CH, 1);
+            continue;
+          }
 
-      renderer.render(scene, camera);
-    };
+          const itemIdx =
+            ((centreInt + offset) % items.length + items.length) % items.length;
 
-    tick();
+          const posY = reduceMotion ? 0 : (-offset + drift) * (CH + GAP);
+          const dist = reduceMotion ? 0 : Math.abs(offset - drift);
+
+          const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
+
+          const sw = CW;
+          const sh = CH * scaleH;
+
+          const baseOpacity = 0.88;
+          const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
+
+          const wantTex = getTexture(items[itemIdx].img);
+
+          if (wantTex && meshes[i].material.uniforms.uTexture.value !== wantTex) {
+            meshes[i].material.uniforms.uTexture.value = wantTex;
+          }
+
+          syncImageSize(meshes[i]);
+
+          meshes[i].position.set(0, posY, i);
+          meshes[i].scale.set(sw, sh, 1);
+          meshes[i].rotation.z = 0;
+
+          meshes[i].material.uniforms.uVelocity.value.set(vel.x, vel.y * 0.28);
+          meshes[i].material.uniforms.uAlpha.value = opacity;
+          meshes[i].material.uniforms.uZoom.value =
+            curveAnim.zoom - clamp(1.0 - dist, 0, 1) * 0.04;
+          meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
+          meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
+          meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
+        }
+
+        renderer.render(scene, camera);
+      },
+    });
+
+    loop.start();
 
     glRef.current = {
       setActive: (index) => {
@@ -483,9 +575,10 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     return () => {
-      cancelAnimationFrame(raf);
+      loop.destroy();
 
       window.removeEventListener("resize", onResize);
+      reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
 
       gsap.killTweensOf(anim);
       gsap.killTweensOf(curveAnim);
@@ -645,8 +738,8 @@ export default function HoverSliderComp({ items = [] }) {
         })}
       </div>
 
-      <p
-        className="pointer-events-none absolute bottom-[8%] right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-md:hidden max-sm:hidden md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
+     <p
+        className="pointer-events-none absolute bottom-[8%] right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-[1025px]:hidden max-md:hidden md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
         style={{ color: "rgba(30,28,24,0.6)" }}
       >
         A curated collection of futuristic UI experiments, motion systems, and
@@ -654,7 +747,7 @@ export default function HoverSliderComp({ items = [] }) {
         the ordinary.
       </p>
 
-      <p className="absolute  h-fit right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-md:block  bottom-2 max-sm:w-[80vw] max-sm:text-sm">
+      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-[1025px]:block max-md:bottom-2 max-md:w-[80vw] max-md:text-sm">
         Click on an item to see the animation. Hover effects available on
         desktop.
       </p>

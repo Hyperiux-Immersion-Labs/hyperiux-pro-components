@@ -1,10 +1,12 @@
 {
-  "name": "@hyperiux/modal",
-  "version": "0.0.1",
+  "name": "@hyperiux/animated-modal",
+  "version": "1.1.1",
   "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
-  "main": "modal.jsx",
+  "main": "index.jsx",
   "files": [
-    "modal.jsx",
+    "index.jsx",
+    "AnimatedModalContent.jsx",
+    "ScrollablePopupContent.jsx",
     "registry.json"
   ],
   "keywords": [

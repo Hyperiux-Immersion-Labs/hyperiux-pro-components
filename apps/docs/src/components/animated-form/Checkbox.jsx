@@ -1,5 +1,5 @@
 
-import React, { forwardRef } from"react";
+import React, { forwardRef } from "react";
 
 /**
  * Props:
@@ -32,6 +32,8 @@ const Checkbox = forwardRef(function Checkbox(
  :"bg-white border-gray-400 hover:border-gray-600"
  }
  `}
+ aria-invalid={error ? true : undefined}
+ aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  >
  {checked && (
@@ -59,7 +61,7 @@ const Checkbox = forwardRef(function Checkbox(
  )}
  </div>
  {error && (
- <p className="mt-1 ml-8 text-xs text-red-500">{error}</p>
+ <p id={`${id}-error`} className="mt-1 ml-8 text-xs text-red-500">{error}</p>
  )}
  </div>
  );

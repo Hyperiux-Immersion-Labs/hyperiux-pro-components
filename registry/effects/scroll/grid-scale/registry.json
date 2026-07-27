@@ -1,5 +1,20 @@
 {
   "name": "grid-scale",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Fixed malformed ScrollTrigger start value ('% top' -> 'top top') on the floating-words timeline; it previously parsed to NaN and anchored the animation to absolute page top instead of the section",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: box/grid-line/clip-path tweens lose their eased curve and floating words fade in place instead of converging to center",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Grid Scale",
   "description": "Scroll-driven animation where a centered clip-path panel expands to fullscreen while corner boxes fly in, grid lines dissolve, and floating keyword pills converge to the center.",
@@ -8,9 +23,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/grid-scale",
+  "previewUrl": "/demo/grid-scale",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "GridScale",
+  "exportKind": "default",
   "importPath": "@/components/effects/grid-scale",
   "target": "src/components/effects/grid-scale",
   "files": [

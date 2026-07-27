@@ -1,0 +1,34 @@
+{
+  "name": "@hyperiux/progressive-bloom-valley",
+  "version": "1.1.1",
+  "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
+  "main": "index.jsx",
+  "files": [
+    "index.jsx",
+    "CameraRig.jsx",
+    "CircularText.jsx",
+    "EdgeBlurEffect.jsx",
+    "ExperienceComp.jsx",
+    "FilmGrainEffect.jsx",
+    "Flower.jsx",
+    "useInput.js",
+    "useValleyData.js",
+    "shaders.js",
+    "createSuspendedRaf.js",
+    "prefersReducedMotion.js",
+    "registry.json"
+  ],
+  "keywords": [
+    "webgl",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@react-three/fiber": "*",
+    "@react-three/drei": "*",
+    "@react-three/postprocessing": "*",
+    "three": "*",
+    "postprocessing": "*",
+    "gsap": "*",
+    "lucide-react": "*"
+  }
+}

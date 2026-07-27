@@ -1,7 +1,6 @@
 
 import MagneticImageTrail from '@/components/magnetic-image-trail'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import SplitLine from '@/components/WebsiteComps/SplitLine'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 

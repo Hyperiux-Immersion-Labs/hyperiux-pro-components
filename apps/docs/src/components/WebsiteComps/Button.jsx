@@ -6,10 +6,10 @@ import { BtnArrow } from "../WebsiteComps/Icons";
 import { tv } from "tailwind-variants";
 
 const buttonTv = tv({
-  base: "group flex overflow-hidden items-center gap-[1vw] max-md:gap-5 max-sm:gap-8 rounded-full px-[1.5vw] py-[.8vw]  max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 relative text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500",
+  base: "group flex overflow-hidden items-center gap-[1vw] max-md:gap-5 max-sm:gap-8 rounded-full px-[1.5vw] py-[.8vw]  max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 relative text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 motion-reduce:transition-none",
   variants: {
     variant: {
-      orange: "bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white ",
+      orange: "bg-[linear-gradient(to_right,#f16b0d,#e61216)] text-white ",
       black: "bg-black text-white border border-background",
       white: "bg-white text-black border border-foreground",
       outline: "bg-transparent text-background border border-background",
@@ -21,14 +21,14 @@ const buttonTv = tv({
   },
   slots: {
     circle: [
-      "duration-500 transition-all rounded-full inline-block",
+      "duration-500 transition-all rounded-full inline-block motion-reduce:transition-none motion-reduce:scale-100",
       "size-[.5vw] max-md:size-2 max-sm:size-2",
     ],
     text: [
-      "relative z-10 duration-500 transition-all group-hover:-translate-x-[1.5vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5",
+      "relative z-10 duration-500 transition-all group-hover:-translate-x-[1.5vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5 motion-reduce:translate-x-0 motion-reduce:transition-none",
     ],
     arrow: [
-      "size-[1.6vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw] right-[0.7vw] max-md:right-4 max-sm:right-4 opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block",
+      "size-[1.6vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw] right-[0.7vw] max-md:right-4 max-sm:right-4 opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block motion-reduce:translate-x-[2vw] motion-reduce:opacity-0 motion-reduce:transition-none",
     ],
   },
 });
@@ -58,7 +58,9 @@ export default function Button({
 
   const hoverTextClass =
     hoverTextClassName ||
-    (variant === "white" || variant === "outline" ? "group-hover:text-white" : "group-hover:text-black");
+    (variant === "white" || variant === "outline"
+      ? "group-hover:text-white motion-reduce:text-inherit"
+      : "group-hover:text-black motion-reduce:text-inherit");
 
   const handleClick = (event) => {
     if (preventDefault || disabled) {
@@ -127,14 +129,14 @@ export default function Button({
       }`}
     >
       <span
-        className={`${styles.circle()} ${circleColorClass} ${scaleClass} ${circleClassName}`}
+        className={`${styles.circle()} ${circleColorClass} ${scaleClass} motion-reduce:scale-100 ${circleClassName}`}
       />
 
       <p className={`${styles.text()} ${hoverTextClass} ${innerClassName}`}>
         {children ?? text}
       </p>
 
-      <span className={`${styles.arrow()} ${hoverTextClass} ${arrowClassName} group-hover:translate-x-0 translate-x-[2vw]`}>
+      <span className={`${styles.arrow()} ${hoverTextClass} ${arrowClassName} group-hover:translate-x-0 translate-x-[2vw] motion-reduce:translate-x-[2vw]`}>
         <BtnArrow />
       </span>
     </Link>

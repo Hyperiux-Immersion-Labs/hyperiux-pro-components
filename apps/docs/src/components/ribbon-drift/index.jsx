@@ -1,14 +1,34 @@
-import React from"react";
-import { ReactLenis } from"lenis/react";
+"use client";
+
+import React from "react";
+import { ReactLenis } from "lenis/react";
 import { RibbonDriftComp } from "./RibbonDriftComp";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 
 const RibbonDrift = () => {
+ const prefersReducedMotion = usePrefersReducedMotion();
+
  return (
  <ReactLenis root>
- <section className="w-screen h-fit max-snm:h-full">
+ <section className="w-screen h-fit max-sm:h-full">
  <RibbonDriftComp images={IMAGE_POOL} projectNames={PROJECT_NAMES} />
  </section>
+ {prefersReducedMotion && (
+ <div
+ aria-live="polite"
+ className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-md p-3 text-center"
+ >
+ <h2 className="text-sm leading-none text-[#111111]">
+ The ribbon keeps drifting.
+ </h2>
+ <p className="mt-2 text-xs leading-5 text-black/65">
+ Ribbon Drift ties its image reveal and text splits to scroll
+ position. Since the animation is driven by scroll motion itself,
+ it can&apos;t be reduced without removing the effect.
+ </p>
+ </div>
+ )}
  </ReactLenis>
  );
 };

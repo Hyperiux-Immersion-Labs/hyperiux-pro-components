@@ -45,6 +45,7 @@ export default function AdminPage() {
   const [planFilter, setPlanFilter] = useState("all");
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState(null);
+  const [intervalByUser, setIntervalByUser] = useState({});
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -72,19 +73,26 @@ export default function AdminPage() {
 
   async function togglePlan(user) {
     const newPlan = user.plan === "pro" ? "free" : "pro";
+    const billingInterval = newPlan === "pro" ? intervalByUser[user.id] || "yearly" : null;
     setUpdatingId(user.id);
     try {
       const res = await fetch("/api/admin/users/update-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkUserId: user.id, plan: newPlan }),
+        body: JSON.stringify({ clerkUserId: user.id, plan: newPlan, billingInterval }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Update failed");
       setUsers((prev) =>
         prev.map((u) =>
           u.id === user.id
-            ? { ...u, plan: newPlan, status: newPlan === "pro" ? "active" : "inactive" }
+            ? {
+                ...u,
+                plan: newPlan,
+                status: newPlan === "pro" ? "active" : "inactive",
+                billingInterval: json.billingInterval,
+                planValidUntil: json.currentPeriodEnd,
+              }
             : u
         )
       );
@@ -113,6 +121,13 @@ export default function AdminPage() {
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Waitlist
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/dashboard/admin/waitlist?tab=new"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Invite
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
           <Link
@@ -162,7 +177,7 @@ export default function AdminPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03]">
+              <tr className="border-b border-white/10 bg-white/3">
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
@@ -172,7 +187,7 @@ export default function AdminPage() {
                 <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody className="divide-y divide-white/6">
               {loading ? (
                 Array.from({ length: 6 }).map((_, i) => (
                   <tr key={i}>
@@ -191,7 +206,7 @@ export default function AdminPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="transition hover:bg-white/[0.02]">
+                  <tr key={user.id} className="transition hover:bg-white/2">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {user.imageUrl ? (
@@ -238,22 +253,37 @@ export default function AdminPage() {
                         <span className="text-xs text-white/25">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => togglePlan(user)}
-                        disabled={updatingId === user.id}
-                        className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
-                          user.plan === "pro"
-                            ? "bg-white/10 text-white/70 hover:bg-white/15"
-                            : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
-                        }`}
-                      >
-                        {updatingId === user.id
-                          ? "Updating…"
-                          : user.plan === "pro"
-                            ? "Downgrade"
-                            : "Upgrade to Pro"}
-                      </button>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        {user.plan !== "pro" && (
+                          <select
+                            value={intervalByUser[user.id] || "yearly"}
+                            onChange={(e) =>
+                              setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
+                            }
+                            disabled={updatingId === user.id}
+                            className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 px-3 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                          >
+                            <option value="monthly">1 month</option>
+                            <option value="yearly">1 year</option>
+                          </select>
+                        )}
+                        <button
+                          onClick={() => togglePlan(user)}
+                          disabled={updatingId === user.id}
+                          className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                            user.plan === "pro"
+                              ? "bg-white/10 text-white/70 hover:bg-white/15"
+                              : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
+                          }`}
+                        >
+                          {updatingId === user.id
+                            ? "Updating…"
+                            : user.plan === "pro"
+                              ? "Downgrade"
+                              : "Upgrade to Pro"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

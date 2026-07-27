@@ -1,8 +1,20 @@
 import "server-only";
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 
 const ACTIVE_STATUSES = ["active", "trialing"];
+
+// Short-lived last-known-good cache, keyed by clerk_user_id. Exists only to
+// bridge brief Supabase blips: on a genuine query error, serve the last
+// verified plan if still fresh, otherwise fail closed to "free". Never used
+// to grant pro from Clerk metadata alone - Supabase stays the sole source
+// of truth for *active* pro access, error or not.
+const PLAN_CACHE_TTL_MS = 60_000;
+const planCache = new Map();
+
+export function invalidatePlanCache(userId) {
+  if (userId) planCache.delete(userId);
+}
 
 export async function getUserPlan(userId) {
   if (!userId) {
@@ -17,36 +29,89 @@ export async function getUserPlan(userId) {
 
   if (error) {
     console.error("GET_USER_PLAN_SUPABASE_ERROR:", error);
+
+    const cached = planCache.get(userId);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.plan;
+    }
+
+    // No fresh cached value and Supabase itself errored - fail closed
+    // rather than falling through to Clerk metadata, which isn't a
+    // verified source of truth for revocation.
+    return "free";
   }
+
+  let plan = "free";
+  let isExpired = false;
 
   if (data?.plan === "pro" && ACTIVE_STATUSES.includes(data.status)) {
     if (!data.current_period_end) {
-      return "pro";
+      plan = "pro";
+    } else {
+      const periodEnd = new Date(data.current_period_end).getTime();
+      if (Number.isNaN(periodEnd) || periodEnd > Date.now()) {
+        plan = "pro";
+      } else {
+        isExpired = true;
+      }
     }
+  }
 
-    const periodEnd = new Date(data.current_period_end).getTime();
+  if (plan === "free" && !data) {
+    // Legitimate "no row at all yet" case (Supabase queried successfully,
+    // nothing on file) - bridges the window between a successful checkout
+    // and the webhook writing the Supabase row. Deliberately NOT used when
+    // a row exists but is expired/inactive: Clerk's publicMetadata is only
+    // ever cleared by a webhook (real subscriptions) or the admin route
+    // (manual grants) - an expired row has neither in flight, so falling
+    // through here would resurrect access from stale metadata forever.
+    const user = await currentUser();
 
-    if (Number.isNaN(periodEnd) || periodEnd > Date.now()) {
-      return "pro";
+    if (
+      user?.publicMetadata?.plan === "pro" ||
+      user?.publicMetadata?.proAccess === true
+    ) {
+      plan = "pro";
     }
   }
 
-  const user = await currentUser();
+  if (isExpired) {
+    // Manually-granted pro (admin route) has no real Razorpay subscription
+    // behind it, so no webhook ever fires to downgrade it - this is the
+    // only place that happens, lazily, on the next time anything checks
+    // this user's plan. Real subscriptions should already be caught up by
+    // their own webhook before current_period_end passes; this is a safety
+    // net for both, not admin-grant-specific.
+    await supabase
+      .from("subscriptions")
+      .update({ plan: "free", status: "expired", updated_at: new Date().toISOString() })
+      .eq("clerk_user_id", userId);
 
-  if (
-    user?.publicMetadata?.plan === "pro" ||
-    user?.publicMetadata?.proAccess === true
-  ) {
-    return "pro";
+    try {
+      const clerk = await clerkClient();
+      const clerkUser = await clerk.users.getUser(userId);
+
+      // Same field set markUserFree() clears on a real cancellation/expiry
+      // webhook - this is the manual-grant/missed-webhook equivalent, so it
+      // shouldn't leave a different (stale) shape behind in publicMetadata.
+      await clerk.users.updateUser(userId, {
+        publicMetadata: {
+          ...clerkUser.publicMetadata,
+          plan: "free",
+          proAccess: false,
+          billingInterval: null,
+          subscriptionStatus: "expired",
+          currentPeriodEnd: null,
+          razorpaySubscriptionId: null,
+          razorpayPlanId: null,
+        },
+      });
+    } catch (metaError) {
+      console.error("GET_USER_PLAN_SELF_HEAL_CLERK_ERROR:", metaError);
+    }
   }
 
-  return "free";
-}
+  planCache.set(userId, { plan, expiresAt: Date.now() + PLAN_CACHE_TTL_MS });
 
-export function canAccessEffect(effectTier = "free", userPlan = "free") {
-  if (!effectTier || effectTier === "free") {
-    return true;
-  }
-
-  return userPlan === "pro";
+  return plan;
 }

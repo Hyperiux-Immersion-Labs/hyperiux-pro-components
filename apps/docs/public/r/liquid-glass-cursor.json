@@ -8,18 +8,33 @@
   ],
   "registryDependencies": [],
   "exportName": "LiquidGlassCursor",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.js",
       "type": "registry:component",
-      "target": "components/hyperiux/liquid-glass-cursor/index.js"
+      "target": "src/components/effects/liquid-glass-cursor/index.js"
     },
     {
       "path": "LiquidText.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/liquid-glass-cursor/LiquidText.jsx"
+      "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
     }
-  ],
-  "tier": "pro"
+  ]
 }

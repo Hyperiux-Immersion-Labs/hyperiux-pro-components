@@ -49,7 +49,7 @@ function PixelateSvgFilter({ id, size, crossLayers }) {
   );
 }
 
-export function SvgPixelReveal({
+export default function SvgPixelReveal({
   src,
   alt = "Image",
   initialPixelSize = 22,

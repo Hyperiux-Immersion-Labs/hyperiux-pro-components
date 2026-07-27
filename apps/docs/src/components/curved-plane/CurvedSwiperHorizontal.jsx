@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 // GLSL shaders with proper horizontal deformation only
 const vertexShader = `
 uniform vec2 uOffset;
@@ -117,6 +118,10 @@ const CurvedPlaneHorizontal = () => {
   const dragging = useRef(false);
   const lastX = useRef(0);
   const lastTime = useRef(0);
+  const reduceMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -146,6 +151,23 @@ const CurvedPlaneHorizontal = () => {
   useEffect(() => {
     if (!imagesLoaded) return;
 
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    const onReduceMotionChange = (event) => {
+      reduceMotionRef.current = event.matches;
+      if (event.matches) {
+        velocityRef.current = 0;
+        scrollVelocityRef.current = 0;
+        scrollIntensityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+      }
+    };
+    if (mq) {
+      reduceMotionRef.current = mq.matches;
+      mq.addEventListener?.("change", onReduceMotionChange);
+    }
+
     const container = containerRef.current;
     const viewHeight = window.innerHeight * 0.8;
     const viewWidth = window.innerWidth;
@@ -163,6 +185,7 @@ const CurvedPlaneHorizontal = () => {
     renderer.setSize(viewWidth, viewHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.domElement.style.cursor = "grab";
+    renderer.domElement.setAttribute("aria-hidden", "true");
     container.appendChild(renderer.domElement);
 
     sceneRef.current = scene;
@@ -241,45 +264,59 @@ const CurvedPlaneHorizontal = () => {
       });
     };
 
-    // Render Loop
-    const animate = () => {
-      // Apply scroll velocity with lerp
-      if (Math.abs(scrollVelocityRef.current) > 0.0001) {
-        targetOffsetRef.current += scrollVelocityRef.current;
-        scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
-      }
+    const loop = createSuspendedRaf({
+      root: container,
+      onFrame: () => {
+        if (reduceMotionRef.current) {
+          // Snap carousel — no inertia, scroll coast, or curve deformation.
+          velocityRef.current = 0;
+          scrollVelocityRef.current = 0;
+          scrollIntensityRef.current = 0;
+          targetDeformationRef.current = 0;
+          deformationRef.current = 0;
+          offsetRef.current = targetOffsetRef.current;
+          updateMeshes();
+          renderer.render(scene, camera);
+          return;
+        }
 
-      // Decay scroll intensity more slowly
-      scrollIntensityRef.current = lerp(scrollIntensityRef.current, 0, 0.02);
+        // Apply scroll velocity with lerp
+        if (Math.abs(scrollVelocityRef.current) > 0.0001) {
+          targetOffsetRef.current += scrollVelocityRef.current;
+          scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
+        }
 
-      // Momentum for drag
-      if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-        targetOffsetRef.current += velocityRef.current;
-        velocityRef.current *= MOMENTUM_FRICTION;
-      }
+        // Decay scroll intensity more slowly
+        scrollIntensityRef.current = lerp(scrollIntensityRef.current, 0, 0.02);
 
-      // Only reset deformation when not dragging and scroll intensity is very low
-      if (!dragging.current) {
-        targetDeformationRef.current = lerp(targetDeformationRef.current, 0, 0.05);
-      }
+        // Momentum for drag
+        if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
+          targetOffsetRef.current += velocityRef.current;
+          velocityRef.current *= MOMENTUM_FRICTION;
+        }
 
-      // Smooth interpolation
-      offsetRef.current = lerp(
-        offsetRef.current,
-        targetOffsetRef.current,
-        SCROLL_SMOOTHNESS
-      );
-      deformationRef.current = lerp(
-        deformationRef.current,
-        targetDeformationRef.current,
-        DEFORMATION_SMOOTHNESS
-      );
+        // Only reset deformation when not dragging and scroll intensity is very low
+        if (!dragging.current) {
+          targetDeformationRef.current = lerp(targetDeformationRef.current, 0, 0.05);
+        }
 
-      updateMeshes();
-      renderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
+        // Smooth interpolation
+        offsetRef.current = lerp(
+          offsetRef.current,
+          targetOffsetRef.current,
+          SCROLL_SMOOTHNESS
+        );
+        deformationRef.current = lerp(
+          deformationRef.current,
+          targetDeformationRef.current,
+          DEFORMATION_SMOOTHNESS
+        );
+
+        updateMeshes();
+        renderer.render(scene, camera);
+      },
+    });
+    loop.start();
 
     const onResize = () => {
       const viewHeight = window.innerHeight * 0.8;
@@ -314,6 +351,17 @@ const CurvedPlaneHorizontal = () => {
       const delta = (dx / spacing) * DRAG_SENSITIVITY;
       targetOffsetRef.current -= delta;
 
+      if (reduceMotionRef.current) {
+        velocityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        lastX.current = currentX;
+        lastTime.current = currentTime;
+        e.preventDefault();
+        return;
+      }
+
       // Calculate velocity for momentum and deformation
       const instantVelocity = dx / dt;
 
@@ -345,8 +393,20 @@ const CurvedPlaneHorizontal = () => {
     const onWheel = (e) => {
       e.preventDefault();
 
-      // Calculate scroll intensity based on deltaY magnitude
       const rawScrollDelta = e.deltaY;
+
+      if (reduceMotionRef.current) {
+        targetOffsetRef.current += rawScrollDelta * 0.0004;
+        velocityRef.current = 0;
+        scrollVelocityRef.current = 0;
+        scrollIntensityRef.current = 0;
+        targetDeformationRef.current = 0;
+        deformationRef.current = 0;
+        offsetRef.current = targetOffsetRef.current;
+        return;
+      }
+
+      // Calculate scroll intensity based on deltaY magnitude
       const scrollIntensity = Math.abs(rawScrollDelta) * 0.002;
 
       // Update scroll intensity (accumulate for sustained scrolling)
@@ -383,6 +443,8 @@ const CurvedPlaneHorizontal = () => {
     dom.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
+      loop.destroy();
+      mq?.removeEventListener?.("change", onReduceMotionChange);
       window.removeEventListener("resize", onResize);
       dom.removeEventListener("mousedown", onPointerDown);
       dom.removeEventListener("mousemove", onPointerMove);

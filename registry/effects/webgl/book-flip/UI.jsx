@@ -1,6 +1,6 @@
 'use client'
-import { useEffect } from"react";
-import { usePage } from"./PageContext";
+import { useEffect } from "react";
+import { usePage } from "./PageContext";
 
 export const UI = ({ images = [] }) => {
  const { page, setPage } = usePage();
@@ -42,7 +42,7 @@ export const UI = ({ images = [] }) => {
  </main>
 
  <div className="relative z-20 h-screen pointer-events-none">
-    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-xl:justify-center max-xl:gap-8 max-md:gap-4 max-xl:top-[85%] max-md:top-[80%]">
+    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-[1025px]:justify-center max-[1025px]:gap-8 max-md:gap-4 max-[1025px]:top-[85%] max-md:top-[80%]">
     <p className="text-[8vw] max-md:text-[10vw] leading-[1.2] text-white">
         BOOK 
        

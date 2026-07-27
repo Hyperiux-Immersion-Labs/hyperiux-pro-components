@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import { getAllPrivateEffects, getEffectBySlug } from "@/lib/registry";
+import { getAllPrivateEffects, getEffectMetadata, getEffectSource } from "@/lib/registry";
 
 import {
   getAllSanityEffectEntries,
@@ -9,11 +9,52 @@ import {
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
-import { getUserPlan, canAccessEffect } from "@/lib/subscription";
+import { getUserPlan } from "@/lib/subscription";
+import { getEffectAccessDecision } from "@/lib/effect-access";
 import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { resolveOgImageUrl } from "@/lib/media";
+
+// Mirrors effect-detail.jsx's isCodeOnlyBlock - a Sanity portable-text block
+// whose only content is a single "code"-marked span (used for freeform code
+// snippets outside of explicit effectCodeBlock entries).
+function isCodeOnlyBlock(block) {
+  const children = block?.children || [];
+
+  if (!children.length) return false;
+
+  return children.every(
+    (child) => child?._type === "span" && (child.marks || []).includes("code")
+  );
+}
+
+// Sanity content.body can carry full Pro source two ways: explicit
+// effectCodeBlock entries (block.code) and "code-only" portable-text blocks
+// (block.children[].text). effect-detail.jsx already gates which component
+// renders based on isLocked, but that only controls the UI - the underlying
+// block data still gets passed to the client component and serialized into
+// the page's RSC payload regardless. Strip the actual code text server-side
+// when locked, so it's never present in what reaches the browser at all.
+function redactLockedBody(body, isLocked) {
+  if (!isLocked || !Array.isArray(body)) return body;
+
+  return body.map((block) => {
+    if (block?._type === "effectCodeBlock") {
+      const { code, ...rest } = block;
+      return rest;
+    }
+
+    if (block?._type === "block" && isCodeOnlyBlock(block)) {
+      return {
+        ...block,
+        children: block.children.map((child) => ({ ...child, text: "" })),
+      };
+    }
+
+    return block;
+  });
+}
 
 function getFallbackContent(effect, effectSlug) {
   if (!effect) return null;
@@ -101,6 +142,24 @@ function getSanityFaqs(content) {
     .filter((item) => item.question && item.answer);
 }
 
+// Registry file content (full component source) must never cross into a
+// "use client" component's props - Next.js serializes the whole prop value
+// into the page's initial HTML/RSC payload regardless of whether the client
+// component actually renders it, so an unauthenticated visitor could read
+// Pro effect source straight out of view-source even though the UI shows a
+// lock screen. The rendered "Source Code" section is driven entirely by
+// Sanity content blocks (which already gate on isLocked) - this raw
+// registry content isn't used on this page at all, only by the
+// separately-authenticated CLI download route.
+function stripFileContent(effect) {
+  if (!effect?.files?.length) return effect;
+
+  return {
+    ...effect,
+    files: effect.files.map(({ content, ...rest }) => rest),
+  };
+}
+
 function normalize(value = "") {
   return value
     .toString()
@@ -135,7 +194,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug, effectSlug } = await params;
-  const effect = getEffectBySlug(effectSlug);
+  const effect = getEffectMetadata(effectSlug);
   const content =
     (await getSanityEffectContent(slug, effectSlug)) ||
     getFallbackContent(effect, effectSlug);
@@ -155,19 +214,32 @@ export async function generateMetadata({ params }) {
 export default async function EffectPage({ params }) {
   const { slug, effectSlug } = await params;
 
-  const effect = getEffectBySlug(effectSlug);
+  // Metadata only - no Pro source content read yet. Auth/plan is resolved
+  // from this before we ever touch source file bytes, so an unauthorized
+  // request never has Pro source attached to its response payload.
+  const effectMeta = getEffectMetadata(effectSlug);
   const content =
     (await getSanityEffectContent(slug, effectSlug)) ||
-    getFallbackContent(effect, effectSlug);
+    getFallbackContent(effectMeta, effectSlug);
 
-  if (!content && !effect) {
+  if (!content && !effectMeta) {
     notFound();
   }
 
   const { userId } = await auth();
-  const userPlan = await getUserPlan(userId);
-  const effectTier = content.tier ?? effect?.tier ?? "pro";
-  const isLocked = !canAccessEffect(effectTier, userPlan);
+  const effectTier = content.tier ?? effectMeta?.tier ?? "pro";
+
+  // userPlan drives general "are you Pro" UI (upgrade CTAs etc.) independent
+  // of this specific effect; access is the actual per-effect gating decision,
+  // shared with the CLI and legacy web API routes - see docs/effect-access.md.
+  const [userPlan, access] = await Promise.all([
+    getUserPlan(userId),
+    getEffectAccessDecision({ effectTier, clerkUserId: userId }),
+  ]);
+  const isLocked = !access.allowed;
+
+  // Only attach Pro source content once the requester is confirmed authorized.
+  const effect = isLocked ? effectMeta : getEffectSource(effectSlug);
 
   const sanityEntries = await getAllSanityEffectEntries();
   const allEffects = buildEffectsFromSanity(sanityEntries);
@@ -206,6 +278,10 @@ export default async function EffectPage({ params }) {
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
 
+  // Only the object actually sent to the client needs redaction - FAQ/SEO
+  // extraction above already ran against the full `content`.
+  const clientContent = { ...content, body: redactLockedBody(content.body, isLocked) };
+
   return (
     <>
       <WebpageJsonLd metadata={pageMetadata} />
@@ -214,8 +290,8 @@ export default async function EffectPage({ params }) {
       <EffectDetailContent
         slug={effectSlug}
         categorySlug={slug}
-        effect={effect}
-        content={content}
+        effect={stripFileContent(effect)}
+        content={clientContent}
         relatedEffects={relatedEffects}
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}

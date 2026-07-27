@@ -11,12 +11,19 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
+import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const SCALE_OFFSCREEN = 1.2;
 const ROTATION_DEG = 6;
 const SCALE_CENTER = 1.0;
+
+// Reduced motion: keep the off-center rotate/scale parallax, just far
+// weaker - "reduce", not remove, per the request. The main gallery translate
+// (slide-to-slide navigation) and thumbnail-strip translate are left alone;
+// both are layout-critical (exact px alignment), not decorative parallax.
+const REDUCED_MOTION_FACTOR = 0.25;
 
 const FRAME_W = 500;
 const FRAME_H = 600;
@@ -62,6 +69,7 @@ export default function ScrollParallaxGallery({
   const thumbRightRef = useRef(null);
 
   const lenis = useLenis();
+  const reducedMotion = prefersReducedMotion();
 
   const isMobileViewport = isMobile ?? false;
 
@@ -89,15 +97,19 @@ export default function ScrollParallaxGallery({
         const dist = i - pos;
         const absDist = Math.abs(dist);
 
-        const maxRot = ROTATION_DEG;
+        const maxRot = reducedMotion
+          ? ROTATION_DEG * REDUCED_MOTION_FACTOR
+          : ROTATION_DEG;
         const rot =
           dist > 0
             ? Math.min(absDist, 1) * maxRot
             : -Math.min(absDist, 1) * maxRot;
 
-        const scale =
-          SCALE_CENTER +
-          Math.min(absDist, 1) * (SCALE_OFFSCREEN - SCALE_CENTER);
+        const scaleDelta = reducedMotion
+          ? (SCALE_OFFSCREEN - SCALE_CENTER) * REDUCED_MOTION_FACTOR
+          : SCALE_OFFSCREEN - SCALE_CENTER;
+
+        const scale = SCALE_CENTER + Math.min(absDist, 1) * scaleDelta;
 
         el.style.transform = `rotate(${rot}deg) scale(${scale})`;
       });
@@ -115,7 +127,7 @@ export default function ScrollParallaxGallery({
       const rounded = Math.round(pos);
       setActiveIndex(Math.max(0, Math.min(total - 1, rounded)));
     },
-    [total, slideW, thumbItem],
+    [total, slideW, thumbItem, reducedMotion],
   );
 
   useEffect(() => {
@@ -290,12 +302,13 @@ export default function ScrollParallaxGallery({
                     ref={(el) => (itemInnerRefs.current[i] = el)}
                     className="absolute inset-0 will-change-transform"
                     style={{
-                      transform: `rotate(${i === 0 ? 0 : ROTATION_DEG}deg) scale(${i === 0 ? 1 : SCALE_OFFSCREEN})`,
+                      transform: `rotate(${i === 0 ? 0 : reducedMotion ? ROTATION_DEG * REDUCED_MOTION_FACTOR : ROTATION_DEG}deg) scale(${i === 0 ? 1 : reducedMotion ? SCALE_CENTER + (SCALE_OFFSCREEN - SCALE_CENTER) * REDUCED_MOTION_FACTOR : SCALE_OFFSCREEN})`,
                       transformOrigin: "center center",
                       borderRadius: 0,
                       filter: "none",
                     }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={slide.src}
                       alt={slide.id}
@@ -373,6 +386,7 @@ function ThumbStrip({
               borderRadius: 0,
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slide.src}
               alt={slide.id}

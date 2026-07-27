@@ -53,16 +53,9 @@ const faqItems = [
   {
     id: "faq1",
     question:
-      "When does Pro open?",
+      "Is Pro available now?",
     answer:
-      "Vault Pro opens next week through Founding Access. You can join the list today, preview Pro effects, and start using Free Core immediately.",
-  },
-  {
-    id: "faq2",
-    question:
-      "Why not open paid Pro today?",
-    answer:
-      "We are opening Pro in a staged way so the first users get a clean install experience, clear licensing, and fast launch-feedback fixes before broader access.",
+      "Yes. Free Core is available immediately with no account required, and Pro is available today through self-serve checkout - no invite, approval, or waitlist needed.",
   },
   {
     id: "faq3",
@@ -137,7 +130,7 @@ const faqItems = [
     question:
       "Do you offer discounts for students, nonprofits, or open-source projects?",
     answer:
-      "We review student, nonprofit, and open-source discount requests case by case - email hi@hyperiux.com with a short description of your use case.",
+      "We review student, nonprofit, and open-source discount requests case by case - email hello@hyperiux.com with a short description of your use case.",
   },
   
 

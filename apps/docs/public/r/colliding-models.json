@@ -9,35 +9,37 @@
     "@react-three/drei",
     "@react-three/rapier",
     "@react-three/postprocessing",
-    "postprocessing",
     "maath"
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "colliding-models.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/colliding-models.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
     },
     {
-      "path": "MagneticEffect.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/MagneticEffect.jsx"
-    },
-    {
-      "path": "models/hyperiux-logo.glb",
-      "type": "registry:asset",
-      "target": "public/models/hyperiux-logo.glb",
-      "source": "/models/hyperiux-logo.glb"
-    },
-    {
-      "path": "models/c-transformed.glb",
-      "type": "registry:asset",
-      "target": "public/models/c-transformed.glb",
-      "source": "/models/c-transformed.glb"
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/colliding-models/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/colliding-models/createSuspendedRaf.js"
+    }
+  ]
 }

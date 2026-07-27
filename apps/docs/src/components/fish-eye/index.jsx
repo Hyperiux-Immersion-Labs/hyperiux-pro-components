@@ -5,6 +5,8 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
+import { createVisibilityGate } from './createSuspendedRaf'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
@@ -124,8 +126,11 @@ function ImageNodeMaterial({ src, isMobile }) {
 }
 
 export default function FishEye({ src }) {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(pointer: coarse)')
@@ -151,15 +156,26 @@ export default function FishEye({ src }) {
     }
   }, [src, isMobile])
 
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: rootRef,
+      onChange: (active) => setFrameloop(active ? 'always' : 'never'),
+    })
+    setFrameloop(gate.isActive ? 'always' : 'never')
+    return () => gate.destroy()
+  }, [])
+
   if (isMobile) return null
 
   if (!objectUrl) return null
 
   return (
+    <div ref={rootRef} className="h-full w-full">
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0, 5], fov: 45 }}
       className="h-full w-full"
+      frameloop={frameloop}
       style={{
         pointerEvents: isMobile ? 'none' : 'auto',
         touchAction: isMobile ? 'none' : 'auto',
@@ -179,5 +195,21 @@ export default function FishEye({ src }) {
     >
       <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
     </Canvas>
+      {prefersReducedMotion && (
+        <div
+          aria-live="polite"
+          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
+        >
+          <h2 className="text-sm leading-none text-black">
+            The lens keeps bending.
+          </h2>
+          <p className="mt-2 text-xs leading-5 text-black">
+            Fish Eye distorts the image as your cursor moves across it.
+            Since the warp is driven entirely by motion, there&apos;s no
+            reduced motion version to fall back on.
+          </p>
+        </div>
+      )}
+    </div>
   )
 }

@@ -108,25 +108,33 @@ export default function TextFillAnimation({
         textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
       );
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.25,
-          },
-        })
-        .to(
-          characters,
-          {
-            className: 'split-chars show',
-            duration: 0.4,
-            stagger: 0.05,
-            ease: 'power2.inOut',
-          },
-          0
-        );
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        gsap.set(characters, { className: 'split-chars show' });
+      } else {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: 0.25,
+            },
+          })
+          .to(
+            characters,
+            {
+              className: 'split-chars show',
+              duration: 0.4,
+              stagger: 0.05,
+              ease: 'power2.inOut',
+            },
+            0
+          );
+      }
 
       return () => {
         split.revert();
@@ -164,7 +172,7 @@ export default function TextFillAnimation({
        
 
         <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
-          <p className="text-sm leading-relaxed text-black/35 max-md:text-lg max-sm:text-sm">
+          <p className="text-sm leading-relaxed text-black/35 max-[1025px]:text-lg max-md:text-sm">
             Less friction.
             <br />
             More building.
@@ -173,13 +181,13 @@ export default function TextFillAnimation({
 
         <div className="absolute bottom-[6vh] right-[5vw] text-right">
           <div className="space-y-1">
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Systems
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Motion
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Clarity
             </p>
           </div>

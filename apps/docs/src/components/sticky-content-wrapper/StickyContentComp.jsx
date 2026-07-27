@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useLenis } from "lenis/react";
+import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,6 +116,8 @@ export function StickyContentComp({
       return;
     }
 
+    const reducedMotion = prefersReducedMotion();
+
     const context = gsap.context(() => {
       // Initial element state
       const contents = contentRefsRef.current;
@@ -128,16 +131,20 @@ export function StickyContentComp({
         });
       });
 
+      // Reduced motion: images crossfade in place - no clip-path wipe or
+      // scale, so only the active image is visible at a time via autoAlpha.
       images.forEach((image, index) => {
         gsap.set(image, {
-          autoAlpha: 1,
+          autoAlpha: reducedMotion ? (index === 0 ? 1 : 0) : 1,
           zIndex: items.length - index,
           clipPath: "inset(0% 0% 0% 0%)",
-          scale: enableImageScaleFlow
-            ? index === 0
-              ? activeImageScale
-              : initialImageScale
-            : 1,
+          scale: reducedMotion
+            ? 1
+            : enableImageScaleFlow
+              ? index === 0
+                ? activeImageScale
+                : initialImageScale
+              : 1,
           transformOrigin: "center center",
         });
       });
@@ -213,16 +220,24 @@ export function StickyContentComp({
           )
           .to(
             currentImage,
-            {
-              clipPath: "inset(0% 0% 100% 0%)",
-              scale: enableImageScaleFlow ? exitImageScale : 1,
-              duration: stepGap,
-              ease: "none",
-            },
+            reducedMotion
+              ? { autoAlpha: 0, duration: stepGap, ease: "none" }
+              : {
+                  clipPath: "inset(0% 0% 100% 0%)",
+                  scale: enableImageScaleFlow ? exitImageScale : 1,
+                  duration: stepGap,
+                  ease: "none",
+                },
             stepStart,
           );
 
-        if (enableImageScaleFlow) {
+        if (reducedMotion) {
+          timeline.to(
+            nextImage,
+            { autoAlpha: 1, duration: stepGap, ease: "none" },
+            stepStart,
+          );
+        } else if (enableImageScaleFlow) {
           timeline.to(
             nextImage,
             {
@@ -299,6 +314,7 @@ export function StickyContentComp({
               }}
               className={`absolute inset-0 h-full w-full opacity-0 ${imageClassName}`}
             >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={item.image}
                 alt={item.alt || item.imageAlt || `sticky-image-${index + 1}`}

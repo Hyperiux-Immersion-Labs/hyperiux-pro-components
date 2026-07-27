@@ -8,7 +8,7 @@ import React from 'react'
 const Page = () => {
   return (
     <>
-    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
+    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
     <LenisSmoothScroll />
     <h1 className="text-[4vw] fixed top-[6vw] max-sm:top-[22vw] max-sm:text-[10vw] max-md:top-[20vw] inset-x-0 max-md:text-[6vw] mx-auto w-[90vw] text-center text-white z-30 pointer-events-none">
       Cards Runway

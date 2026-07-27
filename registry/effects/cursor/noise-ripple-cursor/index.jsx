@@ -1,8 +1,23 @@
 'use client'
-import { useEffect, useRef } from'react';
+import { useEffect, useRef, useState } from'react';
 import * as THREE from'three';
 
 import { registerFxTarget, unregisterFxTarget } from './2dCanvasTracker';
+import { createSuspendedRaf } from './createSuspendedRaf';
+
+function usePrefersReducedMotion() {
+ const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+ useEffect(() => {
+ const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+ const update = () => setPrefersReducedMotion(mediaQuery.matches);
+ update();
+ mediaQuery.addEventListener('change', update);
+ return () => mediaQuery.removeEventListener('change', update);
+ }, []);
+
+ return prefersReducedMotion;
+}
 
 const VERTEX_SRC = `
 varying vec2 vUv;
@@ -311,9 +326,10 @@ export const NoiseDietherShader = ({
  });
 
  const clock = new THREE.Clock();
- let raf = 0;
 
- const animate = () => {
+ const loop = createSuspendedRaf({
+ root: container,
+ onFrame: () => {
  mainMaterial.uniforms.uTime.value = clock.getElapsedTime();
 
  // Update FBO uniforms - only add influence if mouse is moving
@@ -341,15 +357,15 @@ export const NoiseDietherShader = ({
 
  // Render main scene
  renderer.render(scene, camera);
- raf = requestAnimationFrame(animate);
- };
- raf = requestAnimationFrame(animate);
+ },
+ });
+ loop.start();
 
- threeRef.current = { renderer, fboA, fboB, mainMaterial, fboMaterial, ro, raf, imageTexture };
+ threeRef.current = { renderer, fboA, fboB, mainMaterial, fboMaterial, ro, imageTexture };
 
  return () => {
  ro.disconnect();
- cancelAnimationFrame(raf);
+ loop.destroy();
  if (mouseStopTimeoutRef.current) {
  clearTimeout(mouseStopTimeoutRef.current);
  }
@@ -366,7 +382,7 @@ export const NoiseDietherShader = ({
  container.removeChild(renderer.domElement);
  }
  };
- }, [imageSrc, noiseColor, pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness]);
+}, [imageSrc, noiseColor, pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness]);
 
  return (
  <div
@@ -381,7 +397,7 @@ export const NoiseDietherShader = ({
 export default function NoiseRippleCursor({
  overlayColor ='bg-[#1825AA]/30',
  wrapperClassName ='h-screen w-screen',
- imageSrc = null,
+ imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
  shaderConfig = {
  pixelSize: .5,
  patternDensity: 1,
@@ -393,10 +409,12 @@ export default function NoiseRippleCursor({
  }
 }) {
  const { pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness } = shaderConfig;
+ const prefersReducedMotion = usePrefersReducedMotion();
  return (
  <div className={`${wrapperClassName} relative`}>
 
   {imageSrc && (
+  // eslint-disable-next-line @next/next/no-img-element
   <img
   src={imageSrc}
   alt="Background"
@@ -424,6 +442,21 @@ export default function NoiseRippleCursor({
  distortStrength={distortStrength}
  trailDarkness={trailDarkness}
  />
+ {prefersReducedMotion && (
+ <div
+   aria-live="polite"
+   className="pointer-events-none fixed top-24 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+ >
+   <h2 className="text-sm leading-none text-white">
+     The ripple keeps rolling.
+   </h2>
+   <p className="mt-2 text-xs leading-5 text-white/65">
+     Noise Ripple Cursor distorts the image live as your cursor
+     moves through it. The distortion is the effect itself, so
+     reduced motion can&apos;t be applied here.
+   </p>
+ </div>
+ )}
  </div>
  );
 }

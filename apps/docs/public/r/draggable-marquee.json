@@ -10,16 +10,36 @@
   "exportName": "DraggableMarquee",
   "exportKind": "default",
   "tier": "pro",
+  "version": "1.1.1",
+  "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-07-23",
+      "summary": "Offscreen pause now detaches only the marquee's own ticker callback instead of sleeping the global gsap.ticker, which froze every other GSAP animation on the page",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: auto-scroll and post-release throw momentum are disabled, drag remains fully interactive",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/index.jsx"
+      "target": "src/components/effects/draggable-marquee/index.jsx"
     },
     {
       "path": "DraggableMarqueeComp.jsx",
       "type": "registry:component",
-      "target": "components/hyperiux/DraggableMarqueeComp.jsx"
+      "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/draggable-marquee/createSuspendedRaf.js"
     }
   ]
 }

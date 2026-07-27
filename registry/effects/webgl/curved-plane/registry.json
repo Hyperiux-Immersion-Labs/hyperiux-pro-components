@@ -1,17 +1,19 @@
 {
   "name": "curved-plane",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "Curved Plane",
   "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
   "category": "webgl",
   "dependencies": [
-    "three",
-    "gsap"
+    "three"
   ],
   "registryDependencies": [],
-  "previewUrl": "/curved-plane",
+  "previewUrl": "/demo/curved-plane",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "CurvedPlane",
+  "exportKind": "default",
   "importPath": "@/components/effects/curved-plane",
   "target": "src/components/effects/curved-plane",
   "files": [
@@ -26,6 +28,18 @@
     {
       "path": "CurvedSwiperVertical.jsx",
       "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/curved-plane/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ]
 }

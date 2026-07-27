@@ -3,12 +3,26 @@
   "type": "registry:component",
   "title": "Interactive Arrows",
   "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout. Scroll-driven background color transitions via GSAP ScrollTrigger.",
-  "dependencies": [
-    "gsap"
-  ],
+  "dependencies": [],
   "registryDependencies": [],
   "exportName": "InteractiveArrows",
-  "exportKind": "named",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "files": [
     {
       "path": "index.jsx",
@@ -46,10 +60,14 @@
       "target": "src/components/effects/interactive-arrows/points.jsx"
     },
     {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
+    },
+    {
       "path": "utils.js",
       "type": "registry:component",
       "target": "src/components/effects/interactive-arrows/utils.js"
     }
-  ],
-  "tier": "pro"
+  ]
 }

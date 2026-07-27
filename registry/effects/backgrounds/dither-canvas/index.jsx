@@ -1,6 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot() {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function getServerReducedMotionSnapshot() {
+  return false;
+}
+
+// React hook form, for JSX output that depends on the preference (not just
+// an imperative tween). Safe to call during render - returns false on the
+// server.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot
+  );
+}
 
 /* ── constants  */
 const FC = 80;
@@ -488,6 +517,7 @@ export default function DitherCanvas({
   className = "",
 }) {
   const ref = useRef(null);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const canvas = ref.current;
@@ -704,12 +734,12 @@ export default function DitherCanvas({
 
     let phase = 0;
     let frame = 0;
-    let rafId = 0;
-
     const tpBuf = new Float32Array(TM * 4);
     const tlBuf = new Float32Array(TM);
 
-    const render = () => {
+    const loop = createSuspendedRaf({
+      root: canvas,
+      onFrame: () => {
       if (video.readyState >= 2) {
         const timestamp = now();
 
@@ -808,18 +838,17 @@ export default function DitherCanvas({
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
+      },
+    });
 
-      rafId = requestAnimationFrame(render);
-    };
-
-    render();
+    loop.start();
 
     return () => {
       isDisposed = true;
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
 
-      cancelAnimationFrame(rafId);
+      loop.destroy();
 
       video.pause();
       video.removeAttribute("src");
@@ -850,14 +879,31 @@ export default function DitherCanvas({
         className={`absolute inset-0 block h-full w-full bg-black ${className}`.trim()}
       />
 
-      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-xl:hidden">
+      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-[1025px]:hidden">
         {cursorHint}
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-md:text-sm max-xl:text-lg text-white/50 max-xl:block">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-[1025px]:text-sm max-[1025px]:text-lg text-white/50 max-[1025px]:block">
           Open on desktop for the full experience - cursor effect included.
         </p>
+      )}
+
+      {reducedMotion && (
+        <div
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
+        >
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
+            This effect can&apos;t be reduced.
+          </h2>
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect is a continuous
+            cursor-driven fluid distortion rendered every frame, and
+            can&apos;t be simplified to a fade without losing the effect
+            entirely.
+          </p>
+        </div>
       )}
     </>
   );

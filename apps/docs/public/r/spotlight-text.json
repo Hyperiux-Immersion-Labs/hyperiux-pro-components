@@ -6,13 +6,33 @@
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "SpotlightText",
-  "exportKind": "named",
-  "files": [
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
     {
-      "path": "spotlight-text.jsx",
-      "type": "registry:component",
-      "target": "components/hyperiux/spotlight-text.jsx"
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added reduced-motion support for accessible lower-motion spotlight tracking.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-02-10",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
-  "tier": "pro"
+  "files": [
+    {
+      "path": "index.jsx",
+      "type": "registry:component",
+      "target": "src/components/effects/spotlight-text/index.jsx"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "type": "registry:component",
+      "target": "src/components/effects/spotlight-text/createSuspendedRaf.js"
+    }
+  ]
 }

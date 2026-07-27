@@ -2,10 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createSuspendedRaf } from "./createSuspendedRaf";
 
 //  Constants
 const MOUSE_OFFSCREEN = -9999;
 const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
+
+const LERP_SPEED = 0.1;
+const FADE_SPEED = 0.04;
+
+// Reduced motion: spread (spotlight radius, web reach) and speed (lerp/fade)
+// are scaled down, not frozen — matches the convention used elsewhere in
+// this repo (parallax-slider, text-convergence, parallax-gallery).
+const REDUCED_MOTION_FACTOR = 0.6;
 
 // GLSL Shaders 
 
@@ -87,7 +96,6 @@ export default function SpiderParticles({
 
     let width = mount.clientWidth || window.innerWidth;
     let height = mount.clientHeight || window.innerHeight;
-    let animId;
 
     const _glowColor     = new THREE.Color(glowColor);
     const _particleColor = new THREE.Color(particleColor);
@@ -97,7 +105,7 @@ export default function SpiderParticles({
    
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 1);
     mount.appendChild(renderer.domElement);
@@ -221,7 +229,7 @@ export default function SpiderParticles({
       uniforms: {
         uColor:          { value: _particleColor },
         uGlow:           { value: _glowColor },
-        uSize:           { value: particleSize * window.devicePixelRatio },
+        uSize:           { value: particleSize * Math.min(window.devicePixelRatio, 2) },
         uMouse:          { value: new THREE.Vector2(MOUSE_OFFSCREEN, MOUSE_OFFSCREEN) },
         uSpotlightRadius: { value: spotlightRadius },
         uGlowEnabled:    { value: particlesGlow },
@@ -249,7 +257,7 @@ export default function SpiderParticles({
       uniforms: {
         uColor:       { value: _centerColor },
         uGlow:        { value: _glowColor },
-        uSize:        { value: particleSize * window.devicePixelRatio },
+        uSize:        { value: particleSize * Math.min(window.devicePixelRatio, 2) },
         uGlowEnabled: { value: particlesGlow },
         uAlpha:       { value: 0.0 },
       },
@@ -296,10 +304,27 @@ export default function SpiderParticles({
     };
     window.addEventListener("resize", onResize);
 
+    let reduceMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)"
+    );
+    const onReduceMotionChange = (event) => {
+      reduceMotion = event.matches;
+    };
+    reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
+
     //  Animation Loop 
 
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
+    const loop = createSuspendedRaf({
+      root: mount,
+      onFrame: () => {
+      // Reduced motion: scale down speed (lerp/fade) and spread (spotlight
+      // radius, web reach) rather than freezing the effect outright.
+      const lerpSpeed   = reduceMotion ? LERP_SPEED * REDUCED_MOTION_FACTOR       : LERP_SPEED;
+      const fadeSpeed   = reduceMotion ? FADE_SPEED * REDUCED_MOTION_FACTOR       : FADE_SPEED;
+      const spotlightR  = reduceMotion ? spotlightRadius * REDUCED_MOTION_FACTOR  : spotlightRadius;
+      const connectDist = reduceMotion ? mouseConnectDist * REDUCED_MOTION_FACTOR : mouseConnectDist;
 
       // Fade the entire effect in/out as cursor enters or leaves
       mouseEntryAlpha = mousePresent
@@ -323,6 +348,7 @@ export default function SpiderParticles({
       particleMat.uniforms.uMouse.value.copy(smoothMouse);
       particleMat.uniforms.uAlpha.value = mouseEntryAlpha;
       cursorMat.uniforms.uAlpha.value   = mouseEntryAlpha;
+      particleMat.uniforms.uSpotlightRadius.value = spotlightR;
 
       // Move cursor dot
       if (smoothMouse.x > MOUSE_THRESHOLD) {
@@ -343,9 +369,9 @@ export default function SpiderParticles({
           const dy = py - smoothMouse.y;
           const d  = Math.sqrt(dx * dx + dy * dy);
 
-          if (d >= mouseConnectDist) continue; // outside web radius, skip
+          if (d >= connectDist) continue; // outside web radius, skip
 
-          const alpha = (1 - d / mouseConnectDist) * 0.85 * mouseEntryAlpha;
+          const alpha = (1 - d / connectDist) * 0.85 * mouseEntryAlpha;
           const si    = mIdx * 6;
 
           // Line start = cursor position
@@ -375,14 +401,16 @@ export default function SpiderParticles({
       mouseLineGeo.attributes.color.needsUpdate    = true;
 
       renderer.render(scene, camera);
-    };
+      },
+    });
 
-    animate();
+    loop.start();
 
     //  Cleanup 
 
     return () => {
-      cancelAnimationFrame(animId);
+      reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
+      loop.destroy();
       window.removeEventListener("resize", onResize);
       if (mount) {
         mount.removeEventListener("mousemove",  onMove);

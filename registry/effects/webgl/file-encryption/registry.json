@@ -1,5 +1,6 @@
 {
   "name": "file-encryption",
+  "version": "1.1.0",
   "type": "registry:component",
   "title": "File Encryption",
   "description": "Auto-scrolling draggable card marquee with a WebGL laser beam that splits each card between its plain and ASCII/encrypted face, plus Canvas 2D particle scatter.",
@@ -8,9 +9,11 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/file-encryption",
+  "previewUrl": "/demo/file-encryption",
   "tier": "pro",
   "main": "index.jsx",
+  "exportName": "FileEncryption",
+  "exportKind": "default",
   "importPath": "@/components/effects/file-encryption",
   "target": "src/components/effects/file-encryption",
   "files": [
@@ -21,6 +24,22 @@
     {
       "path": "FileEncryptionComp.jsx",
       "target": "src/components/effects/file-encryption/FileEncryptionComp.jsx"
+    },
+    {
+      "path": "webgl-context-recovery.js",
+      "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
+    },
+    {
+      "path": "createSuspendedRaf.js",
+      "target": "src/components/effects/file-encryption/createSuspendedRaf.js"
+    }
+  ],
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Add prefers-reduced-motion support",
+      "breaking": false
     }
   ]
 }
