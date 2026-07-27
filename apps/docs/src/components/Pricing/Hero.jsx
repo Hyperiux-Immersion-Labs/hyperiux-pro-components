@@ -2,7 +2,6 @@
 import React from 'react'
 import Image from 'next/image'
 import SplitLine from '../WebsiteComps/SplitLine'
-import RandomBlur from '../WebsiteComps/RandomBlur'
 import { useFadeUp } from '../Animations/gsapAnimations'
 import LineReveal from '../Animations/LineReveal'
 

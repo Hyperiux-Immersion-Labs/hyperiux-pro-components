@@ -126,7 +126,7 @@ const Points = () => {
     window.addEventListener('resize', handleResize);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseenter', handleMouseEnter);
-    // canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('mouseleave', handleMouseLeave);
 
     const loop = createSuspendedRaf({
       root: canvas,
@@ -138,10 +138,10 @@ const Points = () => {
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseenter', handleMouseEnter);
-      // canvas.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener('mouseleave', handleMouseLeave);
       loop.destroy();
     };
-  }, [drawFrame, handleMouseEnter, handleMouseMove, handleResize, initializePoints]);
+  }, [drawFrame, handleMouseEnter, handleMouseLeave, handleMouseMove, handleResize, initializePoints]);
 
   return (
     <div className="w-full h-full ">

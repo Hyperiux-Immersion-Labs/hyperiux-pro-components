@@ -5,17 +5,13 @@ import SplitText from "gsap/dist/SplitText";
 
 gsap.registerPlugin(SplitText);
 
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
-
 const REDUCED_MOTION_FADE_DURATION = 0.18;
 const REDUCED_MOTION_FADE_EASE = "power2.out";
 
 export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [nextSlideIndex, setNextSlideIndex] = useState(0);
+  const [, setNextSlideIndex] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
   const isInside = useRef(false);
 

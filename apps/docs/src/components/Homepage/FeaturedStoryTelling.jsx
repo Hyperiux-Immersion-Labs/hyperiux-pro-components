@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import VaultBox from "../WebsiteComps/VaultBoxes";
-import SplitLine from "./SplitLine";
 import { prefersReducedMotion } from "@/lib/motion";
 import LineReveal from "../Animations/LineReveal";
 import SplitLineNoMask from "./SplitLineNoMask";

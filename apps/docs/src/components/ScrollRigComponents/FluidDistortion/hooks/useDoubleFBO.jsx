@@ -1,4 +1,3 @@
-import * as THREE from'three';
 import { useFBO } from'@react-three/drei';
 import { useMemo } from'react';
 

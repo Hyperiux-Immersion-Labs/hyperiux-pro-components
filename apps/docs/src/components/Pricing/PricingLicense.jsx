@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
-import RandomBlur from "../WebsiteComps/RandomBlur";
+import React from "react";
 import SplitLine from "../WebsiteComps/SplitLine";
 import LinkButton from "../WebsiteComps/LinkButton";
 import LineReveal from "../Animations/LineReveal";
@@ -27,19 +25,6 @@ const cards = [
 ];
 
 export default function PricingLicense() {
-  const underlineRef = useRef(null);
-  const isAnimating = useRef(false);
-
-  const handleLinkEnter = () => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
-    const el = underlineRef.current;
-    if (!el) return;
-    gsap.timeline({ onComplete: () => { isAnimating.current = false; } })
-      .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
-      .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
-  };
-
   return (
     <section className="w-full bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-[6vw] max-md:py-[16vw]">
 

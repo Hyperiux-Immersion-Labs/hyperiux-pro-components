@@ -337,7 +337,7 @@ function ThumbStrip({
   thumbGap,
   bgColor,
 }) {
-  const [isMobile, setIsMobile] = useState(false);
+  const [, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {

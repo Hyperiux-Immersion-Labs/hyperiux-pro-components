@@ -1,7 +1,6 @@
 import { createPortal, useFrame, useThree } from'@react-three/fiber';
 import { useCallback, useEffect, useMemo, useRef, useState } from'react';
-import { Camera, Color, Mesh, Scene, Texture, Vector2, Vector3 } from'three';
-import { ShaderPass } from'three/examples/jsm/Addons.js';
+import { Camera, Scene, Vector2, Vector3 } from'three';
 import { FluidEffectComponent } from'./FluidEffectComponent';
 import { useFBOs } from'./hooks/useFBOs';
 import { useMaterials } from'./hooks/useMaterials';

@@ -21,10 +21,6 @@ function prefersReducedMotion() {
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
 
-// vw units
-const SLIDE_WIDE = 65;
-const SLIDE_NARROW = 33;
-const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X = "5vw";
 
@@ -146,7 +142,6 @@ function ParallaxSlider({ images = [], bgColor = "#000000" }) {
                 >
                     {images.map((src, i) => {
                         const isWide = i % 2 === 0;
-                        const width = isWide ? SLIDE_WIDE : SLIDE_NARROW;
                         const slideClass = isWide
                             ? "max-md:w-[80vw] max-md:h-[50vh] w-[65vw] h-[43vw]"
                             : "max-md:w-[45vw] max-md:h-[50vh] w-[33vw] h-[43vw]";

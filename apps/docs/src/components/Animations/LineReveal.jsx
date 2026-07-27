@@ -17,7 +17,7 @@ function waitForFontsAndLayout() {
     if (typeof document !== "undefined" && document.fonts?.ready) {
       try {
         await document.fonts.ready;
-      } catch (_) {}
+      } catch {}
     }
 
     requestAnimationFrame(() => {

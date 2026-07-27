@@ -17,11 +17,6 @@ const IMAGE_HIDDEN_CLIP_PATH = "inset(50%)";
 const IMAGE_VISIBLE_CLIP_PATH = "inset(0%)";
 const IMAGE_VISIBILITY_HIDDEN = "hidden";
 const IMAGE_VISIBILITY_VISIBLE = "visible";
-const ITEM_LABEL_START_CODE = 97;
-
-const getItemLabel = (index) =>
-  `(${String.fromCharCode(ITEM_LABEL_START_CODE + index)}.)`;
-
 export default function InteractiveListPreviewComp({ items }) {
   const imageRefs = useRef([]);
   const imageContainerRef = useRef(null);

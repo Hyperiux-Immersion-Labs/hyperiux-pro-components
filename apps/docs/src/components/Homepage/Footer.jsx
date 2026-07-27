@@ -90,7 +90,7 @@ export default function Footer() {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
   const [webglMounted, setWebglMounted] = useState(false);
-  const { isMounted, isMobile } = useIsMobile();
+  const { isMobile } = useIsMobile();
 
   // Footer is a next/dynamic + Suspense boundary streamed in after the
   // initial shell, so Hero's page-wide useFadeUp() (no containerRef, scans

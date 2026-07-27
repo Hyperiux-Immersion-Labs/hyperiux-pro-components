@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import LineReveal from "../Animations/LineReveal";
 

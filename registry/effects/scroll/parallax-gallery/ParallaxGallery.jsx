@@ -310,7 +310,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
 }
 
 function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, bgColor }) {
- const [isMobile, setIsMobile] = useState(false);
+ const [, setIsMobile] = useState(false);
 
  useEffect(() => {
  const checkMobile = () => {

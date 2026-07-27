@@ -218,7 +218,8 @@ function resolveTextureSource(source) {
   if (imageSource.startsWith("/")) return imageSource;
 
   try {
-    const url = new URL(imageSource);
+    // eslint-disable-next-line no-new
+    new URL(imageSource);
 
     // external URL - return as-is (ensure your image host sends CORS headers)
   } catch {

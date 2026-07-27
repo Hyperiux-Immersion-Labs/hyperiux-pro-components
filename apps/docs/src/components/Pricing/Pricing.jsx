@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { useLenis } from "lenis/react";
 import { CheckIcon } from "../../utils/Icons";
 import Button from "../WebsiteComps/Button";
-import RandomBlur from "../WebsiteComps/RandomBlur";
 import SplitLine from "../WebsiteComps/SplitLine";
 import { useUser } from "@clerk/nextjs";
 import ShimmerText from "../WebsiteComps/ShimmerText";

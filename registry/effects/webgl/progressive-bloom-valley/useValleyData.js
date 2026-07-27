@@ -124,8 +124,6 @@ function generateValleyFlowers(curve, terrain, config) {
  localUp.crossVectors(right, tan).normalize();
 
  for (let f = 0; f < config.perRow; f++) {
- const idx = row * config.perRow + f;
- const i3 = idx * 3;
  const side = f < config.perRow / 2 ? -1 : 1;
 
  const rawLat = Math.pow(Math.random(), 0.6);
