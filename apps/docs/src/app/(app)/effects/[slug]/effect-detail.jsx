@@ -33,6 +33,20 @@ import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 
+function formatEffectDate(value) {
+  if (!value) return null;
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return null;
+
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
 function SkeletonBlock({ className = "" }) {
   return (
     <div
@@ -267,6 +281,14 @@ export function EffectDetailContent({
   const hasCtaSection = Boolean(
     safeContent?.ctaBanner?.heading || safeContent?.ctaBanner?.buttonText
   );
+  const addedAtLabel = formatEffectDate(safeContent?.addedAt ?? safeEffect.addedAt);
+  const lastUpdatedLabel = formatEffectDate(
+    safeContent?.lastUpdated ??
+      safeContent?.updatedAt ??
+      safeEffect.lastUpdated ??
+      safeEffect.updatedAt
+  );
+  const shouldShowEffectDates = Boolean(addedAtLabel && lastUpdatedLabel);
 
   const scrollRelatedEffects = (direction) => {
     const slider = relatedSliderRef.current;
@@ -427,7 +449,7 @@ export function EffectDetailContent({
 
                   {pageTitle && (
                     <HeadAnim>
-                      <h1 className="w-full max-sm:text-[6vw] max-sm:font-bold max-md:w-[90%] max-sm:w-[80%] max-md:mx-auto max-md:text-center font-semibold leading-[1.05] max-sm:leading-[1.3] text-foreground text80">
+                      <h1 className="w-full max-sm:text-[6vw] max-sm:font-bold max-md:w-[90%] max-sm:w-[80%] font-semibold leading-[1.05] max-sm:leading-[1.3] text-foreground text80">
                         {pageTitle}
                       </h1>
                     </HeadAnim>
@@ -435,13 +457,19 @@ export function EffectDetailContent({
 
                   {pageSummary && (
                     <Copy delay={0.5}>
-                      <p className="mt-4 w-full max-md:text-center max-md:w-[90%] max-md:mx-auto text-foreground opacity-90 text22 leading-relaxed max-md:leading-[1.3]">
+                      <p className="mt-4 w-full max-md:w-[90%]  text-foreground opacity-90 text22 leading-relaxed max-md:leading-[1.3]">
                         {pageSummary}
                       </p>
                     </Copy>
                   )}
+                  {shouldShowEffectDates && (
+                  <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-sm:text-[3vw]! ">
+                    <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
+                    <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
+                  </div>
+                )}
 
-                  <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup max-sm:mt-8">
+                  <div className="mt-10 flex w-full items-center justify-between gap-3 fadeup max-sm:mt-8">
                     {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
                       <div className="flex flex-wrap items-center gap-2">
                         {dependencies.map((dep) => (
@@ -515,9 +543,11 @@ export function EffectDetailContent({
                     </>
                   )}
                 </div>
+
+                
               </div>
 
-              <div className="max-sm:flex max-sm:px-[7vw] max-md:px-[6vw] w-full max-sm:pt-4 justify-center shrink-0 hidden">
+              <div className="max-sm:flex max-sm:px-[7vw] max-md:px-[6vw] w-full max-sm:pt-4 shrink-0 hidden">
                 <Button
                   text="Live Preview"
                   href={previewHref}
@@ -527,7 +557,7 @@ export function EffectDetailContent({
                 />
               </div>
 
-              <div className="relative max-sm:px-[7vw] max-md:px-[6vw] pt-[1.5vw]">
+              <div className="relative max-sm:px-[7vw] max-md:px-[6vw] pt-0">
                 <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                   <TableOfContents
                     containerRef={contentRef}

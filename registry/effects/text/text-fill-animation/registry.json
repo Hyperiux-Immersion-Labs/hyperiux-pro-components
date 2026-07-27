@@ -1,6 +1,14 @@
 {
   "name": "text-fill-animation",
   "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-07-09",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "type": "registry:component",
   "title": "Text Fill Animation",
   "description": "Scroll-synced text color fill animation with customizable color sweep effect",

@@ -434,6 +434,12 @@ export const effectContent = defineType({
       description: 'Controls sort order on the listing (newest first)',
     }),
     defineField({
+      name: 'updatedAt',
+      title: 'Updated At',
+      type: 'datetime',
+      description: 'Shown on the effect detail page when Added At is also set',
+    }),
+    defineField({
       name: 'coverImage',
       title: 'Cover Image Override',
       type: 'string',
