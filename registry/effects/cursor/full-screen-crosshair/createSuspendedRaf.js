@@ -1,22 +1,3 @@
-/**
- * Shared continuous-animation suspension for Vault effects (F-042).
- *
- * Pauses work when:
- * - the browser tab is hidden (`document.hidden` / `visibilitychange`)
- * - the effect root is fully offscreen (`IntersectionObserver`)
- *
- * Offscreen behavior mirrors `border-beam`: IntersectionObserver with a
- * generous `rootMargin` so animation resumes slightly before the element
- * enters the viewport.
- *
- * Two APIs:
- * - `createSuspendedRaf` — owns the rAF loop (drop-in for simple loops)
- * - `createVisibilityGate` — only reports active/inactive (for custom loops)
- *
- * Rollout (later tasks): copy this file into each effect package that adopts
- * it (registry packages are installed independently; they cannot import from
- * `_shared/` at consumer sites). Keep this path as the canonical source.
- */
 
 const DEFAULT_ROOT_MARGIN = "256px";
 

@@ -242,8 +242,6 @@ const Loader2 = () => {
 
       const travel = root.clientWidth - sequence.offsetWidth;
       const step = travel / 4;
-      const stripHeight = footer?.offsetHeight || root.clientHeight * 0.02;
-      const parkedY = root.clientHeight - stripHeight;
 
       gsap.set(numberContainers, { x: 0 });
       gsap.set(sequence, { x: 0 });

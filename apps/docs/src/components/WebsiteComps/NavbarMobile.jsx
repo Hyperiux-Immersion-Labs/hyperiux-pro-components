@@ -57,31 +57,6 @@ function isExternalHref(href = "") {
   return href.startsWith("http");
 }
 
-function isLoaderActive() {
-  if (typeof window === "undefined") return false;
-
-  return (
-    document.body.classList.contains("loader-active") ||
-    window.__HYPERIUX_LOADER_RUNNING__ === true ||
-    Boolean(document.querySelector("#site-loader")) ||
-    Boolean(document.querySelector("#loader"))
-  );
-}
-
-function hasLoaderCompleted() {
-  if (typeof window === "undefined") return false;
-
-  try {
-    if (window.sessionStorage.getItem("hyperiux-loader-has-run") === "true") {
-      return true;
-    }
-  } catch {
-    // ignore
-  }
-
-  return window.__HYPERIUX_LOADER_COMPLETE__ === true;
-}
-
 function isEffectsCategoryRoute(pathname) {
   const path = cleanPath(pathname);
 

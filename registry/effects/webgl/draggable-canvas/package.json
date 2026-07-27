@@ -4,10 +4,10 @@
   "description": "Six independently draggable Canvas 2D windows that each reveal a different cropped region of a shared video, creating a parallax masking illusion. GSAP Draggable with InertiaPlugin gives each window smooth throw physics. Includes a minimal coordinate-display cursor.",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "DragCursor.jsx",
     "MaskedContainer.jsx",
     "createSuspendedRaf.js",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

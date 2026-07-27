@@ -1,10 +1,9 @@
 'use client'
-import React, { useRef, useEffect, useState, Suspense } from'react'
+import React, { useRef, useEffect, useState } from'react'
 import { Canvas, useFrame, createPortal, useThree } from'@react-three/fiber'
-import { useFBO, PerspectiveCamera, Stats, OrbitControls } from'@react-three/drei'
+import { useFBO, PerspectiveCamera } from'@react-three/drei'
 import * as THREE from'three'
 import gsap from'gsap'
-import TransitionShaderMaterial from'./TransitionShader'
 import { ScrollTrigger } from'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -127,7 +126,7 @@ export default function FrostedTransition({
  if (!wrapperRef.current) return
 
  // Transition 1: Scene 0 → Scene 1 (5% to 10%)
- const transition1 = ScrollTrigger.create({
+ ScrollTrigger.create({
  trigger: wrapperRef.current,
  start:'7% top',
  end:'15% top',
@@ -139,7 +138,7 @@ export default function FrostedTransition({
  // markers: true,
  })
   // Transition 2: Scene 1 → Scene 2 (20% to 25%)
- const transition2 = ScrollTrigger.create({
+ ScrollTrigger.create({
  trigger: wrapperRef.current,
  start:'20% top',
  end:'28% top',

@@ -30,11 +30,6 @@
       "path": "CardDriftComp.jsx",
       "type": "registry:component",
       "target": "src/components/effects/card-drift/CardDriftComp.jsx"
-    },
-    {
-      "path": "NavigationButtons.jsx",
-      "type": "registry:component",
-      "target": "src/components/effects/card-drift/NavigationButtons.jsx"
     }
   ]
 }

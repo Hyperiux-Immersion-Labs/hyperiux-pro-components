@@ -4,9 +4,9 @@
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "NavigationButtons.jsx",
     "TestimonialComp.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

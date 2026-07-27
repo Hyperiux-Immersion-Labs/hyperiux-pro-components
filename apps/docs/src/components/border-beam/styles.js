@@ -748,10 +748,6 @@ const BREATHE_OUTER_BLOOM = [
   { ci: 2, region: 1, quad: 'bl', w: 28, h: 58, x: '0%', y: '60%' },
 ];
 
-function numFmt(v) {
-  return (+v.toFixed(3)).toString();
-}
-
 // Convert an `rgb()` palette color into `rgba()` whose alpha is the live quadrant
 // opacity custom property, so the gradient breathes per-quadrant.
 function setAlphaVar(color, quad, id) {
@@ -1505,7 +1501,7 @@ function breatheInnerVariantCSS(options) {
   const {
     id, borderRadius, borderWidth, duration,
     strokeOpacity, innerOpacity, bloomOpacity,
-    colorVariant, staticColors, brightness, saturation, hueRange, theme,
+    colorVariant, staticColors, brightness, saturation, theme,
   } = options;
 
   const isDark = theme === 'dark';
@@ -1646,7 +1642,7 @@ function breatheOuterVariantCSS(options) {
   const {
     id, borderRadius, duration,
     strokeOpacity, innerOpacity, bloomOpacity,
-    colorVariant, staticColors, brightness, saturation, hueRange, theme,
+    colorVariant, staticColors, brightness, saturation, theme,
     hairlineOpacity = 0,
   } = options;
 

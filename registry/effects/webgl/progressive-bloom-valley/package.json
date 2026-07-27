@@ -4,18 +4,18 @@
   "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "CameraRig.jsx",
     "CircularText.jsx",
     "EdgeBlurEffect.jsx",
     "ExperienceComp.jsx",
     "FilmGrainEffect.jsx",
     "Flower.jsx",
+    "createSuspendedRaf.js",
+    "index.jsx",
+    "prefersReducedMotion.js",
+    "shaders.js",
     "useInput.js",
     "useValleyData.js",
-    "shaders.js",
-    "createSuspendedRaf.js",
-    "prefersReducedMotion.js",
     "registry.json"
   ],
   "keywords": [

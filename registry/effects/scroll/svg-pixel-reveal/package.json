@@ -5,7 +5,7 @@
   "main": "index.jsx",
   "files": [
     "index.jsx",
-    "PixelatedScgFilter.jsx",
+    "PixelatedSvgFilter.jsx",
     "registry.json"
   ],
   "keywords": [

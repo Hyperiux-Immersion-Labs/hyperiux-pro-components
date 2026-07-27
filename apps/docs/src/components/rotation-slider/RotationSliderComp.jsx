@@ -3,7 +3,6 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Mouse } from "lucide-react";
 import { prefersReducedMotion } from "@/lib/motion";
 
 // Reduced motion: a much larger perspective distance flattens the 3D card

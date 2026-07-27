@@ -4,8 +4,8 @@
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "InteractiveListPreviewComp.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

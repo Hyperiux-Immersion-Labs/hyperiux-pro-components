@@ -4,8 +4,8 @@
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "ParallaxGallery.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -13,7 +13,7 @@ export const UI = ({ images = [] }) => {
  audio.play().catch(() => {
  // Audio file not found or playback failed, silently continue
  });
- } catch (err) {
+ } catch {
  // Silently handle audio errors
  }
  }, [page]);

@@ -5,9 +5,6 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-// import Button from "../Reusable/Button";
-import Button from "../WebsiteComps/Button";
-import RandomBlur from "./RandomBlur";
 import SplitLine from "./SplitLine";
 import LineReveal from "../Animations/LineReveal";
 

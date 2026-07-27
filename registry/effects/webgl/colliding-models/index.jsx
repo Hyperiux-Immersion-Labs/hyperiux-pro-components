@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
+
 import * as THREE from 'three'
 import { useEffect, useRef, useReducer, useMemo, useCallback, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
@@ -25,7 +28,7 @@ import {
   Text,
 } from '@react-three/drei'
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier'
-import { EffectComposer, N8AO, Bloom } from '@react-three/postprocessing'
+import { EffectComposer, N8AO } from '@react-three/postprocessing'
 import { easing } from 'maath'
 
 const LOGO_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb'
@@ -308,9 +311,8 @@ function Pointer({ vec = new THREE.Vector3() }) {
 function Model({ children, color = 'white', roughness = 0 }) {
   const ref = useRef()
   const { nodes } = useGLTF(LOGO_MODEL_URL)
-  const { nodes: nodes2, materials: materials2 } = useGLTF(GLASS_MODEL_URL)
+  const { materials: materials2 } = useGLTF(GLASS_MODEL_URL)
   const geometry = nodes.FINAL?.geometry
-  console.log(materials2)
 
   useFrame((state, delta) => {
     if (ref.current?.material?.color) {

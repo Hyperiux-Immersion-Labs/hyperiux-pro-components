@@ -9,7 +9,6 @@ import {
  BoxGeometry,
  Color,
  Float32BufferAttribute,
- MathUtils,
  MeshStandardMaterial,
  Skeleton,
  SkinnedMesh,

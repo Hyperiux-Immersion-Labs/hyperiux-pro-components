@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
+
 import { useRef, useState, useEffect } from "react";
 const CURSOR_MOVE_FONT_FAMILY =
   'var(--cursor-move-font-family, Inter, ui-sans-serif, system-ui, sans-serif)';
