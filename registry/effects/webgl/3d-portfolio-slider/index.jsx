@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import PortfolioSlider from './PortfolioSlider';
 
 const items = [

@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
+
 import { useEffect, useId, useRef } from "react";
 
 const COLS = 22;

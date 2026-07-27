@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import { ExpandingNavbarDesktop } from "./ExpandingNavbarDesktop";
 import { ExpandingNavbarMobile } from "./ExpandingNavbarMobile";
 import { ArrowUpRight } from "lucide-react";

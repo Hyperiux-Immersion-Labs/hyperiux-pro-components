@@ -24,7 +24,7 @@ export function markLoaderCompleted() {
 
     try {
         window.sessionStorage.setItem(LOADER_STORAGE_KEY, 'true')
-    } catch (_) {}
+    } catch {}
 
     window.__HYPERIUX_LOADER_COMPLETE__ = true
     window.__HYPERIUX_LOADER_RUNNING__ = false

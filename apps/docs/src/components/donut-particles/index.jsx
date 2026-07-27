@@ -149,7 +149,6 @@ function DonutParticle({
  for (let i = 0; i < count; i += 1) {
  const rand0 = random01(i + 1.17);
  const rand1 = random01(i + 2.31);
- const rand2 = random01(i + 3.73);
  const rand3 = random01(i + 4.91);
  const rand4 = random01(i + 5.57);
  const rand5 = random01(i + 6.41);

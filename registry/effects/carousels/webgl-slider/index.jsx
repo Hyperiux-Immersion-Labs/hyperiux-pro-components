@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client"
+
 import React, { useEffect, useState } from'react'
 import WebGLSliderComp from './WebGLSliderComp';
 

@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
+
 import { useEffect, useRef, useState } from'react';
 import * as THREE from'three';
 
@@ -300,9 +303,7 @@ export const NoiseDietherShader = ({
  // Register with 2dCanvasTracker
  container.classList.add('fx-target');
  registerFxTarget(container, {
- onMove: ({ localX, localY, rect }) => {
- const scaleX = renderer.domElement.width / rect.right - rect.left || renderer.domElement.width / container.clientWidth;
- const scaleY = renderer.domElement.height / rect.bottom - rect.top || renderer.domElement.height / container.clientHeight;
+ onMove: ({ localX, localY }) => {
  mouseRef.current = {
  x: localX * (renderer.domElement.width / container.clientWidth),
  y: (container.clientHeight - localY) * (renderer.domElement.height / container.clientHeight)

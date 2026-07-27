@@ -10,7 +10,7 @@ gsap.registerPlugin(SplitText);
 export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff" }) {
     const [current, setCurrent] = useState(0);
     const [displayItem, setDisplayItem] = useState(testimonials[0] ?? null);
-    const [isAnimating, setIsAnimating] = useState(false);
+    const [, setIsAnimating] = useState(false);
 
     const quoteRef = useRef(null);
     const quoteMarkRef = useRef(null);

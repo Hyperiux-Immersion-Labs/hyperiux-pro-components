@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
 
 import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from 'react'
@@ -6,7 +8,7 @@ import { Center } from '@react-three/drei'
 import * as THREE from 'three'
 import { degToRad } from 'three/src/math/MathUtils'
 import { EffectComposer, Vignette } from '@react-three/postprocessing'
-import { ArrowRight, Stars } from 'lucide-react'
+import { Stars } from 'lucide-react'
 import EdgeBlurEffect from './edge-blur-effect'
 import CircularText from './circular-text'
 import { createVisibilityGate } from './createSuspendedRaf'

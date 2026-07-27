@@ -428,8 +428,7 @@ function useParticleCanvas(canvasRef, beamStateRef) {
 
  for (const p of particles) {
  const life = (time * p.speed + p.seed) % 1;
- const rightSpace = right - beamX;
- 
+
  // distance from beam → card exit edge
 const maxTravel = Math.max(0, right - beamX);
 

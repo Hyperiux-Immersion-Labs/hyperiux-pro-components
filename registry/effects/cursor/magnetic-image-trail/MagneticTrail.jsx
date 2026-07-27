@@ -2,8 +2,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
-const proxy = (url) => `/api/media-proxy?url=${encodeURIComponent(url)}`;
-
 const imageUrls = [
  "https://picsum.photos/seed/1/800/600",
   "https://picsum.photos/seed/2/800/600",
@@ -47,8 +45,6 @@ const SPEED = 0.0003;
 const MAX_SPEED = 0.0015; // Added max speed limit for generation
 const FOLLOW = 0.22;
 const SPREAD_X = 250; // Slightly more spread since sizes increased
-const DEPTH_POWER = 0.95;
-const THICKNESS = 0.62;
 
 // Interaction Config
 const MOUSE_SPEED_BOOST = 0.003;
@@ -191,8 +187,6 @@ export default function ImageTrail() {
  const currentSpeed = clamp(SPEED + speed01 * MOUSE_SPEED_BOOST, SPEED, MAX_SPEED);
  phase.current += dt * currentSpeed;
  const dir = dirRef.current;
- const denom = Math.max(1, SPREAD_X);
- const dirIntensity = 0.18 + speed01 * 0.12;
 
  const cards = SLOTS.map((slot, i) => {
  const n = SLOTS.length;

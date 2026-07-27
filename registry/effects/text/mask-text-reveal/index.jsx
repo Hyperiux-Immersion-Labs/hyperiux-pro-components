@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
+
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { useEffect, useRef } from "react";

@@ -4,8 +4,8 @@
   "description": "Scroll-pinned horizontal slider with 3D card rotation, vertical drift, and SplitText caption reveals.",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "RotationSliderComp.jsx",
+    "index.jsx",
     "registry.json"
   ],
   "keywords": [
