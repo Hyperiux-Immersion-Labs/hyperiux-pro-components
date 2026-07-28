@@ -78,13 +78,7 @@
       "name": "spellBrightChars",
       "type": "boolean",
       "default": false,
-      "description": "Uses bright sampled areas to spell the configured character phrase.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "characters",
-        "groupTitle": "Characters",
-        "default": true
-      }
+      "description": "Uses bright sampled areas to spell the configured character phrase."
     },
     {
       "name": "colorBoost",
@@ -104,34 +98,19 @@
       "name": "disableMobileCursor",
       "type": "boolean",
       "default": true,
-      "description": "Disables cursor interaction on mobile layouts.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "interaction",
-        "groupTitle": "Interaction"
-      }
+      "description": "Disables cursor interaction on mobile layouts."
     },
     {
       "name": "cursorHint",
       "type": "string",
       "default": "Move your cursor to see the binary fluid distortion effect.",
-      "description": "Instructional cursor hint text.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Instructional cursor hint text."
     },
     {
       "name": "showMobileMessage",
       "type": "boolean",
       "default": true,
-      "description": "Shows or hides the mobile message overlay.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Shows or hides the mobile message overlay."
     },
     {
       "name": "className",

@@ -71,12 +71,7 @@
       "name": "fillTextColor",
       "type": "color",
       "default": "#ff5f00",
-      "description": "Label color inside the fill before hover.",
-      "remixer": {
-        "control": "color",
-        "group": "colors",
-        "groupTitle": "Colors"
-      }
+      "description": "Label color inside the fill before hover."
     },
     {
       "name": "hoverFillBgColor",

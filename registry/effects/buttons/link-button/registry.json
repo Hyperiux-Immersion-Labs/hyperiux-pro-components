@@ -36,12 +36,7 @@
       "name": "mobileText",
       "type": "string",
       "default": "Click me",
-      "description": "Label used on compact viewports.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Label used on compact viewports."
     },
     {
       "name": "textColor",
@@ -69,12 +64,7 @@
       "name": "clickedColor",
       "type": "color",
       "default": "#ff6b00",
-      "description": "Compact viewport color after tapping.",
-      "remixer": {
-        "control": "color",
-        "group": "appearance",
-        "groupTitle": "Appearance"
-      }
+      "description": "Compact viewport color after tapping."
     },
     {
       "name": "underlineHeight",

@@ -70,12 +70,7 @@
       "name": "fillColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Expanded dot fill color.",
-      "remixer": {
-        "control": "color",
-        "group": "colors",
-        "groupTitle": "Colors"
-      }
+      "description": "Expanded dot fill color."
     },
     {
       "name": "hoverTextColor",

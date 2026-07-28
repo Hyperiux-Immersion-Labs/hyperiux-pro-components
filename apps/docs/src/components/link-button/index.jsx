@@ -72,14 +72,14 @@ export default function LinkButton({
     "--icon-rotation": `${iconRotation}deg`,
     "--transition-duration": `${transitionDuration}s`,
     ...(hoverColor ? { "--link-hover-color": hoverColor } : null),
-    ...(textColor ? { color: textColor } : null),
+    ...(textColor ? { "--link-text-color": textColor } : null),
     ...customStyle,
     ...clickedStyle,
   };
   const iconClassNames = `${isIconRotated ? "motion-safe:-rotate-45" : ""} ${
     !isCompactViewport ? "motion-safe:group-hover:-rotate-45" : ""
-  } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
-  const underlineClassNames = `btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[1.5px] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] motion-reduce:after:transition-none ${
+  } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-[var(--transition-duration)] motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
+  const underlineClassNames = `btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[var(--underline-height)] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-[var(--transition-duration)] after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] motion-reduce:after:transition-none ${
     hasMeasuredViewport && isCompactViewport
       ? isIconRotated
         ? "after:origin-right after:scale-x-0 motion-safe:after:origin-left motion-safe:after:scale-x-100"
@@ -94,7 +94,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-md:text-[4vw] max-sm:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-md:text-[4vw] max-sm:text-[5.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

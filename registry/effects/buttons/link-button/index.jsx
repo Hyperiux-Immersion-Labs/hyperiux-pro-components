@@ -60,7 +60,7 @@ export default function LinkButton({
     "--underline-height": `${underlineHeight}px`,
     "--transition-duration": `${transitionDuration}s`,
     ...(hoverColor ? { "--link-hover-color": hoverColor } : null),
-    ...(textColor ? { color: textColor } : null),
+    ...(textColor ? { "--link-text-color": textColor } : null),
     ...(hasMeasuredViewport && isCompactViewport && isIconRotated ? { color: clickedColor } : null),
     ...customStyle,
   };
@@ -75,7 +75,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 hover:text-(--link-hover-color) max-[1025px]:text-[4vw] max-md:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-[1025px]:text-[4vw] max-md:text-[5.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

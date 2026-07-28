@@ -21,22 +21,23 @@ Notes:
 | `colorizeFromVideo` | `false` | boolean | toggle | Uses video color data instead of fixed monochrome characters. |
 | `videoZoom` | `1` | number | range/number | Zoom level applied to the video source. |
 | `charZoom` | `1` | number | range/number | Scale factor for the rendered character grid. |
-| `spellBrightChars` | `false` | boolean | toggle | Uses bright sampled areas to spell the configured character phrase. |
 | `colorBoost` | `1.4` | number | range/number | Boosts sampled color intensity. |
-| `disableMobileCursor` | `true` | boolean | toggle | Disables cursor interaction on mobile layouts. |
-| `cursorHint` | `"Move your cursor to see the binary fluid distortion effect."` | string | text | Instructional cursor hint text. |
-| `showMobileMessage` | `true` | boolean | toggle | Shows or hides the mobile message overlay. |
 | `className` | `""` | string | text | Additional class names for the root element. |
 
-### Dotted Grid (`dotted-grid`, free) - Suggested props
+### Dotted Grid (`dotted-grid`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `dotSize` | `2` | number | range/number | Rendered size of each grid dot. |
-| `gap` | `24` | number | range/number | Spacing between dots in the background grid. |
-| `dotColor` | `#ffffff` | color | color | Color used for the grid dots. |
-| `backgroundColor` | `#000000` | color | color | Background color behind the dotted grid. |
-| `fadeStrength` | `0.6` | number | range/number | Controls edge fade or vignette strength. |
+| `spacing` | `24` | number | range/number | Controls the distance between dots. |
+| `baseRadius` | `7.2` | number | range/number | Sets the base dot size. |
+| `mouseRadius` | `380` | number | range/number | Sets the dark cursor influence radius. |
+| `trailLength` | `456` | number | range/number | Limits how many cursor trail samples are kept. |
+| `trailRadius` | `230` | number | range/number | Controls the width of the cursor trail influence. |
+| `trailFadeMs` | `1200` | number | range/number | Sets how long trail marks remain visible. |
+| `backgroundColor` | `#000000` | color | color | Colors the canvas background. |
+| `trailSaturation` | `16` | number | range/number | Controls how colorful the trail highlight becomes. |
+| `showDesktopHint` | `true` | boolean | toggle | Shows or hides the desktop hint. |
+| `className` | `""` | string | text | Additional class names for the root section. |
 
 ### Spider Particles (`spider-particles`, free)
 
@@ -75,7 +76,6 @@ Notes:
 | `bgColor` | `"#ff5f00"` | color | color | Background color used by the component. |
 | `textColor` | `"#ffffff"` | color | color | Primary text color used by the component. |
 | `fillBgColor` | `"#ffffff"` | color | color | Color value for fill bg color. |
-| `fillTextColor` | `"#ff5f00"` | color | color | Color value for fill text color. |
 | `hoverFillBgColor` | `"#ffffff"` | color | color | Color value for hover fill bg color. |
 | `hoverFillTextColor` | `"#ff5f00"` | color | color | Color value for hover fill text color. |
 | `arrowColor` | undefined | color | color | Color value for arrow color. |
@@ -134,7 +134,6 @@ Notes:
 | `staggerStep` | `0.01` | number | range/number | Delay step applied between animated characters or items. |
 | `bgColor` | `"#ff6b00"` | color | color | Background color used by the component. |
 | `textColor` | `"#ffffff"` | color | color | Primary text color used by the component. |
-| `fillColor` | `"#ffffff"` | color | color | Color value for fill color. |
 | `hoverTextColor` | `"#ff6b00"` | color | color | Color value for hover text color. |
 | `dotColor` | undefined | color | color | Color value for dot color. |
 | `...props` | undefined | object | object/json | Configuration object for props. |
@@ -143,15 +142,12 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `btnText` | undefined | string | text | Button label text. |
-| `href` | `DEFAULT_HREF` | string | text | Destination URL for link-style components. |
-| `className` | `""` | string | text | Additional class names for the root element. |
-| `linkProps` | `{}` | object | object/json | Additional props passed to the link element. |
-| `icon` | `ArrowRight` | unknown | manual review | Icon component rendered in the control. |
-| `iconClassName` | `"max-md:size-[6vw] max-[1025px]:size-[4vw]"` | string | text | Class names for icon class name styling. |
-| `disableNavigation` | `false` | boolean | toggle | Toggles disable navigation behavior. |
-| `onClick` | undefined | function | custom/function | Click handler passed to the interactive element. |
-| `...props` | undefined | object | object/json | Configuration object for props. |
+| `btnText` | `"Hover me"` | string | text | Button label text. |
+| `textColor` | `"#ffffff"` | color | color | Resting label and underline color. |
+| `hoverColor` | `"#ff6b00"` | color | color | Hover label and underline color. |
+| `underlineHeight` | `1.5` | number | range/number | Underline thickness in pixels. |
+| `showIcon` | `true` | boolean | toggle | Shows or hides the arrow icon. |
+| `transitionDuration` | `0.5` | number | range/number | Animation duration in seconds. |
 
 ### Scramble Link Button (`scramble-link-button`, free)
 

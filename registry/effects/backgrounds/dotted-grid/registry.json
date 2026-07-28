@@ -135,15 +135,7 @@
       "name": "dotHue",
       "type": "number",
       "default": 210,
-      "description": "Shifts the trail hue.",
-      "remixer": {
-        "control": "range",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "min": 0,
-        "max": 360,
-        "step": 1
-      }
+      "description": "Shifts the trail hue."
     },
     {
       "name": "trailSaturation",
@@ -174,23 +166,13 @@
       "name": "desktopHint",
       "type": "string",
       "default": "Click anywhere to change the pattern.",
-      "description": "Desktop hint text.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Desktop hint text."
     },
     {
       "name": "mobileHint",
       "type": "string",
       "default": "Works best on desktop",
-      "description": "Mobile hint text shown above the touch instruction.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Mobile hint text shown above the touch instruction."
     },
     {
       "name": "className",

@@ -589,6 +589,16 @@
   transform: scale(0.72);
 }
 
+.checkboxSelected {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.checkboxSelected .checkboxInner {
+  background: #fff;
+  transform: scale(1);
+}
+
 .checkboxOptionSelected .checkboxInner {
   background: #fff;
   transform: scale(1);
@@ -638,6 +648,9 @@
   right: 1rem;
   top: 6.25rem;
   z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   width: auto;
   min-height: 0;
   flex: none;
