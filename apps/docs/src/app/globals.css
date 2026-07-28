@@ -615,6 +615,28 @@ h4 {
   }
 }
 
+@keyframes gradient-text-move {
+  to {
+    background-position: 300% center;
+  }
+}
+
+.gradient-text-animate {
+  background-image: linear-gradient(to right, #FF8400, #FF4100, #FF8400);
+  background-size: 300% auto;
+  background-position: 0% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-text-move 5s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text-animate {
+    animation: none;
+  }
+}
+
 /* Prevent hero flash before the loader canvas is ready on first visit.
    The inline script in layout.js adds this class synchronously. Loader.jsx removes it
    in useLayoutEffect (before first paint) once the canvas is in the DOM. */

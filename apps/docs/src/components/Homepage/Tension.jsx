@@ -177,7 +177,7 @@ export default function Tension() {
         <div className="w-full max-sm:w-[95%] max-sm:mx-auto text-center">
           <LineReveal as="h2" className="text110 font-normal leading-[0.95] max-md:leading-[1.02]">
             Good Motion is{' '}
-            <span className="text-[#ff5f00]">Harder</span> Than It Looks
+            <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
 
           <SplitLine as="p" className="mx-auto mt-[2vw] max-md:mt-[5vw] max-sm:mt-[10vw] max-w-[62vw] text24 leading-[1.55] max-sm:leading-[1.3] text-white max-md:max-w-[85vw] max-md:text-sm max-sm:max-w-full">
