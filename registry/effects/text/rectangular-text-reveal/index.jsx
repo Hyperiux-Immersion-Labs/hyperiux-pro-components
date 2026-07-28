@@ -32,6 +32,14 @@ const SCALE_X_ZERO = "scaleX(0)";
 const SCALE_Y_ZERO = "scaleY(0)";
 const LINE_CLASS_NAME = "tb-line";
 
+/**
+ * @typedef {'left' | 'right' | 'top' | 'bottom'} RectangularTextRevealDirection
+ */
+
+/**
+ * @param {RectangularTextRevealDirection} direction
+ * @returns {{ enterOrigin: string, exitOrigin: string, axis: 'scaleX' | 'scaleY' }}
+ */
 function getOrigins(direction) {
   switch (direction) {
     case "right":
@@ -62,6 +70,18 @@ function getOrigins(direction) {
   }
 }
 
+/**
+ * @param {{
+ *   insetX: string,
+ *   insetY: string,
+ *   background: string,
+ *   transformOrigin: string,
+ *   axis: 'scaleX' | 'scaleY',
+ *   zIndex: number,
+ *   dataAttribute: string,
+ * }} options
+ * @returns {HTMLDivElement}
+ */
 function createRevealRect({
   insetX,
   insetY,
@@ -90,6 +110,29 @@ function createRevealRect({
   return rect;
 }
 
+/**
+ * @typedef {Object} RectangularTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {import('react').ElementType} [as]
+ * @property {string} [className]
+ * @property {string} [baseColor]
+ * @property {string} [overlayColor]
+ * @property {boolean} [useOverlay]
+ * @property {number} [stagger]
+ * @property {number} [coverDuration]
+ * @property {number} [revealDuration]
+ * @property {number} [overlayEnterDuration]
+ * @property {number} [overlayExitDuration]
+ * @property {string} [insetX]
+ * @property {string} [insetY]
+ * @property {string} [triggerStart]
+ * @property {boolean} [once]
+ * @property {RectangularTextRevealDirection} [direction]
+ * @property {number} [delay]
+ * @property {string} [toggleActions]
+ */
+
+/** @param {RectangularTextRevealProps} props */
 export default function RectangularTextReveal({
   children,
   as: Tag = DEFAULT_TAG,
@@ -110,7 +153,7 @@ export default function RectangularTextReveal({
   delay = DEFAULT_DELAY,
   toggleActions = DEFAULT_TOGGLE_ACTIONS,
 }) {
-  const elementRef = useRef(null);
+  const elementRef = useRef(/** @type {HTMLElement | null} */ (null));
 
   useLayoutEffect(() => {
     if (!elementRef.current) {
@@ -130,7 +173,7 @@ export default function RectangularTextReveal({
       linesClass: LINE_CLASS_NAME,
     });
 
-    const lines = split.lines;
+    const lines = /** @type {HTMLElement[]} */ (split.lines);
 
     // Line setup
     gsap.set(elementRef.current, { opacity: 1 });
@@ -175,8 +218,11 @@ export default function RectangularTextReveal({
       };
     }
 
+    /** @type {HTMLDivElement[]} */
     const wrappers = [];
+    /** @type {HTMLDivElement[]} */
     const baseRects = [];
+    /** @type {(HTMLDivElement | null)[]} */
     const overlayRects = [];
 
     lines.forEach((line) => {
@@ -187,7 +233,7 @@ export default function RectangularTextReveal({
       wrapper.style.width = "fit-content";
       wrapper.style.maxWidth = "100%";
 
-      line.parentNode.insertBefore(wrapper, line);
+      /** @type {ParentNode} */ (line.parentNode).insertBefore(wrapper, line);
       wrapper.appendChild(line);
 
       line.style.position = "relative";

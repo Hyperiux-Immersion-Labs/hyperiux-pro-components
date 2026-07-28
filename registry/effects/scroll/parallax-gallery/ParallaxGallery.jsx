@@ -45,6 +45,20 @@ const MOBILE_THUMB_ITEM = MOBILE_THUMB_W + MOBILE_THUMB_GAP;
 const FRAME_VERTICAL_OFFSET_DESKTOP = 44;
 const FRAME_VERTICAL_OFFSET_MOBILE = 28;
 
+/**
+ * @typedef {Object} ParallaxGallerySlide
+ * @property {string} id
+ * @property {string} src
+ * @property {string} type
+ */
+
+/**
+ * @typedef {Object} ScrollParallaxGalleryProps
+ * @property {string[]} [images]
+ * @property {string} [bgColor]
+ */
+
+/** @param {ScrollParallaxGalleryProps} props */
 export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" }) {
 
  const slides = images.map((src, i) => ({
@@ -56,14 +70,14 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  const total = slides.length;
 
  const [activeIndex, setActiveIndex] = useState(0);
- const [isMobile, setIsMobile] = useState(null);
+ const [isMobile, setIsMobile] = useState(/** @type {boolean|null} */ (null));
  const [isLayoutReady, setIsLayoutReady] = useState(false);
 
- const sectionRef = useRef(null);
- const galleryRef = useRef(null);
- const itemInnerRefs = useRef([]);
- const thumbLeftRef = useRef(null);
- const thumbRightRef = useRef(null);
+ const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
+ const galleryRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const itemInnerRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+ const thumbLeftRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const thumbRightRef = useRef(/** @type {HTMLDivElement|null} */ (null));
 
  const lenis = useLenis();
  const reducedMotion = prefersReducedMotion();
@@ -82,7 +96,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  ? FRAME_VERTICAL_OFFSET_MOBILE
  : FRAME_VERTICAL_OFFSET_DESKTOP;
 
- const applyPosition = useCallback((pos) => {
+ const applyPosition = useCallback((/** @type {number} */ pos) => {
  if (!galleryRef.current) return;
 
  const tx = -pos * slideW;
@@ -286,7 +300,7 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  style={{ width: slideW, height: frameH }}
  >
  <div
- ref={(el) => (itemInnerRefs.current[i] = el)}
+ ref={(el) => { itemInnerRefs.current[i] = el; }}
  className="absolute inset-0 will-change-transform"
  style={{
  transform: `rotate(${i === 0 ? 0 : reducedMotion ? ROTATION_DEG * REDUCED_MOTION_FACTOR : ROTATION_DEG}deg) scale(${i === 0 ? 1 : reducedMotion ? SCALE_CENTER + (SCALE_OFFSCREEN - SCALE_CENTER) * REDUCED_MOTION_FACTOR : SCALE_OFFSCREEN})`,
@@ -309,6 +323,20 @@ export default function ScrollParallaxGallery({ images = [], bgColor ="#000000" 
  );
 }
 
+/**
+ * @typedef {Object} ThumbStripProps
+ * @property {import('react').RefObject<HTMLDivElement|null>} refProp
+ * @property {ParallaxGallerySlide[]} slides
+ * @property {'left'|'right'} side
+ * @property {number} [activeIndex]
+ * @property {number} frameW
+ * @property {number} thumbW
+ * @property {number} thumbH
+ * @property {number} thumbGap
+ * @property {string} [bgColor]
+ */
+
+/** @param {ThumbStripProps} props */
 function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, bgColor }) {
  const [, setIsMobile] = useState(false);
 
@@ -322,7 +350,7 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
  return () => window.removeEventListener("resize", checkMobile);
  }, []);
 
- const stripStyle = {
+ const stripStyle = /** @type {import('react').CSSProperties} */ ({
  position:"absolute",
  top:"50%",
  zIndex: 10,
@@ -334,7 +362,7 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
  ),
  height: thumbH,
  transform:"translateY(-50%)",
- };
+ });
 
  return (
  <div style={stripStyle}>
@@ -369,9 +397,18 @@ function ThumbStrip({ refProp, slides, side, frameW, thumbW, thumbH, thumbGap, b
  );
 }
 
+/**
+ * @typedef {Object} SVGDashedBorderProps
+ * @property {number} width
+ * @property {number} height
+ * @property {number} [padding]
+ * @property {number} [strokeWidth]
+ */
+
+/** @param {SVGDashedBorderProps} props */
 function SVGDashedBorder({ width, height, padding = 12, strokeWidth = 1 }) {
  // The mask path ref - this is the solid path we animate to reveal the dashes
- const maskPathRef = useRef(null);
+ const maskPathRef = useRef(/** @type {SVGPathElement|null} */ (null));
  // Unique ID per instance to avoid clipPath conflicts
  const generatedClipId = useId();
  const clipId = `dash-clip-${generatedClipId.replace(/:/g, "")}`;

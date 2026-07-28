@@ -12,6 +12,7 @@ const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
+/** @param {import('react').RefObject<HTMLElement|null>} colRef */
 function animateColumnIn(colRef) {
     if (!colRef.current) return;
     const items = Array.from(colRef.current.children).slice(1);
@@ -24,25 +25,25 @@ function animateColumnIn(colRef) {
 }
 
 export function ExpandingNavbarDesktop() {
-    const backgroundOverlayRef = useRef(null);
-    const menuWrapperRef = useRef(null);
-    const headerRef = useRef(null);
-    const menuContentRef = useRef(null);
+    const backgroundOverlayRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const menuWrapperRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const headerRef = useRef(/** @type {HTMLElement|null} */ (null));
+    const menuContentRef = useRef(/** @type {HTMLDivElement|null} */ (null));
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [selectedSubIndex, setSelectedSubIndex] = useState(null);
-    const [selectedNestedIndex, setSelectedNestedIndex] = useState(null);
-    const [activeMainIndex, setActiveMainIndex] = useState(0);
-    const [activeSubIndex, setActiveSubIndex] = useState(null);
-    const [activeNestedIndex, setActiveNestedIndex] = useState(null);
-    const seprationLineRef = useRef(null);
-    const menuTimeline = useRef(null);
-    const col2Ref = useRef(null);
-    const col3Ref = useRef(null);
-    const mainSquareRef = useRef(null);
-    const mainItemRefs = useRef([]);
-    const containerRef = useRef(null);
-    const toggleButtonRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(/** @type {number|null} */ (0));
+    const [selectedSubIndex, setSelectedSubIndex] = useState(/** @type {number|null} */ (null));
+    const [selectedNestedIndex, setSelectedNestedIndex] = useState(/** @type {number|null} */ (null));
+    const [activeMainIndex, setActiveMainIndex] = useState(/** @type {number|null} */ (0));
+    const [activeSubIndex, setActiveSubIndex] = useState(/** @type {number|null} */ (null));
+    const [activeNestedIndex, setActiveNestedIndex] = useState(/** @type {number|null} */ (null));
+    const seprationLineRef = useRef(/** @type {HTMLSpanElement|null} */ (null));
+    const menuTimeline = useRef(/** @type {gsap.core.Timeline|null} */ (null));
+    const col2Ref = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const col3Ref = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const mainSquareRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const mainItemRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+    const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
 
     const menuEasing = "cubic-bezier(0.625, 0.05, 0, 1)";
 
@@ -97,7 +98,7 @@ export function ExpandingNavbarDesktop() {
 
     useEffect(() => {
         if (!col2Ref.current) return;
-        const children = Array.from(col2Ref.current.children);
+        const children = /** @type {HTMLElement[]} */ (Array.from(col2Ref.current.children));
         if (children.length < 2) return;
         const square = children[0];
         const items = children.slice(1);
@@ -148,7 +149,7 @@ export function ExpandingNavbarDesktop() {
 
     useEffect(() => {
         if (!col3Ref.current) return;
-        const children = Array.from(col3Ref.current.children);
+        const children = /** @type {HTMLElement[]} */ (Array.from(col3Ref.current.children));
         if (children.length < 2) return;
         const square = children[0];
         const items = children.slice(1);
@@ -386,10 +387,10 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full relative">
                             {activeMainIndex !== null &&
                                 activeSubIndex !== null &&
-                                navigationData[activeMainIndex].sublinks[activeSubIndex]?.nestedLinks && (
+                                /** @type {import('./data').ExpandingNavSublink[]} */ (navigationData[activeMainIndex].sublinks)[activeSubIndex]?.nestedLinks && (
                                     <div ref={col3Ref} className="p-[2vw] w-full h-fit rounded-md flex flex-col relative">
                                         <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10" />
-                                        {navigationData[activeMainIndex].sublinks[activeSubIndex].nestedLinks.map((nestedItem, nestedIndex) => (
+                                        {/** @type {import('./data').ExpandingNavNestedLink[]} */ (/** @type {import('./data').ExpandingNavSublink[]} */ (navigationData[activeMainIndex].sublinks)[activeSubIndex].nestedLinks).map((nestedItem, nestedIndex) => (
                                             <div key={nestedIndex} className="opacity-0">
                                                 <HoverFillLink
                                                     href={nestedItem.href}

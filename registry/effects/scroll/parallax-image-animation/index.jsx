@@ -19,6 +19,10 @@ function prefersReducedMotion() {
 // remove. Applies to both the translateY shift and the optional scale range.
 const REDUCED_MOTION_FACTOR = 0.25;
 
+/**
+ * @param {string|number} value
+ * @param {number} factor
+ */
 function reduceOffset(value, factor) {
  if (typeof value !== "string") return value;
  const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)$/);
@@ -27,11 +31,33 @@ function reduceOffset(value, factor) {
  return `${(parseFloat(numeric) * factor).toFixed(2)}${unit}`;
 }
 
+/**
+ * @param {number} value
+ * @param {number} factor
+ */
 function reduceScale(value, factor) {
  if (typeof value !== "number") return value;
  return 1 + (value - 1) * factor;
 }
 
+/**
+ * @typedef {Object} ParallaxImageAnimationProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {string} [wrapperClassName]
+ * @property {string} [imageClassName]
+ * @property {number} [width]
+ * @property {number} [height]
+ * @property {string|number} [translateY]
+ * @property {string} [start]
+ * @property {string} [end]
+ * @property {boolean|number} [scrub]
+ * @property {boolean} [enableScale]
+ * @property {number} [scaleFrom]
+ * @property {number} [scaleTo]
+ */
+
+/** @param {ParallaxImageAnimationProps} props */
 const ParallaxImageAnimation = ({
  src,
  alt ="parallax-img",
@@ -47,8 +73,8 @@ const ParallaxImageAnimation = ({
  scaleFrom = 1.6,
  scaleTo = 1.2,
 }) => {
- const wrapperRef = useRef(null);
- const imageRef = useRef(null);
+ const wrapperRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const imageRef = useRef(/** @type {HTMLImageElement|null} */ (null));
 
  const reducedMotion = prefersReducedMotion();
  const effectiveTranslateY = reducedMotion

@@ -7,9 +7,25 @@ import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} StackingCardItem
+ * @property {string|number} id
+ * @property {string} [category]
+ * @property {string} [title]
+ * @property {string} [description]
+ * @property {string} [image]
+ * @property {string} [backgroundColor]
+ */
+
+/**
+ * @typedef {Object} StackingCardCompProps
+ * @property {StackingCardItem[]} [data]
+ */
+
+/** @param {StackingCardCompProps} props */
 export default function StackingCardComp({ data = [] }) {
- const containerRef = useRef(null);
- const cardsRef = useRef([]);
+ const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const cardsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
 
  useLenis(() => {
  ScrollTrigger.update();
@@ -23,7 +39,7 @@ export default function StackingCardComp({ data = [] }) {
  "(prefers-reduced-motion: reduce)"
  ).matches;
 
- const cards = cardsRef.current.filter(Boolean);
+ const cards = /** @type {HTMLDivElement[]} */ (cardsRef.current.filter(Boolean));
  const numCards = cards.length;
 
  if (!numCards) return;
@@ -151,7 +167,7 @@ export default function StackingCardComp({ data = [] }) {
  return (
  <section
  className="relative z-0 h-[var(--stack-height)] w-full"
- style={{"--stack-height": `${data.length * 100}svh` }}
+ style={/** @type {import('react').CSSProperties} */ ({"--stack-height": `${data.length * 100}svh` })}
  >
  <div
  ref={containerRef}
@@ -174,6 +190,7 @@ export default function StackingCardComp({ data = [] }) {
  );
 }
 
+/** @param {StackingCardItem} props */
 const SliderCard = ({
  id,
  category,

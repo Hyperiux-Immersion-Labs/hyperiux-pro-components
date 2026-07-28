@@ -1,6 +1,47 @@
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
+/**
+ * @typedef {Object} GridSource
+ * @property {string} src
+ * @property {string} caption
+ */
+
+/**
+ * @typedef {Object} GridItem
+ * @property {HTMLDivElement & {__gridItem?: {base: any, itemImage: HTMLDivElement}}} el
+ * @property {HTMLDivElement} container
+ * @property {HTMLDivElement} wrapper
+ * @property {HTMLImageElement} img
+ * @property {number} x
+ * @property {number} y
+ * @property {number} w
+ * @property {number} h
+ * @property {number} extraX
+ * @property {number} extraY
+ * @property {DOMRect} rect
+ * @property {number} ease
+ * @property {number} depth
+ */
+
+/**
+ * @typedef {Object} InfiniteGridClickPayload
+ * @property {number} index
+ * @property {string} src
+ * @property {string} caption
+ * @property {{left: number, top: number, width: number, height: number}} rect
+ */
+
+/**
+ * @typedef {Object} InfiniteGridOptions
+ * @property {HTMLElement} el
+ * @property {GridSource[]} sources
+ * @property {any} [data]
+ * @property {any} [originalSize]
+ * @property {(payload: InfiniteGridClickPayload) => void} [onItemClick]
+ */
+
 export default class InfiniteGrid {
+    /** @param {InfiniteGridOptions} options */
     constructor({ el, sources, data, originalSize, onItemClick }) {
         this.$container = el;
         this.sources = sources;
@@ -8,6 +49,13 @@ export default class InfiniteGrid {
         this.originalSize = originalSize;
         this.onItemClick = onItemClick;
         this.enabled = true;
+
+        this.winW = 0;
+        this.winH = 0;
+        /** @type {{w: number, h: number, tileW: number, tileH: number, gap: number, halfGap: number, leftOffset: number, topOffset: number}} */
+        this.tileSize = { w: 0, h: 0, tileW: 0, tileH: 0, gap: 0, halfGap: 0, leftOffset: 0, topOffset: 0 };
+        /** @type {{w: number, h: number}} */
+        this.wrapSize = { w: 0, h: 0 };
 
         // Fixed grid layout (non-overlapping) like the reference.
         this.layout = {
@@ -27,9 +75,11 @@ export default class InfiniteGrid {
         };
 
         this.isDragging = false;
+        /** @type {number|null} */
         this.activePointerId = null;
         this.drag = { startX: 0, startY: 0, scrollX: 0, scrollY: 0 };
         this.dragMoved = false;
+        /** @type {any} */
         this.pressedItem = null;
 
         this.mouse = {
@@ -38,13 +88,14 @@ export default class InfiniteGrid {
             press: { t: 0, c: 0 },
         };
 
+        /** @type {GridItem[]} */
         this.items = [];
 
         this.reduceMotion =
             typeof window !== "undefined" &&
             (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ??
                 false);
-        this._onReduceMotionChange = (event) => {
+        this._onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
             this.reduceMotion = event.matches;
             if (event.matches) {
                 this.scroll.current.x = this.scroll.target.x;
@@ -78,6 +129,7 @@ export default class InfiniteGrid {
         window.addEventListener('pointercancel', this.onPointerUp);
         this.$container.style.touchAction = 'none';
 
+        /** @type {ReturnType<typeof createSuspendedRaf>|null} */
         this._loop = createSuspendedRaf({
             root: this.$container,
             onFrame: this.render,
@@ -202,7 +254,7 @@ export default class InfiniteGrid {
                         el.style.cursor = 'pointer';
                         // Activation is driven from pointerup (see onPointerUp) rather than
                         // a click listener: pointer capture retargets click to $container.
-                        el.__gridItem = { base, itemImage };
+                        /** @type {any} */ (el).__gridItem = { base, itemImage };
                     }
 
                     this.$container.appendChild(el);
@@ -235,6 +287,7 @@ export default class InfiniteGrid {
         this.scroll.current.y = this.scroll.target.y = this.scroll.last.y = -this.winH * 0.1;
     }
 
+    /** @param {WheelEvent} e */
     onWheel(e) {
         if (!this.enabled) return;
         e.preventDefault();
@@ -243,6 +296,7 @@ export default class InfiniteGrid {
         this.scroll.target.y -= e.deltaY * factor;
     }
 
+    /** @param {PointerEvent} e */
     onPointerDown(e) {
         if (!this.enabled) return;
         e.preventDefault();
@@ -259,6 +313,7 @@ export default class InfiniteGrid {
         this.$container.setPointerCapture?.(e.pointerId);
     }
 
+    /** @param {PointerEvent} [e] */
     onPointerUp(e) {
         if (e && this.activePointerId !== null && e.pointerId !== this.activePointerId) return;
         const wasDragging = this.isDragging;
@@ -301,6 +356,7 @@ export default class InfiniteGrid {
         });
     }
 
+    /** @param {PointerEvent} e */
     onPointerMove(e) {
         if (!this.enabled) return;
         this.mouse.x.t = e.clientX / this.winW;
@@ -391,6 +447,7 @@ export default class InfiniteGrid {
         window.removeEventListener('pointercancel', this.onPointerUp);
     }
 
+    /** @param {any} next */
     setEnabled(next) {
         this.enabled = Boolean(next);
         if (!this.enabled) {

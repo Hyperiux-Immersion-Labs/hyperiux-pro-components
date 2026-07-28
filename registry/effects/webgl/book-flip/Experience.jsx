@@ -2,6 +2,15 @@
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Book } from "./Book";
 
+/**
+ * @typedef {Object} ExperienceOwnProps
+ * @property {string[]} [images]
+ * @property {string} [pathPattern]
+ * @property {any} [floatConfig]
+ * @property {any} [orbitControls]
+ */
+
+/** @param {ExperienceOwnProps & Record<string, any>} props */
 export const Experience = ({
  images = [],
  pathPattern ="/assets/nature",

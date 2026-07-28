@@ -1,5 +1,9 @@
 const effectSlugAliasGroups = [
   {
+    slug: "sample-component",
+    aliases: ["a-sample-component"],
+  },
+  {
     slug: "hyperiux-glitter",
     aliases: ["hyperiux-glitter-concept"],
   },

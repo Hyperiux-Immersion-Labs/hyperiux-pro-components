@@ -38,18 +38,26 @@ const DEFAULT_IMAGE_SOURCES = [
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
 ];
 
-const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
+/**
+ * @typedef {Object} StackToSpreadIntroProps
+ * @property {string[]} [images]
+ * @property {() => void} [onComplete]
+ */
+
+const StackToSpreadIntro = forwardRef(
+  /** @type {import('react').ForwardRefRenderFunction<HTMLElement, StackToSpreadIntroProps>} */
+  (function StackToSpreadIntro(
   { images = DEFAULT_IMAGE_SOURCES, onComplete },
   ref
 ) {
   const uid = useId().replace(/:/g, "");
   const loaderWrapperId = `loader-wrapper-${uid}`;
   const imgsWrapperId = `imgs-wrapper-${uid}`;
-  const rootRef = useRef(null);
-  const imagesRef = useRef([]);
-  const text1Ref = useRef(null);
-  const text2Ref = useRef(null);
-  const descriptionTextRef = useRef(null);
+  const rootRef = useRef(/** @type {HTMLElement | null} */ (null));
+  const imagesRef = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const text1Ref = useRef(/** @type {HTMLParagraphElement | null} */ (null));
+  const text2Ref = useRef(/** @type {HTMLParagraphElement | null} */ (null));
+  const descriptionTextRef = useRef(/** @type {HTMLParagraphElement | null} */ (null));
   const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
@@ -389,8 +397,10 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       </p>
     </section>
   );
-});
+  })
+);
 
+/** @param {{ images?: string[] }} props */
 export default function StackLoader({
   images = DEFAULT_IMAGE_SOURCES,
 }) {
@@ -398,7 +408,7 @@ export default function StackLoader({
   const demoUiId = `demo-ui-${uid}`;
   const [isLoaderComplete, setIsLoaderComplete] = useState(false);
   const [introInstance, setIntroInstance] = useState(0);
-  const stackToSpreadIntroRef = useRef(null);
+  const stackToSpreadIntroRef = useRef(/** @type {HTMLElement | null} */ (null));
 
   const handleLoaderComplete = useCallback(() => {
     setIsLoaderComplete(true);

@@ -16,8 +16,9 @@ const AnimatedToggle = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
-      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+      const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
       setPrefersReducedMotion(matches);
     };
 

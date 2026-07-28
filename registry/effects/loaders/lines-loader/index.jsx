@@ -12,6 +12,7 @@ const VARIANTS = {
   option2: Option2,
 };
 
+/** @type {{ label: string, value: LinesLoaderVariant }[]} */
 const VERSIONS = [
   {
     label: "V1",
@@ -23,8 +24,20 @@ const VERSIONS = [
   },
 ];
 
+/**
+ * @typedef {'option1' | 'option2'} LinesLoaderVariant
+ */
+
+/**
+ * @typedef {{
+ *   onComplete?: () => void,
+ *   onVariantChange?: (variant: LinesLoaderVariant) => void,
+ * } & Record<string, any>} LinesLoaderProps
+ */
+
+/** @param {LinesLoaderProps} props */
 export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
-  const [activeVariant, setActiveVariant] = useState("option1");
+  const [activeVariant, setActiveVariant] = useState(/** @type {LinesLoaderVariant} */ ("option1"));
   const [isCompleted, setIsCompleted] = useState(false);
 
   const ActiveComponent = useMemo(() => {
@@ -43,7 +56,9 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
     onVariantChangeRef.current = onVariantChange;
   }, [onVariantChange]);
 
-  const handleVariantChange = useCallback((newVariant) => {
+  const handleVariantChange = useCallback(
+    /** @param {LinesLoaderVariant} newVariant */
+    (newVariant) => {
     setActiveVariant(newVariant);
     setIsCompleted(false);
     if (onVariantChangeRef.current) {
@@ -85,6 +100,13 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }) {
   );
 }
 
+/**
+ * @param {{
+ *   activeVariant: LinesLoaderVariant,
+ *   onVariantChange: (variant: LinesLoaderVariant) => void,
+ *   isCompleted: boolean,
+ * }} props
+ */
 function VersionNav({ activeVariant, onVariantChange, isCompleted }) {
   return (
     <div

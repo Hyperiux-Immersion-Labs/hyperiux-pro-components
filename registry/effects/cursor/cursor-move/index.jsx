@@ -22,11 +22,19 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/**
+ * @param {number} value
+ * @param {number} inMin
+ * @param {number} inMax
+ * @param {number} outMin
+ * @param {number} outMax
+ */
 function mapRange(value, inMin, inMax, outMin, outMax) {
   const clamped = Math.min(Math.max(value, inMin), inMax);
   return outMin + ((clamped - inMin) / (inMax - inMin)) * (outMax - outMin);
 }
 
+/** @param {import('react').RefObject<HTMLElement|null>} [containerRef] */
 function useMousePosition(containerRef) {
   const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [isDesktop, setIsDesktop] = useState(false);
@@ -66,11 +74,12 @@ function useMousePosition(containerRef) {
 
     // Coalesce mousemove bursts to one state update (and one rect read)
     // per animation frame instead of re-rendering on every raw event.
+    /** @type {number|null} */
     let frameId = null;
     let lastClientX = 0;
     let lastClientY = 0;
 
-    const onMove = (e) => {
+    const onMove = (/** @type {MouseEvent} */ e) => {
       lastClientX = e.clientX;
       lastClientY = e.clientY;
 
@@ -88,6 +97,7 @@ function useMousePosition(containerRef) {
       });
     };
 
+    /** @type {ResizeObserver|undefined} */
     let ro;
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(() => {
@@ -113,6 +123,26 @@ function useMousePosition(containerRef) {
   return { ...pos, isDesktop };
 }
 
+/**
+ * @typedef {Object} FontVariationAxis
+ * @property {string} name
+ * @property {number} min
+ * @property {number} max
+ */
+
+/**
+ * @typedef {Object} VariableFontAndCursorProps
+ * @property {import('react').ReactNode} [children]
+ * @property {import('react').RefObject<HTMLElement|null>} [containerRef]
+ * @property {{ y: FontVariationAxis }} [fontVariationMapping]
+ * @property {string} [className]
+ * @property {any} [as]
+ * @property {string} [transition]
+ * @property {string} [transformOrigin]
+ * @property {{ min: number, max: number }} [skewXRange]
+ */
+
+/** @param {VariableFontAndCursorProps} props */
 function VariableFontAndCursor({
   children,
   containerRef,
@@ -154,6 +184,42 @@ function VariableFontAndCursor({
   );
 }
 
+/**
+ * @typedef {Object} CursorMoveProps
+ * @property {string} [interClassName]
+ * @property {string} [containerClassName]
+ * @property {string} [backgroundClassName]
+ * @property {string} [paddingClassName]
+ * @property {boolean} [showCrosshair]
+ * @property {'solid'|'dotted'|'dashed'} [crosshairVariant]
+ * @property {string} [crosshairClassName]
+ * @property {string} [crosshairDottedColor]
+ * @property {number} [crosshairDottedDotLength]
+ * @property {number} [crosshairDottedGap]
+ * @property {string} [crosshairDashedColor]
+ * @property {number} [crosshairDashedDashLength]
+ * @property {number} [crosshairDashedGap]
+ * @property {string} [crosshairVerticalThicknessClassName]
+ * @property {string} [crosshairHorizontalThicknessClassName]
+ * @property {string} [crosshairVerticalClassName]
+ * @property {string} [crosshairHorizontalClassName]
+ * @property {boolean} [showCursorDot]
+ * @property {string} [cursorDotClassName]
+ * @property {import('react').CSSProperties} [cursorDotStyle]
+ * @property {string} [text]
+ * @property {string} [textWrapperClassName]
+ * @property {string} [textClassName]
+ * @property {any} [textAs]
+ * @property {{ y: FontVariationAxis }} [fontVariationMapping]
+ * @property {string} [variableTextTransition]
+ * @property {string} [variableTextTransformOrigin]
+ * @property {{ min: number, max: number }} [skewXRange]
+ * @property {boolean} [showCoordinates]
+ * @property {string} [coordinatesClassName]
+ * @property {string} [coordinatesTextClassName]
+ */
+
+/** @param {CursorMoveProps} props */
 export default function CursorMove({
   interClassName = "",
   containerClassName = "",
@@ -189,7 +255,7 @@ export default function CursorMove({
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
   coordinatesTextClassName = "text-xs max-[1025px]:text-sm text-white/40 tabular-nums",
 }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const { x, y, isDesktop } = useMousePosition(containerRef);
   const prefersReducedMotion = usePrefersReducedMotion();
 

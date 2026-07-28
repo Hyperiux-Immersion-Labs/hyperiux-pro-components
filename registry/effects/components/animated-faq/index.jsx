@@ -20,8 +20,29 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-const FAQContext = createContext(null);
-const FAQGroupContext = createContext(null);
+/**
+ * @typedef {Object} FAQContextValue
+ * @property {boolean} isOpen
+ * @property {import('react').RefObject<HTMLDivElement | null>} contentOuterRef
+ * @property {import('react').RefObject<HTMLDivElement | null>} contentInnerRef
+ * @property {string} contentId
+ * @property {string} buttonId
+ * @property {string} titleClassName
+ * @property {string} contentClassName
+ * @property {string} iconClassName
+ * @property {number} iconSize
+ * @property {number} iconStrokeWidth
+ */
+
+/**
+ * @typedef {Object} FAQGroupContextValue
+ * @property {boolean} allowMultiple
+ * @property {(string | number)[]} openItems
+ * @property {(itemId: string | number) => void} toggleItem
+ */
+
+const FAQContext = createContext(/** @type {FAQContextValue | null} */ (null));
+const FAQGroupContext = createContext(/** @type {FAQGroupContextValue | null} */ (null));
 
 const useFAQContext = () => {
   const context = useContext(FAQContext);
@@ -33,6 +54,16 @@ const useFAQContext = () => {
   return context;
 };
 
+/**
+ * @typedef {Object} FAQGroupProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [allowMultiple]
+ * @property {(string | number)[]} [defaultOpenItems]
+ * @property {(string | number)[]} [value]
+ * @property {(next: (string | number)[]) => void} [onChange]
+ */
+
+/** @param {FAQGroupProps} props */
 export function FAQGroup({
   children,
   allowMultiple = false,
@@ -43,9 +74,10 @@ export function FAQGroup({
   const isControlled = Array.isArray(value);
   const [internalOpenItems, setInternalOpenItems] = useState(defaultOpenItems);
 
-  const openItems = isControlled ? value : internalOpenItems;
+  const openItems = isControlled ? /** @type {(string | number)[]} */ (value) : internalOpenItems;
 
   const toggleItem = useCallback(
+    /** @param {string | number} itemId */
     (itemId) => {
       const next = (() => {
         const isOpen = openItems.includes(itemId);
@@ -84,6 +116,23 @@ export function FAQGroup({
   );
 }
 
+/**
+ * @typedef {Object} FAQWrapperProps
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [className]
+ * @property {string} [titleClassName]
+ * @property {string} [contentClassName]
+ * @property {string} [iconClassName]
+ * @property {number} [iconSize]
+ * @property {number} [iconStrokeWidth]
+ * @property {number} [duration]
+ * @property {boolean} [defaultOpen]
+ * @property {boolean} [controlledOpen]
+ * @property {(isOpen: boolean) => void} [onToggle]
+ * @property {string | number} [itemId]
+ */
+
+/** @param {FAQWrapperProps} props */
 export function FAQWrapper({
   children,
   className = "",
@@ -112,8 +161,8 @@ export function FAQWrapper({
       ? controlledOpen
       : internalOpen;
 
-  const contentOuterRef = useRef(null);
-  const contentInnerRef = useRef(null);
+  const contentOuterRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const contentInnerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
   const openHeightRef = useRef(0);
   const reduceMotionRef = useRef(
     typeof window !== "undefined" &&
@@ -126,6 +175,7 @@ export function FAQWrapper({
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
+    /** @param {MediaQueryListEvent} event */
     const onChange = (event) => {
       reduceMotionRef.current = event.matches;
     };
@@ -153,8 +203,9 @@ export function FAQWrapper({
     });
   };
 
+  /** @param {import('react').MouseEvent<HTMLDivElement>} event */
   const handleWrapperClick = (event) => {
-    const isInteractive = event.target.closest(
+    const isInteractive = /** @type {HTMLElement} */ (event.target).closest(
       "a, button, input, textarea, select"
     );
 
@@ -163,6 +214,7 @@ export function FAQWrapper({
     handleToggle();
   };
 
+  /** @param {import('react').KeyboardEvent<HTMLDivElement>} event */
   const handleKeyDown = (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -251,6 +303,16 @@ export function FAQWrapper({
   );
 }
 
+/**
+ * @typedef {Object} FAQTitleProps
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [className]
+ * @property {boolean} [showIcon]
+ * @property {'left' | 'right'} [iconPosition]
+ * @property {'rotate' | 'rotate-left-down'} [iconMode]
+ */
+
+/** @param {FAQTitleProps} props */
 export function FAQTitle({
   children,
   className = "",
@@ -309,6 +371,14 @@ export function FAQTitle({
   );
 }
 
+/**
+ * @typedef {Object} FAQContentProps
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [className]
+ * @property {string} [innerClassName]
+ */
+
+/** @param {FAQContentProps} props */
 export function FAQContent({
   children,
   className = "",
@@ -324,6 +394,7 @@ export function FAQContent({
   } = useFAQContext();
 
   return (
+    <>
     <div
       id={contentId}
       ref={contentOuterRef}
@@ -339,6 +410,7 @@ export function FAQContent({
         <div className={innerClassName}>{children}</div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -28,10 +28,21 @@ const TUNNEL_CONFIG = {
  backgroundColor:'#000000'
 }
 
+/**
+ * @typedef {import('react').MutableRefObject<number>} PhaseRef
+ */
+
+/**
+ * @param {{
+ *   index: number,
+ *   loaderValue: number,
+ *   tunnelPhaseRef: PhaseRef,
+ * }} props
+ */
 function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
- const groupRef = useRef()
- const ringContentRef = useRef()
- const textMaterialRef = useRef(null)
+ const groupRef = useRef(/** @type {THREE.Group | null} */ (null))
+ const ringContentRef = useRef(/** @type {THREE.Group | null} */ (null))
+ const textMaterialRef = useRef(/** @type {THREE.MeshBasicMaterial | null} */ (null))
  const direction = index % 2 === 0 ? 1 : -1
  const reduceMotionRef = useRef(
  typeof window !== 'undefined' &&
@@ -60,6 +71,7 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  useEffect(() => {
  const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
  if (!mq) return undefined
+ /** @param {MediaQueryListEvent} event */
  const onChange = (event) => {
  reduceMotionRef.current = event.matches
  }
@@ -68,7 +80,12 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  return () => mq.removeEventListener?.('change', onChange)
  }, [])
 
- useFrame((state, delta) => {
+ useFrame(
+ /**
+  * @param {import('@react-three/fiber').RootState} state
+  * @param {number} delta
+  */
+ (state, delta) => {
  if (!groupRef.current || !ringContentRef.current) return
  const material = textMaterialRef.current
  if (!material) return
@@ -141,6 +158,12 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  )
 }
 
+/**
+ * @param {{
+ *   loaderValue: number,
+ *   tunnelPhaseRef: PhaseRef,
+ * }} props
+ */
 function TunnelScene({ loaderValue, tunnelPhaseRef }) {
  return (
  <>
@@ -152,11 +175,18 @@ function TunnelScene({ loaderValue, tunnelPhaseRef }) {
  )
 }
 
+/**
+ * @param {{
+ *   children?: import('react').ReactNode,
+ *   active: boolean,
+ *   tunnelPhaseRef: PhaseRef,
+ * }} props
+ */
 function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  const { gl, camera, size, viewport } = useThree()
  const portalScene = useMemo(() => new THREE.Scene(), [])
- const fbo = useFBO(size.width, size.height, { samples: 0, depth: false })
- const materialRef = useRef(null)
+ const fbo = useFBO(size.width, size.height, /** @type {any} */ ({ samples: 0, depth: false }))
+ const materialRef = useRef(/** @type {THREE.ShaderMaterial | null} */ (null))
  const reduceMotionRef = useRef(
  typeof window !== 'undefined' &&
  (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false)
@@ -165,6 +195,7 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  useEffect(() => {
  const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
  if (!mq) return undefined
+ /** @param {MediaQueryListEvent} event */
  const onChange = (event) => {
  reduceMotionRef.current = event.matches
  }
@@ -256,7 +287,12 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  }
  }, [material])
 
- useFrame((state, delta) => {
+ useFrame(
+ /**
+  * @param {import('@react-three/fiber').RootState} state
+  * @param {number} delta
+  */
+ (state, delta) => {
  // always render tunnel pass, then crossfade
  gl.setRenderTarget(fbo)
  gl.clear(true, true, true)
@@ -290,15 +326,23 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  )
 }
 
+/**
+ * @param {{
+ *   loaderValue: number,
+ *   onComplete?: () => void,
+ * }} props
+ */
 function NumericTunnelCanvas({ loaderValue, onComplete }) {
  const [effectActive, setEffectActive] = useState(false)
  // Remove useState for canvasOpacity, use a ref instead
- const canvasRef = useRef(null)
+ const canvasRef = useRef(/** @type {HTMLDivElement | null} */ (null))
  const didScheduleRef = useRef(false)
  const tunnelPhaseRef = useRef(0)
 
  useEffect(() => {
+ /** @type {number | undefined} */
  let anim
+ /** @type {ReturnType<typeof setTimeout> | undefined} */
  let fadeTimeout
  if (loaderValue >= 100 && !didScheduleRef.current) {
  didScheduleRef.current = true
@@ -330,7 +374,7 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  requestAnimationFrame(step)
  }
  return () => {
- cancelAnimationFrame(anim)
+ if (anim !== undefined) cancelAnimationFrame(anim)
  clearTimeout(fadeTimeout)
  }
  }, [loaderValue, onComplete])
@@ -355,11 +399,18 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  )
 }
 
+/**
+ * @param {{
+ *   children?: import('react').ReactNode,
+ *   onComplete?: () => void,
+ * }} props
+ */
 export function NumericTunnelLoader({ children, onComplete }) {
  const [loaderValue, setLoaderValue] = useState(0)
  const [isComplete, setIsComplete] = useState(false)
 
  useEffect(() => {
+ /** @type {ReturnType<typeof setInterval> | undefined} */
  let interval;
  const timeout = setTimeout(() => {
  interval = setInterval(() => {

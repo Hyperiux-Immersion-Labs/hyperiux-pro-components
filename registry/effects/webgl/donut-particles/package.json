@@ -4,8 +4,8 @@
   "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
   "main": "index.jsx",
   "files": [
-    "createSuspendedRaf.js",
     "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

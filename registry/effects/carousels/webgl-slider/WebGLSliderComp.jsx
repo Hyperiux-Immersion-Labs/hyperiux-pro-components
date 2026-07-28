@@ -73,19 +73,32 @@ const fragmentShader = /* glsl */ `
  }
 `;
 
+/** @type {(v: number, lo: number, hi: number) => number} */
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+/** @type {(n: number, m: number) => number} */
 const mod = (n, m) => ((n % m) + m) % m;
 
+/**
+ * @param {string} src
+ * @returns {string}
+ */
 function getMediaProxyUrl(src) {
   return src;
 }
 
+/**
+ * @typedef {Object} WebGLSliderImage
+ * @property {string} src
+ * @property {string} text
+ */
+
+/** @param {{ images?: WebGLSliderImage[] }} props */
 function WebGLSliderComp({ images = [] }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
   const scrollRef = useRef(0);
   const lastScroll = useRef(0);
-  const scrollTimeout = useRef(null);
-  const lenisResumeTimeout = useRef(null);
+  const scrollTimeout = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
+  const lenisResumeTimeout = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
   const isSnapping = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -102,6 +115,7 @@ function WebGLSliderComp({ images = [] }) {
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
       setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
     };
@@ -208,6 +222,7 @@ function WebGLSliderComp({ images = [] }) {
 
     const mouse = new THREE.Vector2(-100, -100);
 
+    /** @param {MouseEvent} event */
     const onMouseMove = (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -262,7 +277,9 @@ function WebGLSliderComp({ images = [] }) {
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");
 
+    /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
     const meshes = [];
+    /** @type {THREE.Texture[]} */
     const textures = [];
 
     const geo = new THREE.PlaneGeometry(CARD_W, CARD_H, 64, 64);
@@ -296,9 +313,10 @@ function WebGLSliderComp({ images = [] }) {
           texture.needsUpdate = true;
 
           if (texture.image) {
+            const img = /** @type {any} */ (texture.image);
             mat.uniforms.uImageSize.value.set(
-              texture.image.width || texture.image.videoWidth || 1,
-              texture.image.height || texture.image.videoHeight || 1
+              img.width || img.videoWidth || 1,
+              img.height || img.videoHeight || 1
             );
           }
         },
@@ -325,6 +343,7 @@ function WebGLSliderComp({ images = [] }) {
 
     document.body.style.height = `${total * 100 + 100}vh`;
 
+    /** @type {number} */
     let rafId;
 
     const targetUv = new THREE.Vector2();

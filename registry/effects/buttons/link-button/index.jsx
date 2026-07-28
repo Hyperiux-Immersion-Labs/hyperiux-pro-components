@@ -8,6 +8,20 @@ import { useLayoutEffect, useState } from "react";
 const DEFAULT_HREF = "#";
 const TABLET_BREAKPOINT = 1025;
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
+ *   icon?: import('react').ComponentType<{ className?: string }>,
+ *   iconClassName?: string,
+ *   disableNavigation?: boolean,
+ *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} LinkButtonProps
+ */
+
+/** @param {LinkButtonProps} props */
 export default function LinkButton({
   btnText,
   href = DEFAULT_HREF,
@@ -37,6 +51,7 @@ export default function LinkButton({
     };
   }, []);
 
+  /** @param {import('react').MouseEvent<HTMLAnchorElement>} event */
   const onLinkClick = (event) => {
     setIsIconRotated((previousValue) => !previousValue);
 

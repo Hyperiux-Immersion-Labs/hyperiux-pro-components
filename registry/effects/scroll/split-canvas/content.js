@@ -1,3 +1,11 @@
+/**
+ * @typedef {Object} SplitCanvasSection
+ * @property {string} number
+ * @property {string} title
+ * @property {string} description
+ */
+
+/** @type {SplitCanvasSection[]} */
 export const sections = [
   {
     number: '01',

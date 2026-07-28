@@ -6,7 +6,7 @@ import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from 're
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Center } from '@react-three/drei'
 import * as THREE from 'three'
-import { degToRad } from 'three/src/math/MathUtils'
+import { degToRad } from 'three/src/math/MathUtils.js'
 import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Stars } from 'lucide-react'
 import EdgeBlurEffect from './edge-blur-effect'
@@ -386,12 +386,33 @@ void main(){
 }
 `
 
+/**
+ * @typedef {Object} GPUComputeVar
+ * @property {THREE.ShaderMaterial} simMat
+ * @property {THREE.Mesh} mesh
+ * @property {THREE.WebGLRenderTarget} rtA
+ * @property {THREE.WebGLRenderTarget} rtB
+ */
+
 // Inline GPUCompute
 class GPUCompute {
+   /** @type {THREE.PlaneGeometry} */
+   static sharedGeo
+   /** @type {THREE.OrthographicCamera} */
+   static sharedCam
+   /** @type {THREE.Scene} */
+   static sharedScene
+
+   /**
+    * @param {number} w
+    * @param {number} h
+    * @param {THREE.WebGLRenderer} renderer
+    */
    constructor(w, h, renderer) {
       this.w = w
       this.h = h
       this.gl = renderer
+      /** @type {Record<string, GPUComputeVar>} */
       this.vars = {}
       // Re-use PlaneGeometry and OrthographicCamera instead of newing every frame
       if (!GPUCompute.sharedGeo) GPUCompute.sharedGeo = new THREE.PlaneGeometry(2, 2)
@@ -411,6 +432,11 @@ class GPUCompute {
       })
    }
 
+   /**
+    * @param {string} name
+    * @param {string} fragShader
+    * @param {THREE.Texture} initTex
+    */
    addVar(name, fragShader, initTex) {
       const simMat = new THREE.ShaderMaterial({
          uniforms: {
@@ -433,6 +459,12 @@ class GPUCompute {
       return this.vars[name]
    }
 
+   /**
+    * @param {string} name
+    * @param {number} time
+    * @param {number} delta
+    * @param {THREE.Texture|null} dataTex
+    */
    compute(name, time, delta, dataTex) {
       const v = this.vars[name]
       v.simMat.uniforms.uTime.value = time
@@ -457,6 +489,7 @@ class GPUCompute {
 }
 
 // Seeded RNG (mulberry32)
+/** @param {number} seed */
 function mulberry32(seed) {
    let t = seed >>> 0
    return () => {
@@ -468,6 +501,7 @@ function mulberry32(seed) {
 }
 
 // Build DataTextures for initial positions and static data
+/** @param {typeof CFG} cfg */
 function buildTextures(cfg) {
    const { texSize: S, maxRadius, holeRadius, holeEdgeBand, arms, spiralTightness, armWidth,
       diskHeight, coreRadius, coreHeight, seed } = cfg
@@ -525,7 +559,7 @@ function buildTextures(cfg) {
       dataArr[i * 4 + 3] = armIdx / arms
    }
 
-   const mkTex = (arr) => {
+   const mkTex = (/** @type {Float32Array} */ arr) => {
       const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
       t.needsUpdate = true
       t.minFilter = t.magFilter = THREE.NearestFilter
@@ -536,6 +570,7 @@ function buildTextures(cfg) {
 }
 
 // Build particle geometry (attributes only - positions on GPU)
+/** @param {typeof CFG} cfg */
 function buildGeo(cfg) {
    const { texSize: S, maxRadius, holeRadius, coreRadius, seed } = cfg
    const count = S * S
@@ -574,6 +609,7 @@ function buildGeo(cfg) {
 }
 
 // Build smoke DataTextures (initial positions + static data)
+/** @param {typeof SMOKE_CFG} cfg */
 function buildSmokeTextures(cfg) {
    const S = cfg.texSize
    const total = S * S
@@ -613,7 +649,7 @@ function buildSmokeTextures(cfg) {
       dataArr[i * 4 + 3] = armIdx / cfg.arms
    }
 
-   const mkTex = (arr) => {
+   const mkTex = (/** @type {Float32Array} */ arr) => {
       const t = new THREE.DataTexture(arr, S, S, THREE.RGBAFormat, THREE.FloatType)
       t.needsUpdate = true
       t.minFilter = t.magFilter = THREE.NearestFilter
@@ -622,6 +658,7 @@ function buildSmokeTextures(cfg) {
    return { posTex: mkTex(posArr), dataTex: mkTex(dataArr) }
 }
 
+/** @param {typeof SMOKE_CFG} cfg */
 function buildSmokeGeo(cfg) {
    const S = cfg.texSize
    const count = S * S
@@ -653,12 +690,14 @@ function buildSmokeGeo(cfg) {
 // SmokeFlow - GPGPU-driven flowing nebula layer
 const SmokeFlow = React.memo(function SmokeFlow() {
    const { gl } = useThree()
-   const gpuRef = useRef(null)
-   const matRef = useRef(null)
-   const dataRef = useRef(null)
+   const gpuRef = useRef(/** @type {GPUCompute|null} */ (null))
+   const matRef = useRef(/** @type {THREE.ShaderMaterial|null} */ (null))
+   const dataRef = useRef(/** @type {THREE.Texture|null} */ (null))
    const reduceMotionRef = useRef(
-      typeof window !== 'undefined' &&
-         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      /** @type {boolean} */ (
+         typeof window !== 'undefined' &&
+            window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      )
    )
    const { geo, posTex, dataTex } = useMemo(() => {
       const { posTex, dataTex } = buildSmokeTextures(SMOKE_CFG)
@@ -682,7 +721,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
    useEffect(() => {
       const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
       if (!mq) return
-      const onChange = (event) => {
+      const onChange = (/** @type {MediaQueryListEvent} */ event) => {
          reduceMotionRef.current = event.matches
       }
       reduceMotionRef.current = mq.matches
@@ -731,26 +770,30 @@ const SmokeFlow = React.memo(function SmokeFlow() {
 })
 
 
+/** @type {[number, number, number]} */
 const GALAXY_BASE_ROT = [degToRad(110), degToRad(-10), degToRad(0)]
 /** Max euler offset (rad) from mouse at screen edges - keep small for subtle parallax */
 const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
 /** How fast smoothed mouse catches the cursor (frame-rate independent lerp) */
 const MOUSE_LERP_LAMBDA = 1
 
+/** @param {{children: import('react').ReactNode}} props */
 function GalaxyMouseGroup({ children }) {
-   const groupRef = useRef(null)
+   const groupRef = useRef(/** @type {THREE.Group|null} */ (null))
    const mouseRef = useRef({ x: 0, y: 0 })
    const smoothRef = useRef({ x: 0, y: 0 })
    const reduceMotionRef = useRef(
-      typeof window !== 'undefined' &&
-         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      /** @type {boolean} */ (
+         typeof window !== 'undefined' &&
+            window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      )
    )
 
    useEffect(() => {
       const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
       if (!mq) return
 
-      const onChange = (event) => {
+      const onChange = (/** @type {MediaQueryListEvent} */ event) => {
          reduceMotionRef.current = event.matches
          if (event.matches && groupRef.current) {
             groupRef.current.rotation.set(
@@ -769,7 +812,7 @@ function GalaxyMouseGroup({ children }) {
    }, [])
 
    useEffect(() => {
-      const onMove = (e) => {
+      const onMove = (/** @type {MouseEvent} */ e) => {
          if (reduceMotionRef.current) return
          const w = window.innerWidth || 1
          const h = window.innerHeight || 1
@@ -813,13 +856,15 @@ function GalaxyMouseGroup({ children }) {
 
 const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
    const { gl } = useThree()
-   const groupRef = useRef()
-   const gpuRef = useRef(null)
-   const matRef = useRef(null)
-   const dataRef = useRef(null)
+   const groupRef = useRef(/** @type {THREE.Group|null} */ (null))
+   const gpuRef = useRef(/** @type {GPUCompute|null} */ (null))
+   const matRef = useRef(/** @type {THREE.ShaderMaterial|null} */ (null))
+   const dataRef = useRef(/** @type {THREE.Texture|null} */ (null))
    const reduceMotionRef = useRef(
-      typeof window !== 'undefined' &&
-         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      /** @type {boolean} */ (
+         typeof window !== 'undefined' &&
+            window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      )
    )
    const { geo, posTex, dataTex } = useMemo(() => {
       const { posTex, dataTex } = buildTextures(CFG)
@@ -842,7 +887,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
    useEffect(() => {
       const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
       if (!mq) return
-      const onChange = (event) => {
+      const onChange = (/** @type {MediaQueryListEvent} */ event) => {
          reduceMotionRef.current = event.matches
       }
       reduceMotionRef.current = mq.matches
@@ -918,6 +963,7 @@ const BackgroundStars = React.memo(function BackgroundStars() {
 
 const MOBILE_QUERY = '(max-width: 1024px)'
 
+/** @param {{onReady: () => void}} props */
 function SceneReady({ onReady }) {
    const frameCountRef = useRef(0)
    const readyRef = useRef(false)
@@ -934,10 +980,14 @@ function SceneReady({ onReady }) {
 }
 
 export default function MilkyWay() {
-   const rootRef = useRef(null)
-   const [frameloop, setFrameloop] = useState('always')
+   const rootRef = useRef(/** @type {HTMLElement|null} */ (null))
+   const [frameloop, setFrameloop] = useState(
+      /** @type {'always'|'never'|'demand'} */ ('always')
+   )
    const [isPageLoaded, setIsPageLoaded] = useState(false)
-   const [viewport, setViewport] = useState(null)
+   const [viewport, setViewport] = useState(
+      /** @type {{dpr: number, isMobile: boolean}|null} */ (null)
+   )
    const [isSceneReady, setIsSceneReady] = useState(false)
 
    useEffect(() => {

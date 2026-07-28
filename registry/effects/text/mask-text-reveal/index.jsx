@@ -9,6 +9,18 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+/**
+ * @typedef {Object} MaskTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [stagger]
+ * @property {number} [duration]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {boolean} [scrub]
+ */
+
+/** @param {MaskTextRevealProps} props */
 export default function MaskTextReveal({
     children,
     animateOnScroll = true,
@@ -18,10 +30,10 @@ export default function MaskTextReveal({
     className = "",
     scrub = false,
 }) {
-    const containerRef = useRef(null);
-    const splitRefs = useRef([]);
-    const linesRef = useRef([]);
-    const triggersRef = useRef([]);
+    const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+    const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+    const linesRef = useRef(/** @type {HTMLElement[]} */ ([]));
+    const triggersRef = useRef(/** @type {(InstanceType<typeof ScrollTrigger> | undefined)[]} */ ([]));
 
     useEffect(() => {
         const el = containerRef.current;
@@ -35,7 +47,7 @@ export default function MaskTextReveal({
         linesRef.current = [];
         triggersRef.current = [];
 
-        const elements = Array.from(el.children);
+        const elements = /** @type {HTMLElement[]} */ (Array.from(el.children));
 
         const waitForFonts = async () => {
             if (document.fonts && document.fonts.ready) {
@@ -45,12 +57,14 @@ export default function MaskTextReveal({
             }
         };
 
+        /** @param {Element} [root] */
         const forceAriaVisible = (root) => {
             if (!root) return;
             const hidden = root.querySelectorAll('[aria-hidden="true"]');
             hidden.forEach((node) => node.setAttribute("aria-hidden", "false"));
         };
 
+        /** @param {HTMLElement} [line] */
         const applyMaskStyles = (line) => {
             if (!line) return;
 
@@ -75,14 +89,14 @@ export default function MaskTextReveal({
 
                 const textIndent = getComputedStyle(element).textIndent;
                 if (textIndent && textIndent !== "0px" && split.lines.length > 0) {
-                    split.lines[0].style.paddingLeft = textIndent;
+                    /** @type {HTMLElement} */ (split.lines[0]).style.paddingLeft = textIndent;
                     element.style.textIndent = "0";
                 }
 
-                split.lines.forEach(applyMaskStyles);
+                /** @type {HTMLElement[]} */ (split.lines).forEach(applyMaskStyles);
 
                 forceAriaVisible(element);
-                linesRef.current.push(...split.lines);
+                linesRef.current.push(.../** @type {HTMLElement[]} */ (split.lines));
             });
 
             if (!linesRef.current.length) return;

@@ -11,6 +11,23 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
+/**
+ * @typedef {Object} CardsRunwayCard
+ * @property {string|number} id
+ * @property {string} [title]
+ * @property {string} [text]
+ */
+
+/**
+ * @typedef {Object} CardsRunwayProps
+ * @property {CardsRunwayCard[]} [data]
+ * @property {string} [accentColor]
+ * @property {string} [cardColor]
+ * @property {string} [cardWidth]
+ * @property {string} [start]
+ */
+
+/** @param {CardsRunwayProps} props */
 export default function CardsRunway({
   data = [],
   accentColor = "#ff5f00",
@@ -18,7 +35,7 @@ export default function CardsRunway({
   cardWidth = "28vw",
   start = "10% 90%",
 }) {
-  const root = useRef(null);
+  const root = useRef(/** @type {HTMLElement | null} */ (null));
 
   useEffect(() => {
     let ctx = gsap.context(() => {

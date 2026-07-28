@@ -7,6 +7,10 @@ import InfiniteGrid from "./InfiniteGrid";
 
 const OVERLAY_ASPECT_RATIO = 16 / 9;
 
+/**
+ * @param {number} vw
+ * @param {number} vh
+ */
 function getOverlayMetrics(vw, vh) {
   const isMobile = vw <= 768;
   const isTablet = !isMobile && vw <= 1025;
@@ -43,36 +47,53 @@ function getOverlayMetrics(vw, vh) {
     targetH: Math.round(targetH),
   };
 }
+/**
+ * @param {number} vw
+ * @param {number} vh
+ * @param {number} targetH
+ */
 function getCenteredOverlayTop(vw, vh, targetH) {
   return Math.round((vh - targetH) / 2);
 }
 
 export default function InfiniteGridGallery() {
-  const imagesRef = useRef(null);
-  const gridRef = useRef(null);
+  const imagesRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const gridRef = useRef(/** @type {InfiniteGrid|null} */ (null));
 
-  const expandThumbsRef = useRef(null);
-  const expandThumbRefs = useRef([]);
-  const thumbClickIndexRef = useRef(null);
+  const expandThumbsRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const expandThumbRefs = useRef(/** @type {(HTMLButtonElement|null)[]} */ ([]));
+  const thumbClickIndexRef = useRef(/** @type {number|null} */ (null));
 
   const thumbDragRef = useRef({
     active: false,
-    pointerId: null,
+    pointerId: /** @type {number|null} */ (null),
     startX: 0,
     startScrollLeft: 0,
     moved: false,
   });
 
-  const [expanded, setExpanded] = useState(null);
+  /**
+   * @typedef {Object} ExpandedState
+   * @property {number} index
+   * @property {{left: number, top: number, width: number, height: number}} rect
+   * @property {number} vw
+   * @property {number} vh
+   * @property {{left: number, top: number, width: number, height: number}} target
+   * @property {number} thumbsH
+   */
+
+  const [expanded, setExpanded] = useState(/** @type {ExpandedState|null} */ (null));
   const [isClosing, setIsClosing] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
-  const [displayIndex, setDisplayIndex] = useState(null);
-  const [slide, setSlide] = useState(null);
+  const [displayIndex, setDisplayIndex] = useState(/** @type {number|null} */ (null));
+  const [slide, setSlide] = useState(
+    /** @type {{from: number, to: number, dir: number}|null} */ (null)
+  );
   const [isThumbDragging, setIsThumbDragging] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
-  const closeTimerRef = useRef(null);
-  const slideTimerRef = useRef(null);
+  const closeTimerRef = useRef(/** @type {number|undefined} */ (undefined));
+  const slideTimerRef = useRef(/** @type {number|undefined} */ (undefined));
 
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -297,7 +318,7 @@ export default function InfiniteGridGallery() {
   const active = expanded ? sources[expanded.index] : null;
   const display = displayIndex === null ? null : sources[displayIndex];
 
-  const centerActiveThumb = useCallback((index, behavior = "smooth") => {
+  const centerActiveThumb = useCallback((/** @type {number} */ index, /** @type {ScrollBehavior} */ behavior = "smooth") => {
     const container = expandThumbsRef.current;
     const activeThumb = expandThumbRefs.current[index];
 
@@ -311,7 +332,7 @@ export default function InfiniteGridGallery() {
     container.scrollTo({ left, behavior });
   }, []);
 
-  const navigateTo = useCallback((nextIndex) => {
+  const navigateTo = useCallback((/** @type {number} */ nextIndex) => {
     if (!expanded) return;
     if (isAnimating) return;
 
@@ -381,7 +402,7 @@ export default function InfiniteGridGallery() {
   useEffect(() => {
     if (!expanded) return;
 
-    const onKeyDown = (e) => {
+    const onKeyDown = (/** @type {KeyboardEvent} */ e) => {
       if (e.key === "Escape") closeExpanded();
 
       if (e.key === "ArrowLeft") {
@@ -397,11 +418,11 @@ export default function InfiniteGridGallery() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [closeExpanded, expanded, navigateTo, sources.length]);
 
-  const onThumbPointerDown = (e) => {
+  const onThumbPointerDown = (/** @type {import('react').PointerEvent} */ e) => {
     const container = expandThumbsRef.current;
     if (!container) return;
 
-    const button = e.target.closest("[data-thumb-index]");
+    const button = /** @type {HTMLElement} */ (e.target).closest("[data-thumb-index]");
 
     thumbClickIndexRef.current = button
       ? Number(button.getAttribute("data-thumb-index"))
@@ -417,7 +438,7 @@ export default function InfiniteGridGallery() {
     container.setPointerCapture?.(e.pointerId);
   };
 
-  const onThumbPointerMove = (e) => {
+  const onThumbPointerMove = (/** @type {import('react').PointerEvent} */ e) => {
     if (!thumbDragRef.current.active) return;
     if (thumbDragRef.current.pointerId !== e.pointerId) return;
 
@@ -433,7 +454,7 @@ export default function InfiniteGridGallery() {
     container.scrollLeft = thumbDragRef.current.startScrollLeft - dx;
   };
 
-  const endThumbDrag = (e) => {
+  const endThumbDrag = (/** @type {import('react').PointerEvent} */ e) => {
     if (!thumbDragRef.current.active) return;
     if (thumbDragRef.current.pointerId !== e.pointerId) return;
 
@@ -450,7 +471,7 @@ export default function InfiniteGridGallery() {
     setIsThumbDragging(false);
 
     if (!wasDragged && Number.isInteger(clickedIndex)) {
-      navigateTo(clickedIndex);
+      navigateTo(/** @type {number} */ (clickedIndex));
     }
 
     window.setTimeout(() => {
@@ -458,7 +479,7 @@ export default function InfiniteGridGallery() {
     }, 0);
   };
 
-  const onThumbWheel = (e) => {
+  const onThumbWheel = (/** @type {import('react').WheelEvent} */ e) => {
     const container = expandThumbsRef.current;
     if (!container) return;
 
@@ -482,10 +503,10 @@ export default function InfiniteGridGallery() {
           >
             <div
               className="fixed inset-0 mt-[-3%] flex flex-col items-center justify-start"
-              style={{
+              style={/** @type {import('react').CSSProperties} */ ({
 
                 "--thumbsH": `${expanded.thumbsH}px`,
-              }}
+              })}
             >
               <div
                 className="absolute origin-top-left overflow-hidden bg-[rgba(0,0,0,0.06)] will-change-transform"
@@ -540,10 +561,10 @@ export default function InfiniteGridGallery() {
               <button
                 type="button"
                 className="fixed left-(--nav-left) top-(--nav-top) z-4 grid h-13.5 w-13.5  -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-[1025px]:left-[calc(50%-70px)] max-[1025px]:top-auto max-[1025px]:bottom-[calc(var(--thumbsH)+55px)] max-[1025px]:h-15 max-[1025px]:w-15 max-[1025px]:translate-y-0 max-[1025px]:text-2xl max-md:left-[calc(50%-70px)] max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:text-xl"
-                style={{
+                style={/** @type {import('react').CSSProperties} */ ({
                   "--nav-left": `${Math.max(16, expanded.target.left - 72)}px`,
                   "--nav-top": `${expanded.target.top + expanded.target.height / 2}px`,
-                }}
+                })}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() =>
                   navigateTo((expanded.index - 1 + sources.length) % sources.length)
@@ -557,13 +578,13 @@ export default function InfiniteGridGallery() {
               <button
                 type="button"
                 className="fixed right-(--nav-right) top-(--nav-top) z-4 grid h-13.5 w-13.5 -translate-y-1/2 place-items-center rounded-full border border-black/12 bg-white/90 text-[30px] leading-none text-black shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-opacity disabled:cursor-not-allowed disabled:opacity-35 max-[1025px]:right-[calc(50%-70px)] max-[1025px]:top-auto max-[1025px]:bottom-[calc(var(--thumbsH)+55px)] max-[1025px]:h-15 max-[1025px]:w-15 max-[1025px]:translate-y-0 max-[1025px]:text-2xl max-md:right-[calc(50%-70px)] max-md:bottom-[calc(var(--thumbsH)+55px)] max-md:h-15 max-md:w-15 max-md:text-xl"
-                style={{
+                style={/** @type {import('react').CSSProperties} */ ({
                   "--nav-right": `${Math.max(
                     16,
                     window.innerWidth - (expanded.target.left + expanded.target.width) - 72
                   )}px`,
                   "--nav-top": `${expanded.target.top + expanded.target.height / 2}px`,
-                }}
+                })}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={() => navigateTo((expanded.index + 1) % sources.length)}
                 aria-label="Next"

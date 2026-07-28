@@ -17,8 +17,32 @@
  * animation-delay).
  */
 
+/**
+ * @typedef {Object} PulseOscillator
+ * @property {string} prop
+ * @property {number} a
+ * @property {number} b
+ * @property {number} period
+ * @property {number} delay
+ * @property {string} unit
+ */
+
+/**
+ * @typedef {Object} PulseDriverConfig
+ * @property {PulseOscillator[]} oscillators
+ * @property {{ prop: string, range: number, period: number, continuous: boolean } | null} hue
+ */
+
+/**
+ * @typedef {Object} PulseInstance
+ * @property {HTMLElement} el
+ * @property {PulseDriverConfig} config
+ */
+
+/** @type {Set<PulseInstance>} */
 const instances = new Set();
 
+/** @type {number | null} */
 let rafId = null;
 let lastFrame = 0;
 
@@ -26,11 +50,16 @@ let lastFrame = 0;
 const FRAME_INTERVAL = 1000 / 30 - 2;
 const TWO_PI = Math.PI * 2;
 
-/** Cosine ease-in-out factor in [0, 1]: 0 at phase 0/1, 1 at phase 0.5. */
+/**
+ * Cosine ease-in-out factor in [0, 1]: 0 at phase 0/1, 1 at phase 0.5.
+ * @param {number} phase
+ * @returns {number}
+ */
 function pingPong(phase) {
   return (1 - Math.cos(TWO_PI * phase)) / 2;
 }
 
+/** @param {number} ts */
 function frame(ts) {
   rafId = requestAnimationFrame(frame);
   if (ts - lastFrame < FRAME_INTERVAL) return;
@@ -79,7 +108,7 @@ function stopLoopIfIdle() {
  * Register an element to be driven by the shared pulse loop.
  *
  * @param {HTMLElement} el
- * @param {object} config - config from getPulseDriverConfig() in styles.js
+ * @param {PulseDriverConfig} config - config from getPulseDriverConfig() in styles.js
  * @returns {() => void} cleanup function that unregisters the instance (and
  *          stops the shared loop once no instances remain).
  */

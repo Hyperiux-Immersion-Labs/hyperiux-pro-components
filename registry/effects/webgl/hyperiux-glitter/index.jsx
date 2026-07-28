@@ -12,8 +12,10 @@ import { createVisibilityGate } from "./createSuspendedRaf";
 
 export default function HyperiuxGlitter() {
 
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
   const [modelScale, setModelScale] = useState(0.15);
 
 useEffect(() => {

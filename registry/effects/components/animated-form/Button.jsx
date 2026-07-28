@@ -2,16 +2,18 @@
 import React, { forwardRef } from "react";
 
 /**
- * Button
- * Props:
- * - children: React.ReactNode
- * - type:"button" |"submit" |"reset" (default"button")
- * - isLoading: boolean
- * - loadingText: string (default"Sending...")
- * - className: string
- * - All standard <button> props
+ * @typedef {{
+ *   children?: import('react').ReactNode,
+ *   type?: 'button' | 'submit' | 'reset',
+ *   isLoading?: boolean,
+ *   loadingText?: string,
+ *   className?: string,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'button'>, 'type'>} ButtonProps
  */
-const Button = forwardRef(function Button(
+
+const Button = forwardRef(
+ /** @type {import('react').ForwardRefRenderFunction<HTMLButtonElement, ButtonProps>} */
+ (function Button(
  {
  children,
  type ="button",
@@ -69,6 +71,7 @@ const Button = forwardRef(function Button(
  )}
  </button>
  );
-});
+})
+);
 
 export default Button;

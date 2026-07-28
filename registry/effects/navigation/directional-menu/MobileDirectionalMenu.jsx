@@ -4,14 +4,21 @@ import { useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useFocusTrap } from "./useFocusTrap";
 
+/** @param {import('./DirectionalMegaMenu').DirectionalMenuItem} [item] */
 const hasDropdownContent = (item) => Boolean(item?.customContent);
 
+/**
+ * @typedef {Object} MobileDirectionalMenuProps
+ * @property {import('./DirectionalMegaMenu').DirectionalMenuItem[]} [items]
+ */
+
+/** @param {MobileDirectionalMenuProps} props */
 export function MobileDirectionalMenu({ items = [] }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(/** @type {number|null} */ (null));
 
-  const containerRef = useRef(null);
-  const toggleButtonRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -38,6 +45,7 @@ export function MobileDirectionalMenu({ items = [] }) {
     });
   };
 
+  /** @param {number} index */
   const onToggleSection = (index) => {
     setActiveIndex((currentValue) => (currentValue === index ? null : index));
   };

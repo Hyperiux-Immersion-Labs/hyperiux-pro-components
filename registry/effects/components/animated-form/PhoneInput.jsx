@@ -15,9 +15,49 @@ export const COUNTRY_CODES = [
   { code: "SG", dial: "+65", flag: "🇸🇬", name: "Singapore" },
 ];
 
+/** @type {(...classes: (string | boolean | undefined | null)[]) => string} */
 const joinClasses = (...classes) => classes.filter(Boolean).join(" ");
 
-const PhoneInput = forwardRef(function PhoneInput(
+/**
+ * @typedef {Object} CountryCode
+ * @property {string} code
+ * @property {string} dial
+ * @property {string} flag
+ * @property {string} name
+ */
+
+/**
+ * @typedef {{
+ *   id?: string,
+ *   label?: string | false,
+ *   value?: string,
+ *   onChange?: (value: string) => void,
+ *   defaultCountry?: string,
+ *   countries?: CountryCode[],
+ *   error?: string,
+ *   className?: string,
+ *   wrapperClassName?: string,
+ *   countryButtonClassName?: string,
+ *   flagClassName?: string,
+ *   dialCodeClassName?: string,
+ *   chevronClassName?: string,
+ *   dropdownClassName?: string,
+ *   optionClassName?: string,
+ *   activeOptionClassName?: string,
+ *   optionFlagClassName?: string,
+ *   optionCodeClassName?: string,
+ *   optionDialClassName?: string,
+ *   dividerClassName?: string,
+ *   inputClassName?: string,
+ *   errorClassName?: string,
+ *   placeholder?: string,
+ *   showCountryName?: boolean,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'input'>, 'id' | 'value' | 'onChange' | 'placeholder'>} PhoneInputProps
+ */
+
+const PhoneInput = forwardRef(
+  /** @type {import('react').ForwardRefRenderFunction<HTMLInputElement, PhoneInputProps>} */
+  (function PhoneInput(
   {
     id = "phone",
     label = "Phone Number*",
@@ -47,7 +87,7 @@ const PhoneInput = forwardRef(function PhoneInput(
   },
   ref
 ) {
-  const rootRef = useRef(null);
+  const rootRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
   const [selectedCountry, setSelectedCountry] = useState(() => {
     return countries.find((country) => country.code === defaultCountry) || countries[0];
@@ -60,10 +100,11 @@ const PhoneInput = forwardRef(function PhoneInput(
     : value;
 
   useEffect(() => {
+    /** @param {PointerEvent} event */
     const handlePointerDown = (event) => {
       if (!rootRef.current) return;
 
-      if (!rootRef.current.contains(event.target)) {
+      if (!rootRef.current.contains(/** @type {Node | null} */ (event.target))) {
         setOpen(false);
       }
     };
@@ -75,6 +116,7 @@ const PhoneInput = forwardRef(function PhoneInput(
     };
   }, []);
 
+  /** @param {CountryCode} country */
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
     setOpen(false);
@@ -82,6 +124,7 @@ const PhoneInput = forwardRef(function PhoneInput(
     onChange?.(`${country.dial} ${numberPart}`.trim());
   };
 
+  /** @param {import('react').ChangeEvent<HTMLInputElement>} event */
   const handleNumberChange = (event) => {
     const nextNumber = event.target.value.replace(/[^\d\s\-()]/g, "");
 
@@ -208,6 +251,7 @@ const PhoneInput = forwardRef(function PhoneInput(
       )}
     </div>
   );
-});
+})
+);
 
 export default PhoneInput;

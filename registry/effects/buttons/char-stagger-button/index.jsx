@@ -10,6 +10,27 @@ const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   textClassName?: string,
+ *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
+ *   children?: import('react').ReactNode,
+ *   staggerStep?: number,
+ *   showLine?: boolean,
+ *   lineClassName?: string,
+ *   hoverColor?: string,
+ *   showArrow?: boolean,
+ *   icon?: import('react').ComponentType<{ className?: string }>,
+ *   iconVariant?: 'stacked' | 'single',
+ *   iconClassName?: string,
+ *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} CharStaggerButtonProps
+ */
+
+/** @param {CharStaggerButtonProps} props */
 export default function CharStaggerButton({
   btnText = "",
   href = DEFAULT_HREF,
@@ -29,8 +50,8 @@ export default function CharStaggerButton({
   ...props
 }) {
   // Refs
-  const textRef = useRef(null);
-  const lineRef = useRef(null);
+  const textRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const lineRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
 
@@ -42,8 +63,9 @@ export default function CharStaggerButton({
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
-      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+      const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
       setPrefersReducedMotion(matches);
     };
 
@@ -100,7 +122,8 @@ export default function CharStaggerButton({
     const textElement = textRef.current;
     if (!textElement) return;
     Array.from(textElement.children).forEach((span) => {
-      span.style.transform = isActive && !prefersReducedMotion
+      const spanEl = /** @type {HTMLElement} */ (span);
+      spanEl.style.transform = isActive && !prefersReducedMotion
         ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
         : "translateY(0em) rotate(0.001deg)";
     });
@@ -122,9 +145,13 @@ export default function CharStaggerButton({
     setIsActive((prev) => !prev);
   }, []);
 
-  const onMouseDown = useCallback((e) => {
-    if (isTouchRef.current) e.preventDefault();
-  }, []);
+  const onMouseDown = useCallback(
+    /** @param {import('react').MouseEvent<HTMLAnchorElement>} e */
+    (e) => {
+      if (isTouchRef.current) e.preventDefault();
+    },
+    []
+  );
 
   // Derived
   const sourceText = typeof children === "string" ? children :  btnText;

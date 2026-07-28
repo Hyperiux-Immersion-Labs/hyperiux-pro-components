@@ -12,6 +12,17 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 
+/**
+ * @typedef {Object} PerspectiveTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {boolean} [scrub]
+ * @property {string} [end]
+ */
+
+/** @param {PerspectiveTextRevealProps} props */
 export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
@@ -20,9 +31,9 @@ export default function PerspectiveTextReveal({
  scrub = false,
  end = "bottom 60%",
 }) {
- const containerRef = useRef(null);
- const splitRefs = useRef([]);
- const linesRef = useRef([]);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+ const linesRef = useRef(/** @type {HTMLElement[]} */ ([]));
 
  useLayoutEffect(() => {
  if (!containerRef.current) return;
@@ -38,6 +49,7 @@ export default function PerspectiveTextReveal({
  window.matchMedia &&
  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+ /** @type {ReturnType<typeof gsap.context> | undefined} */
  let ctx;
 
  const init = async () => {
@@ -52,7 +64,7 @@ export default function PerspectiveTextReveal({
  });
 
  splitRefs.current.push(split);
- linesRef.current.push(...split.lines);
+ linesRef.current.push(.../** @type {HTMLElement[]} */ (split.lines));
  });
 
  if (prefersReduced) {

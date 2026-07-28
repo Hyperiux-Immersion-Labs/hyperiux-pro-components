@@ -8,6 +8,14 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} PixelateSvgFilterProps
+ * @property {string} [id]
+ * @property {number} size
+ * @property {boolean} [crossLayers]
+ */
+
+/** @param {PixelateSvgFilterProps} props */
 function PixelateSvgFilter({ id, size, crossLayers }) {
   return (
     <svg aria-hidden="true" style={{ pointerEvents: "none", position: "absolute", height: 0, width: 0, overflow: "hidden" }}>
@@ -51,6 +59,19 @@ function PixelateSvgFilter({ id, size, crossLayers }) {
   );
 }
 
+/**
+ * @typedef {Object} SvgPixelRevealProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {number} [initialPixelSize]
+ * @property {number} [finalPixelSize]
+ * @property {string} [start]
+ * @property {string} [end]
+ * @property {boolean} [crossLayers]
+ * @property {import('react').CSSProperties} [style]
+ */
+
+/** @param {SvgPixelRevealProps} props */
 export default function SvgPixelReveal({
   src,
   alt = "Image",
@@ -61,7 +82,7 @@ export default function SvgPixelReveal({
   crossLayers = true,
   style = {},
 }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const filterId = useId().replace(/:/g, "");
   const [pixelSize, setPixelSize] = useState(initialPixelSize);
   const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;

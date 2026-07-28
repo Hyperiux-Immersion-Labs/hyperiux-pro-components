@@ -15,6 +15,18 @@ const variantMap = {
 
 const REDUCED_MOTION_Y_OFFSET = 20;
 
+/**
+ * @typedef {Object} BlurTextProps
+ * @property {import('react').ReactNode} [children]
+ * @property {number} [delay]
+ * @property {number} [duration]
+ * @property {number} [blur]
+ * @property {string} [className]
+ * @property {'fade' | 'left' | 'right' | 'up' | 'down'} [variant]
+ * @property {boolean} [once]
+ */
+
+/** @param {BlurTextProps} props */
 export default function BlurText({
   children,
   delay = 0,
@@ -24,7 +36,7 @@ export default function BlurText({
   variant = "fade",
   once = true,
 }) {
-  const ref = useRef(null);
+  const ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
   const isInView = useInView(ref, { once, margin: "-100px" });
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -32,6 +44,7 @@ export default function BlurText({
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
+    /** @param {MediaQueryListEvent} event */
     const handleChange = (event) => setPrefersReducedMotion(event.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);

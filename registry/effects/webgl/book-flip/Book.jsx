@@ -92,6 +92,13 @@ const pageMaterials = [
  * Helper function to generate page pairs from image array
  * Creates front/back pairs: [0,1], [2,3], [4,5], etc.
  */
+/**
+ * @typedef {Object} BookPage
+ * @property {string} front
+ * @property {string} back
+ */
+
+/** @param {string[]} imageArray */
 const generatePages = (imageArray) => {
  if (!imageArray || imageArray.length === 0) {
  return [];
@@ -124,9 +131,17 @@ const generatePages = (imageArray) => {
 /**
  * Preload textures for better performance
  */
+/**
+ * @param {string} name
+ * @param {string} pathPattern
+ */
 const resolveTexturePath = (name, pathPattern) =>
  name.startsWith("http") ? name : `${pathPattern}/${name}.png`;
 
+/**
+ * @param {BookPage[]} pages
+ * @param {string} pathPattern
+ */
 const preloadTextures = (pages, pathPattern) => {
  pages.forEach((page) => {
  useTexture.preload(resolveTexturePath(page.front, pathPattern));
@@ -143,6 +158,19 @@ const preloadTextures = (pages, pathPattern) => {
  * - Inner bones curve more (3D effect), outer bones curve less
  * - During turning, bones follow a sine wave for smooth animation
  */
+/**
+ * @typedef {Object} PageOwnProps
+ * @property {number} number
+ * @property {string} front
+ * @property {string} back
+ * @property {number} page
+ * @property {boolean} opened
+ * @property {boolean} bookClosed
+ * @property {string} pathPattern
+ * @property {BookPage[]} pages
+ */
+
+/** @param {PageOwnProps & Record<string, any>} props */
 const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  pathPattern,
  pages,
@@ -166,10 +194,10 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  return texture;
  }, [backTexture]);
 
- const group = useRef();
+ const group = useRef(/** @type {any} */ (null));
  const turnedAt = useRef(0);
  const lastOpened = useRef(opened);
- const skinnedMeshRef = useRef();
+ const skinnedMeshRef = useRef(/** @type {any} */ (null));
 
  /**
  * Create the skeletal mesh for this page
@@ -262,7 +290,7 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  }
 
  // Calculate animation progress (0 to 1, then sin for smooth curve)
- let turningTime = Math.min(400, new Date() - turnedAt.current) / 400;
+ let turningTime = Math.min(400, new Date().getTime() - turnedAt.current) / 400;
  turningTime = Math.sin(turningTime * Math.PI);
 
  // Target rotation: opened = -90°, closed = +90°
@@ -376,6 +404,13 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  * 3. Each page renders and receives updated page/opened props
  * 4. Pages animate their bones based on opened state
  */
+/**
+ * @typedef {Object} BookOwnProps
+ * @property {string[]} [images]
+ * @property {string} [pathPattern]
+ */
+
+/** @param {BookOwnProps & Record<string, any>} props */
 export const Book = ({  images = [],
  pathPattern ="/assets/nature",
  ...props }) => {
@@ -422,9 +457,10 @@ export const Book = ({  images = [],
  * This creates the sequential page-by-page animation
  */
  useEffect(() => {
+ /** @type {ReturnType<typeof setTimeout>|undefined} */
  let timeout;
  const goToPage = () => {
- setDelayedPage((delayedPage) => {
+ setDelayedPage(/** @type {(delayedPage: number) => number} */ ((delayedPage) => {
  if (page === delayedPage) {
  return delayedPage;
  } else {
@@ -442,7 +478,7 @@ export const Book = ({  images = [],
  return delayedPage - 1;
  }
  }
- });
+ }));
  };
  goToPage();
  return () => {

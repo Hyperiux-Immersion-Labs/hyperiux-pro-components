@@ -21,6 +21,17 @@ const DIRECTION_INITIAL = {
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 
+/**
+ * @typedef {Object} OverflowTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {boolean} [scrub]
+ * @property {'top' | 'bottom' | 'left' | 'right'} [direction]
+ */
+
+/** @param {OverflowTextRevealProps} props */
 export default function OverflowTextReveal({
   children,
   animateOnScroll = true,
@@ -29,9 +40,9 @@ export default function OverflowTextReveal({
   scrub = false,
   direction = "bottom",
 }) {
-  const containerRef = useRef(null);
-  const splitRefs = useRef([]);
-  const charsRef = useRef([]);
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+  const charsRef = useRef(/** @type {HTMLElement[]} */ ([]));
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -47,6 +58,7 @@ export default function OverflowTextReveal({
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    /** @type {ReturnType<typeof gsap.context> | undefined} */
     let ctx;
 
     const init = async () => {
@@ -62,13 +74,14 @@ export default function OverflowTextReveal({
           });
 
           split.masks?.forEach((mask) => {
-            mask.style.paddingInline = "0.04em";
-            mask.style.marginInline = "-0.04em";
-            mask.style.boxSizing = "content-box";
+            const maskEl = /** @type {HTMLElement} */ (mask);
+            maskEl.style.paddingInline = "0.04em";
+            maskEl.style.marginInline = "-0.04em";
+            maskEl.style.boxSizing = "content-box";
           });
 
           splitRefs.current.push(split);
-          charsRef.current.push(...split.chars);
+          charsRef.current.push(.../** @type {HTMLElement[]} */ (split.chars));
         });
 
         if (prefersReduced) {

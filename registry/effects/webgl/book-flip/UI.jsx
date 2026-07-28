@@ -2,6 +2,12 @@
 import { useEffect } from "react";
 import { usePage } from "./PageContext";
 
+/**
+ * @typedef {Object} UIProps
+ * @property {string[]} [images]
+ */
+
+/** @param {UIProps} props */
 export const UI = ({ images = [] }) => {
  const { page, setPage } = usePage();
   // Generate page count from images array

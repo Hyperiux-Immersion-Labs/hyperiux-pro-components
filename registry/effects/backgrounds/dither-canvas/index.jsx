@@ -7,6 +7,11 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+/**
+ * @typedef {string | { src: string }} MediaSource
+ */
+
+/** @param {() => void} callback */
 function subscribeToReducedMotion(callback) {
   if (typeof window === "undefined") return () => {};
   const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -14,10 +19,12 @@ function subscribeToReducedMotion(callback) {
   return () => mediaQueryList.removeEventListener("change", callback);
 }
 
+/** @returns {boolean} */
 function getReducedMotionSnapshot() {
   return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
 }
 
+/** @returns {boolean} */
 function getServerReducedMotionSnapshot() {
   return false;
 }
@@ -66,6 +73,11 @@ const TRAIL_CFG = {
   firl: 1.0,
 };
 
+/**
+ * @param {number} width
+ * @param {number} baseCharColumns
+ * @returns {number}
+ */
 function getResponsiveCharColumns(width, baseCharColumns) {
   if (width <= MOBILE_MAX_WIDTH) {
     return Math.round(baseCharColumns * 0.45);
@@ -230,8 +242,14 @@ void main() {
 `;
 
 /* ── helpers ── */
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {number} type
+ * @param {string} src
+ * @returns {WebGLShader}
+ */
 function mkShader(gl, type, src) {
-  const shader = gl.createShader(type);
+  const shader = /** @type {WebGLShader} */ (gl.createShader(type));
 
   gl.shaderSource(shader, src);
   gl.compileShader(shader);
@@ -247,8 +265,12 @@ function mkShader(gl, type, src) {
   return shader;
 }
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @returns {WebGLProgram}
+ */
 function mkProg(gl) {
-  const program = gl.createProgram();
+  const program = /** @type {WebGLProgram} */ (gl.createProgram());
 
   gl.attachShader(program, mkShader(gl, gl.VERTEX_SHADER, VS));
   gl.attachShader(program, mkShader(gl, gl.FRAGMENT_SHADER, FS));
@@ -265,6 +287,11 @@ function mkProg(gl) {
   return program;
 }
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {number} unit
+ * @returns {WebGLTexture}
+ */
 function mkTex(gl, unit) {
   const texture = gl.createTexture();
 
@@ -290,6 +317,7 @@ function createFluid() {
   const p = new Float32Array(FN);
   const div = new Float32Array(FN);
 
+  /** @type {(x: number, y: number) => number} */
   const fi = (x, y) => {
     return (
       Math.max(0, Math.min(FR - 1, y)) * FC +
@@ -297,6 +325,7 @@ function createFluid() {
     );
   };
 
+  /** @type {(b: number, a: Float32Array) => void} */
   const bnd = (b, a) => {
     for (let x = 1; x < FC - 1; x += 1) {
       a[fi(x, 0)] = b === 2 ? -a[fi(x, 1)] : a[fi(x, 1)];
@@ -311,6 +340,7 @@ function createFluid() {
     }
   };
 
+  /** @type {(b: number, d: Float32Array, s: Float32Array, diff: number, dt: number) => void} */
   const diffuse = (b, d, s, diff, dt) => {
     const a = dt * diff * FN;
 
@@ -332,6 +362,7 @@ function createFluid() {
     }
   };
 
+  /** @type {(b: number, d: Float32Array, d0: Float32Array, ux: Float32Array, uy: Float32Array, dt: number) => void} */
   const advect = (b, d, d0, ux, uy, dt) => {
     const dtx = dt * FC * 1.4;
     const dty = dt * FR * 1.4;
@@ -362,6 +393,7 @@ function createFluid() {
     bnd(b, d);
   };
 
+  /** @type {(ux: Float32Array, uy: Float32Array) => void} */
   const project = (ux, uy) => {
     const hx = 1 / FC;
     const hy = 1 / FR;
@@ -433,17 +465,26 @@ function createFluid() {
   };
 }
 
+/**
+ * @param {MediaSource} source
+ * @returns {string}
+ */
 function resolveMediaSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
 
-  return source;
+  return /** @type {string} */ (/** @type {any} */ (source));
 }
 
+/** @param {string} source */
 function isRemoteUrl(source) {
   return /^https?:\/\//i.test(source);
 }
 
+/**
+ * @param {MediaSource} source
+ * @returns {Promise<{ src: string, revoke: () => void }>}
+ */
 async function loadVideoSource(source) {
   const videoSource = resolveMediaSource(source);
 
@@ -476,7 +517,23 @@ async function loadVideoSource(source) {
   };
 }
 
+/**
+ * @typedef {Object} DitherCanvasProps
+ * @property {MediaSource} [videoSrc]
+ * @property {number} [charColumns]
+ * @property {boolean} [colorizeFromVideo]
+ * @property {number} [videoZoom]
+ * @property {number} [charZoom]
+ * @property {boolean} [spellBrightChars]
+ * @property {number} [colorBoost]
+ * @property {boolean} [disableMobileCursor]
+ * @property {string} [cursorHint]
+ * @property {boolean} [showMobileMessage]
+ * @property {string} [className]
+ */
+
 /* ── component  */
+/** @param {DitherCanvasProps} props */
 export default function DitherCanvas({
   videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 
@@ -518,7 +575,7 @@ export default function DitherCanvas({
   showMobileMessage = true,
   className = "",
 }) {
-  const ref = useRef(null);
+  const ref = useRef(/** @type {HTMLCanvasElement | null} */ (null));
   const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -581,6 +638,7 @@ export default function DitherCanvas({
 
     gl.useProgram(program);
 
+    /** @param {string} name */
     const loc = (name) => gl.getUniformLocation(program, name);
 
     const buffer = gl.createBuffer();
@@ -611,7 +669,7 @@ export default function DitherCanvas({
     atlasCanvas.width = CELL * ALL_CHARS.length;
     atlasCanvas.height = CELL;
 
-    const atlasContext = atlasCanvas.getContext("2d");
+    const atlasContext = /** @type {CanvasRenderingContext2D} */ (atlasCanvas.getContext("2d"));
 
     atlasContext.font = `${CELL * 0.92}px monospace`;
     atlasContext.textAlign = "center";
@@ -656,11 +714,21 @@ export default function DitherCanvas({
       vy: 0,
     };
 
+    /**
+     * @typedef {Object} TrailPoint
+     * @property {number} x
+     * @property {number} y
+     * @property {number} vx
+     * @property {number} vy
+     * @property {number} b
+     */
+    /** @type {TrailPoint[]} */
     const trail = [];
     const now = () => performance.now();
 
     const isMobile = () => window.matchMedia("(max-width: 639px)").matches;
 
+    /** @param {MouseEvent} event */
     const onMove = (event) => {
       if (disableMobileCursor && isMobile()) return;
 

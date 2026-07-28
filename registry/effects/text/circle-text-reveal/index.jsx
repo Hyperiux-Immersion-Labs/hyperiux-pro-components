@@ -6,10 +6,16 @@ import { useState, useEffect, useRef } from'react';
 import { motion } from 'motion/react';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
+/**
+ * @typedef {{ x: number | null, y: number | null }} MousePosition
+ */
+
+/** @returns {MousePosition} */
 function useMousePosition() {
- const [mousePosition, setMousePosition] = useState({ x: null, y: null });
+ const [mousePosition, setMousePosition] = useState(/** @type {MousePosition} */ ({ x: null, y: null }));
 
  useEffect(() => {
+ /** @param {MouseEvent} e */
  const updateMousePosition = (e) => {
  setMousePosition({ x: e.clientX, y: e.clientY });
  };
@@ -28,6 +34,7 @@ function useIsPointerFine() {
 
  useEffect(() => {
  const mq = window.matchMedia('(pointer: fine)');
+ /** @param {MediaQueryListEvent} e */
  const handler = (e) => setIsPointerFine(e.matches);
  mq.addEventListener('change', handler);
  return () => mq.removeEventListener('change', handler);
@@ -44,6 +51,7 @@ function usePrefersReducedMotion() {
 
  useEffect(() => {
  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+ /** @param {MediaQueryListEvent} e */
  const handler = (e) => setPrefersReducedMotion(e.matches);
  mq.addEventListener('change', handler);
  return () => mq.removeEventListener('change', handler);
@@ -52,6 +60,16 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} CircleTextRevealProps
+ * @property {string} [textColor]
+ * @property {string} [Text]
+ * @property {string} [revealText]
+ * @property {string} [circleColorBg]
+ * @property {string} [RevealedTextColor]
+ */
+
+/** @param {CircleTextRevealProps} props */
 export default function CircleTextReveal({
  textColor ='#111',
  Text="Some ideas only bloom when you move toward them.",
@@ -59,19 +77,20 @@ export default function CircleTextReveal({
  circleColorBg ='#E76F2E',
  RevealedTextColor ='#fefefe'
 }) {
- const sectionRef = useRef(null);
+ const sectionRef = useRef(/** @type {HTMLElement | null} */ (null));
  const [isHovered, setIsHovered] = useState(false);
  const { x, y } = useMousePosition();
  const isPointerFine = useIsPointerFine();
  const prefersReducedMotion = usePrefersReducedMotion();
 
- const [smoothPos, setSmoothPos] = useState(null);
+ const [smoothPos, setSmoothPos] = useState(/** @type {{ x: number, y: number } | null} */ (null));
 
  const size = isHovered ? 500 : 40;
 
  useEffect(() => {
  if (!isPointerFine) return;
 
+ /** @type {(start: number, end: number, factor: number) => number} */
  const lerp = (start, end, factor) => start + (end - start) * factor;
  const lerpFactor = prefersReducedMotion ? 1 : 0.15;
 
@@ -115,10 +134,10 @@ export default function CircleTextReveal({
  WebkitMaskImage:'radial-gradient(circle at center, black 50%, transparent 51%)',
  WebkitMaskRepeat:'no-repeat',
  }}
- animate={{
+ animate={/** @type {import('motion/react').TargetAndTransition} */ ({
  WebkitMaskPosition: `${smoothPos.x - size / 2}px ${smoothPos.y - size / 2}px`,
  WebkitMaskSize: `${size}px ${size}px`,
- }}
+ })}
  transition={
  prefersReducedMotion
  ? { type:'tween', ease:'linear', duration: 0 }

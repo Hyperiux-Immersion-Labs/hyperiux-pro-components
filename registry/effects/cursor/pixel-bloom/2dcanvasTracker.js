@@ -9,8 +9,32 @@
 // - Add class"fx-target" to any element you want tracked
 // - In a client component, call registerFxTarget(el, { onMove, onEnter, onLeave })
 
+/**
+ * @typedef {Object} CachedRect
+ * @property {number} left
+ * @property {number} top
+ * @property {number} right
+ * @property {number} bottom
+ */
+
+/**
+ * @typedef {Object} FxTarget
+ * @property {Element} el
+ * @property {CachedRect} rect
+ */
+
+/**
+ * @typedef {Object} FxTargetHandlers
+ * @property {(info: { localX: number, localY: number, mouseX: number, mouseY: number, rect: CachedRect }) => void} [onMove]
+ * @property {() => void} [onEnter]
+ * @property {() => void} [onLeave]
+ */
+
+/** @type {WeakMap<Element, FxTargetHandlers>} */
 const handlersByEl = new WeakMap()
+/** @type {FxTarget[]} */
 let targets = [] // [{ el, rect }]
+/** @type {FxTarget|null} */
 let hoveredTarget = null // one of targets entries (same shape as targets[])
 let needsBoundsUpdate = true
 let listenersAttached = false
@@ -18,6 +42,7 @@ let refreshPending = false
 let mouseX = 0
 let mouseY = 0
 
+/** @param {Element} el */
 function toCachedRect(el) {
  const r = el.getBoundingClientRect()
  return {
@@ -40,7 +65,8 @@ function refreshTargets() {
 
  // If the current hovered element disappeared, treat as leave.
  if (hoveredTarget) {
- const stillPresent = targets.find((t) => t.el === hoveredTarget.el) || null
+ const hoveredEl = hoveredTarget.el
+ const stillPresent = targets.find((t) => t.el === hoveredEl) || null
  if (!stillPresent) {
  const prevEl = hoveredTarget.el
  hoveredTarget = null
@@ -121,7 +147,7 @@ function attachListenersOnce() {
 
  window.addEventListener(
 'mousemove',
- (e) => {
+ (/** @type {MouseEvent} */ e) => {
  mouseX = e.clientX
  mouseY = e.clientY
  updateHoverAndNotify()
@@ -134,6 +160,10 @@ function attachListenersOnce() {
  window.addEventListener('scroll', markNeedsUpdate, { passive: true, capture: true })
 }
 
+/**
+ * @param {Element|null|undefined} el
+ * @param {FxTargetHandlers} [handlers]
+ */
 export function registerFxTarget(el, handlers = {}) {
  if (!el) return
  handlersByEl.set(el, handlers)
@@ -141,6 +171,7 @@ export function registerFxTarget(el, handlers = {}) {
  scheduleRefreshTargets()
 }
 
+/** @param {Element|null|undefined} el */
 export function unregisterFxTarget(el) {
  if (!el) return
  handlersByEl.delete(el)

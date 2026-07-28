@@ -25,6 +25,19 @@ const defaultItems = [
     "Senior developers on every project",
 ]
 
+/**
+ * @typedef {Object} SquareTranslateCompProps
+ * @property {string[]} [items]
+ * @property {string} [textClassName]
+ * @property {string} [textColor]
+ * @property {string} [squareClassName]
+ * @property {string} [containerClassName]
+ * @property {number} [translateValue]
+ * @property {string} [borderColor]
+ * @property {number} [totalTranslateImpact]
+ */
+
+/** @param {SquareTranslateCompProps} props */
 export default function SquareTranslateComp({
     items = defaultItems,
     textClassName = 'text-[1vw]',
@@ -35,14 +48,14 @@ export default function SquareTranslateComp({
     borderColor = 'border-black/10',
     totalTranslateImpact = 3,
 }) {
-    const containerRef = useRef(null)
-    const squareRef = useRef(null)
-    const itemRefs = useRef([])
-    const textRefs = useRef([])
+    const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+    const squareRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+    const itemRefs = useRef(/** @type {(HTMLUListElement|null)[]} */ ([]))
+    const textRefs = useRef(/** @type {(HTMLLIElement|null)[]} */ ([]))
 
     useEffect(() => {
-        const container = containerRef.current
-        const square = squareRef.current
+        const container = /** @type {HTMLDivElement} */ (containerRef.current)
+        const square = /** @type {HTMLDivElement} */ (squareRef.current)
         const itemEls = itemRefs.current.filter(Boolean)
         const textEls = textRefs.current.filter(Boolean)
         const reducedMotion = prefersReducedMotion()
@@ -56,16 +69,19 @@ export default function SquareTranslateComp({
         // Scale phase: 0-10% of scroll
         // Translate phase: 10-90% of scroll
         // Scale out phase: 90-100% of scroll
+        /** @param {number} p */
         const getScale = (p) => {
             if (p < 0.1) return p / 0.1 // Scale in from 0 to 1
             if (p > 0.9) return (1 - p) / 0.1 // Scale out from 1 to 0
             return 1 // Full scale during translate
         }
+        /** @param {number} p */
         const getTranslateProgress = (p) => {
             if (p < 0.1) return 0 // No translate during scale in
             if (p > 0.9) return 1 // Stay at end during scale out
             return (p - 0.1) / 0.8 // Translate during middle phase
         }
+        /** @param {number} p */
         const getRotation = (p) => {
             if (p < 0.1) return 0 // No rotation during scale in
             if (p > 0.9) return 360 // Full rotation at end
@@ -122,10 +138,10 @@ export default function SquareTranslateComp({
                 className={`${squareClassName} scale-0 absolute top-0 left-0 pointer-events-none z-10`} />
             {items.map((item, i) => (
                 <ul key={i}
-                    ref={el => itemRefs.current[i] = el}
+                    ref={el => { itemRefs.current[i] = el }}
                     className={`list-none py-[.8vw] max-md:py-[2vw] ${textColor} ${i > 0 ? `border-t ${borderColor}` : ''} ${i === items.length - 1 ? '' : ''}`}
                 >
-                    <li ref={el => textRefs.current[i] = el} className={textClassName}>{item}</li>
+                    <li ref={el => { textRefs.current[i] = el }} className={textClassName}>{item}</li>
                 </ul>
             ))}
         </div>
