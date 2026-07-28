@@ -6,6 +6,7 @@ import {
   useEffect,
   useCallback,
   Suspense,
+  Fragment,
   forwardRef,
 } from "react";
 import Image from "next/image";
@@ -540,6 +541,7 @@ export function EffectDetailContent({
                   ref={contentRef}
                   content={safeContent}
                   isLocked={isLocked}
+                  changelog={safeEffect.changelog}
                 />
               </div>
 
@@ -548,10 +550,6 @@ export function EffectDetailContent({
                   cta={safeContent?.ctaBanner}
                   sectionRef={ctaSectionRef}
                 />
-              </div>
-
-              <div className="max-sm:px-[7vw] max-md:px-[6vw]">
-                <EffectChangelogSection changelog={safeEffect.changelog} />
               </div>
 
               {safeRelatedEffects?.length > 0 && (
@@ -691,7 +689,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false },
+  { content, isLocked = false, changelog = [] },
   ref
 ) {
   if (!content) return null;
@@ -701,7 +699,11 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
       ref={ref}
       className={`space-y-8 w-[70%] max-md:w-full ${styles.content}`}
     >
-      <SanityBodyRenderer body={content.body} isLocked={isLocked} />
+      <SanityBodyRenderer
+        body={content.body}
+        isLocked={isLocked}
+        changelog={changelog}
+      />
     </div>
   );
 });
@@ -775,48 +777,55 @@ function EffectChangelogSection({ changelog = [] }) {
         allowMultiple={false}
         defaultOpenItems={changelog[0]?.version ? [changelog[0].version] : []}
       >
-        <div className={styles.faqAccordionItems}>
+        <div className={styles.changelogTimeline}>
           {changelog.map((entry, index) => {
             const itemId = entry.version || `changelog-${index}`;
 
             return (
-              <FAQWrapper
-                key={itemId}
-                itemId={itemId}
-                className={styles.faqAccordionItem}
-                titleClassName={styles.faqAccordionQuestion}
-                iconClassName={styles.faqAccordionIcon}
-                iconSize={18}
-                iconStrokeWidth={1.8}
-              >
-                <FAQTitle
-                  className="pb-0 justify-start gap-3"
-                  iconPosition="left"
-                  iconMode="rotate-left-down"
+              <div key={itemId} className={styles.changelogTimelineItem}>
+                <div
+                  className={styles.changelogTimelineMarker}
+                  aria-hidden="true"
                 >
-                  <div className={styles.changelogRow}>
-                    <h3 className={styles.changelogVersion}>
-                      v{entry.version}
-                    </h3>
-                    {entry.date && (
-                      <span className={styles.changelogDate}>
-                        {formatChangelogDate(entry.date)}
-                      </span>
-                    )}
-                    {entry.breaking && (
-                      <span className={styles.changelogBreaking}>
-                        Breaking
-                      </span>
-                    )}
-                  </div>
-                </FAQTitle>
+                  <span className={styles.changelogTimelineDot} />
+                </div>
 
-                {entry.summary && (
-                  <FAQContent className={`${styles.changelogSummary} pl-10`}>
-                    {entry.summary}
-                  </FAQContent>
-                )}
-              </FAQWrapper>
+                <FAQWrapper
+                  itemId={itemId}
+                  className={`${styles.faqAccordionItem} ${styles.changelogTimelineCard}`}
+                  titleClassName={styles.faqAccordionQuestion}
+                  iconClassName={styles.faqAccordionIcon}
+                  iconSize={18}
+                  iconStrokeWidth={1.8}
+                >
+                  <FAQTitle
+                    className={styles.changelogTrigger}
+                    iconPosition="right"
+                  >
+                    <div className={styles.changelogRow}>
+                      <h3 className={styles.changelogVersion}>
+                        v{entry.version}
+                      </h3>
+                      {entry.date && (
+                        <span className={styles.changelogDate}>
+                          {formatChangelogDate(entry.date)}
+                        </span>
+                      )}
+                      {entry.breaking && (
+                        <span className={styles.changelogBreaking}>
+                          Breaking
+                        </span>
+                      )}
+                    </div>
+                  </FAQTitle>
+
+                  {entry.summary && (
+                    <FAQContent className={styles.changelogSummary}>
+                      {entry.summary}
+                    </FAQContent>
+                  )}
+                </FAQWrapper>
+              </div>
             );
           })}
         </div>
@@ -825,19 +834,30 @@ function EffectChangelogSection({ changelog = [] }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false }) {
+function SanityBodyRenderer({ body = [], isLocked = false, changelog = [] }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
+  const firstFaqIndex = groupedBlocks.findIndex(
+    (block) => block?._type === "effectFaqAccordion"
+  );
+  const shouldRenderChangelog = changelog?.length > 0;
 
   return (
     <div className="space-y-6">
+      {shouldRenderChangelog && firstFaqIndex === -1 && (
+        <EffectChangelogSection changelog={changelog} />
+      )}
+
       {groupedBlocks.map((block, index) => (
-        <SanityBodyBlock
+        <Fragment
           key={block._key || block._groupKey || `${block._type}-${index}`}
-          block={block}
-          isLocked={isLocked}
-        />
+        >
+          {shouldRenderChangelog && index === firstFaqIndex && (
+            <EffectChangelogSection changelog={changelog} />
+          )}
+          <SanityBodyBlock block={block} isLocked={isLocked} />
+        </Fragment>
       ))}
     </div>
   );
