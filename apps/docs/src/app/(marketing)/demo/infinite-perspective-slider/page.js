@@ -1,10 +1,11 @@
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import DemoContent from "./DemoContent";
+import registry from "../../../../../../../registry/effects/scroll/infinite-perspective-slider/registry.json";
+
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="infinite-perspective-slider" />;
+}
 
 export async function generateMetadata() {
   return getDemoPageMetadata("infinite-perspective-slider");
-}
-
-export default function Page() {
-  return <DemoContent />;
 }

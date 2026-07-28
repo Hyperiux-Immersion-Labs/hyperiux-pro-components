@@ -38,6 +38,30 @@
   "exportKind": "default",
   "importPath": "@/components/effects/fish-eye",
   "target": "src/components/effects/fish-eye",
+  "props": [
+    {
+      "name": "src",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+      "description": "Image source used by the fish-eye lens.",
+      "remixer": {
+        "control": "text",
+        "group": "media",
+        "groupTitle": "Media"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "media",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

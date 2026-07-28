@@ -1,22 +1,11 @@
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ZoomSlider from '@/components/zoom-slider'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/carousels/zoom-slider/registry.json";
 
-
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
-    <LenisSmoothScroll />
-    <ZoomSlider/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="zoom-slider" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("zoom-slider");
 }

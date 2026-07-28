@@ -10,7 +10,7 @@ const notes = [
   "Useful for sharp editorial moments",
 ];
 
-const ScrambleTextWrapper = () => {
+const ScrambleTextWrapper = ({ effectProps = {} }) => {
   return (
     <>
       <LenisSmoothScroll />
@@ -26,6 +26,7 @@ const ScrambleTextWrapper = () => {
                 textSize="text-[6vw] max-sm:text-[8vw] max-md:text-[5vw]"
                 textColor="text-[#121212]"
                 align="left"
+                {...effectProps}
                 className="font-black uppercase mb-8 leading-[0.88] max-md:leading-[1.2] max-sm:leading-[0.92]"
               />
               <SplitLine>
@@ -77,6 +78,7 @@ const ScrambleTextWrapper = () => {
                 textSize="text-5xl max-sm:text-[8vw]"
                 textColor="text-[#121212]"
                 align="left"
+                {...effectProps}
                 className="font-black uppercase leading-[0.94]"
                 start="top 90%"
               />

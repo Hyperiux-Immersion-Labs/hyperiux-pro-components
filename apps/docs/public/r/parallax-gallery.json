@@ -26,6 +26,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": [],
+      "description": "Gallery images used in the parallax layout.",
+      "suggested": true
+    },
+    {
+      "name": "columns",
+      "type": "number",
+      "default": 3,
+      "description": "Number of gallery columns.",
+      "suggested": true
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": 1,
+      "description": "Parallax movement speed.",
+      "suggested": true
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": 24,
+      "description": "Spacing between gallery items.",
+      "suggested": true
+    },
+    {
+      "name": "scaleOnScroll",
+      "type": "boolean",
+      "default": false,
+      "description": "Enables image scaling while scrolling.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "images",
+        "label": "Images",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "columns",
+        "label": "Columns",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "gap",
+        "label": "Gap",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 100,
+        "step": 1
+      },
+      {
+        "name": "scaleOnScroll",
+        "label": "Scale On Scroll",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

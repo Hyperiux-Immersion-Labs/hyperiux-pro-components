@@ -1,17 +1,11 @@
-import HeroBannerAnimated from '@/components/hero-banner-animated'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/hero-banner-animated/registry.json";
 
-
-const page = () => {
-  return (
-   <>
-   <HeroBannerAnimated/>
-   </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="hero-banner-animated" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("hero-banner-animated");
 }

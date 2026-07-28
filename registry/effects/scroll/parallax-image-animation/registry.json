@@ -24,6 +24,22 @@
   "exportKind": "default",
   "importPath": "@/components/effects/parallax-image-animation",
   "target": "src/components/effects/parallax-image-animation",
+  "props": [
+    { "name": "translateY", "type": "string", "default": "30%", "description": "Vertical parallax travel.", "remixer": { "control": "text", "group": "motion", "groupTitle": "Motion" } },
+    { "name": "scrub", "type": "boolean", "default": true, "description": "Links animation progress to scroll.", "remixer": { "control": "checkbox", "group": "motion", "groupTitle": "Motion" } },
+    { "name": "enableScale", "type": "boolean", "default": false, "description": "Enables scale animation while scrolling.", "remixer": { "control": "checkbox", "group": "scale", "groupTitle": "Scale" } },
+    { "name": "scaleFrom", "type": "number", "default": 1.6, "description": "Initial image scale.", "remixer": { "control": "range", "group": "scale", "groupTitle": "Scale", "min": 1, "max": 3, "step": 0.05 } },
+    { "name": "scaleTo", "type": "number", "default": 1.2, "description": "Final image scale.", "remixer": { "control": "range", "group": "scale", "groupTitle": "Scale", "min": 1, "max": 3, "step": 0.05 } }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",

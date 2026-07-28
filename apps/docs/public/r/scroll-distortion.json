@@ -20,6 +20,47 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "shaderConfig",
+      "type": "object",
+      "default": {
+        "strength": 0.8,
+        "rgbShift": 0.05,
+        "scale": 0.15,
+        "transitionDuration": 0.8,
+        "transitionEase": "power3.inOut"
+      },
+      "description": "Shader strength, RGB shift, scale, and transition settings.",
+      "remixer": {
+        "control": "json",
+        "group": "shader",
+        "groupTitle": "Shader"
+      }
+    },
+    {
+      "name": "displacementSrc",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
+      "description": "Displacement texture source.",
+      "remixer": {
+        "control": "text",
+        "group": "media",
+        "groupTitle": "Media"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "shader",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

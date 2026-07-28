@@ -14,12 +14,179 @@
   "version": "1.1.0",
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards as a public prop with a working remixer panel. The originally suggested activeIndex/depth/rotation/duration props don't exist here - card positions come from a fixed hand-tuned per-slot table (getSlotProps), not a linear depth/rotation formula - so they were dropped rather than shipping non-functional controls.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Disable pointer tilt and texture reveal under reduced motion",
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "cards",
+      "type": "array",
+      "default": [
+        {
+          "name": "Hyperiux Core",
+          "num": "0772",
+          "joined": "Apr 20, 2026",
+          "color": "#41431B",
+          "claimedText": "Alexander claimed 2 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern03.png"
+        },
+        {
+          "name": "UI Flux Engine",
+          "num": "0771",
+          "joined": "Apr 20, 2026",
+          "color": "#C084FC",
+          "claimedText": "Travis claimed 5 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern02.png"
+        },
+        {
+          "name": "Neon Grid System",
+          "num": "0770",
+          "joined": "Apr 20, 2026",
+          "color": "#93C5FD",
+          "claimedText": "Kaiho claimed 9 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern03.png"
+        },
+        {
+          "name": "Glassmorph Lab",
+          "num": "0769",
+          "joined": "Apr 20, 2026",
+          "color": "#2C3947",
+          "claimedText": "Exo Des claimed 3 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern04.png"
+        },
+        {
+          "name": "Motion Kit Pro",
+          "num": "0768",
+          "joined": "Apr 20, 2026",
+          "color": "#3E2C23",
+          "claimedText": "Frank Lee claimed 1 hour ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern.png"
+        },
+        {
+          "name": "Shadow Tokens",
+          "num": "0767",
+          "joined": "Apr 20, 2026",
+          "color": "#60A5FA",
+          "claimedText": "Alexander claimed 2 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern05.png"
+        },
+        {
+          "name": "Aurora Layout",
+          "num": "0766",
+          "joined": "Apr 20, 2026",
+          "color": "#FFB33F",
+          "claimedText": "Travis claimed 5 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern02.png"
+        },
+        {
+          "name": "Dark Pulse UI",
+          "num": "0765",
+          "joined": "Apr 20, 2026",
+          "color": "#111111",
+          "claimedText": "Kaiho claimed 9 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern.png"
+        },
+        {
+          "name": "Quantum Cards",
+          "num": "0764",
+          "joined": "Apr 20, 2026",
+          "color": "#A78BFA",
+          "claimedText": "Exo Des claimed 3 hours ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern04.png"
+        },
+        {
+          "name": "Hype Components",
+          "num": "0763",
+          "joined": "Apr 20, 2026",
+          "color": "#F472B6",
+          "claimedText": "Frank Lee claimed 1 hour ago",
+          "textureImage": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern05.png"
+        }
+      ],
+      "description": "Cards rendered in the depth stack (name, num, joined, color, claimedText, textureImage).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "activeIndex",
+      "type": "number",
+      "description": "Initially focused card index.",
+      "default": 0,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 240,
+        "step": 1
+      }
+    },
+    {
+      "name": "depth",
+      "type": "number",
+      "description": "Z-depth between stacked cards.",
+      "default": 80,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 1200,
+        "step": 1
+      }
+    },
+    {
+      "name": "rotation",
+      "type": "number",
+      "description": "Rotation offset between stacked cards.",
+      "default": 6,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": -180,
+        "max": 180,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Card transition duration.",
+      "default": 0.55,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

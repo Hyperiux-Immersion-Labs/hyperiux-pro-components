@@ -2,8 +2,18 @@
   "name": "inertia-img",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Inertia Image",
@@ -29,5 +39,102 @@
       "path": "InertiaImgComp.jsx",
       "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": [],
+      "description": "Images rendered with inertia movement.",
+      "suggested": true
+    },
+    {
+      "name": "strength",
+      "type": "number",
+      "default": 0.22,
+      "description": "Pointer inertia strength.",
+      "suggested": true
+    },
+    {
+      "name": "rotation",
+      "type": "number",
+      "default": 8,
+      "description": "Maximum image rotation while moving.",
+      "suggested": true
+    },
+    {
+      "name": "scale",
+      "type": "number",
+      "default": 1.04,
+      "description": "Hover scale applied to images.",
+      "suggested": true
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.45,
+      "description": "Motion smoothing duration.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "images",
+        "label": "Images",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "strength",
+        "label": "Strength",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "rotation",
+        "label": "Rotation",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 24,
+        "step": 0.1
+      },
+      {
+        "name": "scale",
+        "label": "Scale",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3.12,
+        "step": 0.05
+      },
+      {
+        "name": "duration",
+        "label": "Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    ]
+  }
 }

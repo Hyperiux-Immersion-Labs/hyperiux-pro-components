@@ -29,10 +29,188 @@
   ],
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added data, bgColor, bgTextColor, cardBg, cardTextColor, and barBg as public props with a working remixer panel. The originally suggested props (driftAmount, rotationAmount, duration, shadowOpacity) described ambient hover drift, but this component is a drag-and-throw physics grid with fixed jitter/rotation constants, so they were replaced with the content/theme props CardDriftComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-24",
       "summary": "Added a prefers-reduced-motion notice explaining that dragging stays fully interactive since it is a direct, user-initiated action.",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "data",
+      "type": "array",
+      "default": [
+        {
+          "year": "2024",
+          "tag": "PRODUCT",
+          "text": "Hyperiux drops interface experiences that feel faster than thought."
+        },
+        {
+          "year": "2024",
+          "tag": "DESIGN",
+          "text": "Hyperiux blends motion, interaction, and storytelling into next-gen UI systems."
+        },
+        {
+          "year": "2025",
+          "tag": "TECH",
+          "text": "Hyperiux is redefining how users feel digital products, not just use them."
+        },
+        {
+          "year": "2025",
+          "tag": "COMPONENTS",
+          "text": "Hyperiux pushes the boundaries of immersive web experiences."
+        },
+        {
+          "year": "2025",
+          "tag": "BLOG",
+          "text": "From micro-interactions to full-scale motion systems, Hyperiux builds interfaces that hit different."
+        }
+      ],
+      "description": "Cards rendered in the draggable grid (year, tag, text).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "bgColor",
+      "type": "string",
+      "default": "bg-black",
+      "description": "Tailwind background class for the section.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "bgTextColor",
+      "type": "string",
+      "default": "text-white/70",
+      "description": "Tailwind text color class for the background label.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "cardBg",
+      "type": "string",
+      "default": "bg-indigo-600",
+      "description": "Tailwind background class for each card.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "cardTextColor",
+      "type": "string",
+      "default": "text-white",
+      "description": "Tailwind text color class for card content.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "barBg",
+      "type": "string",
+      "default": "bg-neutral-800",
+      "description": "Tailwind background class for the card's tag bar.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "cards",
+      "type": "array",
+      "description": "Cards rendered in the drift stack.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "driftAmount",
+      "type": "number",
+      "description": "Maximum drift distance on pointer movement.",
+      "default": 28,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "rotationAmount",
+      "type": "number",
+      "description": "Maximum card rotation.",
+      "default": 8,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Animation smoothing duration.",
+      "default": 0.45,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "shadowOpacity",
+      "type": "number",
+      "description": "Shadow intensity under drifting cards.",
+      "default": 0.25,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

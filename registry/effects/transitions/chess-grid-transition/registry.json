@@ -34,6 +34,10 @@
   "exportKind": "default",
   "importPath": "@/components/effects/chess-grid-transition",
   "target": "src/components/effects/chess-grid-transition",
+  "props": [
+    { "name": "enableContentShift", "type": "boolean", "default": false, "description": "Adds content scale/blur during the transition.", "remixer": { "control": "checkbox", "group": "behavior", "groupTitle": "Behavior" } }
+  ],
+  "remixer": { "enabled": true, "defaultOpenGroupId": "behavior", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
   "files": [
     {
       "path": "index.jsx",

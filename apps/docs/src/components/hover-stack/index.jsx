@@ -54,7 +54,14 @@ const cards = [
     },
 ];
 
-const HoverStack = () => {
+const HoverStack = ({
+    cards: cardsProp = cards,
+    cardWidth = 280,
+    cardHeight = 360,
+    overlap = 96,
+    pushDistance = 235,
+    hoverLift = 30,
+}) => {
     return (
         <>
 
@@ -71,12 +78,12 @@ const HoverStack = () => {
                 </div>
 
                 <HoverStackComp
-                    cards={cards}
-                    cardWidth={280}
-                    cardHeight={360}
-                    overlap={96}
-                    pushDistance={235}
-                    hoverLift={30}
+                    cards={cardsProp}
+                    cardWidth={cardWidth}
+                    cardHeight={cardHeight}
+                    overlap={overlap}
+                    pushDistance={pushDistance}
+                    hoverLift={hoverLift}
                 />
             </section>
         </>

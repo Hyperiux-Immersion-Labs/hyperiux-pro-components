@@ -29,7 +29,7 @@ const scenes = [
   },
 ];
 
-const PerspectiveTextWrapper = () => {
+const PerspectiveTextWrapper = ({ effectProps = {} }) => {
   const [replayKey, setReplayKey] = useState(0);
 
   return (
@@ -63,7 +63,7 @@ const PerspectiveTextWrapper = () => {
                   Replay animation
                 </button>
 
-                <PerspectiveTextReveal key={`hero-title-${replayKey}`} scrub={false}>
+                <PerspectiveTextReveal key={`hero-title-${replayKey}`} scrub={false} {...effectProps}>
                   <h1 className="text-[7vw] font-black uppercase leading-[0.84] text-white max-sm:text-[8vw] max-sm:leading-[0.88]">
                     Lines fall into depth.
                   </h1>
@@ -84,7 +84,7 @@ const PerspectiveTextWrapper = () => {
                   <div className="absolute inset-0 bg-[#07090d]/25" />
                 </div>
                 <div className="absolute bottom-0 left-0 max-w-sm border-l border-[#b9e6ff] bg-[#07090d]/80 p-6 backdrop-blur max-sm:max-w-[78%] max-sm:p-4">
-                <PerspectiveTextReveal key={`hero-copy-${replayKey}`} scrub={false}>
+                <PerspectiveTextReveal key={`hero-copy-${replayKey}`} scrub={false} {...effectProps}>
 
                   <p className="text-lg font-semibold leading-8 text-white/76 max-sm:text-sm max-sm:leading-6">
                     Built for moments where typography should rotate into view like a scene finding its angle.
@@ -103,7 +103,7 @@ const PerspectiveTextWrapper = () => {
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/38 max-sm:tracking-[0.16em]">
                     {label}
                   </p>
-                  <PerspectiveTextReveal key={`${label}-${replayKey}`} scrub={false}>
+                  <PerspectiveTextReveal key={`${label}-${replayKey}`} scrub={false} {...effectProps}>
 
                     
 

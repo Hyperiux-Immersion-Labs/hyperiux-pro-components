@@ -1,24 +1,10 @@
-import React from "react";
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import HoverSlider from "@/components/hover-slider";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/hover-slider/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader />
-      <LenisSmoothScroll />
-      <HoverSlider/>
-    </>
-  );
-};
-
-export default page;
-
-
-
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="hover-slider" />;
+}
 
 export async function generateMetadata() {
   return getDemoPageMetadata("hover-slider");

@@ -7,6 +7,7 @@ import { ReactLenis } from "lenis/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 gsap.registerPlugin(ScrollTrigger);
 
 
@@ -72,7 +73,7 @@ function DecoOrb({ className, color }) {
    );
 }
 
-const Page = () => {
+const Page = ({ registry }) => {
    const containerRef = useRef(null);
 
    useEffect(() => {
@@ -113,6 +114,11 @@ const Page = () => {
    }, []);
 
    return (
+      <RegistryRemixerDemo
+         registry={registry}
+         copyCodeOptions={{ propsVariableName: "blurTextProps" }}
+      >
+         {({ values }) => (
       <ReactLenis root>
          <DemoHeader />
          <div ref={containerRef} className="overflow-x-hidden bg-[#f7f1e3]">
@@ -137,6 +143,7 @@ const Page = () => {
                            <BlurText
                               once={false}
                               variant="fade"
+                              {...values}
                               className="block text-6xl font-black uppercase leading-none tracking-tight sm:text-7xl lg:text-8xl"
                            >
                               Blur should feel like a stage entrance, not a loading state.
@@ -265,6 +272,7 @@ const Page = () => {
                               <BlurText
                                  once={false}
                                  variant="up"
+                                 {...values}
                                  className="block text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
                               >
                                  Motion lifts your words off the page and into memory.
@@ -301,6 +309,7 @@ const Page = () => {
                            <BlurText
                               once={false}
                               variant="down"
+                              {...values}
                               className="block max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
                            >
                               Gravity is just another design tool waiting to be used.
@@ -402,6 +411,7 @@ const Page = () => {
                         <BlurText
                            once={false}
                            variant="left"
+                           {...values}
                            className="block text-5xl font-black uppercase leading-none tracking-tight text-black sm:text-6xl"
                         >
                            Direction gives animation intention. Intention gives design
@@ -476,6 +486,7 @@ const Page = () => {
                            <BlurText
                               once={false}
                               variant="right"
+                              {...values}
                               className="block text-4xl font-black uppercase leading-tight tracking-tight sm:text-5xl"
                            >
                               Build components once. Combine them endlessly. Ship
@@ -488,6 +499,8 @@ const Page = () => {
             </section>
          </div>
       </ReactLenis>
+         )}
+      </RegistryRemixerDemo>
    );
 };
 

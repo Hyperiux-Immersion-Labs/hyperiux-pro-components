@@ -29,6 +29,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "characters",
+      "type": "string",
+      "default": "\"HYPERIUX\"",
+      "description": "Characters emitted by the cursor trail.",
+      "suggested": true
+    },
+    {
+      "name": "trailLength",
+      "type": "number",
+      "default": 24,
+      "description": "Maximum number of visible characters.",
+      "suggested": true
+    },
+    {
+      "name": "fontSize",
+      "type": "number",
+      "default": 18,
+      "description": "Size of each trail character.",
+      "suggested": true
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Trail character color.",
+      "suggested": true
+    },
+    {
+      "name": "fadeDuration",
+      "type": "number",
+      "default": 0.8,
+      "description": "Time before trail characters fade out.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "characters",
+        "label": "Characters",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "trailLength",
+        "label": "Trail Length",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 72,
+        "step": 0.1
+      },
+      {
+        "name": "fontSize",
+        "label": "Font Size",
+        "type": "range",
+        "group": "content",
+        "copyable": true,
+        "min": 0,
+        "max": 100,
+        "step": 1
+      },
+      {
+        "name": "textColor",
+        "label": "Text Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "fadeDuration",
+        "label": "Fade Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -46,5 +46,99 @@
       "path": "StackingCardComp.jsx",
       "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "cards",
+      "type": "array",
+      "default": [],
+      "description": "Cards rendered in the stacking scroll sequence.",
+      "suggested": true
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": 80,
+      "description": "Vertical offset between stacked cards.",
+      "suggested": true
+    },
+    {
+      "name": "scaleStep",
+      "type": "number",
+      "default": 0.05,
+      "description": "Scale reduction per stacked card.",
+      "suggested": true
+    },
+    {
+      "name": "stickyTop",
+      "type": "number",
+      "default": 96,
+      "description": "Top offset for sticky card behavior.",
+      "suggested": true
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": false,
+      "description": "Links stacking progress to scroll.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "cards",
+        "label": "Cards",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "offset",
+        "label": "Offset",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 240,
+        "step": 0.1
+      },
+      {
+        "name": "scaleStep",
+        "label": "Scale Step",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "stickyTop",
+        "label": "Sticky Top",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 288,
+        "step": 0.1
+      },
+      {
+        "name": "scrub",
+        "label": "Scrub",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      }
+    ]
+  }
 }

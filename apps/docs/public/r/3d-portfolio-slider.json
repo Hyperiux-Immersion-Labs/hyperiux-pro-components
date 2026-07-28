@@ -27,6 +27,97 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "projects",
+      "type": "array",
+      "default": [],
+      "description": "Portfolio projects rendered in the slider.",
+      "suggested": true
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": 420,
+      "description": "Radius of the 3D project layout.",
+      "suggested": true
+    },
+    {
+      "name": "depth",
+      "type": "number",
+      "default": 900,
+      "description": "Scene perspective depth.",
+      "suggested": true
+    },
+    {
+      "name": "autoRotate",
+      "type": "boolean",
+      "default": false,
+      "description": "Enables automatic rotation.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Scene background color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "projects",
+        "label": "Projects",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "radius",
+        "label": "Radius",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 1680,
+        "step": 1
+      },
+      {
+        "name": "depth",
+        "label": "Depth",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 2700,
+        "step": 0.1
+      },
+      {
+        "name": "autoRotate",
+        "label": "Auto Rotate",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

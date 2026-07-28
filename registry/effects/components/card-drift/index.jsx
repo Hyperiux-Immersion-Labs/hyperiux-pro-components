@@ -2,15 +2,22 @@
 
 import CardDriftComp from './CardDriftComp'
 
-const CardDrift = () => {
+const CardDrift = ({
+  data = testimonials,
+  bgColor = "bg-black",
+  bgTextColor = "text-white/70",
+  cardBg = "bg-indigo-600",
+  cardTextColor = "text-white",
+  barBg = "bg-neutral-800",
+}) => {
   return (
    <CardDriftComp
- data={testimonials}
- bgColor="bg-black"
- bgTextColor="text-white/70"
- cardBg="bg-indigo-600"
- cardTextColor="text-white"
- barBg="bg-neutral-800"
+ data={data}
+ bgColor={bgColor}
+ bgTextColor={bgTextColor}
+ cardBg={cardBg}
+ cardTextColor={cardTextColor}
+ barBg={barBg}
  />
   )
 }

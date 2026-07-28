@@ -27,10 +27,224 @@
   ],
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards, cardWidth, cardHeight, overlap, pushDistance, and hoverLift as public props with a working remixer panel. The originally suggested props (items, spread, rotation, duration, accentColor) didn't match this component's real API, so they were replaced with the props HoverStackComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Disable hover lift/push transforms under reduced motion; keep z-index focus",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "cards",
+      "type": "array",
+      "default": [
+        {
+          "id": 1,
+          "quote": "A must-have for anyone looking to save time and boost productivity.",
+          "tag": "Efficiency",
+          "bg": "#E4FF1A",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 2,
+          "quote": "This tech has completely streamlined my daily tasks.",
+          "tag": "Workflow",
+          "bg": "#DD1155",
+          "accent": "text-[#ffffff]"
+        },
+        {
+          "id": 3,
+          "quote": "Innovative and powerful, yet so easy to use!",
+          "tag": "Simplicity",
+          "bg": "#FF5714",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 4,
+          "quote": "It made everything smoother. Highly recommend!",
+          "tag": "Reliability",
+          "bg": "#E980FC",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 5,
+          "quote": "Fast, reliable, and user-friendly. Exactly what I needed.",
+          "tag": "Speed",
+          "bg": "#67D6A3",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 6,
+          "quote": "I can't imagine my workflow without it now. Simply amazing!",
+          "tag": "Impact",
+          "bg": "#3454D1",
+          "accent": "text-[#ffffff]"
+        },
+        {
+          "id": 7,
+          "quote": "Performance is a game changer. So much smoother now.",
+          "tag": "Performance",
+          "bg": "#B98CFF",
+          "accent": "text-[#1A1A1A]"
+        }
+      ],
+      "description": "Stack cards (quote, tag, bg, accent).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "cardWidth",
+      "type": "number",
+      "default": 280,
+      "description": "Width of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 160,
+        "max": 420,
+        "step": 4
+      }
+    },
+    {
+      "name": "cardHeight",
+      "type": "number",
+      "default": 360,
+      "description": "Height of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 200,
+        "max": 520,
+        "step": 4
+      }
+    },
+    {
+      "name": "overlap",
+      "type": "number",
+      "default": 96,
+      "description": "Horizontal overlap between resting cards in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 0,
+        "max": 200,
+        "step": 2
+      }
+    },
+    {
+      "name": "pushDistance",
+      "type": "number",
+      "default": 235,
+      "description": "Distance neighboring cards are pushed aside on hover.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 100,
+        "max": 400,
+        "step": 5
+      }
+    },
+    {
+      "name": "hoverLift",
+      "type": "number",
+      "default": 30,
+      "description": "Vertical lift applied to the hovered card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 0,
+        "max": 100,
+        "step": 2
+      }
+    },
+    {
+      "name": "items",
+      "type": "array",
+      "description": "Stack items shown on hover.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "description": "Distance cards spread while hovered.",
+      "default": 24,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 72,
+        "step": 1
+      }
+    },
+    {
+      "name": "rotation",
+      "type": "number",
+      "description": "Rotation amount applied to stacked items.",
+      "default": 7,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": -180,
+        "max": 180,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Hover animation duration.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Highlight color for active stack content.",
+      "default": "#ff6b00",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

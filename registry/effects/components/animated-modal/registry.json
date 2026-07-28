@@ -3,6 +3,12 @@
   "version": "1.1.1",
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added triggerLabel, title, subtitle, sections, showCloseButton, closeOnBackdrop, and closeOnEsc as public props with a working remixer panel. The originally suggested size/overlayOpacity/duration props don't exist in AnimatedModalContent (the modal has one fixed size and fade timing), so they were replaced with the props the component actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.1",
       "date": "2026-07-23",
       "summary": "Trigger button responsive classes corrected from max-lg to max-[1025px], matching the max-[1025px]/max-md convention used by the rest of the modal (tablet styling was switching at 1024px on the button but 1280px on the modal chrome).",
@@ -49,5 +55,172 @@
       "path": "ScrollablePopupContent.jsx",
       "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "triggerLabel",
+      "type": "string",
+      "default": "Open Modal",
+      "description": "Text shown on the modal trigger button.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "default": "A Deeper Look at the Project",
+      "description": "Modal heading text.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "Explore the thinking, design strategy, and long-term value proposition behind the development.",
+      "description": "Supporting text under the modal heading.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "sections",
+      "type": "array",
+      "default": [
+        {
+          "heading": "Project Overview",
+          "paragraph": "This development is envisioned as a premium mixed-use destination, combining residential comfort, retail convenience, and elevated lifestyle experiences in one cohesive ecosystem.",
+          "list": [
+            "Prime urban location with excellent access",
+            "Integrated amenities for work, wellness, and leisure",
+            "Architecture focused on long-term livability"
+          ]
+        },
+        {
+          "heading": "Design Philosophy",
+          "paragraph": "Every detail has been planned to create an experience that feels contemporary, intuitive, and timeless. The emphasis is on spatial openness, natural light, and refined materials.",
+          "list": [
+            "Open-plan living concepts",
+            "Daylight-first spatial planning",
+            "Contemporary material palette"
+          ]
+        },
+        {
+          "heading": "Investment Potential",
+          "paragraph": "With strong connectivity, growing infrastructure, and a carefully positioned offering, the project is designed to appeal to both end-users and long-term investors seeking sustained value.",
+          "list": [
+            "High-demand micro-market",
+            "Future-forward development strategy",
+            "Strong long-term appreciation potential"
+          ]
+        },
+        {
+          "heading": "Lifestyle Experience",
+          "paragraph": "The experience extends beyond residences, offering amenities and shared spaces that promote wellness, community, and a more balanced urban lifestyle.",
+          "list": [
+            "Curated leisure and wellness zones",
+            "Community-first shared spaces",
+            "Elevated everyday convenience"
+          ]
+        }
+      ],
+      "description": "Popup sections (heading, paragraph, list).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the close (X) button.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "closeOnBackdrop",
+      "type": "boolean",
+      "default": true,
+      "description": "Closes the modal when the backdrop is clicked.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "closeOnEsc",
+      "type": "boolean",
+      "default": true,
+      "description": "Closes the modal when Escape is pressed.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "size",
+      "type": "enum",
+      "description": "Controls the modal width preset.",
+      "default": "md",
+      "remixer": {
+        "control": "select",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "options": []
+      }
+    },
+    {
+      "name": "overlayOpacity",
+      "type": "number",
+      "description": "Opacity of the page overlay.",
+      "default": 0.65,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Open and close animation duration.",
+      "default": 0.4,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

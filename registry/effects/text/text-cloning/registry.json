@@ -37,5 +37,96 @@
       "type": "registry:component",
       "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "\"Hyperiux\"",
+      "description": "Text copied into clone layers.",
+      "suggested": true
+    },
+    {
+      "name": "cloneCount",
+      "type": "number",
+      "default": 8,
+      "description": "Number of text clones rendered.",
+      "suggested": true
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": 12,
+      "description": "Distance between cloned text layers.",
+      "suggested": true
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Primary text color.",
+      "suggested": true
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Color used for clone highlights.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "text",
+        "label": "Text",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "cloneCount",
+        "label": "Clone Count",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 24,
+        "step": 0.1
+      },
+      {
+        "name": "offset",
+        "label": "Offset",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 36,
+        "step": 0.1
+      },
+      {
+        "name": "textColor",
+        "label": "Text Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

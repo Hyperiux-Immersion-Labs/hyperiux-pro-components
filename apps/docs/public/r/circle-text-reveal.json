@@ -25,6 +25,74 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "Text",
+      "type": "string",
+      "default": "Some ideas only bloom when you move toward them.",
+      "description": "Main visible text.",
+      "remixer": {
+        "control": "textarea",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "revealText",
+      "type": "string",
+      "default": "The hidden layer has been waiting for your cursor.",
+      "description": "Text revealed inside the cursor circle.",
+      "remixer": {
+        "control": "textarea",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Base text color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "circleColorBg",
+      "type": "string",
+      "default": "#ff5f00",
+      "description": "Reveal circle background color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "RevealedTextColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Revealed text color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

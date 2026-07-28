@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 const CharStaggerPrimaryButton = ({
-    btnText = "",
+    btnText = "Hover me",
     href = "#",
     btnClassName = "",
     textClassName = "",
@@ -14,7 +14,7 @@ const CharStaggerPrimaryButton = ({
     children,
     staggerStep = 0.01,
     lineClassName = "",
-    hoverColor = "",
+    hoverColor = "#ffffff",
     showArrow = false,
     icon: Icon = ArrowRight,
     iconClassName = "",

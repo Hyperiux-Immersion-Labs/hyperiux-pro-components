@@ -1,20 +1,9 @@
-
-import ProgressiveBloomValley from "@/components/progressive-bloom-valley";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/progressive-bloom-valley/registry.json";
 
-
-export default function page() {
- return (
- <>
- <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
-<ProgressiveBloomValley/>
-<h1 className="sr-only">Progressive Bloom Valley</h1>
- <ScrollBottom/>
- </>
-
- );
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="progressive-bloom-valley" />;
 }
 
 export async function generateMetadata() {

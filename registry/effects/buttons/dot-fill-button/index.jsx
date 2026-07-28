@@ -9,7 +9,7 @@ const MOBILE_HOLD_MS = 1000;
 const DEFAULT_HREF = "#";
 
 const DotFillBtn = ({
- btnText ="",
+ btnText ="Try demo",
  href = DEFAULT_HREF,
  className ="",
  textClassName ="",

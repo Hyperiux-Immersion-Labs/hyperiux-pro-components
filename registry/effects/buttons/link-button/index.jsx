@@ -9,10 +9,10 @@ const DEFAULT_HREF = "#";
 const TABLET_BREAKPOINT = 1025;
 
 export default function LinkButton({
-  btnText,
+  btnText = "Hover me",
   mobileText = "Click me",
-  textColor,
-  hoverColor,
+  textColor = "#ffffff",
+  hoverColor = "#ff6b00",
   clickedColor = "#ff6b00",
   href = DEFAULT_HREF,
   className = "",

@@ -2,8 +2,18 @@
   "name": "strip-slider",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Strip Slider",
@@ -33,5 +43,99 @@
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "slides",
+      "type": "array",
+      "default": [],
+      "description": "Slides split into animated strips.",
+      "suggested": true
+    },
+    {
+      "name": "stripCount",
+      "type": "number",
+      "default": 12,
+      "description": "Number of strips per slide.",
+      "suggested": true
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.8,
+      "description": "Slide strip transition duration.",
+      "suggested": true
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.04,
+      "description": "Delay between strip animations.",
+      "suggested": true
+    },
+    {
+      "name": "autoplay",
+      "type": "boolean",
+      "default": false,
+      "description": "Automatically advances slides.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "slides",
+        "label": "Slides",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "stripCount",
+        "label": "Strip Count",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 36,
+        "step": 0.1
+      },
+      {
+        "name": "duration",
+        "label": "Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "stagger",
+        "label": "Stagger",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "autoplay",
+        "label": "Autoplay",
+        "type": "toggle",
+        "group": "motion",
+        "copyable": true
+      }
+    ]
+  }
 }

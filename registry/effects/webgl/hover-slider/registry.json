@@ -38,5 +38,99 @@
       "summary": "Add prefers-reduced-motion support",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "slides",
+      "type": "array",
+      "default": [],
+      "description": "Slides revealed on hover.",
+      "suggested": true
+    },
+    {
+      "name": "activeIndex",
+      "type": "number",
+      "default": 0,
+      "description": "Initially active slide.",
+      "suggested": true
+    },
+    {
+      "name": "transitionDuration",
+      "type": "number",
+      "default": 0.45,
+      "description": "Slide transition duration.",
+      "suggested": true
+    },
+    {
+      "name": "imageScale",
+      "type": "number",
+      "default": 1.08,
+      "description": "Image scale while hovered.",
+      "suggested": true
+    },
+    {
+      "name": "showCaptions",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows slide captions.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "slides",
+        "label": "Slides",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "activeIndex",
+        "label": "Active Index",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "transitionDuration",
+        "label": "Transition Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "imageScale",
+        "label": "Image Scale",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3.24,
+        "step": 0.05
+      },
+      {
+        "name": "showCaptions",
+        "label": "Show Captions",
+        "type": "toggle",
+        "group": "content",
+        "copyable": true
+      }
+    ]
+  }
 }

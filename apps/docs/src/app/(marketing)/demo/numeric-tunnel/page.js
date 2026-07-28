@@ -1,15 +1,11 @@
-import NumericTunnel from '@/components/numeric-tunnel'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/loaders/numeric-tunnel/registry.json";
 
-
-const page = () => {
-  return (
-    <NumericTunnel />
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="numeric-tunnel" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("numeric-tunnel");
 }

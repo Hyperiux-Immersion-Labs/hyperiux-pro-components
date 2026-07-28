@@ -2,8 +2,18 @@
   "name": "grid-lift",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Grid Lift",
@@ -29,5 +39,96 @@
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/grid-lift/createSuspendedRaf.js"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "items",
+      "type": "array",
+      "default": [],
+      "description": "Grid items lifted by cursor or controls.",
+      "suggested": true
+    },
+    {
+      "name": "liftAmount",
+      "type": "number",
+      "default": 80,
+      "description": "Maximum z-lift amount.",
+      "suggested": true
+    },
+    {
+      "name": "gridSize",
+      "type": "number",
+      "default": 12,
+      "description": "Number of grid cells or subdivisions.",
+      "suggested": true
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Highlight color for lifted cells.",
+      "suggested": true
+    },
+    {
+      "name": "followCursor",
+      "type": "boolean",
+      "default": false,
+      "description": "Links lift effect to cursor position.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "items",
+        "label": "Items",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "liftAmount",
+        "label": "Lift Amount",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 240,
+        "step": 0.1
+      },
+      {
+        "name": "gridSize",
+        "label": "Grid Size",
+        "type": "range",
+        "group": "content",
+        "copyable": true,
+        "min": 0,
+        "max": 100,
+        "step": 1
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "followCursor",
+        "label": "Follow Cursor",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      }
+    ]
+  }
 }

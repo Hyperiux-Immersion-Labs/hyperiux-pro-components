@@ -10,8 +10,14 @@
   "exportName": "ZoomSlider",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added title, subheading, and sliderData as public props instead of hardcoding them in the wrapper",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -25,12 +31,243 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "Zoom Slider",
+      "description": "Heading text shown above the slider.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "subheading",
+      "type": "string",
+      "default": "Scroll to explore ",
+      "description": "Supporting text shown under the heading.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "sliderData",
+      "type": "array",
+      "default": [
+        {
+          "number": "01",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+          "title": "AURA",
+          "desc": "Soft light and atmospheric tones"
+        },
+        {
+          "number": "02",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+          "title": "DRIFT",
+          "desc": "Floating through silence"
+        },
+        {
+          "number": "03",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+          "title": "FORM",
+          "desc": "Shapes carved by light"
+        },
+        {
+          "number": "04",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FLOW",
+          "desc": "Smooth transitions in motion"
+        },
+        {
+          "number": "05",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "DEPTH",
+          "desc": "Layers and visual weight"
+        },
+        {
+          "number": "06",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+          "title": "ENERGY",
+          "desc": "Movement captured in time"
+        },
+        {
+          "number": "07",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+          "title": "GLITCH",
+          "desc": "Breaking visual boundaries"
+        },
+        {
+          "number": "08",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FRAME-X",
+          "desc": "Cinematic still frame"
+        },
+        {
+          "number": "09",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+          "title": "LIGHTPLAY",
+          "desc": "Contrast and highlights"
+        },
+        {
+          "number": "10",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "MINIMAL",
+          "desc": "Less but stronger"
+        }
+      ],
+      "demoDefault": [
+        {
+          "number": "01",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+          "title": "AURA",
+          "desc": "Soft light and atmospheric tones"
+        },
+        {
+          "number": "02",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+          "title": "DRIFT",
+          "desc": "Floating through silence"
+        },
+        {
+          "number": "03",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+          "title": "FORM",
+          "desc": "Shapes carved by light"
+        },
+        {
+          "number": "04",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FLOW",
+          "desc": "Smooth transitions in motion"
+        },
+        {
+          "number": "05",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "DEPTH",
+          "desc": "Layers and visual weight"
+        },
+        {
+          "number": "06",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+          "title": "ENERGY",
+          "desc": "Movement captured in time"
+        },
+        {
+          "number": "07",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+          "title": "GLITCH",
+          "desc": "Breaking visual boundaries"
+        },
+        {
+          "number": "08",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FRAME-X",
+          "desc": "Cinematic still frame"
+        },
+        {
+          "number": "09",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+          "title": "LIGHTPLAY",
+          "desc": "Contrast and highlights"
+        },
+        {
+          "number": "10",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "MINIMAL",
+          "desc": "Less but stronger"
+        }
+      ],
+      "description": "Slides rendered by the zoom transition (number, src, title, desc).",
+      "copyable": false,
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "slides",
+      "type": "array",
+      "description": "Slides rendered by the zoom transition.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "zoomScale",
+      "type": "number",
+      "description": "Scale applied to images during slide transitions.",
+      "default": 1.2,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Zoom transition duration.",
+      "default": 0.7,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "autoplay",
+      "type": "boolean",
+      "description": "Automatically advances slides.",
+      "default": false,
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "description": "Shows slider navigation controls.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "src/components/effects/zoom-slider/index.jsx",
-      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\nimport React from 'react';\nimport ZoomSliderComp from './ZoomSliderComp';\n\nconst ZoomSlider = () => {\n  return (\n    <ZoomSliderComp\n      title=\"Zoom Slider\"\n      subheading=\"Scroll to explore \"\n      sliderData={DEFAULT_SLIDER_DATA}\n    />\n  );\n};\n \n\nexport default ZoomSlider;\n\nconst DEFAULT_SLIDER_DATA = [\n  {\n    number: '01',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg',\n    title: 'AURA',\n    desc: 'Soft light and atmospheric tones',\n  },\n  {\n    number: '02',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',\n    title: 'DRIFT',\n    desc: 'Floating through silence',\n  },\n  {\n    number: '03',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',\n    title: 'FORM',\n    desc: 'Shapes carved by light',\n  },\n  {\n    number: '04',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',\n    title: 'FLOW',\n    desc: 'Smooth transitions in motion',\n  },\n  {\n    number: '05',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',\n    title: 'DEPTH',\n    desc: 'Layers and visual weight',\n  },\n  {\n    number: '06',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg',\n    title: 'ENERGY',\n    desc: 'Movement captured in time',\n  },\n  {\n    number: '07',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',\n    title: 'GLITCH',\n    desc: 'Breaking visual boundaries',\n  },\n  {\n    number: '08',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',\n    title: 'FRAME-X',\n    desc: 'Cinematic still frame',\n  },\n  {\n    number: '09',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',\n    title: 'LIGHTPLAY',\n    desc: 'Contrast and highlights',\n  },\n  {\n    number: '10',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',\n    title: 'MINIMAL',\n    desc: 'Less but stronger',\n  },\n];\n"
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\nimport React from 'react';\nimport ZoomSliderComp from './ZoomSliderComp';\n\nconst ZoomSlider = ({\n  title = \"Zoom Slider\",\n  subheading = \"Scroll to explore \",\n  sliderData = DEFAULT_SLIDER_DATA,\n}) => {\n  return (\n    <ZoomSliderComp\n      title={title}\n      subheading={subheading}\n      sliderData={sliderData}\n    />\n  );\n};\n \n\nexport default ZoomSlider;\n\nconst DEFAULT_SLIDER_DATA = [\n  {\n    number: '01',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg',\n    title: 'AURA',\n    desc: 'Soft light and atmospheric tones',\n  },\n  {\n    number: '02',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',\n    title: 'DRIFT',\n    desc: 'Floating through silence',\n  },\n  {\n    number: '03',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',\n    title: 'FORM',\n    desc: 'Shapes carved by light',\n  },\n  {\n    number: '04',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',\n    title: 'FLOW',\n    desc: 'Smooth transitions in motion',\n  },\n  {\n    number: '05',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',\n    title: 'DEPTH',\n    desc: 'Layers and visual weight',\n  },\n  {\n    number: '06',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg',\n    title: 'ENERGY',\n    desc: 'Movement captured in time',\n  },\n  {\n    number: '07',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',\n    title: 'GLITCH',\n    desc: 'Breaking visual boundaries',\n  },\n  {\n    number: '08',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',\n    title: 'FRAME-X',\n    desc: 'Cinematic still frame',\n  },\n  {\n    number: '09',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',\n    title: 'LIGHTPLAY',\n    desc: 'Contrast and highlights',\n  },\n  {\n    number: '10',\n    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',\n    title: 'MINIMAL',\n    desc: 'Less but stronger',\n  },\n];\n"
     },
     {
       "path": "ZoomSliderComp.jsx",

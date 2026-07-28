@@ -34,5 +34,99 @@
       "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "slides",
+      "type": "array",
+      "default": [],
+      "description": "Slides arranged around the circular carousel.",
+      "suggested": true
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": 320,
+      "description": "Radius of the circular slide path.",
+      "suggested": true
+    },
+    {
+      "name": "rotationSpeed",
+      "type": "number",
+      "default": 1,
+      "description": "Speed of rotation.",
+      "suggested": true
+    },
+    {
+      "name": "activeIndex",
+      "type": "number",
+      "default": 0,
+      "description": "Initially active slide.",
+      "suggested": true
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows carousel controls.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "slides",
+        "label": "Slides",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "radius",
+        "label": "Radius",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 1280,
+        "step": 1
+      },
+      {
+        "name": "rotationSpeed",
+        "label": "Rotation Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "activeIndex",
+        "label": "Active Index",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "showControls",
+        "label": "Show Controls",
+        "type": "toggle",
+        "group": "content",
+        "copyable": true
+      }
+    ]
+  }
 }

@@ -36,6 +36,45 @@
   "exportKind": "default",
   "importPath": "@/components/effects/pixel-bloom",
   "target": "src/components/effects/pixel-bloom",
+  "props": [
+    {
+      "name": "gridSize",
+      "type": "number",
+      "default": 35,
+      "description": "Pixel grid cell size.",
+      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 12, "max": 80, "step": 1 }
+    },
+    {
+      "name": "effectRadius",
+      "type": "number",
+      "default": 40,
+      "description": "Radius of the cursor bloom.",
+      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 8, "max": 160, "step": 1 }
+    },
+    {
+      "name": "maxTrailLength",
+      "type": "number",
+      "default": 8,
+      "description": "Maximum number of active trail points.",
+      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 1, "max": 32, "step": 1 }
+    },
+    {
+      "name": "cellLifetime",
+      "type": "number",
+      "default": 100,
+      "description": "How long each pixel cell remains active.",
+      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 20, "max": 800, "step": 10 }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "bloom",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",

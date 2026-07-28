@@ -28,6 +28,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": [],
+      "description": "Page images rendered in the book.",
+      "suggested": true
+    },
+    {
+      "name": "page",
+      "type": "number",
+      "default": 0,
+      "description": "Initially open page index.",
+      "suggested": true
+    },
+    {
+      "name": "pageSpeed",
+      "type": "number",
+      "default": 0.8,
+      "description": "Speed of the page flip animation.",
+      "suggested": true
+    },
+    {
+      "name": "bookScale",
+      "type": "number",
+      "default": 1,
+      "description": "Overall scale of the 3D book.",
+      "suggested": true
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows page navigation controls.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "images",
+        "label": "Images",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "page",
+        "label": "Page",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "pageSpeed",
+        "label": "Page Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "bookScale",
+        "label": "Book Scale",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "showControls",
+        "label": "Show Controls",
+        "type": "toggle",
+        "group": "content",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

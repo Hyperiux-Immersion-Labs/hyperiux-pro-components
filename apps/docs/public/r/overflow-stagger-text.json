@@ -25,6 +25,69 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "animateOnScroll",
+      "type": "boolean",
+      "default": true,
+      "description": "Runs the reveal when scrolled into view.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "delay",
+      "type": "number",
+      "default": 0,
+      "description": "Animation delay.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.03,
+      "description": "Delay between characters.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.005
+      }
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": true,
+      "description": "Links the reveal to scroll progress.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

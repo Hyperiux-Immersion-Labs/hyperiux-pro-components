@@ -5,7 +5,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-const DEFAULT_BTN_TEXT = "";
+const DEFAULT_BTN_TEXT = "Hover me";
 const DEFAULT_HREF = "#";
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const DEFAULT_SCRAMBLE_DURATION = 1000;

@@ -25,6 +25,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "items",
+      "type": "array",
+      "default": [],
+      "description": "Stacked sections or cards.",
+      "suggested": true
+    },
+    {
+      "name": "offset",
+      "type": "number",
+      "default": 72,
+      "description": "Vertical offset between stacked items.",
+      "suggested": true
+    },
+    {
+      "name": "scaleStep",
+      "type": "number",
+      "default": 0.04,
+      "description": "Scale difference between stacked items.",
+      "suggested": true
+    },
+    {
+      "name": "stickyTop",
+      "type": "number",
+      "default": 96,
+      "description": "Sticky top offset for the stack.",
+      "suggested": true
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": false,
+      "description": "Links stack movement to scroll progress.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "items",
+        "label": "Items",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "offset",
+        "label": "Offset",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 216,
+        "step": 0.1
+      },
+      {
+        "name": "scaleStep",
+        "label": "Scale Step",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "stickyTop",
+        "label": "Sticky Top",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 288,
+        "step": 0.1
+      },
+      {
+        "name": "scrub",
+        "label": "Scrub",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

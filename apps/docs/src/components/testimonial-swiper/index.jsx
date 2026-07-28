@@ -43,10 +43,10 @@ const data = [
   },
 ];
 
-const TestimonialSwiper = () => {
+const TestimonialSwiper = ({ testimonials = data, bgColor = "#edeae2" }) => {
   return (
     <div className="h-screen bg-white max-sm:h-fit">
-      <TestimonialComp testimonials={data} bgColor="#edeae2" />
+      <TestimonialComp testimonials={testimonials} bgColor={bgColor} />
     </div>
   );
 };

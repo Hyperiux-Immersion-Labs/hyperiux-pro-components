@@ -36,6 +36,101 @@
   "exportKind": "default",
   "importPath": "@/components/effects/full-screen-crosshair",
   "target": "src/components/effects/full-screen-crosshair",
+  "props": [
+    {
+      "name": "color",
+      "type": "color",
+      "default": "#ffffff",
+      "demoDefault": "#F0F3FF",
+      "description": "Crosshair line and center color.",
+      "remixer": { "control": "color", "group": "appearance", "groupTitle": "Appearance" }
+    },
+    {
+      "name": "centerContent",
+      "type": "string",
+      "default": "•",
+      "description": "Text or symbol shown at the cursor center.",
+      "remixer": { "control": "text", "group": "content", "groupTitle": "Content" }
+    },
+    {
+      "name": "hideNativeCursor",
+      "type": "boolean",
+      "default": true,
+      "description": "Hides the system cursor while the crosshair is active.",
+      "remixer": { "control": "checkbox", "group": "interaction", "groupTitle": "Interaction" }
+    },
+    {
+      "name": "lineSize",
+      "type": "number",
+      "default": 100,
+      "demoDefault": 1500,
+      "description": "Length of each crosshair arm.",
+      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 40, "max": 1600, "step": 10 }
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": 20,
+      "description": "Gap around the center symbol.",
+      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 0, "max": 80, "step": 1 }
+    },
+    {
+      "name": "thickness",
+      "type": "number",
+      "default": 1,
+      "demoDefault": 0.5,
+      "description": "Line thickness in pixels.",
+      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 0.25, "max": 8, "step": 0.25 }
+    },
+    {
+      "name": "centerSize",
+      "type": "number",
+      "default": 24,
+      "description": "Center symbol size in pixels.",
+      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 8, "max": 80, "step": 1 }
+    },
+    {
+      "name": "smooth",
+      "type": "boolean",
+      "default": true,
+      "description": "Enables smoothed cursor tracking.",
+      "remixer": { "control": "checkbox", "group": "interaction", "groupTitle": "Interaction" }
+    },
+    {
+      "name": "lerpFactor",
+      "type": "number",
+      "default": 0.14,
+      "demoDefault": 0.1,
+      "description": "Controls cursor smoothing speed.",
+      "remixer": { "control": "range", "group": "interaction", "groupTitle": "Interaction", "min": 0.02, "max": 0.5, "step": 0.01 }
+    },
+    {
+      "name": "blendMode",
+      "type": "string",
+      "default": "normal",
+      "description": "CSS mix-blend-mode for the crosshair.",
+      "remixer": {
+        "control": "select",
+        "group": "appearance",
+        "groupTitle": "Appearance",
+        "options": [
+          { "label": "Normal", "value": "normal" },
+          { "label": "Difference", "value": "difference" },
+          { "label": "Screen", "value": "screen" },
+          { "label": "Overlay", "value": "overlay" }
+        ]
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "appearance",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",

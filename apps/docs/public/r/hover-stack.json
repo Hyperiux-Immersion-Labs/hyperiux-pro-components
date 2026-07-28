@@ -11,18 +11,232 @@
   "version": "1.1.0",
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards, cardWidth, cardHeight, overlap, pushDistance, and hoverLift as public props with a working remixer panel. The originally suggested props (items, spread, rotation, duration, accentColor) didn't match this component's real API, so they were replaced with the props HoverStackComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Disable hover lift/push transforms under reduced motion; keep z-index focus",
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "cards",
+      "type": "array",
+      "default": [
+        {
+          "id": 1,
+          "quote": "A must-have for anyone looking to save time and boost productivity.",
+          "tag": "Efficiency",
+          "bg": "#E4FF1A",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 2,
+          "quote": "This tech has completely streamlined my daily tasks.",
+          "tag": "Workflow",
+          "bg": "#DD1155",
+          "accent": "text-[#ffffff]"
+        },
+        {
+          "id": 3,
+          "quote": "Innovative and powerful, yet so easy to use!",
+          "tag": "Simplicity",
+          "bg": "#FF5714",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 4,
+          "quote": "It made everything smoother. Highly recommend!",
+          "tag": "Reliability",
+          "bg": "#E980FC",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 5,
+          "quote": "Fast, reliable, and user-friendly. Exactly what I needed.",
+          "tag": "Speed",
+          "bg": "#67D6A3",
+          "accent": "text-[#1A1A1A]"
+        },
+        {
+          "id": 6,
+          "quote": "I can't imagine my workflow without it now. Simply amazing!",
+          "tag": "Impact",
+          "bg": "#3454D1",
+          "accent": "text-[#ffffff]"
+        },
+        {
+          "id": 7,
+          "quote": "Performance is a game changer. So much smoother now.",
+          "tag": "Performance",
+          "bg": "#B98CFF",
+          "accent": "text-[#1A1A1A]"
+        }
+      ],
+      "description": "Stack cards (quote, tag, bg, accent).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "cardWidth",
+      "type": "number",
+      "default": 280,
+      "description": "Width of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 160,
+        "max": 420,
+        "step": 4
+      }
+    },
+    {
+      "name": "cardHeight",
+      "type": "number",
+      "default": 360,
+      "description": "Height of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 200,
+        "max": 520,
+        "step": 4
+      }
+    },
+    {
+      "name": "overlap",
+      "type": "number",
+      "default": 96,
+      "description": "Horizontal overlap between resting cards in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 0,
+        "max": 200,
+        "step": 2
+      }
+    },
+    {
+      "name": "pushDistance",
+      "type": "number",
+      "default": 235,
+      "description": "Distance neighboring cards are pushed aside on hover.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 100,
+        "max": 400,
+        "step": 5
+      }
+    },
+    {
+      "name": "hoverLift",
+      "type": "number",
+      "default": 30,
+      "description": "Vertical lift applied to the hovered card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 0,
+        "max": 100,
+        "step": 2
+      }
+    },
+    {
+      "name": "items",
+      "type": "array",
+      "description": "Stack items shown on hover.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "description": "Distance cards spread while hovered.",
+      "default": 24,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 72,
+        "step": 1
+      }
+    },
+    {
+      "name": "rotation",
+      "type": "number",
+      "description": "Rotation amount applied to stacked items.",
+      "default": 7,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": -180,
+        "max": 180,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Hover animation duration.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Highlight color for active stack content.",
+      "default": "#ff6b00",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "src/components/effects/hover-stack/index.jsx",
-      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n\nimport React from \"react\";\nimport { HoverStackComp } from \"./HoverStackComp\";\n\nconst cards = [\n    {\n        id: 1,\n        quote: \"A must-have for anyone looking to save time and boost productivity.\",\n        tag: \"Efficiency\",\n        bg: \"#E4FF1A\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 2,\n        quote: \"This tech has completely streamlined my daily tasks.\",\n        tag: \"Workflow\",\n        bg: \"#DD1155\",\n        accent: \"text-[#ffffff]\",\n    },\n    {\n        id: 3,\n        quote: \"Innovative and powerful, yet so easy to use!\",\n        tag: \"Simplicity\",\n        bg: \"#FF5714\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 4,\n        quote: \"It made everything smoother. Highly recommend!\",\n        tag: \"Reliability\",\n        bg: \"#E980FC\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 5,\n        quote: \"Fast, reliable, and user-friendly. Exactly what I needed.\",\n        tag: \"Speed\",\n        bg: \"#67D6A3\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 6,\n        quote: \"I can’t imagine my workflow without it now. Simply amazing!\",\n        tag: \"Impact\",\n        bg: \"#3454D1\",\n        accent: \"text-[#ffffff]\",\n    },\n    {\n        id: 7,\n        quote: \"Performance is a game changer. So much smoother now.\",\n        tag: \"Performance\",\n        bg: \"#B98CFF\",\n        accent: \"text-[#1A1A1A]\",\n    },\n];\n\nconst HoverStack = () => {\n    return (\n        <>\n            <section className=\"w-full h-fit bg-[#fff9ec] py-[10%] max-md:py-[20%] overflow-hidden flex flex-col gap-[7vw] justify-center items-center\">\n                <div className=\"flex flex-col w-full justify-center items-center gap-[1vw] max-md:gap-[3vw] text-center text-[#1a1a1a]\">\n                <h1 className=\" text-[5.5vw] max-md:text-[9vw] max-[1025px]:text-[7vw]\">\n                    Hover Stack Cards\n                </h1>\n                <p className=\"text-[1.2vw] max-[1025px]:hidden\">\n                    Hover any card , so they can pop out.\n                </p>\n\n                </div>\n\n                <HoverStackComp\n                    cards={cards}\n                    cardWidth={280}\n                    cardHeight={360}\n                    overlap={96}\n                    pushDistance={235}\n                    hoverLift={30}\n                />\n            </section>\n        </>\n    );\n};\n\nexport default HoverStack;\n"
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n\nimport React from \"react\";\nimport { HoverStackComp } from \"./HoverStackComp\";\n\nconst cards = [\n    {\n        id: 1,\n        quote: \"A must-have for anyone looking to save time and boost productivity.\",\n        tag: \"Efficiency\",\n        bg: \"#E4FF1A\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 2,\n        quote: \"This tech has completely streamlined my daily tasks.\",\n        tag: \"Workflow\",\n        bg: \"#DD1155\",\n        accent: \"text-[#ffffff]\",\n    },\n    {\n        id: 3,\n        quote: \"Innovative and powerful, yet so easy to use!\",\n        tag: \"Simplicity\",\n        bg: \"#FF5714\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 4,\n        quote: \"It made everything smoother. Highly recommend!\",\n        tag: \"Reliability\",\n        bg: \"#E980FC\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 5,\n        quote: \"Fast, reliable, and user-friendly. Exactly what I needed.\",\n        tag: \"Speed\",\n        bg: \"#67D6A3\",\n        accent: \"text-[#1A1A1A]\",\n    },\n    {\n        id: 6,\n        quote: \"I can’t imagine my workflow without it now. Simply amazing!\",\n        tag: \"Impact\",\n        bg: \"#3454D1\",\n        accent: \"text-[#ffffff]\",\n    },\n    {\n        id: 7,\n        quote: \"Performance is a game changer. So much smoother now.\",\n        tag: \"Performance\",\n        bg: \"#B98CFF\",\n        accent: \"text-[#1A1A1A]\",\n    },\n];\n\nconst HoverStack = ({\n    cards: cardsProp = cards,\n    cardWidth = 280,\n    cardHeight = 360,\n    overlap = 96,\n    pushDistance = 235,\n    hoverLift = 30,\n}) => {\n    return (\n        <>\n            <section className=\"w-full h-fit bg-[#fff9ec] py-[10%] max-md:py-[20%] overflow-hidden flex flex-col gap-[7vw] justify-center items-center\">\n                <div className=\"flex flex-col w-full justify-center items-center gap-[1vw] max-md:gap-[3vw] text-center text-[#1a1a1a]\">\n                <h1 className=\" text-[5.5vw] max-md:text-[9vw] max-[1025px]:text-[7vw]\">\n                    Hover Stack Cards\n                </h1>\n                <p className=\"text-[1.2vw] max-[1025px]:hidden\">\n                    Hover any card , so they can pop out.\n                </p>\n\n                </div>\n\n                <HoverStackComp\n                    cards={cardsProp}\n                    cardWidth={cardWidth}\n                    cardHeight={cardHeight}\n                    overlap={overlap}\n                    pushDistance={pushDistance}\n                    hoverLift={hoverLift}\n                />\n            </section>\n        </>\n    );\n};\n\nexport default HoverStack;\n"
     },
     {
       "path": "HoverStackComp.jsx",

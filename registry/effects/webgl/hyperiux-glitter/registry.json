@@ -46,5 +46,99 @@
       "summary": "Add prefers-reduced-motion support",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "particleCount",
+      "type": "number",
+      "default": 1600,
+      "description": "Number of glitter particles.",
+      "suggested": true
+    },
+    {
+      "name": "glitterColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Primary glitter color.",
+      "suggested": true
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Secondary glitter highlight color.",
+      "suggested": true
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": 1,
+      "description": "Particle animation speed.",
+      "suggested": true
+    },
+    {
+      "name": "mouseInfluence",
+      "type": "number",
+      "default": 0.5,
+      "description": "Cursor influence on glitter movement.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "particleCount",
+        "label": "Particle Count",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 4800,
+        "step": 0.1
+      },
+      {
+        "name": "glitterColor",
+        "label": "Glitter Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "mouseInfluence",
+        "label": "Mouse Influence",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      }
+    ]
+  }
 }

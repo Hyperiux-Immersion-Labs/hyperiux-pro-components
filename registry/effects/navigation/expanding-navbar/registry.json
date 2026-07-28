@@ -2,8 +2,18 @@
   "name": "expanding-navbar",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: column/square expand animations are set instantly instead of tweened when the user has reduced motion enabled", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: column/square expand animations are set instantly instead of tweened when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Expanding Navbar",
@@ -46,5 +56,96 @@
       "path": "useFocusTrap.js",
       "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "items",
+      "type": "array",
+      "default": [],
+      "description": "Navigation items and expandable panels.",
+      "suggested": true
+    },
+    {
+      "name": "expandedWidth",
+      "type": "number",
+      "default": 720,
+      "description": "Width of the expanded navbar panel.",
+      "suggested": true
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.45,
+      "description": "Expansion animation duration.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Navbar background color.",
+      "suggested": true
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Hover or active link accent color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "items",
+        "label": "Items",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "expandedWidth",
+        "label": "Expanded Width",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 2880,
+        "step": 1
+      },
+      {
+        "name": "duration",
+        "label": "Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

@@ -1,27 +1,10 @@
-
-import { ReactLenis } from'lenis/react'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
-import CircularSlider from '@/components/circular-slider'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/scroll/circular-slider/registry.json";
 
-
-const Page = () => {
- return (
- <>
-
- <ReactLenis root>
-    <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
-<CircularSlider/>
-<ScrollBottom className="bottom-[3.5%]" />
- </ReactLenis>
- </>
- )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="circular-slider" />;
 }
-
-export default Page
-
-
 
 export async function generateMetadata() {
   return getDemoPageMetadata("circular-slider");

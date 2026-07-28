@@ -44,5 +44,96 @@
       "type": "registry:component",
       "target": "src/components/effects/text-stream/TextStreamComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "lines",
+      "type": "array",
+      "default": [],
+      "description": "Text lines streamed by the effect.",
+      "suggested": true
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": 1,
+      "description": "Streaming animation speed.",
+      "suggested": true
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.08,
+      "description": "Delay between streamed text fragments.",
+      "suggested": true
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Text color.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Background color behind the stream.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "lines",
+        "label": "Lines",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "stagger",
+        "label": "Stagger",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "textColor",
+        "label": "Text Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

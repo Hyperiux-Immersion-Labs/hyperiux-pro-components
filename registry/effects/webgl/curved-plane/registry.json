@@ -16,6 +16,18 @@
   "exportKind": "default",
   "importPath": "@/components/effects/curved-plane",
   "target": "src/components/effects/curved-plane",
+  "props": [
+    { "name": "variant", "type": "string", "default": "horizontal", "description": "Selects the horizontal or vertical curved plane carousel." }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": { "controlsButtonClassName": "right-4! top-25!" },
+    "panel": { "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" },
+    "controls": [
+      { "name": "variant", "label": "Variant", "type": "select", "group": "content", "options": [{ "label": "Horizontal", "value": "horizontal" }, { "label": "Vertical", "value": "vertical" }] }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

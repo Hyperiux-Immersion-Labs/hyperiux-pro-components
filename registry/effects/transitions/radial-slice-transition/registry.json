@@ -32,6 +32,10 @@
   "exportKind": "default",
   "importPath": "@/components/effects/radial-slice-transition",
   "target": "src/components/effects/radial-slice-transition",
+  "props": [
+    { "name": "config", "type": "object", "default": { "duration": 4, "color": "#0F2854" }, "description": "Transition duration and overlay color.", "remixer": { "control": "json", "group": "config", "groupTitle": "Config" } }
+  ],
+  "remixer": { "enabled": true, "defaultOpenGroupId": "config", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
   "files": [
     {
       "path": "index.jsx",

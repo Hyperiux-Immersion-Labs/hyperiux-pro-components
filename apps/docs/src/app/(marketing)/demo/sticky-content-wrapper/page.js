@@ -1,18 +1,9 @@
-import StickyContentWrapper from "@/components/sticky-content-wrapper";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
-import { ReactLenis } from "lenis/react";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import registry from "../../../../../../../registry/effects/scroll/sticky-content-wrapper/registry.json";
 
 export default function Page() {
- return (
-     <ReactLenis root>
-        <DemoHeader/>
- <StickyContentWrapper />
- <ScrollBottom className="bottom-[3%] left-[20%]! gap-[1vw] max-sm:left-1/2!" textColor='text-[#111111]' />
-     </ReactLenis>
- );
+  return <SuggestedEffectRemixerDemo registry={registry} slug="sticky-content-wrapper" />;
 }
 
 export async function generateMetadata() {

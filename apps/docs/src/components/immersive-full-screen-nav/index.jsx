@@ -35,9 +35,46 @@ const NAV_CONTENT = {
 export default function ImmersiveFullscreenNav({
   navConfig,
   navContent,
+  ...props
 }) {
-  const config = { ...NAV_CONFIG, ...navConfig };
-  const content = { ...NAV_CONTENT, ...navContent };
+  const {
+    overlayBg,
+    headerOpenColor,
+    clipOrigin,
+    openDuration,
+    closeDuration,
+    linkDuration,
+    linkStagger,
+    linkOffsetY,
+    imageDuration,
+    imageStagger,
+    imageStartScale,
+    socialDuration,
+    socialStagger,
+    socialOffsetY,
+  } = props;
+  const config = {
+    ...NAV_CONFIG,
+    ...navConfig,
+    ...(overlayBg !== undefined ? { overlayBg } : {}),
+    ...(headerOpenColor !== undefined ? { headerOpenColor } : {}),
+    ...(clipOrigin !== undefined ? { clipOrigin } : {}),
+    ...(openDuration !== undefined ? { openDuration } : {}),
+    ...(closeDuration !== undefined ? { closeDuration } : {}),
+  };
+  const content = {
+    ...NAV_CONTENT,
+    ...navContent,
+    ...(linkDuration !== undefined ? { linkDuration } : {}),
+    ...(linkStagger !== undefined ? { linkStagger } : {}),
+    ...(linkOffsetY !== undefined ? { linkOffsetY } : {}),
+    ...(imageDuration !== undefined ? { imageDuration } : {}),
+    ...(imageStagger !== undefined ? { imageStagger } : {}),
+    ...(imageStartScale !== undefined ? { imageStartScale } : {}),
+    ...(socialDuration !== undefined ? { socialDuration } : {}),
+    ...(socialStagger !== undefined ? { socialStagger } : {}),
+    ...(socialOffsetY !== undefined ? { socialOffsetY } : {}),
+  };
 
   return (
     <>

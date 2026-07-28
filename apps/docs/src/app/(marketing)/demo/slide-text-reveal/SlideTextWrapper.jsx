@@ -5,7 +5,7 @@ import { ReactLenis } from 'lenis/react'
 import Image from 'next/image'
 import SlideTextReveal from '@/components/slide-text-reveal'
 
-const SlideTextWrapper = () => {
+const SlideTextWrapper = ({ effectProps = {} }) => {
   const [replayKey, setReplayKey] = useState(0)
 
   return (
@@ -38,6 +38,7 @@ const SlideTextWrapper = () => {
           <SlideTextReveal
             key={`hero-title-${replayKey}`}
             animateOnScroll={false}
+            {...effectProps}
             className="text-center"
           >
             <h1 className="text-8xl max-md:text-6xl font-black leading-[0.92] tracking-tight text-white">
@@ -49,6 +50,7 @@ const SlideTextWrapper = () => {
             key={`hero-copy-${replayKey}`}
             animateOnScroll={false}
             delay={0.2}
+            {...effectProps}
           >
             <p className="mt-8 max-w-2xl text-2xl max-md:text-lg text-white/65">
               A cinematic text reveal where every character enters with
@@ -83,6 +85,7 @@ const SlideTextWrapper = () => {
               key={`showcase-copy-${replayKey}`}
           
               delay={0.15}
+              {...effectProps}
               className="max-w-5xl"
             >
               <p className="text-center text-6xl max-md:text-4xl font-semibold leading-[1.15] text-[#121212]">

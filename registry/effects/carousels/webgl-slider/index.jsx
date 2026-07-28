@@ -19,7 +19,7 @@ const images = [
  { src:"https://picsum.photos/seed/wgl10/800/1200", text:"PR.10\n /10" },
 ];
 
-const WebGLSlider = () => {
+const WebGLSlider = ({ images: imagesProp = images }) => {
  const [isMobile, setIsMobile] = useState(false);
 
  useEffect(() => {
@@ -44,7 +44,7 @@ const WebGLSlider = () => {
  }
 
  return (
- <WebGLSliderComp images={images} />
+ <WebGLSliderComp images={imagesProp} />
  )
 }
 

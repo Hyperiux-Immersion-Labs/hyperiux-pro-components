@@ -13,12 +13,81 @@
   "version": "1.1.0",
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added submitLabel and successMessage as public props with a working remixer panel. fields is now also a real prop (previously hardcoded), but is left undocumented for the live panel since its default value embeds a JSX checkbox label (Terms link) that isn't JSON-editable. The originally suggested accentColor/validateOnBlur props don't exist anywhere in this form's field components, so they were dropped rather than shipping non-functional controls.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-23",
       "summary": "Phone validation now uses per-country national-number length ranges (with trunk-zero tolerance) instead of a flat 10-digit rule that rejected all valid numbers from Ireland, Australia, France, the UAE and Singapore.",
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "fields",
+      "type": "array",
+      "default": [],
+      "description": "Fields rendered by the form (text, email, phone, select, textarea, checkbox)."
+    },
+    {
+      "name": "submitLabel",
+      "type": "string",
+      "default": "Send Message",
+      "description": "Text shown on the submit button.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "successMessage",
+      "type": "string",
+      "default": " Form submitted successfully!",
+      "description": "Message shown after successful submission.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Accent color for focus, checks, and primary actions.",
+      "default": "#ff6b00",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "validateOnBlur",
+      "type": "boolean",
+      "description": "Runs field validation after blur.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -2,8 +2,18 @@
   "name": "elevate-navbar",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: dropdown and hover color transitions are set instantly instead of tweened when the user has reduced motion enabled", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: dropdown and hover color transitions are set instantly instead of tweened when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Elevate Navbar",
@@ -24,6 +34,113 @@
   "exportKind": "default",
   "importPath": "@/components/effects/elevate-navbar",
   "target": "src/components/effects/elevate-navbar",
+  "props": [
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#d8b4fe",
+      "description": "Page background behind the navbar.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "ctaBackground",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "CTA button background color.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "ctaHoverBackground",
+      "type": "string",
+      "default": "#000000",
+      "description": "CTA button hover background color.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "staggerItems",
+      "type": "boolean",
+      "default": true,
+      "description": "Reveals dropdown items one by one.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "dropdown",
+        "groupTitle": "Dropdown"
+      }
+    },
+    {
+      "name": "navConfig",
+      "type": "object",
+      "description": "Navigation links and dropdown content.",
+      "default": {},
+      "remixer": {
+        "control": "json",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "elevation",
+      "type": "number",
+      "description": "Shadow depth after scrolling.",
+      "default": 18,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 54,
+        "step": 1
+      }
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "description": "Backdrop blur amount for the navbar.",
+      "default": 14,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 42,
+        "step": 1
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Color used for active nav state.",
+      "default": "#111111",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "appearance",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

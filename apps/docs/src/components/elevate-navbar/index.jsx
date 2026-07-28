@@ -17,8 +17,8 @@ const NAV_CONFIG = {
   ctaHoverBackground: "#000000",
 };
 
-export default function ElevateNavbar({ navConfig }) {
-  const config = { ...NAV_CONFIG, ...navConfig };
+export default function ElevateNavbar({ navConfig = {}, ...props }) {
+  const config = { ...NAV_CONFIG, ...navConfig, ...props };
   const [isMobile, setIsMobile] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 

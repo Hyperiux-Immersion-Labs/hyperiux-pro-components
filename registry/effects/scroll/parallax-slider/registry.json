@@ -24,6 +24,32 @@
   "exportKind": "default",
   "importPath": "@/components/effects/parallax-slider",
   "target": "src/components/effects/parallax-slider",
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": [
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+        "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg"
+      ],
+      "description": "Image sources rendered in the horizontal slider.",
+      "remixer": { "control": "json/list", "group": "media", "groupTitle": "Media" }
+    },
+    { "name": "bgColor", "type": "string", "default": "#111111", "description": "Slider background color.", "remixer": { "control": "color", "group": "surface", "groupTitle": "Surface" } }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "media",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",

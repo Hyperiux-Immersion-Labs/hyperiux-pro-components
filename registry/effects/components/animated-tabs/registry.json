@@ -28,10 +28,140 @@
   ],
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added defaultActiveIndex, animationType, and slideDistance as public props with a working remixer panel. The originally suggested props (defaultTab, accentColor, duration, orientation) didn't match this component's real API (tab content is JSX, not JSON-editable, and there's no accentColor/orientation concept), so they were replaced with the props AnimatedTabsComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Under reduced motion, use opacity fade instead of horizontal slide",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "defaultActiveIndex",
+      "type": "number",
+      "default": 0,
+      "description": "Index of the initially active tab.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 0,
+        "max": 2,
+        "step": 1
+      }
+    },
+    {
+      "name": "animationType",
+      "type": "string",
+      "default": "slide",
+      "description": "Panel transition style.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "label": "Slide",
+            "value": "slide"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "slideDistance",
+      "type": "number",
+      "default": 40,
+      "description": "Horizontal travel distance for the slide transition, in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 160,
+        "step": 5
+      }
+    },
+    {
+      "name": "tabs",
+      "type": "array",
+      "description": "Tab labels and panel content.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "defaultTab",
+      "type": "number",
+      "description": "Index of the initially active tab.",
+      "default": 0,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 10,
+        "step": 1
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Color used for the active tab indicator.",
+      "default": "#ff6b00",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Panel transition duration.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "orientation",
+      "type": "enum",
+      "description": "Tab layout direction.",
+      "default": "horizontal",
+      "remixer": {
+        "control": "select",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "options": []
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

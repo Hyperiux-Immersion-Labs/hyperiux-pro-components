@@ -1,18 +1,10 @@
-import DepthCardStack from '@/components/depth-card-stack'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/depth-card-stack/registry.json";
 
-
-const Page = () => {
- return (
- <>
- <DemoHeader />
- <DepthCardStack/>
- </>
- )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="depth-card-stack" />;
 }
-
-export default Page
 
 export async function generateMetadata() {
   return getDemoPageMetadata("depth-card-stack");

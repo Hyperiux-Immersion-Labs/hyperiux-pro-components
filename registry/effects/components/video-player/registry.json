@@ -28,10 +28,121 @@
   ],
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added videoSrc, poster, autoPlay, startMuted, and showCloseButton as public props with a working remixer panel. The originally suggested prop names (src, muted, showControls) didn't match the real component API, so they were renamed to match what VideoPlayerComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-23",
       "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate events with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "videoSrc",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
+      "demoDefault": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
+      "description": "Video source URL.",
+      "copyable": false,
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "poster",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png",
+      "demoDefault": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png",
+      "description": "Poster image shown before playback.",
+      "copyable": false,
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "autoPlay",
+      "type": "boolean",
+      "default": true,
+      "description": "Starts playback automatically when allowed.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "startMuted",
+      "type": "boolean",
+      "default": true,
+      "description": "Initial muted state.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the close button on the player.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "src",
+      "type": "string",
+      "description": "Video source URL.",
+      "default": "/showreel.mp4",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "muted",
+      "type": "boolean",
+      "description": "Initial muted state.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "description": "Shows the custom playback controls.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

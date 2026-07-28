@@ -7,10 +7,16 @@ import { ChevronBird } from './ChevronBird'
 import Cross from './Cross'
 import Plus from './Plus'
 
-const AnimatedToggle = () => {
-  const [chevronActive, setChevronActive] = useState(false);
-  const [crossActive, setCrossActive] = useState(false);
-  const [plusActive, setPlusActive] = useState(false);
+const AnimatedToggle = ({
+  defaultChecked = false,
+  size = 96,
+  activeColor = "#ff5f00",
+  inactiveColor = "#a1a1aa",
+  duration = 0.32,
+}) => {
+  const [chevronActive, setChevronActive] = useState(defaultChecked);
+  const [crossActive, setCrossActive] = useState(defaultChecked);
+  const [plusActive, setPlusActive] = useState(defaultChecked);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -30,30 +36,43 @@ const AnimatedToggle = () => {
       mediaQuery?.removeEventListener("change", syncReducedMotion);
     };
   }, []);
+
+  const chevronIconSize = Math.round(size / 3);
+  const iconSize = Math.round(size / 4);
+
+  const boxStyle = {
+    "--toggle-size": `${size}px`,
+    transitionDuration: prefersReducedMotion ? "0s" : `${duration}s`,
+  };
+
   return (
     <div className="flex gap-8 justify-center">
       <button
         onClick={() => setChevronActive((prev) => !prev)}
-        className={`cursor-pointer size-24 max-md:size-18 rounded-lg flex group items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${chevronActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className="cursor-pointer size-(--toggle-size) max-md:size-[calc(var(--toggle-size)*0.75)] rounded-lg flex group items-center justify-center transition-[background-color,transform] motion-reduce:transition-none motion-safe:active:scale-90"
+        style={{ ...boxStyle, backgroundColor: chevronActive ? activeColor : inactiveColor }}
       >
         <ChevronBird
-          className="mt-2 duration-300 transition-all motion-reduce:transition-none motion-safe:group-hover:rotate-180 motion-safe:group-hover:translate-y-[-30%]"
-          size={32}
+          className="mt-2 transition-all motion-reduce:transition-none motion-safe:group-hover:rotate-180 motion-safe:group-hover:translate-y-[-30%]"
+          size={chevronIconSize}
           isActive={chevronActive}
           prefersReducedMotion={prefersReducedMotion}
+          duration={duration}
         />
       </button>
       <button
         onClick={() => setCrossActive((prev) => !prev)}
-        className={`group cursor-pointer size-24 max-md:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${crossActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className="group cursor-pointer size-(--toggle-size) max-md:size-[calc(var(--toggle-size)*0.75)] rounded-lg flex items-center justify-center transition-[background-color,transform] motion-reduce:transition-none motion-safe:active:scale-90"
+        style={{ ...boxStyle, backgroundColor: crossActive ? activeColor : inactiveColor }}
       >
-        <Cross size={24} isActive={crossActive} prefersReducedMotion={prefersReducedMotion} />
+        <Cross size={iconSize} isActive={crossActive} prefersReducedMotion={prefersReducedMotion} duration={duration} />
       </button>
       <button
         onClick={() => setPlusActive((prev) => !prev)}
-        className={`group cursor-pointer size-24 max-md:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${plusActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className="group cursor-pointer size-(--toggle-size) max-md:size-[calc(var(--toggle-size)*0.75)] rounded-lg flex items-center justify-center transition-[background-color,transform] motion-reduce:transition-none motion-safe:active:scale-90"
+        style={{ ...boxStyle, backgroundColor: plusActive ? activeColor : inactiveColor }}
       >
-        <Plus size={24} isActive={plusActive} prefersReducedMotion={prefersReducedMotion} />
+        <Plus size={iconSize} isActive={plusActive} prefersReducedMotion={prefersReducedMotion} duration={duration} />
       </button>
     </div>
   )

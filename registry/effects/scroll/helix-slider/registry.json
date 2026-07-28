@@ -40,5 +40,99 @@
       "path": "HelixSliderComp.jsx",
       "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "slides",
+      "type": "array",
+      "default": [],
+      "description": "Slides positioned along the helix.",
+      "suggested": true
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": 260,
+      "description": "Radius of the helix path.",
+      "suggested": true
+    },
+    {
+      "name": "depth",
+      "type": "number",
+      "default": 900,
+      "description": "Z-depth of the helix.",
+      "suggested": true
+    },
+    {
+      "name": "rotationSpeed",
+      "type": "number",
+      "default": 1,
+      "description": "Rotation speed of the slider.",
+      "suggested": true
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows slider navigation controls.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "slides",
+        "label": "Slides",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "radius",
+        "label": "Radius",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 1040,
+        "step": 1
+      },
+      {
+        "name": "depth",
+        "label": "Depth",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 2700,
+        "step": 0.1
+      },
+      {
+        "name": "rotationSpeed",
+        "label": "Rotation Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "showControls",
+        "label": "Show Controls",
+        "type": "toggle",
+        "group": "content",
+        "copyable": true
+      }
+    ]
+  }
 }

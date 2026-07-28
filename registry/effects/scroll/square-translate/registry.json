@@ -35,5 +35,99 @@
       "path": "SquareTranslateComp.jsx",
       "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "items",
+      "type": "array",
+      "default": [],
+      "description": "Squares or tiles moved by the effect.",
+      "suggested": true
+    },
+    {
+      "name": "distance",
+      "type": "number",
+      "default": 80,
+      "description": "Translate distance for each square.",
+      "suggested": true
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.7,
+      "description": "Translation animation duration.",
+      "suggested": true
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.05,
+      "description": "Delay between square animations.",
+      "suggested": true
+    },
+    {
+      "name": "squareColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Color of translated squares.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "items",
+        "label": "Items",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "distance",
+        "label": "Distance",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 240,
+        "step": 0.1
+      },
+      {
+        "name": "duration",
+        "label": "Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "stagger",
+        "label": "Stagger",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "squareColor",
+        "label": "Square Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

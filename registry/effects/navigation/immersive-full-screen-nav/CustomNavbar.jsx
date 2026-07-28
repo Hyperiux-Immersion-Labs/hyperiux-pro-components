@@ -28,10 +28,16 @@ const SOCIAL_ICONS = {
   ),
 };
 
-const LINK_Y_OFFSET = 30;
+const DEFAULT_LINK_Y_OFFSET = 30;
+const DEFAULT_LINK_DURATION = 0.8;
+const DEFAULT_LINK_STAGGER = 0.07;
 const IMAGE_INITIAL_SCALE = 0.7;
-const IMAGE_ANIMATION_START_SCALE = 0.8;
-const SOCIAL_Y_OFFSET = 14;
+const DEFAULT_IMAGE_START_SCALE = 0.8;
+const DEFAULT_IMAGE_DURATION = 0.9;
+const DEFAULT_IMAGE_STAGGER = 0.02;
+const DEFAULT_SOCIAL_Y_OFFSET = 14;
+const DEFAULT_SOCIAL_DURATION = 0.5;
+const DEFAULT_SOCIAL_STAGGER = 0.06;
 const HEADER_Y_OFFSET = -12;
 const LOCATION_Y_OFFSET = 10;
 const DELAY_OFFSET = 0.2;
@@ -55,6 +61,15 @@ export default function CustomNavbar({
   isOpen = false,
   overlayBg = "#000000",
   delay = 1,
+  linkOffsetY = DEFAULT_LINK_Y_OFFSET,
+  linkDuration = DEFAULT_LINK_DURATION,
+  linkStagger = DEFAULT_LINK_STAGGER,
+  imageStartScale = DEFAULT_IMAGE_START_SCALE,
+  imageDuration = DEFAULT_IMAGE_DURATION,
+  imageStagger = DEFAULT_IMAGE_STAGGER,
+  socialOffsetY = DEFAULT_SOCIAL_Y_OFFSET,
+  socialDuration = DEFAULT_SOCIAL_DURATION,
+  socialStagger = DEFAULT_SOCIAL_STAGGER,
 }) {
   // State & refs
   const linksRef = useRef([]);
@@ -80,9 +95,9 @@ export default function CustomNavbar({
   };
 
   const resetAnimatedElements = () => {
-    gsap.set(linksRef.current, { y: LINK_Y_OFFSET, opacity: 0 });
+    gsap.set(linksRef.current, { y: linkOffsetY, opacity: 0 });
     gsap.set(imagesRef.current, { scale: IMAGE_INITIAL_SCALE, opacity: 0 });
-    gsap.set(socialsRef.current, { y: SOCIAL_Y_OFFSET, opacity: 0 });
+    gsap.set(socialsRef.current, { y: socialOffsetY, opacity: 0 });
     gsap.set(agencyRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(taglineRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(locationRef.current, { y: LOCATION_Y_OFFSET, opacity: 0 });
@@ -142,39 +157,39 @@ export default function CustomNavbar({
 
     gsap.fromTo(
       linksRef.current,
-      { y: LINK_Y_OFFSET, opacity: 0 },
+      { y: linkOffsetY, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.8,
+        duration: linkDuration,
         ease: "power2.out",
-        stagger: 0.07,
+        stagger: linkStagger,
         delay: animationDelay,
       },
     );
 
     gsap.fromTo(
       imagesRef.current,
-      { scale: IMAGE_ANIMATION_START_SCALE, opacity: 0 },
+      { scale: imageStartScale, opacity: 0 },
       {
         scale: 1,
         opacity: 1,
-        duration: 0.9,
+        duration: imageDuration,
         ease: "power3.out",
-        stagger: 0.02,
+        stagger: imageStagger,
         delay: animationDelay + IMAGE_DELAY_OFFSET,
       },
     );
 
     gsap.fromTo(
       socialsRef.current,
-      { y: SOCIAL_Y_OFFSET, opacity: 0 },
+      { y: socialOffsetY, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.5,
+        duration: socialDuration,
         ease: "power2.out",
-        stagger: 0.06,
+        stagger: socialStagger,
         delay: animationDelay + SOCIAL_DELAY_OFFSET,
       },
     );
@@ -190,7 +205,19 @@ export default function CustomNavbar({
         delay: animationDelay + LOCATION_DELAY_OFFSET,
       },
     );
-  }, [delay, isOpen]);
+  }, [
+    delay,
+    imageDuration,
+    imageStagger,
+    imageStartScale,
+    isOpen,
+    linkDuration,
+    linkOffsetY,
+    linkStagger,
+    socialDuration,
+    socialOffsetY,
+    socialStagger,
+  ]);
 
   // Return
   return (
@@ -207,7 +234,7 @@ export default function CustomNavbar({
               key={link.label}
               ref={setLinkRef(index)}
               className="text-[6vw] max-[1025px]:text-[11vw] max-[1025px]:text-[7vw] z-60"
-              style={{ opacity: 0, transform: `translateY(${LINK_Y_OFFSET}px)` }}
+              style={{ opacity: 0, transform: `translateY(${linkOffsetY}px)` }}
             >
 
               <a href={link.href}>
@@ -244,7 +271,7 @@ export default function CustomNavbar({
             key={index}
             href={social.href}
             ref={setSocialRef(index)}
-            style={{ opacity: 0, transform: `translateY(${SOCIAL_Y_OFFSET}px)` }}
+            style={{ opacity: 0, transform: `translateY(${socialOffsetY}px)` }}
           >
             {SOCIAL_ICONS[social.type]}
           </a>

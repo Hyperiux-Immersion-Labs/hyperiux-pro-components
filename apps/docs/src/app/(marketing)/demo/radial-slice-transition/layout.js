@@ -1,12 +1,13 @@
-import React from'react'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import RadialSliceTransition from '@/components/radial-slice-transition'
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import radialSliceTransitionRegistry from "../../../../../../../registry/effects/transitions/radial-slice-transition/registry.json";
 
 export default function layout({ children }) {
- return (
- <RadialSliceTransition>
-    <DemoHeader />
- {children}
- </RadialSliceTransition>
- )
+  return (
+    <TransitionRemixerLayout
+      registry={radialSliceTransitionRegistry}
+      slug="radial-slice-transition"
+    >
+      {children}
+    </TransitionRemixerLayout>
+  );
 }

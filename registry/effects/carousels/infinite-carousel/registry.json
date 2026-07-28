@@ -1,9 +1,25 @@
 {
   "name": "infinite-carousel",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: drag inertia, nav-button tweens, and mobile scroll-snap are shortened or disabled when the user has reduced motion enabled", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards, draggable, showNav, and mobileBreakpoint as public props instead of hardcoding them in the wrapper",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: drag inertia, nav-button tweens, and mobile scroll-snap are shortened or disabled when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Infinite Carousel",
@@ -22,6 +38,201 @@
   "exportKind": "default",
   "importPath": "@/components/effects/infinite-carousel",
   "target": "src/components/effects/infinite-carousel",
+  "props": [
+    {
+      "name": "cards",
+      "type": "array",
+      "default": [
+        {
+          "id": 1,
+          "title": "Luxury Residences",
+          "subtitle": "Dubai Marina",
+          "description": "Experience premium waterfront living with unmatched skyline views, private amenities, and a location built for modern luxury.",
+          "themeClass": "bg-[#111844] text-white",
+          "points": [
+            "Private infinity pool, spa, and concierge access.",
+            "Floor-to-ceiling glass with panoramic marina views.",
+            "Designed for buyers who want prestige and convenience."
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Commercial Spaces",
+          "subtitle": "Downtown Business Bay",
+          "description": "High-performance office environments crafted for ambitious brands, fast-growing teams, and companies that want presence.",
+          "themeClass": "bg-[#EAE0CF] text-[#111111]",
+          "points": [
+            "Flexible layouts for studios, offices, and hybrid teams.",
+            "Prime location close to transport, hotels, and retail.",
+            "Ideal for startups, agencies, and enterprise hubs."
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Beachfront Villas",
+          "subtitle": "Palm Jumeirah",
+          "description": "Escape into private coastal living with architectural elegance, serene surroundings, and direct beach access.",
+          "themeClass": "bg-[#4B5694] text-[#ffffff]",
+          "points": [
+            "Private beach entry and landscaped outdoor decks.",
+            "Large family spaces with premium interior finishes.",
+            "Created for a calmer, more exclusive lifestyle."
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Skyline Penthouses",
+          "subtitle": "Jumeirah Lake Towers",
+          "description": "Elevated urban living for buyers who want privacy, prestige, and dramatic city views from every level.",
+          "themeClass": "bg-[#8CC0EB] text-[#ffffff]",
+          "points": [
+            "Expansive terraces with lounge and dining zones.",
+            "Premium finishes and double-height living spaces.",
+            "Perfect for statement living in the heart of the city."
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Retail Boutiques",
+          "subtitle": "Dubai Hills",
+          "description": "Commercial retail environments positioned for visibility, high-value footfall, and strong brand presence.",
+          "themeClass": "bg-[#2C5EAD] text-[#FFFFFF]",
+          "points": [
+            "High-traffic locations inside premium districts.",
+            "Flexible layouts for flagship retail experiences.",
+            "Built for visibility, conversion, and long-term value."
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Family Townhomes",
+          "subtitle": "Arabian Ranches",
+          "description": "Well-planned residential communities designed for spacious family living, convenience, and long-term comfort.",
+          "themeClass": "bg-[#E8DDB4] text-[#111111]",
+          "points": [
+            "Community parks, schools, and lifestyle amenities.",
+            "Spacious interiors with practical modern layouts.",
+            "A balanced choice for comfort and investment."
+          ]
+        }
+      ],
+      "description": "Cards rendered in the infinite loop (title, subtitle, description, themeClass, points).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "draggable",
+      "type": "boolean",
+      "default": true,
+      "description": "Allows dragging the carousel with pointer/touch input.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "showNav",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the previous/next navigation buttons.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "mobileBreakpoint",
+      "type": "number",
+      "default": 640,
+      "description": "Max viewport width, in pixels, that switches to the mobile layout.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 400,
+        "max": 1024,
+        "step": 20
+      }
+    },
+    {
+      "name": "items",
+      "type": "array",
+      "description": "Carousel items rendered in the infinite loop.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "description": "Continuous carousel movement speed.",
+      "default": 1,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "description": "Spacing between carousel items.",
+      "default": 32,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1200,
+        "step": 1
+      }
+    },
+    {
+      "name": "pauseOnHover",
+      "type": "boolean",
+      "description": "Pauses carousel motion while hovered.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "direction",
+      "type": "enum",
+      "description": "Direction of infinite carousel movement.",
+      "default": "left",
+      "remixer": {
+        "control": "select",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "options": []
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

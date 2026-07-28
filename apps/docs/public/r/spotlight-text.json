@@ -23,6 +23,66 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "text",
+      "type": "string",
+      "default": "Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
+      "description": "Text shown under the spotlight.",
+      "remixer": {
+        "control": "textarea",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "text-3xl",
+      "description": "Text size class.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "align",
+      "type": "string",
+      "default": "center",
+      "description": "Text alignment.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

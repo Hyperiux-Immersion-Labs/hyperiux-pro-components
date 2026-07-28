@@ -1,19 +1,11 @@
-import InteractiveListPreview from '@/components/interactive-list-preview'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/interactive-list-preview/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
-    <InteractiveListPreview/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="interactive-list-preview" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("interactive-list-preview");
 }

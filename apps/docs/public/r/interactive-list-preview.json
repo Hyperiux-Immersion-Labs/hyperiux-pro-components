@@ -13,6 +13,12 @@
   "version": "1.1.1",
   "changelog": [
     {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added items as a public prop with a working remixer panel. The originally suggested previewPlacement/activeIndex/accentColor/duration props don't exist - the preview image position, colors, and timings are fixed in InteractiveListPreviewComp - so they were dropped rather than shipping non-functional controls.",
+      "breaking": false
+    },
+    {
       "version": "1.1.1",
       "date": "2026-07-23",
       "summary": "Renamed helper ListHover.jsx to InteractiveListPreviewComp.jsx (default export) to match the production naming convention and eliminate registry/docs mirror drift.",
@@ -25,12 +31,148 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "items",
+      "type": "array",
+      "default": [
+        {
+          "client": "AURORA UI",
+          "platform": "NEXT.JS",
+          "services": "Motion Design, GSAP, Page Transitions, UI Systems",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
+        },
+        {
+          "client": "NEON FLOW",
+          "platform": "REACT",
+          "services": "Interactive UI, Scroll Animations, Effects Library",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"
+        },
+        {
+          "client": "GLASSMORPH",
+          "platform": "NEXT.JS",
+          "services": "Glass UI, Components, Motion Architecture",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg"
+        },
+        {
+          "client": "VOID SYSTEM",
+          "platform": "CUSTOM WEBGL",
+          "services": "Shaders, Creative Development, Visual Effects",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
+        },
+        {
+          "client": "HYPER SCROLL",
+          "platform": "FRAMER MOTION",
+          "services": "Scroll Storytelling, Motion Systems, Interactions",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
+        },
+        {
+          "client": "KINETIC LAB",
+          "platform": "THREE.JS",
+          "services": "3D Interfaces, Motion UI, WebGL Experiences",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg"
+        },
+        {
+          "client": "PIXEL GRID",
+          "platform": "TAILWIND CSS",
+          "services": "Design Systems, UI Engineering, Responsive Layouts",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg"
+        },
+        {
+          "client": "MOTION CORE",
+          "platform": "HEADLESS CMS",
+          "services": "Reusable Components, Motion Engine, Performance",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg"
+        },
+        {
+          "client": "INTERFACE X",
+          "platform": "NEXT.JS",
+          "services": "Immersive UI, Creative Coding, Transitions, Effects",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg"
+        },
+        {
+          "client": "HYPERIUX",
+          "platform": "UI LIBRARY",
+          "services": "Animations, Interactive Components, Futuristic Experiences",
+          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
+        }
+      ],
+      "description": "List rows and preview content (client, platform, services, img).",
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "previewPlacement",
+      "type": "enum",
+      "description": "Where the preview appears relative to the list.",
+      "default": "right",
+      "remixer": {
+        "control": "select",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "options": []
+      }
+    },
+    {
+      "name": "activeIndex",
+      "type": "number",
+      "description": "Initially active list item.",
+      "default": 0,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 240,
+        "step": 1
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Color used for active list state.",
+      "default": "#ff6b00",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Preview transition duration.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "src/components/effects/interactive-list-preview/index.jsx",
-      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\nimport React from 'react'\nimport InteractiveListPreviewComp from './InteractiveListPreviewComp';\n\nconst InteractiveListPreview = () => {\n  return (\n    <>\n      <div className='flex items-center flex-col gap-20 max-md:gap-20 max-md:py-[15%] max-[1025px]:py-[10%] justify-center h-screen max-[1025px]:h-full bg-neutral-900'>\n\n        <div className='text-center space-y-[1vw] max-[1025px]:space-y-[4vw]'>\n          <h2 className='font-mono text-[4vw] max-[1025px]:text-center  max-md:px-10  text-white max-[1025px]:text-5xl max-md:text-4xl capitalize'>\n            Elevating interaction through motion\n          </h2>\n          <p>\n            Hover on the list to see the effect\n          </p>\n\n        </div>\n\n        <InteractiveListPreviewComp items={projects} />\n      </div>\n    </>\n  )\n}\n\nexport default InteractiveListPreview;\n\nconst projects = [\n  {\n    client:\"AURORA UI\",\n    platform:\"NEXT.JS\",\n    services:\"Motion Design, GSAP, Page Transitions, UI Systems\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg\",\n  },\n  {\n    client:\"NEON FLOW\",\n    platform:\"REACT\",\n    services:\"Interactive UI, Scroll Animations, Effects Library\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg\",\n  },\n  {\n    client:\"GLASSMORPH\",\n    platform:\"NEXT.JS\",\n    services:\"Glass UI, Components, Motion Architecture\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg\",\n  },\n  {\n    client:\"VOID SYSTEM\",\n    platform:\"CUSTOM WEBGL\",\n    services:\"Shaders, Creative Development, Visual Effects\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg\",\n  },\n  {\n    client:\"HYPER SCROLL\",\n    platform:\"FRAMER MOTION\",\n    services:\"Scroll Storytelling, Motion Systems, Interactions\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg\",\n  },\n  {\n    client:\"KINETIC LAB\",\n    platform:\"THREE.JS\",\n    services:\"3D Interfaces, Motion UI, WebGL Experiences\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg\",\n  },\n  {\n    client:\"PIXEL GRID\",\n    platform:\"TAILWIND CSS\",\n     services:\"Design Systems, UI Engineering, Responsive Layouts\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg\",\n  },\n  {\n    client:\"MOTION CORE\",\n    platform:\"HEADLESS CMS\",\n    services:\"Reusable Components, Motion Engine, Performance\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg\",\n  },\n  {\n    client:\"INTERFACE X\",\n    platform:\"NEXT.JS\",\n       services:\"Immersive UI, Creative Coding, Transitions, Effects\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg\",\n  },\n  {\n    client:\"HYPERIUX\",\n    platform:\"UI LIBRARY\",\n   services:\"Animations, Interactive Components, Futuristic Experiences\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg\",\n  },\n];"
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\nimport React from 'react'\nimport InteractiveListPreviewComp from './InteractiveListPreviewComp';\n\nconst InteractiveListPreview = ({ items = projects }) => {\n  return (\n    <>\n      <div className='flex items-center flex-col gap-20 max-md:gap-20 max-md:py-[15%] max-[1025px]:py-[10%] justify-center h-screen max-[1025px]:h-full bg-neutral-900'>\n\n        <div className='text-center space-y-[1vw] max-[1025px]:space-y-[4vw]'>\n          <h2 className='font-mono text-[4vw] max-[1025px]:text-center  max-md:px-10  text-white max-[1025px]:text-5xl max-md:text-4xl capitalize'>\n            Elevating interaction through motion\n          </h2>\n          <p>\n            Hover on the list to see the effect\n          </p>\n\n        </div>\n\n        <InteractiveListPreviewComp items={items} />\n      </div>\n    </>\n  )\n}\n\nexport default InteractiveListPreview;\n\nconst projects = [\n  {\n    client:\"AURORA UI\",\n    platform:\"NEXT.JS\",\n    services:\"Motion Design, GSAP, Page Transitions, UI Systems\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg\",\n  },\n  {\n    client:\"NEON FLOW\",\n    platform:\"REACT\",\n    services:\"Interactive UI, Scroll Animations, Effects Library\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg\",\n  },\n  {\n    client:\"GLASSMORPH\",\n    platform:\"NEXT.JS\",\n    services:\"Glass UI, Components, Motion Architecture\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg\",\n  },\n  {\n    client:\"VOID SYSTEM\",\n    platform:\"CUSTOM WEBGL\",\n    services:\"Shaders, Creative Development, Visual Effects\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg\",\n  },\n  {\n    client:\"HYPER SCROLL\",\n    platform:\"FRAMER MOTION\",\n    services:\"Scroll Storytelling, Motion Systems, Interactions\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg\",\n  },\n  {\n    client:\"KINETIC LAB\",\n    platform:\"THREE.JS\",\n    services:\"3D Interfaces, Motion UI, WebGL Experiences\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg\",\n  },\n  {\n    client:\"PIXEL GRID\",\n    platform:\"TAILWIND CSS\",\n     services:\"Design Systems, UI Engineering, Responsive Layouts\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg\",\n  },\n  {\n    client:\"MOTION CORE\",\n    platform:\"HEADLESS CMS\",\n    services:\"Reusable Components, Motion Engine, Performance\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg\",\n  },\n  {\n    client:\"INTERFACE X\",\n    platform:\"NEXT.JS\",\n       services:\"Immersive UI, Creative Coding, Transitions, Effects\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg\",\n  },\n  {\n    client:\"HYPERIUX\",\n    platform:\"UI LIBRARY\",\n   services:\"Animations, Interactive Components, Futuristic Experiences\",\n    img:\"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg\",\n  },\n];"
     },
     {
       "path": "InteractiveListPreviewComp.jsx",

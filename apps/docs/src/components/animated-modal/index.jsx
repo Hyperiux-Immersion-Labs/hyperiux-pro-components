@@ -49,7 +49,15 @@ const popupSections = [
   },
 ];
 
-export default function AnimatedModal() {
+export default function AnimatedModal({
+  triggerLabel = "Open Modal",
+  title = "A Deeper Look at the Project",
+  subtitle = "Explore the thinking, design strategy, and long-term value proposition behind the development.",
+  sections = popupSections,
+  showCloseButton = true,
+  closeOnBackdrop = true,
+  closeOnEsc = true,
+}) {
   const [isContentOpen, setIsContentOpen] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -68,18 +76,21 @@ export default function AnimatedModal() {
           max-sm:px-[6vw] max-sm:py-[3.5vw] max-sm:text-[4vw]
         "
       >
-        Open Modal
+        {triggerLabel}
       </button>
 
       <AnimatedModalContent
         className="h-full backdrop-blur-none "
         isOpen={isContentOpen}
         onClose={() => setIsContentOpen(false)}
+        showCloseButton={showCloseButton}
+        closeOnBackdrop={closeOnBackdrop}
+        closeOnEsc={closeOnEsc}
       >
         <ScrollablePopupContent
-          title="A Deeper Look at the Project"
-          subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development."
-          sections={popupSections}
+          title={title}
+          subtitle={subtitle}
+          sections={sections}
         />
       </AnimatedModalContent>
 

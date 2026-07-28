@@ -19,6 +19,20 @@
   "exportKind": "default",
   "importPath": "@/components/effects/interactive-blur-reveal",
   "target": "src/components/effects/interactive-blur-reveal",
+  "props": [
+    { "name": "iChannel0", "type": "string", "default": "https://picsum.photos/seed/hover7/800/1000", "description": "Primary image texture revealed by pointer movement." },
+    { "name": "iChannel1", "type": "string", "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png", "description": "Noise texture used by the blur reveal shader." }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "media",
+    "layout": { "controlsButtonClassName": "right-4! top-25!" },
+    "panel": { "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" },
+    "controls": [
+      { "name": "iChannel0", "label": "Image Texture", "type": "text", "group": "media", "copyable": true },
+      { "name": "iChannel1", "label": "Noise Texture", "type": "text", "group": "media", "copyable": true }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -23,7 +23,7 @@ const notes = [
   "A small stagger turns text into rhythm.",
 ];
 
-const OverflowStaggerWrapper = () => {
+const OverflowStaggerWrapper = ({ effectProps = {} }) => {
   const [replayKey, setReplayKey] = useState(0);
 
   return (
@@ -34,7 +34,7 @@ const OverflowStaggerWrapper = () => {
 
             <div className="grid gap-10 px-6 py-14 grid-cols-[1.08fr_0.92fr] max-md:grid-cols-1 max-sm:px-4 max-sm:py-10">
               <div className="flex flex-col gap-[2vw] max-sm:gap-[4vw]">
-                <OverflowStaggerText key={`hero-title-${replayKey}`} scrub={false} start="top bottom">
+                <OverflowStaggerText key={`hero-title-${replayKey}`} scrub={false} start="top bottom" {...effectProps}>
                   <h1 className=" text-[7vw] uppercase leading-[0.82] tracking-normal text-[#151515] max-md:text-[10vw] max-sm:text-[15vw] max-sm:leading-[0.86]">
                     Text that steps into frame.
                   </h1>
@@ -66,6 +66,7 @@ const OverflowStaggerWrapper = () => {
                   scrub={false}
                   start="top bottom"
                   stagger={0.008}
+                  {...effectProps}
                 >
                   <p className="max-w-md text-lg leading-8 text-[#151515]/68 max-sm:text-base max-sm:leading-7">
                     A clean text reveal where each character rises from a

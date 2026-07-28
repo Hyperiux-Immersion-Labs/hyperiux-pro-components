@@ -32,14 +32,20 @@ const UI_CARDS = [
   },
 ];
 
-export default function CardsRunway() {
+export default function CardsRunway({
+  data = UI_CARDS,
+  accentColor = "#ff5f00",
+  cardColor = "#161616",
+  cardWidth = "28vw",
+  start = "10% 80%",
+}) {
   return (
     <CardsRunwayComponent
-      data={UI_CARDS}
-      accentColor="#ff5f00"
-      cardColor="#161616"
-      cardWidth="28vw"
-      start="10% 80%"
+      data={data}
+      accentColor={accentColor}
+      cardColor={cardColor}
+      cardWidth={cardWidth}
+      start={start}
     />
   );
 }

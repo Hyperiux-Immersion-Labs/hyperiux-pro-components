@@ -25,6 +25,66 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "animateOnScroll",
+      "type": "boolean",
+      "default": true,
+      "description": "Runs reveal on scroll.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "delay",
+      "type": "number",
+      "default": 0,
+      "description": "Animation delay.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": false,
+      "description": "Links reveal to scroll progress.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "default": "bottom 60%",
+      "description": "ScrollTrigger end position.",
+      "remixer": {
+        "control": "text",
+        "group": "scroll",
+        "groupTitle": "Scroll"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

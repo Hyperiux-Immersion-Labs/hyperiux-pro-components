@@ -61,6 +61,13 @@ const DEFAULT_CTA = {
 export function ElevateNavbarDesktop({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
+  navTextDuration = NAV_TEXT_DURATION,
+  ctaDuration = CTA_DURATION,
+  dropdownItemOffsetY = DROPDOWN_ITEM_OFFSET_Y,
+  dropdownPointerDelay = DROPDOWN_POINTER_DELAY,
+  staggerItems = true,
+  ctaBackground = DEFAULT_CTA_BACKGROUND,
+  ctaHoverBackground = HOVER_CTA_BACKGROUND,
 }) {
   const navWrapRef = useRef(null);
   const navLinksRef = useRef([]);
@@ -169,7 +176,7 @@ export function ElevateNavbarDesktop({
     gsap
       .timeline({
         defaults: {
-          duration: NAV_TEXT_DURATION,
+          duration: navTextDuration,
           ease: "power2.out",
           overwrite: true,
         },
@@ -215,7 +222,7 @@ export function ElevateNavbarDesktop({
 
     gsap.set(dropdownItems, {
       opacity: 0,
-      y: DROPDOWN_ITEM_OFFSET_Y,
+      y: dropdownItemOffsetY,
       pointerEvents: "auto",
     });
 
@@ -227,7 +234,7 @@ export function ElevateNavbarDesktop({
       y: 0,
       opacity: 1,
       duration: 0.22,
-      stagger: 0.025,
+      stagger: staggerItems ? 0.025 : 0,
       ease: "power3.out",
     });
   }, [getCurrentDropdownItems, killItemTween, reduceMotion]);
@@ -246,7 +253,7 @@ export function ElevateNavbarDesktop({
 
       if (reduceMotion()) {
         gsap.set(dropdownItems, {
-          y: DROPDOWN_ITEM_OFFSET_Y,
+          y: dropdownItemOffsetY,
           opacity: 0,
           pointerEvents: "none",
         });
@@ -265,10 +272,10 @@ export function ElevateNavbarDesktop({
       });
 
       itemTweenRef.current.to(dropdownItems, {
-        y: DROPDOWN_ITEM_OFFSET_Y,
+        y: dropdownItemOffsetY,
         opacity: 0,
         duration: 0.16,
-        stagger: 0.015,
+        stagger: staggerItems ? 0.015 : 0,
         ease: "power2.out",
       });
     },
@@ -384,7 +391,7 @@ export function ElevateNavbarDesktop({
       return;
     }
 
-    hideCallRef.current = gsap.delayedCall(DROPDOWN_POINTER_DELAY, () => {
+    hideCallRef.current = gsap.delayedCall(dropdownPointerDelay, () => {
       if (isPointerInsideDropdownRef.current) return;
 
       closeDropdown();
@@ -477,8 +484,8 @@ export function ElevateNavbarDesktop({
     if (reduceMotion()) {
       gsap.set(ctaElement, {
         backgroundColor: isEntering
-          ? HOVER_CTA_BACKGROUND
-          : DEFAULT_CTA_BACKGROUND,
+          ? ctaHoverBackground
+          : ctaBackground,
         color: isEntering ? "#fff" : "#000",
       });
       gsap.set(defaultText, { yPercent: 0 });
@@ -489,7 +496,7 @@ export function ElevateNavbarDesktop({
     gsap
       .timeline({
         defaults: {
-          duration: CTA_DURATION,
+          duration: ctaDuration,
           ease: "power2.out",
           overwrite: true,
         },
@@ -498,8 +505,8 @@ export function ElevateNavbarDesktop({
         ctaElement,
         {
           backgroundColor: isEntering
-            ? HOVER_CTA_BACKGROUND
-            : DEFAULT_CTA_BACKGROUND,
+            ? ctaHoverBackground
+            : ctaBackground,
         },
         0
       )

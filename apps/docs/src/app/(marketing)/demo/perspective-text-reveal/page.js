@@ -1,17 +1,10 @@
-import PerspectiveTextWrapper from './PerspectiveTextWrapper'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import perspectiveTextRevealRegistry from "../../../../../../../registry/effects/text/perspective-text-reveal/registry.json";
 
 
 const page = () => {
-  return (
-    <>
-     <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
-      <ScrollBottom textColor='#ffffff' />
-      <PerspectiveTextWrapper />
-    </>
-  )
+  return <DemoContent registry={perspectiveTextRevealRegistry} />;
 }
 
 export default page

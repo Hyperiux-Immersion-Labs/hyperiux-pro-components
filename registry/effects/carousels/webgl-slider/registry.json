@@ -1,9 +1,25 @@
 {
   "name": "webgl-slider",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: scroll-snap animations are skipped/shortened when the user has reduced motion enabled", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added images as a public prop instead of hardcoding it in the wrapper",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: scroll-snap animations are skipped/shortened when the user has reduced motion enabled",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "WebGL Slider",
@@ -23,6 +39,183 @@
   "exportKind": "default",
   "importPath": "@/components/effects/webgl-slider",
   "target": "src/components/effects/webgl-slider",
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": [
+        {
+          "src": "https://picsum.photos/seed/wgl0/800/1200",
+          "text": "PR.00\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl1/800/1200",
+          "text": "PR.01\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl2/800/1200",
+          "text": "PR.02\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl3/800/1200",
+          "text": "PR.03\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl4/800/1200",
+          "text": "PR.04\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl5/800/1200",
+          "text": "PR.05\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl6/800/1200",
+          "text": "PR.06\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl7/800/1200",
+          "text": "PR.07\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl8/800/1200",
+          "text": "PR.08\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl9/800/1200",
+          "text": "PR.09\n /10"
+        },
+        {
+          "src": "https://picsum.photos/seed/wgl10/800/1200",
+          "text": "PR.10\n /10"
+        }
+      ],
+      "demoDefault": [
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+          "text": "PR.00\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+          "text": "PR.01\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+          "text": "PR.02\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+          "text": "PR.03\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "text": "PR.04\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+          "text": "PR.05\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+          "text": "PR.06\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+          "text": "PR.07\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+          "text": "PR.08\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+          "text": "PR.09\n /10"
+        },
+        {
+          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+          "text": "PR.10\n /10"
+        }
+      ],
+      "description": "Image slides rendered in the WebGL scene (src, text label).",
+      "copyable": false,
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "slides",
+      "type": "array",
+      "description": "Image or media slides rendered in the WebGL scene.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "distortionStrength",
+      "type": "number",
+      "description": "Strength of the shader distortion during transitions.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "transitionDuration",
+      "type": "number",
+      "description": "WebGL slide transition duration.",
+      "default": 0.9,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "backgroundColor",
+      "type": "color",
+      "description": "Canvas background color.",
+      "default": "#000000",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "description": "Shows slider navigation controls.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

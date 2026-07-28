@@ -50,5 +50,96 @@
       "path": "NumberCounterThree.jsx",
       "target": "src/components/effects/number-counter/NumberCounterThree.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "value",
+      "type": "number",
+      "default": 100,
+      "description": "Target value for the counter.",
+      "suggested": true
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 1.2,
+      "description": "Duration of the count animation.",
+      "suggested": true
+    },
+    {
+      "name": "prefix",
+      "type": "string",
+      "default": "\"\"",
+      "description": "Text shown before the number.",
+      "suggested": true
+    },
+    {
+      "name": "suffix",
+      "type": "string",
+      "default": "\"+\"",
+      "description": "Text shown after the number.",
+      "suggested": true
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Counter text color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "value",
+        "label": "Value",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 300,
+        "step": 0.1
+      },
+      {
+        "name": "duration",
+        "label": "Duration",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "prefix",
+        "label": "Prefix",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "suffix",
+        "label": "Suffix",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "textColor",
+        "label": "Text Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

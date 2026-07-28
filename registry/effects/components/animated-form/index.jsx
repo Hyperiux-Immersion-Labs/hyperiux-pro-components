@@ -95,15 +95,20 @@ async function submitHandler(data) {
  console.log("Contact form submitted:", data);
 }
 
-export default function AnimatedForm() {
+export default function AnimatedForm({
+ fields = FIELDS,
+ submitLabel = "Send Message",
+ successMessage = " Form submitted successfully!",
+}) {
  return (
  <main className="w-full bg-white min-h-screen mx-auto py-20 max-[1025px]:pt-28 px-6">
   <div className="w-[50%] max-[1025px]:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl text-black mb-8">Get in touch</h1>
  <ContactForm
- fields={FIELDS}
+ fields={fields}
  schema={contactSchema}
  onSubmit={submitHandler}
- submitLabel="Send Message"
+ submitLabel={submitLabel}
+ successMessage={successMessage}
  />
  </div>
  </main>

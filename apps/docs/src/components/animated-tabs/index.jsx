@@ -137,10 +137,20 @@ const tabsData = [
   },
 ];
 
-export default function AnimatedTabs() {
+export default function AnimatedTabs({
+  tabs = tabsData,
+  defaultActiveIndex = 0,
+  animationType = "slide",
+  slideDistance = 40,
+}) {
   return (
     <section className="min-h-screen w-full bg-white">
-      <AnimatedTabsComp tabs={tabsData} />
+      <AnimatedTabsComp
+        tabs={tabs}
+        defaultActiveIndex={defaultActiveIndex}
+        animationType={animationType}
+        slideDistance={slideDistance}
+      />
     </section>
   );
 }

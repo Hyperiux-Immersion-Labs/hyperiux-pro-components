@@ -13,10 +13,7 @@ const TRANSITION_MS = 480;
 const NUMBER_DWELL_MS = 1000;
 const RANDOM_DWELL_MS = 300;
 const RANGE_MIN = 0;
-const RANGE_MAX = 10;
-const BG = "#d1d1d1";
 const GRID_STROKE = "rgba(255,255,255,0.55)";
-const INK = "#111";
 const MOBILE_MAX_WIDTH = 768;
 const TABLET_MAX_WIDTH = 1024;
 const DIGIT_HEIGHT = 9;
@@ -109,9 +106,9 @@ function getNumberCells(n, rows, width) {
  return cells;
 }
 
-function computeMaxBlocks(rows, width) {
+function computeMaxBlocks(rows, width, maxValue) {
  let max = 0;
- for (let n = RANGE_MIN; n <= RANGE_MAX; n++) {
+ for (let n = RANGE_MIN; n <= maxValue; n++) {
   max = Math.max(max, getNumberCells(n, rows, width).length);
  }
  return max;
@@ -175,7 +172,12 @@ function drawCapsule(ctx, x1, y1, x2, y2, r) {
  ctx.closePath(); ctx.fill();
 }
 
-export default function GooeyCounter() {
+export default function GooeyCounter({
+ maxValue = 10,
+ duration = 1,
+ blobColor = "#111111",
+ backgroundColor = "#d1d1d1",
+}) {
  const canvasRef = useRef(null);
  const stateRef = useRef(null);
  const gooeyFilterId = `gooey-${useId().replace(/:/g, "")}`;
@@ -187,6 +189,11 @@ export default function GooeyCounter() {
   let offscreen = new OffscreenCanvas(1, 1);
   let offCtx = offscreen.getContext("2d");
   const filterUrl = `url(#${gooeyFilterId})`;
+
+  const paceScale = duration;
+  const transitionDuration = TRANSITION_MS * paceScale;
+  const numberDwellMs = NUMBER_DWELL_MS * paceScale;
+  const randomDwellMs = RANDOM_DWELL_MS * paceScale;
 
   let reduceMotion =
    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
@@ -202,11 +209,11 @@ export default function GooeyCounter() {
   const sim = {
    blocks: [], phase: "idle", nextNumber: RANGE_MIN + 1,
    timer: null, raf: null, layout: null, transition: null,
-   activeRows: ROWS, viewportWidth: window.innerWidth, maxBlocks: computeMaxBlocks(ROWS, window.innerWidth),
+   activeRows: ROWS, viewportWidth: window.innerWidth, maxBlocks: computeMaxBlocks(ROWS, window.innerWidth, maxValue),
   };
   stateRef.current = sim;
 
-  const transitionMs = () => (reduceMotion ? 0 : TRANSITION_MS);
+  const transitionMs = () => (reduceMotion ? 0 : transitionDuration);
 
   // Animation helpers
   function beginTransition(dur, onDone) {
@@ -243,20 +250,20 @@ export default function GooeyCounter() {
    if (reduceMotion) {
     sim.timer = setTimeout(() => {
      const n = sim.nextNumber;
-     sim.nextNumber = n >= RANGE_MAX ? RANGE_MIN : n + 1;
+     sim.nextNumber = n >= maxValue ? RANGE_MIN : n + 1;
      goToNumber(n, loop);
-    }, NUMBER_DWELL_MS);
+    }, numberDwellMs);
     return;
    }
    sim.timer = setTimeout(() => {
     goToRandom(() => {
      sim.timer = setTimeout(() => {
       const n = sim.nextNumber;
-      sim.nextNumber = n >= RANGE_MAX ? RANGE_MIN : n + 1;
+      sim.nextNumber = n >= maxValue ? RANGE_MIN : n + 1;
       goToNumber(n, loop);
-     }, RANDOM_DWELL_MS);
+     }, randomDwellMs);
     });
-   }, NUMBER_DWELL_MS);
+   }, numberDwellMs);
   }
 
   function start() {
@@ -278,7 +285,7 @@ export default function GooeyCounter() {
    const rpos = randomLayout(sim.maxBlocks, sim.activeRows);
    sim.blocks = rpos.map(p => ({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: false }));
    assignTargets(sim.blocks, firstTargets);
-   beginTransition(TRANSITION_MS, loop);
+   beginTransition(transitionDuration, loop);
   }
   stateRef.current.start = start;
 
@@ -292,7 +299,7 @@ export default function GooeyCounter() {
 
    if (newRows !== sim.activeRows || widthChanged) {
     sim.activeRows = newRows;
-    sim.maxBlocks = computeMaxBlocks(newRows, vw);
+    sim.maxBlocks = computeMaxBlocks(newRows, vw, maxValue);
    }
 
    canvas.width = Math.floor(vw * dpr);
@@ -336,14 +343,14 @@ export default function GooeyCounter() {
 
    const { vw, vh, cell, gridW, gridH, originX, originY } = L;
 
-   ctx.fillStyle = BG;
+   ctx.fillStyle = backgroundColor;
    ctx.fillRect(0, 0, vw, vh);
 
    offCtx.clearRect(0, 0, vw, vh);
    const snapped = sim.blocks.map(b => ({
     r: b.cr, c: b.cc, ir: Math.round(b.cr), ic: Math.round(b.cc),
    }));
-   offCtx.fillStyle = INK;
+   offCtx.fillStyle = blobColor;
 
    const linkDist = 1.6;
    for (let i = 0; i < snapped.length; i++) {
@@ -394,10 +401,10 @@ export default function GooeyCounter() {
    window.removeEventListener("resize", resize);
    reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
   };
- }, [gooeyFilterId]);
+ }, [gooeyFilterId, maxValue, duration, blobColor, backgroundColor]);
 
  return (
-  <div style={{ position: "fixed", inset: 0, background: BG }}>
+  <div style={{ position: "fixed", inset: 0, background: backgroundColor }}>
     <div className="w-full h-fit gap-[0.5vw]  text-black relative z-4 flex flex-col items-center justify-center max-[1025px]:text-center max-[1025px]:px-[7vw] max-[1025px]:gap-[3vw] pt-19 max-[1025px]:pt-20 max-md:pt-22 ">
       <h1 className="text-[4vw] max-md:text-[9vw] max-[1025px]:text-[7vw]">
         Gooey Counter

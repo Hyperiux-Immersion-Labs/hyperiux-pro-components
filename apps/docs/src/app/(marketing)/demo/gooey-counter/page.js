@@ -1,19 +1,10 @@
-import GooeyCounter from '@/components/gooey-counter'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/gooey-counter/registry.json";
 
-
-const page = () => {
- return (
-    <>
-    <DemoHeader />
- <GooeyCounter/>
-    </>
- )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="gooey-counter" />;
 }
-
-export default page
 
 export async function generateMetadata() {
   return getDemoPageMetadata("gooey-counter");

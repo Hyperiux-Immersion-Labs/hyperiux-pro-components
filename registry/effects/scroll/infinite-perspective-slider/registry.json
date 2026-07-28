@@ -26,6 +26,226 @@
   "exportKind": "default",
   "importPath": "@/components/effects/infinite-perspective-slider",
   "target": "src/components/effects/infinite-perspective-slider",
+  "props": [
+    {
+      "name": "cardWidth",
+      "type": "number",
+      "default": 320,
+      "description": "Desktop card width.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 160,
+        "max": 560,
+        "step": 1
+      }
+    },
+    {
+      "name": "cardGap",
+      "type": "number",
+      "default": 24,
+      "description": "Spacing between cards.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 0,
+        "max": 160,
+        "step": 1
+      }
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": 2200,
+      "description": "3D perspective depth.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 600,
+        "max": 5000,
+        "step": 50
+      }
+    },
+    {
+      "name": "scrollSpeed",
+      "type": "number",
+      "default": 1,
+      "description": "Scroll and drag movement multiplier.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "scrollLerp",
+      "type": "number",
+      "default": 0.1,
+      "description": "How quickly the slider catches its target.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.02,
+        "max": 0.4,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "velocityLerp",
+      "type": "number",
+      "default": 0.09,
+      "description": "Velocity smoothing amount.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.02,
+        "max": 0.3,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "rotationSensitivity",
+      "type": "number",
+      "default": 0.025,
+      "description": "How much velocity tilts cards.",
+      "remixer": {
+        "control": "range",
+        "group": "rotation",
+        "groupTitle": "Rotation",
+        "min": 0,
+        "max": 0.15,
+        "step": 0.005
+      }
+    },
+    {
+      "name": "rotationDamp",
+      "type": "number",
+      "default": 0.1,
+      "description": "How quickly tilt reacts to velocity.",
+      "remixer": {
+        "control": "range",
+        "group": "rotation",
+        "groupTitle": "Rotation",
+        "min": 0.02,
+        "max": 0.4,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "rotationLerp",
+      "type": "number",
+      "default": 0.12,
+      "description": "Rotation smoothing amount.",
+      "remixer": {
+        "control": "range",
+        "group": "rotation",
+        "groupTitle": "Rotation",
+        "min": 0.02,
+        "max": 0.4,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "maxRotation",
+      "type": "number",
+      "default": 80,
+      "description": "Maximum card tilt angle.",
+      "remixer": {
+        "control": "range",
+        "group": "rotation",
+        "groupTitle": "Rotation",
+        "min": 0,
+        "max": 89,
+        "step": 1
+      }
+    },
+    {
+      "name": "scrollStopDelay",
+      "type": "number",
+      "default": 180,
+      "description": "Delay before hover text can return after scrolling.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Card Text",
+        "min": 0,
+        "max": 600,
+        "step": 10
+      }
+    },
+    {
+      "name": "textEnterDuration",
+      "type": "number",
+      "default": 0.35,
+      "description": "Hover text enter duration.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Card Text",
+        "min": 0.1,
+        "max": 1.2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "textLeaveDuration",
+      "type": "number",
+      "default": 0.35,
+      "description": "Hover text leave duration.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Card Text",
+        "min": 0.1,
+        "max": 1.2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "textStagger",
+      "type": "number",
+      "default": 0.06,
+      "description": "Stagger between hover text lines.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Card Text",
+        "min": 0,
+        "max": 0.3,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "images",
+      "type": "array",
+      "description": "Images shown in the perspective slider.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "layout",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

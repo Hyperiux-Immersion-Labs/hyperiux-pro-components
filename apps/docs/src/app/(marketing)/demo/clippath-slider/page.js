@@ -1,20 +1,10 @@
-import ClipPathSlider from '@/components/clip-path-slider'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/carousels/clippath-slider/registry.json";
 
-
-const Page = () => {
- return (
- <>
- <DemoHeader logoColor='#FFFFFF' textColor='white' />
- <ClipPathSlider/>
- </>
- )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="clippath-slider" />;
 }
-
-export default Page
-
-
 
 export async function generateMetadata() {
   return getDemoPageMetadata("clippath-slider");

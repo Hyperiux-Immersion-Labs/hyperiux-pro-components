@@ -1,23 +1,9 @@
-import GlitchyText from "@/components/glitchy-text";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import SplitLine from "@/components/WebsiteComps/SplitLine";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import glitchyTextRegistry from "../../../../../../../registry/effects/text/glitchy-text/registry.json";
 
 const page = () => {
-  return (
-    <>
-      <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
-      <GlitchyText />
-      <SplitLine
-        as="p"
-        start="top 120%"
-        className="absolute bottom-[5%] text-center left-1/2 -translate-x-1/2"
-      >
-        Click on the button to run the animation
-      </SplitLine>
-    </>
-  );
+  return <DemoContent registry={glitchyTextRegistry} />;
 };
 
 export default page;

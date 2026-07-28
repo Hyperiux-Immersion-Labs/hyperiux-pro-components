@@ -32,6 +32,91 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "headline",
+      "type": "string",
+      "default": "\"Hyperiux Vault\"",
+      "description": "Hero headline text.",
+      "suggested": true
+    },
+    {
+      "name": "subheadline",
+      "type": "string",
+      "default": "\"Animated product story\"",
+      "description": "Supporting hero copy.",
+      "suggested": true
+    },
+    {
+      "name": "videoSrc",
+      "type": "string",
+      "default": "\"/showreel.mp4\"",
+      "description": "Hero video or texture source.",
+      "suggested": true
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Accent color for hero highlights.",
+      "suggested": true
+    },
+    {
+      "name": "enableZoom",
+      "type": "boolean",
+      "default": false,
+      "description": "Enables the interactive zoom state.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "headline",
+        "label": "Headline",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "subheadline",
+        "label": "Subheadline",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "videoSrc",
+        "label": "Video Src",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "enableZoom",
+        "label": "Enable Zoom",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

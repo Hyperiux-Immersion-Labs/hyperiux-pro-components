@@ -26,6 +26,35 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "config",
+      "type": "object",
+      "default": {
+        "enableBlur": false,
+        "strokeColor": "#82A0FF",
+        "strokeWidth": 2,
+        "duration": 1.5
+      },
+      "description": "Brush stroke color, width, blur, and duration.",
+      "remixer": {
+        "control": "json",
+        "group": "config",
+        "groupTitle": "Config"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "config",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

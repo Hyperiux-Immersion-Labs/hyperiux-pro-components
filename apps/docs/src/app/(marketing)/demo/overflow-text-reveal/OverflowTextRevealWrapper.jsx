@@ -15,7 +15,7 @@ const stats = [
   { value: "∞", label: "Possibilities" },
 ];
 
-const OverflowTextRevealWrapper = () => {
+const OverflowTextRevealWrapper = ({ effectProps = {} }) => {
   const [replayKey, setReplayKey] = useState(0);
 
   return (
@@ -48,12 +48,12 @@ const OverflowTextRevealWrapper = () => {
               direction - bottom (default)
             </p>
           </SplitLine>
-          <OverflowTextReveal direction="bottom" scrub={false}>
+          <OverflowTextReveal direction="bottom" scrub={false} {...effectProps}>
             <h1 className="text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase max-sm:text-5xl">
               Characters<br />Rise From<br />Below
             </h1>
           </OverflowTextReveal>
-          <OverflowTextReveal direction="bottom" scrub={false} delay={0.1}>
+          <OverflowTextReveal direction="bottom" scrub={false} delay={0.1} {...effectProps}>
             <p className="max-w-lg py-8 text-xl max-md:text-2xl leading-relaxed font-light text-white/50 max-sm:text-base">
               The default variant. Each character slides upward out of its clipping mask,
               rotating into place with a subtle tilt as you scroll.
@@ -80,7 +80,7 @@ const OverflowTextRevealWrapper = () => {
               direction - top
             </p>
           </SplitLine>
-          <OverflowTextReveal direction="top" scrub={true}>
+          <OverflowTextReveal direction="top" scrub={true} {...effectProps}>
             <h2 className="max-w-2xl text-7xl font-black text-[#2c1810] leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
               Falling<br />Down From<br />The Sky
             </h2>

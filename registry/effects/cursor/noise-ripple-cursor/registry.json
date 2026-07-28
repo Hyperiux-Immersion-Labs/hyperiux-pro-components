@@ -38,6 +38,72 @@
   "exportKind": "default",
   "importPath": "@/components/effects/noise-ripple-cursor",
   "target": "src/components/effects/noise-ripple-cursor",
+  "props": [
+    {
+      "name": "imageSrc",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+      "description": "Image source distorted by the ripple shader.",
+      "remixer": {
+        "control": "text",
+        "group": "media",
+        "groupTitle": "Media"
+      }
+    },
+    {
+      "name": "overlayColor",
+      "type": "string",
+      "default": "bg-[#1825AA]/30",
+      "description": "Tailwind class applied to the color overlay.",
+      "remixer": {
+        "control": "text",
+        "group": "surface",
+        "groupTitle": "Surface"
+      }
+    },
+    {
+      "name": "wrapperClassName",
+      "type": "string",
+      "default": "h-screen w-screen",
+      "description": "Class names applied to the effect wrapper.",
+      "remixer": {
+        "control": "text",
+        "group": "surface",
+        "groupTitle": "Surface"
+      },
+      "copyable": false
+    },
+    {
+      "name": "shaderConfig",
+      "type": "object",
+      "default": {
+        "pixelSize": 0.5,
+        "patternDensity": 1,
+        "fluidRadius": 0.08,
+        "fluidStrength": 0.2,
+        "fluidDissipation": 0.9,
+        "distortStrength": 0.5,
+        "trailDarkness": 0
+      },
+      "description": "Shader tuning object for pixel size, fluid radius, distortion, and trail behavior.",
+      "remixer": {
+        "control": "json",
+        "group": "shader",
+        "groupTitle": "Shader"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "media",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

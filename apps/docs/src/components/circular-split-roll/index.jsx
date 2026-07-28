@@ -108,9 +108,9 @@ const ROLL_CONFIG = {
   imageSideOpacity: 0.14,
 };
 
-export default function CircularSplitRoll({ config }) {
+export default function CircularSplitRoll({ config = {}, ...props }) {
   const isDesktop = useIsDesktop();
-  const rollConfig = { ...ROLL_CONFIG, ...config };
+  const rollConfig = { ...ROLL_CONFIG, ...config, ...props };
 
   return (
     <ReactLenis

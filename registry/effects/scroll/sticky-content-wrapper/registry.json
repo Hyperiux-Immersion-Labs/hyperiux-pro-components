@@ -35,5 +35,96 @@
       "path": "StickyContentComp.jsx",
       "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "sections",
+      "type": "array",
+      "default": [],
+      "description": "Sections shown beside sticky content.",
+      "suggested": true
+    },
+    {
+      "name": "stickyTop",
+      "type": "number",
+      "default": 96,
+      "description": "Top offset for the sticky content.",
+      "suggested": true
+    },
+    {
+      "name": "contentWidth",
+      "type": "string",
+      "default": "\"45%\"",
+      "description": "Width of the sticky content area.",
+      "suggested": true
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": 64,
+      "description": "Gap between sticky and scrolling content.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Wrapper background color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "sections",
+        "label": "Sections",
+        "type": "json",
+        "group": "content",
+        "copyable": true
+      },
+      {
+        "name": "stickyTop",
+        "label": "Sticky Top",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 288,
+        "step": 0.1
+      },
+      {
+        "name": "contentWidth",
+        "label": "Content Width",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "gap",
+        "label": "Gap",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 256,
+        "step": 1
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  }
 }

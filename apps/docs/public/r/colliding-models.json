@@ -30,6 +30,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "modelUrl",
+      "type": "string",
+      "default": "\"/models/model.glb\"",
+      "description": "Main GLB model source.",
+      "suggested": true
+    },
+    {
+      "name": "connectorCount",
+      "type": "number",
+      "default": 8,
+      "description": "Number of connecting shapes or joints.",
+      "suggested": true
+    },
+    {
+      "name": "gravity",
+      "type": "number",
+      "default": 0,
+      "description": "Physics gravity strength.",
+      "suggested": true
+    },
+    {
+      "name": "modelScale",
+      "type": "number",
+      "default": 1,
+      "description": "Scale applied to the 3D model.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Canvas background color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "modelUrl",
+        "label": "Model Url",
+        "type": "text",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "connectorCount",
+        "label": "Connector Count",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 24,
+        "step": 0.1
+      },
+      {
+        "name": "gravity",
+        "label": "Gravity",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "modelScale",
+        "label": "Model Scale",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

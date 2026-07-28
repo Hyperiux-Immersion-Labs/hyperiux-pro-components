@@ -1,21 +1,10 @@
-import React from 'react'
-import OverflowStaggerWrapper from './OverflowStaggerWrapper'
-import { ReactLenis } from "lenis/react";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import overflowStaggerTextRegistry from "../../../../../../../registry/effects/text/overflow-stagger-text/registry.json";
 
 
 const page = () => {
-  return (
-    <>
-          <ReactLenis root>
-      <DemoHeader />
-      <OverflowStaggerWrapper />
-       <ScrollBottom textColor={"text-[#151515]"}/>
-        </ReactLenis>
-    </>
-  )
+  return <DemoContent registry={overflowStaggerTextRegistry} />;
 }
 
 export default page

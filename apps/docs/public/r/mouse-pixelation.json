@@ -28,6 +28,59 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "pixel-shift",
+      "description": "Selects the active pixelation version."
+    },
+    {
+      "name": "imageUrl",
+      "type": "string",
+      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+      "description": "Image texture used by supported pixelation variants."
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "variant",
+        "label": "Variant",
+        "type": "select",
+        "group": "content",
+        "options": [
+          {
+            "label": "Pixel Circle",
+            "value": "pixel-circle"
+          },
+          {
+            "label": "Pixel Shift",
+            "value": "pixel-shift"
+          },
+          {
+            "label": "Enhanced Pixel Cube",
+            "value": "enhanced-pixel-cube"
+          }
+        ]
+      },
+      {
+        "name": "imageUrl",
+        "label": "Image URL",
+        "type": "text",
+        "group": "media",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

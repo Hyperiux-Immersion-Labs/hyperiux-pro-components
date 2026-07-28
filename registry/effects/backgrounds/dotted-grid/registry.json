@@ -135,7 +135,15 @@
       "name": "dotHue",
       "type": "number",
       "default": 210,
-      "description": "Shifts the trail hue."
+      "description": "Shifts the trail hue.",
+      "remixer": {
+        "control": "range",
+        "group": "appearance",
+        "groupTitle": "Appearance",
+        "min": 0,
+        "max": 360,
+        "step": 1
+      }
     },
     {
       "name": "trailSaturation",

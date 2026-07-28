@@ -23,6 +23,100 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "arrowCount",
+      "type": "number",
+      "default": 24,
+      "description": "Number of arrows rendered in the field.",
+      "suggested": true
+    },
+    {
+      "name": "arrowColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Arrow stroke or fill color.",
+      "suggested": true
+    },
+    {
+      "name": "activeColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Arrow color near the pointer.",
+      "suggested": true
+    },
+    {
+      "name": "reactionRadius",
+      "type": "number",
+      "default": 160,
+      "description": "Pointer radius that rotates or highlights arrows.",
+      "suggested": true
+    },
+    {
+      "name": "smoothing",
+      "type": "number",
+      "default": 0.12,
+      "description": "Motion smoothing for arrow response.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "arrowCount",
+        "label": "Arrow Count",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 72,
+        "step": 0.1
+      },
+      {
+        "name": "arrowColor",
+        "label": "Arrow Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "activeColor",
+        "label": "Active Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "reactionRadius",
+        "label": "Reaction Radius",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 640,
+        "step": 1
+      },
+      {
+        "name": "smoothing",
+        "label": "Smoothing",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",

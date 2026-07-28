@@ -1,26 +1,11 @@
-import React from "react";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import SplitCanvas from "@/components/split-canvas";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/scroll/split-canvas/registry.json";
 
-const page = () => {
-  return (
-    <>
-      <DemoHeader />
-      <ScrollBottom
-        textColor={"text-black"}
-        className="bottom-[3%] gap-[1vw]"
-      />
-      <div className="sr-only">
-        <h1 clasName="">SplitCanvas</h1>
-      </div>
-      <SplitCanvas />
-    </>
-  );
-};
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="split-canvas" />;
+}
 
-export default page;
 export async function generateMetadata() {
   return getDemoPageMetadata("split-canvas");
 }

@@ -21,13 +21,13 @@ function usePrefersReducedMotion() {
 }
 
 
-const RibbonDrift = () => {
+const RibbonDrift = ({ images = IMAGE_POOL, projectNames = PROJECT_NAMES }) => {
  const prefersReducedMotion = usePrefersReducedMotion();
 
  return (
  <ReactLenis root>
  <section className="w-screen h-fit max-md:h-full">
- <RibbonDriftComp images={IMAGE_POOL} projectNames={PROJECT_NAMES} />
+ <RibbonDriftComp images={images} projectNames={projectNames} />
  </section>
  {prefersReducedMotion && (
  <div

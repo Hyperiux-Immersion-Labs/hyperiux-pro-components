@@ -26,6 +26,58 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "cols",
+      "type": "number",
+      "default": 30,
+      "description": "Pixel grid columns.",
+      "remixer": {
+        "control": "range",
+        "group": "grid",
+        "groupTitle": "Grid",
+        "min": 8,
+        "max": 80,
+        "step": 1
+      }
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "default": 40,
+      "description": "Pixel grid rows.",
+      "remixer": {
+        "control": "range",
+        "group": "grid",
+        "groupTitle": "Grid",
+        "min": 8,
+        "max": 100,
+        "step": 1
+      }
+    },
+    {
+      "name": "enableContentShift",
+      "type": "boolean",
+      "default": false,
+      "description": "Adds content scale/blur during the transition.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "grid",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

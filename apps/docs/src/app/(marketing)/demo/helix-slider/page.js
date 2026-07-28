@@ -1,21 +1,11 @@
-
-import HelixSlider  from '@/components/helix-slider'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/scroll/helix-slider/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'  />
-   <HelixSlider />
-   <ScrollBottom className='z-90 bottom-[5%] gap-[0.5vw] ' textColor={'text-white'} />
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="helix-slider" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("helix-slider");
 }

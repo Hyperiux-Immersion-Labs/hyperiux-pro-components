@@ -19,7 +19,7 @@ const images = [
     { src: `${P}${B}/h-03.jpg`, text: "PR.10\n /10" },
 ];
 
-const WebGLSlider = () => {
+const WebGLSlider = ({ images: imagesProp = images }) => {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const WebGLSlider = () => {
 
     return (
         //  <ReactLenis root options={{  infinite: true,  autoRaf: true,  duration: 1.5,  lerp: 0.075  }}>
-        <WebGLSliderComp images={images} />
+        <WebGLSliderComp images={imagesProp} />
         //  </ReactLenis>
     )
 }

@@ -46,7 +46,7 @@ const beats = [
   },
 ];
 
-const MaskTextWrapper = () => {
+const MaskTextWrapper = ({ effectProps = {} }) => {
   return (
     
       <main className="overflow-hidden bg-[#f8f2df] text-[#111111]">
@@ -57,7 +57,7 @@ const MaskTextWrapper = () => {
            
 
            <div className="grid items-end gap-8 py-10 grid-cols-[1.08fr_0.92fr] max-md:grid-cols-1 max-md:gap-7 max-md:py-9 max-sm:gap-6 max-sm:py-8">
-  <MaskTextReveal scrub={false} className="w-full col-span-2 max-md:col-span-1">
+  <MaskTextReveal scrub={false} {...effectProps} className="w-full col-span-2 max-md:col-span-1">
     <h1 className="w-full max-w-6xl text-[clamp(3.5rem,8vw,8.5rem)] font-black uppercase leading-[0.82] text-[#111111] max-md:text-[clamp(3.2rem,9vw,6.5rem)] max-md:leading-[0.84] max-sm:text-[3.25rem] max-sm:leading-[0.86]">
       Pull the words from the noise.
     </h1>
@@ -119,7 +119,7 @@ const MaskTextWrapper = () => {
               <p className="mb-5 inline-block border border-black bg-[#ff6b4a] px-4 py-2 text-xs font-black uppercase tracking-[0.26em] shadow-[5px_5px_0_#111111]">
                 Creative use case
               </p>
-              <MaskTextReveal scrub={true}>
+              <MaskTextReveal scrub={true} {...effectProps}>
                 <h2 className="text-6xl font-black uppercase leading-[0.88] max-sm:text-[3.25rem]">
                   Design the scroll like a mixtape.
                 </h2>
@@ -140,7 +140,7 @@ const MaskTextWrapper = () => {
                     {kicker}
                   </p>
                     </SplitLine>
-                  <MaskTextReveal scrub={true}>
+                  <MaskTextReveal scrub={true} {...effectProps}>
                     <h3 className="text-5xl mt-8 mb-6 font-black uppercase leading-[0.95] max-sm:text-[2.35rem]">
                       {title}
                     </h3>
@@ -174,7 +174,7 @@ const MaskTextWrapper = () => {
                 ))}
               </div>
 
-              <MaskTextReveal scrub={true}>
+              <MaskTextReveal scrub={true} {...effectProps}>
                 <p className="text-[clamp(3.5rem,8vw,9rem)] max-md:text-[8vw] font-black uppercase leading-[0.86] text-white max-sm:text-[3.35rem]">
                   Hide the sentence until the screen asks for it.
                 </p>

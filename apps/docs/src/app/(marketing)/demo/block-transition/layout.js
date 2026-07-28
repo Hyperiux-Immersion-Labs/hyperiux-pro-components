@@ -1,12 +1,10 @@
-import React from'react'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import BlockTransition from '@/components/block-transition'
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import blockTransitionRegistry from "../../../../../../../registry/effects/transitions/block-transition/registry.json";
 
 export default function layout({ children }) {
- return (
- <BlockTransition>
-    <DemoHeader />
- {children}
- </BlockTransition>
- )
+  return (
+    <TransitionRemixerLayout registry={blockTransitionRegistry} slug="block-transition">
+      {children}
+    </TransitionRemixerLayout>
+  );
 }

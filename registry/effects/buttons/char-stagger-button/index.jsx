@@ -11,14 +11,14 @@ const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export default function CharStaggerButton({
-  btnText = "",
+  btnText = "Hover me",
   href = DEFAULT_HREF,
   className = "",
   textClassName = "",
   linkProps = {},
   children,
   staggerStep = DEFAULT_STAGGER_STEP,
-  showLine = false,
+  showLine = true,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,

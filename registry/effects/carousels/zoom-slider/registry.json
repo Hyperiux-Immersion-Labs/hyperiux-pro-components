@@ -1,9 +1,25 @@
 {
   "name": "zoom-slider",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: drag/scroll lerp collapses to direct tracking with no momentum glide, hover text uses a fade instead of a line-slide, and the hover image-scale is skipped", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added title, subheading, and sliderData as public props instead of hardcoding them in the wrapper",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: drag/scroll lerp collapses to direct tracking with no momentum glide, hover text uses a fade instead of a line-slide, and the hover image-scale is skipped",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Zoom Slider",
@@ -21,6 +37,237 @@
   "exportKind": "default",
   "importPath": "@/components/effects/zoom-slider",
   "target": "src/components/effects/zoom-slider",
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "Zoom Slider",
+      "description": "Heading text shown above the slider.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "subheading",
+      "type": "string",
+      "default": "Scroll to explore ",
+      "description": "Supporting text shown under the heading.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "sliderData",
+      "type": "array",
+      "default": [
+        {
+          "number": "01",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+          "title": "AURA",
+          "desc": "Soft light and atmospheric tones"
+        },
+        {
+          "number": "02",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+          "title": "DRIFT",
+          "desc": "Floating through silence"
+        },
+        {
+          "number": "03",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+          "title": "FORM",
+          "desc": "Shapes carved by light"
+        },
+        {
+          "number": "04",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FLOW",
+          "desc": "Smooth transitions in motion"
+        },
+        {
+          "number": "05",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "DEPTH",
+          "desc": "Layers and visual weight"
+        },
+        {
+          "number": "06",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+          "title": "ENERGY",
+          "desc": "Movement captured in time"
+        },
+        {
+          "number": "07",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+          "title": "GLITCH",
+          "desc": "Breaking visual boundaries"
+        },
+        {
+          "number": "08",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FRAME-X",
+          "desc": "Cinematic still frame"
+        },
+        {
+          "number": "09",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+          "title": "LIGHTPLAY",
+          "desc": "Contrast and highlights"
+        },
+        {
+          "number": "10",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "MINIMAL",
+          "desc": "Less but stronger"
+        }
+      ],
+      "demoDefault": [
+        {
+          "number": "01",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+          "title": "AURA",
+          "desc": "Soft light and atmospheric tones"
+        },
+        {
+          "number": "02",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+          "title": "DRIFT",
+          "desc": "Floating through silence"
+        },
+        {
+          "number": "03",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+          "title": "FORM",
+          "desc": "Shapes carved by light"
+        },
+        {
+          "number": "04",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FLOW",
+          "desc": "Smooth transitions in motion"
+        },
+        {
+          "number": "05",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "DEPTH",
+          "desc": "Layers and visual weight"
+        },
+        {
+          "number": "06",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+          "title": "ENERGY",
+          "desc": "Movement captured in time"
+        },
+        {
+          "number": "07",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+          "title": "GLITCH",
+          "desc": "Breaking visual boundaries"
+        },
+        {
+          "number": "08",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+          "title": "FRAME-X",
+          "desc": "Cinematic still frame"
+        },
+        {
+          "number": "09",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+          "title": "LIGHTPLAY",
+          "desc": "Contrast and highlights"
+        },
+        {
+          "number": "10",
+          "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+          "title": "MINIMAL",
+          "desc": "Less but stronger"
+        }
+      ],
+      "description": "Slides rendered by the zoom transition (number, src, title, desc).",
+      "copyable": false,
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "slides",
+      "type": "array",
+      "description": "Slides rendered by the zoom transition.",
+      "default": [],
+      "remixer": {
+        "control": "json",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "zoomScale",
+      "type": "number",
+      "description": "Scale applied to images during slide transitions.",
+      "default": 1.2,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Zoom transition duration.",
+      "default": 0.7,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "autoplay",
+      "type": "boolean",
+      "description": "Automatically advances slides.",
+      "default": false,
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "showControls",
+      "type": "boolean",
+      "description": "Shows slider navigation controls.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -1013,7 +1013,7 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-col items-center gap-0">
           <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
-            This is a Pro effect.
+            This is a Pro Effect.
           </h3>
 
           <p className="max-w-sm text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">

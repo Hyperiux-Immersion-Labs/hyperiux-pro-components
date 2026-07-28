@@ -4,6 +4,38 @@ import { buildRemixerDemoCode } from "./build-remixer-code";
 import RemixerLauncher from "./RemixerLauncher";
 import { useRemixerControls } from "./useRemixerControls";
 
+function toGroupTitle(value) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function getGroupsFromRemixerControls(controls = []) {
+  if (!controls.length) return undefined;
+
+  const groupMap = new Map();
+
+  for (const control of controls) {
+    const groupId = control.group ?? "controls";
+    if (!groupMap.has(groupId)) {
+      groupMap.set(groupId, {
+        id: groupId,
+        title: control.groupTitle ?? toGroupTitle(groupId),
+        controls: [],
+      });
+    }
+    groupMap.get(groupId).controls.push({
+      ...control,
+      id: control.id ?? control.name,
+    });
+  }
+
+  return [...groupMap.values()];
+}
+
 export default function RegistryRemixerDemo({
   registry,
   component: Component,
@@ -12,14 +44,19 @@ export default function RegistryRemixerDemo({
   copyCodeOptions,
 }) {
   const remixerConfig = registry?.remixer ?? {};
+  const layoutConfig = remixerConfig.layout ?? {};
+  const panelConfig = remixerConfig.panel ?? {};
+  const remixerGroups =
+    remixerConfig.groups ?? getGroupsFromRemixerControls(remixerConfig.controls);
   const {
     groups,
     values,
     updateValue,
     resetValues,
-  } = useRemixerControls({ props: registry?.props ?? [] });
+  } = useRemixerControls({ groups: remixerGroups, props: registry?.props ?? [] });
 
   const effect = render ? render(values) : <Component {...values} />;
+  const buildCode = copyCodeOptions?.buildCode;
 
   return (
     <>
@@ -30,17 +67,21 @@ export default function RegistryRemixerDemo({
           values={values}
           onChange={updateValue}
           onCopyCode={() =>
-            buildRemixerDemoCode({
-              registry,
-              values,
-              groups,
-              ...copyCodeOptions,
-            })
+            buildCode
+              ? buildCode({ registry, values, groups })
+              : buildRemixerDemoCode({
+                  registry,
+                  values,
+                  groups,
+                  ...copyCodeOptions,
+                })
           }
           onReset={resetValues}
           defaultOpenGroupId={remixerConfig.defaultOpenGroupId}
-          buttonClassName={remixerConfig.layout?.buttonClassName}
-          panelClassName={remixerConfig.layout?.panelClassName}
+          buttonClassName={
+            layoutConfig.buttonClassName ?? layoutConfig.controlsButtonClassName
+          }
+          panelClassName={layoutConfig.panelClassName ?? panelConfig.className}
         />
       ) : null}
     </>
