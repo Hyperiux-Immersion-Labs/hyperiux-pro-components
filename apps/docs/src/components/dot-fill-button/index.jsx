@@ -5,9 +5,11 @@ import Link from "next/link";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
+const DEFAULT_HREF = "#";
 
 const DotFillBtn = ({
  btnText ="",
+ href = DEFAULT_HREF,
  className ="",
  textClassName ="",
  staggerStep = 0.01,
@@ -150,6 +152,7 @@ const DotFillBtn = ({
 
 	return (
 		<Link
+			href={href}
 			{...props}
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}

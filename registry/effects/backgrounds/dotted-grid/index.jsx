@@ -34,12 +34,12 @@ function usePrefersReducedMotion() {
 }
 
 
-const SPACING = 24;
-const BASE_RADIUS = 7.2;
-const MOUSE_RADIUS = 380; // wider head influence
-const TRAIL_LENGTH = 456; // even more history
-const TRAIL_RADIUS = 230; // wider trail reach
-const TRAIL_FADE_MS = 1200;
+const DEFAULT_SPACING = 24;
+const DEFAULT_BASE_RADIUS = 7.2;
+const DEFAULT_MOUSE_RADIUS = 380;
+const DEFAULT_TRAIL_LENGTH = 456;
+const DEFAULT_TRAIL_RADIUS = 230;
+const DEFAULT_TRAIL_FADE_MS = 1200;
 
 const RANDOM_TIME = 0.6;
 const COLLECT_TIME = 1.1;
@@ -147,7 +147,21 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 };
 
 
-export default function DottedGrid() {
+export default function DottedGrid({
+  spacing = DEFAULT_SPACING,
+  baseRadius = DEFAULT_BASE_RADIUS,
+  mouseRadius = DEFAULT_MOUSE_RADIUS,
+  trailLength = DEFAULT_TRAIL_LENGTH,
+  trailRadius = DEFAULT_TRAIL_RADIUS,
+  trailFadeMs = DEFAULT_TRAIL_FADE_MS,
+  backgroundColor = "#000000",
+  dotHue = 210,
+  trailSaturation = 16,
+  showDesktopHint = true,
+  desktopHint = "Click anywhere to change the pattern.",
+  mobileHint = "Works best on desktop",
+  className = "",
+}) {
   const canvasRef  = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
@@ -187,8 +201,8 @@ export default function DottedGrid() {
 
     const createDots = () => {
       dots = [];
-      for (let y = SPACING / 2; y < height; y += SPACING) {
-        for (let x = SPACING / 2; x < width; x += SPACING) {
+      for (let y = spacing / 2; y < height; y += spacing) {
+        for (let x = spacing / 2; x < width; x += spacing) {
           dots.push({
             x,
             y,
@@ -226,7 +240,7 @@ export default function DottedGrid() {
       mouseRef.current.active  = true;
       mouseRef.current.trail.push({ x, y, t: performance.now() });
 
-      if (mouseRef.current.trail.length > TRAIL_LENGTH) {
+      if (mouseRef.current.trail.length > trailLength) {
         mouseRef.current.trail.shift();
       }
     };
@@ -305,10 +319,10 @@ export default function DottedGrid() {
       const trailLift = trailStrength * 38 * (1 - trailStrength * 0.55);
 
       const finalLightness = clamp01((lightness - mouseDark + mouseLift + trailLift) / 100) * 100;
-      const saturation     = trailStrength * trailStrength * 16;
+      const saturation     = trailStrength * trailStrength * trailSaturation;
 
       ctx.beginPath();
-      ctx.fillStyle = `hsla(210, ${saturation}%, ${finalLightness}%, ${alpha})`;
+      ctx.fillStyle = `hsla(${dotHue}, ${saturation}%, ${finalLightness}%, ${alpha})`;
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
     };
@@ -325,7 +339,7 @@ export default function DottedGrid() {
         mouse.x = lerp(mouse.x, mouse.targetX, 0.12);
         mouse.y = lerp(mouse.y, mouse.targetY, 0.12);
 
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = backgroundColor;
         ctx.fillRect(0, 0, width, height);
 
         for (const dot of dots) {
@@ -339,7 +353,7 @@ export default function DottedGrid() {
               height
             );
             const brightness = clamp01(0.16 + shapeStrength * 0.84);
-            const radius = BASE_RADIUS + shapeStrength * 1.25;
+            const radius = baseRadius + shapeStrength * 1.25;
             drawDot(dot.x, dot.y, radius, brightness, 0, 0, 0);
             continue;
           }
@@ -356,8 +370,8 @@ export default function DottedGrid() {
             const dx = dot.x - mouse.x;
             const dy = dot.y - mouse.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < MOUSE_RADIUS) {
-              const norm = dist / MOUSE_RADIUS;
+            if (dist < mouseRadius) {
+              const norm = dist / mouseRadius;
               targetMouseStrength = (1 - norm) * (1 - norm) * (1 - norm);
             }
           }
@@ -367,7 +381,7 @@ export default function DottedGrid() {
           let targetTrailStrength = 0;
           for (let i = 0; i < mouse.trail.length; i++) {
             const pt = mouse.trail[i];
-            const age = (now - pt.t) / TRAIL_FADE_MS;
+            const age = (now - pt.t) / trailFadeMs;
             if (age >= 1) continue;
 
             const ageFade = (1 - age) * (1 - age) * (1 - age);
@@ -378,8 +392,8 @@ export default function DottedGrid() {
             const dy = dot.y - pt.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < TRAIL_RADIUS) {
-              const proximity = 1 - smoothstep(0, 1, dist / TRAIL_RADIUS);
+            if (dist < trailRadius) {
+              const proximity = 1 - smoothstep(0, 1, dist / trailRadius);
               const softProximity = proximity * proximity * proximity;
               targetTrailStrength = Math.max(targetTrailStrength, softProximity * fade);
             }
@@ -402,8 +416,8 @@ export default function DottedGrid() {
           const mouseShrink = 1 - dot.currentMouseStrength * 0.75;
           const trailShrink = 1 - dot.currentTrailStrength * 0.65;
 
-          const stableRadius = BASE_RADIUS + dot.currentShapeStrength * 1.25;
-          const randomRadius = BASE_RADIUS + randomBlink * 0.35;
+          const stableRadius = baseRadius + dot.currentShapeStrength * 1.25;
+          const randomRadius = baseRadius + randomBlink * 0.35;
           const radius = lerp(stableRadius, randomRadius, dot.currentRandomStrength) * mouseShrink * trailShrink;
 
           drawDot(dot.x, dot.y, radius, brightness, grayDisperseBlink, dot.currentTrailStrength, dot.currentMouseStrength);
@@ -428,18 +442,33 @@ export default function DottedGrid() {
       canvas.removeEventListener("click", handleClick);
       loop.destroy();
     };
-  }, []);
+  }, [
+    baseRadius,
+    backgroundColor,
+    dotHue,
+    mouseRadius,
+    spacing,
+    trailFadeMs,
+    trailLength,
+    trailRadius,
+    trailSaturation,
+  ]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
+    <section className={`relative h-screen w-full overflow-hidden bg-black ${className}`}>
       <canvas
         ref={canvasRef}
         className="block h-full w-full cursor-pointer touch-none bg-black"
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/4 via-transparent to-black/40" />
       <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.95)]" />
+      {showDesktopHint ? (
+        <div className="max-[1025px]:hidden fixed bottom-15 left-1/2 -translate-x-1/2 z-50 p-4 rounded-2xl bg-white/10 backdrop-blur-md text-white text-center text-md pointer-events-none">
+          {desktopHint}
+        </div>
+      ) : null}
       <div className="hidden max-[1025px]:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm leading-tight pointer-events-none">
-        Works best on desktop  <br />
+        {mobileHint} <br />
         Here, tap & drag to explore
       </div>
 

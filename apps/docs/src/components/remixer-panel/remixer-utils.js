@@ -1,23 +1,8 @@
 "use client";
 
 export function cloneRemixerValues(values = {}) {
-  if (typeof structuredClone === "function") {
-    return structuredClone(values);
-  }
-
+  if (typeof structuredClone === "function") return structuredClone(values);
   return JSON.parse(JSON.stringify(values));
-}
-
-export function getDefaultsFromGroups(groups = []) {
-  return groups.reduce((defaults, group) => {
-    for (const control of group.controls ?? []) {
-      if (!control || control.docsOnly) continue;
-      if (!("default" in control)) continue;
-      defaults[control.id] = control.default;
-    }
-
-    return defaults;
-  }, {});
 }
 
 export function getDefaultsFromProps(props = []) {
@@ -27,16 +12,11 @@ export function getDefaultsFromProps(props = []) {
       defaults[prop.name] = prop.demoDefault;
       return defaults;
     }
-
     if ("default" in (prop.remixer ?? {})) {
       defaults[prop.name] = prop.remixer.default;
       return defaults;
     }
-
-    if ("default" in prop) {
-      defaults[prop.name] = prop.default;
-    }
-
+    if ("default" in prop) defaults[prop.name] = prop.default;
     return defaults;
   }, {});
 }
@@ -46,9 +26,7 @@ export function getGroupsFromProps(props = []) {
 
   for (const prop of props) {
     if (!prop?.remixer) continue;
-
     const groupId = prop.remixer.group ?? "controls";
-
     if (!groupMap.has(groupId)) {
       groupMap.set(groupId, {
         id: groupId,
@@ -56,7 +34,6 @@ export function getGroupsFromProps(props = []) {
         controls: [],
       });
     }
-
     groupMap.get(groupId).controls.push(
       normalizeRemixerControl({
         id: prop.name,
@@ -81,22 +58,17 @@ export function getGroupsFromProps(props = []) {
 
 export function getCopyableRemixerValues(values = {}, groups = []) {
   const allowedIds = new Set();
-
   for (const group of groups) {
     for (const control of group.controls ?? []) {
       if (!control || control.docsOnly || control.copyable === false) continue;
       allowedIds.add(control.id);
     }
   }
-
-  return Object.fromEntries(
-    Object.entries(values).filter(([id]) => allowedIds.has(id)),
-  );
+  return Object.fromEntries(Object.entries(values).filter(([id]) => allowedIds.has(id)));
 }
 
 export function normalizeRemixerControl(control = {}) {
   const type = control.control ?? control.type ?? "range";
-
   return {
     ...control,
     id: control.id ?? control.name,

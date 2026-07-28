@@ -23,6 +23,88 @@
   "exportKind": "default",
   "importPath": "@/components/effects/ring-carousel",
   "target": "src/components/effects/ring-carousel",
+  "props": [
+    {
+      "name": "snap",
+      "type": "boolean",
+      "default": true,
+      "description": "Snaps the ring to the nearest item after drag.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "autoPlay",
+      "type": "boolean",
+      "default": true,
+      "description": "Rotates the carousel automatically.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "autoPlayInterval",
+      "type": "number",
+      "default": 800,
+      "description": "Delay between autoplay advances in milliseconds.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 400,
+        "max": 4000,
+        "step": 100
+      }
+    },
+    {
+      "name": "pauseOnHover",
+      "type": "boolean",
+      "default": true,
+      "description": "Pauses autoplay while the carousel is hovered.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "showNavigation",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows previous and next buttons.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "showDots",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows pagination dots.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

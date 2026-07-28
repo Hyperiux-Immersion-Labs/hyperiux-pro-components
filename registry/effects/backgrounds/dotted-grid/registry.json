@@ -35,6 +35,181 @@
   "exportKind": "named",
   "importPath": "@/components/effects/dotted-grid",
   "target": "src/components/effects/dotted-grid",
+  "props": [
+    {
+      "name": "spacing",
+      "type": "number",
+      "default": 24,
+      "description": "Controls the distance between dots.",
+      "remixer": {
+        "control": "range",
+        "group": "grid",
+        "groupTitle": "Grid",
+        "min": 12,
+        "max": 48,
+        "step": 1
+      }
+    },
+    {
+      "name": "baseRadius",
+      "type": "number",
+      "default": 7.2,
+      "description": "Sets the base dot size.",
+      "remixer": {
+        "control": "range",
+        "group": "grid",
+        "groupTitle": "Grid",
+        "min": 2,
+        "max": 14,
+        "step": 0.1
+      }
+    },
+    {
+      "name": "mouseRadius",
+      "type": "number",
+      "default": 380,
+      "description": "Sets the dark cursor influence radius.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 80,
+        "max": 700,
+        "step": 10
+      }
+    },
+    {
+      "name": "trailLength",
+      "type": "number",
+      "default": 456,
+      "description": "Limits how many cursor trail samples are kept.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 40,
+        "max": 800,
+        "step": 8
+      }
+    },
+    {
+      "name": "trailRadius",
+      "type": "number",
+      "default": 230,
+      "description": "Controls the width of the cursor trail influence.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 60,
+        "max": 460,
+        "step": 10
+      }
+    },
+    {
+      "name": "trailFadeMs",
+      "type": "number",
+      "default": 1200,
+      "description": "Sets how long trail marks remain visible.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 200,
+        "max": 2600,
+        "step": 50
+      }
+    },
+    {
+      "name": "backgroundColor",
+      "type": "color",
+      "default": "#000000",
+      "description": "Colors the canvas background.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "dotHue",
+      "type": "number",
+      "default": 210,
+      "description": "Shifts the trail hue.",
+      "remixer": {
+        "control": "range",
+        "group": "appearance",
+        "groupTitle": "Appearance",
+        "min": 0,
+        "max": 360,
+        "step": 1
+      }
+    },
+    {
+      "name": "trailSaturation",
+      "type": "number",
+      "default": 16,
+      "description": "Controls how colorful the trail highlight becomes.",
+      "remixer": {
+        "control": "range",
+        "group": "appearance",
+        "groupTitle": "Appearance",
+        "min": 0,
+        "max": 100,
+        "step": 1
+      }
+    },
+    {
+      "name": "showDesktopHint",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows or hides the desktop hint.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "desktopHint",
+      "type": "string",
+      "default": "Click anywhere to change the pattern.",
+      "description": "Desktop hint text.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "mobileHint",
+      "type": "string",
+      "default": "Works best on desktop",
+      "description": "Mobile hint text shown above the touch instruction.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "",
+      "description": "Additional class names for the root section."
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "grid",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -26,48 +26,28 @@ export default function RemixerLauncher({
   panelShift = -140,
   closedX = "100%",
   openX = "0%",
-  controlledExpanded,
-  onExpandedChange,
 }) {
-  const [internalExpanded, setInternalExpanded] = useState(false);
-  const isExpanded = controlledExpanded ?? internalExpanded;
-
-  const setExpanded = (nextValue) => {
-    if (onExpandedChange) {
-      onExpandedChange(nextValue);
-      return;
-    }
-
-    setInternalExpanded(nextValue);
-  };
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className={`${styles.launcherLayer} ${containerClassName}`}>
       <motion.button
         type="button"
-        onClick={() => setExpanded(!isExpanded)}
+        onClick={() => setIsExpanded((current) => !current)}
         animate={{ x: isExpanded ? panelShift : 0 }}
         transition={remixerPanelTransition}
-        className={`${styles.footerButton} ${styles.launcherButton} ${buttonClassName}`}
+        className={`${styles.launcherButton} ${buttonClassName}`}
         aria-expanded={isExpanded}
       >
-        <PanelLeft
-          className={`${styles.actionIcon} ${styles.launcherIcon} ${
-            isExpanded ? "" : styles.launcherIconClosed
-          }`}
-        />
-        <span className={`${styles.footerButtonText} ${styles.launcherButtonText}`}>
-          {buttonLabel}
-        </span>
+        <PanelLeft className={`${styles.launcherIcon} ${isExpanded ? "" : styles.launcherIconClosed}`} />
+        <span className={styles.launcherButtonText}>{buttonLabel}</span>
       </motion.button>
 
       <motion.div
         initial={false}
         animate={{ x: isExpanded ? openX : closedX }}
         transition={remixerPanelTransition}
-        className={`${styles.launcherPanel} ${
-          isExpanded ? styles.launcherPanelOpen : styles.launcherPanelClosed
-        } ${panelClassName}`}
+        className={`${styles.launcherPanel} ${isExpanded ? styles.launcherPanelOpen : ""} ${panelClassName}`}
       >
         <div className={`${styles.launcherPanelInner} ${panelInnerClassName}`}>
           <RemixerPanel
