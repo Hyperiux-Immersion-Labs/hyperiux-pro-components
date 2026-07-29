@@ -1,8 +1,8 @@
 # Hyperiux Vault — Phase 2 Plan
 
-*Internal planning · Rev. 7 (compressed for team-wide Claude Code)*
+*Internal planning · Rev. 8 (compressed for team-wide Claude Code)*
 
-**6 / 19** items done · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
+**8 / 19** items done · **2** built, not yet merged · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
 
 ---
 
@@ -41,8 +41,8 @@ Wave 2's TypeScript and testing retrofits changed most: split across 2–3 peopl
 
 | Item | Effort | Status |
 |---|---|---|
-| Unified registry + Sanity workflow | 2–3 days | — |
-| Props schema design | 1 day | — |
+| Unified registry + Sanity workflow | ~~2–3 days~~ | ✅ Done — merged to `phase-2-dev` (`e19b662e0`/`9ff76c0f3`): new `component-workflow.test.js`, `sanity-code-sync.test.js`, `component-automation-plan.md` |
+| Props schema design | ~~1 day~~ | 🟡 Built, not yet merged — `registry.json` now carries real `props`/`remixer` fields on the `props-remixer` branch (`2867563bf`) |
 | CI gate | ~~1 day~~ | ✅ Done |
 | Extended linting | ~~1–2 days~~ | ✅ Done |
 
@@ -56,7 +56,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 
 | Item | Effort | Notes |
 |---|---|---|
-| Remixer panel + live prop controls | 4–5 days | Needs the props schema |
+| Remixer panel + live prop controls | ~~4–5 days~~ | 🟡 Built, not yet merged — `790541607` → `d0354fb5d` "implemented remixer panel in all effects", still only on `props-remixer` |
 | ~~Props table in Sanity~~ | ~~1–2 days + ongoing~~ | ⏹ Descoped — props/data render directly from the registry on effect detail pages instead of a separate Sanity table |
 | TypeScript, all 115 effects | ~1.5 wk | Infra first (1–2 days), then retype every existing effect, split across 2–3 people |
 | Tests, all 115 effects | ~~1 wk~~ | ✅ Done — [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
@@ -76,7 +76,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | Item | Effort | Notes |
 |---|---|---|
 | Comparison pages | ~1 wk | Aceternity, Magic UI, Osmo + 1 reserved slot. Mostly research/writing, one page per person, concurrent |
-| MCP Server | 2–3 days | Needs Wave 1 proven stable — an AI-readable catalog is only as good as the registry it reads from |
+| MCP Server | ~~2–3 days~~ | ✅ Done — merged in `hyperiux-components` ([PR #6](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components/pull/6), `1f980bb`); extra docs/tests (`57bc913`) still sitting on that repo's `phase-2-dev` |
 
 ## Wave 4 — Design (parallel, not on the critical path)
 
@@ -107,4 +107,4 @@ Held for later, correctly — needs a real designer, not dev-driven design-in-co
 
 ---
 
-*Hyperiux Vault — Phase 2, Rev. 7 · Wave 1: 2/4 done · Wave 2: 4 done, 1 descoped, 7 open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault — Phase 2, Rev. 8 · Wave 1: 3/4 done, 1 built-unmerged · Wave 2: 4 done, 1 built-unmerged, 1 descoped, 6 open · Wave 3: 1/2 done · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
