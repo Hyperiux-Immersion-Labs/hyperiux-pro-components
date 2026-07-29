@@ -2,6 +2,7 @@ import Homepage from "@/components/Homepage/Homepage";
 import React from "react";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import { getSearchIndexEffects } from "@/lib/search-index";
 
 const faqItems = [
   {
@@ -161,12 +162,14 @@ export const metadata = createPageMetadata({
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
 });
 
-export default function page() {
+export default async function page() {
+  const effects = await getSearchIndexEffects();
+
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <Homepage faqItems={faqItems} />
+      <Homepage faqItems={faqItems} effects={effects} />
     </>
   );
 }

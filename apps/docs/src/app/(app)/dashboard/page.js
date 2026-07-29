@@ -180,8 +180,8 @@ export default function DashboardPage() {
               </div>
             ) : (
               <p className="text-white/75 mt-2">
-                Free accounts include 30 effects. Upgrade to unlock the full
-                vault.
+                Free accounts include {data.totalFreeEffects} effects. Upgrade
+                to unlock the full vault.
               </p>
             )}
           </div>

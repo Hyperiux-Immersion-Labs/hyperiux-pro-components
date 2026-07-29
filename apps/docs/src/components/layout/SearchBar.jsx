@@ -317,6 +317,17 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
   }, [isOpen, lenis]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (externalOpenRef.current === externalOpen) return;
 
     externalOpenRef.current = externalOpen;
@@ -510,89 +521,89 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
               )}
             </div>
           ) : (
-            <div className="space-y-1 p-2">
-              {filteredDocs.map((item) => (
-                <button
-                  key={item.href}
-                  onClick={() => handleSelect({ ...item, type: "docs" })}
-                  className="group flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-all duration-200 hover:bg-neutral-800/50"
-                >
-                  <SearchResultIcon src={item.icon} alt={item.title} />
-
-                  <div className="flex-1">
-                    <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
-                      {item.title}
-                    </div>
-
-                    <div className="mt-0.5 text-xs text-neutral-500 transition-colors group-hover:text-neutral-400">
-                      Docs · {item.description}
-                    </div>
-                  </div>
-
-                  <svg
-                    className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              ))}
-
-              {filteredEffects.map((effect) => {
-                const categoryIcon = getEffectCategoryIcon(effect);
-                const categoryLabel = getEffectCategoryLabel(effect);
-
-                return (
-                  <button
-                    key={effect.name || getSafeEffectHref(effect)}
-                    onClick={() => handleEffectSelect(effect)}
-                    className="group flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-all duration-200 hover:bg-neutral-800/50"
-                  >
-                    <SearchResultIcon
-                      src={categoryIcon}
-                      alt={categoryLabel || effect.title}
-                    />
-
-                    <div className="flex-1">
-                      <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
-                        {effect.title}
-                      </div>
-
-                      <div className="mt-0.5 text-xs capitalize text-neutral-500 transition-colors group-hover:text-neutral-400">
-                        {categoryLabel}
-                      </div>
-                    </div>
-
-                    <svg
-                      className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+            <div className="p-2">
+                {filteredDocs.map((item) => (
+                    <button
+                      key={item.href}
+                      onClick={() => handleSelect({ ...item, type: "docs" })}
+                      className="group relative flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                );
-              })}
+                      <SearchResultIcon src={item.icon} alt={item.title} />
 
-              {isLoadingGlobalEffects && searchableEffects.length === 0 && (
-                <div className="px-3 py-3 text-center text-xs text-neutral-600">
-                  Loading global effects...
-                </div>
-              )}
-            </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
+                          {item.title}
+                        </div>
+
+                        <div className="mt-0.5 text-xs text-neutral-400 transition-colors group-hover:text-neutral-200">
+                          Docs · {item.description}
+                        </div>
+                      </div>
+
+                      <svg
+                        className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                ))}
+
+                {filteredEffects.map((effect) => {
+                  const categoryIcon = getEffectCategoryIcon(effect);
+                  const categoryLabel = getEffectCategoryLabel(effect);
+
+                  return (
+                    <button
+                      key={effect.name || getSafeEffectHref(effect)}
+                      onClick={() => handleEffectSelect(effect)}
+                      className="group relative flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
+                    >
+                      <SearchResultIcon
+                        src={categoryIcon}
+                        alt={categoryLabel || effect.title}
+                      />
+
+                      <div className="flex-1">
+                        <div className="font-medium text-neutral-200 transition-colors group-hover:text-white">
+                          {effect.title}
+                        </div>
+
+                        <div className="mt-0.5 text-xs capitalize text-neutral-500 transition-colors group-hover:text-neutral-400">
+                          {categoryLabel}
+                        </div>
+                      </div>
+
+                      <svg
+                        className="h-5 w-5 -translate-x-2 text-neutral-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:text-neutral-400 group-hover:opacity-100"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  );
+                })}
+
+                {isLoadingGlobalEffects && searchableEffects.length === 0 && (
+                  <div className="px-3 py-3 text-center text-xs text-neutral-600">
+                    Loading global effects...
+                  </div>
+                )}
+              </div>
           )}
         </div>
       </div>

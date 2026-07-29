@@ -260,18 +260,21 @@ export default function Pricing({ padding, content = true }) {
                 <p className="text24 mb-[1vw] max-md:mb-2">
                   {isYearly ? "Yearly" : "Monthly"}
                 </p>
+                <div className={`${isYearly ? "opacity-100 delay-300 duration-300" : "opacity-0 pointer-events-none"} w-fit `}>
+
                 <ShimmerText
                   as="div"
                   shimmerColor="#fab389"
                   baseColor="#ff5f00"
-                  className="inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]!"
+                  className={`inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]! `}
                 >
                   <p
-                    className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                    className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 `}
                   >
                     3 months free
                   </p>
                 </ShimmerText>
+                </div>
               </div>
               <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">
                 For developers, founders, and agencies shipping premium work.

@@ -226,93 +226,66 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
           </p>
         </div>
 
-        <div className="h-full w-[49%] rounded-md max-md:h-fit max-md:w-full max-md:p-[6vw] relative px-[3.5vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between bg-background text-foreground">
-          <div className="space-y-[1.5vw] max-md:space-y-[6vw]">
-            <p className="text80 font-heading">Pro</p>
-
-            {/* Always shows the full yearly price. First 100 paid users
-                (shared pool across USD and INR) are silently switched to the
-                founding plan_id server-side (create-subscription route) -
-                no visible indication, no separate tier on this card. */}
-            <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
-              <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
-                <span>{symbol}</span>
-                <PriceDigits
-                  monthlyAmount={monthlyAmount}
-                  yearlyAmount={yearlyAmount}
-                  isYearly={isYearly}
-                />
-              </p>
-              <p className="text24 mb-[1vw] max-md:mb-2">
-                {isYearly ? "Yearly" : "Monthly"}
-              </p>
-              <ShimmerText
-                as="div"
-                shimmerColor="#fab389"
-                baseColor="#ff5f00"
-                className="inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]!"
-              >
-                <p
-                  className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 ${isYearly ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-                >
-                  3 months free
-                </p>
-              </ShimmerText>
-            </div>
-            <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">
-              For developers, founders, and agencies shipping premium work.
-            </p>
-            <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw] max-sm:pt-[3vw]">
-              {ProFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center w-full">
-                  <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
-                    <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-sm:w-[4vw] max-sm:h-[4vw] shrink-0 max-md:h-[3.5vw] max-md:w-[3.5vw]" />
+        <div className="h-full rounded-md max-md:h-fit max-md:p-[6vw] relative px-[4vw] max-sm:rounded-sm flex-col py-[3vw] pb-[5vw] flex items-start max-md:gap-[10vw] justify-between w-1/2 max-md:w-full bg-background text-foreground">
+                    <div className="space-y-[1.5vw] max-md:space-y-[6vw] w-full">
+                      <p className="text80 font-heading">Pro</p>
+        
+                      <div className="flex gap-[1vw] max-md:gap-[2vw]  items-end">
+                        <p className="text110 max-sm:text-[13vw]! flex items-center font-medium! font-heading">
+                          <span>$</span>
+                          <PriceDigit digit="1" visible={isYearly} />
+                          <PriceDigit digit={isYearly ? "7" : "2"} />
+                          <PriceDigit digit={isYearly ? "9" : "0"} />
+                        </p>
+                        <p className="text24 mb-[1vw] max-md:mb-2">
+                          {isYearly ? "Yearly" : "Monthly"}
+                        </p>
+                        <div className={`${isYearly ? "opacity-100 delay-300 duration-300" : "opacity-0 pointer-events-none"} w-fit `}>
+        
+                        <ShimmerText
+                          as="div"
+                          shimmerColor="#fab389"
+                          baseColor="#ff5f00"
+                          className={`inline-block w-[15vw] max-md:w-[28vw] max-sm:w-[31vw] max-sm:text-[4vw]! `}
+                        >
+                          <p
+                            className={`text22 w-full text-nowrap max-sm:text-[4vw]! font-heading font-medium! max-md:mb-2 mb-[.75vw] ml-[1vw]  text-primary transition-opacity duration-300 `}
+                          >
+                            3 months free
+                          </p>
+                        </ShimmerText>
+                        </div>
+                      </div>
+                      <p className="text24 mt-[-1vw] max-sm:leading-[1.2] max-md:mt-0">
+                        For developers, founders, and agencies shipping premium work.
+                      </p>
+                      <div className="flex flex-col gap-[1.5vw] max-md:gap-[3.5vw] pt-[2vw] max-sm:pt-[3vw]">
+                        {ProFeatures.map((feature, index) => (
+                          <div key={index} className="flex items-center w-full">
+                            <div className="w-[3vw] max-sm:w-[7vw] max-md:w-[5vw]">
+                              <CheckIcon className="w-[1.5vw] h-[1.5vw] max-md:mt-0 max-sm:w-[4vw] max-sm:h-[4vw] shrink-0 max-md:h-[3.5vw] max-md:w-[3.5vw]" />
+                            </div>
+                            <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
+                              {feature}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
+                      <div className="w-fit max-sm:w-full">
+                        {/* Clerk-free by design: the landing page renders without
+                            ClerkProvider, so this CTA is always the anonymous
+                            variant. Plan-aware pricing lives on /pricing. */}
+                        <Button
+                          variant="orange"
+                          text="Upgrade to Pro"
+                          href="/sign-up"
+                          className="max-md:w-full max-sm:text-[4vw]"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text24 leading-[1.2] max-md:text-[4.2vw] w-[90%]">
-                    {feature}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-[1vw] max-md:space-y-[4vw] w-fit max-md:w-full">
-            <div className="w-fit max-sm:w-full">
-              {!isLoaded ? (  
-                <Button
-                  variant="orange"
-                  text="···"
-                  className="max-md:w-full max-sm:text-[4vw]"
-                  disabled
-                />
-              ) : userPlan === "pro" ? (
-                <Button
-                  variant="orange"
-                  text="Current Plan"
-                  className="max-md:w-full max-sm:text-[4vw]"
-                  disabled
-                />
-              ) : userPlan === "free" ? (
-                <RazorpayCheckoutButton
-                  plan={isYearly ? "yearly" : "monthly"}
-                  currency={currency}
-                  className="bg-[linear-gradient(to_right,#ff5f00,#E84002)] text-white rounded-full px-[1.5vw] py-[.8vw] max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 text-[1.15vw] font-medium tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw] max-sm:font-normal transition-all duration-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full"
-                  onSuccess={() => {
-                    window.location.href = "/dashboard?upgraded=true";
-                  }}
-                >
-                  {isYearly ? "Get Pro" : "Get Pro"}
-                </RazorpayCheckoutButton>
-              ) : (
-                <Button
-                  variant="orange"
-                  text="Get Pro"
-                  href="/sign-up"
-                  className="max-md:w-full max-sm:text-[4vw]"
-                />
-              )}
-            </div>
-          </div>
-        </div>
       </div>
       <SplitLine
         as="p"

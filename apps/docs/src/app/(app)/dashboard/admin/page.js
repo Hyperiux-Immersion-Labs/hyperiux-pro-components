@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ArrowUpRight, ChevronDown } from "lucide-react";
+import { Search, ArrowUpRight, ChevronDown, Mail, X, UserPlus } from "lucide-react";
 
 function formatDate(value) {
   if (!value) return "-";
@@ -28,7 +28,22 @@ function PlanBadge({ plan }) {
   );
 }
 
-function StatusBadge({ status }) {
+// Admins don't necessarily have an active subscription row (they get full
+// access via publicMetadata.role, a separate axis from plan/status), so
+// showing them as "inactive" is wrong rather than merely unstyled - check
+// isAdmin first. For everyone else, "inactive" only ever means "never
+// subscribed" (every user gets a free/inactive row at signup - see the
+// Clerk webhook), not a lapsed subscription, so free plans read as "Free"
+// instead of a status word that implies something broke.
+function StatusBadge({ status, plan, isAdmin }) {
+  if (isAdmin) {
+    return <span className="text-xs font-medium text-[#ff5f00]">Admin</span>;
+  }
+
+  if (plan !== "pro") {
+    return <span className="text-xs text-white/40">Free</span>;
+  }
+
   const color =
     status === "active"
       ? "text-emerald-400"
@@ -36,6 +51,88 @@ function StatusBadge({ status }) {
         ? "text-blue-400"
         : "text-white/40";
   return <span className={`text-xs capitalize ${color}`}>{status || "inactive"}</span>;
+}
+
+function InviteModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email) return;
+    setSending(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/waitlist/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Invite failed");
+      setMessage({ type: "success", text: `Invitation sent to ${email}` });
+      setEmail("");
+    } catch (err) {
+      setMessage({ type: "error", text: err.message });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Invite user</h2>
+          <button
+            onClick={onClose}
+            className="text-white/40 transition hover:text-white"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <p className="mb-4 text-sm text-white/50">
+          Send an invitation email to any address — they&apos;ll get a link
+          straight to account setup.
+        </p>
+        <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-3">
+          <Mail className="h-4 w-4 shrink-0 text-white/40" />
+          <input
+            type="email"
+            required
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="min-w-60 flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+          />
+          <button
+            type="submit"
+            disabled={sending}
+            className="rounded-full px-4 py-2.5 text-xs font-medium bg-[#ff5f00]/15 text-[#ff5f00] transition hover:bg-[#ff5f00]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {sending ? "Sending…" : "Send Invitation"}
+          </button>
+        </form>
+        {message && (
+          <p
+            className={`mt-3 text-sm ${
+              message.type === "success" ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
+            {message.text}
+          </p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function AdminPage() {
@@ -46,6 +143,18 @@ export default function AdminPage() {
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState(null);
   const [intervalByUser, setIntervalByUser] = useState({});
+  const [showInviteModal, setShowInviteModal] = useState(false);
+
+  useEffect(() => {
+    if (!showInviteModal) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [showInviteModal]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -107,6 +216,7 @@ export default function AdminPage() {
   const freeCount = users.filter((u) => u.plan === "free").length;
 
   return (
+    <>
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -116,20 +226,13 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link
-            href="/dashboard/admin/waitlist"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
-          >
-            Waitlist
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
-          <Link
-            href="/dashboard/admin/waitlist?tab=new"
+          <button
+            onClick={() => setShowInviteModal(true)}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Invite
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
+            <UserPlus className="h-3.5 w-3.5" />
+          </button>
           <Link
             href="/dashboard/admin/emails"
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
@@ -139,6 +242,8 @@ export default function AdminPage() {
           </Link>
         </div>
       </div>
+
+      
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
@@ -239,7 +344,7 @@ export default function AdminPage() {
                       <PlanBadge plan={user.plan} />
                     </td>
                     <td className="px-4 py-3">
-                      <StatusBadge status={user.status} />
+                      <StatusBadge status={user.status} plan={user.plan} isAdmin={user.isAdmin} />
                     </td>
                     <td className="px-4 py-3 text-white/60 whitespace-nowrap">
                       {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
@@ -256,17 +361,20 @@ export default function AdminPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         {user.plan !== "pro" && (
-                          <select
-                            value={intervalByUser[user.id] || "yearly"}
-                            onChange={(e) =>
-                              setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
-                            }
-                            disabled={updatingId === user.id}
-                            className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 px-3 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
-                          >
-                            <option value="monthly">1 month</option>
-                            <option value="yearly">1 year</option>
-                          </select>
+                          <div className="relative">
+                            <select
+                              value={intervalByUser[user.id] || "yearly"}
+                              onChange={(e) =>
+                                setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
+                              }
+                              disabled={updatingId === user.id}
+                              className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                            >
+                              <option value="monthly">1 month</option>
+                              <option value="yearly">1 year</option>
+                            </select>
+                            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+                          </div>
                         )}
                         <button
                           onClick={() => togglePlan(user)}
@@ -293,5 +401,10 @@ export default function AdminPage() {
         </div>
       </div>
     </div>
+    {showInviteModal && (
+        <InviteModal onClose={() => setShowInviteModal(false)} />
+      )}
+    
+    </>
   );
 }

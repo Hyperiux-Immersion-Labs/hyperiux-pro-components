@@ -137,15 +137,8 @@ export function VaultContent({
   const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const wishlistTimerRef = useRef(null);
 
   useEffect(() => { setMounted(true); }, []);
-
-  useEffect(() => {
-    if (!showWishlistToast) return;
-    wishlistTimerRef.current = setTimeout(() => setShowWishlistToast(false), 6000);
-    return () => clearTimeout(wishlistTimerRef.current);
-  }, [showWishlistToast]);
 
 const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
@@ -825,33 +818,53 @@ const routeKey = `${pathname}${
     </VaultLayout>
 
     {mounted && createPortal(
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-sm:bottom-4 max-sm:left-4 max-sm:right-4">
-        {/* Pro upgrade success toast */}
+      <>
+        {/* Pro upgrade success modal */}
         <div
-          className={`flex w-80 fixed bottom-6 right-6  max-sm:w-full flex-col gap-3 rounded-md border bg-[#0e0e0e] border-white/20 p-5 shadow-2xl transition-all duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          onClick={() => setUpgradeToastDismissed(true)}
         >
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm ">You&apos;re now Pro - full vault unlocked.</p>
-            <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors">✕</button>
+          <div
+            className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-xl font-medium text-white">Welcome to Pro</h2>
+              <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors absolute right-[3%] top-[5%]">✕</button>
+            </div>
+            <p className="text-sm text-white/60 text-center">
+              Your upgrade is confirmed and the full vault is unlocked. Explore
+              every Pro effect and start shipping right away.
+            </p>
+            <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
+              Explore effects
+            </Link>
           </div>
-          <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
-            Explore effects
-          </Link>
         </div>
 
-        {/* Wishlist sign-in toast */}
+        {/* Wishlist sign-in modal */}
         <div
-          className={`flex w-80 fixed bottom-6 right-6 max-sm:translate-x-[-50%] max-sm:left-1/2 max-md:bottom-12 max-sm:w-[80vw] max-md:w-[40vw] max-sm:bottom-20 flex-col gap-3 rounded-md border border-white/20 bg-[#0e0e0e] p-5 shadow-2xl transition-all duration-300 ${showWishlistToast ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 translate-y-4"}`}
+          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          onClick={() => setShowWishlistToast(false)}
         >
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm text-white">Sign in to save effects to your wishlist.</p>
-            <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors">✕</button>
+          <div
+            className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-xl font-medium text-white">Sign in required</h2>
+              <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors absolute right-[3%] top-[5%]">✕</button>
+            </div>
+            <p className="text-sm text-white/60 text-center">
+              Create a free account or sign in to save effects to your
+              wishlist and pick up right where you left off.
+            </p>
+            <Link href="/sign-in?redirect_url=/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors" onClick={() => setShowWishlistToast(false)}>
+              Sign In
+            </Link>
           </div>
-          <Link href="/sign-in?redirect_url=/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors" onClick={() => setShowWishlistToast(false)}>
-            Sign In
-          </Link>
         </div>
-      </div>,
+      </>,
       document.body
     )}
     </>

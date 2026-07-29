@@ -56,12 +56,12 @@ function StorytellingSpacer() {
   );
 }
 
-export default function Homepage({ faqItems }) {
+export default function Homepage({ faqItems, effects = [] }) {
   const { isMounted, isMobile } = useIsMobile();
 
   return (
     <>
-      <VaultShell>
+      <VaultShell effects={effects}>
         <Loader />
         <main id="main-content">
           <Hero />

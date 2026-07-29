@@ -188,7 +188,7 @@ export function VaultHeader({
               <button
                 type="button"
                 onClick={openSearch}
-                className="group flex h-12 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-md:hidden max-md:gap-3"
+                className="group flex py-[0.8vw] cursor-pointer items-center gap-10 rounded-full border border-white/40 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-white max-md:hidden max-md:gap-3"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -209,7 +209,7 @@ export function VaultHeader({
                   <span className="text-sm max-md:hidden">Search</span>
                 </div>
 
-                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
+                <kbd className="space-x-2 rounded bg-black/70 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
                   ⌘K
                 </kbd>
               </button>
@@ -329,7 +329,7 @@ export function VaultHeader({
                   <button
                     type="button"
                     onClick={openSearchFromMobile}
-                    className="group flex h-12 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-sm:h-14"
+                    className="group flex py-4 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-sm:h-14"
                   >
                     <div className="flex items-center gap-2">
                       <svg

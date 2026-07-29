@@ -197,6 +197,15 @@ export function getRegistryIndex() {
   return JSON.parse(content);
 }
 
+// public/r/index.json (what getRegistryIndex() reads) has no `tier` field on
+// its items, so free-tier counts can't be derived from it - only the private
+// registry.json files under registry/effects/** carry `tier`. Used to keep
+// "free accounts get N effects" messaging in sync with the actual catalog
+// instead of a number that drifts every time a free effect ships.
+export function getFreeEffectsCount() {
+  return getAllPrivateEffects().filter((effect) => effect.tier !== "pro").length;
+}
+
 // Metadata only - never reads Pro source file contents off disk. Safe to
 // call before any auth/plan check (e.g. generateMetadata, or to compute
 // isLocked before deciding whether the caller is even allowed to see source).
