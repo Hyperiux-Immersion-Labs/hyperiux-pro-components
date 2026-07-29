@@ -1,15 +1,18 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
+const DEFAULT_BTN_TEXT = "Hover me";
 const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export default function CharStaggerButton({
-  btnText = "",
+  btnText = DEFAULT_BTN_TEXT,
   href = DEFAULT_HREF,
   className = "",
   textClassName = "",

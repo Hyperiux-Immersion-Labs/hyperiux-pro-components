@@ -321,8 +321,8 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "SvgPixelReveal",
-      "exportKind": "named",
+      "exportName": "SVGPixelReveal",
+      "exportKind": "default",
       "version": "1.0.0"
     },
     {
@@ -1135,7 +1135,7 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "AnimatedFAQ",
+      "exportName": "AnimatedFaq",
       "exportKind": "default",
       "version": "1.1.0"
     },

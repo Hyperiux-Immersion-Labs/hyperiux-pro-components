@@ -21,7 +21,6 @@ const CAMERA_START_Z = 18;
 const TUNNEL_START_Z = 17;
 
 const SCROLL_SPEED = 0.012;
-const CAMERA_SMOOTHING = 0.08;
 const SCROLL_DAMPING = 7; // higher = stops sooner
 const CAMERA_FOLLOW = 10; // higher = follows target more tightly
 const MAX_SCROLL_VELOCITY = 2.0;
@@ -595,7 +594,7 @@ export default function GridTunnelComp({ images = [] }) {
           img.onload = onSuccess;
           img.onerror = onFail;
           img.src = url;
-        } catch (e) {
+        } catch {
           res({ ok: false, url });
         }
       });

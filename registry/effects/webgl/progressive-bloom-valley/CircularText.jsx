@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from'react'
 import gsap from'gsap'
-import { CupSoda, Stars } from'lucide-react'
+import { Stars } from'lucide-react'
 
 const CircularText = ({
  text ='',

@@ -5,7 +5,7 @@ import {
     FAQGroup,
     FAQTitle,
     FAQWrapper,
-} from "@/components/animated-faq";
+} from "@/components/animated-faq/AnimatedFaqComp";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";

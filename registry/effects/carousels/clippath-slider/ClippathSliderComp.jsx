@@ -8,7 +8,7 @@ gsap.registerPlugin(SplitText);
 export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [nextSlideIndex, setNextSlideIndex] = useState(0);
+  const [, setNextSlideIndex] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
   const isInside = useRef(false);
 

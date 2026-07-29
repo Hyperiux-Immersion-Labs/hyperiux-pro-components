@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
@@ -10,8 +12,10 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 
+const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
+
 export default function PerspectiveTextReveal({
- children,
+ children = DEFAULT_TEXT,
  animateOnScroll = true,
  delay = 0,
  className = "",

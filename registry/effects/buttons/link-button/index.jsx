@@ -1,13 +1,16 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { ArrowRight } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
 
 const DEFAULT_HREF = "#";
+const DEFAULT_BTN_TEXT = "Hover me";
 const TABLET_BREAKPOINT = 1025;
 
 export default function LinkButton({
-  btnText,
+  btnText = DEFAULT_BTN_TEXT,
   href = DEFAULT_HREF,
   className = "",
   linkProps = {},

@@ -3,7 +3,6 @@
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Mouse } from "lucide-react";
 
 // True when the user has asked the OS to minimise animation. Safe to call
 // during render - returns false on the server.

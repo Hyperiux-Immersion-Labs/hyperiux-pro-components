@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
@@ -138,7 +140,11 @@ function ImageNodeMaterial({ src, isMobile }) {
   )
 }
 
-export default function FishEye({ src }) {
+const DEFAULT_SRC =
+  'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
+const DEFAULT_CLASS_NAME = 'h-[50vh] w-[50vw]'
+
+export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_NAME }) {
   const rootRef = useRef(null)
   const [frameloop, setFrameloop] = useState('always')
   const [objectUrl, setObjectUrl] = useState(null)
@@ -181,7 +187,7 @@ export default function FishEye({ src }) {
   if (isMobile) return null
 
   return (
-    <div ref={rootRef} className="h-full w-full">
+    <div ref={rootRef} className={className}>
       {objectUrl ? (
         <Canvas
           dpr={[1, 2]}

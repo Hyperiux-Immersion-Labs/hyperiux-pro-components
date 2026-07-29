@@ -1,4 +1,3 @@
-import Link from "next/link";
 import AuthBgVideo from "./AuthBgVideo";
 
 export default function AuthShell({

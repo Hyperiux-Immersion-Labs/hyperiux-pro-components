@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useRef, useEffect } from "react";
@@ -19,14 +21,21 @@ function prefersReducedMotion() {
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
 
-// vw units
-const SLIDE_WIDE = 65;
-const SLIDE_NARROW = 33;
-const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X = "5vw";
 
-function ParallaxSlider({ images = [], bgColor = "#000000" }) {
+const DEFAULT_IMAGES = [
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+];
+
+function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#000000" }) {
     const outerRef = useRef(null);
     const trackRef = useRef(null);
 
@@ -144,7 +153,6 @@ function ParallaxSlider({ images = [], bgColor = "#000000" }) {
                 >
                     {images.map((src, i) => {
                         const isWide = i % 2 === 0;
-                        const width = isWide ? SLIDE_WIDE : SLIDE_NARROW;
                         const slideClass = isWide
                             ? "max-md:w-[80vw] max-md:h-[50vh] w-[65vw] h-[43vw]"
                             : "max-md:w-[45vw] max-md:h-[50vh] w-[33vw] h-[43vw]";

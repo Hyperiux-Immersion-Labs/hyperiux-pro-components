@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
-import { prefersReducedMotion } from "@/lib/motion";
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
 const vertexShader = /* glsl */ `
  uniform float uFold;
@@ -103,16 +106,18 @@ function WebGLSliderComp({ images = [] }) {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
     const syncReducedMotion = (event) => {
-      setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
+      const matches =
+        "matches" in event ? event.matches : event.currentTarget?.matches ?? prefersReducedMotion();
+      setReduceMotion(matches);
     };
 
-    // Without matchMedia there is no preference to read, and the default
-    // (motion on) already matches what prefersReducedMotion() reports.
-    if (!mediaQuery) return;
+    if (mediaQuery) {
+      syncReducedMotion(mediaQuery);
+      mediaQuery.addEventListener("change", syncReducedMotion);
+      return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+    }
 
-    syncReducedMotion(mediaQuery);
-    mediaQuery.addEventListener("change", syncReducedMotion);
-    return () => mediaQuery.removeEventListener("change", syncReducedMotion);
+    setReduceMotion(prefersReducedMotion());
   }, []);
 
   // Optional: if a Lenis instance exists somewhere in the tree, use it to

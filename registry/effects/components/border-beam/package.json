@@ -4,9 +4,9 @@
   "description": "Animated border beam effect for cards and surfaces",
   "main": "index.jsx",
   "files": [
-    "index.jsx",
     "BorderBeam.jsx",
     "PulseDriver.js",
+    "index.jsx",
     "styles.js",
     "registry.json"
   ],

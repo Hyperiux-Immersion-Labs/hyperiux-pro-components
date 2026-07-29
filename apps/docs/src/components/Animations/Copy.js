@@ -94,7 +94,7 @@ export default function Copy({
       if (document.fonts?.ready) {
         try {
           await document.fonts.ready;
-        } catch (_) {}
+        } catch {}
       }
 
       if (isKilled || runId !== runIdRef.current || !containerRef.current) {

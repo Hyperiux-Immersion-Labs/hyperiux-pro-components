@@ -7,8 +7,8 @@
     "gsap"
   ],
   "registryDependencies": [],
-  "exportName": "SvgPixelReveal",
-  "exportKind": "named",
+  "exportName": "SVGPixelReveal",
+  "exportKind": "default",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [
@@ -26,9 +26,9 @@
       "target": "src/components/effects/svg-pixel-reveal/index.jsx"
     },
     {
-      "path": "PixelatedScgFilter.jsx",
+      "path": "PixelatedSvgFilter.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.jsx"
     }
   ]
 }

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import { ReactLenis } from "lenis/react";
 import HelixSliderComp from "./HelixSliderComp";
 

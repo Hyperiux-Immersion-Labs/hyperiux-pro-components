@@ -1,4 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
+
 import { useEffect, useMemo, useState } from "react";
 import PixelCircle from "./PixelCircle";
 import PixelShift from "./PixelShift";

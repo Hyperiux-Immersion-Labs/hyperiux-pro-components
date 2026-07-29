@@ -15,7 +15,7 @@ export default function DraggableCanvas() {
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [containerPositions, setContainerPositions] = useState({
+  const [, setContainerPositions] = useState({
     large: { x: 0, y: 0 },
     medium: { x: 0, y: 0 },
     small: { x: 0, y: 0 },

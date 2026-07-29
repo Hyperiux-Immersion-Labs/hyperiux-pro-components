@@ -22,7 +22,7 @@ import {
   FAQGroup,
   FAQTitle,
   FAQWrapper,
-} from "@/components/animated-faq";
+} from "@/components/animated-faq/AnimatedFaqComp";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Button from "@/components/WebsiteComps/Button";

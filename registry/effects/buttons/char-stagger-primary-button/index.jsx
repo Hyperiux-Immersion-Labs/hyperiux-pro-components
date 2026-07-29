@@ -1,10 +1,12 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 const CharStaggerPrimaryButton = ({
-    btnText = "",
+    btnText = "Hover me",
     href = "#",
     btnClassName = "",
     textClassName = "",

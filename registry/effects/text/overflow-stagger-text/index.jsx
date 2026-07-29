@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useEffect, useRef } from "react";
@@ -21,13 +23,15 @@ const COPY_WRAPPER_ATTRIBUTE = "data-copy-wrapper";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const DEFAULT_TEXT = <p>Text that steps into frame.</p>;
+
 export default function OverflowStaggerText({
-  children,
+  children = DEFAULT_TEXT,
   animateOnScroll = true,
   delay = 0,
   className = "",
   stagger = STAGGER_DELAY,
-  scrub = true,
+  scrub = false,
   start = "top 90%",
   end = "bottom 60%",
 }) {

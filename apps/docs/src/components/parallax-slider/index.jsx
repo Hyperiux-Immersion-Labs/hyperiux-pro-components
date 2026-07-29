@@ -13,14 +13,21 @@ gsap.registerPlugin(ScrollTrigger);
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
 
-// vw units
-const SLIDE_WIDE = 65;
-const SLIDE_NARROW = 33;
-const SLIDE_HEIGHT = 43;
 const GAP = 1.6;
 const PAD_X = "5vw";
 
-function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
+const DEFAULT_IMAGES = [
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+];
+
+function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
   const outerRef = useRef(null);
   const trackRef = useRef(null);
 
@@ -138,7 +145,6 @@ function ParallaxSlider({ images = [], bgColor = "#0e0e0e" }) {
         >
           {images.map((src, i) => {
             const isWide = i % 2 === 0;
-            const width = isWide ? SLIDE_WIDE : SLIDE_NARROW;
             const slideClass = isWide
               ? "max-sm:w-[80vw] max-sm:h-[50vh] w-[65vw] h-[43vw]"
               : "max-sm:w-[45vw] max-sm:h-[50vh] w-[33vw] h-[43vw]";

@@ -194,7 +194,7 @@ export default function NavDropdownItem({ label, href, icon, hoverGroupRef }) {
             if (document.fonts?.ready) {
                 try {
                     await document.fonts.ready
-                } catch (_) {}
+                } catch {}
             }
 
             if (
