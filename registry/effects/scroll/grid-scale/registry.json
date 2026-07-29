@@ -38,99 +38,34 @@
   ],
   "props": [
     {
-      "name": "items",
-      "type": "array",
-      "default": [],
-      "description": "Grid items affected by the scale animation.",
-      "suggested": true
+      "name": "bgColor",
+      "type": "color",
+      "default": "#242424",
+      "description": "Background color of the section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
-      "name": "columns",
-      "type": "number",
-      "default": 4,
-      "description": "Number of grid columns on desktop.",
-      "suggested": true
+      "name": "panelColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Background color of the expanding center panel.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
-      "name": "scaleAmount",
+      "name": "convergeStagger",
       "type": "number",
-      "default": 1.18,
-      "description": "Hover or scroll scale amount.",
-      "suggested": true
-    },
-    {
-      "name": "gap",
-      "type": "number",
-      "default": 20,
-      "description": "Spacing between grid items.",
-      "suggested": true
-    },
-    {
-      "name": "duration",
-      "type": "number",
-      "default": 0.4,
-      "description": "Scale animation duration.",
-      "suggested": true
+      "default": 0.7,
+      "description": "Total stagger spread (seconds) as the floating keyword pills converge to center.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 3, "step": 0.05 }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "style",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "items",
-        "label": "Items",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "columns",
-        "label": "Columns",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 12,
-        "step": 0.1
-      },
-      {
-        "name": "scaleAmount",
-        "label": "Scale Amount",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 3.54,
-        "step": 0.05
-      },
-      {
-        "name": "gap",
-        "label": "Gap",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 100,
-        "step": 1
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

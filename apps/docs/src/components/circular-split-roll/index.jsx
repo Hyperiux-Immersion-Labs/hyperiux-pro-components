@@ -108,9 +108,13 @@ const ROLL_CONFIG = {
   imageSideOpacity: 0.14,
 };
 
-export default function CircularSplitRoll({ config = {}, ...props }) {
+export default function CircularSplitRoll({
+  radius = 500,
+  cardSize = 205,
+  textSideScale = 0.68,
+  textSideOpacity = 0.18,
+}) {
   const isDesktop = useIsDesktop();
-  const rollConfig = { ...ROLL_CONFIG, ...config, ...props };
 
   return (
     <ReactLenis
@@ -120,7 +124,23 @@ export default function CircularSplitRoll({ config = {}, ...props }) {
       }}
     >
       <main>
-        <CircularSplitRollComp items={showcaseItems} {...rollConfig} />
+        <CircularSplitRollComp
+          items={showcaseItems}
+          sectionHeight={ROLL_CONFIG.sectionHeight}
+          leftRadiusX={radius}
+          leftRadiusY={radius}
+          rightRadiusX={radius}
+          rightRadiusY={radius}
+          imageCardWidth={cardSize}
+          imageCardHeight={cardSize}
+          scrub={ROLL_CONFIG.scrub}
+          textCenterScale={ROLL_CONFIG.textCenterScale}
+          textSideScale={textSideScale}
+          textSideOpacity={textSideOpacity}
+          imageCenterScale={ROLL_CONFIG.imageCenterScale}
+          imageSideScale={ROLL_CONFIG.imageSideScale}
+          imageSideOpacity={ROLL_CONFIG.imageSideOpacity}
+        />
       </main>
 
     </ReactLenis>

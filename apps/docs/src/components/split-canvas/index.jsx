@@ -5,12 +5,17 @@ import { ReactLenis } from 'lenis/react';
 import { sections } from './content';
 import SplitCanvasComp from './SplitCanvasComp';
 
-export default function SplitCanvas() {
+export default function SplitCanvas({
+    bgColor = "#F5F5F0",
+    gridSize = 16,
+    numSlices = 32,
+    canvasSize = 599,
+}) {
     const wrapperRef = useRef(null);
 
     return (
         <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>
-            <main className="bg-[#F5F5F0] min-h-screen text-black">
+            <main className="min-h-screen text-black" style={{ backgroundColor: bgColor }}>
                 <div
                     ref={wrapperRef}
                     className="relative"
@@ -18,7 +23,12 @@ export default function SplitCanvas() {
                 >
                     {/* Fixed Canvas Container - higher z-index to be visible */}
                     <div className="sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-sm:items-center">
-                        <SplitCanvasComp wrapperRef={wrapperRef} />
+                        <SplitCanvasComp
+                            wrapperRef={wrapperRef}
+                            gridSize={gridSize}
+                            numSlices={numSlices}
+                            canvasSize={canvasSize}
+                        />
                     </div>
 
                     {/* Content Sections */}

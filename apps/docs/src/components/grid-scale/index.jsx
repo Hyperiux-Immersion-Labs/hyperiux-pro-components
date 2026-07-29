@@ -41,7 +41,11 @@ const floatingWords = [
   { text: 'HYPERIUX', color: 'bg-sky-200', start: { top: '92%', left: '90%', xPercent: -50, yPercent: -50 } },
 ]
 
-export default function GridScale() {
+export default function GridScale({
+  bgColor = "#242424",
+  panelColor = "#ffffff",
+  convergeStagger = 0.7,
+}) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `grid-scale-${uid}`;
   const centeredTextRef = useRef(null);
@@ -195,7 +199,7 @@ tl.fromTo(
           opacity: 0,
           ease: converge,
           stagger: {
-            amount: 0.7,
+            amount: convergeStagger,
             each: 0.1,
             grid: "auto",
             from: "random"
@@ -206,14 +210,15 @@ tl.fromTo(
     });
 
     return () => ctx.revert();
-  }, [sectionId]);
+  }, [sectionId, convergeStagger]);
 
   return (
     <>
-      <section id={sectionId} className='h-[400vh] w-full bg-[#242424]'>
+      <section id={sectionId} className='h-[400vh] w-full' style={{ backgroundColor: bgColor }}>
         <div className='h-screen w-full sticky top-0 overflow-hidden'>
           <div
-            className="clip-path flex items-center justify-center z-200 absolute top-0 left-0 w-full h-screen bg-white"
+            className="clip-path flex items-center justify-center z-200 absolute top-0 left-0 w-full h-screen"
+            style={{ backgroundColor: panelColor }}
           >
             <h1 ref={centeredTextRef} className='text-[#242424] opacity-0 w-[60vw] text-center leading-[1.1] text-[3.5vw] max-sm:text-[4.5vw]'>
               Building futuristic interfaces

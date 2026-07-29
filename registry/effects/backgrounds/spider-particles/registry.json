@@ -88,34 +88,6 @@
       }
     },
     {
-      "name": "lerpSpeed",
-      "type": "number",
-      "default": 0.1,
-      "description": "Adjusts how quickly the mouse follows.",
-      "remixer": {
-        "control": "range",
-        "group": "interaction",
-        "groupTitle": "Interactions",
-        "min": 0.01,
-        "max": 0.5,
-        "step": 0.01
-      }
-    },
-    {
-      "name": "fadeSpeed",
-      "type": "number",
-      "default": 0.04,
-      "description": "Controls how fast the effect fades in and out.",
-      "remixer": {
-        "control": "range",
-        "group": "interaction",
-        "groupTitle": "Interactions",
-        "min": 0.005,
-        "max": 0.2,
-        "step": 0.005
-      }
-    },
-    {
       "name": "particleColor",
       "type": "color",
       "default": "#ffffff",

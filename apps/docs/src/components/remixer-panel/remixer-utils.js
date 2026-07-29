@@ -31,6 +31,7 @@ export function getGroupsFromProps(props = []) {
       groupMap.set(groupId, {
         id: groupId,
         title: prop.remixer.groupTitle ?? toControlLabel(groupId),
+        collapsible: prop.remixer.groupCollapsible ?? true,
         controls: [],
       });
     }
@@ -79,6 +80,7 @@ export function normalizeRemixerControl(control = {}) {
 
 export function normalizeRemixerGroups(groups = []) {
   return groups.map((group, index) => ({
+    ...group,
     id: group.id ?? `group-${index}`,
     title: group.title,
     controls: (group.controls ?? []).map(normalizeRemixerControl),

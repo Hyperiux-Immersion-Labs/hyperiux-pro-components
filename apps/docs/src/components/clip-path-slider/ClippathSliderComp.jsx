@@ -8,7 +8,7 @@ gsap.registerPlugin(SplitText);
 const REDUCED_MOTION_FADE_DURATION = 0.18;
 const REDUCED_MOTION_FADE_EASE = "power2.out";
 
-export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
+export default function ClippathSliderComp({ slides = [], clueText, showClue = true, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", duration = 0.75, }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [, setNextSlideIndex] = useState(0);
@@ -262,7 +262,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         gsap.to(proxy, {
           progress: 1,
           imgScale: 1.25,
-          duration: 1.2,
+          duration,
           // ease:"cubic-bezier(.075, .82, .165, 1)",
           ease: "power2.inOut",
           onUpdate: draw,
@@ -282,7 +282,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         img.onerror = animate;
       }
     });
-  }, [reduceMotion, slides]);
+  }, [reduceMotion, slides, duration]);
 
   // SLIDE CHANGE
   const changeSlide = useCallback(async (newIndex) => {
@@ -328,7 +328,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       } else {
         gsap.to(outgoingRef.current, {
           scale: 1.0,
-          duration: 1.2,
+          duration,
           ease: "power2.inOut",
         });
       }
@@ -394,7 +394,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
     setCurrentSlide(newIndex);
     setIsTransitioning(false);
-  }, [fadeOutText, isTransitioning, reduceMotion, runSweepAnimation, slides]);
+  }, [fadeOutText, isTransitioning, reduceMotion, runSweepAnimation, slides, duration]);
 
   const nextSlideNav = useCallback(() => {
     if (slides.length === 0) return;
@@ -677,7 +677,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         </div>
       </div>
 
-      {clueText && (
+      {showClue && clueText && (
         <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full max-md:rounded-[4vw] border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-xs leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-18 max-sm:leading-[1.2]">
           {clueText}
         </p>

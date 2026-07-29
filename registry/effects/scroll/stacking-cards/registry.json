@@ -49,96 +49,62 @@
   ],
   "props": [
     {
-      "name": "cards",
-      "type": "array",
-      "default": [],
-      "description": "Cards rendered in the stacking scroll sequence.",
-      "suggested": true
-    },
-    {
-      "name": "offset",
-      "type": "number",
-      "default": 80,
-      "description": "Vertical offset between stacked cards.",
-      "suggested": true
-    },
-    {
-      "name": "scaleStep",
-      "type": "number",
-      "default": 0.05,
-      "description": "Scale reduction per stacked card.",
-      "suggested": true
-    },
-    {
-      "name": "stickyTop",
-      "type": "number",
-      "default": 96,
-      "description": "Top offset for sticky card behavior.",
-      "suggested": true
-    },
-    {
-      "name": "scrub",
+      "name": "imageZoomEnabled",
       "type": "boolean",
-      "default": false,
-      "description": "Links stacking progress to scroll.",
-      "suggested": true
+      "default": true,
+      "description": "Enables the image zoom-in effect during card reveals.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "tiltEnabled",
+      "type": "boolean",
+      "default": true,
+      "description": "Enables the outgoing card tilt, scale, and rotateX treatment.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "cardCornerRadius",
+      "type": "string",
+      "default": "3vw",
+      "description": "Corner radius applied to the outgoing card as it tilts away.",
+      "remixer": {
+        "control": "text",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "stackPerspective",
+      "type": "number",
+      "default": 1200,
+      "description": "Perspective depth applied to the stacked card scene.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 200,
+        "max": 2400,
+        "step": 10
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "suggested": false,
+    "defaultOpenGroupId": "motion",
     "layout": {
       "controlsButtonClassName": "right-4! top-25!"
     },
     "panel": {
       "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "cards",
-        "label": "Cards",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "offset",
-        "label": "Offset",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 240,
-        "step": 0.1
-      },
-      {
-        "name": "scaleStep",
-        "label": "Scale Step",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 3,
-        "step": 0.05
-      },
-      {
-        "name": "stickyTop",
-        "label": "Sticky Top",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 288,
-        "step": 0.1
-      },
-      {
-        "name": "scrub",
-        "label": "Scrub",
-        "type": "toggle",
-        "group": "controls",
-        "copyable": true
-      }
-    ]
+    }
   }
 }

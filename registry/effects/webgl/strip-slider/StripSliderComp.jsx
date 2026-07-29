@@ -79,7 +79,7 @@ const galleryVert = /* glsl */ `
  varying vec2 vTexCoordB;
  varying float vTexBlend;
 
- const float dispVertScale = 4.0;
+ uniform float uDispVertScale;
  const float dispNormScale = 0.01;
  const float dispViewScale = 30.0;
 
@@ -119,7 +119,7 @@ const galleryVert = /* glsl */ `
        );
 
    float disp = texture2D(uTex, vTexCoord).a;
-   float dispScaled = (disp - 0.5) * vWidth * dispVertScale;
+   float dispScaled = (disp - 0.5) * vWidth * uDispVertScale;
    vec3 posDisp = vec3(position.xy, dispScaled);
 
    gl_Position = projectionMatrix * viewMatrix * modelMatrix * instanceMatrix * vec4(posDisp, 1.0);
@@ -173,7 +173,7 @@ const galleryVert = /* glsl */ `
      disp = mix(disp, dispB, vTexBlend);
    }
 
-   float dispScaled = (disp - 0.5) * vWidth * dispVertScale;
+   float dispScaled = (disp - 0.5) * vWidth * uDispVertScale;
    vec3 posDisp = vec3(position.xy, dispScaled);
 
    vec4 normal = texture2D(uNormalsTex, vTexCoord);
@@ -383,7 +383,11 @@ const hazeFrag = /* glsl */ `
  }
 `;
 
-export default function StripSliderComp({ items = [] }) {
+export default function StripSliderComp({
+  items = [],
+  dispScale = 1,
+  cameraSway = 0.03,
+}) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -502,7 +506,7 @@ export default function StripSliderComp({ items = [] }) {
       ...item,
       i,
       imageWidth: 1 / (item.imageCount || 1),
-      dispScale: item.dispScale || 1,
+      dispScale: (item.dispScale || 1) * dispScale,
       expanded: i === 0,
       width: i === 0 ? 1 : GALLERY_ITEM_W,
     }));
@@ -562,6 +566,7 @@ galleryContainer.add(mesh);
         uTex: { value: null },
         uNormalsTex: { value: null },
         uPortrait,
+        uDispVertScale: { value: 4.0 * dispScale },
       },
     });
 
@@ -605,6 +610,7 @@ galleryContainer.add(mesh);
         uImageWidth: { value: 1 },
         uStartTime: { value: 0 },
         uDispScale: { value: 1 },
+        uDispVertScale: { value: 4.0 * dispScale },
         uImageAspect: { value: 1.0 },
       },
     });
@@ -801,7 +807,6 @@ galleryContainer.add(mesh);
     let tLast = 0;
 
     const cameraTarget = new THREE.Vector3(0, 0, CAMERA_Z);
-    const CAMERA_SWAY = 0.03;
     const pointer = new THREE.Vector2(-1, 0);
     const raycaster = new THREE.Raycaster();
 
@@ -955,14 +960,14 @@ galleryContainer.add(mesh);
 
   if (portrait) {
     cameraTarget.set(
-      (h / 2 - cy) * -CAMERA_SWAY,
-      (w / 2 - cx) * -CAMERA_SWAY,
+      (h / 2 - cy) * -cameraSway,
+      (w / 2 - cx) * -cameraSway,
       CAMERA_Z
     );
   } else {
     cameraTarget.set(
-      (w / 2 - cx) * -CAMERA_SWAY,
-      (h / 2 - cy) * CAMERA_SWAY,
+      (w / 2 - cx) * -cameraSway,
+      (h / 2 - cy) * cameraSway,
       CAMERA_Z
     );
   }
@@ -991,8 +996,6 @@ galleryContainer.add(mesh);
     let touchLast = null;
     let touchTracker = 0;
 
-    const TOUCH_SPEED = 0.015;
-
     function onTouchStart() {
       touchTracker = 0;
       touchLast = null;
@@ -1012,7 +1015,7 @@ galleryContainer.add(mesh);
       touchLast = pos;
       touchTracker += delta;
 
-      const threshold = (portrait ? rect.height : rect.width) * TOUCH_SPEED;
+      const threshold = (portrait ? rect.height : rect.width) * 0.015;
 
       if (Math.abs(touchTracker) > threshold) {
         navigateGallery(Math.sign(touchTracker));
@@ -1104,7 +1107,7 @@ galleryContainer.add(mesh);
 
       renderer.dispose();
     };
-  }, [items]);
+  }, [items, dispScale, cameraSway]);
 
   return (
     <canvas

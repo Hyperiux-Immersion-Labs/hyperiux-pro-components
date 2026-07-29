@@ -40,96 +40,41 @@
   ],
   "props": [
     {
-      "name": "cards",
-      "type": "array",
-      "default": [],
-      "description": "Cards shuffled by scroll progress.",
-      "suggested": true
+      "name": "background",
+      "type": "color",
+      "default": "#FFFBEB",
+      "description": "Background color of the section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
-      "name": "shuffleAmount",
+      "name": "cardsGap",
       "type": "number",
-      "default": 80,
-      "description": "Maximum movement distance during shuffle.",
-      "suggested": true
+      "default": 6,
+      "description": "Spacing between cards, in vw.",
+      "remixer": { "control": "range", "group": "style", "groupTitle": "Style", "min": 0, "max": 20, "step": 0.5 }
     },
     {
-      "name": "rotationAmount",
+      "name": "sectionHeight",
       "type": "number",
-      "default": 12,
-      "description": "Maximum rotation during shuffle.",
-      "suggested": true
+      "default": 400,
+      "description": "Total scroll-track height (vh) — controls how much scrolling the shuffle takes.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 100, "max": 800, "step": 10 }
     },
     {
-      "name": "stagger",
+      "name": "shuffleIntensity",
       "type": "number",
-      "default": 0.08,
-      "description": "Delay between card movements.",
-      "suggested": true
-    },
-    {
-      "name": "scrub",
-      "type": "boolean",
-      "default": false,
-      "description": "Links shuffle progress to scroll.",
-      "suggested": true
+      "default": 1,
+      "description": "Multiplier on how far and how much each card drifts/rotates during the shuffle.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "cards",
-        "label": "Cards",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "shuffleAmount",
-        "label": "Shuffle Amount",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 240,
-        "step": 0.1
-      },
-      {
-        "name": "rotationAmount",
-        "label": "Rotation Amount",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 36,
-        "step": 0.1
-      },
-      {
-        "name": "stagger",
-        "label": "Stagger",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "scrub",
-        "label": "Scrub",
-        "type": "toggle",
-        "group": "controls",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

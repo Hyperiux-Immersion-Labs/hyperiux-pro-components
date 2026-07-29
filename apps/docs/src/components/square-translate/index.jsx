@@ -15,7 +15,7 @@ const items = [
     "Senior developers on every project",
 ];
 
-export default function SquareTranslate() {
+export default function SquareTranslate(props) {
     return (
         <>
 
@@ -23,11 +23,10 @@ export default function SquareTranslate() {
                 items={items}
                 textClassName="text-[1.1vw] max-md:text-lg"
                 textColor="text-black"
-                squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3 bg-[#FB450F]"
+                squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3"
                 containerClassName="w-[50vw]  max-md:w-full"
-                translateValue={55}
                 borderColor="border-black/10"
-                totalTranslateImpact={3}
+                {...props}
             />
 
         </>

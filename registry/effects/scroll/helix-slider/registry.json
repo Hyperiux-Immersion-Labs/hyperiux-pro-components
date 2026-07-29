@@ -43,96 +43,48 @@
   ],
   "props": [
     {
-      "name": "slides",
-      "type": "array",
-      "default": [],
-      "description": "Slides positioned along the helix.",
-      "suggested": true
-    },
-    {
-      "name": "radius",
+      "name": "snakeAmplitude",
       "type": "number",
-      "default": 260,
-      "description": "Radius of the helix path.",
-      "suggested": true
+      "default": 340,
+      "description": "Width of the S-curve the helix swings across horizontally.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 700, "step": 5 }
     },
     {
-      "name": "depth",
+      "name": "depthAmplitude",
       "type": "number",
-      "default": 900,
-      "description": "Z-depth of the helix.",
-      "suggested": true
+      "default": 200,
+      "description": "Front-to-back depth of the helix.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 500, "step": 5 }
     },
     {
-      "name": "rotationSpeed",
+      "name": "perspective",
       "type": "number",
-      "default": 1,
-      "description": "Rotation speed of the slider.",
-      "suggested": true
+      "default": 1900,
+      "description": "3D perspective depth on the scene.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 400, "max": 3000, "step": 50 }
     },
     {
-      "name": "showControls",
-      "type": "boolean",
-      "default": false,
-      "description": "Shows slider navigation controls.",
-      "suggested": true
+      "name": "scaleMin",
+      "type": "number",
+      "default": 0.72,
+      "description": "How small distant cards shrink to.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0.2, "max": 1, "step": 0.02 }
+    },
+    {
+      "name": "maxYRotation",
+      "type": "number",
+      "default": 0,
+      "description": "Max card tilt (degrees) around the vertical axis as it moves along the helix — 0 disables the tilt entirely.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 90, "step": 1 }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "slides",
-        "label": "Slides",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "radius",
-        "label": "Radius",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 1040,
-        "step": 1
-      },
-      {
-        "name": "depth",
-        "label": "Depth",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 2700,
-        "step": 0.1
-      },
-      {
-        "name": "rotationSpeed",
-        "label": "Rotation Speed",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      },
-      {
-        "name": "showControls",
-        "label": "Show Controls",
-        "type": "toggle",
-        "group": "content",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

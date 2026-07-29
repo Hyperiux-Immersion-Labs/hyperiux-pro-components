@@ -154,17 +154,6 @@
       }
     },
     {
-      "name": "items",
-      "type": "array",
-      "description": "Carousel items rendered in the infinite loop.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "speed",
       "type": "number",
       "description": "Continuous carousel movement speed.",
@@ -212,7 +201,10 @@
         "control": "select",
         "group": "controls",
         "groupTitle": "Controls",
-        "options": []
+        "options": [
+          "left",
+          "right"
+        ]
       }
     }
   ],

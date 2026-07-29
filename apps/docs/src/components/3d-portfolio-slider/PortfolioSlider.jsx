@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 import { usePrefersReducedMotion } from "@/lib/motion";
 
-function getViewportConfig() {
+function getViewportConfig(zoomFactorMultiplier = 1) {
   const width = window.innerWidth;
   const isMobile = width < 768;
   const isTablet = width <= 1025;
@@ -19,11 +19,16 @@ function getViewportConfig() {
     planeWidthFactor: isMobile ? 0.85 : isTablet ? 0.82 : 0.5,
     baseRadius: isMobile ? 20 : isTablet ? 26 : 35,
     maxRadius: isMobile ? 30 : isTablet ? 42 : 55,
-    zoomFactor: isMobile ? 0.7 : isTablet ? 1.05 : 1.5,
+    zoomFactor: (isMobile ? 0.7 : isTablet ? 1.05 : 1.5) * zoomFactorMultiplier,
   };
 }
 
-export default function PortfolioSlider({ items }) {
+export default function PortfolioSlider({
+  items,
+  zoomFactor = 1,
+  scrollSpeed = 0.01,
+  showCaption = true,
+}) {
   const containerRef = useRef(null);
   const circleRef = useRef(null);
   const textContainerRef = useRef(null);
@@ -35,7 +40,7 @@ export default function PortfolioSlider({ items }) {
     let scene, camera, renderer;
     let planes = [];
 
-    let currentRadius = getViewportConfig().initialRadius;
+    let currentRadius = getViewportConfig(zoomFactor).initialRadius;
 
     const container = containerRef.current;
 
@@ -49,7 +54,7 @@ export default function PortfolioSlider({ items }) {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const viewportConfig = getViewportConfig();
+    const viewportConfig = getViewportConfig(zoomFactor);
 
     camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
     camera.position.z = 5;
@@ -73,7 +78,6 @@ export default function PortfolioSlider({ items }) {
     const planeWidth = frustumWidth * viewportConfig.planeWidthFactor;
     const planeHeight = frustumHeight;
     const spacing = planeWidth;
-    const speedFactor = 0.01;
 
     items.forEach((item, i) => {
       const texture = loader.load(item.url);
@@ -153,9 +157,9 @@ export default function PortfolioSlider({ items }) {
       if (!isSnapping && Math.abs(delta) < 0.5) {
         if (!snapTimeout) {
           snapTimeout = setTimeout(() => {
-            const currentScrollOffset = offset * speedFactor;
+            const currentScrollOffset = offset * scrollSpeed;
             const targetScrollOffset = Math.round(currentScrollOffset / spacing) * spacing;
-            const targetOffset = targetScrollOffset / speedFactor;
+            const targetOffset = targetScrollOffset / scrollSpeed;
 
             if (Math.abs(offset - targetOffset) > 1) {
               isSnapping = true;
@@ -185,7 +189,7 @@ export default function PortfolioSlider({ items }) {
         }
       }
 
-      const scrollOffset = offset * speedFactor;
+      const scrollOffset = offset * scrollSpeed;
 
       const targetRadius = Math.min(
         viewportConfig.baseRadius + Math.abs(delta) * 0.12,
@@ -300,22 +304,24 @@ export default function PortfolioSlider({ items }) {
       container.removeChild(renderer.domElement);
       lenis.destroy();
     };
-  }, [items]);
+  }, [items, zoomFactor, scrollSpeed]);
 
   const scrollHeight = items.length * 100; // 100vh per image for smooth infinite scrolling
 
   return (
-    <div className={`w-full bg-black`} style={{ height: `${scrollHeight}vh` }}>
+    <div className="w-full bg-black" style={{ height: `${scrollHeight}vh` }}>
       <div ref={containerRef} className="sticky top-0 h-screen w-full overflow-hidden">
-        <div
-          ref={textContainerRef}
-          data-active-text={items[0].description}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-md:h-9 max-md:w-70 max-md:text-xl max-sm:h-12 max-sm:w-[84vw] max-sm:text-base"
-        >
-          <div ref={activeTextRef} className="absolute w-full h-full flex items-center justify-center">
-            {items[0].description}
+        {showCaption && (
+          <div
+            ref={textContainerRef}
+            data-active-text={items[0].description}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-lg uppercase tracking-[0.2em] z-20 pointer-events-none mix-blend-difference overflow-hidden h-7.5 w-50 max-md:h-9 max-md:w-70 max-md:text-xl max-sm:h-12 max-sm:w-[84vw] max-sm:text-base"
+          >
+            <div ref={activeTextRef} className="absolute w-full h-full flex items-center justify-center">
+              {items[0].description}
+            </div>
           </div>
-        </div>
+        )}
         <div ref={circleRef} className="absolute top-1/2 left-1/2 w-0 h-0 pointer-events-none z-10"
           style={{ transform: "translate(-50%, -50%) rotate(0deg)" }}
         >

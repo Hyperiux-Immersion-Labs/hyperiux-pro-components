@@ -3,13 +3,19 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { prefersReducedMotion } from "@/lib/motion";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(SplitText);
 
-const DEFAULT_CARD_WIDTH = 320;
-const DEFAULT_CARD_GAP = 24;
+// True when the user has asked the OS to minimise animation. Safe to call
+// during render - returns false on the server.
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
+const VELOCITY_LERP = 0.09;
+
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1025;
 const MOBILE_CARD_WIDTH = 240;
@@ -17,28 +23,28 @@ const MOBILE_CARD_GAP = 16;
 const TABLET_CARD_WIDTH = 380;
 const TABLET_CARD_GAP = 20;
 
-const ACTIVE_CONTENT_CLEAR_DELTA = 2;
+const ROTATION_SENSITIVITY = 0.025;
+const ROTATION_DAMP = 0.1;
+const ROTATION_LERP = 0.12;
 
+const ACTIVE_CONTENT_CLEAR_DELTA = 2;
+const SCROLL_STOP_DELAY = 180;
+
+const TEXT_ENTER_DURATION = 0.35;
+const TEXT_LEAVE_DURATION = 0.35;
+const TEXT_STAGGER = 0.06;
 const TEXT_LEAVE_STAGGER = 0.04;
 
 const getItemData = (item) => (typeof item === "string" ? { src: item } : item);
 
 export function InfinitePerspectiveSliderComp({
   images = [],
-  cardWidth = DEFAULT_CARD_WIDTH,
-  cardGap = DEFAULT_CARD_GAP,
+  cardWidth: desktopCardWidth = 320,
+  cardGap: desktopCardGap = 24,
   perspective = 2200,
-  scrollSpeed = 1.0,
+  scrollSpeed = 1,
   scrollLerp = 0.1,
-  velocityLerp = 0.09,
-  rotationSensitivity = 0.025,
-  rotationDamp = 0.1,
-  rotationLerp = 0.12,
   maxRotation = 80,
-  scrollStopDelay = 180,
-  textEnterDuration = 0.35,
-  textLeaveDuration = 0.35,
-  textStagger = 0.06,
 }) {
   const stripRef = useRef(null);
   const settersRef = useRef([]);
@@ -56,53 +62,31 @@ export function InfinitePerspectiveSliderComp({
   const leaveHandlersRef = useRef({});
   const enterHandlersRef = useRef({});
 
-  const [viewportWidth, setViewportWidth] = useState(DEFAULT_CARD_WIDTH * 4);
+  const [viewportWidth, setViewportWidth] = useState(desktopCardWidth * 4);
 
   const isMobileViewport = viewportWidth < MOBILE_BREAKPOINT;
   const isTabletViewport =
     viewportWidth >= MOBILE_BREAKPOINT && viewportWidth < TABLET_BREAKPOINT;
 
-  const resolvedCardWidth = isMobileViewport
+  const cardWidth = isMobileViewport
     ? MOBILE_CARD_WIDTH
     : isTabletViewport
       ? TABLET_CARD_WIDTH
-      : cardWidth;
+      : desktopCardWidth;
 
-  const resolvedCardGap = isMobileViewport
+  const cardGap = isMobileViewport
     ? MOBILE_CARD_GAP
     : isTabletViewport
       ? TABLET_CARD_GAP
-      : cardGap;
+      : desktopCardGap;
 
-  const cardStep = resolvedCardWidth + resolvedCardGap;
+  const cardStep = cardWidth + cardGap;
 
   const cardHeight = isMobileViewport
     ? "calc(40vh + 72px)"
     : isTabletViewport
       ? "calc(45vh + 84px)"
       : "calc(50vh + 96px)";
-
-  // Read by the rAF loop and the pointer handlers so prop changes apply on the
-  // next frame instead of tearing down the loop and snapping back to offset 0.
-  const configRef = useRef(null);
-
-  configRef.current = {
-    cardStep,
-    cardWidth: resolvedCardWidth,
-    isMobileViewport,
-    isTabletViewport,
-    scrollSpeed,
-    scrollLerp,
-    velocityLerp,
-    rotationSensitivity,
-    rotationDamp,
-    rotationLerp,
-    maxRotation,
-    scrollStopDelay,
-    textEnterDuration,
-    textLeaveDuration,
-    textStagger,
-  };
 
   const stateRef = useRef({
     current: 0,
@@ -154,7 +138,7 @@ export function InfinitePerspectiveSliderComp({
       if (enterHandler) {
         enterHandler();
       }
-    }, configRef.current.scrollStopDelay);
+    }, SCROLL_STOP_DELAY);
   }, [clearActiveContent]);
 
   const initSetters = () => {
@@ -172,24 +156,22 @@ export function InfinitePerspectiveSliderComp({
 
       if (!strip || !images.length) return;
 
-      const { cardStep: step, cardWidth: width } = configRef.current;
-
       const cards = strip.children;
       const setters = settersRef.current;
 
       const count = images.length;
-      const loopWidth = count * step;
+      const loopWidth = count * cardStep;
 
       const viewW = window.innerWidth;
       const centerX = viewW / 2;
-      const centreOffset = centerX - width / 2;
+      const centreOffset = centerX - cardWidth / 2;
 
       for (let index = 0; index < cards.length; index += 1) {
-        let x = index * step - offset + centreOffset;
+        let x = index * cardStep - offset + centreOffset;
 
         x = ((x % loopWidth) + loopWidth) % loopWidth;
 
-        if (x > loopWidth - step) {
+        if (x > loopWidth - cardStep) {
           x -= loopWidth;
         }
 
@@ -197,7 +179,7 @@ export function InfinitePerspectiveSliderComp({
         setters[index]?.rotateY(rotation);
       }
     },
-    [images]
+    [cardStep, cardWidth, images]
   );
 
   useEffect(() => {
@@ -234,7 +216,7 @@ export function InfinitePerspectiveSliderComp({
         state.rotationVelocity = 0;
         state.currentRotation = 0;
       } else {
-        state.current = lerp(state.current, state.target, LERP);
+        state.current = lerp(state.current, state.target, scrollLerp);
         state.velocity = state.target - state.current;
 
         state.smoothVelocity = lerp(
@@ -260,11 +242,7 @@ export function InfinitePerspectiveSliderComp({
         );
       }
 
-      const finalRotation = clamp(
-        state.currentRotation,
-        -config.maxRotation,
-        config.maxRotation
-      );
+      const finalRotation = clamp(state.currentRotation, -maxRotation, maxRotation);
 
       if (Math.abs(state.current - state.target) < 0.05) {
         const shift = Math.round(state.current / loopWidth) * loopWidth;
@@ -277,17 +255,13 @@ export function InfinitePerspectiveSliderComp({
     };
 
     const onWheel = (event) => {
-      const config = configRef.current;
-
-      if (config.isMobileViewport || config.isTabletViewport) return;
-
       const delta = event.deltaY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
         markScrolling();
       }
 
-      state.target += delta * config.scrollSpeed;
+      state.target += delta * scrollSpeed;
     };
 
     const onDown = (clientX) => {
@@ -307,7 +281,7 @@ export function InfinitePerspectiveSliderComp({
         markScrolling();
       }
 
-      state.target += -delta * configRef.current.scrollSpeed;
+      state.target += -delta * scrollSpeed;
     };
 
     const onUp = () => {
@@ -378,7 +352,7 @@ export function InfinitePerspectiveSliderComp({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [images, positionCards, markScrolling]);
+  }, [cardStep, images, positionCards, markScrolling, scrollSpeed, scrollLerp, maxRotation]);
 
   useEffect(() => {
     if (!images.length) return;
@@ -444,9 +418,6 @@ export function InfinitePerspectiveSliderComp({
 
         activeHoverIndexRef.current = index;
 
-        const { textEnterDuration: duration, textStagger: stagger } =
-          configRef.current;
-
         gsap.killTweensOf(allLines);
         gsap.killTweensOf([number, title, description]);
 
@@ -462,8 +433,8 @@ export function InfinitePerspectiveSliderComp({
             numberLines,
             {
               yPercent: 0,
-              duration,
-              stagger,
+              duration: TEXT_ENTER_DURATION,
+              stagger: TEXT_STAGGER,
             },
             0
           )
@@ -471,8 +442,8 @@ export function InfinitePerspectiveSliderComp({
             [titleLines, descriptionLines],
             {
               yPercent: 0,
-              duration,
-              stagger,
+              duration: TEXT_ENTER_DURATION,
+              stagger: TEXT_STAGGER,
             },
             0.05
           );
@@ -482,8 +453,6 @@ export function InfinitePerspectiveSliderComp({
         if (activeHoverIndexRef.current === index) {
           activeHoverIndexRef.current = null;
         }
-
-        const { textLeaveDuration: duration } = configRef.current;
 
         gsap.killTweensOf(allLines);
         gsap.killTweensOf([number, title, description]);
@@ -499,7 +468,7 @@ export function InfinitePerspectiveSliderComp({
             [titleLines, descriptionLines],
             {
               yPercent: 100,
-              duration,
+              duration: TEXT_LEAVE_DURATION,
               stagger: TEXT_LEAVE_STAGGER,
             },
             0
@@ -508,7 +477,7 @@ export function InfinitePerspectiveSliderComp({
             numberLines,
             {
               yPercent: 100,
-              duration,
+              duration: TEXT_LEAVE_DURATION,
               stagger: TEXT_LEAVE_STAGGER,
             },
             0.04
@@ -575,9 +544,9 @@ export function InfinitePerspectiveSliderComp({
   }, [images]);
 
   return (
-    <div className="h-fit w-screen overflow-hidden">
+    <div className="h-screen w-screen overflow-hidden">
       <div
-        className="pointer-events-none relative flex h-full items-center overflow-hidden max-md:items-center"
+        className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center "
         style={{ perspective: `${perspective}px` }}
       >
         <div
@@ -596,7 +565,7 @@ export function InfinitePerspectiveSliderComp({
                 }}
                 className="pointer-events-auto absolute left-0 top-0 opacity-0 will-change-transform"
                 style={{
-                  width: resolvedCardWidth,
+                  width: cardWidth,
                   height: cardHeight,
                   transformOrigin: "center center",
                   transform: "translateZ(1px)",
@@ -606,7 +575,7 @@ export function InfinitePerspectiveSliderComp({
                   ref={(element) => {
                     numberRefs.current[index] = element;
                   }}
-                  className="mb-2 text-2xl leading-none tracking-tight text-black opacity-0 max-md:text-xl max-sm:mb-1 max-sm:text-lg"
+                  className="mb-2 text-2xl leading-none tracking-tight text-black opacity-0 max-[1025px]:text-xl max-md:mb-1 max-md:text-lg"
                 >
                   {number}
                 </div>
@@ -615,13 +584,12 @@ export function InfinitePerspectiveSliderComp({
                   ref={(element) => {
                     imageRefs.current[index] = element;
                   }}
-                  className="relative h-[50vh] w-full overflow-hidden bg-white max-md:h-[45vh] max-sm:h-[40vh]"
+                  className="relative h-[50vh] w-full overflow-hidden bg-white max-[1025px]:h-[45vh] max-md:h-[40vh]"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={src}
                     alt={`slide-${index}`}
-                    className="object-cover h-full w-full absolute inset-0"
+                    className="absolute inset-0 h-full w-full object-cover"
                     draggable={false}
                   />
                 </div>
@@ -631,7 +599,7 @@ export function InfinitePerspectiveSliderComp({
                     ref={(element) => {
                       titleRefs.current[index] = element;
                     }}
-                    className="text-xl uppercase leading-none tracking-[0.04em] text-black opacity-0 max-md:text-lg max-sm:text-base"
+                    className="text-xl uppercase leading-none tracking-[0.04em] text-black opacity-0 max-[1025px]:text-lg max-md:text-base"
                   >
                     {title}
                   </div>
@@ -640,7 +608,7 @@ export function InfinitePerspectiveSliderComp({
                     ref={(element) => {
                       descriptionRefs.current[index] = element;
                     }}
-                    className="text-sm leading-none text-black/70 opacity-0 max-md:text-xs max-sm:text-xs"
+                    className="text-sm leading-none text-black/70 opacity-0 max-[1025px]:text-xs max-md:text-xs"
                   >
                     {desc || description || ""}
                   </div>
@@ -650,6 +618,8 @@ export function InfinitePerspectiveSliderComp({
           })}
         </div>
       </div>
+
+      
     </div>
   );
 }

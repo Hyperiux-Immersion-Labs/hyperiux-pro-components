@@ -38,93 +38,55 @@
   ],
   "props": [
     {
-      "name": "slides",
-      "type": "array",
-      "default": [],
-      "description": "Slides used by the rotation slider.",
-      "suggested": true
-    },
-    {
       "name": "rotationAmount",
       "type": "number",
-      "default": 18,
-      "description": "Rotation applied during slide transitions.",
-      "suggested": true
+      "default": 1,
+      "description": "Multiplier on the built-in per-breakpoint rotateY entrance/exit strength as cards scroll by.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
     },
     {
-      "name": "duration",
+      "name": "verticalDrift",
       "type": "number",
-      "default": 0.65,
-      "description": "Slide transition duration.",
-      "suggested": true
+      "default": 1,
+      "description": "Multiplier on the built-in per-breakpoint vertical offset each card travels while scrolling past.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
     },
     {
-      "name": "autoplay",
-      "type": "boolean",
-      "default": false,
-      "description": "Automatically advances slides.",
-      "suggested": true
+      "name": "scrollSmoothing",
+      "type": "number",
+      "default": 1,
+      "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 3, "step": 0.05 }
     },
     {
-      "name": "showControls",
+      "name": "perspective",
+      "type": "number",
+      "default": 1200,
+      "description": "3D perspective distance, in pixels, applied to the sticky track — lower values look deeper/more distorted.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 400, "max": 3000, "step": 50 }
+    },
+    {
+      "name": "showCaptions",
       "type": "boolean",
-      "default": false,
-      "description": "Shows slider navigation controls.",
-      "suggested": true
+      "default": true,
+      "description": "Shows the text caption overlay on each card.",
+      "remixer": { "control": "checkbox", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Color of the card caption text.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "slides",
-        "label": "Slides",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "rotationAmount",
-        "label": "Rotation Amount",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 54,
-        "step": 0.1
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      },
-      {
-        "name": "autoplay",
-        "label": "Autoplay",
-        "type": "toggle",
-        "group": "motion",
-        "copyable": true
-      },
-      {
-        "name": "showControls",
-        "label": "Show Controls",
-        "type": "toggle",
-        "group": "content",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

@@ -40,236 +40,32 @@
   "target": "src/components/effects/circular-split-roll",
   "props": [
     {
-      "name": "imageCardWidth",
+      "name": "radius",
+      "type": "number",
+      "default": 500,
+      "description": "Radius of both rotating rings.",
+      "remixer": { "control": "range", "group": "layout", "groupTitle": "Layout", "min": 100, "max": 900, "step": 10 }
+    },
+    {
+      "name": "cardSize",
       "type": "number",
       "default": 205,
-      "description": "Image card width.",
-      "remixer": {
-        "control": "range",
-        "group": "layout",
-        "groupTitle": "Layout",
-        "min": 80,
-        "max": 420,
-        "step": 1
-      }
-    },
-    {
-      "name": "imageCardHeight",
-      "type": "number",
-      "default": 205,
-      "description": "Image card height.",
-      "remixer": {
-        "control": "range",
-        "group": "layout",
-        "groupTitle": "Layout",
-        "min": 80,
-        "max": 420,
-        "step": 1
-      }
-    },
-    {
-      "name": "leftRadiusX",
-      "type": "number",
-      "default": 500,
-      "description": "Horizontal radius of the left ring.",
-      "remixer": {
-        "control": "range",
-        "group": "circle",
-        "groupTitle": "Circle",
-        "min": 100,
-        "max": 900,
-        "step": 10
-      }
-    },
-    {
-      "name": "leftRadiusY",
-      "type": "number",
-      "default": 500,
-      "description": "Vertical radius of the left ring.",
-      "remixer": {
-        "control": "range",
-        "group": "circle",
-        "groupTitle": "Circle",
-        "min": 100,
-        "max": 900,
-        "step": 10
-      }
-    },
-    {
-      "name": "rightRadiusX",
-      "type": "number",
-      "default": 500,
-      "description": "Horizontal radius of the right ring.",
-      "remixer": {
-        "control": "range",
-        "group": "circle",
-        "groupTitle": "Circle",
-        "min": 100,
-        "max": 900,
-        "step": 10
-      }
-    },
-    {
-      "name": "rightRadiusY",
-      "type": "number",
-      "default": 500,
-      "description": "Vertical radius of the right ring.",
-      "remixer": {
-        "control": "range",
-        "group": "circle",
-        "groupTitle": "Circle",
-        "min": 100,
-        "max": 900,
-        "step": 10
-      }
-    },
-    {
-      "name": "textCenterScale",
-      "type": "number",
-      "default": 1,
-      "description": "Title scale near the center of the ring.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Text",
-        "min": 0.4,
-        "max": 2.5,
-        "step": 0.05
-      }
+      "description": "Size of the right-rail image cards.",
+      "remixer": { "control": "range", "group": "layout", "groupTitle": "Layout", "min": 80, "max": 420, "step": 1 }
     },
     {
       "name": "textSideScale",
       "type": "number",
       "default": 0.68,
       "description": "Title scale away from the center.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Text",
-        "min": 0.1,
-        "max": 1.5,
-        "step": 0.02
-      }
+      "remixer": { "control": "range", "group": "text", "groupTitle": "Text", "min": 0.1, "max": 1.5, "step": 0.02 }
     },
     {
       "name": "textSideOpacity",
       "type": "number",
       "default": 0.18,
       "description": "Title opacity away from the center.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Text",
-        "min": 0,
-        "max": 1,
-        "step": 0.02
-      }
-    },
-    {
-      "name": "imageCenterScale",
-      "type": "number",
-      "default": 1,
-      "description": "Image scale near the center of the ring.",
-      "remixer": {
-        "control": "range",
-        "group": "images",
-        "groupTitle": "Images",
-        "min": 0.4,
-        "max": 2.5,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "imageSideScale",
-      "type": "number",
-      "default": 0.58,
-      "description": "Image scale away from the center.",
-      "remixer": {
-        "control": "range",
-        "group": "images",
-        "groupTitle": "Images",
-        "min": 0.1,
-        "max": 1.5,
-        "step": 0.02
-      }
-    },
-    {
-      "name": "imageSideOpacity",
-      "type": "number",
-      "default": 0.14,
-      "description": "Image opacity away from the center.",
-      "remixer": {
-        "control": "range",
-        "group": "images",
-        "groupTitle": "Images",
-        "min": 0,
-        "max": 1,
-        "step": 0.02
-      }
-    },
-    {
-      "name": "items",
-      "type": "array",
-      "description": "Content items revealed by the split roll.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "segments",
-      "type": "number",
-      "description": "Number of circular split segments.",
-      "default": 12,
-      "remixer": {
-        "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "min": 0,
-        "max": 240,
-        "step": 1
-      }
-    },
-    {
-      "name": "duration",
-      "type": "number",
-      "description": "Roll animation duration.",
-      "default": 0.8,
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "stagger",
-      "type": "number",
-      "description": "Delay between segment animations.",
-      "default": 0.04,
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "accentColor",
-      "type": "color",
-      "description": "Highlight color during the reveal.",
-      "default": "#ff6b00",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
-      }
+      "remixer": { "control": "range", "group": "text", "groupTitle": "Text", "min": 0, "max": 1, "step": 0.02 }
     }
   ],
   "remixer": {

@@ -43,96 +43,48 @@
   ],
   "props": [
     {
-      "name": "images",
-      "type": "array",
-      "default": [],
-      "description": "Gallery images used in the parallax layout.",
-      "suggested": true
+      "name": "bgColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Background color of the gallery section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
-      "name": "columns",
+      "name": "borderColor",
+      "type": "color",
+      "default": "rgba(255, 255, 255, 0.5)",
+      "description": "Color of the dashed border around the center frame.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "rotationDeg",
       "type": "number",
-      "default": 3,
-      "description": "Number of gallery columns.",
-      "suggested": true
+      "default": 6,
+      "description": "Max rotation (degrees) applied to off-center slides as they scroll past.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 30, "step": 0.5 }
     },
     {
-      "name": "speed",
+      "name": "offscreenScale",
+      "type": "number",
+      "default": 1.2,
+      "description": "Scale applied to off-center slides relative to the centered one.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 1, "max": 2, "step": 0.05 }
+    },
+    {
+      "name": "frameScale",
       "type": "number",
       "default": 1,
-      "description": "Parallax movement speed.",
-      "suggested": true
-    },
-    {
-      "name": "gap",
-      "type": "number",
-      "default": 24,
-      "description": "Spacing between gallery items.",
-      "suggested": true
-    },
-    {
-      "name": "scaleOnScroll",
-      "type": "boolean",
-      "default": false,
-      "description": "Enables image scaling while scrolling.",
-      "suggested": true
+      "description": "Multiplier on the center frame's width/height.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.5, "max": 1.5, "step": 0.05 }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "images",
-        "label": "Images",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "columns",
-        "label": "Columns",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "speed",
-        "label": "Speed",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      },
-      {
-        "name": "gap",
-        "label": "Gap",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 100,
-        "step": 1
-      },
-      {
-        "name": "scaleOnScroll",
-        "label": "Scale On Scroll",
-        "type": "toggle",
-        "group": "controls",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

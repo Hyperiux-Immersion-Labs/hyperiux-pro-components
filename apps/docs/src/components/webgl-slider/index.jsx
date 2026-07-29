@@ -19,7 +19,11 @@ const images = [
     { src: `${P}${B}/h-03.jpg`, text: "PR.10\n /10" },
 ];
 
-const WebGLSlider = ({ images: imagesProp = images }) => {
+const WebGLSlider = ({
+    distortionStrength = 1,
+    transitionDuration = 0.6,
+    enableHoverEffect = true,
+}) => {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -44,7 +48,12 @@ const WebGLSlider = ({ images: imagesProp = images }) => {
 
     return (
         //  <ReactLenis root options={{  infinite: true,  autoRaf: true,  duration: 1.5,  lerp: 0.075  }}>
-        <WebGLSliderComp images={imagesProp} />
+        <WebGLSliderComp
+            images={images}
+            distortionStrength={distortionStrength}
+            transitionDuration={transitionDuration}
+            enableHoverEffect={enableHoverEffect}
+        />
         //  </ReactLenis>
     )
 }

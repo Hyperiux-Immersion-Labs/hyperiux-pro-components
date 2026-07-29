@@ -91,140 +91,17 @@
       }
     },
     {
-      "name": "velocityLerp",
-      "type": "number",
-      "default": 0.09,
-      "description": "Velocity smoothing amount.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0.02,
-        "max": 0.3,
-        "step": 0.01
-      }
-    },
-    {
-      "name": "rotationSensitivity",
-      "type": "number",
-      "default": 0.025,
-      "description": "How much velocity tilts cards.",
-      "remixer": {
-        "control": "range",
-        "group": "rotation",
-        "groupTitle": "Rotation",
-        "min": 0,
-        "max": 0.15,
-        "step": 0.005
-      }
-    },
-    {
-      "name": "rotationDamp",
-      "type": "number",
-      "default": 0.1,
-      "description": "How quickly tilt reacts to velocity.",
-      "remixer": {
-        "control": "range",
-        "group": "rotation",
-        "groupTitle": "Rotation",
-        "min": 0.02,
-        "max": 0.4,
-        "step": 0.01
-      }
-    },
-    {
-      "name": "rotationLerp",
-      "type": "number",
-      "default": 0.12,
-      "description": "Rotation smoothing amount.",
-      "remixer": {
-        "control": "range",
-        "group": "rotation",
-        "groupTitle": "Rotation",
-        "min": 0.02,
-        "max": 0.4,
-        "step": 0.01
-      }
-    },
-    {
       "name": "maxRotation",
       "type": "number",
       "default": 80,
       "description": "Maximum card tilt angle.",
       "remixer": {
         "control": "range",
-        "group": "rotation",
-        "groupTitle": "Rotation",
+        "group": "motion",
+        "groupTitle": "Motion",
         "min": 0,
         "max": 89,
         "step": 1
-      }
-    },
-    {
-      "name": "scrollStopDelay",
-      "type": "number",
-      "default": 180,
-      "description": "Delay before hover text can return after scrolling.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Card Text",
-        "min": 0,
-        "max": 600,
-        "step": 10
-      }
-    },
-    {
-      "name": "textEnterDuration",
-      "type": "number",
-      "default": 0.35,
-      "description": "Hover text enter duration.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Card Text",
-        "min": 0.1,
-        "max": 1.2,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "textLeaveDuration",
-      "type": "number",
-      "default": 0.35,
-      "description": "Hover text leave duration.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Card Text",
-        "min": 0.1,
-        "max": 1.2,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "textStagger",
-      "type": "number",
-      "default": 0.06,
-      "description": "Stagger between hover text lines.",
-      "remixer": {
-        "control": "range",
-        "group": "text",
-        "groupTitle": "Card Text",
-        "min": 0,
-        "max": 0.3,
-        "step": 0.01
-      }
-    },
-    {
-      "name": "images",
-      "type": "array",
-      "description": "Images shown in the perspective slider.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
       }
     }
   ],

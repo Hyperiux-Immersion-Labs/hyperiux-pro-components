@@ -31,20 +31,6 @@
       }
     },
     {
-      "name": "staggerStep",
-      "type": "number",
-      "default": 0.01,
-      "description": "Delay between each character's hover motion.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 0.08,
-        "step": 0.005
-      }
-    },
-    {
       "name": "bgColor",
       "type": "color",
       "default": "#ff6b00",
@@ -67,12 +53,6 @@
       }
     },
     {
-      "name": "fillColor",
-      "type": "color",
-      "default": "#ffffff",
-      "description": "Expanded dot fill color."
-    },
-    {
       "name": "hoverTextColor",
       "type": "color",
       "default": "#ff6b00",
@@ -87,7 +67,7 @@
       "name": "dotColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Dot color before expansion.",
+      "description": "Dot color.",
       "remixer": {
         "control": "color",
         "group": "colors",

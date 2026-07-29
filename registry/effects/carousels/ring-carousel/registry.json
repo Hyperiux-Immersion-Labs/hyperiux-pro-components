@@ -47,20 +47,6 @@
       }
     },
     {
-      "name": "autoPlayInterval",
-      "type": "number",
-      "default": 800,
-      "description": "Delay between autoplay advances in milliseconds.",
-      "remixer": {
-        "control": "range",
-        "group": "behavior",
-        "groupTitle": "Behavior",
-        "min": 400,
-        "max": 4000,
-        "step": 100
-      }
-    },
-    {
       "name": "pauseOnHover",
       "type": "boolean",
       "default": true,

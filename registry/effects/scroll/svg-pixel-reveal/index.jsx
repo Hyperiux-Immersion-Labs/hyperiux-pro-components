@@ -54,17 +54,22 @@ function PixelateSvgFilter({ id, size, crossLayers }) {
 export default function SvgPixelReveal({
   src,
   alt = "Image",
-  initialPixelSize = 22,
-  finalPixelSize = 1,
-  start = "top 50%",
-  end = "bottom 35%",
+  intensity = 22,
   crossLayers = true,
   style = {},
 }) {
   const containerRef = useRef(null);
   const filterId = useId().replace(/:/g, "");
+  const initialPixelSize = Math.max(2, intensity);
+  const finalPixelSize = 1;
+  const start = "top 50%";
+  const end = "bottom 35%";
   const [pixelSize, setPixelSize] = useState(initialPixelSize);
   const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
+
+  useEffect(() => {
+    setPixelSize(initialPixelSize);
+  }, [initialPixelSize]);
 
   useEffect(() => {
     const container = containerRef.current;

@@ -10,6 +10,8 @@ const DEFAULT_MOUSE_RADIUS = 380;
 const DEFAULT_TRAIL_LENGTH = 456;
 const DEFAULT_TRAIL_RADIUS = 230;
 const DEFAULT_TRAIL_FADE_MS = 1200;
+const DOT_HUE = 210;
+const TRAIL_SATURATION = 16;
 
 const RANDOM_TIME = 0.6;
 const COLLECT_TIME = 1.1;
@@ -125,8 +127,6 @@ export default function DottedGrid({
   trailRadius = DEFAULT_TRAIL_RADIUS,
   trailFadeMs = DEFAULT_TRAIL_FADE_MS,
   backgroundColor = "#000000",
-  dotHue = 210,
-  trailSaturation = 16,
   showDesktopHint = true,
   desktopHint = "Click anywhere to change the pattern.",
   mobileHint = "Works best on desktop",
@@ -275,10 +275,10 @@ export default function DottedGrid({
       const trailLift = trailStrength * 38 * (1 - trailStrength * 0.55);
 
       const finalLightness = clamp01((lightness - mouseDark + mouseLift + trailLift) / 100) * 100;
-      const saturation = trailStrength * trailStrength * trailSaturation;
+      const saturation = trailStrength * trailStrength * TRAIL_SATURATION;
 
       ctx.beginPath();
-      ctx.fillStyle = `hsla(${dotHue}, ${saturation}%, ${finalLightness}%, ${alpha})`;
+      ctx.fillStyle = `hsla(${DOT_HUE}, ${saturation}%, ${finalLightness}%, ${alpha})`;
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
     };
@@ -384,13 +384,11 @@ export default function DottedGrid({
   }, [
     baseRadius,
     backgroundColor,
-    dotHue,
     mouseRadius,
     spacing,
     trailFadeMs,
     trailLength,
     trailRadius,
-    trailSaturation,
   ]);
 
   return (

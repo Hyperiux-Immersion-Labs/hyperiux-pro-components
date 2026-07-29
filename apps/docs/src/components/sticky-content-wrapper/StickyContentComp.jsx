@@ -93,6 +93,7 @@ export function StickyContentComp({
   contentClassName = "",
   imageClassName = "",
   containerHeight,
+  bgColor = "#ffffff",
   contentEnterYPercent = 12,
   contentExitYPercent = -12,
   contentTransitionDuration = 0.8,
@@ -289,6 +290,7 @@ export function StickyContentComp({
       >
         <div
           className={`relative h-full w-[42%] max-md:h-[55%] max-md:w-full ${leftClassName}`}
+          style={{ backgroundColor: bgColor }}
         >
           {items.map((item, index) => (
             <div

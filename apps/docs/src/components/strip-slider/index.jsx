@@ -32,13 +32,20 @@ const items = [
  { id:'item-20', url:`${P}${B}/h-14.jpg`, text:'Image 7',   atlasIndex: 20, colors: ['#333','#aaa'] },
 ];
 
-const StripSlider = () => {
+const StripSlider = ({
+ dispScale = 1,
+ cameraSway = 0.03,
+}) => {
  const prefersReducedMotion = usePrefersReducedMotion();
 
  return (
  <div className="w-full h-screen bg-black">
  <LenisSmoothScroll />
- <StripSliderComp items={items} />
+ <StripSliderComp
+ items={items}
+ dispScale={dispScale}
+ cameraSway={cameraSway}
+ />
 
  {prefersReducedMotion && (
  <div

@@ -3,11 +3,24 @@
 
 import ScrollParallaxGallery from "./ParallaxGallery";
 
-const ParallaxGallery = () => {
+const ParallaxGallery = ({
+  bgColor = "#111111",
+  rotationDeg = 6,
+  offscreenScale = 1.2,
+  borderColor = "rgba(255, 255, 255, 0.5)",
+  frameScale = 1,
+}) => {
   return (
     <>
     <div className="min-h-screen">
-      <ScrollParallaxGallery images={images} bgColor="#111111" />
+      <ScrollParallaxGallery
+        images={images}
+        bgColor={bgColor}
+        rotationDeg={rotationDeg}
+        offscreenScale={offscreenScale}
+        borderColor={borderColor}
+        frameScale={frameScale}
+      />
     </div>
     </>
   );

@@ -38,93 +38,41 @@
   ],
   "props": [
     {
-      "name": "sections",
-      "type": "array",
-      "default": [],
-      "description": "Sections shown beside sticky content.",
-      "suggested": true
-    },
-    {
-      "name": "stickyTop",
-      "type": "number",
-      "default": 96,
-      "description": "Top offset for the sticky content.",
-      "suggested": true
-    },
-    {
-      "name": "contentWidth",
-      "type": "string",
-      "default": "\"45%\"",
-      "description": "Width of the sticky content area.",
-      "suggested": true
-    },
-    {
-      "name": "gap",
-      "type": "number",
-      "default": 64,
-      "description": "Gap between sticky and scrolling content.",
-      "suggested": true
-    },
-    {
-      "name": "backgroundColor",
-      "type": "string",
+      "name": "bgColor",
+      "type": "color",
       "default": "#ffffff",
-      "description": "Wrapper background color.",
-      "suggested": true
+      "description": "Background color of the sticky content pane (left side).",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "contentEnterYPercent",
+      "type": "number",
+      "default": 2,
+      "description": "Vertical offset (% of content height) each content block starts from before sliding into place.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 60, "step": 1 }
+    },
+    {
+      "name": "contentTransitionDuration",
+      "type": "number",
+      "default": 0.9,
+      "description": "Duration of each content block's enter/exit transition on the scroll timeline.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.1, "max": 3, "step": 0.05 }
+    },
+    {
+      "name": "stepGap",
+      "type": "number",
+      "default": 2.1,
+      "description": "Scroll-timeline distance allotted to each section step — bigger means more scrolling per section.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.5, "max": 6, "step": 0.1 }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "sections",
-        "label": "Sections",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "stickyTop",
-        "label": "Sticky Top",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 288,
-        "step": 0.1
-      },
-      {
-        "name": "contentWidth",
-        "label": "Content Width",
-        "type": "text",
-        "group": "controls",
-        "copyable": true
-      },
-      {
-        "name": "gap",
-        "label": "Gap",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 256,
-        "step": 1
-      },
-      {
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

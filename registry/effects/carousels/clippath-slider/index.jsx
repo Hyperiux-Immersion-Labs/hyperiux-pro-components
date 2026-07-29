@@ -51,16 +51,20 @@ const slides = [
 const ClipPathSlider = ({
   slides: slidesProp = slides,
   clueText = "Click either side and watch the next scene cut through.",
+  showClue = true,
   cursorBg = "#ff5f00",
   cursorLineColor = "#ffffff",
+  duration = 0.75,
 }) => {
   return (
     <>
       <ClippathSliderComp
         slides={slidesProp}
         clueText={clueText}
+        showClue={showClue}
         cursorBg={cursorBg}
         cursorLineColor={cursorLineColor}
+        duration={duration}
       />
     </>
   )

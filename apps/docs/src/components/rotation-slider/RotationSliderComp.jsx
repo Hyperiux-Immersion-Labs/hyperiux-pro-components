@@ -7,7 +7,6 @@ import { prefersReducedMotion } from "@/lib/motion";
 
 // Reduced motion: a much larger perspective distance flattens the 3D card
 // rotation (less depth distortion) instead of removing it outright.
-const PERSPECTIVE = "1200px";
 const REDUCED_PERSPECTIVE = "4800px";
 
 const MOBILE_BREAKPOINT = 640;
@@ -38,7 +37,15 @@ const useIsomorphicLayoutEffect =
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function RotationSliderComp({ images }) {
+export function RotationSliderComp({
+    images,
+    rotationAmount = 1,
+    verticalDrift = 1,
+    scrollSmoothing = 1,
+    perspective = 1200,
+    showCaptions = true,
+    textColor = "#ffffff",
+}) {
     const outerRef = useRef(null);
     const trackRef = useRef(null);
     const cardsRef = useRef([]);
@@ -91,7 +98,7 @@ export function RotationSliderComp({ images }) {
                     // Reduced motion: scrub:true tracks scroll position
                     // directly (no smoothing lag) instead of the ~1s
                     // catch-up delay - the "lerp" here is that scrub value.
-                    scrub: reducedMotion ? true : 1,
+                    scrub: reducedMotion ? true : scrollSmoothing,
                     invalidateOnRefresh: true,
                 },
             });
@@ -104,11 +111,11 @@ export function RotationSliderComp({ images }) {
                 const total = images.length;
                 const mid = Math.floor(total / 2);
 
-                const step = isMobile
+                const step = (isMobile
                     ? MOBILE_STEP
                     : isTablet
                         ? TABLET_STEP
-                        : DESKTOP_STEP;
+                        : DESKTOP_STEP) * verticalDrift;
 
                 let offset;
 
@@ -128,14 +135,14 @@ export function RotationSliderComp({ images }) {
                         ? MOBILE_ROTATE_IN
                         : isTablet
                             ? TABLET_ROTATE_IN
-                            : DESKTOP_ROTATE_IN) * rotationScale;
+                            : DESKTOP_ROTATE_IN) * rotationScale * rotationAmount;
 
                 const rotateOutValue =
                     (isMobile
                         ? MOBILE_ROTATE_OUT
                         : isTablet
                             ? TABLET_ROTATE_OUT
-                            : DESKTOP_ROTATE_OUT) * rotationScale;
+                            : DESKTOP_ROTATE_OUT) * rotationScale * rotationAmount;
 
                 const tl = gsap.timeline({
                     scrollTrigger: {
@@ -175,14 +182,14 @@ export function RotationSliderComp({ images }) {
         });
 
         return () => context.revert();
-    }, [images]);
+    }, [images, rotationAmount, verticalDrift, scrollSmoothing]);
 
     return (
         <div ref={outerRef} className="relative bg-white">
-            
+
             <div
                 className="sticky top-0 flex h-screen items-center overflow-hidden"
-                style={{ perspective: reducedMotion ? REDUCED_PERSPECTIVE : PERSPECTIVE }}
+                style={{ perspective: reducedMotion ? REDUCED_PERSPECTIVE : `${perspective}px` }}
             >
               
                 <div
@@ -219,6 +226,8 @@ export function RotationSliderComp({ images }) {
                                 text={img.text}
                                 index={index}
                                 total={images.length}
+                                showCaptions={showCaptions}
+                                textColor={textColor}
                             />
                         </div>
                     ))}
@@ -229,7 +238,7 @@ export function RotationSliderComp({ images }) {
     );
 }
 
-const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
+const RotationCard = forwardRef(({ src, index, total, text, showCaptions, textColor }, ref) => {
     return (
         <div
             ref={ref}
@@ -253,10 +262,11 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
                 />
             </div>
 
-            {text && (
+            {showCaptions && text && (
                 <div
-                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium text-white max-md:text-[2.4vw] max-sm:text-[4vw]"
+                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium max-md:text-[2.4vw] max-sm:text-[4vw]"
                     style={{
+                        color: textColor,
                         textShadow:
                             "0 0.15vw 0.35vw rgba(0,0,0,0.35), 0 0.45vw 1.2vw rgba(0,0,0,0.35)",
                     }}

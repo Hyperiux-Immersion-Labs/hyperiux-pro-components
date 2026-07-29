@@ -3,10 +3,17 @@
 import React from 'react'
 import ScrollStackComp from './ScrollStackComp';
 
-const ScrollStack = () => {
+const ScrollStack = ({
+  sectionBgColor = "#ffffff",
+  cardRadius = 45,
+}) => {
   return (
    <>
-    <ScrollStackComp cards={defaultContent} />
+    <ScrollStackComp
+      cards={defaultContent}
+      sectionBgColor={sectionBgColor}
+      cardRadius={cardRadius}
+    />
    </>
   )
 }

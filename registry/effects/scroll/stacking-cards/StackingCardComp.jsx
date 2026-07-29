@@ -7,7 +7,13 @@ import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function StackingCardComp({ data = [] }) {
+export default function StackingCardComp({
+ data = [],
+ imageZoomEnabled = true,
+ tiltEnabled = true,
+ cardCornerRadius = "3vw",
+ stackPerspective = 1200,
+}) {
  const containerRef = useRef(null);
  const cardsRef = useRef([]);
 
@@ -42,7 +48,7 @@ export default function StackingCardComp({ data = [] }) {
 
  const firstImage = cards[0]?.querySelector(".card-image");
 
- if (firstImage && !reduceMotion) {
+ if (firstImage && !reduceMotion && imageZoomEnabled) {
  gsap.fromTo(
  firstImage,
  { scale: 1.5 },
@@ -105,7 +111,7 @@ export default function StackingCardComp({ data = [] }) {
 
  const currentImage = cards[i].querySelector(".card-image");
 
- if (currentImage) {
+ if (currentImage && imageZoomEnabled) {
  tl.to(
  currentImage,
  {
@@ -123,10 +129,10 @@ export default function StackingCardComp({ data = [] }) {
  tl.to(
  cards[i - 1],
  {
- scale: 0.8,
- rotation: rotateDir,
- rotateX: 20,
- borderRadius:"3vw",
+ scale: tiltEnabled ? 0.8 : 1,
+ rotation: tiltEnabled ? rotateDir : 0,
+ rotateX: tiltEnabled ? 20 : 0,
+ borderRadius: tiltEnabled ? cardCornerRadius : 0,
  ease:"linear",
  duration: 0.5,
  },
@@ -146,7 +152,7 @@ export default function StackingCardComp({ data = [] }) {
  }, containerRef);
 
  return () => ctx.revert();
- }, [data]);
+ }, [cardCornerRadius, data, imageZoomEnabled, stackPerspective, tiltEnabled]);
 
  return (
  <section
@@ -156,7 +162,7 @@ export default function StackingCardComp({ data = [] }) {
  <div
  ref={containerRef}
  className="sticky top-0 h-screen max-md:h-svh w-screen overflow-hidden bg-black"
- style={{ perspective:"1200px" }}
+ style={{ perspective: `${stackPerspective}px` }}
  >
  {data.map((item, i) => (
  <div

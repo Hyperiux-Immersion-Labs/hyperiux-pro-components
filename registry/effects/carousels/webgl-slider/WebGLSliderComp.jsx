@@ -80,7 +80,12 @@ function getMediaProxyUrl(src) {
   return src;
 }
 
-function WebGLSliderComp({ images = [] }) {
+function WebGLSliderComp({
+  images = [],
+  distortionStrength = 1,
+  transitionDuration = 0.6,
+  enableHoverEffect = true,
+}) {
   const containerRef = useRef(null);
   const scrollRef = useRef(0);
   const lastScroll = useRef(0);
@@ -171,7 +176,7 @@ function WebGLSliderComp({ images = [] }) {
            
             gsap.to(obj, {
               y: targetScroll,
-              duration: reduceMotion ? 0.15 : 0.6,
+              duration: reduceMotion ? 0.15 : transitionDuration,
               ease: reduceMotion ? "power1.out" : "power2.inOut",
               onUpdate: () => {
                 window.scrollTo(0, obj.y);
@@ -191,7 +196,7 @@ function WebGLSliderComp({ images = [] }) {
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       if (lenisResumeTimeout.current) clearTimeout(lenisResumeTimeout.current);
     };
-  }, [lenis, reduceMotion]);
+  }, [lenis, reduceMotion, transitionDuration]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -215,7 +220,9 @@ function WebGLSliderComp({ images = [] }) {
 
     // Reduced motion: the pointer only drives the hover bend, which is
     // disabled below, so there is nothing to track.
-    if (!reduceMotion) {
+    const hoverEnabled = enableHoverEffect && !reduceMotion;
+
+    if (hoverEnabled) {
       window.addEventListener("mousemove", onMouseMove);
     }
 
@@ -448,7 +455,7 @@ function WebGLSliderComp({ images = [] }) {
 
         // Reduced motion: no pointer-following bend — uHover stays at 0, so
         // the card surface is unaffected by the cursor.
-        if (!reduceMotion) {
+        if (hoverEnabled) {
           mesh.material.uniforms.uHoverPos.value.lerp(targetUv, 0.15);
 
           const isMouseOffscreen = mouse.x < -10 || mouse.y < -10;
@@ -456,6 +463,9 @@ function WebGLSliderComp({ images = [] }) {
 
           mesh.material.uniforms.uHover.value +=
             (hoverTarget - mesh.material.uniforms.uHover.value) * 0.1;
+        } else if (mesh.material.uniforms.uHover.value !== 0) {
+          mesh.material.uniforms.uHover.value +=
+            (0.0 - mesh.material.uniforms.uHover.value) * 0.15;
         }
 
         if (!isVisible) {
@@ -470,7 +480,7 @@ function WebGLSliderComp({ images = [] }) {
 
         // Reduced motion: keep `fold` driving text offset/spacing exactly as
         // in normal mode, only mute the GPU curl/bend deformation.
-        mesh.material.uniforms.uFold.value = reduceMotion ? 0.0 : fold;
+        mesh.material.uniforms.uFold.value = reduceMotion ? 0.0 : fold * distortionStrength;
 
         if (textEl) {
           if (textEl.style.display === "none") {
@@ -550,7 +560,7 @@ function WebGLSliderComp({ images = [] }) {
 
       document.body.style.height = "";
     };
-  }, [images, isMobile, reduceMotion]);
+  }, [images, isMobile, reduceMotion, distortionStrength, enableHoverEffect]);
 
   if (isMobile) {
     return (

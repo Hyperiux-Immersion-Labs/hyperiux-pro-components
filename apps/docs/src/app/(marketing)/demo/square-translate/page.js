@@ -1,9 +1,9 @@
-import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import registry from "../../../../../../../registry/effects/scroll/square-translate/registry.json";
+import squareTranslateRegistry from "../../../../../../../registry/effects/scroll/square-translate/registry.json";
 
 export default function Page() {
-  return <SuggestedEffectRemixerDemo registry={registry} slug="square-translate" />;
+  return <DemoContent registry={squareTranslateRegistry} />;
 }
 
 export async function generateMetadata() {

@@ -26,6 +26,52 @@
   "exportKind": "default",
   "importPath": "@/components/effects/square-translate",
   "target": "src/components/effects/square-translate",
+  "props": [
+    {
+      "name": "translateValue",
+      "type": "number",
+      "default": 55,
+      "description": "Translate distance for the row currently aligned with the square.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 160, "step": 1 }
+    },
+    {
+      "name": "totalTranslateImpact",
+      "type": "number",
+      "default": 3,
+      "description": "How many neighboring rows ripple outward from the square.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 1, "max": 8, "step": 1 }
+    },
+    {
+      "name": "maxRotation",
+      "type": "number",
+      "default": 360,
+      "description": "Total rotation the square completes over the scroll track.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 1080, "step": 15 }
+    },
+    {
+      "name": "transitionDuration",
+      "type": "number",
+      "default": 0.4,
+      "description": "Tween duration for the square and row movement on each scroll update.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.05, "max": 1.2, "step": 0.05 }
+    },
+    {
+      "name": "squareColor",
+      "type": "color",
+      "default": "#FB450F",
+      "description": "Color of the translated square marker.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",
@@ -35,99 +81,5 @@
       "path": "SquareTranslateComp.jsx",
       "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
     }
-  ],
-  "props": [
-    {
-      "name": "items",
-      "type": "array",
-      "default": [],
-      "description": "Squares or tiles moved by the effect.",
-      "suggested": true
-    },
-    {
-      "name": "distance",
-      "type": "number",
-      "default": 80,
-      "description": "Translate distance for each square.",
-      "suggested": true
-    },
-    {
-      "name": "duration",
-      "type": "number",
-      "default": 0.7,
-      "description": "Translation animation duration.",
-      "suggested": true
-    },
-    {
-      "name": "stagger",
-      "type": "number",
-      "default": 0.05,
-      "description": "Delay between square animations.",
-      "suggested": true
-    },
-    {
-      "name": "squareColor",
-      "type": "string",
-      "default": "#ff6b00",
-      "description": "Color of translated squares.",
-      "suggested": true
-    }
-  ],
-  "remixer": {
-    "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
-    "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
-    },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "items",
-        "label": "Items",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "distance",
-        "label": "Distance",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 240,
-        "step": 0.1
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      },
-      {
-        "name": "stagger",
-        "label": "Stagger",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "squareColor",
-        "label": "Square Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      }
-    ]
-  }
+  ]
 }

@@ -8,10 +8,28 @@ import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CircularSliderComp = ({ heading, para, data = [] }) => {
+const CircularSliderComp = ({
+ heading,
+ para,
+ data = [],
+ items,
+ title,
+ subtitle,
+ backgroundColor = "#111111",
+ gap = 24,
+ cardWidth = 320,
+ cardHeight = 360,
+ showBottomText = true,
+}) => {
  const outerRef = useRef(null);
  const wheelRef = useRef(null);
  const reducedMotion = usePrefersReducedMotion();
+ const resolvedItems = items ?? data;
+ const resolvedTitle = title ?? heading;
+ const resolvedSubtitle = subtitle ?? para;
+ const resolvedGap = Math.max(0, gap);
+ const resolvedCardWidth = Math.max(220, cardWidth);
+ const resolvedCardHeight = Math.max(240, cardHeight);
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -22,7 +40,8 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  const radius = wheel.offsetWidth / 1.1;
  const center = wheel.offsetWidth / 2;
  const total = cards.length;
- const slice = (0.58 * Math.PI) / total;
+ const gapAngle = radius > 0 ? resolvedGap / radius : 0;
+ const slice = ((0.58 * Math.PI) + gapAngle * Math.max(total - 1, 0)) / Math.max(total, 1);
 
  cards.forEach((item, i) => {
  const angle = i * slice;
@@ -60,7 +79,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  }, outerRef);
 
  return () => ctx.revert();
- }, []);
+ }, [resolvedGap, resolvedItems.length]);
 
  return (
  <>
@@ -68,13 +87,14 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  <section
  ref={outerRef}
  className="max-md:hidden relative h-[250vh]"
+ style={{ backgroundColor }}
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
  >
  <div className="w-full flex justify-center pt-[6%] ">
  <h1 className="text-[2.5vw] uppercase tracking-widest text-center">
- {heading}
+ {resolvedTitle}
  </h1>
  </div>
 
@@ -84,56 +104,66 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  ref={wheelRef}
  className="absolute flex items-center justify-center top-0 left-[49%] -translate-x-1/2 w-screen h-[100vw] max-w-[125vw] max-h-[125vw]"
  >
- {data.map((product, i) => (
+ {resolvedItems.map((product, i) => (
  <div
  key={i}
  className="wheel-card absolute top-0 left-0"
- style={{ width:"23vw", height:"26vw" }}
+ style={{ width: `${resolvedCardWidth}px`, height: `${resolvedCardHeight}px` }}
  >
  <SliderCard
- heading={product.heading}
- text={product.text}
+ heading={product.title ?? product.heading}
+ text={product.description ?? product.text}
  link={product.link}
  bgColor={product.bgColor}
  textColor={product.textColor}
+ ctaLabel={product.ctaLabel}
  />
  </div>
  ))}
  </div>
  </div>
 
+ {showBottomText ? (
  <div className="w-full flex justify-center pb-[2%]">
  <p className="font-light uppercase tracking-widest text-[2.2vw] text-center">
- {para}
+ {resolvedSubtitle}
  </p>
  </div>
+ ) : null}
  </div>
  </section>
 
  {/* Mobile / Tablet */}
- <section className="hidden max-md:block py-[16vw] max-sm:py-[22vw] px-[5vw]">
+ <section
+ className="hidden max-md:block py-[16vw] max-sm:py-[22vw] px-[5vw]"
+ style={{ backgroundColor }}
+ >
  <h2 className="text-center max-md:text-[4vw] max-sm:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
- {heading}
+ {resolvedTitle}
  </h2>
  <div className="flex flex-col items-center gap-[5vw] max-sm:gap-[10vw]">
- {data.map((product, i) => (
+ {resolvedItems.map((product, i) => (
  <div
  key={i}
- className="w-[85vw] max-md:w-full rounded-[5vw] overflow-hidden"
+ className="max-md:w-full rounded-[5vw] overflow-hidden"
+ style={{ width: "min(85vw, 100%)", maxWidth: `${resolvedCardWidth}px` }}
  >
  <SliderCard
- heading={product.heading}
- text={product.text}
+ heading={product.title ?? product.heading}
+ text={product.description ?? product.text}
  link={product.link}
  bgColor={product.bgColor}
  textColor={product.textColor}
+ ctaLabel={product.ctaLabel}
  />
  </div>
  ))}
  </div>
+ {showBottomText ? (
  <p className="text-center font-light uppercase tracking-widest max-md:text-[2.5vw] max-sm:text-[6vw] mt-[10vw]">
- {para}
+ {resolvedSubtitle}
  </p>
+ ) : null}
  </section>
 
  {reducedMotion && (
@@ -158,7 +188,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 export default CircularSliderComp;
 
 
-const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
+const SliderCard = ({ heading, text, link, bgColor, textColor, ctaLabel = "See More" }) => {
  const cardContent = (
  <div
  className="w-full h-full max-md:h-auto rounded-[1.5vw] max-md:rounded-[5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-md:gap-8 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-md:px-[8%] max-sm:px-6 py-20 max-md:py-12 max-sm:py-10"
@@ -187,7 +217,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  className="text-[1vw] max-sm:text-xs max-md:text-lg uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}
  >
- See More
+ {ctaLabel}
  </span>
  <ArrowRight />
  </div>

@@ -31,11 +31,15 @@ function CarouselCard({ title, subtitle, description, themeClass, points }) {
 }
 
 export default function InfiniteCarousel({
-    cards = cardsData,
     draggable = true,
-    showNav = true,
-    mobileBreakpoint = 640,
+    gap = 32,
 }) {
+    const cards = cardsData;
+    const showNav = true;
+    const mobileBreakpoint = 640;
+    const speed = 1;
+    const pauseOnHover = true;
+    const direction = "left";
     return (
         <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:min-h-0 max-md:h-auto max-md:pb-0">
 
@@ -47,6 +51,7 @@ export default function InfiniteCarousel({
                         width: "100%",
                         minHeight: "auto",
                         alignItems: "stretch",
+                        gap: `${gap}px`,
                     }}
                     pageClassName="gap-8 max-[1025px]:gap-6 max-md:gap-4"
                     prevLabel={<ArrowLeft />}
@@ -62,6 +67,9 @@ export default function InfiniteCarousel({
                     draggable={draggable}
                     showNav={showNav}
                     mobileBreakpoint={mobileBreakpoint}
+                    speed={speed}
+                    pauseOnHover={pauseOnHover}
+                    direction={direction}
                 >
                     {cards.map((card) => (
                         <CarouselCard key={card.id} {...card} />

@@ -167,7 +167,7 @@
 }
 
 .panelOpen .body {
-  max-height: calc(100vh - 132px);
+  max-height: none;
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -248,6 +248,20 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.groupStatic {
+  overflow: visible;
+}
+
+.groupStaticHeader {
+  padding: 0.95rem 1rem 0.35rem;
+}
+
+.groupBodyStatic {
+  opacity: 1;
+  transform: none;
+  padding: 0;
+}
+
 .groupTrigger {
   width: 100%;
   display: flex;
@@ -304,9 +318,16 @@
 
 .groupBodyInner {
   overflow-x: auto;
-  overflow-y: hidden;
   display: grid;
   gap: 0;
+}
+
+/* Only the collapsible (animated) group needs to clip vertically while its
+   grid-template-rows transitions from 0fr to 1fr. The static (always-open)
+   group must stay visible or its fields get cut off with no way to scroll
+   to them. */
+.groupBody .groupBodyInner {
+  overflow-y: hidden;
 }
 
 .field {

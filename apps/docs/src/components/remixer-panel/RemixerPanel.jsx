@@ -165,8 +165,27 @@ export default function RemixerPanel({ isExpanded, groups, values, onChange, onC
 
   return (
     <aside className={`${styles.panel} ${isExpanded ? styles.panelOpen : ""}`}>
-      <div className={styles.body}>
+      <div className={styles.body} data-lenis-prevent>
         {availableGroups.map((group) => {
+          if (group.collapsible === false) {
+            return (
+              <section key={group.id} className={`${styles.group} ${styles.groupStatic}`}>
+                {group.title ? (
+                  <div className={styles.groupStaticHeader}>
+                    <span className={styles.groupTitle}>{group.title}</span>
+                  </div>
+                ) : null}
+                <div className={styles.groupBodyStatic}>
+                  <div className={styles.groupBodyInner}>
+                    {group.controls.map((control) => (
+                      <ControlField key={control.id} control={control} value={values[control.id]} onChange={(nextValue) => onChange(control.id, nextValue)} />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
           const isOpen = openGroupId === group.id;
           return (
             <section key={group.id} className={`${styles.group} ${isOpen ? styles.groupOpen : ""}`}>

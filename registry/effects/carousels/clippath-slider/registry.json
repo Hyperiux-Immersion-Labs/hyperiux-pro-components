@@ -115,20 +115,21 @@
         }
       ],
       "description": "Slides rendered by the clip-path sweep transition (name, description, image).",
-      "copyable": false,
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "copyable": false
     },
     {
       "name": "clueText",
       "type": "string",
       "default": "Click either side and watch the next scene cut through.",
-      "description": "Instructional hint shown above the slider.",
+      "description": "Instructional hint shown above the slider."
+    },
+    {
+      "name": "showClue",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the instructional clue text above the slider.",
       "remixer": {
-        "control": "text",
+        "control": "checkbox",
         "group": "content",
         "groupTitle": "Content"
       }
@@ -159,13 +160,7 @@
       "name": "clipDirection",
       "type": "enum",
       "description": "Direction the clipping mask travels during transition.",
-      "default": "left",
-      "remixer": {
-        "control": "select",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "options": []
-      }
+      "default": "left"
     },
     {
       "name": "duration",
@@ -185,23 +180,13 @@
       "name": "easing",
       "type": "string",
       "description": "Easing curve used for slide transitions.",
-      "default": "power3.inOut",
-      "remixer": {
-        "control": "text",
-        "group": "controls",
-        "groupTitle": "Controls"
-      }
+      "default": "power3.inOut"
     },
     {
       "name": "showControls",
       "type": "boolean",
       "description": "Shows slider navigation controls.",
-      "default": true,
-      "remixer": {
-        "control": "checkbox",
-        "group": "controls",
-        "groupTitle": "Controls"
-      }
+      "default": true
     }
   ],
   "remixer": {

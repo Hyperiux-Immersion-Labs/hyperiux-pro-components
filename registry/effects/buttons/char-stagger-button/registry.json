@@ -78,21 +78,6 @@
         "group": "appearance",
         "groupTitle": "Appearance"
       }
-    },
-    {
-      "name": "iconVariant",
-      "type": "string",
-      "default": "stacked",
-      "description": "Chooses the arrow animation style.",
-      "remixer": {
-        "control": "select",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "options": [
-          { "label": "Stacked", "value": "stacked" },
-          { "label": "Single", "value": "single" }
-        ]
-      }
     }
   ],
   "remixer": {

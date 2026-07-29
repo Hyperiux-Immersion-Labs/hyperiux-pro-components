@@ -83,11 +83,22 @@ const PROPERTIES_DATA = [
   },
 ];
 
-export const HorizontalFeatureReveal = () => {
+export const HorizontalFeatureReveal = ({
+  bgColor = "#ffffff",
+  imageScale = 1.4,
+  imageParallaxRange = 30,
+  cardGap = 15,
+}) => {
   return (
 
       <div>
-        <HorizontalScrollComp propertiesData={PROPERTIES_DATA} />
+        <HorizontalScrollComp
+          propertiesData={PROPERTIES_DATA}
+          bgColor={bgColor}
+          imageScale={imageScale}
+          imageParallaxRange={imageParallaxRange}
+          cardGap={cardGap}
+        />
       </div>
 
   );

@@ -22,45 +22,91 @@
   ],
   "props": [
     {
-      "name": "slides",
+      "name": "items",
       "type": "array",
       "default": [],
-      "description": "Slides arranged around the circular carousel.",
-      "suggested": true
+      "description": "Cards arranged around the circular carousel."
     },
     {
-      "name": "radius",
+      "name": "title",
+      "type": "string",
+      "default": "Interfaces that react.",
+      "description": "Primary heading shown above the rotating carousel."
+    },
+    {
+      "name": "subtitle",
+      "type": "string",
+      "default": "Built for motion, crafted for experience.",
+      "description": "Supporting text shown below the rotating carousel."
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Background color for the full component section.",
+      "remixer": {
+        "control": "color",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "showBottomText",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows or hides the bottom supporting text.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": 24,
+      "description": "Additional spacing between cards along the wheel arc.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 0,
+        "max": 120,
+        "step": 1
+      }
+    },
+    {
+      "name": "cardWidth",
       "type": "number",
       "default": 320,
-      "description": "Radius of the circular slide path.",
-      "suggested": true
+      "description": "Desktop width of each orbiting card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 220,
+        "max": 420,
+        "step": 4
+      }
     },
     {
-      "name": "rotationSpeed",
+      "name": "cardHeight",
       "type": "number",
-      "default": 1,
-      "description": "Speed of rotation.",
-      "suggested": true
-    },
-    {
-      "name": "activeIndex",
-      "type": "number",
-      "default": 0,
-      "description": "Initially active slide.",
-      "suggested": true
-    },
-    {
-      "name": "showControls",
-      "type": "boolean",
-      "default": false,
-      "description": "Shows carousel controls.",
-      "suggested": true
+      "default": 360,
+      "description": "Desktop height of each orbiting card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 240,
+        "max": 520,
+        "step": 4
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "layout",
     "layout": {
       "controlsButtonClassName": "right-4! top-25!"
     },
@@ -69,48 +115,48 @@
     },
     "controls": [
       {
-        "name": "slides",
-        "label": "Slides",
-        "type": "json",
-        "group": "content",
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "layout",
         "copyable": true
       },
       {
-        "name": "radius",
-        "label": "Radius",
+        "name": "showBottomText",
+        "label": "Show Bottom Text",
+        "type": "checkbox",
+        "group": "layout",
+        "copyable": true
+      },
+      {
+        "name": "gap",
+        "label": "Gap",
         "type": "range",
-        "group": "controls",
+        "group": "layout",
         "copyable": true,
         "min": 0,
-        "max": 1280,
+        "max": 120,
         "step": 1
       },
       {
-        "name": "rotationSpeed",
-        "label": "Rotation Speed",
+        "name": "cardWidth",
+        "label": "Card Width",
         "type": "range",
-        "group": "motion",
+        "group": "layout",
         "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
+        "min": 220,
+        "max": 420,
+        "step": 4
       },
       {
-        "name": "activeIndex",
-        "label": "Active Index",
+        "name": "cardHeight",
+        "label": "Card Height",
         "type": "range",
-        "group": "controls",
+        "group": "layout",
         "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "showControls",
-        "label": "Show Controls",
-        "type": "toggle",
-        "group": "content",
-        "copyable": true
+        "min": 240,
+        "max": 520,
+        "step": 4
       }
     ]
   },

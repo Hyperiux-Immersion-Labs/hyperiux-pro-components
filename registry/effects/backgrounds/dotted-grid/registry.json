@@ -132,34 +132,6 @@
       }
     },
     {
-      "name": "dotHue",
-      "type": "number",
-      "default": 210,
-      "description": "Shifts the trail hue.",
-      "remixer": {
-        "control": "range",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "min": 0,
-        "max": 360,
-        "step": 1
-      }
-    },
-    {
-      "name": "trailSaturation",
-      "type": "number",
-      "default": 16,
-      "description": "Controls how colorful the trail highlight becomes.",
-      "remixer": {
-        "control": "range",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "min": 0,
-        "max": 100,
-        "step": 1
-      }
-    },
-    {
       "name": "showDesktopHint",
       "type": "boolean",
       "default": true,

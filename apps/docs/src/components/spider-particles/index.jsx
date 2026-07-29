@@ -12,6 +12,8 @@ const MOUSE_THRESHOLD = -9000; // anything above this = mouse is on screen
 // are scaled down, not frozen — matches the convention used elsewhere in
 // this repo (parallax-slider, text-convergence, parallax-gallery).
 const REDUCED_MOTION_FACTOR = 0.6;
+const LERP_SPEED = 0.1;
+const FADE_SPEED = 0.04;
 
 // GLSL Shaders 
 
@@ -74,8 +76,6 @@ export default function SpiderParticles({
   particleSize = 20.0,
   mouseConnectDist = 160,
   spotlightRadius = 300,
-  lerpSpeed = 0.1,
-  fadeSpeed = 0.04,
   showWeb = true,
   particlesGlow = false,
   glowColor = 0xffffff,
@@ -318,8 +318,8 @@ export default function SpiderParticles({
       onFrame: () => {
       // Reduced motion: scale down speed (lerp/fade) and spread (spotlight
       // radius, web reach) rather than freezing the effect outright.
-      const effectiveLerpSpeed   = reduceMotion ? lerpSpeed * REDUCED_MOTION_FACTOR       : lerpSpeed;
-      const effectiveFadeSpeed   = reduceMotion ? fadeSpeed * REDUCED_MOTION_FACTOR       : fadeSpeed;
+      const effectiveLerpSpeed   = reduceMotion ? LERP_SPEED * REDUCED_MOTION_FACTOR       : LERP_SPEED;
+      const effectiveFadeSpeed   = reduceMotion ? FADE_SPEED * REDUCED_MOTION_FACTOR       : FADE_SPEED;
       const spotlightR  = reduceMotion ? spotlightRadius * REDUCED_MOTION_FACTOR  : spotlightRadius;
       const connectDist = reduceMotion ? mouseConnectDist * REDUCED_MOTION_FACTOR : mouseConnectDist;
 
@@ -433,8 +433,6 @@ export default function SpiderParticles({
     particleSize,
     mouseConnectDist,
     spotlightRadius,
-    lerpSpeed,
-    fadeSpeed,
     showWeb,
     particlesGlow,
     glowColor,

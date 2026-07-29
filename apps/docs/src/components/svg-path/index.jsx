@@ -67,7 +67,13 @@ const imgs = svgPathImages.map((src) => ({
   link: "/",
 }));
 
-export default function SVGPath() {
+export default function SVGPath({
+  bgColor = "#000000",
+  baseVelocity = 8,
+  dragSensitivity = 0.1,
+  slowDownFactor = 0.3,
+  draggable = true,
+}) {
   const [activeTab, setActiveTab] = useState("circle");
 
   const currentTab = useMemo(() => {
@@ -77,8 +83,8 @@ export default function SVGPath() {
   return (
     <>
 
-      <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden bg-black">
-        <div className="fixed inset-0 h-svh w-dvw overflow-hidden bg-black">
+      <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden" style={{ backgroundColor: bgColor }}>
+        <div className="fixed inset-0 h-svh w-dvw overflow-hidden" style={{ backgroundColor: bgColor }}>
           <div className="pointer-events-auto fixed left-1/2 bottom-[5%] max-md:bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-md:gap-[1.2vw] max-md:p-[0.7vw] max-sm:w-fit max-md:h-fit max-sm:justify-center max-sm:gap-[2vw] max-sm:p-[1.4vw]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -104,12 +110,13 @@ export default function SVGPath() {
             key={`${currentTab.id}-${currentTab.path}`}
             path={currentTab.path}
             viewBox={currentTab.viewBox}
-            baseVelocity={currentTab.baseVelocity}
+            baseVelocity={baseVelocity}
             slowdownOnHover
-            draggable
+            slowDownFactor={slowDownFactor}
+            draggable={draggable}
             useScrollVelocity
             repeat={currentTab.repeat}
-            dragSensitivity={0.1}
+            dragSensitivity={dragSensitivity}
             className={currentTab.className}
             responsive
             grabCursor

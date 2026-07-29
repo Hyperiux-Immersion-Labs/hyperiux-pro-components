@@ -52,93 +52,48 @@
   ],
   "props": [
     {
-      "name": "path",
-      "type": "string",
-      "default": "defaultPath",
-      "description": "SVG path used by the marquee.",
-      "suggested": true
-    },
-    {
-      "name": "viewBox",
-      "type": "string",
-      "default": "\"0 0 1200 600\"",
-      "description": "SVG viewBox for the path.",
-      "suggested": true
+      "name": "bgColor",
+      "type": "color",
+      "default": "#000000",
+      "description": "Background color of the section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
       "name": "baseVelocity",
       "type": "number",
       "default": 8,
-      "description": "Base movement speed along the path.",
-      "suggested": true
+      "description": "Marquee scroll speed along the path.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 24, "step": 0.5 }
     },
     {
-      "name": "repeat",
+      "name": "dragSensitivity",
       "type": "number",
-      "default": 2,
-      "description": "Number of times children repeat on the path.",
-      "suggested": true
+      "default": 0.1,
+      "description": "How much drag movement translates to velocity.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 1, "step": 0.02 }
     },
     {
-      "name": "showPath",
+      "name": "slowDownFactor",
+      "type": "number",
+      "default": 0.3,
+      "description": "How much the marquee slows down while hovered.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 1, "step": 0.05 }
+    },
+    {
+      "name": "draggable",
       "type": "boolean",
-      "default": false,
-      "description": "Shows the SVG guide path.",
-      "suggested": true
+      "default": true,
+      "description": "Enables drag interaction on the marquee.",
+      "remixer": { "control": "checkbox", "group": "motion", "groupTitle": "Motion" }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "controls",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "path",
-        "label": "Path",
-        "type": "text",
-        "group": "controls",
-        "copyable": true
-      },
-      {
-        "name": "viewBox",
-        "label": "View Box",
-        "type": "text",
-        "group": "controls",
-        "copyable": true
-      },
-      {
-        "name": "baseVelocity",
-        "label": "Base Velocity",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 24,
-        "step": 0.1
-      },
-      {
-        "name": "repeat",
-        "label": "Repeat",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "showPath",
-        "label": "Show Path",
-        "type": "toggle",
-        "group": "content",
-        "copyable": true
-      }
-    ]
+    "copyCode": { "includeOnlyPublicProps": true }
   }
 }

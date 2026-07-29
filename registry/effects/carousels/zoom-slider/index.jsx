@@ -4,19 +4,20 @@ import React from 'react';
 import ZoomSliderComp from './ZoomSliderComp';
 
 const ZoomSlider = ({
-  title = "Zoom Slider",
-  subheading = "Scroll to explore ",
-  sliderData = DEFAULT_SLIDER_DATA,
+  scaleOnHover = true,
+  textOnHover = true,
 }) => {
   return (
     <ZoomSliderComp
-      title={title}
-      subheading={subheading}
-      sliderData={sliderData}
+      title="Zoom Slider"
+      subheading="Scroll to explore "
+      sliderData={DEFAULT_SLIDER_DATA}
+      scaleOnHover={scaleOnHover}
+      textOnHover={textOnHover}
     />
   );
 };
- 
+
 
 export default ZoomSlider;
 

@@ -14,30 +14,16 @@
   "changelog": [],
   "props": [
     {
-      "name": "initialPixelSize",
+      "name": "intensity",
       "type": "number",
       "default": 22,
-      "description": "Starting SVG pixel filter size.",
+      "description": "Starting pixelation intensity before the reveal sharpens the image.",
       "remixer": {
         "control": "range",
         "group": "filter",
         "groupTitle": "Filter",
         "min": 2,
         "max": 80,
-        "step": 1
-      }
-    },
-    {
-      "name": "finalPixelSize",
-      "type": "number",
-      "default": 1,
-      "description": "Final SVG pixel filter size.",
-      "remixer": {
-        "control": "range",
-        "group": "filter",
-        "groupTitle": "Filter",
-        "min": 1,
-        "max": 20,
         "step": 1
       }
     },

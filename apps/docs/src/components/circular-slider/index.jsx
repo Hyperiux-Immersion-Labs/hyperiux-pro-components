@@ -1,50 +1,64 @@
 import CircularSliderComp from './CircularSliderComp';
 
-const data = [
+const defaultItems = [
   {
-    heading: "Arrow Fill Button",
-    text: "Primary button with an expanding fill and animated arrow",
+    title: "Arrow Fill Button",
+    description: "Primary button with an expanding fill and animated arrow",
     bgColor: "#655A7C",
     textColor: "#2A2433",
   },
   {
-    heading: "Custom Cursor",
-    text: "Interactive cursor that transforms every hover",
+    title: "Custom Cursor",
+    description: "Interactive cursor that transforms every hover",
     bgColor: "#AB92BF",
     textColor: "#3D2E50",
   },
   {
-    heading: "Text Scramble",
-    text: "Dynamic text reveal with glitch-style transitions",
+    title: "Text Scramble",
+    description: "Dynamic text reveal with glitch-style transitions",
     bgColor: "#AFC1D6",
     textColor: "#2C3E52",
   },
   {
-    heading: "Hover Reveal Card",
-    text: "Cards that come alive on hover interaction",
+    title: "Hover Reveal Card",
+    description: "Cards that come alive on hover interaction",
     bgColor: "#CEF9F2",
     textColor: "#1A5C53",
   },
   {
-    heading: "Scroll Animations",
-    text: "Smooth GSAP-powered scroll-based animations",
+    title: "Scroll Animations",
+    description: "Smooth GSAP-powered scroll-based animations",
     bgColor: "#D6CA98",
     textColor: "#4A3F1A",
   },
   {
-    heading: "Circular Slider",
-    text: "Rotating card slider with immersive motion",
+    title: "Circular Slider",
+    description: "Rotating card slider with immersive motion",
     bgColor: "#655A7C",
     textColor: "#2A2433",
   },
 ];
 
-const CircularSlider = () => {
+const CircularSlider = ({
+  items = defaultItems,
+  title = "Interfaces that react.",
+  subtitle = "Built for motion, crafted for experience.",
+  backgroundColor = "#111111",
+  gap = 24,
+  cardWidth = 320,
+  cardHeight = 360,
+  showBottomText = true,
+}) => {
   return (
     <CircularSliderComp
-      data={data}
-      heading="Interfaces that react."
-      para="Built for motion, crafted for experience."
+      items={items}
+      title={title}
+      subtitle={subtitle}
+      backgroundColor={backgroundColor}
+      gap={gap}
+      cardWidth={cardWidth}
+      cardHeight={cardHeight}
+      showBottomText={showBottomText}
     />
   );
 };

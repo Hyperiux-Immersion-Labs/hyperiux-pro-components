@@ -3,17 +3,21 @@ import { FooterParallax } from "./ParallaxFooter";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-const ParallaxFooter = () => {
+const ParallaxFooter = ({
+  containerBgColor = "#ff6b00",
+  footerBgColor = "#1a1a1a",
+}) => {
   return (
     <>
-
-
-      <div className="w-screen h-screen bg-[#ff6b00] relative z-2 flex justify-center items-center">
+      <div
+        className="relative z-2 flex h-screen w-screen items-center justify-center"
+        style={{ backgroundColor: containerBgColor }}
+      >
         <h1 className="text-[4vw] font-medium max-sm:text-[8.5vw] w-[70%] text-center">
           Scroll To See Parallax Effect
         </h1>
       </div>
-      <FooterParallax footerClassName="bg-[#1a1a1a] text-white px-10 py-20">
+      <FooterParallax footerClassName="text-white px-10 py-20" footerStyle={{ backgroundColor: footerBgColor }}>
         <div className="max-w-7xl mx-auto flex justify-between max-sm:flex-col max-sm:justify-start max-sm:gap-[12vw]">
           <div className="w-[40%] max-md:w-[70%] max-sm:w-[80%]">
             <h1 className="text-5xl font-semibold max-sm:text-[7.5vw]">

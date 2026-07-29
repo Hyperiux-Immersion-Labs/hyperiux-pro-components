@@ -2,12 +2,20 @@
 import DraggableMarqueeComp from "./DraggableMarqueeComp";
 
 
-const DraggableMarquee = () => {
+const DraggableMarquee = ({
+  speed = 7.2,
+  pauseOnHover = false,
+  throwMultiplier = 2.8,
+  throwFriction = 0.975,
+}) => {
   return (
         <section className="w-screen h-screen bg-black text-white flex flex-col justify-center items-center">
 				<DraggableMarqueeComp
 					items={marqueeImages}
-					speed={7.2}
+					speed={speed}
+					pauseOnHover={pauseOnHover}
+					throwMultiplier={throwMultiplier}
+					throwFriction={throwFriction}
 					gapClassName="gap-[2vw] max-md:gap-[4vw]"
 					className="py-10"
 					itemClassName="select-none"

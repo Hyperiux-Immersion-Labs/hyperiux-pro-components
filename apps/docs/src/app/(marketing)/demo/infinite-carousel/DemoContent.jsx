@@ -1,8 +1,8 @@
 "use client";
 
-import InfiniteCarousel from "@/components/InfiniteCarousel";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import InfiniteCarousel from "@/components/InfiniteCarousel";
 
 export default function DemoContent({ registry }) {
   return (

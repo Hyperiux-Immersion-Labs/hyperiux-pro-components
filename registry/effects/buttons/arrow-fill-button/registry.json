@@ -103,8 +103,7 @@
     {
       "name": "arrowColor",
       "type": "color",
-      "default": "#ff5f00",
-      "description": "Arrow color before hover.",
+      "description": "Arrow color before hover. Falls back to fillTextColor when unset.",
       "remixer": {
         "control": "color",
         "group": "hover",
@@ -114,12 +113,22 @@
     {
       "name": "hoverArrowColor",
       "type": "color",
-      "default": "#ff5f00",
-      "description": "Arrow color after hover.",
+      "description": "Arrow color after hover. Falls back to hoverFillTextColor when unset.",
       "remixer": {
         "control": "color",
         "group": "hover",
         "groupTitle": "Hover"
+      }
+    },
+    {
+      "name": "showArrow",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows or hides the animated arrow icon.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "content",
+        "groupTitle": "Content"
       }
     }
   ],

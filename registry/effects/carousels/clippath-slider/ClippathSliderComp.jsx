@@ -5,7 +5,7 @@ import SplitText from "gsap/dist/SplitText";
 
 gsap.registerPlugin(SplitText);
 
-export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
+export default function ClippathSliderComp({ slides = [], clueText, showClue = true, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", duration = 0.75, }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [, setNextSlideIndex] = useState(0);
@@ -262,7 +262,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         gsap.to(proxy, {
           progress: 1,
           imgScale: 1.25,
-          duration: 1.2,
+          duration,
           // ease:"cubic-bezier(.075, .82, .165, 1)",
           ease: "power2.inOut",
           onUpdate: draw,
@@ -282,7 +282,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         img.onerror = animate;
       }
     });
-  }, [slides]);
+  }, [slides, duration]);
 
   // SLIDE CHANGE
   const changeSlide = useCallback(async (newIndex) => {
@@ -326,7 +326,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       } else {
         gsap.to(outgoingRef.current, {
           scale: 1.0,
-          duration: 1.2,
+          duration,
           ease: "power2.inOut",
         });
       }
@@ -388,7 +388,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
     setCurrentSlide(newIndex);
     setIsTransitioning(false);
-  }, [fadeOutText, isTransitioning, runSweepAnimation, slides]);
+  }, [fadeOutText, isTransitioning, runSweepAnimation, slides, duration]);
 
   const nextSlideNav = useCallback(() => {
     if (slides.length === 0) return;
@@ -670,7 +670,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         </div>
       </div>
 
-      {clueText && (
+      {showClue && clueText && (
         <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-md:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-[1025px]:text-base max-md:text-sm leading-relaxed text-white/80  backdrop-blur-md max-md:bottom-6 ">
           {clueText}
         </p>

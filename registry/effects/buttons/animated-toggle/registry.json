@@ -95,17 +95,6 @@
         "max": 1,
         "step": 0.02
       }
-    },
-    {
-      "name": "checked",
-      "type": "boolean",
-      "description": "Initial on/off state for the toggle.",
-      "default": false,
-      "remixer": {
-        "control": "checkbox",
-        "group": "controls",
-        "groupTitle": "Controls"
-      }
     }
   ],
   "remixer": {

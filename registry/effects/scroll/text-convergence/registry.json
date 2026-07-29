@@ -26,13 +26,24 @@
   "importPath": "@/components/effects/text-convergence",
   "target": "src/components/effects/text-convergence",
   "props": [
-    { "name": "text", "type": "string", "default": "Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless.", "description": "Text content that converges on scroll.", "remixer": { "control": "textarea", "group": "content", "groupTitle": "Content" } },
-    { "name": "bgColor", "type": "string", "default": "bg-[#111111]", "description": "Background class for the section.", "remixer": { "control": "text", "group": "surface", "groupTitle": "Surface" } },
-    { "name": "textColor", "type": "string", "default": "text-[#ffffff]", "description": "Text color class.", "remixer": { "control": "text", "group": "surface", "groupTitle": "Surface" } }
+    {
+      "name": "bgColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Background color of the section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "charRotation",
+      "type": "number",
+      "default": 20,
+      "description": "Max random rotation (degrees, plus or minus) each character starts from before flying into place.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 90, "step": 1 }
+    }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
