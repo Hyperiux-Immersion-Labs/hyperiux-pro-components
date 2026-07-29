@@ -25,7 +25,6 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const DEFAULT_TEXT = <p>Text that steps into frame.</p>;
 
-const DEFAULT_TEXT = <p>Text that steps into frame.</p>;
 
 /**
  * @typedef {Object} OverflowStaggerTextProps

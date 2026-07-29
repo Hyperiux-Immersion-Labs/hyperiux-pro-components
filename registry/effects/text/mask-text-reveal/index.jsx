@@ -11,8 +11,6 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const DEFAULT_TEXT = <p className="text-2xl">Pull the words from the noise.</p>;
 
-const DEFAULT_TEXT = <p className="text-2xl">Pull the words from the noise.</p>;
-
 /**
  * @typedef {Object} MaskTextRevealProps
  * @property {import('react').ReactNode} [children]

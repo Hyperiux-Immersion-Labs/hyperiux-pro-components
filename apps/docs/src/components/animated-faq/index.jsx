@@ -7,6 +7,16 @@ import {
 } from "./AnimatedFaqComp";
 import React from "react";
 
+/** @typedef {import('react').ReactNode} ReactNode */
+/**
+ * @typedef {Object} FAQItem
+ * @property {string} id
+ * @property {ReactNode} title
+ * @property {ReactNode} content
+ * @property {boolean} defaultOpen
+ */
+
+/** @type {FAQItem[]} */
 const faqItems = [
   {
     id: "faq-1",
@@ -49,6 +59,7 @@ const faqItems = [
   },
 ];
 
+/** @returns {import('react').JSX.Element} */
 export default function AnimatedFaq() {
   const defaultOpenItems = faqItems
     .filter((item) => item.defaultOpen)

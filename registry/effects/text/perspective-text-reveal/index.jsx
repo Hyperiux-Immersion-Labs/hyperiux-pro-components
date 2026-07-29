@@ -14,7 +14,7 @@ const REDUCED_MOTION_Y_OFFSET = 24;
 
 const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
 
-const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
+
 
 /**
  * @typedef {Object} PerspectiveTextRevealProps
