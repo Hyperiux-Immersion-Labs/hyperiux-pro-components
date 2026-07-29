@@ -14,6 +14,19 @@ const REDUCED_MOTION_Y_OFFSET = 24;
 
 const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
 
+const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
+
+/**
+ * @typedef {Object} PerspectiveTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {boolean} [scrub]
+ * @property {string} [end]
+ */
+
+/** @param {PerspectiveTextRevealProps} props */
 export default function PerspectiveTextReveal({
  children = DEFAULT_TEXT,
  animateOnScroll = true,
@@ -22,9 +35,9 @@ export default function PerspectiveTextReveal({
  scrub = false,
  end = "bottom 60%",
 }) {
- const containerRef = useRef(null);
- const splitRefs = useRef([]);
- const linesRef = useRef([]);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+ const linesRef = useRef(/** @type {HTMLElement[]} */ ([]));
 
  useLayoutEffect(() => {
  if (!containerRef.current) return;
@@ -40,6 +53,7 @@ export default function PerspectiveTextReveal({
  window.matchMedia &&
  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+ /** @type {ReturnType<typeof gsap.context> | undefined} */
  let ctx;
 
  const init = async () => {
@@ -54,7 +68,7 @@ export default function PerspectiveTextReveal({
  });
 
  splitRefs.current.push(split);
- linesRef.current.push(...split.lines);
+ linesRef.current.push(.../** @type {HTMLElement[]} */ (split.lines));
  });
 
  if (prefersReduced) {

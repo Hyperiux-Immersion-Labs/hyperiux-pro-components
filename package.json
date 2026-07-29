@@ -6,7 +6,19 @@
     "build": "npm --prefix apps/docs run build",
     "start": "npm --prefix apps/docs run start",
     "lint": "npm --prefix apps/docs run lint",
-    "build:registry": "node ./scripts/build-registry.js"
+    "build:registry": "node ./scripts/build-registry.js",
+    "component:new": "node ./scripts/component-workflow.mjs new",
+    "component:sync": "node ./scripts/component-workflow.mjs sync",
+    "component:rename": "node ./scripts/component-workflow.mjs rename",
+    "component:move": "node ./scripts/component-workflow.mjs move",
+    "component:delete": "node ./scripts/component-workflow.mjs delete",
+    "component:diff": "node ./scripts/component-workflow.mjs diff",
+    "component:revert": "node ./scripts/component-workflow.mjs revert",
+    "component:verify": "node ./scripts/component-workflow.mjs verify",
+    "component:test": "npm --prefix apps/docs run test -- src/lib/component-workflow.test.js",
+    "sanity:code:diff": "node ./scripts/sanity-code-sync.mjs diff",
+    "sanity:code:sync": "node ./scripts/sanity-code-sync.mjs sync",
+    "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^16.2.10",

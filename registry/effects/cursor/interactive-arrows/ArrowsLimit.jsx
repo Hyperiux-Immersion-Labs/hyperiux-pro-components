@@ -3,6 +3,7 @@ import { Point } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
+  /** @param {Point} position */
   constructor(position) {
     this.pos = position;
     this.dx = 0;
@@ -11,6 +12,10 @@ class Arrow {
     this.ease = 0.1;
   }
 
+  /**
+   * @param {number} mouseX
+   * @param {number} mouseY
+   */
   update(mouseX, mouseY) {
     const targetDx = mouseX - this.pos.x;
     const targetDy = mouseY - this.pos.y;
@@ -19,6 +24,7 @@ class Arrow {
     this.angle = Math.atan2(this.dy, this.dx);
   }
 
+  /** @param {CanvasRenderingContext2D} ctx */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
@@ -39,12 +45,19 @@ class Arrow {
   }
 }
 
-const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
-  const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const arrowsRef = useRef([]);
+/**
+ * @typedef {Object} ArrowsLimitProps
+ * @property {number} [rows]
+ * @property {number} [columns]
+ */
 
-  const initializeArrows = useCallback((canvas) => {
+/** @param {ArrowsLimitProps} props */
+const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const arrowsRef = useRef(/** @type {Arrow[]} */ ([]));
+
+  const initializeArrows = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
     const arrows = [];
     const spacingX = canvas.width / (columns + 1);
     const spacingY = canvas.height / (rows + 1);
@@ -73,10 +86,10 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
     }
   }, [initializeArrows]);
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();  
+    const rect = canvas.getBoundingClientRect();
     if (
       e.clientX >= rect.left &&
       e.clientX <= rect.right &&
@@ -93,7 +106,7 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
 
@@ -106,7 +119,7 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
   }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 

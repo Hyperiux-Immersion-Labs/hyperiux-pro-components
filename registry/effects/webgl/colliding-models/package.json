@@ -4,8 +4,8 @@
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
   "main": "index.jsx",
   "files": [
-    "createSuspendedRaf.js",
     "index.jsx",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

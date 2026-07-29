@@ -9,6 +9,12 @@ import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
 import { createVisibilityGate } from './createSuspendedRaf'
 
+/**
+ * @param {number} current
+ * @param {number} target
+ * @param {number} lambda
+ * @param {number} delta
+ */
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
 
@@ -26,6 +32,7 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion
 }
 
+/** @param {string} src */
 function loadCorsObjectUrl(src) {
   return fetch(src, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
     .then((res) => {
@@ -35,12 +42,19 @@ function loadCorsObjectUrl(src) {
     .then((blob) => URL.createObjectURL(blob))
 }
 
+/**
+ * @typedef {Object} ImageNodeMaterialProps
+ * @property {string} src
+ * @property {boolean} isMobile
+ */
+
+/** @param {ImageNodeMaterialProps} props */
 function ImageNodeMaterial({ src, isMobile }) {
-  const sourceMap = useTexture(src)
+  const sourceMap = /** @type {THREE.Texture} */ (useTexture(src))
   const { size, camera } = useThree()
 
   const height =
-    2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * camera.position.z
+    2 * Math.tan((/** @type {THREE.PerspectiveCamera} */ (camera).fov * Math.PI) / 180 / 2) * camera.position.z
 
   const width = height * (size.width / size.height)
 
@@ -48,7 +62,7 @@ function ImageNodeMaterial({ src, isMobile }) {
   const target = useRef(new THREE.Vector2(0.5, 0.5))
   const strength = useRef(0)
   const strengthTarget = useRef(0)
-  const materialRef = useRef(null)
+  const materialRef = useRef(/** @type {any} */ (null))
 
   const map = useMemo(() => {
     const clonedMap = sourceMap.clone()
@@ -144,10 +158,16 @@ const DEFAULT_SRC =
   'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
 const DEFAULT_CLASS_NAME = 'h-[50vh] w-[50vw]'
 
+/**
+ * @typedef {Object} FishEyeProps
+ * @property {string} src
+ */
+
+/** @param {FishEyeProps} props */
 export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_NAME }) {
-  const rootRef = useRef(null)
-  const [frameloop, setFrameloop] = useState('always')
-  const [objectUrl, setObjectUrl] = useState(null)
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+  const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
+  const [objectUrl, setObjectUrl] = useState(/** @type {string|null} */ (null))
   const [isMobile, setIsMobile] = useState(false)
   const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -162,6 +182,7 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
   useEffect(() => {
     if (isMobile) return undefined
 
+    /** @type {string|null} */
     let url = null
     loadCorsObjectUrl(src)
       .then((u) => {
@@ -198,7 +219,7 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
             pointerEvents: isMobile ? 'none' : 'auto',
             touchAction: isMobile ? 'none' : 'auto',
           }}
-          gl={({ canvas }) => {
+          gl={(/** @type {any} */ { canvas }) => {
             const renderer = new THREE.WebGPURenderer({
               canvas,
               antialias: true,

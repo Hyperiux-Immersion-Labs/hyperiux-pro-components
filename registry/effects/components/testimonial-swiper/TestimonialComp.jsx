@@ -6,23 +6,38 @@ import NavigationButtons from "./NavigationButtons";
 
 gsap.registerPlugin(SplitText);
 
+/**
+ * @typedef {Object} Testimonial
+ * @property {string} quote
+ * @property {string} name
+ * @property {string} title
+ * @property {string} image
+ */
+
+/**
+ * @typedef {Object} TestimonialCompProps
+ * @property {Testimonial[]} [testimonials]
+ * @property {string} [bgColor]
+ */
+
+/** @param {TestimonialCompProps} props */
 export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff" }) {
     const [current, setCurrent] = useState(0);
     const [displayItem, setDisplayItem] = useState(testimonials[0] ?? null);
     const [, setIsAnimating] = useState(false);
 
-    const quoteRef = useRef(null);
-    const quoteMarkRef = useRef(null);
-    const nameRef = useRef(null);
-    const titleRef = useRef(null);
-    const mobileNameRef = useRef(null);
-    const mobileTitleRef = useRef(null);
-    const desktopImageRef = useRef(null);
-    const mobileImageRef = useRef(null);
-    const imageRef = useRef(null);
-    const splitRef = useRef(null);
-    const prevCurrentRef = useRef(null);
-    const pendingDirectionRef = useRef("next");
+    const quoteRef = useRef(/** @type {HTMLQuoteElement|null} */ (null));
+    const quoteMarkRef = useRef(/** @type {HTMLSpanElement|null} */ (null));
+    const nameRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+    const titleRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+    const mobileNameRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+    const mobileTitleRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+    const desktopImageRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const mobileImageRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const imageRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const splitRef = useRef(/** @type {InstanceType<typeof SplitText>|null} */ (null));
+    const prevCurrentRef = useRef(/** @type {number|null} */ (null));
+    const pendingDirectionRef = useRef(/** @type {'next'|'prev'} */ ("next"));
     const isAnimatingRef = useRef(false);
     const reduceMotionRef = useRef(
         typeof window !== "undefined" &&
@@ -30,12 +45,13 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     );
 
     const total = testimonials.length;
+    /** @param {number} n */
     const pad = (n) => String(n).padStart(2, "0");
 
     useEffect(() => {
         const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
         if (!mq) return;
-        const onChange = (event) => {
+        const onChange = (/** @type {MediaQueryListEvent} */ event) => {
             reduceMotionRef.current = event.matches;
         };
         reduceMotionRef.current = mq.matches;
@@ -43,7 +59,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
         return () => mq.removeEventListener?.("change", onChange);
     }, []);
 
-    const animateIn = useCallback((direction) => {
+    const animateIn = useCallback((/** @type {'next'|'prev'} */ direction) => {
         if (splitRef.current) {
             splitRef.current.revert();
             splitRef.current = null;
@@ -102,7 +118,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
             const wrapper = document.createElement("div");
             wrapper.style.overflow = "hidden";
             wrapper.style.display = "block";
-            line.parentNode.insertBefore(wrapper, line);
+            /** @type {Node} */ (line.parentNode).insertBefore(wrapper, line);
             wrapper.appendChild(line);
         });
 
@@ -135,7 +151,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     }, []);
 
     const fadeOutCurrent = useCallback(() => {
-        return new Promise((resolve) => {
+        return /** @type {Promise<void>} */ (new Promise((resolve) => {
             const targets = [
                 quoteRef.current,
                 imageRef.current,
@@ -152,7 +168,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                 ease: "power1.in",
                 onComplete: resolve,
             });
-        });
+        }));
     }, []);
 
     const handlePrev = useCallback(async () => {

@@ -1,3 +1,14 @@
+/**
+ * @typedef {Object} HoverFillLinkOwnProps
+ * @property {string} [href]
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [className]
+ * @property {boolean} [isActive]
+ */
+
+/** @typedef {HoverFillLinkOwnProps & Omit<import('react').AnchorHTMLAttributes<HTMLAnchorElement>, keyof HoverFillLinkOwnProps>} HoverFillLinkProps */
+
+/** @param {HoverFillLinkProps} props */
 export function HoverFillLink({ href, children, className = "", isActive, ...props }) {
     const text = typeof children === "string" ? children : "";
     return (

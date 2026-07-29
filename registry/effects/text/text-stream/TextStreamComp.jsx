@@ -6,10 +6,11 @@ import { useIsMobile } from "./hooks";
 
 const BASE_SPEED = 0.6;
 
+/** @param {{ items?: string[] }} props */
 export default function TextStreamComp({ items = [] }) {
-  const trackRef = useRef(null);
-  const contentRef = useRef(null);
-  const containerRef = useRef(null);
+  const trackRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
   const [copyCount, setCopyCount] = useState(2);
   const isMobile = useIsMobile();
@@ -22,7 +23,7 @@ export default function TextStreamComp({ items = [] }) {
     lastScrollDirection: 1,
   });
 
-  const scrollTimeoutRef = useRef(null);
+  const scrollTimeoutRef = useRef(/** @type {number | null} */ (null));
 
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -74,6 +75,10 @@ export default function TextStreamComp({ items = [] }) {
         gsap.set(track, { y: metricsRef.current.currentY });
       };
 
+      /**
+       * @param {number} _
+       * @param {number} deltaTime
+       */
       const tick = (_, deltaTime) => {
         const { distance } = metricsRef.current;
 
@@ -99,6 +104,7 @@ export default function TextStreamComp({ items = [] }) {
         gsap.set(track, { y: metricsRef.current.currentY });
       };
 
+      /** @param {number} delta */
       const applyScrollMotion = (delta) => {
         if (!delta) return;
 
@@ -112,7 +118,7 @@ export default function TextStreamComp({ items = [] }) {
         metricsRef.current.lastScrollDirection = direction;
         metricsRef.current.targetVelocity = direction * boost;
 
-        window.clearTimeout(scrollTimeoutRef.current);
+        window.clearTimeout(scrollTimeoutRef.current ?? undefined);
 
         scrollTimeoutRef.current = window.setTimeout(() => {
           metricsRef.current.targetVelocity =
@@ -120,6 +126,7 @@ export default function TextStreamComp({ items = [] }) {
         }, 120);
       };
 
+      /** @param {WheelEvent} event */
       const handleWheel = (event) => {
         applyScrollMotion(event.deltaY);
       };
@@ -158,7 +165,7 @@ export default function TextStreamComp({ items = [] }) {
         window.removeEventListener("wheel", handleWheel);
         window.removeEventListener("scroll", handleScroll);
 
-        window.clearTimeout(scrollTimeoutRef.current);
+        window.clearTimeout(scrollTimeoutRef.current ?? undefined);
 
         gsap.ticker.remove(tick);
       };

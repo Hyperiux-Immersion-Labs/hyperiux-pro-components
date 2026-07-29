@@ -6,6 +6,7 @@ import CustomNavbar from "./CustomNavbar";
 import FullscreenNav from "./FullscreenNav";
 
 
+/** @type {Partial<import('./FullscreenNav').FullscreenNavProps>} */
 const NAV_CONFIG = {
   brand: "Hyperiux",
   brandHref: "/",
@@ -16,6 +17,7 @@ const NAV_CONFIG = {
   closeDuration: 1.2,
 };
 
+/** @type {Partial<import('./CustomNavbar').CustomNavbarProps>} */
 const NAV_CONTENT = {
   agencyName: "",
   tagline: "Crafting digital experiences.",
@@ -35,6 +37,13 @@ const NAV_CONTENT = {
   ],
 };
 
+/**
+ * @typedef {Object} ImmersiveFullscreenNavProps
+ * @property {Partial<import('./FullscreenNav').FullscreenNavProps>} [navConfig]
+ * @property {Partial<import('./CustomNavbar').CustomNavbarProps>} [navContent]
+ */
+
+/** @param {ImmersiveFullscreenNavProps} props */
 export default function ImmersiveFullscreenNav({
   navConfig = NAV_CONFIG,
   navContent = NAV_CONTENT,

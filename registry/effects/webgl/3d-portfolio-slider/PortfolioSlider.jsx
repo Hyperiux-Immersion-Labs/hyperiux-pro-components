@@ -8,6 +8,7 @@ import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+/** @param {() => void} callback */
 function subscribeToReducedMotion(callback) {
   if (typeof window === "undefined") return () => {};
   const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -49,21 +50,39 @@ function getViewportConfig() {
   };
 }
 
+/**
+ * @typedef {Object} PortfolioSliderItem
+ * @property {string} url
+ * @property {string} description
+ */
+
+/**
+ * @typedef {Object} PortfolioSliderProps
+ * @property {PortfolioSliderItem[]} items
+ */
+
+/** @param {PortfolioSliderProps} props */
 export default function PortfolioSlider({ items }) {
- const containerRef = useRef(null);
- const circleRef = useRef(null);
- const textContainerRef = useRef(null);
- const activeTextRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const circleRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const textContainerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const activeTextRef = useRef(/** @type {HTMLDivElement|null} */ (null));
  const prevRawIndexRef = useRef(0);
  const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
- let scene, camera, renderer;
+ /** @type {THREE.Scene} */
+ let scene;
+ /** @type {THREE.PerspectiveCamera} */
+ let camera;
+ /** @type {THREE.WebGLRenderer} */
+ let renderer;
+ /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
  let planes = [];
 
  let currentRadius = getViewportConfig().initialRadius;
 
- const container = containerRef.current;
+ const container = /** @type {HTMLDivElement} */ (containerRef.current);
 
 
  const lenis = new Lenis({
@@ -147,8 +166,10 @@ const speedFactor = 0.01;
  const totalWidth = spacing * items.length;
 
  let offset = 0;
+ /** @type {number|null} */
  let prevScroll = null;
  let isSnapping = false;
+ /** @type {ReturnType<typeof setTimeout>|null} */
  let snapTimeout = null;
  let snapObj = { offset: 0 };
 
@@ -157,7 +178,7 @@ const speedFactor = 0.01;
  root: null,
  observeTab: false,
  observeOffscreen: false,
- onFrame: (time) => {
+ onFrame: (/** @type {number} */ time) => {
  lenis.raf(time);
 
  // Delta
@@ -286,7 +307,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
 
  const gate = createVisibilityGate({
  root: container,
- onChange: (active) => {
+ onChange: (/** @type {boolean} */ active) => {
  if (active) {
  if (!isSnapping) {
  lenis?.start?.();

@@ -13,6 +13,17 @@ const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 const DEFAULT_TEXT = <p>Slide from right.</p>;
 
+/**
+ * @typedef {Object} SlideTextRevealProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {string} [start]
+ * @property {string} [end]
+ */
+
+/** @param {SlideTextRevealProps} props */
 export default function SlideTextReveal({
   children = DEFAULT_TEXT,
   animateOnScroll = true,
@@ -21,9 +32,9 @@ export default function SlideTextReveal({
   start = "top 80%",
   end = "bottom 60%",
 }) {
-  const containerRef = useRef(null);
-  const splitRefs = useRef([]);
-  const charsRef = useRef([]);
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+  const charsRef = useRef(/** @type {HTMLElement[]} */ ([]));
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -39,6 +50,7 @@ export default function SlideTextReveal({
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    /** @type {ReturnType<typeof gsap.context> | undefined} */
     let ctx;
 
     const init = async () => {
@@ -53,7 +65,7 @@ export default function SlideTextReveal({
           });
 
           splitRefs.current.push(split);
-          charsRef.current.push(...split.chars);
+          charsRef.current.push(.../** @type {HTMLElement[]} */ (split.chars));
         });
 
         if (prefersReduced) {

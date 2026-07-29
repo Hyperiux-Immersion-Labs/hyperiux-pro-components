@@ -3,6 +3,10 @@ import { Point, lerpAngle } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
+  /**
+   * @param {Point} position
+   * @param {import('react').RefObject<Arrow[]>} arrowsRef
+   */
   constructor(position, arrowsRef) {
     this.pos = position;
     this.arrowsRef = arrowsRef;
@@ -14,6 +18,10 @@ class Arrow {
     this.targetPos = { ...position };
   }
 
+  /**
+   * @param {number} mouseX
+   * @param {number} mouseY
+   */
   update(mouseX, mouseY) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
@@ -62,6 +70,7 @@ class Arrow {
     this.pos.y += (this.targetPos.y - this.pos.y) * 0.1;
   }
 
+  /** @param {CanvasRenderingContext2D} ctx */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
@@ -82,11 +91,11 @@ class Arrow {
 }
 
 const Arrows = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const mouseRef = useRef({ x: 0, y: 0 });
-  const arrowsRef = useRef([]);
+  const arrowsRef = useRef(/** @type {Arrow[]} */ ([]));
 
-  const initializeArrows = useCallback((canvas) => {
+  const initializeArrows = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
     const arrows = [];
     const spacing = 50;
     const cols = Math.floor(canvas.width / spacing);
@@ -110,7 +119,7 @@ const Arrows = () => {
     }
   }, [initializeArrows]);
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
     const canvas = canvasRef.current;
     if (canvas) {
       const rect = canvas.getBoundingClientRect();
@@ -126,7 +135,7 @@ const Arrows = () => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -137,7 +146,7 @@ const Arrows = () => {
   }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     arrowsRef.current = initializeArrows(canvas);

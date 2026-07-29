@@ -4,9 +4,9 @@
   "description": "Canvas 2D effect that orbits a cluster of images around the cursor in a diagonal loop. Images scale up in the direction of movement and push forward/upward based on mouse velocity, creating a magnetic pull feel.",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "MagneticTrail.jsx",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

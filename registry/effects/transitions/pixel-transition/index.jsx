@@ -17,14 +17,26 @@ const COLOR ='#111111'
 const DURATION_LEAVE = 1.0
 const DURATION_ENTER = 0.8
 
+/**
+ * @param {number} t
+ * @returns {number}
+ */
 function easeInOut(t) {
  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
+/**
+ * @param {HTMLCanvasElement | null} canvas
+ * @param {number} progress
+ * @param {boolean} isEnter
+ * @param {number} [cols]
+ * @param {number} [rows]
+ * @param {boolean} [fromTopLeft]
+ */
 function drawGrid(canvas, progress, isEnter, cols = COLS, rows = ROWS, fromTopLeft = false) {
  if (!canvas) return
 
- const ctx = canvas.getContext('2d')
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'))
  const w = canvas.clientWidth
  const h = canvas.clientHeight
 
@@ -78,15 +90,24 @@ function drawGrid(canvas, progress, isEnter, cols = COLS, rows = ROWS, fromTopLe
  }
 }
 
+/**
+ * @typedef {Object} PixelTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {number} [cols]
+ * @property {number} [rows]
+ * @property {boolean} [enableContentShift]
+ */
+
+/** @param {PixelTransitionProps} props */
 export default function PixelTransition({
  children,
  cols = COLS,
  rows = ROWS,
  enableContentShift = false,
 }) {
- const wrapperRef = useRef(null)
- const canvasRef = useRef(null)
- const tweenRef = useRef(null)
+ const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+ const canvasRef = useRef(/** @type {HTMLCanvasElement | null} */ (null))
+ const tweenRef = useRef(/** @type {gsap.core.Tween | null} */ (null))
  const stateRef = useRef({ progress: 0 })
 
  const resizeCanvas = () => {
@@ -99,10 +120,20 @@ export default function PixelTransition({
  canvas.height = Math.ceil(h * dpr)
  canvas.style.width = `${w}px`
  canvas.style.height = `${h}px`
- const ctx = canvas.getContext('2d')
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'))
  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
  }
 
+ /**
+  * @param {{
+  *   from: number,
+  *   to: number,
+  *   duration: number,
+  *   isEnter: boolean,
+  *   fromTopLeft?: boolean,
+  *   onComplete: () => void,
+  * }} options
+  */
  const animateGrid = ({ from, to, duration, isEnter, fromTopLeft = false, onComplete }) => {
  const canvas = canvasRef.current
  if (!canvas) { onComplete(); return null }

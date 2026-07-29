@@ -4,6 +4,45 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
+/**
+ * @typedef {Object} MouseTrailParticlesProps
+ * @property {number} [maxParticles]
+ * @property {number} [spawnPerMove]
+ * @property {number} [particleLife]
+ * @property {number} [size]
+ * @property {string} [color]
+ * @property {number} [brightness]
+ * @property {number} [zOffset]
+ * @property {number} [spread]
+ * @property {number} [velocityStrength]
+ * @property {number} [lerpFactor]
+ * @property {number} [idleDamping]
+ * @property {number} [stopSpeedThreshold]
+ * @property {number} [idleModeDelay]
+ * @property {number} [idleCometDelayMin]
+ * @property {number} [idleCometDelayMax]
+ * @property {number} [idleCometLife]
+ * @property {number} [idleCometSpeedMin]
+ * @property {number} [idleCometSpeedMax]
+ * @property {number} [idleCometSpawnPerFrame]
+ * @property {number} [idleCometTrailSpread]
+ * @property {number} [idleCometViewportPadding]
+ */
+
+/**
+ * @typedef {Object} ParticleSystem
+ * @property {Float32Array} positions
+ * @property {Float32Array} ages
+ * @property {Float32Array} lifes
+ * @property {Float32Array} seeds
+ * @property {Float32Array} alphas
+ * @property {Float32Array} sizes
+ * @property {Float32Array} velocities
+ * @property {number} count
+ * @property {number} cursor
+ */
+
+/** @param {MouseTrailParticlesProps} props */
 const MouseTrailParticles = ({
   maxParticles = 1400,
   spawnPerMove = 8,
@@ -33,7 +72,7 @@ const MouseTrailParticles = ({
   // extra padding beyond visible viewport
   idleCometViewportPadding = 0.2,
 }) => {
-  const pointsRef = useRef();
+  const pointsRef = useRef(/** @type {any} */ (null));
   const { camera, gl, clock, viewport } = useThree();
 
   const targetPointerWorldRef = useRef(new THREE.Vector3());
@@ -62,12 +101,12 @@ const MouseTrailParticles = ({
   });
 
   useEffect(() => {
-    const handlePointerMove = (e) => {
+    const handlePointerMove = (/** @type {PointerEvent} */ e) => {
       const rect = gl.domElement.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-      raycaster.setFromCamera({ x, y }, camera);
+      raycaster.setFromCamera(/** @type {import('three').Vector2} */ ({ x, y }), camera);
 
       if (raycaster.ray.intersectPlane(plane, hitPoint)) {
         targetPointerWorldRef.current.copy(hitPoint);
@@ -91,6 +130,10 @@ const MouseTrailParticles = ({
     };
   }, [camera, gl, plane, raycaster, hitPoint]);
 
+  /**
+   * @param {number} min
+   * @param {number} max
+   */
   const randomRange = (min, max) => min + Math.random() * (max - min);
 
   const getScreenBounds = () => {
@@ -101,12 +144,12 @@ const MouseTrailParticles = ({
     };
   };
 
-  const scheduleNextIdleComet = (now) => {
+  const scheduleNextIdleComet = (/** @type {number} */ now) => {
     idleCometRef.current.nextSpawnTime =
       now + randomRange(idleCometDelayMin, idleCometDelayMax);
   };
 
-  const spawnIdleComet = (now) => {
+  const spawnIdleComet = (/** @type {number} */ now) => {
     const comet = idleCometRef.current;
     const { halfW, halfH } = getScreenBounds();
 
@@ -148,6 +191,13 @@ const MouseTrailParticles = ({
     comet.active = true;
   };
 
+  /**
+   * @param {ParticleSystem} particles
+   * @param {import('three').Vector3} basePos
+   * @param {import('three').Vector3} velocity
+   * @param {number} [lifeMul]
+   * @param {number} [localSpread]
+   */
   const spawnParticle = (particles, basePos, velocity, lifeMul = 1, localSpread = spread) => {
     const i = particles.cursor;
 

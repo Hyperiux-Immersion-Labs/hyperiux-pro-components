@@ -28,8 +28,16 @@ function usePrefersReducedMotion() {
 	return prefersReducedMotion
 }
 
+/**
+ * @typedef {Object} ButterflyPoolProps
+ * @property {THREE.Material} matcapMaterial
+ * @property {THREE.Object3D} gltfScene
+ * @property {THREE.AnimationClip[]} gltfAnimations
+ */
+
+/** @param {ButterflyPoolProps} props */
 function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
-	const poolRef = useRef([])
+	const poolRef = useRef(/** @type {THREE.Object3D[]} */ ([]))
 	const activeCountRef = useRef(0)
 	const lastSpawnTime = useRef(0)
 	const { size } = useThree()
@@ -44,7 +52,7 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 			const instanceMaterial = matcapMaterial.clone()
 			instanceMaterial.transparent = true
 			instanceMaterial.opacity = 1
-			clone.traverse((child) => {
+			clone.traverse((/** @type {any} */ child) => {
 				if (child.isMesh || child.isSkinnedMesh) {
 					child.material = instanceMaterial
 				}
@@ -123,7 +131,7 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 	})
 
 	useEffect(() => {
-		const handleMouseMove = (e) => {
+		const handleMouseMove = (/** @type {MouseEvent} */ e) => {
 			const now = Date.now()
 			if (now - lastSpawnTime.current < SPAWN_THROTTLE) return
 			lastSpawnTime.current = now
@@ -198,8 +206,8 @@ function ButterflyTrail() {
 useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
 export default function ButterflyTrailCursor() {
-	const rootRef = useRef(null)
-	const [frameloop, setFrameloop] = useState('always')
+	const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+	const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
 	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {

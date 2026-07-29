@@ -5,6 +5,22 @@ import SplitText from "gsap/dist/SplitText";
 
 gsap.registerPlugin(SplitText);
 
+/**
+ * @typedef {Object} Slide
+ * @property {string} name
+ * @property {string} description
+ * @property {string} image
+ */
+
+/**
+ * @typedef {Object} ClippathSliderCompProps
+ * @property {Slide[]} [slides]
+ * @property {string} [clueText]
+ * @property {string} [cursorBg]
+ * @property {string} [cursorLineColor]
+ */
+
+/** @param {ClippathSliderCompProps} props */
 export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "#ff5f00", cursorLineColor = "#ffffff", }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -15,18 +31,18 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
   const [layerA, setLayerA] = useState({ index: 0 });
   const [layerB, setLayerB] = useState({ index: 0 });
 
-  const textRef = useRef(null);
-  const canvasRef = useRef(null);
-  const linesCanvasRef = useRef(null);
-  const bgRefA = useRef(null);
-  const bgRefB = useRef(null);
-  const autoPlayTimerRef = useRef(null);
-  const splitRef = useRef(null);
-  const rafRef = useRef(null);
-  const activeLayerRef = useRef("A");
-  const cursorRef = useRef(null);
-  const line1Ref = useRef(null);
-  const line2Ref = useRef(null);
+  const textRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const canvasRef = useRef(/** @type {HTMLCanvasElement | null} */ (null));
+  const linesCanvasRef = useRef(/** @type {HTMLCanvasElement | null} */ (null));
+  const bgRefA = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const bgRefB = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const autoPlayTimerRef = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
+  const splitRef = useRef(/** @type {InstanceType<typeof SplitText> | null} */ (null));
+  const rafRef = useRef(/** @type {number | null} */ (null));
+  const activeLayerRef = useRef(/** @type {'A' | 'B'} */ ("A"));
+  const cursorRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const line1Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const line2Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
 
   const mouse = useRef({ x: 0, y: 0 });
   const pos = useRef({ x: 0, y: 0 });
@@ -49,13 +65,14 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
     canvas.width = W;
     canvas.height = H;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
     const cx = W * 0.25;
     const cy = H / 2;
     const R = Math.sqrt(
       Math.max(cx, W - cx) ** 2 + Math.max(cy, H - cy) ** 2
     ) + 10;
 
+    /** @type {(hour: number) => number} */
     const clockAngle = (hour) => ((hour * 30 - 90) * Math.PI) / 180;
     const pos1 = clockAngle(1.5);
     const pos5 = clockAngle(4.5);
@@ -158,7 +175,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
   // FADE OUT TEXT
   const fadeOutText = useCallback(() => {
-    return new Promise((resolve) => {
+    return /** @type {Promise<void>} */ (new Promise((resolve) => {
       if (!textRef.current) return resolve();
       gsap.killTweensOf(textRef.current);
       if (prefersReducedMotion()) {
@@ -188,15 +205,17 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
           resolve();
         },
       });
-    });
+    }));
   }, []);
 
-  const runSweepAnimation = useCallback((nextIndex) => {
-    return new Promise((resolve) => {
+  const runSweepAnimation = useCallback(
+    /** @param {number} nextIndex */
+    (nextIndex) => {
+    return /** @type {Promise<void>} */ (new Promise((resolve) => {
       const canvas = canvasRef.current;
       if (!canvas) return resolve();
 
-      const ctx = canvas.getContext("2d");
+      const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
       const W = canvas.width;
       const H = canvas.height;
 
@@ -216,6 +235,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
           Math.max(cx, W - cx) ** 2 + Math.max(cy, H - cy) ** 2
         ) + 10;
 
+        /** @type {(hour: number) => number} */
         const clockAngle = (hour) => ((hour * 30 - 90) * Math.PI) / 180;
         const pos1 = clockAngle(1.5);
         const pos5 = clockAngle(4.5);
@@ -281,15 +301,17 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         img.onload = animate;
         img.onerror = animate;
       }
-    });
+    }));
   }, [slides]);
 
   // SLIDE CHANGE
-  const changeSlide = useCallback(async (newIndex) => {
+  const changeSlide = useCallback(
+    /** @param {number} newIndex */
+    async (newIndex) => {
     if (isTransitioning || slides.length === 0) return;
 
     setIsTransitioning(true);
-    clearTimeout(autoPlayTimerRef.current);
+    clearTimeout(autoPlayTimerRef.current ?? undefined);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
     const canvas = canvasRef.current;
@@ -404,7 +426,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
     autoPlayTimerRef.current = setTimeout(() => {
       nextSlideNav();
     }, 8000);
-    return () => clearTimeout(autoPlayTimerRef.current);
+    return () => clearTimeout(autoPlayTimerRef.current ?? undefined);
   }, [isTransitioning, nextSlideNav, slides.length]);
 
   useEffect(() => {
@@ -438,9 +460,12 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       x: 0,
     });
 
+    /** @type {'left' | 'right'} */
     let currentSide = "right";
+    /** @type {number | null} */
     let cursorRafId = null;
 
+    /** @param {MouseEvent} e */
     const handleMove = (e) => {
       const x = e.clientX;
       const y = e.clientY;

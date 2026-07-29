@@ -11,6 +11,37 @@ const TABLET_CARD_W = 340;
 const TABLET_CARD_H = 500;
 const AUTO_PLAY_DELAY = 5000;
 
+/**
+ * @typedef {Object} DepthCardStackCard
+ * @property {string} name
+ * @property {string} num
+ * @property {string} joined
+ * @property {string} color
+ * @property {string} claimedText
+ * @property {string} textureImage
+ */
+
+/**
+ * @typedef {Object} DepthCardStackCompProps
+ * @property {DepthCardStackCard[]} cards
+ */
+
+/**
+ * @typedef {Object} SlotProps
+ * @property {number} x
+ * @property {number} y
+ * @property {number} rotateX
+ * @property {number} rotateZ
+ * @property {number} rotateY
+ * @property {number} scale
+ * @property {number} opacity
+ * @property {number} zIndex
+ */
+
+/**
+ * @param {number|null} slot
+ * @returns {SlotProps}
+ */
 function getSlotProps(slot) {
  switch (slot) {
  case 0:
@@ -28,6 +59,12 @@ function getSlotProps(slot) {
  }
 }
 
+/**
+ * @param {number} cardIdx
+ * @param {number} centerIdx
+ * @param {number} total
+ * @returns {number|null}
+ */
 function computeSlot(cardIdx, centerIdx, total) {
  const rel = ((cardIdx - centerIdx) % total + total) % total;
  if (rel === 0) return 0;
@@ -39,14 +76,15 @@ function computeSlot(cardIdx, centerIdx, total) {
 }
 
 
+/** @param {DepthCardStackCompProps} props */
 export default function DepthCardStackComp({ cards }) {
- const cardRefs = useRef([]);
- const cardFaceRefs = useRef([]);
- const textureRefs = useRef([]);
+ const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+ const cardFaceRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+ const textureRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
  const centerRef = useRef(0);
  const animating = useRef(false);
  const isHoveredRef = useRef(false);
- const timelineRef = useRef(null);
+ const timelineRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
  const [autoplayResetKey, setAutoplayResetKey] = useState(0);
  const [claimedText, setClaimedText] = useState(cards[0].claimedText);
  const [isMobile, setIsMobile] = useState(false);
@@ -61,7 +99,7 @@ export default function DepthCardStackComp({ cards }) {
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
-    const onChange = (event) => setReduceMotion(event.matches);
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => setReduceMotion(event.matches);
     setReduceMotion(mq.matches);
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
@@ -83,7 +121,7 @@ export default function DepthCardStackComp({ cards }) {
  const cardWidth = isTablet ? TABLET_CARD_W : CARD_W;
  const cardHeight = isTablet ? TABLET_CARD_H : CARD_H;
 
- const applyLayout = useCallback((animate) => {
+ const applyLayout = useCallback((/** @type {boolean} */ animate) => {
  const total = cards.length;
  timelineRef.current?.kill();
  timelineRef.current = null;
@@ -119,7 +157,7 @@ export default function DepthCardStackComp({ cards }) {
  };
  }, [applyLayout]);
 
- const navigate = useCallback((dir) => {
+ const navigate = useCallback((/** @type {number} */ dir) => {
  if (animating.current) return;
  animating.current = true;
 
@@ -234,6 +272,7 @@ export default function DepthCardStackComp({ cards }) {
  }
 
  const cards = cardRefs.current;
+ /** @type {{ cardEl: HTMLDivElement, handleEnter: (e: MouseEvent) => void, handleMove: (e: MouseEvent) => void, handleLeave: () => void, getRaf: () => number | null }[]} */
  const handlers = [];
 
  cards.forEach((cardEl, i) => {
@@ -243,9 +282,10 @@ export default function DepthCardStackComp({ cards }) {
 
  // Track per-card enter progress so first mousemove eases in gently
  let enterProgress = 0;
+ /** @type {number | null} */
  let enterRaf = null;
 
- const handleEnter = (e) => {
+ const handleEnter = (/** @type {MouseEvent} */ e) => {
  if (i !== centerRef.current || animating.current) return;
  isHoveredRef.current = true;
  enterProgress = 0;
@@ -257,7 +297,7 @@ export default function DepthCardStackComp({ cards }) {
  const startTime = performance.now();
  const RAMP_DURATION = 350;
 
- const ramp = (now) => {
+ const ramp = (/** @type {number} */ now) => {
  enterProgress = Math.min((now - startTime) / RAMP_DURATION, 1);
  if (enterProgress < 1) enterRaf = requestAnimationFrame(ramp);
  else enterRaf = null;
@@ -265,7 +305,7 @@ export default function DepthCardStackComp({ cards }) {
  enterRaf = requestAnimationFrame(ramp);
  };
 
- const handleMove = (e) => {
+ const handleMove = (/** @type {MouseEvent} */ e) => {
  if (i !== centerRef.current || animating.current) return;
 
  const rect = cardEl.getBoundingClientRect();

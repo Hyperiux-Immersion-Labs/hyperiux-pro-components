@@ -55,18 +55,25 @@ const PANEL_OPEN_DURATION = 0.3;
 const PANEL_CLOSE_DURATION = 0.2;
 const ACCORDION_DURATION = 0.25;
 
+/**
+ * @typedef {Object} ElevateNavbarMobileProps
+ * @property {import('./ElevateDesktopNav').ElevateMenuItem[]} [menuItems]
+ * @property {import('./ElevateDesktopNav').ElevateCta} [cta]
+ */
+
+/** @param {ElevateNavbarMobileProps} props */
 export function ElevateNavbarMobile({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdownIndex, setActiveDropdownIndex] = useState(null);
+  const [activeDropdownIndex, setActiveDropdownIndex] = useState(/** @type {number|null} */ (null));
 
-  const panelRef = useRef(null);
-  const backdropRef = useRef(null);
-  const sectionsRef = useRef([]);
-  const containerRef = useRef(null);
-  const toggleButtonRef = useRef(null);
+  const panelRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const backdropRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const sectionsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
   const reduceMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
@@ -261,7 +268,7 @@ export function ElevateNavbarMobile({
                   }}
                 >
                   <div className="space-y-[2vw] pt-[1vw]">
-                    {item.dropdown.map((dropdownItem) => (
+                    {/** @type {import('./ElevateDesktopNav').ElevateDropdownItem[]} */ (item.dropdown).map((dropdownItem) => (
                       <a
                         key={dropdownItem.title}
                         href={dropdownItem.href}

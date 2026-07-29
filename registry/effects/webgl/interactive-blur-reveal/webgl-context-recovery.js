@@ -34,13 +34,13 @@ export function attachWebGLContextRecovery(canvas, handlers = {}) {
 
   const { onLost, onRestored } = handlers;
 
-  const handleLost = (event) => {
+  const handleLost = (/** @type {Event} */ event) => {
     // Required so the browser will later fire `webglcontextrestored`.
     event.preventDefault();
     if (onLost) onLost(event);
   };
 
-  const handleRestored = (event) => {
+  const handleRestored = (/** @type {Event} */ event) => {
     if (onRestored) onRestored(event);
   };
 

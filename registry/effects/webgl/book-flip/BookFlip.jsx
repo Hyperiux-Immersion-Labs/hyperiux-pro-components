@@ -17,6 +17,17 @@ import { createVisibilityGate } from "./createSuspendedRaf";
  * - floatConfig: object - Float animation configuration
  * - showUI: boolean - Show page navigation UI
  */
+/**
+ * @typedef {Object} BookFlippOwnProps
+ * @property {string[]} [images]
+ * @property {string} [pathPattern]
+ * @property {string} [bgColor]
+ * @property {{ mobile: number, desktop: number }} [cameraDistance]
+ * @property {any} [floatConfig]
+ * @property {boolean} [showUI]
+ */
+
+/** @param {BookFlippOwnProps & Record<string, any>} props */
 export const BookFlipp = ({  images = [],
  pathPattern ="/assets/nature",
  bgColor ="#000000",
@@ -25,8 +36,8 @@ export const BookFlipp = ({  images = [],
  showUI = true,
  ...props
 }) => {
- const rootRef = useRef(null);
- const [frameloop, setFrameloop] = useState("always");
+ const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ("always"));
  const [cameraZ, setCameraZ] = useState(cameraDistance.mobile);
  const horizontalDistance = Math.hypot(0.5, cameraZ);
  const basePolarAngle = Math.atan2(horizontalDistance, 1);

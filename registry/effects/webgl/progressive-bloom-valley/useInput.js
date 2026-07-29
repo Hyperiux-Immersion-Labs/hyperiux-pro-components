@@ -3,6 +3,9 @@ import { useThree } from "@react-three/fiber";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 import { prefersReducedMotion } from "./prefersReducedMotion";
 
+/**
+ * @param {{scrollIntensity?: number, autoSpeed?: number, damping?: number, loopPoint?: number}} [props]
+ */
 export default function useInput({
   scrollIntensity = 1,
   autoSpeed = 0.00004,
@@ -19,7 +22,7 @@ export default function useInput({
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         velocity.current = 0;
@@ -45,7 +48,7 @@ export default function useInput({
       }
     };
 
-    const onWheel = (e) => {
+    const onWheel = (/** @type {WheelEvent} */ e) => {
       e.preventDefault();
 
       // Reduced-motion: apply scroll instantly (no velocity coast / autoplay feel).
@@ -60,10 +63,10 @@ export default function useInput({
     };
 
     let lastTouchY = 0;
-    const onTouchStart = (e) => {
+    const onTouchStart = (/** @type {TouchEvent} */ e) => {
       lastTouchY = e.touches[0].clientY;
     };
-    const onTouchMove = (e) => {
+    const onTouchMove = (/** @type {TouchEvent} */ e) => {
       const dy = e.touches[0].clientY - lastTouchY;
       lastTouchY = e.touches[0].clientY;
 
@@ -77,7 +80,7 @@ export default function useInput({
       velocity.current -= dy * 0.00015 * scrollIntensity;
     };
 
-    const onMouseMove = (e) => {
+    const onMouseMove = (/** @type {MouseEvent} */ e) => {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = (e.clientY / window.innerHeight) * 2 - 1;
     };

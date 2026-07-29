@@ -19,6 +19,7 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion
 }
 
+/** @type {import('./StripSliderComp').StripSliderItem[]} */
 const items = [
  { id:'item-0',  url:'https://picsum.photos/seed/strip0/600/900',  text:'Nature 1',  atlasIndex: 0,  colors: ['#333','#aaa'] },
  { id:'item-1',  url:'https://picsum.photos/seed/strip1/600/900',  text:'Nature 2',  atlasIndex: 1,  colors: ['#333','#aaa'] },

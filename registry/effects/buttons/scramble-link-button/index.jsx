@@ -14,6 +14,14 @@ const DEFAULT_REVEAL_STAGGER = 1.4;
 const COMPACT_LAYOUT_BREAKPOINT = 1025;
 const GLYPHS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
+/**
+ * @param {object} options
+ * @param {string} options.finalText
+ * @param {number} options.iteration
+ * @param {number} options.maxIterations
+ * @param {number} options.revealStagger
+ * @returns {string}
+ */
 function getScrambledText({
   finalText,
   iteration,
@@ -44,6 +52,27 @@ function getScrambledText({
   return output;
 }
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   textClassName?: string,
+ *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
+ *   hoverColor?: string,
+ *   showLine?: boolean,
+ *   lineClassName?: string,
+ *   showArrow?: boolean,
+ *   icon?: import('react').ComponentType<{ className?: string }>,
+ *   iconClassName?: string,
+ *   scrambleDuration?: number,
+ *   stepMs?: number,
+ *   revealStagger?: number,
+ *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} ScrambleLinkButtonProps
+ */
+
+/** @param {ScrambleLinkButtonProps} props */
 export function ScrambleLinkButton({
   btnText = DEFAULT_BTN_TEXT,
   href = DEFAULT_HREF,
@@ -62,8 +91,8 @@ export function ScrambleLinkButton({
   onClick,
   ...props
 }) {
-  const scrambleRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const scrambleRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const timeoutRef = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
   const [isCompactLayout, setIsCompactLayout] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -95,8 +124,9 @@ export function ScrambleLinkButton({
       `(max-width: ${COMPACT_LAYOUT_BREAKPOINT - 1}px)`
     );
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncCompactLayout = (event) => {
-      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+      const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
       setIsCompactLayout(matches);
 
       if (!matches) {
@@ -155,6 +185,7 @@ export function ScrambleLinkButton({
     runScramble();
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerDown = (event) => {
     props.onPointerDown?.(event);
 
@@ -166,10 +197,12 @@ export function ScrambleLinkButton({
     runScramble();
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerUp = (event) => {
     props.onPointerUp?.(event);
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerCancel = (event) => {
     props.onPointerCancel?.(event);
   };
@@ -186,7 +219,7 @@ export function ScrambleLinkButton({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
       className={`group inline-flex cursor-pointer items-center gap-2  text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out motion-reduce:transition-none hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-lg:text-[3vw] max-md:text-[4.2vw] ${className}`}
-      style={{ "--scramble-hover-color": hoverColor }}
+      style={/** @type {import('react').CSSProperties} */ ({ "--scramble-hover-color": hoverColor })}
     >
       <span className={innerClassName} style={activeLineStyle}>
         <span

@@ -9,6 +9,14 @@ const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
+/**
+ * @typedef {Object} ExpandToggleProps
+ * @property {boolean} expanded
+ * @property {number} [size]
+ * @property {string} [boxClassName]
+ */
+
+/** @param {ExpandToggleProps} props */
 function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/50" }) {
     return (
         <span
@@ -35,15 +43,15 @@ function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/5
 
 export function ExpandingNavbarMobile() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [expandedMain, setExpandedMain] = useState(null);
-    const [expandedSub, setExpandedSub] = useState(null);
+    const [expandedMain, setExpandedMain] = useState(/** @type {number|null} */ (null));
+    const [expandedSub, setExpandedSub] = useState(/** @type {number|null} */ (null));
 
-    const overlayRef = useRef(null);
-    const contentRef = useRef(null);
-    const menuTimeline = useRef(null);
-    const mainItemRefs = useRef([]);
-    const containerRef = useRef(null);
-    const toggleButtonRef = useRef(null);
+    const overlayRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const contentRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const menuTimeline = useRef(/** @type {gsap.core.Timeline|null} */ (null));
+    const mainItemRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+    const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
     const menuEase = "cubic-bezier(0.625, 0.05, 0, 1)";
 
     useEffect(() => {
@@ -131,6 +139,7 @@ export function ExpandingNavbarMobile() {
         onEscape: closeMenu,
     });
 
+    /** @param {number} index */
     const toggleMain = (index) => {
         if (expandedMain === index) {
             setExpandedMain(null);
@@ -141,6 +150,7 @@ export function ExpandingNavbarMobile() {
         }
     };
 
+    /** @param {number} index */
     const toggleSub = (index) => {
         setExpandedSub(expandedSub === index ? null : index);
     };

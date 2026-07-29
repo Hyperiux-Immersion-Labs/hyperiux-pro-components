@@ -48,7 +48,7 @@ const Content = () => (
 )
 
 export default function MagneticImageTrail() {
-  const [isMobile, setIsMobile] = useState(null)
+  const [isMobile, setIsMobile] = useState(/** @type {boolean|null} */ (null))
   const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {

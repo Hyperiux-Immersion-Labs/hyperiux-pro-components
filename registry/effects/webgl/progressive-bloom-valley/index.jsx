@@ -12,8 +12,10 @@ import Experience from "./ExperienceComp";
 import { createVisibilityGate } from "./createSuspendedRaf";
 
 export default function ProgressiveBloomValley() {
- const rootRef = useRef(null);
- const [frameloop, setFrameloop] = useState("always");
+ const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const [frameloop, setFrameloop] = useState(
+ /** @type {'always'|'never'|'demand'} */ ("always")
+ );
 
  useEffect(() => {
  const gate = createVisibilityGate({
@@ -42,7 +44,7 @@ export default function ProgressiveBloomValley() {
  <Experience />
  </Suspense>
 
- <EffectComposer disableNormalPass>
+ <EffectComposer {...(/** @type {any} */ ({ disableNormalPass: true }))}>
  {/* Mipmap blur creates an extremely soft, diffused glow without harsh edges */}
  {/* Threshold ensures only the hovered (multiplied) pixels bloom, preserving details elsewhere */}
   <EdgeBlurEffect blurStrength={1.2} blurStart={0.2} />

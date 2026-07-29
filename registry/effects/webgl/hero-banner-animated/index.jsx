@@ -6,7 +6,7 @@ import React, { useRef, useEffect, useCallback, useState } from'react'
 import { Canvas, useThree, useFrame } from'@react-three/fiber'
 import { Environment, Center } from'@react-three/drei'
 import RoomModel from'./RoomModel'
-import { degToRad } from'three/src/math/MathUtils'
+import { degToRad } from'three/src/math/MathUtils.js'
 import gsap from'gsap'
 import CustomGrainNoise from'./CustomGrainNoise'
 import { EffectComposer } from'@react-three/postprocessing'
@@ -46,11 +46,12 @@ const CAMERA_CONFIG = {
   mobile:  { zoomedZ: 6.0, outZ: 7.9 }
 }
 
+/** @param {{lightRef: import('react').RefObject<import('three').PointLight|null>}} props */
 function MovingPointLight({ lightRef }) {
   const { gl } = useThree()
   const targetRef = useRef({ x: 0, y: 0 })
 
-  const handlePointerMove = useCallback((event) => {
+  const handlePointerMove = useCallback((/** @type {MouseEvent} */ event) => {
     const rect = gl.domElement.getBoundingClientRect()
     targetRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     targetRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
@@ -85,9 +86,17 @@ function MovingPointLight({ lightRef }) {
   )
 }
 
+/**
+ * @param {{
+ *   isZoomed: boolean,
+ *   setIsZoomed: (value: boolean|((prev: boolean) => boolean)) => void,
+ *   videoRef: import('react').RefObject<HTMLVideoElement|null>,
+ *   deviceType: 'desktop'|'tablet'|'mobile'
+ * }} props
+ */
 function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
-  const groupRef = useRef()
-  const lightRef = useRef()
+  const groupRef = useRef(/** @type {import('three').Group|null} */ (null))
+  const lightRef = useRef(/** @type {import('three').PointLight|null} */ (null))
   const { camera } = useThree()
   const [environmentIntensity, setEnvironmentIntensity] = useState(ENV_INTENSITY_CONFIG.out)
 
@@ -96,13 +105,13 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
     light: ENV_INTENSITY_CONFIG.lightOut
   })
 
-  const handleModelClick = useCallback((e) => {
+  const handleModelClick = useCallback((/** @type {any} */ e) => {
     e?.stopPropagation()
     setIsZoomed(prev => !prev)
   }, [setIsZoomed])
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (/** @type {KeyboardEvent} */ e) => {
       if (e.key === "Escape") setIsZoomed(false)
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -119,10 +128,10 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 
     if (isZoomed) {
       gsap.to(camera.position, { x: 0, y: 0.05, z: cfg.zoomedZ, duration, ease })
-      gsap.to(groupRef.current.rotation, { x: 0, y: 0, z: 0, duration, ease })
+      gsap.to(/** @type {import('three').Group} */ (groupRef.current).rotation, { x: 0, y: 0, z: 0, duration, ease })
     } else {
       gsap.to(camera.position, { x: 0, y: 0, z: cfg.outZ, duration, ease })
-      gsap.to(groupRef.current.rotation, { x: 0, y: 0, z: degToRad(-5), duration, ease })
+      gsap.to(/** @type {import('three').Group} */ (groupRef.current).rotation, { x: 0, y: 0, z: degToRad(-5), duration, ease })
     }
 
     gsap.to(intensityState.current, {
@@ -163,11 +172,15 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 }
 
 export default function HeroBannerAnimated() {
-  const rootRef = useRef(null)
-  const [frameloop, setFrameloop] = useState('always')
+  const rootRef = useRef(/** @type {HTMLElement|null} */ (null))
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ('always')
+  )
   const [isZoomed, setIsZoomed] = useState(false)
-  const [deviceType, setDeviceType] = useState('desktop')
-  const videoRef = useRef(null)
+  const [deviceType, setDeviceType] = useState(
+    /** @type {'desktop'|'tablet'|'mobile'} */ ('desktop')
+  )
+  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null))
   const isMobile = deviceType === 'mobile'
   const prefersReducedMotion = usePrefersReducedMotion()
 
