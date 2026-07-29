@@ -1,8 +1,8 @@
 # Hyperiux Vault — Phase 2 Plan
 
-*Internal planning · Rev. 5 (compressed for team-wide Claude Code)*
+*Internal planning · Rev. 6 (compressed for team-wide Claude Code)*
 
-**3 / 19** items done · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
+**4 / 19** items done · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
 
 ---
 
@@ -57,7 +57,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | Item | Effort | Notes |
 |---|---|---|
 | Remixer panel + live prop controls | 4–5 days | Needs the props schema |
-| Props table in Sanity | 1–2 days + ongoing | Needs the props schema; backfill runs alongside everything else |
+| ~~Props table in Sanity~~ | ~~1–2 days + ongoing~~ | ⏹ Descoped — props/data render directly from the registry on effect detail pages instead of a separate Sanity table |
 | TypeScript, all 115 effects | ~1.5 wk | Infra first (1–2 days), then retype every existing effect, split across 2–3 people |
 | Tests, all 115 effects | ~~1 wk~~ | ✅ Done — [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
 | Admin dashboard expansion | 2–3 days | Login/activity tracking, Vercel Analytics in-app, daily install/copy metric — extends existing email log view |
@@ -66,7 +66,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | On-site changelog display | 1 day | Data already exists in registry's `changelog` field |
 | Published date on effect cards | 1 day | `addedAt` already tracked in Sanity |
 | Code comments pass | 1–2 days | Claude-assisted, human-reviewed before merge |
-| Default image + text hardening | 1 day | Closes remaining gaps so no effect shows a blank state |
+| Default image + text hardening | ~~1 day~~ | ✅ Done — remaining components already ship with real images/text, no blank-state gap found |
 | Em dash cleanup in Sanity | 1 day | Same style rule already applied to CLI README/changelog |
 
 **Tests, all 115 effects — shipped, jsdom + `@testing-library/react` harness in `apps/docs`, scope confirmed as render-mounts-cleanly + prop-contract (the "One remaining call" below is now resolved on that basis):** 110/115 effects pass a real mount-without-throwing check; the other 5 are documented, individually-reasoned known limitations, not silent gaps — `fish-eye` imports `three/webgpu`, which can't run outside a real browser GPU context, and 4 effects (`dotted-grid`, `full-screen-crosshair`, `svg-pixel-reveal`, `text-stream`) only fail to import when batched with ~30+ others in one test session despite working fine alone, an unresolved vite-node/esbuild tooling quirk rather than a bug in any of them. Building the harness also surfaced a real, live bug: `liquid-glass-cursor`'s main file held JSX but was named `index.js` instead of `.jsx` — harmless in this repo's own permissive webpack config, but would fail to parse for anyone installing that Pro effect via the CLI into a standard toolchain. Fixed alongside the harness.
@@ -107,4 +107,4 @@ Held for later, correctly — needs a real designer, not dev-driven design-in-co
 
 ---
 
-*Hyperiux Vault — Phase 2, Rev. 5 · Wave 1: 2/4 done · Wave 2: tests done, 10 items open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault — Phase 2, Rev. 6 · Wave 1: 2/4 done · Wave 2: 2 done, 1 descoped, 9 open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
