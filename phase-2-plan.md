@@ -1,8 +1,8 @@
 # Hyperiux Vault — Phase 2 Plan
 
-*Internal planning · Rev. 6 (compressed for team-wide Claude Code)*
+*Internal planning · Rev. 7 (compressed for team-wide Claude Code)*
 
-**4 / 19** items done · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
+**6 / 19** items done · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
 
 ---
 
@@ -63,8 +63,8 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | Admin dashboard expansion | 2–3 days | Login/activity tracking, Vercel Analytics in-app, daily install/copy metric — extends existing email log view |
 | Accessibility badge | 1 day | 94% of effects already handle reduced motion — surfaces it as a trust signal |
 | "Similar effects" recommendations | 1 day | Category/tag-based, no ML needed |
-| On-site changelog display | 1 day | Data already exists in registry's `changelog` field |
-| Published date on effect cards | 1 day | `addedAt` already tracked in Sanity |
+| On-site changelog display | ~~1 day~~ | ✅ Done — [PR #18](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/18) |
+| Published date on effect cards | ~~1 day~~ | ✅ Done — changelog-driven `addedAt`/`updatedAt` dates, synced into Sanity (`f5bb00ad3`) |
 | Code comments pass | 1–2 days | Claude-assisted, human-reviewed before merge |
 | Default image + text hardening | ~~1 day~~ | ✅ Done — remaining components already ship with real images/text, no blank-state gap found |
 | Em dash cleanup in Sanity | 1 day | Same style rule already applied to CLI README/changelog |
@@ -107,4 +107,4 @@ Held for later, correctly — needs a real designer, not dev-driven design-in-co
 
 ---
 
-*Hyperiux Vault — Phase 2, Rev. 6 · Wave 1: 2/4 done · Wave 2: 2 done, 1 descoped, 9 open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault — Phase 2, Rev. 7 · Wave 1: 2/4 done · Wave 2: 4 done, 1 descoped, 7 open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
