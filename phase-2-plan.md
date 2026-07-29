@@ -1,8 +1,8 @@
 # Hyperiux Vault — Phase 2 Plan
 
-*Internal planning · Rev. 4 (compressed for team-wide Claude Code)*
+*Internal planning · Rev. 5 (compressed for team-wide Claude Code)*
 
-**2 / 19** items done · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
+**3 / 19** items done · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
 
 ---
 
@@ -59,7 +59,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | Remixer panel + live prop controls | 4–5 days | Needs the props schema |
 | Props table in Sanity | 1–2 days + ongoing | Needs the props schema; backfill runs alongside everything else |
 | TypeScript, all 115 effects | ~1.5 wk | Infra first (1–2 days), then retype every existing effect, split across 2–3 people |
-| Tests, all 115 effects | ~1 wk | Harness first (1–2 days), then a render + prop-contract test per effect. Real regression net, not full pixel-diff visual regression |
+| Tests, all 115 effects | ~~1 wk~~ | ✅ Done — [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
 | Admin dashboard expansion | 2–3 days | Login/activity tracking, Vercel Analytics in-app, daily install/copy metric — extends existing email log view |
 | Accessibility badge | 1 day | 94% of effects already handle reduced motion — surfaces it as a trust signal |
 | "Similar effects" recommendations | 1 day | Category/tag-based, no ML needed |
@@ -68,6 +68,8 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 | Code comments pass | 1–2 days | Claude-assisted, human-reviewed before merge |
 | Default image + text hardening | 1 day | Closes remaining gaps so no effect shows a blank state |
 | Em dash cleanup in Sanity | 1 day | Same style rule already applied to CLI README/changelog |
+
+**Tests, all 115 effects — shipped, jsdom + `@testing-library/react` harness in `apps/docs`, scope confirmed as render-mounts-cleanly + prop-contract (the "One remaining call" below is now resolved on that basis):** 110/115 effects pass a real mount-without-throwing check; the other 5 are documented, individually-reasoned known limitations, not silent gaps — `fish-eye` imports `three/webgpu`, which can't run outside a real browser GPU context, and 4 effects (`dotted-grid`, `full-screen-crosshair`, `svg-pixel-reveal`, `text-stream`) only fail to import when batched with ~30+ others in one test session despite working fine alone, an unresolved vite-node/esbuild tooling quirk rather than a bug in any of them. Building the harness also surfaced a real, live bug: `liquid-glass-cursor`'s main file held JSX but was named `index.js` instead of `.jsx` — harmless in this repo's own permissive webpack config, but would fail to parse for anyone installing that Pro effect via the CLI into a standard toolchain. Fixed alongside the harness.
 
 ## Wave 3 — Extended
 
@@ -99,12 +101,10 @@ Held for later, correctly — needs a real designer, not dev-driven design-in-co
 | "Your project" dashboard view | Valuable, not urgent |
 | Public showcase gallery | Needs a submission + moderation flow — content-ops, not engineering |
 
-## One remaining call
+## Resolved calls
 
-**How deep should "proper tests for all 115 effects" go?**
-
-Scoped above as render-mounts-cleanly + prop-contract tests — real, catches real breakage, achievable at this scale. If the intent is full pixel-diff visual regression across every effect, that's a separate, larger infrastructure project layered on top of this one, not a variant of the same estimate. Confirm the scope above, or say if you meant the bigger version.
+**How deep should "proper tests for all 115 effects" go?** — Resolved: render-mounts-cleanly + prop-contract, not full pixel-diff visual regression. Shipped on that basis in [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19); see Wave 2 above. Full visual regression remains a separate, larger infrastructure project if it's ever wanted.
 
 ---
 
-*Hyperiux Vault — Phase 2, Rev. 4 · Wave 1: 2/4 done · ~4–5 wk critical path · TS + tests: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault — Phase 2, Rev. 5 · Wave 1: 2/4 done · Wave 2: tests done, 10 items open · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
