@@ -105,7 +105,6 @@ export default function StackingPlane({ images, bgColor ="black" }) {
  }
 
  return () => {
- ScrollTrigger.getAll().forEach((t) => t.kill());
  tl.kill();
  };
  }, [CARD_COUNT, IMAGES]);

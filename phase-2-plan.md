@@ -1,8 +1,8 @@
 # Hyperiux Vault — Phase 2 Plan
 
-*Internal planning · Rev. 3 (compressed for team-wide Claude Code)*
+*Internal planning · Rev. 4 (compressed for team-wide Claude Code)*
 
-**19** items in scope · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
+**2 / 19** items done · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3
 
 ---
 
@@ -39,14 +39,18 @@ Wave 2's TypeScript and testing retrofits changed most: split across 2–3 peopl
 
 ## Wave 1 — Foundation
 
-| Item | Effort |
-|---|---|
-| Unified registry + Sanity workflow | 2–3 days |
-| Props schema design | 1 day |
-| CI gate | 1 day |
-| Extended linting | 1–2 days |
+| Item | Effort | Status |
+|---|---|---|
+| Unified registry + Sanity workflow | 2–3 days | — |
+| Props schema design | 1 day | — |
+| CI gate | ~~1 day~~ | ✅ Done |
+| Extended linting | ~~1–2 days~~ | ✅ Done |
 
 Registry workflow and props schema run in parallel with CI gate and linting — two tracks, not four sequential steps. That's the whole wave in about a week.
+
+**CI gate + extended linting were estimated at 2–3 days combined — shipped in one session instead.** First real data point on how this compression model plays out in practice:
+- CI gate: lint, test, and build run on every PR for both `apps/docs` and `hyperiux-vault`, verified green on GitHub's actual runners (not just locally) — [PR #17](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/17). Branch protection turned out to need a paid GitHub plan for a private repo (free-tier org, confirmed via the API) — deferred by choice, not blocked; the checks themselves are live and enforced by convention for now.
+- Extended linting: found and fixed 2 real lint errors, wired the previously-unused Sanity Studio lint script, and made a deliberate call to keep ~70 new React-Compiler-rule warnings (`react-hooks/refs`, `set-state-in-effect`, `immutability`, `purity`) non-blocking rather than risk a blind fix across 39 animation/WebGL files — tracked in [issue #16](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/issues/16) for a proper pass.
 
 ## Wave 2 — Core
 
@@ -103,4 +107,4 @@ Scoped above as render-mounts-cleanly + prop-contract tests — real, catches re
 
 ---
 
-*Hyperiux Vault — Phase 2, Rev. 3 (compressed for team-wide Claude Code) · ~4–5 wk critical path · TS + tests: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault — Phase 2, Rev. 4 · Wave 1: 2/4 done · ~4–5 wk critical path · TS + tests: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*

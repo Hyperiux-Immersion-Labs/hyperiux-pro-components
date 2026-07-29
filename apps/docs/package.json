@@ -39,7 +39,7 @@
     "lucide-react": "^0.577.0",
     "maath": "^0.10.8",
     "motion": "^12.40.0",
-    "next": "16.2.7",
+    "next": "16.2.12",
     "next-cloudinary": "^6.17.5",
     "next-recaptcha-v3": "^1.5.3",
     "next-transition-router": "^0.2.11",

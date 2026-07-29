@@ -9,16 +9,17 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
-    "start": "sanity start"
+    "start": "sanity start",
+    "lint": "eslint ."
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^5.31.1",
+    "@sanity/vision": "^6.6.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "sanity": "^5.31.1",
+    "sanity": "^6.6.0",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
