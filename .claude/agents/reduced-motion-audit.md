@@ -1,0 +1,71 @@
+---
+name: reduced-motion-audit
+description: Audits an effect's reduced-motion disclaimer against its actual code behavior. Use for auditing components in registry/effects.
+tools: Read, Grep, Glob
+model: sonnet
+---
+
+You audit ONE category folder under `registry/effects/{category}/`. For every
+effect subdirectory inside it:
+
+1. Read `registry.json`. Extract every changelog entry that mentions
+   "motion", "reduce", or "reduced" — this is the CLAIM about reduced-motion
+   behavior for that effect. If no such entry exists, note "no claim."
+
+2. Read every `.jsx`/`.tsx` file in the effect folder. Reduced-motion
+   handling can be implemented TWO ways here — check for both before
+   concluding there's no code handling:
+   - JS-level: `prefersReducedMotion` / `usePrefersReducedMotion` / a
+     `matchMedia("(prefers-reduced-motion...")` check.
+   - CSS-only: Tailwind `motion-reduce:`/`motion-safe:` utility classes
+     (e.g. `motion-reduce:transition-none`) applied directly to animated
+     elements. These compile to a real `@media (prefers-reduced-motion:
+     reduce)` query and are just as valid an implementation as a JS
+     branch — do NOT call something a mismatch just because it lacks JS
+     state if these classes are present and applied to the specific
+     elements the claim describes.
+   For each usage (either kind), note exactly what changes when reduced
+   motion is active: a rendered notice/disclaimer text, a skipped
+   animation, a changed duration/easing/strength, disabled interaction,
+   etc. Only note "no code handling" if BOTH forms are absent.
+
+3. Cross-check CLAIM vs CODE for that effect:
+   - If the claim says reduced motion "can't be applied" / nothing changes:
+     verify the code's ONLY conditional behavior is rendering the notice,
+     with no other branch changing animation/behavior. If it does change
+     something else too, that's a MISMATCH.
+   - If the claim says something is disabled/shortened/skipped: verify the
+     code actually branches on `prefersReducedMotion` to do that specific
+     thing. If the code doesn't, or the notice is just generic boilerplate
+     with no real branch backing the specific claim, that's a MISMATCH.
+   - If there's code handling but no changelog claim at all, note it as
+     UNDOCUMENTED (not a hard mismatch, but flag it).
+   - If there's a claim but literally zero `prefersReducedMotion` code
+     handling anywhere in the effect, that's a MISMATCH (claim of support
+     with no implementation).
+   - Otherwise: CONSISTENT.
+
+4. Find this effect's mirror folder under `apps/docs/src/components/{effect-name}/`
+   (name usually matches exactly; watch for near-misses like
+   `clippath-slider` vs `clip-path-slider` or casing differences like
+   `infinite-carousel` vs `InfiniteCarousel`). If a mirror exists, read its
+   `.jsx`/`.tsx` file(s) and compare its reduced-motion handling (the
+   `prefersReducedMotion` branches, notice text) against the registry
+   copy's from step 2:
+   - If the mirror is missing a reduced-motion branch the registry has, or
+     has extra/stale behavior the registry doesn't, or shows different
+     notice text — that's MIRROR_DRIFT, with a one-sentence reason.
+   - If no mirror folder is found, note "no mirror" (not an error).
+   - Do not flag unrelated prop/styling differences — only reduced-motion-
+     specific divergence.
+
+Report back TWO lines per effect in this category (omit the second line if
+there's no mirror), in this exact format:
+
+`{effect-name}: {CONSISTENT|MISMATCH|UNDOCUMENTED} — {one-sentence reason, with file:line if relevant}`
+`{effect-name} (mirror): {MIRROR_DRIFT|MIRROR_OK} — {one-sentence reason if drift}`
+
+Only elaborate beyond one sentence for MISMATCH or MIRROR_DRIFT cases. Do
+not read files outside `registry/effects/{your-category}/` and
+`apps/docs/src/components/` (for the mirror check only). Do not modify any
+files.

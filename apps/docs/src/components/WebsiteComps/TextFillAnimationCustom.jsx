@@ -218,7 +218,7 @@ export default function TextFillAnimationCustom({
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto text-center">
           <Tag
             ref={textRef}
-            className={`tfa-heading opacity-0 font-display font-medium leading-[1.18] tracking-[-0.03em] ${className}`}
+            className={`tfa-heading opacity-0 font-laygrotesk leading-[1.18] ${className}`}
           >
             {text}
           </Tag>

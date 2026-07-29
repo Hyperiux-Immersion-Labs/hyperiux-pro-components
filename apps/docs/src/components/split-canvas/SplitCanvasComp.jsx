@@ -216,7 +216,7 @@ export default function SplitCanvasComp({ wrapperRef }) {
  loop.destroy();
  loop = null;
  }
- ScrollTrigger.getAll().forEach(t => t.kill());
+//  ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {
  renderer.dispose();
  renderer.forceContextLoss();

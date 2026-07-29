@@ -13,7 +13,7 @@ const page = () => {
         className="bottom-[3%] gap-[1vw]"
       />
       <div className="sr-only">
-        <h1 clasName="">SplitCanvas</h1>
+        <h1 className="">SplitCanvas</h1>
       </div>
       <SplitCanvas />
     </>
