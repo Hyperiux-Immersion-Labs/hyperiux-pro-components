@@ -40,20 +40,62 @@
   "target": "src/components/effects/fish-eye",
   "props": [
     {
-      "name": "src",
-      "type": "string",
-      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
-      "description": "Image source used by the fish-eye lens.",
+      "name": "bulgeEffect",
+      "type": "number",
+      "default": 1,
+      "description": "Strength of the fish-eye bulge distortion.",
       "remixer": {
-        "control": "text",
-        "group": "media",
-        "groupTitle": "Media"
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.125,
+      "description": "Smoothing duration for bulge strength changes.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 1,
+        "step": 0.005
+      }
+    },
+    {
+      "name": "smoothness",
+      "type": "number",
+      "default": 0.083,
+      "description": "Cursor-follow smoothing duration.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 1,
+        "step": 0.005
+      }
+    },
+    {
+      "name": "mouseInteractive",
+      "type": "boolean",
+      "default": true,
+      "description": "Enables cursor-driven fish-eye distortion.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "media",
+    "defaultOpenGroupId": "controls",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

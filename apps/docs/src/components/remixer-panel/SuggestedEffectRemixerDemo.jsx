@@ -25,7 +25,6 @@ import ElevateNavbar from "@/components/elevate-navbar";
 import ExpandingNavbar from "@/components/expanding-navbar";
 import FileEncryption from "@/components/file-encryption";
 import GooeyCounter from "@/components/gooey-counter";
-import GridLift from "@/components/grid-lift";
 import GridScale from "@/components/grid-scale";
 import GridTunnel from "@/components/grid-tunnel";
 import HelixSlider from "@/components/helix-slider";
@@ -39,6 +38,7 @@ import InfiniteGridGallery from "@/components/infinite-grid-gallery";
 import InfinitePerspectiveSlider from "@/components/infinite-perspective-slider";
 import InteractiveArrows from "@/components/interactive-arrows";
 import InteractiveListPreview from "@/components/interactive-list-preview";
+import LinesLoader from "@/components/lines-loader";
 import MagneticImageTrail from "@/components/magnetic-image-trail";
 import MilkyWay from "@/components/milky-way";
 import NumberCounter from "@/components/number-counter";
@@ -91,7 +91,6 @@ const components = {
   "expanding-navbar": ExpandingNavbar,
   "file-encryption": FileEncryption,
   "gooey-counter": GooeyCounter,
-  "grid-lift": GridLift,
   "grid-scale": GridScale,
   "grid-tunnel": GridTunnel,
   "helix-slider": HelixSlider,
@@ -105,6 +104,7 @@ const components = {
   "infinite-perspective-slider": InfinitePerspectiveSlider,
   "interactive-arrows": InteractiveArrows,
   "interactive-list-preview": InteractiveListPreview,
+  "lines-loader": LinesLoader,
   "magnetic-image-trail": MagneticImageTrail,
   "milky-way": MilkyWay,
   "number-counter": NumberCounter,
@@ -132,6 +132,7 @@ const components = {
 
 export default function SuggestedEffectRemixerDemo({ registry, slug }) {
   const Component = components[slug];
+  const hideDemoHeader = registry?.category === "navigation" || slug === "lines-loader";
 
   if (!Component) return null;
 
@@ -139,7 +140,7 @@ export default function SuggestedEffectRemixerDemo({ registry, slug }) {
     <RegistryRemixerDemo
       registry={registry}
       render={(values) => {
-        const { style, className } = getSuggestedPreviewProps(values);
+        const { style, className } = getSuggestedPreviewProps(values, slug);
 
         return (
           <div className={className} style={style}>
@@ -153,7 +154,7 @@ export default function SuggestedEffectRemixerDemo({ registry, slug }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          {hideDemoHeader ? null : <DemoHeader logoColor="#ffffff" textColor="#ffffff" />}
           {effect}
         </>
       )}
@@ -161,21 +162,24 @@ export default function SuggestedEffectRemixerDemo({ registry, slug }) {
   );
 }
 
-function getSuggestedPreviewProps(values) {
+function getSuggestedPreviewProps(values, slug) {
   const duration = firstNumber(values, [
     "duration",
     "transitionDuration",
     "fadeDuration",
     "pageSpeed",
   ]);
-  const scale = firstNumber(values, [
-    "scale",
-    "imageScale",
-    "bookScale",
-    "scaleAmount",
-    "scaleOnDrag",
-    "expandAmount",
-  ]);
+  const scale = firstNumber(
+    values,
+    [
+      "scale",
+      ["hover-slider", "infinite-grid-gallery"].includes(slug) ? null : "imageScale",
+      slug === "book-flip" ? null : "bookScale",
+      "scaleAmount",
+      slug === "draggable-canvas" ? null : "scaleOnDrag",
+      "expandAmount",
+    ].filter(Boolean),
+  );
   const rotation = firstNumber(values, [
     "rotation",
     "rotationAmount",

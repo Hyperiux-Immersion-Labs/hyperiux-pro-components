@@ -69,6 +69,59 @@
       }
     },
     {
+      "name": "activeColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Active and focused nav link color.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "inactiveColor",
+      "type": "string",
+      "default": "rgba(255,255,255,0.5)",
+      "description": "Dimmed nav link color while another item is active.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.35,
+      "description": "Nav, dropdown, and mobile accordion animation duration.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 1.5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "ease",
+      "type": "string",
+      "default": "power2.out",
+      "description": "GSAP easing used for nav and dropdown transitions.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          { "value": "power2.out", "label": "Power 2 Out" },
+          { "value": "power3.out", "label": "Power 3 Out" },
+          { "value": "power4.out", "label": "Power 4 Out" },
+          { "value": "expo.out", "label": "Expo Out" }
+        ]
+      }
+    },
+    {
       "name": "staggerItems",
       "type": "boolean",
       "default": true,
@@ -77,56 +130,6 @@
         "control": "checkbox",
         "group": "dropdown",
         "groupTitle": "Dropdown"
-      }
-    },
-    {
-      "name": "navConfig",
-      "type": "object",
-      "description": "Navigation links and dropdown content.",
-      "default": {},
-      "remixer": {
-        "control": "json",
-        "group": "controls",
-        "groupTitle": "Controls"
-      }
-    },
-    {
-      "name": "elevation",
-      "type": "number",
-      "description": "Shadow depth after scrolling.",
-      "default": 18,
-      "remixer": {
-        "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "min": 0,
-        "max": 54,
-        "step": 1
-      }
-    },
-    {
-      "name": "blur",
-      "type": "number",
-      "description": "Backdrop blur amount for the navbar.",
-      "default": 14,
-      "remixer": {
-        "control": "range",
-        "group": "style",
-        "groupTitle": "Style",
-        "min": 0,
-        "max": 42,
-        "step": 1
-      }
-    },
-    {
-      "name": "accentColor",
-      "type": "color",
-      "description": "Color used for active nav state.",
-      "default": "#111111",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
       }
     }
   ],

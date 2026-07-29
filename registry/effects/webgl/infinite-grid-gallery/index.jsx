@@ -47,7 +47,13 @@ function getCenteredOverlayTop(vw, vh, targetH) {
   return Math.round((vh - targetH) / 2);
 }
 
-export default function InfiniteGridGallery() {
+export default function InfiniteGridGallery({
+  images,
+  columns = 4,
+  gap = 44,
+  speed = 1,
+  imageScale = 1,
+}) {
   const imagesRef = useRef(null);
   const gridRef = useRef(null);
 
@@ -153,14 +159,18 @@ export default function InfiniteGridGallery() {
     []
   );
 
-  const sources = useMemo(
-    () =>
-      Array.from({ length: 120 }, (_, i) => {
-        const pick = unsplashPool[i % unsplashPool.length];
+  const sources = useMemo(() => {
+    const sourcePool = Array.isArray(images) && images.length ? images : unsplashPool;
+
+    return Array.from({ length: 120 }, (_, i) => {
+        const pick = sourcePool[i % sourcePool.length];
+        const src = typeof pick === "string" ? pick : pick.src ?? pick.url;
+        const title = typeof pick === "string" ? `Image ${i + 1}` : pick.caption ?? pick.title;
 
         return {
-          src: pick.src,
+          src,
           caption: (() => {
+            if (title) return title;
             // Deterministic"random" name per index (stable across reloads).
             const adjectives = [
               "Silent",
@@ -213,9 +223,8 @@ export default function InfiniteGridGallery() {
             return `${a} ${b}`;
           })(),
         };
-      }),
-    [unsplashPool]
-  );
+      });
+  }, [images, unsplashPool]);
 
   const data = useMemo(() => {
     const cols = 3;
@@ -259,6 +268,10 @@ export default function InfiniteGridGallery() {
       sources,
       data,
       originalSize: { w: 1422, h: 1006 },
+      columns,
+      gap,
+      speed,
+      imageScale,
       onItemClick: ({ index, rect }) => {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
@@ -292,7 +305,7 @@ export default function InfiniteGridGallery() {
       gridRef.current?.destroy?.();
       gridRef.current = null;
     };
-  }, [data, sources]);
+  }, [columns, data, gap, imageScale, sources, speed]);
 
   const active = expanded ? sources[expanded.index] : null;
   const display = displayIndex === null ? null : sources[displayIndex];

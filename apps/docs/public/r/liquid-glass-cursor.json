@@ -84,22 +84,25 @@
     },
     {
       "name": "brightness",
-      "type": "string",
-      "default": "90%",
-      "description": "CSS brightness filter value.",
+      "type": "number",
+      "default": 90,
+      "description": "CSS brightness filter percentage.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "filter",
-        "groupTitle": "Filter"
+        "groupTitle": "Filter",
+        "min": 0,
+        "max": 200,
+        "step": 1
       }
     },
     {
       "name": "borderColor",
       "type": "string",
-      "default": "rgba(0,0,0,0.05)",
+      "default": "#ffffff",
       "description": "Cursor border and inner shadow color.",
       "remixer": {
-        "control": "text",
+        "control": "color",
         "group": "surface",
         "groupTitle": "Surface"
       }

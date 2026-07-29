@@ -888,6 +888,18 @@ function SanityBodyBlock({ block, isLocked = false }) {
   }
 
   if (block._type === "effectTableBlock") {
+    const headers = Array.isArray(block.headers) ? block.headers : [];
+    const rows = Array.isArray(block.rows) ? block.rows : [];
+    const columnCount = Math.max(
+      headers.length,
+      rows.reduce(
+        (max, row) => Math.max(max, Array.isArray(row?.cells) ? row.cells.length : 0),
+        0
+      )
+    );
+
+    if (!columnCount) return null;
+
     return (
       <div className="space-y-3 fadeup">
         {block.caption && (
@@ -896,21 +908,30 @@ function SanityBodyBlock({ block, isLocked = false }) {
           </h3>
         )}
 
-        <div className={styles.tableWrap}>
+        <div
+          className={styles.tableWrap}
+          data-variant={block.colorVariant || "vault"}
+        >
           <table className={styles.table}>
-            <thead>
-              <tr>
-                {(block.headers || []).map((header, index) => (
-                  <th key={`${header}-${index}`}>{header}</th>
-                ))}
-              </tr>
-            </thead>
+            {headers.length ? (
+              <thead>
+                <tr>
+                  {Array.from({ length: columnCount }).map((_, index) => (
+                    <th key={`${headers[index] || "header"}-${index}`}>
+                      {headers[index] || ""}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            ) : null}
 
             <tbody>
-              {(block.rows || []).map((row, rowIndex) => (
+              {rows.map((row, rowIndex) => (
                 <tr key={row._key || `${rowIndex}`}>
-                  {(row.cells || []).map((cell, cellIndex) => (
-                    <td key={`${rowIndex}-${cellIndex}`}>{cell}</td>
+                  {Array.from({ length: columnCount }).map((_, cellIndex) => (
+                    <td key={`${rowIndex}-${cellIndex}`}>
+                      {row.cells?.[cellIndex] || ""}
+                    </td>
                   ))}
                 </tr>
               ))}

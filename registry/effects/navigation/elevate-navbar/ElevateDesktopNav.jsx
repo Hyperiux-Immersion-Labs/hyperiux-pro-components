@@ -63,6 +63,9 @@ export function ElevateNavbarDesktop({
   cta = DEFAULT_CTA,
   navTextDuration = NAV_TEXT_DURATION,
   ctaDuration = CTA_DURATION,
+  activeColor = ACTIVE_TEXT_COLOR,
+  inactiveColor = DIMMED_TEXT_COLOR,
+  ease = "power2.out",
   dropdownItemOffsetY = DROPDOWN_ITEM_OFFSET_Y,
   dropdownPointerDelay = DROPDOWN_POINTER_DELAY,
   staggerItems = true,
@@ -147,8 +150,8 @@ export function ElevateNavbarDesktop({
 
       const color =
         activeIndex !== null && index !== activeIndex
-          ? DIMMED_TEXT_COLOR
-          : ACTIVE_TEXT_COLOR;
+          ? inactiveColor
+          : activeColor;
 
       if (reduceMotion()) {
         gsap.set(linkElement, { color });
@@ -157,12 +160,12 @@ export function ElevateNavbarDesktop({
 
       gsap.to(linkElement, {
         color,
-        duration: 0.22,
-        ease: "power2.out",
+        duration: navTextDuration,
+        ease,
         overwrite: true,
       });
     });
-  }, [reduceMotion]);
+  }, [activeColor, ease, inactiveColor, navTextDuration, reduceMotion]);
 
   const animateTextSwap = useCallback((item, isEntering) => {
     if (!item) return;
@@ -177,13 +180,13 @@ export function ElevateNavbarDesktop({
       .timeline({
         defaults: {
           duration: navTextDuration,
-          ease: "power2.out",
+          ease,
           overwrite: true,
         },
       })
       .to(item.defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(item.hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, [reduceMotion]);
+  }, [ease, navTextDuration, reduceMotion]);
 
   const initDropdownItemText = useCallback(() => {
     dropdownTextDataRef.current = dropdownItemsRef.current.map((itemElement) => {
@@ -233,11 +236,11 @@ export function ElevateNavbarDesktop({
     itemTweenRef.current.to(dropdownItems, {
       y: 0,
       opacity: 1,
-      duration: 0.22,
+      duration: navTextDuration,
       stagger: staggerItems ? 0.025 : 0,
-      ease: "power3.out",
+      ease,
     });
-  }, [getCurrentDropdownItems, killItemTween, reduceMotion]);
+  }, [dropdownItemOffsetY, ease, getCurrentDropdownItems, killItemTween, navTextDuration, reduceMotion, staggerItems]);
 
   const animateDropdownItemsOut = useCallback(
     (onComplete) => {
@@ -274,12 +277,12 @@ export function ElevateNavbarDesktop({
       itemTweenRef.current.to(dropdownItems, {
         y: dropdownItemOffsetY,
         opacity: 0,
-        duration: 0.16,
+        duration: navTextDuration,
         stagger: staggerItems ? 0.015 : 0,
-        ease: "power2.out",
+        ease,
       });
     },
-    [getCurrentDropdownItems, killItemTween, reduceMotion]
+    [dropdownItemOffsetY, ease, getCurrentDropdownItems, killItemTween, navTextDuration, reduceMotion, staggerItems]
   );
 
   const closeDropdown = useCallback(() => {
@@ -351,9 +354,9 @@ export function ElevateNavbarDesktop({
         itemTweenRef.current = gsap.to(dropdownItems, {
           y: 0,
           opacity: 1,
-          duration: 0.18,
+          duration: navTextDuration,
           stagger: 0.02,
-          ease: "power3.out",
+          ease,
           overwrite: true,
         });
 
@@ -370,11 +373,13 @@ export function ElevateNavbarDesktop({
     },
     [
       animateDropdownItemsOut,
+      ease,
       getCurrentDropdownItems,
       killHideCall,
       killItemTween,
       killSwitchTween,
       menuItems,
+      navTextDuration,
       reduceMotion,
       renderedDropdownIndex,
       setRenderedDropdownIndex,
@@ -396,7 +401,7 @@ export function ElevateNavbarDesktop({
 
       closeDropdown();
     });
-  }, [closeDropdown, killHideCall, reduceMotion]);
+  }, [closeDropdown, dropdownPointerDelay, killHideCall, reduceMotion]);
 
   const onHeaderMouseEnter = useCallback(() => {
     killHideCall();
@@ -497,7 +502,7 @@ export function ElevateNavbarDesktop({
       .timeline({
         defaults: {
           duration: ctaDuration,
-          ease: "power2.out",
+          ease,
           overwrite: true,
         },
       })
@@ -512,7 +517,7 @@ export function ElevateNavbarDesktop({
       )
       .to(defaultText, { yPercent: isEntering ? -100 : 0 }, 0)
       .to(hoverText, { yPercent: isEntering ? 0 : 100 }, 0);
-  }, [reduceMotion]);
+  }, [ctaBackground, ctaDuration, ctaHoverBackground, ease, reduceMotion]);
 
   const onDropdownMouseEnter = useCallback(() => {
     isPointerInsideDropdownRef.current = true;

@@ -82,6 +82,7 @@ export default function RegistryRemixerDemo({
             layoutConfig.buttonClassName ?? layoutConfig.controlsButtonClassName
           }
           panelClassName={layoutConfig.panelClassName ?? panelConfig.className}
+          containerClassName={layoutConfig.containerClassName}
         />
       ) : null}
     </>

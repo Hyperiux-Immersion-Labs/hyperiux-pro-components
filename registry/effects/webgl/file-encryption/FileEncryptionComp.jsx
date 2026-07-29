@@ -14,6 +14,7 @@ const AUTO_SPEED = 55;
 const PARTICLE_COUNT = 1500;
 const BEAM_COLOR ="#ff5f00";
 const PARTICLE_COLOR ="#ffb380";
+const BACKGROUND_COLOR = "#07060f";
 
 const GLYPHS ="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789=-%@!";
 
@@ -54,6 +55,17 @@ function hexToRgb(hex) {
  if (h.length === 3)
  return [parseInt(h[0]+h[0],16)/255, parseInt(h[1]+h[1],16)/255, parseInt(h[2]+h[2],16)/255];
  return [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255];
+}
+
+function clampNumber(value, min, max, fallback) {
+ const number = Number(value);
+ if (!Number.isFinite(number)) return fallback;
+ return Math.min(Math.max(number, min), max);
+}
+
+function withAlpha(hex, alphaHex) {
+ const value = typeof hex === "string" && hex ? hex : BEAM_COLOR;
+ return `${value}${alphaHex}`;
 }
 
 //  WebGL Beam
@@ -350,7 +362,7 @@ function makeParticles(count) {
  }));
 }
 
-function useParticleCanvas(canvasRef, beamStateRef) {
+function useParticleCanvas(canvasRef, beamStateRef, particleColor, speedRef) {
  const particles = useMemo(() => makeParticles(PARTICLE_COUNT), []);
 
  useEffect(() => {
@@ -427,7 +439,7 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  ctx.globalCompositeOperation ="lighter";
 
  for (const p of particles) {
- const life = (time * p.speed + p.seed) % 1;
+ const life = (time * p.speed * speedRef.current + p.seed) % 1;
 
  // distance from beam → card exit edge
 const maxTravel = Math.max(0, right - beamX);
@@ -452,7 +464,7 @@ const fade =
  if (fade <= 0) continue;
 
  ctx.globalAlpha = fade * 0.9;
- ctx.fillStyle = PARTICLE_COLOR;
+ ctx.fillStyle = particleColor;
  ctx.beginPath();
  ctx.arc(x, y, p.size, 0, Math.PI * 2);
  ctx.fill();
@@ -470,7 +482,7 @@ const fade =
  mq?.removeEventListener?.("change", onReduceMotionChange);
  loop.destroy();
  };
- }, [beamStateRef, canvasRef, particles]);
+ }, [beamStateRef, canvasRef, particleColor, particles, speedRef]);
 }
 
 function Chip() {
@@ -542,7 +554,7 @@ function PlainFace({ card }) {
  );
 }
 
-function AsciiFace({ card, beamLit }) {
+function AsciiFace({ card, beamLit, speedValue, cardScale }) {
  const seed = useMemo(() => seedFromStr(card.id || card.number || card.holder), [card]);
  const [grid, setGrid] = useState(() => makeGrid(seed));
  const randRef = useRef(null);
@@ -554,6 +566,8 @@ function AsciiFace({ card, beamLit }) {
  useEffect(() => {
  if (!beamLit) return;
  if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+ const intervalMs =
+ speedValue <= 0 ? 1000000 : Math.max(18, 55 / speedValue);
  const interval = setInterval(() => {
  const rand = randRef.current;
  setGrid(prev =>
@@ -561,9 +575,9 @@ function AsciiFace({ card, beamLit }) {
  row.map(ch => (rand() < 0.22 ? randomGlyph(rand) : ch))
  )
  );
- }, 55);
+ }, intervalMs);
  return () => clearInterval(interval);
- }, [beamLit]);
+ }, [beamLit, speedValue]);
 
  return (
  <div
@@ -579,10 +593,13 @@ function AsciiFace({ card, beamLit }) {
  <div
  className="absolute font-mono select-none"
  style={{
- top: PAD_Y, left: PAD_X, right: PAD_X, bottom: PAD_Y,
- fontSize: 11,
- lineHeight: `${CHAR_H}px`,
- letterSpacing: `${CHAR_W - 7}px`,
+ top: PAD_Y * cardScale,
+ left: PAD_X * cardScale,
+ right: PAD_X * cardScale,
+ bottom: PAD_Y * cardScale,
+ fontSize: 11 * cardScale,
+ lineHeight: `${CHAR_H * cardScale}px`,
+ letterSpacing: `${(CHAR_W - 7) * cardScale}px`,
  color: card.glowColor,
  opacity: 0.85,
  textShadow: beamLit
@@ -602,7 +619,7 @@ function AsciiFace({ card, beamLit }) {
 }
 
 // ─── CardShell 
-function CardShell({ card, settersRef }) {
+function CardShell({ card, settersRef, cardScale, speedValue }) {
  const [beamLit, setBeamLit] = useState(false);
  const beamLitRef = useRef(false);
 
@@ -626,7 +643,13 @@ function CardShell({ card, settersRef }) {
  <div
  data-card-uid={card._uid}
  className="relative shrink-0 rounded-2xl"
- style={{ width: CARD_W, height: CARD_H }}
+ style={{
+ width: CARD_W,
+ height: CARD_H,
+ transform: `scale(${cardScale})`,
+ transformOrigin: "center",
+ transition: "transform 260ms ease",
+ }}
  >
  <div data-plain className="absolute inset-0"
  style={{ clipPath: `inset(0 ${CARD_W}px 0 0 round 16px)` }}>
@@ -634,13 +657,24 @@ function CardShell({ card, settersRef }) {
  </div>
  <div data-ascii className="absolute h-full w-full inset-0"
  style={{ clipPath: `inset(0 0 0 ${CARD_W}px round 16px)` }}>
- <AsciiFace card={card} beamLit={beamLit} />
+ <AsciiFace
+ card={card}
+ beamLit={beamLit}
+ speedValue={speedValue}
+ cardScale={1}
+ />
  </div>
  </div>
  );
 }
 
-export function FileEncryptionComp({ cards = [] }) {
+export function FileEncryptionComp({
+ cards = [],
+ speed = 1,
+ accentColor = BEAM_COLOR,
+ backgroundColor = BACKGROUND_COLOR,
+ cardSize = 1,
+}) {
  const rootRef = useRef(null);
  const trackRef = useRef(null);
  const xRef = useRef(null);
@@ -652,6 +686,15 @@ export function FileEncryptionComp({ cards = [] }) {
  typeof window !== "undefined" &&
  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
  );
+ const speedRef = useRef(clampNumber(speed, 0, 5, 1));
+ const resolvedSpeed = clampNumber(speed, 0, 5, 1);
+ const resolvedCardSize = clampNumber(cardSize, 0.65, 1.5, 1);
+ const cardScale = resolvedCardSize;
+ const particleColor = withAlpha(accentColor, "99");
+
+ useEffect(() => {
+ speedRef.current = resolvedSpeed;
+ }, [resolvedSpeed]);
 
  const allCards = useMemo(() => {
  if (!cards.length) return [];
@@ -681,15 +724,16 @@ export function FileEncryptionComp({ cards = [] }) {
   }, []);
 
   const singleGroupWidth = useMemo(
-    () => cards.length * (CARD_W + cardGap),
-    [cards.length, cardGap]
+    () => cards.length * ((CARD_W + cardGap) * resolvedCardSize),
+    [cards.length, cardGap, resolvedCardSize]
   );
+ const visualCardGap = cardGap * resolvedCardSize;
 
- const primaryColor = BEAM_COLOR;
+ const primaryColor = accentColor;
 
  // WebGL beam state ref
  const beamStateRef = useWebGLBeam(beamCanvasRef, primaryColor);
- useParticleCanvas(particleCanvasRef, beamStateRef);
+ useParticleCanvas(particleCanvasRef, beamStateRef, particleColor, speedRef);
 
  useEffect(() => {
  if (typeof window ==="undefined") return;  if (!cards.length) return;
@@ -742,9 +786,9 @@ export function FileEncryptionComp({ cards = [] }) {
  // No auto-scroll / inertia — drag still moves cards directly.
  dragRef.current.velocity = 0;
  } else {
- xRef.current += (AUTO_SPEED * dt) / 1000;
+ xRef.current += (AUTO_SPEED * speedRef.current * dt) / 1000;
  if (Math.abs(dragRef.current.velocity) > 0.5) {
- xRef.current += dragRef.current.velocity * 0.4;
+ xRef.current += dragRef.current.velocity * 0.4 * speedRef.current;
  dragRef.current.velocity *= 0.88;
  }
  }
@@ -769,8 +813,10 @@ export function FileEncryptionComp({ cards = [] }) {
  track.querySelectorAll("[data-card-uid]").forEach((el) => {
  const uid = el.dataset.cardUid;
  const box = el.getBoundingClientRect();
- const splitPx = Math.max(0, Math.min(CARD_W, beamX - box.left));
- const lit = splitPx > 1 && splitPx < CARD_W - 1;
+ const displayWidth = Math.max(1, box.width);
+ const splitDisplayPx = Math.max(0, Math.min(displayWidth, beamX - box.left));
+ const splitPx = splitDisplayPx / resolvedCardSize;
+ const lit = splitDisplayPx > 1 && splitDisplayPx < displayWidth - 1;
 
  if (lit) {
  anyCard = true;
@@ -778,7 +824,7 @@ export function FileEncryptionComp({ cards = [] }) {
  activeCardBottom = 1 - (box.bottom - rootBox.top) / rootBox.height;
  activeCardLeft = (box.left - rootBox.left) / rootBox.width;
  activeCardRight = (box.right - rootBox.left) / rootBox.width;
- activeCardProgress = splitPx / CARD_W;
+ activeCardProgress = splitDisplayPx / displayWidth;
  }
 
  settersRef.current[uid]?.(splitPx);
@@ -829,15 +875,15 @@ export function FileEncryptionComp({ cards = [] }) {
  window.removeEventListener("pointerup", onUp);
   window.removeEventListener("pointercancel", onUp);
  };
- }, [cards.length, singleGroupWidth, beamStateRef]);
+ }, [beamStateRef, cards.length, resolvedCardSize, singleGroupWidth]);
 
  if (!cards.length) return null;
 
  return (
  <section
  ref={rootRef}
- className="relative overflow-hidden select-none"
- style={{ height: CARD_H + 80, cursor:"grab", touchAction:"none" }}
+ className="relative overflow-visible select-none"
+ style={{ height: CARD_H * 1.5 + 80, cursor:"grab", touchAction:"none" }}
  aria-label="Encrypted cards marquee"
  >
  {/* WebGL beam canvas - full section coverage, screen blend */}
@@ -862,23 +908,23 @@ export function FileEncryptionComp({ cards = [] }) {
  }}
  />
 
- {/* Edge vignette */}
- <div className="pointer-events-none absolute inset-y-0 left-0 z-30 w-32"
- style={{ background:"linear-gradient(90deg, #07060f, transparent)" }} />
- <div className="pointer-events-none absolute inset-y-0 right-0 z-30 w-32"
- style={{ background:"linear-gradient(270deg, #07060f, transparent)" }} />
-
  {/* Card track */}
  <div
  ref={trackRef}
  className="absolute top-1/2 left-0 flex will-change-transform"
 style={{
-  gap: cardGap,
+  gap: visualCardGap,
   marginTop: -(CARD_H / 2),
 }}
  >
  {allCards.map((card) => (
- <CardShell key={card._uid} card={card} settersRef={settersRef} />
+ <CardShell
+ key={card._uid}
+ card={card}
+ settersRef={settersRef}
+ cardScale={cardScale}
+ speedValue={resolvedSpeed}
+ />
  ))}
  </div>
 

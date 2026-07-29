@@ -3,7 +3,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { LevaPanel, useControls } from "leva";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
 function usePrefersReducedMotion() {
@@ -24,68 +23,28 @@ const lerp = (start, end, amount) => start + (end - start) * amount;
 
 const DEFAULT_SVG_MASK_URL = null;
 
-const levaTheme = {
- colors: {
- elevation1:"#0d0d0d",
- elevation2:"#141414",
- elevation3:"#1c1c1c",
- accent1:"#ff5f00",
- accent2:"#e05500",
- accent3:"#ff8030",
- highlight1:"#555555",
- highlight2:"#999999",
- highlight3:"#eeeeee",
- vivid1:"#ff5f00",
- folderWidgetColor:"#ff5f00",
- toolTipBackground:"#1c1c1c",
- toolTipText:"#cccccc",
- },
- radii: {
- xs:"3px",
- sm:"4px",
- lg:"6px",
- },
- space: {
- sm:"4px",
- md:"6px",
- rowGap:"4px",
- colGap:"6px",
- },
- fontSizes: {
- root:"11px",
- },
- fonts: {
- mono:"-apple-system, BlinkMacSystemFont,'Segoe UI', sans-serif",
- sans:"-apple-system, BlinkMacSystemFont,'Segoe UI', sans-serif",
- },
- sizes: {
- rootWidth:"270px",
- controlWidth:"55%",
- numberInputMinWidth:"48px",
- rowHeight:"28px",
- folderTitleHeight:"24px",
- sliderHeight:"3px",
- sliderKnobSize:"13px",
- scrubberWidth:"8px",
- scrubberHeight:"14px",
- },
- borderWidths: {
- root:"0px",
- input:"1px",
- focus:"1px",
- hover:"1px",
- active:"1px",
- folder:"0px",
- },
-
-};
-
-function GridLiftDesktop() {
+function GridLiftDesktop({
+ maskScale = 1.08,
+ fontSize = 350,
+ fontWeight = 200,
+ interactionRange = 120,
+ hoverRadius = 550,
+ hoverFalloff = 1.55,
+ liftRotation = -88,
+ liftHeight = 58,
+ liftSmoothness = 0.08,
+ gridSpacing = 13,
+ strokeSize = 1.15,
+ baseOpacity = 1,
+ hoverOpacity = 0.6,
+ backgroundColor = "#000000",
+ gridColor = "#272727",
+ hoverColor = "#ffffff",
+}) {
  const canvasRef = useRef(null);
  const fileInputRef = useRef(null);
  const isDesktop = true;
  const prefersReducedMotion = usePrefersReducedMotion();
- const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef([]);
@@ -96,70 +55,11 @@ function GridLiftDesktop() {
  const [maskSourceState, setMaskSourceState] = useState("Text");
  const [maskText, setMaskText] = useState("DESIGN");
 
- // Live ref - Leva's render() callbacks close over this, not stale state
- const maskSourceRef = useRef("Text");
  const handleSetMask = (val) => {
- maskSourceRef.current = val;
  setMaskSourceState(val);
  };
 
  const maskSource = maskSourceState;
-
- const [
- {
- fontSize,
- fontWeight,
- maskScale,
- gridSpacing,
- strokeSize,
- hoverRadius,
- hoverFalloff,
- interactionRange,
- liftHeight,
- liftRotation,
- liftSmoothness,
- baseOpacity,
- hoverOpacity,
- backgroundColor,
- gridColor,
- hoverColor,
- },
- ] = useControls(
-"CONTROLS",
- () => ({
- maskScale: { label:"Mask scale", value: 1.08, min: 0.2, max: 3, step: 0.01 },
- fontSize: {
- label:"Font size",
- value: 350,
- min: 40,
- max: 520,
- step: 1,
- render: () => maskSourceRef.current ==="Text",
- },
- fontWeight: {
- label:"Font weight",
- value: 200,
- min: 100,
- max: 1000,
- step: 100,
- render: () => maskSourceRef.current ==="Text",
- },
- interactionRange: { label:"Interaction range", value: 120, min: 10, max: 300, step: 1 },
- hoverRadius: { label:"Hover radius", value: 550, min: 80, max: 1200, step: 1 },
- hoverFalloff: { label:"Hover falloff", value: 1.55, min: 0.4, max: 4, step: 0.05 },
- liftRotation: { label:"Lift rotation", value: -88, min: -180, max: 180, step: 1 },
- liftHeight: { label:"Lift height", value: 58, min: 0, max: 180, step: 1 },
- liftSmoothness: { label:"Lift smoothness", value: 0.08, min: 0.01, max: 0.35, step: 0.01 },
- gridSpacing: { label:"Grid spacing", value: 13, min: 6, max: 40, step: 1 },
- strokeSize: { label:"Stroke size", value: 1.15, min: 0.4, max: 4, step: 0.1 },
- baseOpacity: { label:"Base opacity", value: 1, min: 0.05, max: 1, step: 0.01 },
- hoverOpacity: { label:"Lift opacity", value: 0.6, min: 0.1, max: 1, step: 0.01 },
- backgroundColor: { label:"Background", value:"#000000" },
- gridColor: { label:"Grid color", value:"#272727" },
- hoverColor: { label:"Hover color", value:"#ffffff" },
- }),
- [svgName],
- );
 
  const safeText =
  typeof maskText ==="string" && maskText.trim().length > 0 ? maskText :"LSD";
@@ -563,141 +463,32 @@ useEffect(() => {
  onChange={handleSVGUpload}
  style={{ display:"none" }}
  />
- {isDesktop && (
- <div className="grid-lift-right-controls max-md:hidden fixed right-4 top-4 z-60 pointer-events-auto">
- <LevaPanel
- theme={levaTheme}
- collapsed={{ collapsed: isLevaCollapsed, onChange: setIsLevaCollapsed }}
- oneLineLabels={true}
- flat={false}
- hideCopyButton
- />
- </div>
- )}
  </div>
  <style jsx global>{`
  @import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
-
- .grid-lift-right-controls [class*="TitleBar"] {
-   display: none !important;
- }
-
- .grid-lift-right-controls div[class*="Panel"] {
-   border-radius: 12px !important;
-   overflow: hidden !important;
-   border: 1px solid #232323 !important;
-   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
-   background: #0f0f0f !important;
- }
-
- .grid-lift-right-controls [class*="Label"],
- .grid-lift-right-controls [class*="label"] {
-   text-transform: none !important;
-   letter-spacing: 0 !important;
-   font-size: 12px !important;
-   font-weight: 400 !important;
-   color: #ffffff !important;
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
- }
-
- .grid-lift-right-controls input[type="number"] {
-   color: #ffffff !important;
-   font-size: 11px !important;
-   background: #141414 !important;
-   border: 1px solid #2a2a2a !important;
-   border-radius: 6px !important;
-   text-align: right !important;
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
- }
-
- .grid-lift-right-controls [class*="Thumb"],
- .grid-lift-right-controls [class*="thumb"] {
-   background: #ffffff !important;
-   border: none !important;
-   border-radius: 50% !important;
-   box-shadow: 0 0 0 2px rgba(255, 95, 0, 0.4) !important;
- }
-
- .grid-lift-right-controls input[type="text"] {
-   background: #1a1a1a !important;
-   border: 1px solid #2e2e2e !important;
-   border-radius: 6px !important;
-   color: #ffffff !important;
-   font-size: 13px !important;
-   font-weight: 700 !important;
-   letter-spacing: 0.05em !important;
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
- }
-
- .grid-lift-right-controls input[type="text"]:focus {
-   border-color: #ff5f00 !important;
-   outline: none !important;
- }
-
- .grid-lift-right-controls button[class*="Button"] {
-   background: #1a1a1a !important;
-   border: 1px solid #2e2e2e !important;
-   border-radius: 6px !important;
-   color: #cccccc !important;
-   font-size: 12px !important;
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-   text-transform: none !important;
-   letter-spacing: 0 !important;
-   transition: border-color 0.15s, color 0.15s !important;
- }
-
- .grid-lift-right-controls button[class*="Button"]:hover {
-   border-color: #ff5f00 !important;
-   color: #ffffff !important;
-   background: #1f1f1f !important;
- }
-
- [data-mask-source] [class*="Swatch"],
- [data-mask-source] [class*="swatch"] {
-   border-radius: 4px !important;
-   border: 1px solid #3a3a3a !important;
-   width: 44px !important;
-   height: 20px !important;
- }
-
- [data-mask-source] input[disabled],
- [data-mask-source] input[readonly] {
-   background: transparent !important;
-   border: none !important;
-   color: #444444 !important;
-   font-size: 11px !important;
- }
-
- [data-mask-source] [style*="rgb(0, 122, 255)"],
- [data-mask-source] [style*="#007aff"],
- [data-mask-source] [style*="hsl(210"] {
-   background-color: #ff5f00 !important;
-   border-color: #ff5f00 !important;
-   color: #ff5f00 !important;
- }
-
- [data-mask-source] *::-webkit-scrollbar {
-   width: 3px !important;
- }
-
- [data-mask-source] *::-webkit-scrollbar-track {
-   background: transparent !important;
- }
-
- [data-mask-source] *::-webkit-scrollbar-thumb {
-   background: #2a2a2a !important;
-   border-radius: 2px !important;
- }
-
- [data-mask-source] *::-webkit-scrollbar-thumb:hover {
-   background: #ff5f00 !important;
- }
  `}</style>
  </>
  );
 }
 
-export default function GridLift() {
+export default function GridLift({
+ maskScale = 1.08,
+ fontSize = 350,
+ fontWeight = 200,
+ interactionRange = 120,
+ hoverRadius = 550,
+ hoverFalloff = 1.55,
+ liftRotation = -88,
+ liftHeight = 58,
+ liftSmoothness = 0.08,
+ gridSpacing = 13,
+ strokeSize = 1.15,
+ baseOpacity = 1,
+ hoverOpacity = 0.6,
+ backgroundColor = "#000000",
+ gridColor = "#272727",
+ hoverColor = "#ffffff",
+} = {}) {
  const [isDesktop, setIsDesktop] = useState(true);
 
  useEffect(() => {
@@ -731,5 +522,24 @@ export default function GridLift() {
   );
  }
 
- return <GridLiftDesktop />;
+ return (
+ <GridLiftDesktop
+ maskScale={maskScale}
+ fontSize={fontSize}
+ fontWeight={fontWeight}
+ interactionRange={interactionRange}
+ hoverRadius={hoverRadius}
+ hoverFalloff={hoverFalloff}
+ liftRotation={liftRotation}
+ liftHeight={liftHeight}
+ liftSmoothness={liftSmoothness}
+ gridSpacing={gridSpacing}
+ strokeSize={strokeSize}
+ baseOpacity={baseOpacity}
+ hoverOpacity={hoverOpacity}
+ backgroundColor={backgroundColor}
+ gridColor={gridColor}
+ hoverColor={hoverColor}
+ />
+ );
 }

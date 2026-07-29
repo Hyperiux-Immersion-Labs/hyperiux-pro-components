@@ -15,10 +15,6 @@ export default function DemoContent({ registry }) {
             values.iChannel0 ||
             "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
           }
-          iChannel1={
-            values.iChannel1 ||
-            "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png"
-          }
         />
       )}
       copyCodeOptions={{ propsVariableName: "interactiveBlurRevealProps" }}

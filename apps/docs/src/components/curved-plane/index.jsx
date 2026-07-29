@@ -21,10 +21,13 @@ const VERSIONS = [
   },
 ];
 
-export default function CurvedPlane({ variant = "horizontal", ...props }) {
-  const [activeVariant, setActiveVariant] = useState(
-    VARIANTS[variant] ? variant : "horizontal"
-  );
+export default function CurvedPlane({
+  speed = 1,
+  curveValue = 1,
+  gap = 1,
+  imageSize = 1,
+}) {
+  const [activeVariant, setActiveVariant] = useState("horizontal");
 
   const ActiveComponent = useMemo(() => {
     return VARIANTS[activeVariant] || CurvedPlaneHorizontal;
@@ -36,7 +39,12 @@ export default function CurvedPlane({ variant = "horizontal", ...props }) {
         activeVariant={activeVariant}
         onVariantChange={setActiveVariant}
       />
-      <ActiveComponent {...props} />
+      <ActiveComponent
+        speed={speed}
+        curveValue={curveValue}
+        gap={gap}
+        imageSize={imageSize}
+      />
     </>
   );
 }

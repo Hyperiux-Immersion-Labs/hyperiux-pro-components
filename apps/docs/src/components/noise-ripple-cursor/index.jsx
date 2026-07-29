@@ -161,6 +161,7 @@ export const NoiseDietherShader = ({
  className,
  style,
  pixelSize = 3,
+ lerp = 0.2,
  patternDensity = 1,
  fluidRadius = 0.05,
  fluidStrength = 0.3,
@@ -171,8 +172,10 @@ export const NoiseDietherShader = ({
  const containerRef = useRef(null);
  const threeRef = useRef(null);
  const mouseRef = useRef({ x: -1, y: -1 });
+ const targetMouseRef = useRef({ x: -1, y: -1 });
  const isMouseStoppedRef = useRef(false);
  const mouseStopTimeoutRef = useRef(null);
+ const resolvedLerp = Math.max(0.01, Math.min(1, Number(lerp) || 0.2));
 
  const parseColor = (hex) => {
  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -288,7 +291,7 @@ export const NoiseDietherShader = ({
  container.classList.add('fx-target');
  registerFxTarget(container, {
  onMove: ({ localX, localY }) => {
- mouseRef.current = {
+ targetMouseRef.current = {
  x: localX * (renderer.domElement.width / container.clientWidth),
  y: (container.clientHeight - localY) * (renderer.domElement.height / container.clientHeight)
  };
@@ -303,6 +306,7 @@ export const NoiseDietherShader = ({
  },
  onLeave: () => {
  mouseRef.current = { x: -1, y: -1 };
+ targetMouseRef.current = { x: -1, y: -1 };
  isMouseStoppedRef.current = false;
  if (mouseStopTimeoutRef.current) {
  clearTimeout(mouseStopTimeoutRef.current);
@@ -323,6 +327,14 @@ export const NoiseDietherShader = ({
  // Mouse stopped - don't add new influence
  fboMaterial.uniforms.uMouse.value.set(-1, -1);
  } else {
+ if (targetMouseRef.current.x >= 0) {
+ if (mouseRef.current.x < 0) {
+ mouseRef.current = { ...targetMouseRef.current };
+ } else {
+ mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * resolvedLerp;
+ mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * resolvedLerp;
+ }
+ }
  fboMaterial.uniforms.uMouse.value.set(
  mouseRef.current.x * (256 / renderer.domElement.width),
  mouseRef.current.y * (256 / renderer.domElement.height)
@@ -367,7 +379,7 @@ export const NoiseDietherShader = ({
  container.removeChild(renderer.domElement);
  }
  };
- }, [imageSrc, noiseColor, pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness]);
+ }, [imageSrc, noiseColor, pixelSize, resolvedLerp, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness]);
 
  return (
  <div
@@ -380,23 +392,16 @@ export const NoiseDietherShader = ({
 };
 
 export default function NoiseRippleCursor({
- overlayColor ='bg-[#1825AA]/30',
- wrapperClassName ='h-screen w-screen',
+ overlayColor ='#1825AA',
  imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
- shaderConfig = {
- pixelSize: .5,
- patternDensity: 1,
- fluidRadius: 0.08,
- fluidStrength: .2,
- fluidDissipation: 0.9,
- distortStrength: 0.5,
- trailDarkness: 0
- }
+ pixelSize = 0.5,
+ lerp = 0.2,
+ distortion = 0.5,
+ radius = 0.08
 }) {
- const { pixelSize, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness } = shaderConfig;
  const prefersReducedMotion = usePrefersReducedMotion();
  return (
- <div className={`${wrapperClassName} relative`}>
+ <div className="h-screen w-screen relative">
 
   {imageSrc && (
   // eslint-disable-next-line @next/next/no-img-element
@@ -414,18 +419,22 @@ export default function NoiseRippleCursor({
   }}
   />
  )}
- <div className={`h-full w-full ${overlayColor} absolute inset-0`} />
+ <div
+ className="h-full w-full absolute inset-0"
+ style={{ backgroundColor: overlayColor, opacity: 0.3 }}
+ />
  <NoiseDietherShader
  imageSrc={imageSrc}
- noiseColor="#1825AA"
+ noiseColor={overlayColor}
  style={{ width:'100%', height:'100%', position:'relative', zIndex: 1 }}
  pixelSize={pixelSize}
- patternDensity={patternDensity}
- fluidRadius={fluidRadius}
- fluidStrength={fluidStrength}
- fluidDissipation={fluidDissipation}
- distortStrength={distortStrength}
- trailDarkness={trailDarkness}
+ lerp={lerp}
+ patternDensity={1}
+ fluidRadius={radius}
+ fluidStrength={0.2}
+ fluidDissipation={0.9}
+ distortStrength={distortion}
+ trailDarkness={0}
  />
  {prefersReducedMotion && (
  <div

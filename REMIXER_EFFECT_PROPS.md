@@ -371,17 +371,17 @@ Notes:
 
 ## Cursor
 
-### Butterfly Trail Cursor (`butterfly-trail-cursor`, pro) - Suggested props
+### Butterfly Trail Cursor (`butterfly-trail-cursor`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `butterflyCount` | `14` | number | range/number | Number of trail butterflies. |
 | `trailDistance` | `18` | number | range/number | Distance between trail items. |
-| `wingColor` | `#ff6b00` | color | color | Primary butterfly wing color. |
+| `wingColor` | `#ffffff` | color | color | Primary butterfly wing color. |
 | `size` | `28` | number | range/number | Rendered butterfly size. |
 | `followSpeed` | `0.18` | number | range/number | How quickly the trail follows the pointer. |
 
-### Character Trail (`character-trail`, pro) - Suggested props
+### Character Trail (`character-trail`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
@@ -395,20 +395,21 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `beanCount` | `18` | number | range/number | Number of cursor trail beans. |
-| `beanColor` | `#6b3f24` | color | color | Coffee bean color. |
+| `beanCount` | `300` | number | range/number | Number of beans in the flowing cursor field. |
+| `beanColor` | `#392416` | color | color | Coffee bean color. |
 | `size` | `22` | number | range/number | Rendered bean size. |
 | `rotationSpeed` | `1` | number | range/number | Rotation speed for each bean. |
-| `fadeDuration` | `0.75` | number | range/number | Time before beans fade out. |
+| `mouseInteraction` | `true` | boolean | checkbox/toggle | Enables mouse-reactive bean movement. |
+| `scatterIntensity` | `1` | number | range/number | Strength and radius of the mouse scatter force. |
 
-### Colorful Cursor Aura (`colorful-cursor-aura`, pro) - Suggested props
+### Colorful Cursor Aura (`colorful-cursor-aura`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `auraSize` | `160` | number | range/number | Diameter of the cursor aura. |
-| `colors` | `defaultColors` | array | color-list | Gradient colors used in the aura. |
-| `blur` | `32` | number | range/number | Blur amount applied to the aura. |
-| `opacity` | `0.75` | number | range/number | Aura opacity. |
+| `auraSize` | `325` | number | range/number | Diameter of the cursor aura. |
+| `color1` | `#a78bfa` | color | color | Outer aura ring color. |
+| `color2` | `#fb7185` | color | color | Middle aura ring color. |
+| `color3` | `#fde68a` | color | color | Inner aura ring color. |
 | `followSpeed` | `0.12` | number | range/number | How quickly the aura follows the cursor. |
 
 ### Cursor Move (`cursor-move`, pro)
@@ -428,6 +429,7 @@ Notes:
 | `crosshairDashedColor` | `"rgba(255,255,255,0.2)"` | color | color | Color value for crosshair dashed color. |
 | `crosshairDashedDashLength` | `10` | number | range/number | Numeric value for crosshair dashed dash length. |
 | `crosshairDashedGap` | `10` | number | range/number | Numeric value for crosshair dashed gap. |
+| `lerp` | `0.2` | number | range/number | Mouse-follow smoothing amount; lower values feel smoother and slower, higher values track faster. |
 | `crosshairVerticalThicknessClassName` | `"w-px"` | string | text | Class names for crosshair vertical thickness class name styling. |
 | `crosshairHorizontalThicknessClassName` | `"h-px"` | string | text | Class names for crosshair horizontal thickness class name styling. |
 | `crosshairVerticalClassName` | `""` | string | text | Class names for crosshair vertical class name styling. |
@@ -451,7 +453,10 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `src` | undefined | string | text | Image, video, or asset source URL. |
+| `bulgeEffect` | `1` | number | range/number | Strength of the fish-eye bulge distortion. |
+| `duration` | `0.125` | number | range/number | Smoothing duration for bulge strength changes. |
+| `smoothness` | `0.083` | number | range/number | Cursor-follow smoothing duration. |
+| `mouseInteractive` | `true` | boolean | toggle | Enables cursor-driven fish-eye distortion. |
 
 ### Full Screen Crosshair (`full-screen-crosshair`, pro)
 
@@ -460,24 +465,21 @@ Notes:
 | `color` | `"#ffffff"` | color | color | Primary color value used by the effect. |
 | `centerContent` | `"•"` | string | text | Value for center content. |
 | `hideNativeCursor` | `true` | boolean | toggle | Toggles hide native cursor behavior. |
-| `lineSize` | `100` | number | range/number | Numeric value for line size. |
 | `gap` | `20` | number | range/number | Spacing between repeated items. |
 | `thickness` | `1` | number | range/number | Numeric value for thickness. |
 | `centerSize` | `24` | number | range/number | Numeric value for center size. |
 | `smooth` | `true` | boolean | toggle | Toggles smooth behavior. |
 | `lerpFactor` | `0.14` | number | range/number | Numeric value for lerp factor. |
-| `blendMode` | `"normal"` | string | text | Value for blend mode. |
 | `className` | `""` | string | text | Additional class names for the root element. |
 
-### Inertia Image (`inertia-img`, pro) - Suggested props
+### Inertia Image (`inertia-img`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `images` | `defaultImages` | array | json/list | Images rendered with inertia movement. |
-| `strength` | `0.22` | number | range/number | Pointer inertia strength. |
-| `rotation` | `8` | number | range/number | Maximum image rotation while moving. |
-| `scale` | `1.04` | number | range/number | Hover scale applied to images. |
-| `duration` | `0.45` | number | range/number | Motion smoothing duration. |
+| `strength` | `1` | number | range/number | Pointer inertia velocity multiplier. |
+| `rotation` | `0` | number | range/number | Maximum image rotation while moving. |
+| `scale` | `1` | number | range/number | Hover scale applied to images. |
+| `duration` | `0.4` | number | range/number | Motion smoothing duration. |
 
 ### Interactive Arrows (`interactive-arrows`, pro) - Suggested props
 
@@ -497,8 +499,8 @@ Notes:
 | `textHoverSize` | `120` | number | range/number | Numeric value for text hover size. |
 | `distortionScale` | `1.5` | number | range/number | Numeric value for distortion scale. |
 | `blurAmount` | `0.002` | number | range/number | Numeric value for blur amount. |
-| `brightness` | `"90%"` | string | text | Value for brightness. |
-| `borderColor` | `"rgba(255,255,255,0.1)"` | color | color | Color value for border color. |
+| `brightness` | `90` | number | range/number | CSS brightness filter percentage. |
+| `borderColor` | `#ffffff` | color | color | Cursor border and inner shadow color. |
 | `maxButtonWidth` | `200` | number | range/number | Numeric value for max button width. |
 | `maxButtonHeight` | `150` | number | range/number | Numeric value for max button height. |
 
@@ -506,20 +508,23 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `images` | `defaultImages` | array | json/list | Images emitted in the magnetic trail. |
-| `trailLength` | `16` | number | range/number | Maximum visible images in the trail. |
-| `magnetStrength` | `0.25` | number | range/number | Strength of magnetic pull toward the cursor path. |
-| `imageSize` | `120` | number | range/number | Rendered trail image size. |
-| `fadeDuration` | `0.8` | number | range/number | Time before trail images fade out. |
+| `trailLength` | `18` | number | range/number | Maximum visible images in the trail. |
+| `magnetStrength` | `1` | number | range/number | Strength of magnetic pull, speed boost, and directional push. |
+| `scaleIn` | `0.06` | number | range/number | Minimum scale for images entering and leaving the center path. |
+| `scaleOut` | `1.48` | number | range/number | Maximum directional scale for images pushed away by movement. |
+| `lerp` | `0.18` | number | range/number | Pointer smoothing amount; higher values follow faster. |
+| `size` | `1` | number | range/number | Overall image size multiplier. |
 
 ### Noise Ripple Cursor (`noise-ripple-cursor`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `overlayColor` | `'bg-[#1825AA]/30'` | color | color | Color value for overlay color. |
-| `wrapperClassName` | `'h-screen w-screen'` | string | text | Class names for wrapper class name styling. |
 | `imageSrc` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-im...` | string | text | Image source or image data used by the effect. |
-| `shaderConfig` | `{ pixelSize: .5, patternDensity: 1, fluidRadius: 0.08, fluidStrength:...` | object | object/json | Configuration object for shader config. |
+| `overlayColor` | `#1825AA` | color | color | Overlay and ripple shader color. |
+| `pixelSize` | `0.5` | number | range/number | Pixel block size used by the dither shader. |
+| `lerp` | `0.2` | number | range/number | Mouse smoothing amount for the ripple source. |
+| `distortion` | `0.5` | number | range/number | Strength of the image UV distortion. |
+| `radius` | `0.08` | number | range/number | Radius of the cursor ripple influence. |
 
 ### Phantom Image Trail (`phantom-image-trail`, free)
 
@@ -573,9 +578,10 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `id` | undefined | unknown | manual review | Value for id. |
-| `size` | `16` | number | range/number | Size value used by the visual element. |
-| `crossLayers` | `false` | boolean | toggle | Toggles cross layers behavior. |
+| `src` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"` | string | text | Image source URL; blank values fall back to the default image. |
+| `pixelSize` | `16` | number | range/number | Baseline SVG pixelation size. |
+| `duration` | `0.25` | number | range/number | Smoothing duration for pixel-size changes. |
+| `mouseReactivity` | `1` | number | range/number | Strength of cursor-driven pixelation changes. |
 
 ### Rope Cursor (`rope-cursor`, pro)
 
@@ -593,15 +599,18 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `onComplete` | undefined | function | custom/function | Callback fired when the animation or loader completes. |
-| `onVariantChange` | undefined | function | custom/function | Callback fired for the variant change event. |
-| `...props` | undefined | object | object/json | Configuration object for props. |
+| `duration` | `1` | number | range/number | Overall timeline duration multiplier. |
+| `lineHeight` | `1` | number | range/number | Rendered height of each loader line in pixels. |
+| `darkLineColor` | `#ffffff` | color | color | Line color on the dark loader layer. |
+| `lightLineColor` | `#000000` | color | color | Line color on the light reveal layer. |
+| `fadeOutDuration` | `0.5` | number | range/number | Duration of the line fade-out phases. |
+| `loaderDuration` | `1` | number | range/number | Duration multiplier for the main line morph and reveal. |
 
 ### Numeric Tunnel (`numeric-tunnel`, free) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `digitCount` | `180` | number | range/number | Number of digits rendered in the tunnel. |
+| `digitCount` | `50` | number | range/number | Number of digits rendered in the tunnel. |
 | `speed` | `1` | number | range/number | Forward motion speed. |
 | `depth` | `900` | number | range/number | Visual tunnel depth. |
 | `textColor` | `#ffffff` | color | color | Digit color. |
@@ -611,46 +620,64 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `images` | `DEFAULT_IMAGE_SOURCES` | array | asset-list/json | Image sources used by the visual effect. |
+| `imageSize` | `1` | number | range/number | Scale multiplier for the loader image stack. |
+| `duration` | `1` | number | range/number | Global duration multiplier for the loader animation. |
+| `fadeOutDuration` | `0.8` | number | range/number | Duration of the final image and loader fade-out. |
+| `backgroundColor` | `#fcfcfc` | color | color | Loader background color. |
+
+Changing any Stack Loader remixer prop restarts the loader animation so the new image size, timing, fade-out, or loader background color is visible immediately.
 
 ## Navigation
 
-### Directional Menu (`directional-menu`, free) - Suggested props
+### Directional Menu (`directional-menu`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Menu items and panel content. |
-| `closeDelay` | `180` | number | range/number | Delay before closing the menu. |
+| `activeColor` | `#ffffff` | color | color | Color for the active menu item. |
+| `inactiveColor` | `#ffffff` | color | color | Color for inactive menu items. |
+| `duration` | `0.35` | number | range/number | Menu transition duration. |
+| `ease` | `power2.inOut` | string | select | GSAP easing used for menu transitions. |
+| `closeDelay` | `80` | number | range/number | Delay before closing the menu. |
 | `panelGap` | `20` | number | range/number | Gap between trigger and submenu panel. |
-| `accentColor` | `#ff6b00` | color | color | Color for active menu state. |
-| `openOnHover` | `true` | boolean | toggle | Opens panels on hover instead of click. |
 
-### Elevate Navbar (`elevate-navbar`, free) - Suggested props
+### Elevate Navbar (`elevate-navbar`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `navConfig` | `defaultNavConfig` | object | json | Navigation links and dropdown content. |
 | `backgroundColor` | `#d8b4fe` | color | color | Page background behind the navbar demo. |
-| `elevation` | `18` | number | range/number | Shadow depth after scrolling. |
-| `blur` | `14` | number | range/number | Backdrop blur amount for the navbar. |
-| `accentColor` | `#111111` | color | color | Color used for active nav state. |
+| `ctaBackground` | `#ffffff` | color | color | CTA button background color. |
+| `ctaHoverBackground` | `#000000` | color | color | CTA button hover background color. |
+| `activeColor` | `#ffffff` | color | color | Active and focused nav link color. |
+| `inactiveColor` | `rgba(255,255,255,0.5)` | color | color | Dimmed nav link color while another item is active. |
+| `duration` | `0.35` | number | range/number | Nav, dropdown, and mobile accordion animation duration. |
+| `ease` | `power2.out` | string | select | GSAP easing used for nav and dropdown transitions. |
+| `staggerItems` | `true` | boolean | checkbox | Reveals dropdown items one by one. |
 
-### Expanding Navbar (`expanding-navbar`, pro) - Suggested props
+### Expanding Navbar (`expanding-navbar`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Navigation items and expandable panels. |
-| `expandedWidth` | `720` | number | range/number | Width of the expanded navbar panel. |
-| `duration` | `0.45` | number | range/number | Expansion animation duration. |
+| `expandedWidth` | `98` | number | range/number | Expanded desktop panel width in viewport units. |
+| `duration` | `1` | number | range/number | Expansion animation duration. |
+| `ease` | `cubic-bezier(0.625, 0.05, 0, 1)` | string | select | Easing used for the menu expansion. |
 | `backgroundColor` | `#ffffff` | color | color | Navbar background color. |
-| `accentColor` | `#ff6b00` | color | color | Hover or active link accent color. |
+| `activeColor` | `#ff5f00` | color | color | Hover or active link accent color. |
 
 ### Immersive Full Screen Navigation (`immersive-full-screen-nav`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `navConfig` | `NAV_CONFIG` | object | object/json | Configuration object for nav config. |
-| `navContent` | `NAV_CONTENT` | unknown | manual review | Value for nav content. |
+| `overlayBg` | `#ff5f00` | color | color | Fullscreen overlay background color. |
+| `headerOpenColor` | `#ffffff` | color | color | Hamburger bar color while open. |
+| `linkColor` | `#ffffff` | color | color | Navigation link color. |
+| `linkHoverColor` | `#a3a3a3` | color | color | Navigation link hover color. |
+| `clipOrigin` | `bottom` | string | select | Edge where the overlay reveals from. |
+| `openDuration` | `1.2` | number | range/number | Overlay open duration. |
+| `closeDuration` | `1.2` | number | range/number | Overlay close duration. |
+| `ease` | `power4.inOut` | string | select | Overlay reveal easing. |
+| `linkStagger` | `0.07` | number | range/number | Delay between nav links. |
+| `imageStagger` | `0.02` | number | range/number | Delay between overlay images. |
+| `socialStagger` | `0.06` | number | range/number | Delay between social links. |
 
 ## Scroll
 
@@ -1085,16 +1112,19 @@ Notes:
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `enableContentShift` | `false` | boolean | toggle | Toggles enable content shift behavior. |
-| `rows` | `ROWS` | number | range/number | Numeric value for rows. |
-| `color` | `COLOR` | color | color | Primary color value used by the effect. |
+| `enableContentShift` | `false` | boolean | toggle | Adds content scale/blur during the transition. |
+| `rows` | `5` | number | range/number | Number of block rows. |
+| `color` | `#000000` | color | color | Transition block color. |
+| `duration` | `1` | number | range/number | Duration multiplier for the cover and reveal block animations. |
 
 ### Chess Grid Transition (`chess-grid-transition`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `enableContentShift` | `false` | boolean | toggle | Toggles enable content shift behavior. |
+| `duration` | `1` | number | range/number | Duration multiplier for the chess grid sweep. |
+| `gridSize` | `8` | number | range/number | Grid density used to derive transition columns and responsive rows. |
+| `color` | `#ff5f00` | color | color | Chess grid block color. |
 
 ### Page Flip Transition (`page-flip-transition`, pro)
 
@@ -1109,8 +1139,10 @@ Notes:
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `cols` | `COLS` | unknown | manual review | Value for cols. |
-| `rows` | `ROWS` | number | range/number | Numeric value for rows. |
+| `cols` | `30` | number | range/number | Pixel grid columns. |
+| `rows` | `40` | number | range/number | Pixel grid rows. |
+| `pixelColor` | `#111111` | color | color | Color used to draw each transition pixel. |
+| `duration` | `1` | number | range/number | Duration multiplier for the leave and enter pixel sweeps. |
 | `enableContentShift` | `false` | boolean | toggle | Toggles enable content shift behavior. |
 
 ### Radial Slice Transition (`radial-slice-transition`, pro)
@@ -1118,14 +1150,17 @@ Notes:
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `config` | `{ duration: 4, color: '#0F2854' }` | object | object/json | Configuration object for config. |
+| `duration` | `4` | number | range/number | Total duration of the radial slice transition. |
+| `color` | `#0F2854` | color | color | Radial slice overlay color. |
 
 ### SVG Brush Transition (`svg-brush-transition`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `config` | `{ enableBlur: false, strokeColor: '#82A0FF', strokeWidth: 2, duration...` | object | object/json | Configuration object for config. |
+| `strokeWidth` | `2` | number | range/number | Final brush stroke width after the covering wipe completes. |
+| `strokeColor` | `#82A0FF` | color | color | SVG brush stroke color. |
+| `duration` | `1.5` | number | range/number | Duration of the SVG brush draw and reveal animations. |
 
 ## Webgl
 
@@ -1143,11 +1178,8 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `images` | `defaultPages` | array | json/list | Page images rendered in the book. |
-| `page` | `0` | number | range/number | Initially open page index. |
 | `pageSpeed` | `0.8` | number | range/number | Speed of the page flip animation. |
-| `bookScale` | `1` | number | range/number | Overall scale of the 3D book. |
-| `showControls` | `true` | boolean | toggle | Shows page navigation controls. |
+| `bookScale` | `1` | number | range/number | Scale applied to the 3D book group. |
 
 ### Colliding Models (`colliding-models`, pro) - Suggested props
 
@@ -1163,113 +1195,127 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `variant` | `"horizontal"` | string | text | Visual or behavior variant. |
-| `...props` | undefined | object | object/json | Configuration object for props. |
+| `speed` | `1` | number | range/number | Drag, wheel, and inertia movement speed. |
+| `curveValue` | `1` | number | range/number | Multiplier for the image plane curvature deformation. |
+| `gap` | `1` | number | range/number | Spacing multiplier between image planes. |
+| `imageSize` | `1` | number | range/number | Image plane size multiplier. |
 
 ### Donut Particles (`donut-particles`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
+| `particleSize` | `1` | number | range | Scale multiplier applied to every particle's rendered size. |
+| `donutScale` | `3.5` | number | range | Scale applied to the particle donut. |
+| `particleColor` | `"#9973ff"` | color | color | Base color used for the particle glow cycle. |
+| `cameraFov` | `50` | number | range | Camera field of view. |
+| `mouseInteraction` | `true` | boolean | toggle | Enables cursor-driven particle flow on desktop viewports. |
+| `speed` | `1` | number | range | Playback speed multiplier for rotation and particle motion. |
+| `intensity` | `1` | number | range | Strength multiplier for particle glow and cursor interaction force. |
 | `className` | `""` | string | text | Additional class names for the root element. |
 | `canvasClassName` | `""` | string | text | Class names for canvas class name styling. |
-| `donutPosition` | `[0, 0, 0]` | array | asset-list/json | List data for donut position. |
-| `donutScale` | `3.5` | number | range/number | Numeric value for donut scale. |
-| `donutRotation` | `[degToRad(-60), degToRad(45), 0]` | array | asset-list/json | List data for donut rotation. |
-| `cameraPosition` | `[2.0, 4, 6]` | array | asset-list/json | List data for camera position. |
-| `cameraFov` | `50` | number | range/number | Numeric value for camera fov. |
-| `dpr` | `[1, 2]` | array | asset-list/json | List data for dpr. |
+| `donutPosition` | `[0, 0, 0]` | array | asset-list/json | List data for donut position. Not exposed in the remixer panel. |
+| `donutRotation` | `[degToRad(-60), degToRad(45), 0]` | array | asset-list/json | List data for donut rotation. Not exposed in the remixer panel. |
+| `cameraPosition` | `[2.0, 4, 6]` | array | asset-list/json | List data for camera position. Not exposed in the remixer panel. |
+| `dpr` | `[1, 2]` | array | asset-list/json | List data for dpr. Not exposed in the remixer panel. |
 
 ### Draggable Canvas (`draggable-canvas`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Canvas items that can be dragged. |
-| `dragBounds` | `"viewport"` | enum | select | Bounds used for draggable movement. |
 | `friction` | `0.12` | number | range/number | Inertia friction after drag release. |
-| `scaleOnDrag` | `1.04` | number | range/number | Scale applied while dragging. |
-| `backgroundColor` | `#000000` | color | color | Canvas background color. |
+| `scaleOnDrag` | `1.04` | number | range/number | Scale applied to each draggable canvas window while dragging. |
+| `backgroundColor` | `#000000` | color | color | Scene background behind the draggable canvases. |
+| `canvasBorderColor` | `#71717a` | color | color | Border color for each draggable canvas window. |
+| `rounded` | `0` | number | range/number | Corner radius for each draggable canvas window. |
 
 ### File Encryption (`file-encryption`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `fileName` | `"vault.zip"` | string | text | Demo file name displayed by the interface. |
-| `progress` | `0` | number | range/number | Initial encryption progress value. |
-| `accentColor` | `#ff6b00` | color | color | Accent color for progress and status. |
-| `speed` | `1` | number | range/number | Animation speed for the encryption sequence. |
-| `showStatusText` | `true` | boolean | toggle | Shows status labels during the sequence. |
+| `accentColor` | `#ff5f00` | color | color | Beam, particle, and heading accent color. |
+| `backgroundColor` | `#07060f` | color | color | Scene and marquee background color. |
+| `speed` | `1` | number | range/number | Marquee, particle, and scramble animation speed. |
+| `cardSize` | `1` | number | range/number | Credit card size multiplier. |
 
 ### Fractal Glass (`fractal-glass`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `imageSrc` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-im...` | string | text | Image source or image data used by the effect. |
-| `videoSrc` | `null` | string | text | Video source URL used by the effect. |
-| `mediaType` | `"image"` | string | text | Value for media type. |
-| `stripesFrequency` | `40` | number | range/number | Numeric value for stripes frequency. |
-| `glassStrength` | `2.0` | number | range/number | Numeric value for glass strength. |
-| `glassSmoothness` | `0.014` | number | range/number | Numeric value for glass smoothness. |
-| `parallaxStrength` | `0.15` | number | range/number | Numeric value for parallax strength. |
-| `distortionMultiplier` | `8.0` | number | range/number | Numeric value for distortion multiplier. |
-| `edgePadding` | `0.12` | number | range/number | Numeric value for edge padding. |
+| `imageSrc` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-im...` | string | text | Image URL rendered through the glass refraction shader. |
+| `stripesFrequency` | `40` | number | range/number | Number of refractive glass strips. |
+| `glassStrength` | `2.0` | number | range/number | Intensity of strip refraction. |
+| `glassSmoothness` | `0.014` | number | range/number | Smoothness of neighboring refraction samples. |
+| `parallaxStrength` | `0.15` | number | range/number | Pointer-reactive horizontal parallax amount. |
+| `distortionMultiplier` | `8.0` | number | range/number | Parallax amplification around distorted stripes. |
+| `edgePadding` | `0.12` | number | range/number | Softening amount near image edges. |
 
-### Grid Lift (`grid-lift`, pro) - Suggested props
+### Grid Lift (`grid-lift`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Grid items lifted by cursor or controls. |
-| `liftAmount` | `80` | number | range/number | Maximum z-lift amount. |
-| `gridSize` | `12` | number | range/number | Number of grid cells or subdivisions. |
-| `accentColor` | `#ff6b00` | color | color | Highlight color for lifted cells. |
-| `followCursor` | `true` | boolean | toggle | Links lift effect to cursor position. |
+| `maskScale` | `1.08` | number | range | Scale applied to the text/SVG mask. |
+| `fontSize` | `350` | number | range | Base font size used to fit the text mask (Text mode only). |
+| `fontWeight` | `200` | number | range | Font weight used for the text mask (Text mode only). |
+| `interactionRange` | `120` | number | range | Distance from the mask shape at which cursor interaction starts registering. |
+| `hoverRadius` | `550` | number | range | Radius of cursor influence over grid cells. |
+| `hoverFalloff` | `1.55` | number | range | Falloff curve power applied across the hover radius. |
+| `liftRotation` | `-88` | number | range | Direction, in degrees, that lifted cells are extruded toward. |
+| `liftHeight` | `58` | number | range | Maximum extrusion distance for lifted cells. |
+| `liftSmoothness` | `0.08` | number | range | Lerp smoothing factor applied to the lift animation. |
+| `gridSpacing` | `13` | number | range | Spacing between grid cells, in pixels. |
+| `strokeSize` | `1.15` | number | range | Line width for the grid strokes. |
+| `baseOpacity` | `1` | number | range | Opacity of the resting (unlifted) grid. |
+| `hoverOpacity` | `0.6` | number | range | Opacity of the lifted grid highlight. |
+| `backgroundColor` | `#000000` | color | color | Canvas background color. |
+| `gridColor` | `#272727` | color | color | Color of the resting grid lines. |
+| `hoverColor` | `#ffffff` | color | color | Color of the lifted grid highlight. |
+
+These are the effect's real Leva controls, ported 1:1 (same defaults/min/max/step) — the Leva panel has been removed in favor of the shared remixer panel. `maskSource`/`maskText`/SVG upload remain interactive UI state in the demo's top-left panel, not remixer props.
 
 ### Grid Tunnel (`grid-tunnel`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `gridSize` | `24` | number | range/number | Density of the tunnel grid. |
-| `speed` | `1` | number | range/number | Tunnel travel speed. |
-| `depth` | `1000` | number | range/number | Depth of the tunnel scene. |
-| `lineColor` | `#ffffff` | color | color | Grid line color. |
-| `backgroundColor` | `#000000` | color | color | Tunnel background color. |
+| `gridSize` | `24` | number | range/number | Tunnel grid density. |
+| `speed` | `1` | number | range/number | Scroll and touch travel speed. |
+| `depth` | `1000` | number | range/number | Visible tunnel fog depth. |
+| `lineColor` | `#9ca3af` | color | color | Grid line color. |
+| `backgroundColor` | `#ffffff` | color | color | Tunnel background color. |
 
-### Hero Banner Animated (`hero-banner-animated`, pro) - Suggested props
+### Hero Banner Animated (`hero-banner-animated`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `headline` | `"Hyperiux Vault"` | string | text | Hero headline text. |
-| `subheadline` | `"Animated product story"` | string | textarea | Supporting hero copy. |
-| `videoSrc` | `"/showreel.mp4"` | string | text | Hero video or texture source. |
-| `accentColor` | `#ff6b00` | color | color | Accent color for hero highlights. |
-| `enableZoom` | `true` | boolean | toggle | Enables the interactive zoom state. |
+| `mouseMovement` | `true` | boolean | toggle | Enables the cursor-tracked point light. |
+| `intensity` | `3` | number | range | Peak brightness of the cursor-tracked point light when the scene is not zoomed. |
+| `lerp` | `0.1` | number | range | Smoothing factor for the point light following the cursor; higher values follow faster. |
+| `accentColor` | `#ECE4B4` | color | color | Accent color for hero text, markers, links, and icon highlights. |
 
 ### Hover Slider (`hover-slider`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `slides` | `defaultSlides` | array | json/list | Slides revealed on hover. |
-| `activeIndex` | `0` | number | range/number | Initially active slide. |
-| `transitionDuration` | `0.45` | number | range/number | Slide transition duration. |
-| `imageScale` | `1.08` | number | range/number | Image scale while hovered. |
-| `showCaptions` | `true` | boolean | toggle | Shows slide captions. |
+| `transitionDuration` | `0.45` | number | range/number | Hover reveal and curve transition duration. |
+| `imageScale` | `0.95` | number | range/number | WebGL image plane scale. |
+| `curveFactor` | `1` | number | range/number | Multiplier for the circular arc image curvature. |
 
 ### Hyperiux Glitter Concept (`hyperiux-glitter`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `particleCount` | `1600` | number | range/number | Number of glitter particles. |
 | `glitterColor` | `#ffffff` | color | color | Primary glitter color. |
-| `accentColor` | `#ff6b00` | color | color | Secondary glitter highlight color. |
+| `accentColor` | `#ffffff` | color | color | Secondary glitter trail color. |
 | `speed` | `1` | number | range/number | Particle animation speed. |
-| `mouseInfluence` | `0.5` | number | range/number | Cursor influence on glitter movement. |
+| `mouseInfluence` | `1` | number | range/number | Cursor influence on glitter movement. |
+| `rotationInfluence` | `1` | number | range/number | Cursor influence on model rotation. |
 
 ### Infinite Grid Gallery (`infinite-grid-gallery`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `images` | `defaultImages` | array | json/list | Images rendered in the infinite grid. |
-| `columns` | `5` | number | range/number | Desktop grid column count. |
-| `gap` | `24` | number | range/number | Spacing between grid images. |
+| `images` | `defaultImages` | array | prop only | Optional custom images rendered in the infinite grid; not exposed in the remixer. |
+| `columns` | `4` | number | range/number | Desktop grid column count. |
+| `gap` | `44` | number | range/number | Spacing between grid images. |
 | `speed` | `1` | number | range/number | Grid movement speed. |
 | `imageScale` | `1` | number | range/number | Scale applied to gallery images. |
 
@@ -1277,8 +1323,10 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `iChannel0` | `"https://picsum.photos/seed/hover7/800/1000"` | string | text | Value for i channel0. |
-| `iChannel1` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-im...` | string | text | Value for i channel1. |
+| `iChannel0` | `"https://picsum.photos/seed/hover7/800/1000"` | string | text | Primary image texture revealed by pointer movement. |
+| `mouseRadius` | `180` | number | range/number | Radius of the cursor reveal mask. |
+| `mouseInteraction` | `true` | boolean | toggle | Enables pointer-driven reveal drawing. |
+| `duration` | `0.3` | number | range/number | Trail persistence and fade duration in seconds. |
 | `className` | undefined | string | text | Additional class names for the root element. |
 | `style` | undefined | unknown | manual review | Inline style overrides for the root element. |
 
@@ -1286,28 +1334,32 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `starCount` | `1800` | number | range/number | Number of stars in the scene. |
-| `galaxyRadius` | `6` | number | range/number | Radius of the galaxy spread. |
-| `rotationSpeed` | `0.2` | number | range/number | Galaxy rotation speed. |
-| `starColor` | `#ffffff` | color | color | Primary star color. |
+| `particleSize` | `1` | number | range/number | Particle and nebula point size multiplier. |
+| `coreColor` | `#f5f5ff` | color | color | Bright inner galaxy and starfield color. |
+| `accentColor` | `#ffe6ad` | color | color | Nebula and sparkle accent color. |
+| `outerColor` | `#e05c12` | color | color | Outer arm and warm sparkle color. |
 | `backgroundColor` | `#000000` | color | color | Canvas background color. |
+| `mouseInfluence` | `1` | number | range/number | How strongly the galaxy tilts with mouse movement. |
+| `rotationSpeed` | `0.2` | number | range/number | Galaxy simulation and auto-rotation speed. |
 
 ### Mouse Pixelation (`mouse-pixelation`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `variant` | `"pixel-shift"` | string | text | Visual or behavior variant. |
-| `imageUrl` | `DEFAULT_PIXEL_SHIFT_IMAGE` | unknown | manual review | Image source or image data used by the effect. |
-| `...props` | undefined | object | object/json | Configuration object for props. |
+| `gridSize` | `35` | number | range/number | Pixel/grid resolution shared by all three versions. |
+| `mouseInteraction` | `true` | boolean | toggle | Enables cursor-driven pixel movement, trails, and cube rotation. |
+| `lerp` | `0.1` | number | range/number | Mouse-follow smoothing shared by all three versions. |
+| `backgroundColor` | `#000000` | color | color | V1 pixel-circle canvas background color. |
+| `cubeSize` | `1` | number | range/number | V3 enhanced pixel cube scale. |
+| `gridEmbossing` | `1` | number | range/number | V3 extruded grid depth and deformation strength. |
 
 ### Progressive Bloom Valley (`progressive-bloom-valley`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `modelUrl` | `"/valley/scene.glb"` | string | text | 3D scene or valley model source. |
-| `bloomStrength` | `1.2` | number | range/number | Bloom post-processing intensity. |
-| `bloomRadius` | `0.4` | number | range/number | Bloom spread radius. |
-| `cameraSpeed` | `1` | number | range/number | Camera movement speed through the scene. |
+| `bloomStrength` | `1.2` | number | range/number | Flower shader glow intensity. |
+| `bloomRadius` | `0.4` | number | range/number | Edge bloom softness radius. |
+| `cameraSpeed` | `1` | number | range/number | Camera autoplay and scroll/touch travel multiplier. |
 | `backgroundColor` | `#000000` | color | color | Scene background color. |
 
 ### Strip Slider (`strip-slider`, pro) - Suggested props

@@ -56,6 +56,31 @@
       }
     },
     {
+      "name": "pixelColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Color used to draw each transition pixel.",
+      "remixer": {
+        "control": "color",
+        "group": "surface",
+        "groupTitle": "Surface"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 1,
+      "description": "Duration multiplier for the leave and enter pixel sweeps.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.25,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
       "name": "enableContentShift",
       "type": "boolean",
       "default": false,

@@ -4,13 +4,13 @@
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "Book.jsx",
-    "BookFlip.jsx",
     "Experience.jsx",
     "PageContext.jsx",
     "UI.jsx",
+    "BookFlip.jsx",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -76,6 +76,20 @@
       "remixer": { "control": "checkbox", "group": "crosshair", "groupTitle": "Crosshair" }
     },
     {
+      "name": "lerp",
+      "type": "number",
+      "default": 0.2,
+      "description": "Mouse-follow smoothing amount; lower values feel smoother and slower, higher values track faster.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
       "name": "showCoordinates",
       "type": "boolean",
       "default": true,

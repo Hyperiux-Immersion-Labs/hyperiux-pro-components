@@ -3,18 +3,24 @@
 import ColorfulCursorAuraComp from './ColorfulCursorAuraComp'
 import { usePrefersReducedMotion } from '@/lib/motion'
 
-const ColorfulCursorAura = () => {
+const ColorfulCursorAura = ({
+  auraSize = 325,
+  color1 = '#a78bfa',
+  color2 = '#fb7185',
+  color3 = '#fde68a',
+  followSpeed = 0.12,
+}) => {
   const prefersReducedMotion = usePrefersReducedMotion()
 
   return (
      <div className="relative min-h-screen bg-white">
       <ColorfulCursorAuraComp
         text="One hover, and suddenly your UI has personality"
-        colors={{
-          color1: '#a78bfa',
-          color2: '#fb7185',
-          color3: '#fde68a',
-        }}
+        auraSize={auraSize}
+        color1={color1}
+        color2={color2}
+        color3={color3}
+        followSpeed={followSpeed}
         enableEntryAnimation={true}
       />
 

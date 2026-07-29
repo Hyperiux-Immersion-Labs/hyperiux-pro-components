@@ -47,7 +47,7 @@ const Content = () => (
   </main>
 )
 
-export default function MagneticImageTrail() {
+export default function MagneticImageTrail(props) {
   const [isMobile, setIsMobile] = useState(null)
   const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -69,7 +69,7 @@ export default function MagneticImageTrail() {
     <Content />
   ) : (
     <>
-      <ImageTrail />
+      <ImageTrail {...props} />
       {prefersReducedMotion && (
         <div
           aria-live="polite"

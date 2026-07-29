@@ -4,10 +4,10 @@
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
   "main": "index.jsx",
   "files": [
-    "InfiniteGrid.jsx",
-    "createSuspendedRaf.js",
     "index.jsx",
+    "InfiniteGrid.jsx",
     "util.js",
+    "createSuspendedRaf.js",
     "registry.json"
   ],
   "keywords": [

@@ -4,7 +4,7 @@ import GridTunnelComp from './GridTunnelComp';
 const P = "/api/media-proxy?url=";
 const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
 
-const images = [
+const defaultImages = [
   `${P}${B}/h-01.jpg`,
   `${P}${B}/h-02.jpg`,
   `${P}${B}/h-03.jpg`,
@@ -55,9 +55,23 @@ const images = [
   `${P}${B}/v-10.jpg`,
 ];
 
-const GridTunnel = () => {
+const GridTunnel = ({
+  images = defaultImages,
+  gridSize = 24,
+  speed = 1,
+  depth = 1000,
+  lineColor = "#9ca3af",
+  backgroundColor = "#ffffff",
+}) => {
   return (
-   <GridTunnelComp images={images}/>
+   <GridTunnelComp
+     images={images}
+     gridSize={gridSize}
+     speed={speed}
+     depth={depth}
+     lineColor={lineColor}
+     backgroundColor={backgroundColor}
+   />
   )
 }
 

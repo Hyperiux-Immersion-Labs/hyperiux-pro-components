@@ -276,6 +276,15 @@ const MouseTrailParticles = ({
     };
   }, [size, color, brightness]);
 
+  useEffect(() => {
+    const uniforms = pointsRef.current?.material?.uniforms;
+    if (!uniforms) return;
+
+    uniforms.uSize.value = size;
+    uniforms.uColor.value.set(color);
+    uniforms.uBrightness.value = brightness;
+  }, [size, color, brightness]);
+
   useFrame((state, delta) => {
     if (!pointsRef.current) return;
 

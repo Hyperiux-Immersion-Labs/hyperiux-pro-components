@@ -23,7 +23,7 @@
   ],
   "type": "registry:component",
   "title": "Full Screen Crosshair",
-  "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
+  "description": "Fullscreen crosshair cursor overlay with configurable gap, thickness, smoothing, and center content.",
   "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
@@ -58,14 +58,6 @@
       "default": true,
       "description": "Hides the system cursor while the crosshair is active.",
       "remixer": { "control": "checkbox", "group": "interaction", "groupTitle": "Interaction" }
-    },
-    {
-      "name": "lineSize",
-      "type": "number",
-      "default": 100,
-      "demoDefault": 1500,
-      "description": "Length of each crosshair arm.",
-      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 40, "max": 1600, "step": 10 }
     },
     {
       "name": "gap",
@@ -103,23 +95,6 @@
       "demoDefault": 0.1,
       "description": "Controls cursor smoothing speed.",
       "remixer": { "control": "range", "group": "interaction", "groupTitle": "Interaction", "min": 0.02, "max": 0.5, "step": 0.01 }
-    },
-    {
-      "name": "blendMode",
-      "type": "string",
-      "default": "normal",
-      "description": "CSS mix-blend-mode for the crosshair.",
-      "remixer": {
-        "control": "select",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "options": [
-          { "label": "Normal", "value": "normal" },
-          { "label": "Difference", "value": "difference" },
-          { "label": "Screen", "value": "screen" },
-          { "label": "Overlay", "value": "overlay" }
-        ]
-      }
     }
   ],
   "remixer": {

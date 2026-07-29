@@ -28,94 +28,95 @@
   ],
   "props": [
     {
-      "name": "items",
-      "type": "array",
-      "default": [],
-      "description": "Navigation items and expandable panels.",
-      "suggested": true
-    },
-    {
       "name": "expandedWidth",
       "type": "number",
-      "default": 720,
-      "description": "Width of the expanded navbar panel.",
-      "suggested": true
+      "default": 98,
+      "description": "Expanded desktop panel width in viewport units.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 55,
+        "max": 100,
+        "step": 1
+      }
     },
     {
       "name": "duration",
       "type": "number",
-      "default": 0.45,
+      "default": 1,
       "description": "Expansion animation duration.",
-      "suggested": true
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.2,
+        "max": 3,
+        "step": 0.05
+      }
     },
     {
       "name": "backgroundColor",
       "type": "string",
       "default": "#ffffff",
       "description": "Navbar background color.",
-      "suggested": true
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     },
     {
-      "name": "accentColor",
+      "name": "activeColor",
       "type": "string",
-      "default": "#ff6b00",
+      "default": "#ff5f00",
       "description": "Hover or active link accent color.",
-      "suggested": true
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "ease",
+      "type": "string",
+      "default": "cubic-bezier(0.625, 0.05, 0, 1)",
+      "description": "Easing used for the menu expansion.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "value": "cubic-bezier(0.625, 0.05, 0, 1)",
+            "label": "Custom Curve"
+          },
+          {
+            "value": "power2.out",
+            "label": "Power 2 Out"
+          },
+          {
+            "value": "power3.out",
+            "label": "Power 3 Out"
+          },
+          {
+            "value": "expo.out",
+            "label": "Expo Out"
+          }
+        ]
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "style",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "items",
-        "label": "Items",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "expandedWidth",
-        "label": "Expanded Width",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 2880,
-        "step": 1
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      },
-      {
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      },
-      {
-        "name": "accentColor",
-        "label": "Accent Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      }
-    ]
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {

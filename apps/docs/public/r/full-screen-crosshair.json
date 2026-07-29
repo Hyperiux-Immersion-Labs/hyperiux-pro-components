@@ -2,7 +2,7 @@
   "name": "full-screen-crosshair",
   "type": "registry:component",
   "title": "Full Screen Crosshair",
-  "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
+  "description": "Fullscreen crosshair cursor overlay with configurable gap, thickness, smoothing, and center content.",
   "dependencies": [],
   "registryDependencies": [],
   "exportName": "FullScreenCrosshair",
@@ -62,21 +62,6 @@
         "control": "checkbox",
         "group": "interaction",
         "groupTitle": "Interaction"
-      }
-    },
-    {
-      "name": "lineSize",
-      "type": "number",
-      "default": 100,
-      "demoDefault": 1500,
-      "description": "Length of each crosshair arm.",
-      "remixer": {
-        "control": "range",
-        "group": "geometry",
-        "groupTitle": "Geometry",
-        "min": 40,
-        "max": 1600,
-        "step": 10
       }
     },
     {
@@ -146,35 +131,6 @@
         "min": 0.02,
         "max": 0.5,
         "step": 0.01
-      }
-    },
-    {
-      "name": "blendMode",
-      "type": "string",
-      "default": "normal",
-      "description": "CSS mix-blend-mode for the crosshair.",
-      "remixer": {
-        "control": "select",
-        "group": "appearance",
-        "groupTitle": "Appearance",
-        "options": [
-          {
-            "label": "Normal",
-            "value": "normal"
-          },
-          {
-            "label": "Difference",
-            "value": "difference"
-          },
-          {
-            "label": "Screen",
-            "value": "screen"
-          },
-          {
-            "label": "Overlay",
-            "value": "overlay"
-          }
-        ]
       }
     }
   ],

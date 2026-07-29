@@ -34,12 +34,23 @@ const images = [
     "https://picsum.photos/seed/12/800/600",
 ];
 
-const InertiaImage = () => {
+const InertiaImage = ({
+  strength = 1,
+  rotation = 0,
+  scale = 1,
+  duration = 0.4,
+}) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <>
-      <InertiaImageComp images={images}/>
+      <InertiaImageComp
+        images={images}
+        strength={strength}
+        rotation={rotation}
+        scale={scale}
+        duration={duration}
+      />
       {prefersReducedMotion && (
         <div
           aria-live="polite"

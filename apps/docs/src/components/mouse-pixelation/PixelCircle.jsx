@@ -10,7 +10,11 @@ import { createVisibilityGate } from "./createSuspendedRaf";
 gsap.registerPlugin(ScrollTrigger);
 
 const INITIAL_POINTER = 0.5;
-const POINTER_LERP = 0.1;
+const DEFAULT_GRID_SIZE = 35;
+const DEFAULT_LERP = 0.1;
+const DEFAULT_BACKGROUND_COLOR = "#000000";
+const DEFAULT_CIRCLE_COLOR_A = "#0080b3";
+const DEFAULT_CIRCLE_COLOR_B = "#801acc";
 const HOVER_LERP = 0.05;
 const PLANE_WIDTH = 18;
 const PLANE_HEIGHT = 12;
@@ -36,6 +40,9 @@ const PIXEL_CIRCLES_FRAG = /* glsl */ `
   uniform vec2  uResolution;
   uniform vec2  uCircle1Center;
   uniform vec2  uCircle2Center;
+  uniform vec3  uBackgroundColor;
+  uniform vec3  uCircleColorA;
+  uniform vec3  uCircleColorB;
 
   varying vec2 vUv;
 
@@ -83,8 +90,8 @@ const PIXEL_CIRCLES_FRAG = /* glsl */ `
     float c2 = smoothstep(0.5, 0.0, distance(pixelatedUV, uCircle2Center));
 
     vec3 color = mix(
-      vec3(0.0),
-      mix(vec3(0.0, 0.5, 0.7), vec3(0.5, 0.1, 0.8), c2),
+      uBackgroundColor,
+      mix(uCircleColorA, uCircleColorB, c2),
       c1
     );
 
@@ -109,6 +116,9 @@ class PixelCirclesMaterial extends THREE.ShaderMaterial {
         uResolution: { value: new THREE.Vector2(2, 2) },
         uCircle1Center: { value: new THREE.Vector2(0.3, 0.5) },
         uCircle2Center: { value: new THREE.Vector2(0.7, 0.5) },
+        uBackgroundColor: { value: new THREE.Color(DEFAULT_BACKGROUND_COLOR) },
+        uCircleColorA: { value: new THREE.Color(DEFAULT_CIRCLE_COLOR_A) },
+        uCircleColorB: { value: new THREE.Color(DEFAULT_CIRCLE_COLOR_B) },
       },
       vertexShader: PIXEL_CIRCLES_VERT,
       fragmentShader: PIXEL_CIRCLES_FRAG,
@@ -137,13 +147,64 @@ const DEFAULT_MOBILE_NOTICE =
 const DEFAULT_DESCRIPTION =
   "The Vault is a curated collection of production-ready UI effects built to help developers ship polished interactions faster.";
 
-function PixelCirclesPlane() {
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function createShaderPalette(color) {
+  const baseColor = new THREE.Color(color);
+  const hsl = {};
+
+  baseColor.getHSL(hsl);
+
+  if (hsl.l < 0.02 && hsl.s < 0.02) {
+    return {
+      background: baseColor,
+      circleA: new THREE.Color(DEFAULT_CIRCLE_COLOR_A),
+      circleB: new THREE.Color(DEFAULT_CIRCLE_COLOR_B),
+    };
+  }
+
+  const hue = hsl.s < 0.02 ? 0.58 : hsl.h;
+  const saturation = Math.max(0.45, hsl.s);
+  const brightness = Math.max(0.34, Math.min(0.7, hsl.l + 0.18));
+
+  return {
+    background: baseColor,
+    circleA: new THREE.Color().setHSL(hue, saturation, brightness),
+    circleB: new THREE.Color().setHSL(
+      (hue + 0.14) % 1,
+      Math.min(1, saturation + 0.12),
+      Math.min(0.74, brightness + 0.08)
+    ),
+  };
+}
+
+function PixelCirclesPlane({
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
+}) {
   const materialRef = useRef(null);
   const pointerRef = useRef({
     target: { x: INITIAL_POINTER, y: INITIAL_POINTER },
     current: { x: INITIAL_POINTER, y: INITIAL_POINTER },
   });
   const isHoveredRef = useRef(false);
+  const safeGridSize = clampNumber(gridSize, 8, 90, DEFAULT_GRID_SIZE);
+  const safeLerp = clampNumber(lerp, 0.01, 0.6, DEFAULT_LERP);
+  const paletteRef = useRef(createShaderPalette(backgroundColor));
+
+  useEffect(() => {
+    paletteRef.current = createShaderPalette(backgroundColor);
+  }, [backgroundColor]);
 
   useEffect(() => {
     const onResize = () => {
@@ -192,6 +253,10 @@ function PixelCirclesPlane() {
   }, []);
 
   const onPointerEnter = () => {
+    if (!mouseInteraction) {
+      return;
+    }
+
     isHoveredRef.current = true;
   };
 
@@ -200,6 +265,10 @@ function PixelCirclesPlane() {
   };
 
   const onPointerMove = (event) => {
+    if (!mouseInteraction) {
+      return;
+    }
+
     const [u, v] = event.uv;
     pointerRef.current.target = { x: u, y: v };
   };
@@ -217,11 +286,23 @@ function PixelCirclesPlane() {
     const { uniforms } = material;
 
     uniforms.uTime.value = time;
-    current.x += (target.x - current.x) * POINTER_LERP;
-    current.y += (target.y - current.y) * POINTER_LERP;
+    uniforms.uBasePixels.value = safeGridSize;
+    uniforms.uBackgroundColor.value.copy(paletteRef.current.background);
+    uniforms.uCircleColorA.value.copy(paletteRef.current.circleA);
+    uniforms.uCircleColorB.value.copy(paletteRef.current.circleB);
+
+    if (!mouseInteraction) {
+      target.x = INITIAL_POINTER;
+      target.y = INITIAL_POINTER;
+    }
+
+    current.x += (target.x - current.x) * safeLerp;
+    current.y += (target.y - current.y) * safeLerp;
     uniforms.uMouse.value.set(current.x, current.y);
     uniforms.uHover.value +=
-      ((isHoveredRef.current ? 1 : 0) - uniforms.uHover.value) * HOVER_LERP;
+      ((mouseInteraction && isHoveredRef.current ? 1 : 0) -
+        uniforms.uHover.value) *
+      HOVER_LERP;
     uniforms.uCircle1Center.value.set(
       0.5 + 0.2 * Math.sin(time * 0.3),
       0.5 + 0.2 * Math.cos(time * 0.3)
@@ -249,6 +330,10 @@ export default function Pixelation({
   secondLine = DEFAULT_SECOND_LINE,
   mobileNotice = DEFAULT_MOBILE_NOTICE,
   description = DEFAULT_DESCRIPTION,
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
 }) {
   const rootRef = useRef(null);
   const [frameloop, setFrameloop] = useState("always");
@@ -266,7 +351,13 @@ export default function Pixelation({
     <div ref={rootRef} className="relative h-screen w-screen overflow-hidden">
       <div className="fixed left-0 top-0 h-full w-full overflow-hidden">
         <Canvas aria-hidden="true" frameloop={frameloop}>
-          <PixelCirclesPlane />
+          <color attach="background" args={[backgroundColor]} />
+          <PixelCirclesPlane
+            gridSize={gridSize}
+            mouseInteraction={mouseInteraction}
+            lerp={lerp}
+            backgroundColor={backgroundColor}
+          />
         </Canvas>
       </div>
 

@@ -52,7 +52,7 @@
     {
       "name": "characters",
       "type": "string",
-      "default": "\"HYPERIUX\"",
+      "default": "HYPERIUX",
       "description": "Characters emitted by the cursor trail.",
       "suggested": true
     },
@@ -90,7 +90,8 @@
     "suggested": true,
     "defaultOpenGroupId": "controls",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "controlsButtonClassName": "right-4! top-25!",
+      "containerClassName": "z-50000!"
     },
     "panel": {
       "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

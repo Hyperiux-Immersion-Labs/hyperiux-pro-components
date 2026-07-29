@@ -70,28 +70,28 @@
     {
       "name": "arrowCount",
       "type": "number",
-      "default": 24,
+      "default": 50,
       "description": "Number of arrows rendered in the field.",
       "suggested": true
     },
     {
       "name": "arrowColor",
       "type": "string",
-      "default": "#111111",
+      "default": "#000000",
       "description": "Arrow stroke or fill color.",
       "suggested": true
     },
     {
       "name": "activeColor",
       "type": "string",
-      "default": "#ff6b00",
+      "default": "#000000",
       "description": "Arrow color near the pointer.",
       "suggested": true
     },
     {
       "name": "reactionRadius",
       "type": "number",
-      "default": 160,
+      "default": 30,
       "description": "Pointer radius that rotates or highlights arrows.",
       "suggested": true
     },
@@ -154,9 +154,9 @@
         "type": "range",
         "group": "controls",
         "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
       }
     ]
   }

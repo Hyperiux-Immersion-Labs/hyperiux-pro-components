@@ -16,9 +16,21 @@ function mapRange(value, inMin, inMax, outMin, outMax) {
   return outMin + ((clamped - inMin) / (inMax - inMin)) * (outMax - outMin);
 }
 
-function useMousePosition(containerRef) {
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function useMousePosition(containerRef, lerp = 0.2) {
   const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [isDesktop, setIsDesktop] = useState(false);
+  const targetRef = useRef({ x: 0, y: 0, width: 0, height: 0 });
+  const safeLerp = clampNumber(lerp, 0.01, 1, 0.2);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -42,6 +54,15 @@ function useMousePosition(containerRef) {
     const el = containerRef?.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
+    const centeredPosition = {
+      x: rect.width / 2,
+      y: rect.height / 2,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    targetRef.current = centeredPosition;
+
     setPos((prev) => ({
       x: isDesktop ? prev.x : rect.width / 2,
       y: isDesktop ? prev.y : rect.height / 2,
@@ -56,6 +77,7 @@ function useMousePosition(containerRef) {
     // Coalesce mousemove bursts to one state update (and one rect read)
     // per animation frame instead of re-rendering on every raw event.
     let frameId = null;
+    let smoothingFrameId = null;
     let lastClientX = 0;
     let lastClientY = 0;
 
@@ -68,19 +90,57 @@ function useMousePosition(containerRef) {
       frameId = requestAnimationFrame(() => {
         frameId = null;
         const nextRect = el.getBoundingClientRect();
-        setPos({
+        targetRef.current = {
           x: lastClientX - nextRect.left,
           y: lastClientY - nextRect.top,
           width: nextRect.width,
           height: nextRect.height,
-        });
+        };
       });
     };
+
+    const smoothToTarget = () => {
+      const target = targetRef.current;
+
+      setPos((prev) => {
+        const nextX = prev.x + (target.x - prev.x) * safeLerp;
+        const nextY = prev.y + (target.y - prev.y) * safeLerp;
+        const shouldSnap =
+          Math.abs(target.x - nextX) < 0.05 && Math.abs(target.y - nextY) < 0.05;
+        const resolvedX = shouldSnap ? target.x : nextX;
+        const resolvedY = shouldSnap ? target.y : nextY;
+
+        if (
+          prev.x === resolvedX &&
+          prev.y === resolvedY &&
+          prev.width === target.width &&
+          prev.height === target.height
+        ) {
+          return prev;
+        }
+
+        return {
+          x: resolvedX,
+          y: resolvedY,
+          width: target.width,
+          height: target.height,
+        };
+      });
+
+      smoothingFrameId = requestAnimationFrame(smoothToTarget);
+    };
+
+    smoothingFrameId = requestAnimationFrame(smoothToTarget);
 
     let ro;
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(() => {
         const nextRect = el.getBoundingClientRect();
+        targetRef.current = {
+          ...targetRef.current,
+          width: nextRect.width,
+          height: nextRect.height,
+        };
         setPos((prev) => ({
           x: prev.x,
           y: prev.y,
@@ -95,9 +155,10 @@ function useMousePosition(containerRef) {
     return () => {
       el.removeEventListener("mousemove", onMove);
       if (frameId !== null) cancelAnimationFrame(frameId);
+      if (smoothingFrameId !== null) cancelAnimationFrame(smoothingFrameId);
       ro?.disconnect?.();
     };
-  }, [containerRef, isDesktop]);
+  }, [containerRef, isDesktop, safeLerp]);
 
   return { ...pos, isDesktop };
 }
@@ -113,8 +174,9 @@ function VariableFontAndCursor({
   transition = "transform 0.05s linear",
   transformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
+  lerp = 0.2,
 }) {
-  const { x, y, width, height, isDesktop } = useMousePosition(containerRef);
+  const { x, y, width, height, isDesktop } = useMousePosition(containerRef, lerp);
 
   let fontVariationSettings = '"wght" 400';
   let skewX = 0;
@@ -173,12 +235,13 @@ export default function CursorMove({
   variableTextTransition = "transform 0.05s linear",
   variableTextTransformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
+  lerp = 0.2,
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
   coordinatesTextClassName = "text-xs max-md:text-sm text-white/40 tabular-nums",
 }) {
   const containerRef = useRef(null);
-  const { x, y, isDesktop } = useMousePosition(containerRef);
+  const { x, y, isDesktop } = useMousePosition(containerRef, lerp);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const isPatternCrosshair = crosshairVariant === "dotted" || crosshairVariant === "dashed";
@@ -249,6 +312,7 @@ export default function CursorMove({
           transition={variableTextTransition}
           transformOrigin={variableTextTransformOrigin}
           skewXRange={skewXRange}
+          lerp={lerp}
         >
           {text}
         </VariableFontAndCursor>

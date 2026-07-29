@@ -28,23 +28,34 @@
   ],
   "props": [
     {
-      "name": "config",
-      "type": "object",
-      "default": {
-        "duration": 4,
-        "color": "#0F2854"
-      },
-      "description": "Transition duration and overlay color.",
+      "name": "duration",
+      "type": "number",
+      "default": 4,
+      "description": "Total duration of the radial slice transition.",
       "remixer": {
-        "control": "json",
-        "group": "config",
-        "groupTitle": "Config"
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.75,
+        "max": 8,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "color",
+      "type": "string",
+      "default": "#0F2854",
+      "description": "Radial slice overlay color.",
+      "remixer": {
+        "control": "color",
+        "group": "surface",
+        "groupTitle": "Surface"
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "config",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

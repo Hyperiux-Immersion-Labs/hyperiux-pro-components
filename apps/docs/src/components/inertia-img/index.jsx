@@ -18,12 +18,23 @@ const images = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-3.png",
 ];
 
-const InertiaImage = () => {
+const InertiaImage = ({
+  strength = 1,
+  rotation = 0,
+  scale = 1,
+  duration = 0.4,
+}) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <>
-      <InertiaImageComp images={images}/>
+      <InertiaImageComp
+        images={images}
+        strength={strength}
+        rotation={rotation}
+        scale={scale}
+        duration={duration}
+      />
       {prefersReducedMotion && (
         <div
           aria-live="polite"

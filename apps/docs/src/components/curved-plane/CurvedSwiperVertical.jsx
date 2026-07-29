@@ -104,7 +104,21 @@ function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
-const CurvedPlaneVertical = ({ routes }) => {
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return clamp(number, min, max);
+}
+
+const CurvedPlaneVertical = ({
+  routes,
+  speed = 1,
+  curveValue = 1,
+  gap = 1,
+  imageSize = 1,
+}) => {
   const uid = useId().replace(/:/g, "");
   const sectionId = `curved-swiper-vertical-${uid}`;
   const containerRef = useRef(null);
@@ -126,8 +140,21 @@ const CurvedPlaneVertical = ({ routes }) => {
     typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
   );
+  const controlsRef = useRef({
+    speed: clampNumber(speed, 0, 3, 1),
+    curveValue: clampNumber(curveValue, 0, 3, 1),
+    gap: clampNumber(gap, 0.5, 2, 1),
+    imageSize: clampNumber(imageSize, 0.5, 2, 1),
+  });
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    controlsRef.current.speed = clampNumber(speed, 0, 3, 1);
+    controlsRef.current.curveValue = clampNumber(curveValue, 0, 3, 1);
+    controlsRef.current.gap = clampNumber(gap, 0.5, 2, 1);
+    controlsRef.current.imageSize = clampNumber(imageSize, 0.5, 2, 1);
+  }, [curveValue, gap, imageSize, speed]);
 
   useEffect(() => {
     const loader = new THREE.TextureLoader();
@@ -224,6 +251,10 @@ const CurvedPlaneVertical = ({ routes }) => {
       const offset = offsetRef.current;
       const deform = deformationRef.current;
       const tablet = isTablet();
+      const currentImageWidth = FIXED_IMAGE_WIDTH * controlsRef.current.imageSize;
+      const currentImageHeight = FIXED_IMAGE_HEIGHT * controlsRef.current.imageSize;
+      const spacingX = currentImageWidth + 150 * controlsRef.current.gap;
+      const spacingY = currentImageHeight + 80 * controlsRef.current.gap;
 
       meshes.forEach((mesh, i) => {
         const col = i % NUM_COLUMNS;
@@ -256,29 +287,31 @@ const CurvedPlaneVertical = ({ routes }) => {
         let xPos;
         if (tablet) {
           if (col === 0) {
-            xPos = -SPACING_X / 2;
+            xPos = -spacingX / 2;
           } else if (col === 2) {
-            xPos = SPACING_X / 2;
+            xPos = spacingX / 2;
           }
         } else {
-          xPos = (col - 1) * SPACING_X;
+          xPos = (col - 1) * spacingX;
         }
         
-        const baseY = (row - VISIBLE_ROWS / 2) * SPACING_Y;
-        const yOffset = (offset - Math.floor(offset)) * SPACING_Y;
+        const baseY = (row - VISIBLE_ROWS / 2) * spacingY;
+        const yOffset = (offset - Math.floor(offset)) * spacingY;
         
         const direction = col === 1 ? -1 : 1;
         const yPos = (baseY - yOffset) * direction;
 
         mesh.position.set(xPos, yPos, 0);
+        mesh.scale.set(currentImageWidth, currentImageHeight, 1);
 
         // Always full opacity - no fading
         mesh.material.uniforms.uAlpha.value = 1.0;
 
         const deformDirection = direction;
+        mesh.material.uniforms.uMeshSize.value.set(currentImageWidth, currentImageHeight);
         mesh.material.uniforms.uOffset.value.set(
           0,
-          deform * DEFORMATION_INTENSITY * deformDirection
+          deform * DEFORMATION_INTENSITY * deformDirection * controlsRef.current.curveValue
         );
       });
     };
@@ -298,7 +331,7 @@ const CurvedPlaneVertical = ({ routes }) => {
         }
 
         if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-          targetOffsetRef.current += velocityRef.current;
+          targetOffsetRef.current += velocityRef.current * controlsRef.current.speed;
           velocityRef.current *= MOMENTUM_FRICTION;
         }
 
@@ -353,8 +386,10 @@ const CurvedPlaneVertical = ({ routes }) => {
       const currentTime = Date.now();
       const dy = currentY - lastY.current;
       const dt = Math.max(currentTime - lastTime.current, 1);
+      const currentImageHeight = FIXED_IMAGE_HEIGHT * controlsRef.current.imageSize;
+      const spacingY = currentImageHeight + 80 * controlsRef.current.gap;
 
-      const delta = (dy / SPACING_Y) * DRAG_SENSITIVITY;
+      const delta = (dy / spacingY) * DRAG_SENSITIVITY * controlsRef.current.speed;
       targetOffsetRef.current -= delta;
 
       if (reduceMotionRef.current) {
@@ -393,7 +428,7 @@ const CurvedPlaneVertical = ({ routes }) => {
 
     const onWheel = (e) => {
       const delta = e.deltaY / 100;
-      targetOffsetRef.current += delta * 0.12;   // reduced from 0.25
+      targetOffsetRef.current += delta * 0.12 * controlsRef.current.speed;   // reduced from 0.25
 
       if (reduceMotionRef.current) {
         velocityRef.current = 0;
@@ -406,7 +441,7 @@ const CurvedPlaneVertical = ({ routes }) => {
 
       velocityRef.current = Math.max(
         -MAX_SCROLL_VELOCITY,
-        Math.min(MAX_SCROLL_VELOCITY, delta * 0.15)  // reduced from 0.4
+        Math.min(MAX_SCROLL_VELOCITY, delta * 0.15 * controlsRef.current.speed)  // reduced from 0.4
       );
 
       const deformIntensity = Math.max(

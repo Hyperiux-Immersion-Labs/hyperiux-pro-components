@@ -34,7 +34,11 @@ function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/5
     );
 }
 
-export function ExpandingNavbarMobile() {
+export function ExpandingNavbarMobile({
+    activeColor = "#ff5f00",
+    duration = 1,
+    ease = "cubic-bezier(0.625, 0.05, 0, 1)",
+}) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [expandedMain, setExpandedMain] = useState(null);
     const [expandedSub, setExpandedSub] = useState(null);
@@ -45,13 +49,14 @@ export function ExpandingNavbarMobile() {
     const mainItemRefs = useRef([]);
     const containerRef = useRef(null);
     const toggleButtonRef = useRef(null);
-    const menuEase = "cubic-bezier(0.625, 0.05, 0, 1)";
+    const motionDuration = Math.max(0.05, Number(duration) || 1);
+    const menuEase = ease;
 
     useEffect(() => {
         const tl = gsap.timeline({ paused: true });
 
-        const overlayDuration = prefersReducedMotion() ? 0.3 : 0.6;
-        const contentDuration = prefersReducedMotion() ? 0.35 : 0.7;
+        const overlayDuration = prefersReducedMotion() ? 0.3 : 0.6 * motionDuration;
+        const contentDuration = prefersReducedMotion() ? 0.35 : 0.7 * motionDuration;
 
         gsap.set(overlayRef.current, { opacity: 0, pointerEvents: "none" });
         gsap.set(contentRef.current, {
@@ -89,7 +94,7 @@ export function ExpandingNavbarMobile() {
         });
 
         menuTimeline.current = tl;
-    }, []);
+    }, [menuEase, motionDuration]);
 
     useEffect(() => {
         const items = mainItemRefs.current.filter(Boolean);
@@ -98,10 +103,10 @@ export function ExpandingNavbarMobile() {
         if (isMenuOpen) {
             gsap.fromTo(items,
                 { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: prefersReducedMotion() ? 0.25 : 0.5, stagger: 0.06, ease: menuEase, delay: prefersReducedMotion() ? 0.15 : 0.3 }
+                { opacity: 1, y: 0, duration: prefersReducedMotion() ? 0.25 : 0.5 * motionDuration, stagger: 0.06 * motionDuration, ease: menuEase, delay: prefersReducedMotion() ? 0.15 : 0.3 * motionDuration }
             );
         }
-    }, [isMenuOpen]);
+    }, [isMenuOpen, menuEase, motionDuration]);
 
     const toggleMenu = () => {
         if (!menuTimeline.current) return;
@@ -185,10 +190,10 @@ export function ExpandingNavbarMobile() {
                                 {/* Sublinks - grid 0fr→1fr for smooth height */}
                                 {item.sublinks && (
                                     <div
-                                        className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
+                                        className={`grid transition-[grid-template-rows] motion-reduce:duration-150 ${
                                             expandedMain === mainIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                         }`}
-                                        style={{ transitionTimingFunction: menuEase }}
+                                        style={{ transitionDuration: `${0.5 * motionDuration}s`, transitionTimingFunction: menuEase }}
                                     >
                                         <div
                                             className={`min-h-0 overflow-hidden ${
@@ -219,10 +224,10 @@ export function ExpandingNavbarMobile() {
 
                                                         {sub.nestedLinks && (
                                                             <div
-                                                                className={`grid transition-[grid-template-rows] duration-500 motion-reduce:duration-150 ${
+                                                                className={`grid transition-[grid-template-rows] motion-reduce:duration-150 ${
                                                                     expandedSub === subIndex ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                                                                 }`}
-                                                                style={{ transitionTimingFunction: menuEase }}
+                                                                style={{ transitionDuration: `${0.5 * motionDuration}s`, transitionTimingFunction: menuEase }}
                                                             >
                                                                 <div
                                                                     className={`min-h-0 overflow-hidden ${
@@ -282,7 +287,8 @@ export function ExpandingNavbarMobile() {
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer items-center justify-center max-md:rounded-md max-sm:rounded-sm max-sm:p-2.5 max-md:p-3 text-white transition-all duration-300 bg-[#2E2A2A]"
+                        className="flex cursor-pointer items-center justify-center max-md:rounded-md max-sm:rounded-sm max-sm:p-2.5 max-md:p-3 text-white transition-all duration-300"
+                        style={{ backgroundColor: isMenuOpen ? activeColor : "#2E2A2A" }}
                     >
                         <div className="relative max-sm:h-3 max-sm:w-4 max-md:w-7 max-md:h-5">
                             <span

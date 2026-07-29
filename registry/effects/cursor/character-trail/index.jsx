@@ -49,7 +49,7 @@ const Content = () => (
   </main>
 )
 
-const CharacterTrail = () => {
+const CharacterTrail = (props) => {
      const [isMobile, setIsMobile] = useState(false)
      const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -68,7 +68,7 @@ const CharacterTrail = () => {
      {isMobile ? (
         <Content />
       ) : (
-        <CharacterTrailComp>
+        <CharacterTrailComp {...props}>
           <Content />
         </CharacterTrailComp>
       )}

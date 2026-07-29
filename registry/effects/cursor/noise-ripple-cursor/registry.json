@@ -52,44 +52,69 @@
     },
     {
       "name": "overlayColor",
-      "type": "string",
-      "default": "bg-[#1825AA]/30",
-      "description": "Tailwind class applied to the color overlay.",
+      "type": "color",
+      "default": "#1825AA",
+      "description": "Overlay and ripple shader color.",
       "remixer": {
-        "control": "text",
+        "control": "color",
         "group": "surface",
         "groupTitle": "Surface"
       }
     },
     {
-      "name": "wrapperClassName",
-      "type": "string",
-      "default": "h-screen w-screen",
-      "description": "Class names applied to the effect wrapper.",
+      "name": "pixelSize",
+      "type": "number",
+      "default": 0.5,
+      "description": "Pixel block size used by the dither shader.",
       "remixer": {
-        "control": "text",
-        "group": "surface",
-        "groupTitle": "Surface"
-      },
-      "copyable": false
+        "control": "range",
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 0.1,
+        "max": 8,
+        "step": 0.1
+      }
     },
     {
-      "name": "shaderConfig",
-      "type": "object",
-      "default": {
-        "pixelSize": 0.5,
-        "patternDensity": 1,
-        "fluidRadius": 0.08,
-        "fluidStrength": 0.2,
-        "fluidDissipation": 0.9,
-        "distortStrength": 0.5,
-        "trailDarkness": 0
-      },
-      "description": "Shader tuning object for pixel size, fluid radius, distortion, and trail behavior.",
+      "name": "lerp",
+      "type": "number",
+      "default": 0.2,
+      "description": "Mouse smoothing amount for the ripple source.",
       "remixer": {
-        "control": "json",
+        "control": "range",
         "group": "shader",
-        "groupTitle": "Shader"
+        "groupTitle": "Shader",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "distortion",
+      "type": "number",
+      "default": 0.5,
+      "description": "Strength of the image UV distortion.",
+      "remixer": {
+        "control": "range",
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "default": 0.08,
+      "description": "Radius of the cursor ripple influence.",
+      "remixer": {
+        "control": "range",
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 0.01,
+        "max": 0.3,
+        "step": 0.01
       }
     }
   ],

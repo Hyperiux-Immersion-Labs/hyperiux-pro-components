@@ -1583,9 +1583,7 @@
       "categories": [
         "webgl"
       ],
-      "dependencies": [
-        "leva"
-      ],
+      "dependencies": [],
       "registryDependencies": [],
       "exportName": "GridLift",
       "exportKind": "default",

@@ -5,15 +5,25 @@ import gsap from 'gsap'
 import { TransitionRouter } from 'next-transition-router'
 import { prefersReducedMotion } from '@/lib/motion'
 
+function clampNumber(value, min, max, fallback) {
+    const next = Number(value)
+    if (!Number.isFinite(next)) return fallback
+    return Math.min(max, Math.max(min, next))
+}
+
 export default function RadialSliceTransition({
     children,
     config = { duration: 4, color: '#0F2854' },
+    duration,
+    color,
 }) {
-    const { duration, color } = {
+    const resolvedConfig = {
         duration: 4,
         color: '#0F2854',
         ...config,
     }
+    const resolvedDuration = clampNumber(duration ?? resolvedConfig.duration, 0.75, 8, 4)
+    const resolvedColor = color ?? resolvedConfig.color
     const overlayRef = useRef(null)
     const shapeRef = useRef({ start: 0, end: 0 })
     const contentRef = useRef(null)
@@ -80,7 +90,7 @@ export default function RadialSliceTransition({
                     return () => tl.kill()
                 }
 
-                const tExit = (duration - DELAY) / 2
+                const tExit = (resolvedDuration - DELAY) / 2
 
                 tl.to(contentRef.current, {
                     opacity: 0.7,
@@ -124,7 +134,7 @@ export default function RadialSliceTransition({
                     return () => tl.kill()
                 }
 
-                const tExit = (duration - DELAY) / 2
+                const tExit = (resolvedDuration - DELAY) / 2
                 const tEnter = tExit
 
                 tl.to(contentRef.current, {
@@ -163,7 +173,7 @@ export default function RadialSliceTransition({
                 ref={overlayRef}
                 className="fixed inset-0 z-999 pointer-events-none"
                 style={{
-                    backgroundColor: color,
+                    backgroundColor: resolvedColor,
                     opacity: 0,
                     WebkitMaskImage: 'conic-gradient(from 0deg, transparent 0deg, transparent 360deg)',
                     maskImage: 'conic-gradient(from 0deg, transparent 0deg, transparent 360deg)',

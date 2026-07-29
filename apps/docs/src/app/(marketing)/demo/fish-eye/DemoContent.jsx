@@ -12,15 +12,15 @@ export default function DemoContent({ registry }) {
       render={(values) => (
         <>
           <div className="h-[30vw] w-[30vw] max-md:hidden relative">
-            <FishEye src={values.src} />
+            <FishEye {...values} />
           </div>
 
           <div className="h-[45vw] w-[30vw] max-md:hidden relative">
-            <FishEye src={values.src} />
+            <FishEye {...values} />
           </div>
 
           <div className="size-[25vw] mt-auto max-md:hidden relative">
-            <FishEye src={values.src} />
+            <FishEye {...values} />
           </div>
         </>
       )}

@@ -11,14 +11,15 @@ class Arrow {
     this.dist = 0;
   }
 
-  update(mx, my) {
+  update(mx, my, smoothing) {
     this.dx = mx - this.pos.x;
     this.dy = my - this.pos.y;
     this.dist = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-    this.angle = Math.atan2(this.dy, this.dx);
+    const targetAngle = Math.atan2(this.dy, this.dx);
+    this.angle += (targetAngle - this.angle) * smoothing;
   }
 
-  draw(ctx) {
+  draw(ctx, arrowColor, activeColor, reactionRadius) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
@@ -31,13 +32,20 @@ class Arrow {
     ctx.lineTo(5, 30);
     ctx.lineWidth = 5;
     const alpha = 1 - (this.dist / 300);
-    ctx.strokeStyle = `rgba(0, 0, 0, ${Math.max(0, alpha)})`;
+    ctx.globalAlpha = Math.max(0, alpha);
+    ctx.strokeStyle = this.dist < reactionRadius ? activeColor : arrowColor;
     ctx.stroke();
     ctx.restore();
   }
 }
 
-const ArrowsOpacity = () => {
+const ArrowsOpacity = ({
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+  smoothing = 0.12,
+}) => {
   const canvasRef = useRef(null);
   const arrowArrRef = useRef([]);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -45,9 +53,11 @@ const ArrowsOpacity = () => {
   useEffect(() => {
     const initializeArrows = (canvas) => {
       arrowArrRef.current = [];
+      const count = Math.max(1, Number(arrowCount) || 50);
+      const spacing = 75 * Math.sqrt(50 / count);
       for (let y = 0; y < canvas.height / 20; y++) {
         for (let x = 0; x < canvas.width / 50; x++) {
-          const arr = new Arrow(new Point(x * 75, y * 75));
+          const arr = new Arrow(new Point(x * spacing, y * spacing));
           arrowArrRef.current.push(arr);
         }
       }
@@ -89,8 +99,8 @@ const ArrowsOpacity = () => {
           for (let x = 0; x < canvas.width / 50; x++) {
             const arrow = arrowArrRef.current[y * 10 + x];
             if (arrow) {
-              arrow.update(mx, my);
-              arrow.draw(ctx);
+              arrow.update(mx, my, smoothing === 0.12 ? 1 : smoothing);
+              arrow.draw(ctx, arrowColor, activeColor, reactionRadius);
             }
           }
         }
@@ -103,7 +113,7 @@ const ArrowsOpacity = () => {
       canvas.removeEventListener('mousemove', handleMouseMove);
       loop.destroy();
     };
-  }, []);
+  }, [activeColor, arrowColor, arrowCount, reactionRadius, smoothing]);
 
   return (
       <canvas ref={canvasRef} className="w-full h-full pointer-events-auto" />

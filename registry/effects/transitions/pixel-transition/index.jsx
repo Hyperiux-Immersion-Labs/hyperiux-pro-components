@@ -17,11 +17,17 @@ const COLOR ='#111111'
 const DURATION_LEAVE = 1.0
 const DURATION_ENTER = 0.8
 
+function clampNumber(value, min, max, fallback) {
+ const next = Number(value)
+ if (!Number.isFinite(next)) return fallback
+ return Math.min(max, Math.max(min, next))
+}
+
 function easeInOut(t) {
  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
-function drawGrid(canvas, progress, isEnter, cols = COLS, rows = ROWS, fromTopLeft = false) {
+function drawGrid(canvas, progress, isEnter, cols = COLS, rows = ROWS, fromTopLeft = false, pixelColor = COLOR) {
  if (!canvas) return
 
  const ctx = canvas.getContext('2d')
@@ -40,7 +46,7 @@ function drawGrid(canvas, progress, isEnter, cols = COLS, rows = ROWS, fromTopLe
  const totalDiag = cols + rows
 
  ctx.clearRect(0, 0, w, h)
- ctx.fillStyle = COLOR
+ ctx.fillStyle = pixelColor
 
  for (let c = 0; c < cols; c++) {
   for (let r = 0; r < rows; r++) {
@@ -82,12 +88,15 @@ export default function PixelTransition({
  children,
  cols = COLS,
  rows = ROWS,
+ pixelColor = COLOR,
+ duration = 1,
  enableContentShift = false,
 }) {
  const wrapperRef = useRef(null)
  const canvasRef = useRef(null)
  const tweenRef = useRef(null)
  const stateRef = useRef({ progress: 0 })
+ const safeDuration = clampNumber(duration, 0.25, 3, 1)
 
  const resizeCanvas = () => {
  const canvas = canvasRef.current
@@ -109,16 +118,16 @@ export default function PixelTransition({
 
  canvas.style.opacity ='1'
  stateRef.current.progress = from
- drawGrid(canvas, from, isEnter, cols, rows, fromTopLeft)
+ drawGrid(canvas, from, isEnter, cols, rows, fromTopLeft, pixelColor)
 
  tweenRef.current?.kill()
  const tween = gsap.to(stateRef.current, {
  progress: to,
  duration,
  ease:'none',
- onUpdate: () => drawGrid(canvas, stateRef.current.progress, isEnter, cols, rows, fromTopLeft),
+ onUpdate: () => drawGrid(canvas, stateRef.current.progress, isEnter, cols, rows, fromTopLeft, pixelColor),
  onComplete: () => {
- drawGrid(canvas, to, isEnter, cols, rows, fromTopLeft)
+ drawGrid(canvas, to, isEnter, cols, rows, fromTopLeft, pixelColor)
  if (isEnter) canvas.style.opacity ='0'
  onComplete()
  },
@@ -129,13 +138,13 @@ export default function PixelTransition({
 
  useEffect(() => {
  resizeCanvas()
- drawGrid(canvasRef.current, 0, false, cols, rows)
+ drawGrid(canvasRef.current, 0, false, cols, rows, false, pixelColor)
  window.addEventListener('resize', resizeCanvas)
  return () => {
  window.removeEventListener('resize', resizeCanvas)
  tweenRef.current?.kill()
  }
- }, [cols, rows])
+ }, [cols, rows, pixelColor])
 
  return (
  <TransitionRouter
@@ -152,7 +161,7 @@ export default function PixelTransition({
  timeline.fromTo(
  wrapperRef.current,
  { xPercent: 0, filter:'blur(0px)', opacity: 1 },
- { xPercent: 4, filter:'blur(2px)', opacity: 0.82, duration: DURATION_LEAVE, ease:'power2.inOut' },
+ { xPercent: 4, filter:'blur(2px)', opacity: 0.82, duration: DURATION_LEAVE * safeDuration, ease:'power2.inOut' },
  0
  )
  }
@@ -160,7 +169,7 @@ export default function PixelTransition({
  const tween = animateGrid({
  from: 0,
  to: 1,
- duration: DURATION_LEAVE,
+ duration: DURATION_LEAVE * safeDuration,
  isEnter: false,
  onComplete: next,
  })
@@ -179,7 +188,7 @@ export default function PixelTransition({
  timeline.fromTo(
  wrapperRef.current,
  { xPercent: -3, filter:'blur(2px)', opacity: 0.86 },
- { xPercent: 0, filter:'blur(0px)', opacity: 1, duration: DURATION_ENTER, ease:'power2.out' },
+ { xPercent: 0, filter:'blur(0px)', opacity: 1, duration: DURATION_ENTER * safeDuration, ease:'power2.out' },
  0
  )
  }
@@ -187,7 +196,7 @@ export default function PixelTransition({
  const tween = animateGrid({
  from: 0,
  to: 1,
- duration: DURATION_ENTER,
+ duration: DURATION_ENTER * safeDuration,
  isEnter: true,
  fromTopLeft: true,
  onComplete: next,

@@ -11,15 +11,16 @@ class Arrow {
     this.rotationEase = 0.12;
   }
 
-  update(mouseX, mouseY) {
+  update(mouseX, mouseY, smoothing) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
     const targetAngle = Math.atan2(this.dy, this.dx);
 
-    this.angle = lerpAngle(this.angle, targetAngle, this.rotationEase);
+    this.angle = lerpAngle(this.angle, targetAngle, smoothing);
   }
 
-  draw(ctx) {
+  draw(ctx, arrowColor, activeColor, mouseX, mouseY, reactionRadius) {
+    const isActive = Math.hypot(mouseX - this.pos.x, mouseY - this.pos.y) < reactionRadius;
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
@@ -31,13 +32,19 @@ class Arrow {
     ctx.moveTo(30, 0);
     ctx.lineTo(10, 20);
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = isActive ? activeColor : arrowColor;
     ctx.stroke();
     ctx.restore();
   }
 }
 
-const ArrowsPlay = () => {
+const ArrowsPlay = ({
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+  smoothing = 0.12,
+}) => {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const arrowsRef = useRef([]);
@@ -45,7 +52,8 @@ const ArrowsPlay = () => {
 
   const initializeArrows = useCallback((canvas) => {
     const arrows = [];
-    const spacing = 120;
+    const count = Math.max(1, Number(arrowCount) || 50);
+    const spacing = 120 * Math.sqrt(50 / count);
     
     const cols = Math.floor(canvas.width / spacing);
     const rows = Math.floor(canvas.height / spacing);
@@ -83,7 +91,7 @@ const ArrowsPlay = () => {
       }
     }
     return arrows;
-  }, []);
+  }, [arrowCount]);
   
 
   const handleResize = useCallback(() => {
@@ -124,10 +132,10 @@ const ArrowsPlay = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y);
-      arrow.draw(ctx);
+      arrow.update(mouse.x, mouse.y, smoothing);
+      arrow.draw(ctx, arrowColor, activeColor, mouse.x, mouse.y, reactionRadius);
     });
-  }, []);
+  }, [activeColor, arrowColor, reactionRadius, smoothing]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -166,7 +174,7 @@ const ArrowsPlay = () => {
         ref={divRef}
         className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center cursor-pointer h-[25vw] w-[32vw] bg-transparent"
       >
-        <h1 className='text-center text-[15vw] leading-none text-black transition-all duration-500 ease'>
+        <h1 className='text-center text-[15vw] leading-none transition-all duration-500 ease' style={{ color: arrowColor }}>
           Play
         </h1>
       </div>

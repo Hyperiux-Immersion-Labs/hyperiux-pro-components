@@ -21,15 +21,37 @@
   ],
   "props": [
     {
-      "name": "variant",
-      "type": "string",
-      "default": "horizontal",
-      "description": "Selects the horizontal or vertical curved plane carousel."
+      "name": "speed",
+      "type": "number",
+      "default": 1,
+      "description": "Drag, wheel, and inertia movement speed.",
+      "suggested": true
+    },
+    {
+      "name": "curveValue",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier for the image plane curvature deformation.",
+      "suggested": true
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "default": 1,
+      "description": "Spacing multiplier between image planes.",
+      "suggested": true
+    },
+    {
+      "name": "imageSize",
+      "type": "number",
+      "default": 1,
+      "description": "Image plane size multiplier.",
+      "suggested": true
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "controls",
     "layout": {
       "controlsButtonClassName": "right-4! top-25!"
     },
@@ -38,20 +60,44 @@
     },
     "controls": [
       {
-        "name": "variant",
-        "label": "Variant",
-        "type": "select",
-        "group": "content",
-        "options": [
-          {
-            "label": "Horizontal",
-            "value": "horizontal"
-          },
-          {
-            "label": "Vertical",
-            "value": "vertical"
-          }
-        ]
+        "name": "speed",
+        "label": "Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "curveValue",
+        "label": "Curve Value",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      },
+      {
+        "name": "gap",
+        "label": "Gap",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0.5,
+        "max": 2,
+        "step": 0.05
+      },
+      {
+        "name": "imageSize",
+        "label": "Image Size",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0.5,
+        "max": 2,
+        "step": 0.05
       }
     ]
   },

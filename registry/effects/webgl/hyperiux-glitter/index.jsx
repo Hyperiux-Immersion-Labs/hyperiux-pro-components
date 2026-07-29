@@ -10,11 +10,26 @@ import MouseTrailParticles from "./MouseTrailParticles";
 import MorphingParticleModel from "./MorphingParticleModelNew";
 import { createVisibilityGate } from "./createSuspendedRaf";
 
-export default function HyperiuxGlitter() {
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(Math.max(number, min), max);
+}
+
+export default function HyperiuxGlitter({
+  glitterColor = "#ffffff",
+  accentColor = "#ffffff",
+  speed = 1,
+  mouseInfluence = 1,
+  rotationInfluence = 1,
+}) {
 
   const rootRef = useRef(null);
   const [frameloop, setFrameloop] = useState("always");
   const [modelScale, setModelScale] = useState(0.15);
+  const resolvedSpeed = clampNumber(speed, 0.05, 5, 1);
+  const resolvedMouseInfluence = clampNumber(mouseInfluence, 0, 4, 1);
+  const resolvedRotationInfluence = clampNumber(rotationInfluence, 0, 4, 1);
 
 useEffect(() => {
   const gate = createVisibilityGate({
@@ -61,13 +76,18 @@ useEffect(() => {
               url="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-new-model.glb"
               scale={modelScale}
               particleCount={10000}
-              color="#ffffff"
+              color={glitterColor}
               size={0.18}
-              speed={1.15}
+              speed={1.15 * resolvedSpeed}
               opacity={1}
               brightness={4.5}
               showModel={false}
               modelOpacity={0}
+              parallaxStrength={0.12 * resolvedMouseInfluence}
+              rotationStrengthX={0.12 * resolvedRotationInfluence}
+              rotationStrengthY={0.18 * resolvedRotationInfluence}
+              rotationStrengthZ={0.04 * resolvedRotationInfluence}
+              interactionStrength={2.24 * resolvedMouseInfluence}
               frontFacingThreshold={0.12}
               frontFacingSoftness={0.05}
             />
@@ -76,24 +96,24 @@ useEffect(() => {
           <MouseTrailParticles
             maxParticles={700}
             spawnPerMove={4}
-            particleLife={0.4}
+            particleLife={0.4 / Math.sqrt(resolvedSpeed)}
             size={0.14}
-            color="#ffffff"
+            color={accentColor}
             brightness={5.5}
             zOffset={0.1}
-            spread={0.035}
-            velocityStrength={0.24}
+            spread={0.035 * Math.max(resolvedMouseInfluence, 0.25)}
+            velocityStrength={0.24 * resolvedMouseInfluence}
             lerpFactor={0.12}
             idleDamping={0.92}
             stopSpeedThreshold={0.0015}
             idleModeDelay={1.2}
             idleCometDelayMin={0.5}
             idleCometDelayMax={1.4}
-            idleCometLife={0.85}
-            idleCometSpeedMin={4.1}
-            idleCometSpeedMax={10.1}
+            idleCometLife={0.85 / Math.sqrt(resolvedSpeed)}
+            idleCometSpeedMin={4.1 * resolvedSpeed}
+            idleCometSpeedMax={10.1 * resolvedSpeed}
             idleCometSpawnPerFrame={10}
-            idleCometTrailSpread={0.08}
+            idleCometTrailSpread={0.08 * Math.max(resolvedMouseInfluence, 0.25)}
             idleCometViewportPadding={0.25}
           />
         </Suspense>
@@ -116,4 +136,3 @@ useEffect(() => {
       </div>
   );
 }
-

@@ -43,11 +43,10 @@ const STOP_VELOCITY_EPSILON = 0.00008;
 const MASK_FADE_ALPHA = 0.015;
 const MASK_IDLE_FADE_ALPHA = 0.085;
 
-const TRAIL_RADIUS = 180;
-const TRAIL_SOFT_RADIUS = 210;
-const TRAIL_LINE_WIDTH = 190;
-
-const ACTIVE_DRAW_WINDOW_MS = 300;
+const DEFAULT_MOUSE_RADIUS = 180;
+const DEFAULT_DURATION = 0.3;
+const DEFAULT_NOISE_TEXTURE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png";
 
 const BLUR_REVEAL_VERT = /* glsl */ `#version 300 es
 in vec2 position;
@@ -333,9 +332,31 @@ function drawTrailStamp(ctx, x, y, radius, softRadius) {
   ctx.fill();
 }
 
-function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/800/1000", iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png", className, style }) {
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function InteractiveBlurReveal({
+  iChannel0 = "https://picsum.photos/seed/hover7/800/1000",
+  mouseRadius = DEFAULT_MOUSE_RADIUS,
+  mouseInteraction = true,
+  duration = DEFAULT_DURATION,
+  className,
+  style,
+}) {
   const canvasRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const configRef = useRef({
+    mouseRadius: DEFAULT_MOUSE_RADIUS,
+    mouseInteraction: true,
+    duration: DEFAULT_DURATION,
+  });
 
   const pointerRef = useRef({
     isInside: false,
@@ -349,6 +370,21 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     lastMoveTime: 0,
     hasDrawn: false,
   });
+
+  useEffect(() => {
+    configRef.current = {
+      mouseRadius: clampNumber(mouseRadius, 40, 420, DEFAULT_MOUSE_RADIUS),
+      mouseInteraction,
+      duration: clampNumber(duration, 0.08, 1.5, DEFAULT_DURATION),
+    };
+
+    if (!mouseInteraction) {
+      const pointer = pointerRef.current;
+
+      pointer.isInside = false;
+      pointer.hasDrawn = false;
+    }
+  }, [duration, mouseInteraction, mouseRadius]);
 
   useEffect(() => {
     let isDisposed = false;
@@ -401,7 +437,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
 
       const [baseImage, noiseImage] = await Promise.all([
         loadImage(iChannel0),
-        loadImage(iChannel1),
+        loadImage(DEFAULT_NOISE_TEXTURE),
       ]);
 
       if (isDisposed) {
@@ -457,6 +493,10 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       }
 
       function updatePointerFromClient(clientX, clientY) {
+        if (!configRef.current.mouseInteraction) {
+          return;
+        }
+
         const rect = canvas.getBoundingClientRect();
         const pointer = pointerRef.current;
         const isInside = isPointInsideRect(clientX, clientY, rect);
@@ -486,11 +526,22 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       }
 
       function fadeMask(now, pointer) {
+        const durationMs = configRef.current.duration * 1000;
         const idleAge = now - pointer.lastMoveTime;
+        const idleFade = clampNumber(
+          MASK_IDLE_FADE_ALPHA * (DEFAULT_DURATION / configRef.current.duration),
+          0.015,
+          0.22,
+          MASK_IDLE_FADE_ALPHA
+        );
+        const activeFade = clampNumber(
+          MASK_FADE_ALPHA * (DEFAULT_DURATION / configRef.current.duration),
+          0.003,
+          0.08,
+          MASK_FADE_ALPHA
+        );
         const fadeAlpha =
-          idleAge > ACTIVE_DRAW_WINDOW_MS
-            ? MASK_IDLE_FADE_ALPHA
-            : MASK_FADE_ALPHA;
+          idleAge > durationMs ? idleFade : activeFade;
 
         maskCtx.save();
         maskCtx.globalCompositeOperation = "destination-out";
@@ -500,11 +551,16 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
       }
 
       function drawTrail(pointer, velocity, now) {
+        const durationMs = configRef.current.duration * 1000;
+        const radius = configRef.current.mouseRadius;
+        const softRadius = radius * 1.17;
+        const lineWidth = radius * 1.05;
         const idleAge = now - pointer.lastMoveTime;
 
         const shouldDraw =
+          configRef.current.mouseInteraction &&
           pointer.isInside &&
-          idleAge <= ACTIVE_DRAW_WINDOW_MS &&
+          idleAge <= durationMs &&
           velocity > STOP_VELOCITY_EPSILON;
 
         if (!shouldDraw) {
@@ -523,7 +579,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         maskCtx.lineCap = "round";
         maskCtx.lineJoin = "round";
         maskCtx.strokeStyle = "rgba(255,255,255,0.72)";
-        maskCtx.lineWidth = TRAIL_LINE_WIDTH;
+        maskCtx.lineWidth = lineWidth;
 
         if (pointer.hasDrawn) {
           maskCtx.beginPath();
@@ -536,8 +592,8 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
           maskCtx,
           currentX,
           currentY,
-          TRAIL_RADIUS,
-          TRAIL_SOFT_RADIUS
+          radius,
+          softRadius
         );
 
         maskCtx.restore();
@@ -572,8 +628,10 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
 
         pointer.lastTime = now;
 
-        const smoothing =
-          1.0 - Math.pow(POINTER_LERP_FACTOR, frameDelta / 1000);
+        const smoothing = configRef.current.mouseInteraction
+          ? 1.0 -
+            Math.pow(POINTER_LERP_FACTOR, frameDelta / 1000)
+          : 0;
 
         pointer.previousX = pointer.x;
         pointer.previousY = pointer.y;
@@ -669,9 +727,13 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         loop = null;
       }
     };
-  }, [iChannel0, iChannel1]);
+  }, [iChannel0]);
 
   function updatePointerFromEvent(event) {
+    if (!mouseInteraction) {
+      return;
+    }
+
     const canvas = canvasRef.current;
 
     if (!canvas) return;

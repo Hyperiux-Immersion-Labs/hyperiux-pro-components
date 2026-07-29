@@ -28,7 +28,7 @@ const STACK_Y_PERCENT_STEP = 20;
 const SPREAD_Y_PERCENT_STEP = 110;
 const IMAGE_FADE_STAGGER = 0.08;
 
-const DEFAULT_IMAGE_SOURCES = [
+const STACK_IMAGE_SOURCES = [
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
@@ -38,8 +38,24 @@ const DEFAULT_IMAGE_SOURCES = [
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
 ];
 
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, numericValue));
+}
+
 const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
-  { images = DEFAULT_IMAGE_SOURCES, onComplete },
+  {
+    imageSize = 1,
+    duration = 1,
+    fadeOutDuration = 0.8,
+    backgroundColor = "#fcfcfc",
+    onComplete,
+  },
   ref
 ) {
   const uid = useId().replace(/:/g, "");
@@ -51,6 +67,9 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
   const text2Ref = useRef(null);
   const descriptionTextRef = useRef(null);
   const onCompleteRef = useRef(onComplete);
+  const safeImageSize = clampNumber(imageSize, 0.5, 2.5, 1);
+  const safeDuration = clampNumber(duration, 0.25, 3, 1);
+  const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.8);
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
@@ -91,6 +110,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
             onCompleteRef.current?.();
           },
         });
+        tl.timeScale(1 / safeDuration);
 
         // Smooth opacity in (already laid out vertically).
         tl.to(imageElements, {
@@ -117,12 +137,12 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
           imageElements,
           {
             opacity: 0,
-            duration: 0.55,
+            duration: safeFadeOutDuration,
             stagger: { each: 0.04, from: "edges" },
           },
           "-=0.15"
         );
-        tl.to(rootRef.current, { opacity: 0, duration: 0.4 }, "-=0.2");
+        tl.to(rootRef.current, { opacity: 0, duration: safeFadeOutDuration }, "-=0.2");
       }, rootRef);
 
       return () => ctx.revert();
@@ -166,6 +186,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
       });
 
       const tl = gsap.timeline();
+      tl.timeScale(1 / safeDuration);
 
       tl.fromTo(
         `#${imgsWrapperId}`,
@@ -295,7 +316,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         imageElements,
         {
           opacity: 0,
-          duration: 0.8,
+          duration: safeFadeOutDuration,
           stagger: {
             each: IMAGE_FADE_STAGGER,
             from: "end",
@@ -303,7 +324,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
           onComplete: () => {
             gsap.to(rootRef.current, {
               opacity: 0,
-              duration: 0.5,
+              duration: safeFadeOutDuration,
               ease: INTRO_EASE,
               onComplete: () => {
                 gsap.set(rootRef.current, {
@@ -326,7 +347,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
     }, rootRef);
 
     return () => ctx.revert();
-  }, [imgsWrapperId]);
+  }, [imgsWrapperId, safeDuration, safeFadeOutDuration]);
 
   return (
     <section
@@ -340,7 +361,8 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         }
       }}
       id={loaderWrapperId}
-      className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-[1025px]:px-[5vw] max-md:px-[6vw]"
+      className="flex h-screen w-full items-center justify-center px-[2.5vw] text-black max-[1025px]:px-[5vw] max-md:px-[6vw]"
+      style={{ backgroundColor }}
     >
       <div className="flex w-full items-center justify-between max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:gap-[33vh] max-md:gap-[70vw]">
         <p
@@ -352,9 +374,13 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 
         <div
           id={imgsWrapperId}
-          className="relative size-[6.5vw] max-[1025px]:z-99 max-[1025px]:size-[13vw] max-md:size-[18vw]"
+          className="relative max-[1025px]:z-99"
+          style={{
+            width: `clamp(4rem, ${6.5 * safeImageSize}vw, 18rem)`,
+            height: `clamp(4rem, ${6.5 * safeImageSize}vw, 18rem)`,
+          }}
         >
-          {images.map((src, index) => (
+          {STACK_IMAGE_SOURCES.map((src, index) => (
             <div
               key={`${src}-${index}`}
               ref={(element) => {
@@ -392,13 +418,17 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 });
 
 export default function StackLoader({
-  images = DEFAULT_IMAGE_SOURCES,
+  imageSize = 1,
+  duration = 1,
+  fadeOutDuration = 0.8,
+  backgroundColor = "#fcfcfc",
 }) {
   const uid = useId().replace(/:/g, "");
   const demoUiId = `demo-ui-${uid}`;
   const [isLoaderComplete, setIsLoaderComplete] = useState(false);
   const [introInstance, setIntroInstance] = useState(0);
   const stackToSpreadIntroRef = useRef(null);
+  const previousRemixerPropsRef = useRef(null);
 
   const handleLoaderComplete = useCallback(() => {
     setIsLoaderComplete(true);
@@ -408,6 +438,25 @@ export default function StackLoader({
     setIsLoaderComplete(false);
     setIntroInstance((currentInstance) => currentInstance + 1);
   }, []);
+
+  useEffect(() => {
+    const remixerProps = { imageSize, duration, fadeOutDuration, backgroundColor };
+
+    if (!previousRemixerPropsRef.current) {
+      previousRemixerPropsRef.current = remixerProps;
+      return;
+    }
+
+    const hasChanged = Object.entries(remixerProps).some(
+      ([key, value]) => previousRemixerPropsRef.current[key] !== value
+    );
+
+    if (!hasChanged) return;
+
+    previousRemixerPropsRef.current = remixerProps;
+    setIsLoaderComplete(false);
+    setIntroInstance((currentInstance) => currentInstance + 1);
+  }, [backgroundColor, duration, fadeOutDuration, imageSize]);
 
   return (
     <div
@@ -444,7 +493,10 @@ export default function StackLoader({
       <StackToSpreadIntro
         key={introInstance}
         ref={stackToSpreadIntroRef}
-        images={images}
+        imageSize={imageSize}
+        duration={duration}
+        fadeOutDuration={fadeOutDuration}
+        backgroundColor={backgroundColor}
         onComplete={handleLoaderComplete}
       />
     </div>

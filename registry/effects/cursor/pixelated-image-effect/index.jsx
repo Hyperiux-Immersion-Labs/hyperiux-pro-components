@@ -138,15 +138,55 @@ export function PixelateSvgFilter({
 
 export default function PixelatedImageEffect({
   src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-  alt = "Pixelated nature scene",
-
+  pixelSize = 16,
+  duration = 0.25,
+  mouseReactivity = 1,
   imageClassName = "",
 }) {
   const imageRef = useRef(null);
   const isTouching = useRef(false);
-  const [pixelSize, setPixelSize] = useState(16);
+  const animationRef = useRef(null);
+  const [renderedPixelSize, setRenderedPixelSize] = useState(pixelSize);
+  const [targetPixelSize, setTargetPixelSize] = useState(pixelSize);
   const pixelateFilterId = `pixelate-filter-${useId().replace(/:/g, "")}`;
   const prefersReducedMotion = usePrefersReducedMotion();
+  const fallbackSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
+  const resolvedSrc = typeof src === "string" && src.trim() ? src.trim() : fallbackSrc;
+  const resolvedPixelSize = Math.min(Math.max(Number(pixelSize) || 16, 1), 64);
+  const resolvedDuration = Math.max(Number(duration) || 0, 0);
+  const resolvedMouseReactivity = Math.min(Math.max(Number(mouseReactivity) || 0, 0), 2);
+
+  useEffect(() => {
+    setTargetPixelSize(resolvedPixelSize);
+  }, [resolvedPixelSize]);
+
+  useEffect(() => {
+    cancelAnimationFrame(animationRef.current);
+
+    if (resolvedDuration === 0) {
+      setRenderedPixelSize(targetPixelSize);
+      return undefined;
+    }
+
+    const startValue = renderedPixelSize;
+    const distance = targetPixelSize - startValue;
+    const startTime = performance.now();
+    const durationMs = resolvedDuration * 1000;
+
+    const animate = (time) => {
+      const progress = Math.min((time - startTime) / durationMs, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setRenderedPixelSize(startValue + distance * eased);
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationRef.current);
+  }, [resolvedDuration, targetPixelSize]);
 
   const updatePixel = (event) => {
     if (!imageRef.current) return;
@@ -154,8 +194,10 @@ export default function PixelatedImageEffect({
     const rect = imageRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
 
-    const nextPixelSize = Math.min(Math.max(x / 30, 1), 64);
-    setPixelSize(nextPixelSize);
+    const pointerPixelSize = Math.min(Math.max(x / 30, 1), 64);
+    const nextPixelSize =
+      resolvedPixelSize + (pointerPixelSize - resolvedPixelSize) * resolvedMouseReactivity;
+    setTargetPixelSize(Math.min(Math.max(nextPixelSize, 1), 64));
   };
 
   const handlePointerDown = (event) => {
@@ -186,7 +228,7 @@ export default function PixelatedImageEffect({
 
       <PixelateSvgFilter
         id={pixelateFilterId}
-        size={pixelSize}
+        size={renderedPixelSize}
         crossLayers
       />
 
@@ -201,8 +243,8 @@ export default function PixelatedImageEffect({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={src}
-          alt={alt}
+          src={resolvedSrc}
+          alt=""
           className={`object-cover absolute inset-0 ${imageClassName}`.trim()}
         />
       </div>

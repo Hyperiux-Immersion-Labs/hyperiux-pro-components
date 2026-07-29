@@ -8,17 +8,16 @@ import { createVisibilityGate } from "./createSuspendedRaf";
 const IMAGE_ASPECT_RATIO = 1920 / 1080;
 const TABLET_MAX_WIDTH = 768;
 const MOBILE_MAX_WIDTH = 640;
-const MOUSE_LERP = 0.15;
 const VELOCITY_TARGET_SCALE = 35;
 const VELOCITY_SMOOTH_LERP = 0.06;
-const VELOCITY_CURRENT_LERP = 0.15;
 const VELOCITY_DECAY = 0.96;
 const MOVEMENT_TIMEOUT_MS = 300;
 const MOVEMENT_STATE_LERP = 0.05;
 const INITIAL_MOUSE = 0.5;
 const INITIAL_VELOCITY_Y = 0.5;
 const INITIAL_TIME = 2;
-const BLOCK_SIZE = 1 / 35;
+const DEFAULT_GRID_SIZE = 35;
+const DEFAULT_LERP = 0.1;
 const EFFECT_RADIUS = 0.3;
 const EFFECT_INTENSITY = 1.8;
 const DEFAULT_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
@@ -84,7 +83,22 @@ const PIXEL_SHIFT_FRAG = /* glsl */ `
   }
 `;
 
-function PlaneWithShader({ texture }) {
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function PlaneWithShader({
+  texture,
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+}) {
   const materialRef = useRef(null);
   const shaderMaterialRef = useRef(null);
   const moveTimeoutRef = useRef(null);
@@ -95,6 +109,8 @@ function PlaneWithShader({ texture }) {
   const targetVelocityRef = useRef(new THREE.Vector2(0, 0));
   const smoothedVelocityRef = useRef(new THREE.Vector2(0, 0));
   const { size, viewport } = useThree();
+  const safeGridSize = clampNumber(gridSize, 8, 90, DEFAULT_GRID_SIZE);
+  const safeLerp = clampNumber(lerp, 0.01, 0.6, DEFAULT_LERP);
 
   const shaderMaterial = useMemo(
     () =>
@@ -102,7 +118,7 @@ function PlaneWithShader({ texture }) {
         uniforms: {
           uMouse: { value: new THREE.Vector2(INITIAL_MOUSE, INITIAL_MOUSE) },
           uVelocity: { value: new THREE.Vector2(0, INITIAL_VELOCITY_Y) },
-          uBlockSize: { value: BLOCK_SIZE },
+          uBlockSize: { value: 1 / DEFAULT_GRID_SIZE },
           uRadius: { value: EFFECT_RADIUS },
           uIntensity: { value: EFFECT_INTENSITY },
           uTime: { value: INITIAL_TIME },
@@ -121,6 +137,18 @@ function PlaneWithShader({ texture }) {
   }, [shaderMaterial]);
 
   useEffect(() => {
+    shaderMaterial.uniforms.uBlockSize.value = 1 / safeGridSize;
+  }, [safeGridSize, shaderMaterial]);
+
+  useEffect(() => {
+    if (!mouseInteraction) {
+      targetMouseRef.current.set(INITIAL_MOUSE, INITIAL_MOUSE);
+      targetVelocityRef.current.set(0, 0);
+      smoothedVelocityRef.current.set(0, 0);
+      isMovingRef.current = 0;
+      return undefined;
+    }
+
     const onMouseMove = (event) => {
       const nextMouse = new THREE.Vector2(
         event.clientX / size.width,
@@ -153,7 +181,7 @@ function PlaneWithShader({ texture }) {
         clearTimeout(moveTimeoutRef.current);
       }
     };
-  }, [size.height, size.width]);
+  }, [mouseInteraction, size.height, size.width]);
 
   useFrame(() => {
     const shader = shaderMaterialRef.current;
@@ -164,14 +192,14 @@ function PlaneWithShader({ texture }) {
 
     // Animation loop
     shader.uniforms.uTime.value = clockRef.current.getElapsedTime();
-    shader.uniforms.uMouse.value.lerp(targetMouseRef.current, MOUSE_LERP);
+    shader.uniforms.uMouse.value.lerp(targetMouseRef.current, safeLerp);
     smoothedVelocityRef.current.lerp(
       targetVelocityRef.current,
       VELOCITY_SMOOTH_LERP
     );
     shader.uniforms.uVelocity.value.lerp(
       smoothedVelocityRef.current,
-      VELOCITY_CURRENT_LERP
+      safeLerp
     );
     targetVelocityRef.current.multiplyScalar(VELOCITY_DECAY);
     shader.uniforms.uIsMoving.value = THREE.MathUtils.lerp(
@@ -256,7 +284,12 @@ function loadTextureBlobUrl(source) {
     });
 }
 
-function Scene({ img }) {
+function Scene({
+  img,
+  gridSize,
+  mouseInteraction,
+  lerp,
+}) {
   const resolvedImage = resolveImageSource(img) || DEFAULT_IMAGE_URL;
   const [textureUrl, setTextureUrl] = useState(null);
 
@@ -320,13 +353,23 @@ function Scene({ img }) {
 
   if (!texture) return null;
 
-  return <PlaneWithShader texture={texture} />;
+  return (
+    <PlaneWithShader
+      texture={texture}
+      gridSize={gridSize}
+      mouseInteraction={mouseInteraction}
+      lerp={lerp}
+    />
+  );
 }
 
 export default function PixelShift({
   img,
   imageUrl = img || DEFAULT_IMAGE_URL,
   notice = DEFAULT_NOTICE,
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
 }) {
   const rootRef = useRef(null);
   const [frameloop, setFrameloop] = useState("always");
@@ -350,7 +393,12 @@ export default function PixelShift({
 
       <Canvas aria-hidden="true" camera={{ position: [0, 0, 5], fov: 45 }} frameloop={frameloop}>
         <color attach="background" args={["#000000"]} />
-        <Scene img={imageUrl} />
+        <Scene
+          img={imageUrl}
+          gridSize={gridSize}
+          mouseInteraction={mouseInteraction}
+          lerp={lerp}
+        />
       </Canvas>
     </div>
   );

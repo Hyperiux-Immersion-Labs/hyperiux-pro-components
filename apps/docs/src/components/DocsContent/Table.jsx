@@ -35,6 +35,7 @@ export default function DocsTable({
   headers,
   rows = [],
   caption,
+  colorVariant = "vault",
   className,
   tableClassName,
   headerRowClassName,
@@ -44,11 +45,20 @@ export default function DocsTable({
   ...props
 }) {
   const normalizedColumns = normalizeColumns({ columns, headers, rows });
+  const variantClassName =
+    colorVariant === "orange"
+      ? "[--docs-table-border:rgba(255,95,0,0.32)] [--docs-table-header-bg:var(--primary)] [--docs-table-header-color:#0e0e0e] [--docs-table-cell-color:rgba(255,255,255,0.82)]"
+      : colorVariant === "muted"
+        ? "[--docs-table-border:rgba(147,147,147,0.28)] [--docs-table-header-bg:rgba(255,255,255,0.08)] [--docs-table-header-color:rgba(255,255,255,0.9)] [--docs-table-cell-color:rgba(255,255,255,0.68)]"
+        : colorVariant === "outline"
+          ? "[--docs-table-border:rgba(255,255,255,0.22)] [--docs-table-header-bg:transparent] [--docs-table-header-color:#fff] [--docs-table-cell-color:rgba(255,255,255,0.76)]"
+          : "[--docs-table-border:rgba(255,255,255,0.14)] [--docs-table-header-bg:#272727] [--docs-table-header-color:#fff] [--docs-table-cell-color:rgba(255,255,255,0.76)]";
 
   return (
     <div
   className={cx(
-    "w-full overflow-x-auto rounded-md border border-white/12 bg-white/4 fadeup",
+    "w-full overflow-x-auto rounded-md border border-(--docs-table-border) bg-transparent fadeup",
+    variantClassName,
     className
   )}
   {...props}
@@ -73,9 +83,9 @@ export default function DocsTable({
               key={col.key ?? idx}
               scope="col"
               className={cx(
-                "bg-[#272727] px-4 py-3.5 text-[1.2rem] font-medium text-white/80 border-b border-white/10",
+                "bg-(--docs-table-header-bg) px-4 py-3.5 text-[1.2rem] font-semibold text-(--docs-table-header-color) border-b border-(--docs-table-border)",
                 idx !== normalizedColumns.length - 1 &&
-                  "border-r border-white/10",
+                  "border-r border-(--docs-table-border)",
                 col.headerClassName,
                 headerCellClassName
               )}
@@ -114,9 +124,9 @@ export default function DocsTable({
               <td
                 key={col.key ?? colIdx}
                 className={cx(
-                  "px-4 py-3.5 text-sm md:text-base leading-relaxed text-white/70 border-white/10",
+                  "px-4 py-3.5 text-sm md:text-base leading-relaxed text-(--docs-table-cell-color) border-(--docs-table-border)",
                   colIdx !== normalizedColumns.length - 1 &&
-                    "border-r border-white/10",
+                    "border-r border-(--docs-table-border)",
                   col.cellClassName,
                   cellClassName
                 )}

@@ -2,12 +2,33 @@
 
 'use client'
 
-import React, { useCallback, useState } from'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from'react'
 import { NumericTunnelLoader } from './NumericTunnelLoader'
 
-export default function NumericTunnel() {
+export default function NumericTunnel({
+ digitCount = 50,
+ speed = 1,
+ depth = 900,
+ textColor = '#ffffff',
+ backgroundColor = '#000000',
+}) {
  const [isComplete, setIsComplete] = useState(false)
  const [tunnelInstance, setTunnelInstance] = useState(0)
+ const didMountRef = useRef(false)
+ const tunnelConfig = useMemo(
+ () => ({ digitCount, speed, depth, textColor, backgroundColor }),
+ [backgroundColor, depth, digitCount, speed, textColor]
+ )
+
+ useEffect(() => {
+ if (!didMountRef.current) {
+ didMountRef.current = true
+ return
+ }
+
+ setIsComplete(false)
+ setTunnelInstance((currentInstance) => currentInstance + 1)
+ }, [tunnelConfig])
 
  const handleComplete = useCallback(() => {
  setIsComplete(true)
@@ -19,7 +40,11 @@ export default function NumericTunnel() {
  }, [])
 
  return (
- <NumericTunnelLoader key={tunnelInstance} onComplete={handleComplete}>
+ <NumericTunnelLoader
+ key={tunnelInstance}
+ onComplete={handleComplete}
+ config={tunnelConfig}
+ >
  <div className="h-screen w-full bg-white">
  <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-black text-[4vw] font-bold">HYPERIUX VAULT</h2>
 <button
@@ -44,5 +69,3 @@ export default function NumericTunnel() {
  </NumericTunnelLoader>
  )
 }
-
-
