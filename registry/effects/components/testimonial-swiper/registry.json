@@ -1,6 +1,6 @@
 {
   "name": "testimonial-swiper",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "type": "registry:component",
   "title": "Testimonial Swiper",
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
@@ -33,6 +33,18 @@
   ],
   "changelog": [
     {
+      "version": "1.2.2",
+      "date": "2026-07-30",
+      "summary": "Added top padding so the testimonial count and navigation sit below the demo header, and added an imageSize prop for testimonial images.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed the testimonials content prop from the public/remixer API and wired bgColor, accentColor, autoplay, autoplayDelay, and showNavigation into the testimonial slider.",
+      "breaking": false
+    },
+    {
       "version": "1.2.0",
       "date": "2026-07-28",
       "summary": "Added testimonials and bgColor as public props with a working remixer panel. The originally suggested props (autoplay, autoplayDelay, accentColor, showNavigation) didn't match this component's real API, so they were replaced with the props TestimonialComp actually accepts.",
@@ -47,48 +59,6 @@
   ],
   "props": [
     {
-      "name": "testimonials",
-      "type": "array",
-      "default": [
-        {
-          "quote": "Design that feels completely effortless, yet performs like it's been engineered with precision. Every interaction flows naturally, every detail feels intentional, and the entire experience just makes sense without the user ever needing to think about it.",
-          "name": "Aarav Mehta",
-          "title": "Product Lead, InnovateX",
-          "image": "https://picsum.photos/seed/1/800/600"
-        },
-        {
-          "quote": "Hyperiux didn't just improve our UI - it transformed the way users interact with our product. It pushed us to rethink our entire approach to design, making every screen more intuitive, more fluid, and far more engaging than we thought possible.",
-          "name": "Sofia Patel",
-          "title": "Frontend Developer",
-          "image": "https://picsum.photos/seed/2/800/600"
-        },
-        {
-          "quote": "Everything feels intentional. Every hover, every transition, every detail - it's crafted, not just built.",
-          "name": "Rohan Kapoor",
-          "title": "UX Designer, PixelCraft",
-          "image": "https://picsum.photos/seed/3/800/600"
-        },
-        {
-          "quote": "We didn't just ship faster - we shipped something we're genuinely proud of. The design quality improved, the development flow became smoother, and for the first time, everything felt aligned between vision and execution.",
-          "name": "Ananya Sharma",
-          "title": "Founder, Buildspace Studio",
-          "image": "https://picsum.photos/seed/4/800/600"
-        },
-        {
-          "quote": "It's rare to find a UI system that's both aesthetic and brutally practical. This one just gets it.",
-          "name": "Dev Malhotra",
-          "title": "Full Stack Engineer",
-          "image": "https://picsum.photos/seed/5/800/600"
-        }
-      ],
-      "description": "Testimonials shown in the swiper (quote, name, title, image).",
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "bgColor",
       "type": "color",
       "default": "#edeae2",
@@ -100,10 +70,21 @@
       }
     },
     {
+      "name": "accentColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Accent color for the count, quote mark, and navigation controls.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
       "name": "autoplay",
       "type": "boolean",
-      "description": "Automatically advances testimonials.",
       "default": true,
+      "description": "Automatically advances testimonials.",
       "remixer": {
         "control": "checkbox",
         "group": "motion",
@@ -113,43 +94,46 @@
     {
       "name": "autoplayDelay",
       "type": "number",
-      "description": "Delay between testimonial changes.",
       "default": 4500,
+      "description": "Delay between testimonial changes in milliseconds.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "accentColor",
-      "type": "color",
-      "description": "Accent color for controls and active state.",
-      "default": "#ff6b00",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
+        "min": 1000,
+        "max": 9000,
+        "step": 250
       }
     },
     {
       "name": "showNavigation",
       "type": "boolean",
-      "description": "Shows previous/next controls.",
       "default": true,
+      "description": "Shows previous/next controls.",
       "remixer": {
         "control": "checkbox",
         "group": "controls",
         "groupTitle": "Controls"
       }
+    },
+    {
+      "name": "imageSize",
+      "type": "number",
+      "default": 1,
+      "description": "Scale multiplier for the testimonial images.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0.6,
+        "max": 1.8,
+        "step": 0.05
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "style",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

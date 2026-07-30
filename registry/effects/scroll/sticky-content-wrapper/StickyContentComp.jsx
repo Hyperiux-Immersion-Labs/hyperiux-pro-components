@@ -91,6 +91,9 @@ const renderStickyContent = (item) => {
   );
 };
 
+// Scroll-timeline distance allotted to each section step.
+const STEP_GAP = 2;
+
 export function StickyContentComp({
   items = [],
   className = "",
@@ -104,7 +107,6 @@ export function StickyContentComp({
   contentExitYPercent = -12,
   contentTransitionDuration = 0.8,
   contentDelay = 0.28,
-  stepGap = 2,
   enableImageScaleFlow = true,
   initialImageScale = 1.5,
   activeImageScale = 1.2,
@@ -157,7 +159,7 @@ export function StickyContentComp({
       });
 
       // Scroll timeline
-      const totalTimelineDuration = Math.max(1, (items.length - 1) * stepGap);
+      const totalTimelineDuration = Math.max(1, (items.length - 1) * STEP_GAP);
       const snapValues =
         items.length > 1
           ? Array.from({ length: items.length }, (_, index) => index / (items.length - 1))
@@ -196,7 +198,7 @@ export function StickyContentComp({
         const nextContent = contents[index + 1];
         const currentImage = images[index];
         const nextImage = images[index + 1];
-        const stepStart = index * stepGap;
+        const stepStart = index * STEP_GAP;
         const nextContentStart =
           stepStart + contentTransitionDuration + contentDelay;
 
@@ -228,11 +230,11 @@ export function StickyContentComp({
           .to(
             currentImage,
             reducedMotion
-              ? { autoAlpha: 0, duration: stepGap, ease: "none" }
+              ? { autoAlpha: 0, duration: STEP_GAP, ease: "none" }
               : {
                   clipPath: "inset(0% 0% 100% 0%)",
                   scale: enableImageScaleFlow ? exitImageScale : 1,
-                  duration: stepGap,
+                  duration: STEP_GAP,
                   ease: "none",
                 },
             stepStart,
@@ -241,7 +243,7 @@ export function StickyContentComp({
         if (reducedMotion) {
           timeline.to(
             nextImage,
-            { autoAlpha: 1, duration: stepGap, ease: "none" },
+            { autoAlpha: 1, duration: STEP_GAP, ease: "none" },
             stepStart,
           );
         } else if (enableImageScaleFlow) {
@@ -249,7 +251,7 @@ export function StickyContentComp({
             nextImage,
             {
               scale: activeImageScale,
-              duration: stepGap,
+              duration: STEP_GAP,
               ease: "none",
             },
             stepStart,
@@ -270,7 +272,6 @@ export function StickyContentComp({
     contentExitYPercent,
     contentTransitionDuration,
     contentDelay,
-    stepGap,
     enableImageScaleFlow,
     initialImageScale,
     activeImageScale,
@@ -287,6 +288,7 @@ export function StickyContentComp({
       className={`flex w-screen justify-between relative ${className}`}
       style={{
         height: containerHeight || `${items.length * 100}vh`,
+        backgroundColor: bgColor,
       }}
     >
        <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center text-black items-center ">

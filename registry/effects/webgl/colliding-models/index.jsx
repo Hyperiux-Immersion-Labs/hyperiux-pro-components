@@ -39,22 +39,38 @@ const MODEL_SCALE = 0.08
 const COLLIDER_SCALE = 0.5
 const POINTER_RADIUS = 0.55
 
-const shuffle = (accent = 0) => [
-  { color: '#444', roughness: 0.1 },
-  { color: '#444', roughness: 0.75 },
-  { color: '#444', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: 'white', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: accents[accent], roughness: 0.1, accent: true },
-  { color: accents[accent], roughness: 0.75, accent: true },
-  { color: accents[accent], roughness: 0.1, accent: true },
-]
+const shuffle = (accent = 0, count = 9) => {
+  const styles = [
+    { color: '#444', roughness: 0.1 },
+    { color: '#444', roughness: 0.75 },
+    { color: '#444', roughness: 0.75 },
+    { color: 'white', roughness: 0.1 },
+    { color: 'white', roughness: 0.75 },
+    { color: 'white', roughness: 0.1 },
+    { color: accents[accent], roughness: 0.1, accent: true },
+    { color: accents[accent], roughness: 0.75, accent: true },
+    { color: accents[accent], roughness: 0.1, accent: true },
+  ]
 
-function Scene({ frameloop = 'always' }) {
+  return Array.from(
+    { length: Math.max(0, Math.round(count)) },
+    (_, i) => styles[i % styles.length]
+  )
+}
+
+function Scene({
+  frameloop = 'always',
+  connectorCount = 8,
+  gravity = 0,
+  modelScale = 1,
+  backgroundColor = '#141518',
+}) {
   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
   const [showTitle, setShowTitle] = useState(true)
-  const connectors = useMemo(() => shuffle(accent), [accent])
+  const connectors = useMemo(
+    () => shuffle(accent, connectorCount),
+    [accent, connectorCount]
+  )
   const connectorRefs = useRef([])
   const registerConnector = useCallback((index, api) => {
     connectorRefs.current[index] = api
@@ -112,7 +128,7 @@ function Scene({ frameloop = 'always' }) {
           HYPERIUX
         </Text>
       )}
-      <color attach="background" args={['#141518']} />
+      <color attach="background" args={[backgroundColor]} />
       <ambientLight intensity={0.4} />
       <spotLight
         position={[10, 10, 10]}
@@ -122,13 +138,13 @@ function Scene({ frameloop = 'always' }) {
         castShadow
       />
 
-      <Physics gravity={[0, 0, 0]}>
+      <Physics gravity={[0, -gravity, 0]}>
         <Pointer />
         {connectors.map((props, i) => (
-          <Connector key={i} {...props} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
+          <Connector key={i} {...props} modelScale={modelScale} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
         ))}
         <Connector position={[10, 10, 5]} connectorRefs={connectorRefs} registerConnector={registerConnector} index={connectors.length}>
-          <Model>
+          <Model modelScale={modelScale}>
             <MeshTransmissionMaterial
               clearcoat={1}
               thickness={10}
@@ -308,7 +324,7 @@ function Pointer({ vec = new THREE.Vector3() }) {
   )
 }
 
-function Model({ children, color = 'white', roughness = 0 }) {
+function Model({ children, color = 'white', roughness = 0, modelScale = 1 }) {
   const ref = useRef()
   const { nodes } = useGLTF(LOGO_MODEL_URL)
   const { materials: materials2 } = useGLTF(GLASS_MODEL_URL)
@@ -322,12 +338,14 @@ function Model({ children, color = 'white', roughness = 0 }) {
 
   if (!geometry) return null
 
+  const scale = MODEL_SCALE * modelScale
+
   return (
     <mesh
       ref={ref}
       castShadow
       receiveShadow
-      scale={[MODEL_SCALE, MODEL_SCALE, MODEL_SCALE * 2.3]}
+      scale={[scale, scale, scale * 2.3]}
       geometry={geometry}
     >
       <meshPhysicalMaterial
@@ -346,7 +364,12 @@ function Model({ children, color = 'white', roughness = 0 }) {
 }
 
 
-export default function CollidingModels() {
+export default function CollidingModels({
+  connectorCount = 8,
+  gravity = 0,
+  modelScale = 1,
+  backgroundColor = '#141518',
+}) {
   const rootRef = useRef(null)
   const [frameloop, setFrameloop] = useState('always')
   const prefersReducedMotion = usePrefersReducedMotion()
@@ -364,8 +387,18 @@ export default function CollidingModels() {
 
     <>
       <div className="w-full h-screen flex items-center justify-center px-12 max-md:px-6 max-[1025px]:px-10">
-        <div ref={rootRef} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
-          <Scene frameloop={frameloop} />
+        <div
+          ref={rootRef}
+          className="relative h-full w-full overflow-hidden rounded-2xl"
+          style={{ backgroundColor }}
+        >
+          <Scene
+            frameloop={frameloop}
+            connectorCount={connectorCount}
+            gravity={gravity}
+            modelScale={modelScale}
+            backgroundColor={backgroundColor}
+          />
           <p className="pointer-events-none max-[1025px]:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>

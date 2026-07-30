@@ -38,7 +38,11 @@ function ReducedMotionNote() {
     )
 }
 
-export default function NumberCounter() {
+export default function NumberCounter({
+    duration = 1.5,
+    stagger = 0.1,
+    textColor = "#021A54",
+}) {
     const prefersReducedMotion = usePrefersReducedMotion()
     const [replayOneKey, setReplayOneKey] = useState(0)
     const [replayTwoKey, setReplayTwoKey] = useState(0)
@@ -60,11 +64,13 @@ export default function NumberCounter() {
                         <div className="flex-1 min-w-65 rounded-md border border-black/10 bg-white shadow-sm p-8 flex flex-col items-center">
                             <div className="flex-1 w-full flex items-center justify-center">
                                 <NumberCounterOne
-                                    key={replayOneKey}
-                                    textColor="#021A54"
+                                    key={`${replayOneKey}-${duration}-${stagger}-${textColor}`}
+                                    textColor={textColor}
                                     textSize="text-[5vw] md:text-[3.2vw]"
                                     fontWeight="normal"
                                     stats={[{ value: "936", suffix: "" }]}
+                                    duration={duration}
+                                    stagger={stagger}
                                     reducedMotion={prefersReducedMotion}
                                 />
                             </div>
@@ -81,11 +87,13 @@ export default function NumberCounter() {
                         <div className="flex-1 min-w-[260px] rounded-md border border-black/10 bg-white shadow-sm p-8 flex flex-col items-center">
                             <div className="flex-1 w-full flex items-center justify-center">
                                 <NumberCounterTwo
-                                    key={replayTwoKey}
+                                    key={`${replayTwoKey}-${duration}-${stagger}-${textColor}`}
                                     value="594"
                                     textSize="text-[5vw] max-[1025px]:text-[7vw] max-md:text-[12vw] md:text-[3.2vw]"
-                                    color="#021A54"
+                                    color={textColor}
                                     fontWeight="normal"
+                                    duration={duration}
+                                    stagger={stagger}
                                     reducedMotion={prefersReducedMotion}
                                 />
                             </div>
@@ -102,11 +110,12 @@ export default function NumberCounter() {
                         <div className="flex-1 min-w-[260px] rounded-md border border-black/10 bg-white shadow-sm p-8 flex flex-col items-center">
                             <div className="flex-1 w-full flex items-center justify-center">
                                 <NumberCounterThree
-                                    key={replayThreeKey}
+                                    key={`${replayThreeKey}-${duration}-${stagger}-${textColor}`}
                                     value="246"
-                                    duration={2}
+                                    duration={duration}
+                                    stagger={stagger}
                                     fontWeight="medium"
-                                    textColor="#021A54"
+                                    textColor={textColor}
                                     textSize="text-[5vw] max-[1025px]:text-[7vw] max-md:text-[12vw] md:text-[3.2vw]"
                                     reducedMotion={prefersReducedMotion}
                                 />

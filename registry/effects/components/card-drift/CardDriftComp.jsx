@@ -6,6 +6,23 @@ import { Draggable } from "gsap/Draggable";
 
 gsap.registerPlugin(Draggable);
 
+const DEFAULT_DRIFT_AMOUNT = 30;
+const DEFAULT_ROTATION_AMOUNT = 3;
+const DEFAULT_SMOOTHNESS = 0.7;
+const DEFAULT_LERP = 0.35;
+
+function clampNumber(value, min, max, fallback) {
+ const number = Number(value);
+ if (!Number.isFinite(number)) return fallback;
+ return Math.min(Math.max(number, min), max);
+}
+
+function getCardRotation(index, amount) {
+ if (amount === 0) return 0;
+ const normalized = (((index * 37) % 100) / 50) - 1;
+ return normalized * amount;
+}
+
 function usePrefersReducedMotion() {
  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -22,14 +39,37 @@ function usePrefersReducedMotion() {
 
 export default function CardDriftComp({
  data = [],
- cardBg ="bg-blue-700",
- cardTextColor ="text-white",
- barBg ="bg-neutral-700",
- bgColor ="bg-black",
- bgTextColor ="text-white/10",
+ backgroundColor = "#000000",
+ backgroundTextColor = "#ffffff",
+ cardColor = "#4f46e5",
+ cardTextColor = "#ffffff",
+ barColor = "#262626",
+ driftAmount = DEFAULT_DRIFT_AMOUNT,
+ rotationAmount = DEFAULT_ROTATION_AMOUNT,
+ smoothness = DEFAULT_SMOOTHNESS,
+ lerp = DEFAULT_LERP,
 }) {
  const containerRef = useRef(null);
+ const configRef = useRef({
+  driftAmount: DEFAULT_DRIFT_AMOUNT,
+  rotationAmount: DEFAULT_ROTATION_AMOUNT,
+  smoothness: DEFAULT_SMOOTHNESS,
+  lerp: DEFAULT_LERP,
+ });
  const reducedMotion = usePrefersReducedMotion();
+ const safeDriftAmount = clampNumber(driftAmount, 0, 90, DEFAULT_DRIFT_AMOUNT);
+ const safeRotationAmount = clampNumber(rotationAmount, 0, 18, DEFAULT_ROTATION_AMOUNT);
+ const safeSmoothness = clampNumber(smoothness, 0.15, 1.5, DEFAULT_SMOOTHNESS);
+ const safeLerp = clampNumber(lerp, 0.02, 1, DEFAULT_LERP);
+
+ useEffect(() => {
+  configRef.current = {
+   driftAmount: safeDriftAmount,
+   rotationAmount: safeRotationAmount,
+   smoothness: safeSmoothness,
+   lerp: safeLerp,
+  };
+ }, [safeDriftAmount, safeRotationAmount, safeSmoothness, safeLerp]);
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -66,7 +106,7 @@ export default function CardDriftComp({
  let x =
  col * cellWidth +
  (cellWidth - cardRect.width) / 2 +
- gsap.utils.random(-30, 30);
+ gsap.utils.random(-configRef.current.driftAmount, configRef.current.driftAmount);
 
  const verticalOffset = isMobile
  ? containerRect.height * 0.16
@@ -78,7 +118,7 @@ export default function CardDriftComp({
  row * cellHeight +
  (cellHeight - cardRect.height) / 2 +
  verticalOffset +
- gsap.utils.random(-30, 30);
+ gsap.utils.random(-configRef.current.driftAmount, configRef.current.driftAmount);
 
  x = Math.max(0, Math.min(x, containerRect.width - cardRect.width));
  y = Math.max(0, Math.min(y, containerRect.height - cardRect.height));
@@ -86,7 +126,7 @@ export default function CardDriftComp({
  gsap.set(card, {
  x,
  y,
- rotation: gsap.utils.random(-3, 3),
+ rotation: getCardRotation(i, configRef.current.rotationAmount),
  zIndex: i + 1,
  opacity: 1,
  });
@@ -115,7 +155,7 @@ export default function CardDriftComp({
 
  gsap.to(card, {
  scale: 1.05,
- duration: 0.2,
+ duration: Math.min(configRef.current.smoothness, 0.35),
  ease:"power2.out",
  });
  },
@@ -129,7 +169,7 @@ export default function CardDriftComp({
  const curY = gsap.getProperty(card,"y");
 
  // Exponential moving average for smoother velocity
- const alpha = Math.min(1, dt / 30);
+ const alpha = Math.min(1, configRef.current.lerp + dt / 1000);
  velX = velX * (1 - alpha) + ((curX - lastX) / dt) * alpha;
  velY = velY * (1 - alpha) + ((curY - lastY) / dt) * alpha;
 
@@ -142,7 +182,7 @@ export default function CardDriftComp({
  onRelease() {
  gsap.to(card, {
  scale: 1,
- duration: 0.2,
+ duration: Math.min(configRef.current.smoothness, 0.35),
  ease:"power2.out",
  });
 
@@ -150,9 +190,9 @@ export default function CardDriftComp({
  const maxX = bounds.width - card.offsetWidth;
  const maxY = bounds.height - card.offsetHeight;
 
- const throwDuration = 0.7;
- const throwX = velX * throwDuration * 1000 * 0.35;
- const throwY = velY * throwDuration * 1000 * 0.35;
+ const throwDuration = configRef.current.smoothness;
+ const throwX = velX * throwDuration * 1000 * (configRef.current.driftAmount / 90);
+ const throwY = velY * throwDuration * 1000 * (configRef.current.driftAmount / 90);
 
  const curX = gsap.getProperty(card,"x");
  const curY = gsap.getProperty(card,"y");
@@ -168,8 +208,8 @@ export default function CardDriftComp({
  const distOutX = Math.max(0, -curX, curX - maxX);
  const distOutY = Math.max(0, -curY, curY - maxY);
  const distOut = Math.sqrt(distOutX * distOutX + distOutY * distOutY);
- const baseDuration = gsap.utils.clamp(0.3, 1.0, speed * 0.4);
- const duration = gsap.utils.clamp(0.4, 1.2, baseDuration + distOut * 0.002);
+ const baseDuration = gsap.utils.clamp(0.2, 1.0, speed * configRef.current.smoothness);
+ const duration = gsap.utils.clamp(0.25, 1.6, baseDuration + distOut * 0.002);
 
  gsap.to(card, {
  x: targetX,
@@ -185,14 +225,33 @@ export default function CardDriftComp({
  return () => ctx.revert();
  }, [data]);
 
+ useEffect(() => {
+  const cards = containerRef.current
+   ? gsap.utils.toArray(".testimonial-card", containerRef.current)
+   : [];
+
+  cards.forEach((card, index) => {
+   gsap.to(card, {
+    rotation: getCardRotation(index, safeRotationAmount),
+    duration: Math.min(safeSmoothness, 0.35),
+    ease: "power2.out",
+    overwrite: "auto",
+   });
+  });
+
+  return () => cards.forEach((card) => gsap.killTweensOf(card));
+ }, [safeRotationAmount, safeSmoothness]);
+
  return (
  <div
  ref={containerRef}
- className={`relative w-screen h-screen overflow-hidden ${bgColor}`}
+ className="relative w-screen h-screen overflow-hidden"
+ style={{ backgroundColor }}
  >
 
  <h1
- className={`absolute inset-0 flex items-center justify-center text-9xl max-[1025px]:text-7xl font-light pointer-events-none select-none text-center leading-none ${bgTextColor}`}
+ className="absolute inset-0 flex items-center justify-center text-9xl max-[1025px]:text-7xl font-light pointer-events-none select-none text-center leading-none"
+ style={{ color: backgroundTextColor }}
  >
  Draggable <br /> Testimonial
  </h1>
@@ -202,9 +261,9 @@ export default function CardDriftComp({
  <Card
  key={index}
  item={item}
- cardBg={cardBg}
+ cardColor={cardColor}
  cardTextColor={cardTextColor}
- barBg={barBg}
+ barColor={barColor}
  />
  ))}
 
@@ -228,13 +287,17 @@ export default function CardDriftComp({
 }
 
 
-function Card({ item, cardBg, cardTextColor, barBg }) {
+function Card({ item, cardColor, cardTextColor, barColor }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
- <div className={`w-96 max-md:w-42 max-[1025px]:w-60 ${cardBg} ${cardTextColor}`}>
+ <div
+ className="w-96 max-md:w-42 max-[1025px]:w-60"
+ style={{ backgroundColor: cardColor, color: cardTextColor }}
+ >
  {/* Top bar */}
  <div
- className={`flex justify-between text-xs px-3 max-md:px-2 py-1 ${barBg}`}
+ className="flex justify-between text-xs px-3 max-md:px-2 py-1"
+ style={{ backgroundColor: barColor }}
  >
  <span>{item.year}</span>
  <span>{item.tag}</span>

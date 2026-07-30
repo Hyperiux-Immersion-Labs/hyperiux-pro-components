@@ -1,7 +1,19 @@
 {
   "name": "text-cloning",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "changelog": [
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Restored the bottom text input for live demo editing while keeping text out of the remixer, and removed accentColor from the public API.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Removed the live text field from the effect and wired cloneCount, offset, textColor, accentColor, and textSize into the canvas renderer.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -40,93 +52,68 @@
   ],
   "props": [
     {
-      "name": "text",
-      "type": "string",
-      "default": "\"Hyperiux\"",
-      "description": "Text copied into clone layers.",
-      "suggested": true
-    },
-    {
       "name": "cloneCount",
       "type": "number",
-      "default": 8,
-      "description": "Number of text clones rendered.",
-      "suggested": true
+      "default": 9,
+      "description": "Number of text clone layers rendered.",
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 1,
+        "max": 24,
+        "step": 1
+      }
     },
     {
       "name": "offset",
       "type": "number",
-      "default": 12,
-      "description": "Distance between cloned text layers.",
-      "suggested": true
+      "default": 220,
+      "description": "Maximum pointer parallax distance between clone layers.",
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 420,
+        "step": 5
+      }
     },
     {
       "name": "textColor",
       "type": "string",
-      "default": "#ffffff",
-      "description": "Primary text color.",
-      "suggested": true
+      "default": "#f5f5f5",
+      "description": "Clone and center text color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     },
     {
-      "name": "accentColor",
-      "type": "string",
-      "default": "#ff6b00",
-      "description": "Color used for clone highlights.",
-      "suggested": true
+      "name": "textSize",
+      "type": "number",
+      "default": 1,
+      "description": "Text size multiplier.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0.4,
+        "max": 1.8,
+        "step": 0.05
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
     "defaultOpenGroupId": "controls",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "text",
-        "label": "Text",
-        "type": "text",
-        "group": "controls",
-        "copyable": true
-      },
-      {
-        "name": "cloneCount",
-        "label": "Clone Count",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 24,
-        "step": 0.1
-      },
-      {
-        "name": "offset",
-        "label": "Offset",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 36,
-        "step": 0.1
-      },
-      {
-        "name": "textColor",
-        "label": "Text Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      },
-      {
-        "name": "accentColor",
-        "label": "Accent Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      }
-    ]
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   }
 }

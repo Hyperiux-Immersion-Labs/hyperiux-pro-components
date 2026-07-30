@@ -4,19 +4,33 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 const DEFAULT_IMAGE_Z_INDEX = 10;
-const HIGHLIGHT_ANIMATION_DURATION = 0.4;
-const HIGHLIGHT_FADE_DURATION = 0.3;
-const IMAGE_REVEAL_DURATION = 0.6;
-const IMAGE_HIDE_DURATION = 1;
+const DEFAULT_IMAGE_SIZE = 1;
+const DEFAULT_DURATION = 0.6;
+const DEFAULT_SMOOTHNESS = 0.35;
+const DEFAULT_LERP = 0.18;
+const BASE_IMAGE_WIDTH_REM = 19.5;
+const BASE_IMAGE_HEIGHT_REM = 22.5;
 const IMAGE_OFFSET_MULTIPLIER = 20;
-const ROW_TEXT_ANIMATION_DURATION = 0.3;
 const ACTIVE_ROW_TEXT_COLOR = "#000000";
 const INACTIVE_ROW_TEXT_COLOR = "#ffffff";
 const IMAGE_HIDDEN_CLIP_PATH = "inset(50%)";
 const IMAGE_VISIBLE_CLIP_PATH = "inset(0%)";
 const IMAGE_VISIBILITY_HIDDEN = "hidden";
 const IMAGE_VISIBILITY_VISIBLE = "visible";
-export default function InteractiveListPreviewComp({ items }) {
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(Math.max(number, min), max);
+}
+
+export default function InteractiveListPreviewComp({
+  items,
+  imageSize = DEFAULT_IMAGE_SIZE,
+  duration = DEFAULT_DURATION,
+  smoothness = DEFAULT_SMOOTHNESS,
+  lerp = DEFAULT_LERP,
+}) {
   const imageRefs = useRef([]);
   const imageContainerRef = useRef(null);
   const tableRef = useRef(null);
@@ -26,10 +40,16 @@ export default function InteractiveListPreviewComp({ items }) {
   const tweenGenerationRef = useRef({});
   const activeIndexRef = useRef(null);
   const zIndexRef = useRef(DEFAULT_IMAGE_Z_INDEX);
+  const pointerTargetRef = useRef({ x: 0, y: 0 });
+  const pointerCurrentRef = useRef({ x: 0, y: 0 });
   const reduceMotionRef = useRef(
     typeof window !== "undefined" &&
       (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
   );
+  const safeImageSize = clampNumber(imageSize, 0.5, 2, DEFAULT_IMAGE_SIZE);
+  const safeDuration = clampNumber(duration, 0.1, 2, DEFAULT_DURATION);
+  const safeSmoothness = clampNumber(smoothness, 0.05, 1.5, DEFAULT_SMOOTHNESS);
+  const safeLerp = clampNumber(lerp, 0.02, 1, DEFAULT_LERP);
 
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -40,16 +60,47 @@ export default function InteractiveListPreviewComp({ items }) {
       if (event.matches && imageContainerRef.current) {
         gsap.killTweensOf(imageContainerRef.current);
         gsap.set(imageContainerRef.current, { x: 0, y: 0 });
+        pointerTargetRef.current = { x: 0, y: 0 };
+        pointerCurrentRef.current = { x: 0, y: 0 };
       }
     };
 
     reduceMotionRef.current = mq.matches;
     if (mq.matches && imageContainerRef.current) {
       gsap.set(imageContainerRef.current, { x: 0, y: 0 });
+      pointerTargetRef.current = { x: 0, y: 0 };
+      pointerCurrentRef.current = { x: 0, y: 0 };
     }
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
+
+  useEffect(() => {
+    let frameId;
+
+    const tick = () => {
+      const imageContainer = imageContainerRef.current;
+
+      if (imageContainer && !reduceMotionRef.current) {
+        const current = pointerCurrentRef.current;
+        const target = pointerTargetRef.current;
+
+        current.x += (target.x - current.x) * safeLerp;
+        current.y += (target.y - current.y) * safeLerp;
+
+        gsap.set(imageContainer, {
+          x: current.x,
+          y: current.y,
+        });
+      }
+
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [safeLerp]);
 
   useEffect(() => {
     imageRefs.current.forEach((imageElement) => {
@@ -97,7 +148,7 @@ export default function InteractiveListPreviewComp({ items }) {
 
     gsap.to(rowElement.querySelectorAll("td"), {
       color,
-      duration: ROW_TEXT_ANIMATION_DURATION,
+      duration: safeSmoothness,
       ease: "power2.out",
       overwrite: "auto",
     });
@@ -116,7 +167,7 @@ export default function InteractiveListPreviewComp({ items }) {
       y: rowBounds.top - tableBounds.top,
       height: rowBounds.height,
       opacity: 1,
-      duration: HIGHLIGHT_ANIMATION_DURATION,
+      duration: safeSmoothness,
       ease: "power3.out",
       overwrite: "auto",
     });
@@ -136,7 +187,7 @@ export default function InteractiveListPreviewComp({ items }) {
       ...(reduceMotion
         ? { opacity: 0 }
         : { clipPath: IMAGE_HIDDEN_CLIP_PATH, opacity: 0 }),
-      duration: reduceMotion ? HIGHLIGHT_FADE_DURATION : IMAGE_HIDE_DURATION,
+      duration: reduceMotion ? Math.min(safeSmoothness, 0.35) : safeDuration,
       ease: reduceMotion ? "power2.out" : "power3.inOut",
       onComplete: () => {
         if (tweenGenerationRef.current[index] !== tweenGeneration) return;
@@ -181,7 +232,7 @@ export default function InteractiveListPreviewComp({ items }) {
 
       gsap.to(imageElement, {
         opacity: 1,
-        duration: HIGHLIGHT_FADE_DURATION,
+        duration: Math.min(safeSmoothness, 0.35),
         ease: "power2.out",
         onComplete: () => {
           if (tweenGenerationRef.current[index] !== tweenGeneration) return;
@@ -202,7 +253,7 @@ export default function InteractiveListPreviewComp({ items }) {
       gsap.to(imageElement, {
         clipPath: IMAGE_VISIBLE_CLIP_PATH,
         opacity: 1,
-        duration: IMAGE_REVEAL_DURATION,
+        duration: safeDuration,
         ease: "power2.inOut",
         onComplete: () => {
           if (tweenGenerationRef.current[index] !== tweenGeneration) return;
@@ -247,10 +298,12 @@ export default function InteractiveListPreviewComp({ items }) {
 
     gsap.to(highlightRef.current, {
       opacity: 0,
-      duration: HIGHLIGHT_FADE_DURATION,
+      duration: safeSmoothness,
       ease: "power2.out",
       overwrite: "auto",
     });
+
+    pointerTargetRef.current = { x: 0, y: 0 };
   };
 
   const onMouseMove = (event) => {
@@ -262,12 +315,10 @@ export default function InteractiveListPreviewComp({ items }) {
     const x = (event.clientX - bounds.left) / bounds.width - 0.5;
     const y = (event.clientY - bounds.top) / bounds.height - 0.5;
 
-    gsap.to(imageContainerRef.current, {
+    pointerTargetRef.current = {
       x: x * IMAGE_OFFSET_MULTIPLIER,
       y: y * IMAGE_OFFSET_MULTIPLIER,
-      duration: HIGHLIGHT_ANIMATION_DURATION,
-      ease: "power2.out",
-    });
+    };
   };
 
   return (
@@ -292,6 +343,8 @@ export default function InteractiveListPreviewComp({ items }) {
               ref={(element) => setImageRef(index, element)}
               className="invisible absolute left-[35%] top-1/2 h-90 w-78 -translate-y-1/2"
               style={{
+                width: `${BASE_IMAGE_WIDTH_REM * safeImageSize}rem`,
+                height: `${BASE_IMAGE_HEIGHT_REM * safeImageSize}rem`,
                 willChange: "clip-path, opacity",
                 zIndex: DEFAULT_IMAGE_Z_INDEX,
               }}

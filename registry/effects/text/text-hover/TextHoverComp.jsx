@@ -49,6 +49,8 @@ export default function TextHoverComp({
   data = [],
   bgColor = "#0a0a0a",
   textColor = "#ffffff",
+  hoverColor = "#ffffff",
+  duration = 0.35,
 }) {
   const sectionRef = useRef(null);
   const contentRef = useRef(null);
@@ -171,13 +173,13 @@ export default function TextHoverComp({
         duration: prefersReducedMotion
           ? REDUCED_MOTION_MOVE_DURATION
           : instant
-          ? 0.22
-          : 0.35,
+          ? Math.min(0.22, duration)
+          : duration,
         ease: "power3.out",
         overwrite: "auto",
       });
     },
-    [measureHighlight, prefersReducedMotion]
+    [duration, measureHighlight, prefersReducedMotion]
   );
 
   const startRefreshTracking = useCallback(
@@ -252,12 +254,12 @@ export default function TextHoverComp({
         opacity: 0,
         scale: 1.14,
         filter: "blur(8px)",
-        duration: prefersReducedMotion ? REDUCED_MOTION_MOVE_DURATION : 0.2,
+        duration: prefersReducedMotion ? REDUCED_MOTION_MOVE_DURATION : Math.min(0.2, duration),
         ease: "power3.out",
         overwrite: "auto",
       });
     }
-  }, [prefersReducedMotion]);
+  }, [duration, prefersReducedMotion]);
 
   const handleDesktopHover = useCallback(
     (index) => {
@@ -446,7 +448,6 @@ export default function TextHoverComp({
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
                           "text-2xl max-[1025px]:text-[4vw] max-md:text-[4.5vw]",
-                          "text-neutral-400",
                           prefersReducedMotion
                             ? [
                                 "transition-opacity duration-300",
@@ -457,6 +458,7 @@ export default function TextHoverComp({
                                 isActive ? "-translate-y-full" : "translate-y-0",
                               ].join(" "),
                         ].join(" ")}
+                        style={{ color: textColor }}
                       >
                         {item.label}
                       </h3>
@@ -476,7 +478,7 @@ export default function TextHoverComp({
                                 isActive ? "translate-y-0" : "translate-y-full",
                               ].join(" "),
                         ].join(" ")}
-                        style={{ color: textColor }}
+                        style={{ color: hoverColor }}
                       >
                         {item.label}
                       </span>
@@ -492,13 +494,14 @@ export default function TextHoverComp({
                         descriptionRefs.current[i] = el;
                       }}
                       className={[
-                        "max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide text-neutral-400 max-[1025px]:max-w-[64vw] max-[1025px]:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]",
+                        "max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide max-[1025px]:max-w-[64vw] max-[1025px]:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]",
                         prefersReducedMotion
                           ? `transition-opacity duration-300 ${
                               isActive ? "opacity-100" : "opacity-0"
                             }`
                           : "",
                       ].join(" ")}
+                      style={{ color: textColor }}
                     >
                       {item.description}
                     </p>
@@ -510,23 +513,23 @@ export default function TextHoverComp({
 
           <div
             ref={highlightRef}
-            className="pointer-events-none absolute left-[-1%] top-0 max-[1025px]:left-[-5%]"
+            className="pointer-events-none absolute left-0 top-0"
           >
             <CornerSVG
               className="absolute left-0 top-0 size-8 opacity-70 max-[1025px]:size-7 max-md:size-5"
-              style={{ color: textColor }}
+              style={{ color: hoverColor }}
             />
             <CornerSVG
               className="absolute right-0 top-0 size-8 rotate-90 opacity-70 max-[1025px]:size-7 max-md:size-5"
-              style={{ color: textColor }}
+              style={{ color: hoverColor }}
             />
             <CornerSVG
               className="absolute bottom-3 left-0 size-8 -rotate-90 opacity-70 max-[1025px]:size-7 max-[1025px]:bottom-2 max-md:size-5"
-              style={{ color: textColor }}
+              style={{ color: hoverColor }}
             />
             <CornerSVG
               className="absolute bottom-3 right-0 size-8 rotate-180 opacity-70 max-[1025px]:size-7 max-[1025px]:bottom-2 max-md:size-5"
-              style={{ color: textColor }}
+              style={{ color: hoverColor }}
             />
           </div>
         </div>

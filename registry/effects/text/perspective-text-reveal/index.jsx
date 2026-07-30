@@ -16,9 +16,10 @@ export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
  delay = 0,
+ duration = 0.8,
+ stagger = 0.08,
  className = "",
  scrub = false,
- end = "bottom 60%",
 }) {
  const containerRef = useRef(null);
  const splitRefs = useRef([]);
@@ -73,7 +74,6 @@ export default function PerspectiveTextReveal({
  scrollTrigger: {
  trigger: containerRef.current,
  start:"top 90%",
- end,
  scrub,
  },
  });
@@ -99,8 +99,8 @@ export default function PerspectiveTextReveal({
  yPercent: 0,
  rotateX: 0,
  opacity: 1,
- duration: 0.8,
- stagger: 0.08,
+ duration,
+ stagger,
  ease:"power3.out",
  delay,
  };
@@ -111,7 +111,6 @@ export default function PerspectiveTextReveal({
  scrollTrigger: {
  trigger: containerRef.current,
  start:"top 90%",
- end,
  scrub,
 //  markers:true,
  },
@@ -128,7 +127,7 @@ export default function PerspectiveTextReveal({
  if (ctx) ctx.revert();
  splitRefs.current.forEach((split) => split?.revert());
  };
- }, [animateOnScroll, delay, scrub, end]);
+ }, [animateOnScroll, delay, duration, scrub, stagger]);
 
  return (
  <div

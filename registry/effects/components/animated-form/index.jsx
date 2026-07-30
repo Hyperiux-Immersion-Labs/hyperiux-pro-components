@@ -96,19 +96,28 @@ async function submitHandler(data) {
 }
 
 export default function AnimatedForm({
- fields = FIELDS,
- submitLabel = "Send Message",
- successMessage = " Form submitted successfully!",
+ accentColor = "#111111",
+ backgroundColor = "#ffffff",
+ textColor = "#111111",
+ inputBackgroundColor = "#ffffff",
+ fieldBorderColor = "#e5e7eb",
+ inputRoundedness = 28,
+ duration = 0.3,
 }) {
  return (
- <main className="w-full bg-white min-h-screen mx-auto py-20 max-[1025px]:pt-28 px-6">
-  <div className="w-[50%] max-[1025px]:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl text-black mb-8">Get in touch</h1>
+ <main className="w-full min-h-screen mx-auto py-20 max-[1025px]:pt-28 px-6" style={{ backgroundColor }}>
+  <div className="w-[50%] max-[1025px]:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl mb-8" style={{ color: textColor }}>Get in touch</h1>
  <ContactForm
- fields={fields}
+ fields={FIELDS}
  schema={contactSchema}
  onSubmit={submitHandler}
- submitLabel={submitLabel}
- successMessage={successMessage}
+ submitLabel="Send Message"
+ accentColor={accentColor}
+ textColor={textColor}
+ inputBackgroundColor={inputBackgroundColor}
+ fieldBorderColor={fieldBorderColor}
+ inputRoundedness={inputRoundedness}
+ duration={duration}
  />
  </div>
  </main>

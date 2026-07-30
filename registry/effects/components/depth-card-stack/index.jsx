@@ -16,10 +16,23 @@ const cards = [
  { name:"Hype Components", num:"0763", joined:"Apr 20, 2026", color:"#F472B6", claimedText:"Frank Lee claimed 1 hour ago", textureImage:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/textures/texture-pattern05.png" },
 ];
 
-const DepthCardStack = ({ cards: cardsProp = cards }) => {
+const DepthCardStack = ({
+  duration,
+  mouseInteraction,
+  bgVisible,
+  lerp,
+  smoothness,
+}) => {
   return (
     <>
-      <DepthCardStackComp cards={cardsProp} />
+      <DepthCardStackComp
+        cards={cards}
+        duration={duration}
+        mouseInteraction={mouseInteraction}
+        bgVisible={bgVisible}
+        lerp={lerp}
+        smoothness={smoothness}
+      />
     </>
   )
 }

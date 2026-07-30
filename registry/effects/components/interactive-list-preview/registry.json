@@ -1,6 +1,6 @@
 {
   "name": "interactive-list-preview",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "type": "registry:component",
   "title": "Interactive List Preview",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
@@ -29,6 +29,12 @@
   ],
   "changelog": [
     {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed the public items/previewPlacement controls and replaced the stale control set with working imageSize, duration, smoothness, and lerp props.",
+      "breaking": false
+    },
+    {
       "version": "1.2.0",
       "date": "2026-07-28",
       "summary": "Added items as a public prop with a working remixer panel. The originally suggested previewPlacement/activeIndex/accentColor/duration props don't exist - the preview image position, colors, and timings are fixed in InteractiveListPreviewComp - so they were dropped rather than shipping non-functional controls.",
@@ -49,132 +55,65 @@
   ],
   "props": [
     {
-      "name": "items",
-      "type": "array",
-      "default": [
-        {
-          "client": "AURORA UI",
-          "platform": "NEXT.JS",
-          "services": "Motion Design, GSAP, Page Transitions, UI Systems",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"
-        },
-        {
-          "client": "NEON FLOW",
-          "platform": "REACT",
-          "services": "Interactive UI, Scroll Animations, Effects Library",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"
-        },
-        {
-          "client": "GLASSMORPH",
-          "platform": "NEXT.JS",
-          "services": "Glass UI, Components, Motion Architecture",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg"
-        },
-        {
-          "client": "VOID SYSTEM",
-          "platform": "CUSTOM WEBGL",
-          "services": "Shaders, Creative Development, Visual Effects",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg"
-        },
-        {
-          "client": "HYPER SCROLL",
-          "platform": "FRAMER MOTION",
-          "services": "Scroll Storytelling, Motion Systems, Interactions",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
-        },
-        {
-          "client": "KINETIC LAB",
-          "platform": "THREE.JS",
-          "services": "3D Interfaces, Motion UI, WebGL Experiences",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg"
-        },
-        {
-          "client": "PIXEL GRID",
-          "platform": "TAILWIND CSS",
-          "services": "Design Systems, UI Engineering, Responsive Layouts",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg"
-        },
-        {
-          "client": "MOTION CORE",
-          "platform": "HEADLESS CMS",
-          "services": "Reusable Components, Motion Engine, Performance",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg"
-        },
-        {
-          "client": "INTERFACE X",
-          "platform": "NEXT.JS",
-          "services": "Immersive UI, Creative Coding, Transitions, Effects",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg"
-        },
-        {
-          "client": "HYPERIUX",
-          "platform": "UI LIBRARY",
-          "services": "Animations, Interactive Components, Futuristic Experiences",
-          "img": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
-        }
-      ],
-      "description": "List rows and preview content (client, platform, services, img).",
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "previewPlacement",
-      "type": "enum",
-      "description": "Where the preview appears relative to the list.",
-      "default": "right",
-      "remixer": {
-        "control": "select",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "options": []
-      }
-    },
-    {
-      "name": "activeIndex",
+      "name": "imageSize",
       "type": "number",
-      "description": "Initially active list item.",
-      "default": 0,
+      "description": "Scale multiplier for the hover preview image.",
+      "default": 1,
       "remixer": {
         "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "min": 0,
-        "max": 240,
-        "step": 1
-      }
-    },
-    {
-      "name": "accentColor",
-      "type": "color",
-      "description": "Color used for active list state.",
-      "default": "#ff6b00",
-      "remixer": {
-        "control": "color",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.05
       }
     },
     {
       "name": "duration",
       "type": "number",
-      "description": "Preview transition duration.",
+      "description": "Preview image reveal and hide duration.",
+      "default": 0.6,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "smoothness",
+      "type": "number",
+      "description": "Highlight and row text transition smoothing duration.",
       "default": 0.35,
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
+        "min": 0.05,
+        "max": 1.5,
         "step": 0.05
+      }
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "description": "Pointer-follow smoothing amount; higher values track faster.",
+      "default": 0.18,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.02,
+        "max": 1,
+        "step": 0.01
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

@@ -16,13 +16,11 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `videoSrc` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-vi...` | string | text | Video source URL used by the effect. |
 | `charColumns` | `DEFAULT_CHAR_COLUMNS` | number | range/number | Controls the density of generated character columns. |
+| `charZoom` | `1` | number | range/number | Scale factor for the rendered character grid. |
 | `colorizeFromVideo` | `false` | boolean | toggle | Uses video color data instead of fixed monochrome characters. |
 | `videoZoom` | `1` | number | range/number | Zoom level applied to the video source. |
-| `charZoom` | `1` | number | range/number | Scale factor for the rendered character grid. |
 | `colorBoost` | `1.4` | number | range/number | Boosts sampled color intensity. |
-| `className` | `""` | string | text | Additional class names for the root element. |
 
 ### Dotted Grid (`dotted-grid`, free)
 
@@ -36,7 +34,6 @@ Notes:
 | `trailFadeMs` | `1200` | number | range/number | Sets how long trail marks remain visible. |
 | `backgroundColor` | `#000000` | color | color | Colors the canvas background. |
 | `showDesktopHint` | `true` | boolean | toggle | Shows or hides the desktop hint. |
-| `className` | `""` | string | text | Additional class names for the root section. |
 
 ### Spider Particles (`spider-particles`, free)
 
@@ -47,23 +44,26 @@ Notes:
 | `particleSize` | `20.0` | number | range/number | Rendered size of each particle. |
 | `mouseConnectDist` | `160` | number | range/number | Cursor distance used for particle connection lines. |
 | `spotlightRadius` | `300` | number | range/number | Cursor spotlight radius for reveal or particle effects. |
-| `particlesGlow` | `false` | boolean | toggle | Enables or disables glow rendering for particles. |
-| `glowColor` | `0xffffff` | color | color | Glow color used by particles or highlights. |
 | `particleColor` | `0xffffff` | color | color | Main particle color. |
 | `webColor` | `0xffffff` | color | color | Color of the cursor connection lines. |
 | `centerColor` | `0xffffff` | color | color | Color of the cursor center point. |
+| `particlesGlow` | `false` | boolean | toggle | Enables or disables glow rendering for particles. |
+| `glowColor` | `0xffffff` | color | color | Glow color used by particles or highlights. |
+| `showWeb` | `true` | boolean | toggle | Shows or hides spider strings. |
+
 
 ## Buttons
 
-### Animated Toggle (`animated-toggle`, pro) - Suggested props
+### Animated Toggle (`animated-toggle`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `checked` | `false` | boolean | toggle | Initial on/off state for the toggle. |
-| `size` | `44` | number | range/number | Overall switch size. |
-| `activeColor` | `#ff6b00` | color | color | Track color when the toggle is active. |
-| `inactiveColor` | `#222222` | color | color | Track color when the toggle is inactive. |
-| `duration` | `0.35` | number | range/number | Toggle animation duration in seconds. |
+| `size` | `96` | number | range/number | Overall toggle box size in pixels. |
+| `activeColor` | `#ff5f00` | color | color | Box color when a toggle is active. |
+| `inactiveColor` | `#a1a1aa` | color | color | Box color when a toggle is inactive. |
+| `duration` | `0.32` | number | range/number | Icon transition duration in seconds. |
+
+Note: `defaultChecked` was removed — all three toggles always start unchecked.
 
 ### Arrow Fill Button (`arrow-fill-button`, free)
 
@@ -249,131 +249,157 @@ Notes:
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `fields` | `defaultFields` | array | json/list | Fields rendered by the form demo. |
-| `submitLabel` | `"Submit"` | string | text | Text shown on the submit button. |
-| `accentColor` | `#ff6b00` | color | color | Accent color for focus, checks, and primary actions. |
-| `successMessage` | `"Message sent"` | string | text | Message shown after successful submission. |
-| `validateOnBlur` | `true` | boolean | toggle | Runs field validation after blur. |
+| `accentColor` | `#111111` | color | color | Accent color for focus, checks, and primary actions. |
+| `backgroundColor` | `#ffffff` | color | color | Page background color around the form. |
+| `textColor` | `#111111` | color | color | Text color for the form heading and field labels. |
+| `inputBackgroundColor` | `#ffffff` | color | color | Background color for inputs, textarea, and select controls. |
+| `fieldBorderColor` | `#e5e7eb` | color | color | Default border color for form controls. |
+| `inputRoundedness` | `28` | number | range/number | Border radius for inputs and the submit button in pixels. |
+| `duration` | `0.3` | number | range/number | Transition duration for focus and button effects. |
 
 ### Animated Modal (`animated-modal`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `triggerLabel` | `"Open modal"` | string | text | Text shown on the modal trigger. |
-| `title` | `"Modal title"` | string | text | Modal heading text. |
-| `size` | `"md"` | enum | select | Controls the modal width preset. |
-| `overlayOpacity` | `0.65` | number | range/number | Opacity of the page overlay. |
-| `duration` | `0.4` | number | range/number | Open and close animation duration. |
+| `showCloseButton` | `true` | boolean | toggle | Shows the close button. |
+| `closeOnBackdrop` | `true` | boolean | toggle | Closes the modal when the backdrop is clicked. |
+| `closeOnEsc` | `true` | boolean | toggle | Closes the modal when Escape is pressed. |
+| `size` | `72` | number | range/number | Modal content width as a percentage of the viewport. |
+| `overlayOpacity` | `0.82` | number | range/number | Opacity of the page overlay. |
+| `duration` | `0.5` | number | range/number | Open and close fade duration. |
+| `backgroundColor` | `#ffffff` | color | color | Modal content background color. |
+| `textColor` | `#111111` | color | color | Modal content text color. |
+| `roundedness` | `24` | number | range/number | Modal content border radius in pixels. |
 
 ### Tabs (`animated-tabs`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `tabs` | `defaultTabs` | array | json/list | Tab labels and panel content. |
-| `defaultTab` | `0` | number | range/number | Index of the initially active tab. |
-| `accentColor` | `#ff6b00` | color | color | Color used for the active tab indicator. |
-| `duration` | `0.35` | number | range/number | Panel transition duration. |
-| `orientation` | `"horizontal"` | enum | select | Tab layout direction. |
+| `defaultActiveIndex` | `0` | number | range/number | Index of the initially active tab. |
+| `animationType` | `"slide"` | string | select | Panel transition style. |
+| `slideDistance` | `40` | number | range/number | Horizontal travel distance for the slide transition in pixels. |
+| `accentColor` | `#ff6b00` | color | color | Color used for the active tab label and indicator. |
+| `duration` | `0.35` | number | range/number | Panel and indicator transition duration. |
 
-### Border Beam (`border-beam`, pro) - Suggested props
+### Border Beam (`border-beam`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `duration` | `6` | number | range/number | Time for the beam to complete a loop. |
+| `size` | `"md"` | string | select | Chooses the beam motion family and sizing preset (Rotate MD/SM, Line, Pulse Inner/Outside). |
+| `colorVariant` | `"colorful"` | string | select | Chooses the color palette used by the beam (Colorful, Mono, Ocean, Sunset). |
+| `theme` | `"light"` | string | select | Sets the light, dark, or auto (system-aware) beam tuning. |
+| `staticColors` | `false` | boolean | toggle | Freezes the animated color drift. |
+| `active` | `true` | boolean | toggle | Turns the beam animation on or off. |
+| `hueRange` | `30` | number | range/number | Controls the amount of hue drift. |
+| `strength` | `1` | number | range/number | Scales the beam intensity. |
+| `duration` | `2` | number | range/number | Time for the beam to complete a loop. |
 | `beamWidth` | `2` | number | range/number | Thickness of the animated border beam. |
-| `beamColor` | `#ff6b00` | color | color | Primary color of the border beam. |
-| `backgroundColor` | `#111111` | color | color | Card or container background color. |
-| `paused` | `false` | boolean | toggle | Pauses the border animation. |
+| `backgroundColor` | `#f4f5f7` | color | color | Card or container background color. |
 
-### Card Drift (`card-drift`, pro) - Suggested props
+Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the existing gradient rather than truly recoloring it, and `paused` duplicated `active`. Only props with simple, direct, reliable mappings are kept.
+
+### Card Drift (`card-drift`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `cards` | `defaultCards` | array | json/list | Cards rendered in the drift stack. |
-| `driftAmount` | `28` | number | range/number | Maximum drift distance on pointer movement. |
-| `rotationAmount` | `8` | number | range/number | Maximum card rotation. |
-| `duration` | `0.45` | number | range/number | Animation smoothing duration. |
-| `shadowOpacity` | `0.25` | number | range/number | Shadow intensity under drifting cards. |
+| `backgroundColor` | `#000000` | color | color | Background color for the draggable card field. |
+| `backgroundTextColor` | `#ffffff` | color | color | Color of the large background label. |
+| `cardColor` | `#4f46e5` | color | color | Background color for each draggable card. |
+| `cardTextColor` | `#ffffff` | color | color | Text color for each draggable card. |
+| `barColor` | `#262626` | color | color | Background color for each card's tag bar. |
+| `driftAmount` | `30` | number | range/number | Initial scatter and drag throw distance for cards. |
+| `rotationAmount` | `3` | number | range/number | Maximum random rotation applied to individual cards. |
+| `smoothness` | `0.7` | number | range/number | Release and scale smoothing duration for each dragged card. |
+| `lerp` | `0.35` | number | range/number | Velocity smoothing amount while dragging; higher values react faster. |
 
 ### Cards Runway (`cards-runway`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `cards` | `defaultCards` | array | json/list | Cards shown in the runway sequence. |
-| `speed` | `1` | number | range/number | Playback speed for the runway motion. |
-| `gap` | `32` | number | range/number | Spacing between runway cards. |
-| `perspective` | `900` | number | range/number | Perspective depth applied to card movement. |
-| `pauseOnHover` | `true` | boolean | toggle | Pauses movement while hovering cards. |
+| `accentColor` | `#ff5f00` | color | color | Accent color used by the runway card bars. |
+| `cardColor` | `#161616` | color | color | Background color of each card. |
+| `speed` | `1` | number | range/number | Playback speed multiplier for the runway motion. |
+| `gap` | `48` | number | range/number | Spacing between runway cards in pixels. |
+| `perspective` | `900` | number | range/number | Perspective depth applied to the runway track. |
 
-### Depth Card Stack (`depth-card-stack`, pro) - Suggested props
-
-| Prop | Default | Type | Remixer control | Short description |
-|---|---|---|---|---|
-| `cards` | `defaultCards` | array | json/list | Cards rendered in the depth stack. |
-| `activeIndex` | `0` | number | range/number | Initially focused card index. |
-| `depth` | `80` | number | range/number | Z-depth between stacked cards. |
-| `rotation` | `6` | number | range/number | Rotation offset between stacked cards. |
-| `duration` | `0.55` | number | range/number | Card transition duration. |
-
-### Gooey Counter (`gooey-counter`, free) - Suggested props
+### Depth Card Stack (`depth-card-stack`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `value` | `100` | number | range/number | Target number displayed by the counter. |
-| `duration` | `1.2` | number | range/number | Duration of the count animation. |
-| `blobColor` | `#ff6b00` | color | color | Color of the gooey animated shape. |
-| `textColor` | `#ffffff` | color | color | Color of the counter text. |
-| `prefix` | `""` | string | text | Text shown before the number. |
+| `duration` | `0.55` | number | range/number | Card navigation transition duration. |
+| `mouseInteraction` | `true` | boolean | toggle | Enables pointer tilt and texture reveal on the active card. |
+| `bgVisible` | `true` | boolean | toggle | Shows the white section background behind the card stack. |
+| `lerp` | `0.18` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
+| `smoothness` | `0.4` | number | range/number | Hover enter/leave smoothing duration for card tilt and texture reveal. |
 
-### Hover Stack (`hover-stack`, free) - Suggested props
+### Gooey Counter (`gooey-counter`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Stack items shown on hover. |
-| `spread` | `24` | number | range/number | Distance cards spread while hovered. |
-| `rotation` | `7` | number | range/number | Rotation amount applied to stacked items. |
+| `maxValue` | `100` | number | range/number | Upper bound of the looping count sequence. |
+| `gridSize` | `22` | number | range/number | Number of grid columns used by the morphing counter. |
+| `duration` | `1` | number | range/number | Pace multiplier for the count/morph animation. |
+| `roundedness` | `0` | number | range/number | Corner rounding for each gooey grid cell. |
+| `blobColor` | `#111111` | color | color | Color of the gooey animated blocks. |
+| `backgroundColor` | `#d1d1d1` | color | color | Background color behind the counter. |
+
+### Hover Stack (`hover-stack`, free)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `cardWidth` | `280` | number | range/number | Width of each card in pixels. |
+| `cardHeight` | `360` | number | range/number | Height of each card in pixels. |
+| `overlap` | `96` | number | range/number | Horizontal overlap between resting cards in pixels. |
+| `pushDistance` | `235` | number | range/number | Distance neighboring cards are pushed aside on hover. |
+| `hoverLift` | `30` | number | range/number | Vertical lift applied to the hovered card in pixels. |
+| `spread` | `24` | number | range/number | Distance cards spread vertically while hovered. |
+| `rotation` | `7` | number | range/number | Rotation amount applied to stacked cards' resting tilt. |
 | `duration` | `0.35` | number | range/number | Hover animation duration. |
-| `accentColor` | `#ff6b00` | color | color | Highlight color for active stack content. |
+| `accentColor` | `transparent` | color | color | Outline color shown around the active card; transparent by default (matching the original no-outline look) until a color is picked. |
 
-### Interactive List Preview (`interactive-list-preview`, free) - Suggested props
+Note: `cards` and `items` were removed — card content (quote, tag, background, accent) is now always the built-in set.
 
-| Prop | Default | Type | Remixer control | Short description |
-|---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | List rows and preview content. |
-| `previewPlacement` | `"right"` | enum | select | Where the preview appears relative to the list. |
-| `activeIndex` | `0` | number | range/number | Initially active list item. |
-| `accentColor` | `#ff6b00` | color | color | Color used for active list state. |
-| `duration` | `0.35` | number | range/number | Preview transition duration. |
-
-### Ribbon Drift (`ribbon-drift`, pro) - Suggested props
+### Interactive List Preview (`interactive-list-preview`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `ribbons` | `defaultRibbons` | array | json/list | Ribbon labels or image strips rendered by the effect. |
-| `driftSpeed` | `1` | number | range/number | Speed of the ribbon drift. |
-| `amplitude` | `36` | number | range/number | Vertical drift amplitude. |
-| `ribbonColor` | `#ff6b00` | color | color | Primary ribbon color. |
-| `pauseOnHover` | `false` | boolean | toggle | Pauses ribbon motion on hover. |
+| `imageSize` | `1` | number | range/number | Scale multiplier for the hover preview image. |
+| `duration` | `0.6` | number | range/number | Preview image reveal and hide duration. |
+| `smoothness` | `0.35` | number | range/number | Highlight and row text transition smoothing duration. |
+| `lerp` | `0.18` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
+
+### Ribbon Drift (`ribbon-drift`, pro)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `driftSpeed` | `1` | number | range/number | Speed of the ribbon drift (scales scroll-timeline durations). |
+| `imageSize` | `1` | number | range/number | Scale multiplier applied to the ribbon images. |
+| `showNames` | `true` | boolean | toggle | Shows the project name on hover. |
+| `ribbonColor` | `#000000` | color | color | Color of the section-break reveal text fill. |
+
+Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were removed — content is always drawn from the built-in image/name pool.
 
 ### Testimonial Swiper (`testimonial-swiper`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `testimonials` | `defaultTestimonials` | array | json/list | Testimonials shown in the swiper. |
+| `bgColor` | `#edeae2` | color | color | Background color behind the testimonial content. |
+| `accentColor` | `#ff6b00` | color | color | Accent color for the count, quote mark, and navigation controls. |
 | `autoplay` | `true` | boolean | toggle | Automatically advances testimonials. |
-| `autoplayDelay` | `4500` | number | range/number | Delay between testimonial changes. |
-| `accentColor` | `#ff6b00` | color | color | Accent color for controls and active state. |
+| `autoplayDelay` | `4500` | number | range/number | Delay between testimonial changes in milliseconds. |
 | `showNavigation` | `true` | boolean | toggle | Shows previous/next controls. |
+| `imageSize` | `1` | number | range/number | Scale multiplier for the testimonial images. |
 
-### Custom Video Player (`video-player`, pro) - Suggested props
+### Custom Video Player (`video-player`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `src` | `"/showreel.mp4"` | string | text | Video source URL. |
-| `poster` | `""` | string | text | Poster image shown before playback. |
-| `autoPlay` | `false` | boolean | toggle | Starts playback automatically when allowed. |
-| `muted` | `true` | boolean | toggle | Initial muted state. |
-| `showControls` | `true` | boolean | toggle | Shows the custom playback controls. |
+| `autoPlay` | `true` | boolean | toggle | Starts playback automatically when allowed. |
+| `startMuted` | `true` | boolean | toggle | Initial muted state. |
+| `showCloseButton` | `true` | boolean | toggle | Shows the close button on the player. |
+| `rounded` | `false` | boolean | toggle | Rounds the player frame when not fullscreen. |
+| `preserveAspectRatio` | `true` | boolean | toggle | Uses object-contain instead of object-cover for the video. |
+| `hideControlsDelay` | `1800` | number | range/number | Delay before controls auto-hide, in milliseconds. |
 
 ## Cursor
 
@@ -892,10 +918,14 @@ The previous `leftContent`/`rightContent`/`split`/`backgroundColor`/`transitionD
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `bgColor` | `#ffffff` | color | color | Background color of the sticky content pane (left side). |
+| `bgColor` | `#ffffff` | color | color | Background color of the sticky section, including the gap between the content and image panes. |
 | `contentEnterYPercent` | `2` | number | range | Vertical offset (% of content height) each content block starts from before sliding into place. |
 | `contentTransitionDuration` | `0.9` | number | range | Duration of each content block's enter/exit transition on the scroll timeline. |
-| `stepGap` | `2.1` | number | range | Scroll-timeline distance allotted to each section step. |
+| `initialImageScale` | `1.5` | number | range | Scale of an image before it becomes the active image. |
+| `activeImageScale` | `1.2` | number | range | Scale of the image while it is active on screen. |
+| `exitImageScale` | `1` | number | range | Scale of an image after it has exited. |
+
+Note: `stepGap` was removed — each section step now always uses a fixed 2s scroll-timeline distance.
 
 ### Marquee on SVG Path (`svg-path`, pro)
 
@@ -939,32 +969,28 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 | `duration` | `0.5` | number | range/number | Animation duration. |
 | `blur` | `10` | number | range/number | Numeric value for blur. |
 | `className` | `""` | string | text | Additional class names for the root element. |
-| `variant` | `"fade"` | string | text | Visual or behavior variant. |
-| `once` | `true` | boolean | toggle | Toggles once behavior. |
+| `variant` | `"fade"` | string | select | Direction variant for the reveal. |
+| `once` | `false` | boolean | toggle | Runs the reveal only once per viewport entry when enabled. |
 
 ### Circle Text Reveal (`circle-text-reveal`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `textColor` | `'#111'` | color | color | Primary text color used by the component. |
-| `Text` | `"Some ideas only bloom when you move toward them."` | string | text | Value for text. |
-| `revealText` | `"The hidden layer has been waiting for your cursor."` | string | text | Value for reveal text. |
 | `circleColorBg` | `'#E76F2E'` | color | color | Color value for circle color bg. |
 | `RevealedTextColor` | `'#fefefe'` | color | color | Color value for revealed text color. |
+| `lerp` | `0.15` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
+| `smoothness` | `0.5` | number | range/number | Mask-size transition duration in seconds. |
+| `circleSize` | `500` | number | range/number | Expanded reveal circle size in pixels. |
 
 ### Glitchy Text (`glitchy-text`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `runOnScroll` | `false` | boolean | toggle | Toggles run on scroll behavior. |
-| `triggerId` | `"glitch-section"` | string | text | Value for trigger id. |
-| `start` | `"top 70%"` | string | text | Value for start. |
-| `end` | `"bottom 30%"` | string | text | Value for end. |
-| `once` | `true` | boolean | toggle | Toggles once behavior. |
-| `markers` | `false` | boolean | toggle | Toggles markers behavior. |
 | `initialDelay` | `2.5` | number | range/number | Animation delay value. |
 | `replayDelay` | `0.2` | number | range/number | Animation delay value. |
-| `text` | `"Engineering meets artistry"` | string | text | Text content rendered or animated by the effect. |
+| `baseTextColor` | `#ffffff` | color | color | Base text layer color. |
+| `glitchColor` | `#eab308` | color | color | Accent color for the glitch layers and replay button. |
 
 ### Mask Text Reveal (`mask-text-reveal`, pro)
 
@@ -982,11 +1008,9 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `value` | `100` | number | range/number | Target value for the counter. |
-| `duration` | `1.2` | number | range/number | Duration of the count animation. |
-| `prefix` | `""` | string | text | Text shown before the number. |
-| `suffix` | `"+"` | string | text | Text shown after the number. |
-| `textColor` | `#ffffff` | color | color | Counter text color. |
+| `duration` | `1.5` | number | range/number | Digit roll duration in seconds for all three counters. |
+| `stagger` | `0.1` | number | range/number | Delay between digit columns in seconds for all three counters. |
+| `textColor` | `#021A54` | color | color | Counter text color for all three counters. |
 
 ### Overflow Stagger Text (`overflow-stagger-text`, free)
 
@@ -1019,9 +1043,9 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
 | `animateOnScroll` | `true` | boolean | toggle | Toggles animate on scroll behavior. |
 | `delay` | `0` | number | range/number | Delay before the animation starts. |
-| `className` | `""` | string | text | Additional class names for the root element. |
+| `duration` | `0.8` | number | range/number | Line reveal duration in seconds. |
+| `stagger` | `0.08` | number | range/number | Delay between revealed lines. |
 | `scrub` | `false` | boolean | toggle | Toggles scrub behavior. |
-| `end` | `"bottom 60%"` | string | text | Value for end. |
 
 ### Rectangular Text Reveal (`rectangular-text-reveal`, free)
 
@@ -1050,14 +1074,13 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `text` | undefined | string | text | Text content rendered or animated by the effect. |
-| `speed` | `0.6` | number | range/number | Animation or movement speed. |
-| `charType` | `'lowercase'` | string | text | Value for char type. |
-| `textSize` | `'text-base'` | string | text | Value for text size. |
-| `textColor` | `'text-white'` | color | color | Primary text color used by the component. |
-| `align` | `'left'` | string | text | Value for align. |
-| `start` | `'top 40%'` | string | text | Value for start. |
-| `className` | undefined | string | text | Additional class names for the root element. |
+| `speed` | `0.6` | number | range/number | Scramble character cycling speed. |
+| `charType` | `"lowercase"` | string | select | Character set used while scrambling. |
+| `textSize` | `5` | number | range/number | Text size in vw. |
+| `textColor` | `#111111` | color | color | Text color. |
+| `align` | `"left"` | string | select | Text alignment. |
+| `duration` | `0.7` | number | range/number | Scramble reveal duration in seconds. |
+| `stagger` | `0.04` | number | range/number | Delay between scrambled characters. |
 
 ### Slide Text Reveal (`slide-text-reveal`, pro)
 
@@ -1066,34 +1089,34 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 | `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
 | `animateOnScroll` | `true` | boolean | toggle | Toggles animate on scroll behavior. |
 | `delay` | `0` | number | range/number | Delay before the animation starts. |
-| `className` | `""` | string | text | Additional class names for the root element. |
-| `start` | `"top 80%"` | string | text | Value for start. |
-| `end` | `"bottom 60%"` | string | text | Value for end. |
+| `duration` | `0.5` | number | range/number | Character reveal duration in seconds. |
+| `speed` | `20` | number | range/number | Starting horizontal offset in pixels. |
+| `stagger` | `0.03` | number | range/number | Delay between revealed characters. |
+| `variant` | `"right"` | string | select | Slide direction, from right or from left. |
 
 ### Spotlight Text (`spotlight-text`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `text` | `"Hyperiux Vault is where design meets precision - a thoughtfully craf...` | string | text | Text content rendered or animated by the effect. |
-| `className` | `""` | string | text | Additional class names for the root element. |
-| `size` | `"text-3xl md:text-5xl"` | string | text | Size value used by the visual element. |
-| `align` | `"center"` | string | text | Value for align. |
+| `baseTextColor` | `#525252` | color | color | Dim base text color. |
+| `spotlightColor` | `#ffffff` | color | color | Text color inside the spotlight. |
+| `lerp` | `0.08` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
+| `spotlightSize` | `220` | number | range/number | Spotlight radius in pixels. |
+| `smoothness` | `0.12` | number | range/number | Spotlight opacity smoothing amount. |
 
 ### Text Cloning (`text-cloning`, pro) - Suggested props
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `text` | `"Hyperiux"` | string | text | Text copied into clone layers. |
-| `cloneCount` | `8` | number | range/number | Number of text clones rendered. |
-| `offset` | `12` | number | range/number | Distance between cloned text layers. |
-| `textColor` | `#ffffff` | color | color | Primary text color. |
-| `accentColor` | `#ff6b00` | color | color | Color used for clone highlights. |
+| `cloneCount` | `9` | number | range/number | Number of text clone layers rendered. |
+| `offset` | `220` | number | range/number | Maximum pointer parallax distance between clone layers. |
+| `textColor` | `#f5f5f5` | color | color | Clone and center text color. |
+| `textSize` | `1` | number | range/number | Text size multiplier. |
 
 ### Text Fill Animation (`text-fill-animation`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `text` | `"Design systems should feel effortless, not like you're fighting your...` | string | text | Text content rendered or animated by the effect. |
 | `textColor` | `'#111111'` | color | color | Primary text color used by the component. |
 | `primaryColor` | `'#ff6b00'` | color | color | Color value for primary color. |
 | `dimColor` | `'#dddddd'` | color | color | Color value for dim color. |
@@ -1112,21 +1135,23 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `items` | `defaultItems` | array | json/list | Text rows or industry items revealed on hover. |
-| `textColor` | `#ffffff` | color | color | Base text color. |
-| `hoverColor` | `#ff6b00` | color | color | Text color while hovered. |
-| `expandAmount` | `1.18` | number | range/number | Scale or expansion amount on hover. |
-| `duration` | `0.35` | number | range/number | Hover animation duration. |
+| `bgColor` | `#0a0a0a` | color | color | Section background color. |
+| `textColor` | `#ffffff` | color | color | Inactive text and description color. |
+| `hoverColor` | `#ffffff` | color | color | Active text and corner-frame color. |
+| `duration` | `0.35` | number | range/number | Hover frame animation duration in seconds. |
 
-### Text Stream (`text-stream`, pro) - Suggested props
+### Text Stream (`text-stream`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `lines` | `defaultLines` | array | json/list | Text lines streamed by the effect. |
-| `speed` | `1` | number | range/number | Streaming animation speed. |
-| `stagger` | `0.08` | number | range/number | Delay between streamed text fragments. |
+| `speed` | `1` | number | range/number | Streaming speed multiplier. |
+| `stagger` | `0.08` | number | range/number | Vertical spacing between streamed lines. |
 | `textColor` | `#ffffff` | color | color | Text color. |
 | `backgroundColor` | `#000000` | color | color | Background color behind the stream. |
+| `autoplay` | `true` | boolean | toggle | Keeps the stream drifting on its own when idle. |
+| `runOnScroll` | `true` | boolean | toggle | Boosts and reverses the stream in response to scroll or wheel input. |
+
+Note: `autoplay` and `runOnScroll` both run by default and can be toggled independently.
 
 ## Transitions
 
@@ -1204,15 +1229,16 @@ The previous `projects`/`radius`/`depth`/`autoRotate`/`backgroundColor` props (2
 | `pageSpeed` | `0.8` | number | range/number | Speed of the page flip animation. |
 | `bookScale` | `1` | number | range/number | Scale applied to the 3D book group. |
 
-### Colliding Models (`colliding-models`, pro) - Suggested props
+### Colliding Models (`colliding-models`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `modelUrl` | `"/models/model.glb"` | string | text | Main GLB model source. |
 | `connectorCount` | `8` | number | range/number | Number of connecting shapes or joints. |
 | `gravity` | `0` | number | range/number | Physics gravity strength. |
 | `modelScale` | `1` | number | range/number | Scale applied to the 3D model. |
-| `backgroundColor` | `#000000` | color | color | Canvas background color. |
+| `backgroundColor` | `#141518` | color | color | Canvas background color. |
+
+Note: `modelUrl` was removed — the model geometry/materials are fixed GLB assets that can't be swapped without breaking the effect.
 
 ### Curved Plane (`curved-plane`, pro)
 

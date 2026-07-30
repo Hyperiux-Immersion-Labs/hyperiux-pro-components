@@ -64,19 +64,21 @@ const popupSections = [
 ];
 
 export default function AnimatedModal({
-  triggerLabel = "Open Modal",
-  title = "A Deeper Look at the Project",
-  subtitle = "Explore the thinking, design strategy, and long-term value proposition behind the development.",
-  sections = popupSections,
   showCloseButton = true,
   closeOnBackdrop = true,
   closeOnEsc = true,
+  size = 72,
+  overlayOpacity = 0.82,
+  duration = 0.5,
+  backgroundColor = "#ffffff",
+  textColor = "#111111",
+  roundedness = 24,
 }) {
   const [isContentOpen, setIsContentOpen] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <>
+    <div className="flex min-h-screen w-full items-center justify-center bg-white">
       <button
         type="button"
         onClick={() => {
@@ -90,7 +92,7 @@ export default function AnimatedModal({
           max-md:px-[6vw] max-md:py-[3.5vw] max-md:text-[4vw]
         "
       >
-        {triggerLabel}
+        Open Modal
       </button>
 
       <AnimatedModalContent
@@ -100,11 +102,17 @@ export default function AnimatedModal({
         showCloseButton={showCloseButton}
         closeOnBackdrop={closeOnBackdrop}
         closeOnEsc={closeOnEsc}
+        overlayOpacity={overlayOpacity}
+        duration={duration}
       >
         <ScrollablePopupContent
-          title={title}
-          subtitle={subtitle}
-          sections={sections}
+          title="A Deeper Look at the Project"
+          subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development."
+          sections={popupSections}
+          size={size}
+          backgroundColor={backgroundColor}
+          textColor={textColor}
+          roundedness={roundedness}
         />
       </AnimatedModalContent>
 
@@ -123,6 +131,6 @@ export default function AnimatedModal({
           </p>
         </div>
       )}
-    </>
+    </div>
   );
 }

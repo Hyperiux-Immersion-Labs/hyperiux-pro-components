@@ -525,7 +525,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.2.2",
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -550,6 +550,20 @@
       {
         "path": "NavigationButtons.jsx",
         "target": "src/components/effects/card-drift/NavigationButtons.jsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.2.2",
+        "date": "2026-07-30",
+        "summary": "Stopped rebuilding the random card layout when remixer values change; rotation now updates individual cards only.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.1",
+        "date": "2026-07-30",
+        "summary": "Removed data/cards and shadowOpacity from the public prop surface, replaced Tailwind color class props with color-picker props, and added working driftAmount, rotationAmount, smoothness, and lerp controls.",
+        "breaking": false
       }
     ]
   },
@@ -1154,8 +1168,20 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.2",
     "changelog": [
+      {
+        "version": "1.2.2",
+        "date": "2026-07-30",
+        "summary": "Removed the rotation prop and matched the headline color to the supporting line.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.1",
+        "date": "2026-07-30",
+        "summary": "Removed content, activeIndex, and depth controls; added working rotation, duration, mouseInteraction, bgVisible, lerp, and smoothness props.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -1840,8 +1866,20 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.1.0",
+    "version": "1.2.2",
     "changelog": [
+      {
+        "version": "1.2.2",
+        "date": "2026-07-30",
+        "summary": "Changed the default and maximum counter range to 0..100.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.1",
+        "date": "2026-07-30",
+        "summary": "Removed value/textColor/prefix from the public prop surface, capped maxValue at 50, and added working gridSize and roundedness controls.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -2577,8 +2615,26 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.1.0",
+    "version": "1.2.1",
     "changelog": [
+      {
+        "version": "1.2.1",
+        "date": "2026-07-30",
+        "summary": "Removed the public items/previewPlacement controls and replaced the stale control set with working imageSize, duration, smoothness, and lerp props.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-07-28",
+        "summary": "Added items as a public prop with a working remixer panel. The originally suggested previewPlacement/activeIndex/accentColor/duration props don't exist - the preview image position, colors, and timings are fixed in InteractiveListPreviewComp - so they were dropped rather than shipping non-functional controls.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Renamed helper ListHover.jsx to InteractiveListPreviewComp.jsx (default export) to match the production naming convention and eliminate registry/docs mirror drift.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -2604,8 +2660,8 @@
         "target": "src/components/effects/interactive-list-preview/index.jsx"
       },
       {
-        "path": "ListHover.jsx",
-        "target": "src/components/effects/interactive-list-preview/ListHover.jsx"
+        "path": "InteractiveListPreviewComp.jsx",
+        "target": "src/components/effects/interactive-list-preview/InteractiveListPreviewComp.jsx"
       }
     ]
   },
@@ -4797,7 +4853,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.2.1",
     "dependencies": [
       "lucide-react"
     ],
@@ -4817,6 +4873,14 @@
       {
         "path": "VideoPlayerComp.jsx",
         "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.2.1",
+        "date": "2026-07-30",
+        "summary": "Removed public videoSrc/poster/src media controls and duplicate muted/showControls entries; merged behavior and controls into a single working controls group.",
+        "breaking": false
       }
     ]
   },

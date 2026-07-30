@@ -33,19 +33,20 @@ const UI_CARDS = [
 ];
 
 export default function CardsRunway({
-  data = UI_CARDS,
   accentColor = "#ff5f00",
   cardColor = "#161616",
-  cardWidth = "28vw",
-  start = "10% 80%",
+  speed = 1,
+  gap = 48,
+  perspective = 900,
 }) {
   return (
     <CardsRunwayComponent
-      data={data}
+      data={UI_CARDS}
       accentColor={accentColor}
       cardColor={cardColor}
-      cardWidth={cardWidth}
-      start={start}
+      speed={speed}
+      gap={gap}
+      perspective={perspective}
     />
   );
 }

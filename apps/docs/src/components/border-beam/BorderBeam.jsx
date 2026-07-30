@@ -95,6 +95,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     saturation,
     hueRange = 30,
     strength = 1,
+    beamWidth,
     className,
     style,
     onActivate,
@@ -239,6 +240,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   // Falls back to 0 only for the pre-detection frame.
   const radius = customBorderRadius ?? autoRadius ?? 0;
   const cycle = duration ?? (size === 'line' ? 3.1 : isBreathe ? 2.3 : 1.96);
+  const finalBorderWidth = beamWidth ?? dims.borderWidth;
   const sat = saturation ?? finish.saturation;
   const bright = brightnessProp ?? finish.brightness ?? 1.3;
   const hueSpan = size === 'line' ? Math.min(hueRange, 13) : hueRange;
@@ -249,7 +251,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
       buildRimCSS({
         id,
         borderRadius: radius,
-        borderWidth: dims.borderWidth,
+        borderWidth: finalBorderWidth,
         duration: cycle,
         strokeOpacity: finish.strokeOpacity,
         innerOpacity: finish.innerOpacity,
@@ -267,7 +269,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [
       id,
       radius,
-      dims.borderWidth,
+      finalBorderWidth,
       cycle,
       finish.strokeOpacity,
       finish.innerOpacity,

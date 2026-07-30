@@ -1,22 +1,30 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import CardDriftComp from './CardDriftComp'
 
 const CardDrift = ({
-  data = testimonials,
-  bgColor = "bg-black",
-  bgTextColor = "text-white/70",
-  cardBg = "bg-indigo-600",
-  cardTextColor = "text-white",
-  barBg = "bg-neutral-800",
+  backgroundColor,
+  backgroundTextColor,
+  cardColor,
+  cardTextColor,
+  barColor,
+  driftAmount,
+  rotationAmount,
+  smoothness,
+  lerp,
 }) => {
   return (
    <CardDriftComp
- data={data}
- bgColor={bgColor}
- bgTextColor={bgTextColor}
- cardBg={cardBg}
+ data={testimonials}
+ backgroundColor={backgroundColor}
+ backgroundTextColor={backgroundTextColor}
+ cardColor={cardColor}
  cardTextColor={cardTextColor}
- barBg={barBg}
+ barColor={barColor}
+ driftAmount={driftAmount}
+ rotationAmount={rotationAmount}
+ smoothness={smoothness}
+ lerp={lerp}
  />
   )
 }

@@ -14,7 +14,7 @@ const FONT_WEIGHTS = {
  bold:"font-bold",
 };
 
-const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion = false }) => {
+const DigitScroller = memo(({ digit, index, duration = 2, stagger = 0.1, color, trigger, reducedMotion = false }) => {
  const containerRef = useRef(null);
 
  useEffect(() => {
@@ -23,6 +23,7 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
  gsap.to(containerRef.current, {
  y: `-${parseInt(digit, 10) * 10}%`,
  duration,
+ delay: index * stagger,
  ease:"power1.out",
  scrollTrigger: {
  trigger,
@@ -31,7 +32,7 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
  });
  });
  return () => ctx.revert();
- }, [digit, duration, reducedMotion, trigger]);
+ }, [digit, duration, index, stagger, reducedMotion, trigger]);
 
  if (reducedMotion) {
  return (
@@ -59,16 +60,16 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
 
 DigitScroller.displayName ="DigitScroller";
 
-const renderDigits = (value, color, trigger, reducedMotion) =>
+const renderDigits = (value, color, trigger, duration, stagger, reducedMotion) =>
  value.split("").map((char, i) =>
  /\d/.test(char) ? (
- <DigitScroller key={i} digit={char} color={color} trigger={trigger} reducedMotion={reducedMotion} />
+ <DigitScroller key={i} digit={char} index={i} duration={duration} stagger={stagger} color={color} trigger={trigger} reducedMotion={reducedMotion} />
  ) : (
  <span key={i} style={{ color }}>{char}</span>
  )
  );
 
-const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reducedMotion }) => {
+const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, duration, stagger, reducedMotion }) => {
  const { prefix, value, suffix, superSuffix } = stat;
 
  return (
@@ -79,7 +80,7 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
  className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-[1025px]:text-[7vw] max-md:text-[12vw] ${textSize}`}
  >
  {prefix && <span style={{ color: textColor }}>{prefix}</span>}
- {renderDigits(value, textColor, trigger, reducedMotion)}
+ {renderDigits(value, textColor, trigger, duration, stagger, reducedMotion)}
  {suffix && <span style={{ color: textColor }}>{suffix}</span>}
  {superSuffix && <sup style={{ color: textColor }}>{superSuffix}</sup>}
  </h3>
@@ -99,6 +100,8 @@ export default function NumberCounterOne({
  textColor ="black",
  textSize ="text-[5vw]",
  fontWeight ="normal",
+ duration = 2,
+ stagger = 0.1,
  reducedMotion = false,
 }) {
  const uid = useId().replace(/:/g, "");
@@ -118,6 +121,8 @@ export default function NumberCounterOne({
  textSize={textSize}
  fontWeight={fontWeight}
  trigger={trigger}
+ duration={duration}
+ stagger={stagger}
  reducedMotion={reducedMotion}
  />
  ))}

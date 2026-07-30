@@ -95,6 +95,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     saturation,
     hueRange = 30,
     strength = 1,
+    beamWidth,
     className,
     style,
     onActivate,
@@ -239,6 +240,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   // Falls back to 0 only for the pre-detection frame.
   const finalBorderRadius = customBorderRadius ?? detectedRadius ?? 0;
   const finalDuration = duration ?? (size === 'line' ? 3.1 : isPulse ? 2.3 : 1.96);
+  const finalBorderWidth = beamWidth ?? sizeConfig.borderWidth;
   const finalSaturation = saturation ?? themeConfig.saturation;
   const finalBrightness = brightnessProp ?? themeConfig.brightness ?? 1.3;
   const finalHueRange = size === 'line' ? Math.min(hueRange, 13) : hueRange;
@@ -249,7 +251,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
       generateBeamCSS({
         id,
         borderRadius: finalBorderRadius,
-        borderWidth: sizeConfig.borderWidth,
+        borderWidth: finalBorderWidth,
         duration: finalDuration,
         strokeOpacity: themeConfig.strokeOpacity,
         innerOpacity: themeConfig.innerOpacity,
@@ -267,7 +269,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [
       id,
       finalBorderRadius,
-      sizeConfig.borderWidth,
+      finalBorderWidth,
       finalDuration,
       themeConfig.strokeOpacity,
       themeConfig.innerOpacity,

@@ -42,7 +42,7 @@ const SlideTextWrapper = ({ effectProps = {} }) => {
             className="text-center"
           >
             <h1 className="text-8xl max-md:text-6xl font-black leading-[0.92] tracking-tight text-white">
-              Slide From Right
+              Slide Text Reveal
             </h1>
           </SlideTextReveal>
 

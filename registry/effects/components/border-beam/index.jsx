@@ -21,6 +21,9 @@ export default function BorderBeam({
   active = true,
   hueRange = 30,
   strength = 1,
+  duration,
+  beamWidth,
+  backgroundColor = "#f4f5f7",
 }) {
   return (
     <BeamBorder
@@ -31,8 +34,13 @@ export default function BorderBeam({
       active={active}
       hueRange={hueRange}
       strength={strength}
+      duration={duration}
+      beamWidth={beamWidth}
     >
-      <div className="rounded-md bg-[#f4f5f7] p-[2.2vw] backdrop-blur-sm max-[1025px]:p-[4.8vw] max-md:p-[6vw]">
+      <div
+        className="rounded-md p-[2.2vw] backdrop-blur-sm max-[1025px]:p-[4.8vw] max-md:p-[6vw]"
+        style={{ backgroundColor }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[0.8vw] uppercase tracking-[0.22em] text-black/45 max-[1025px]:text-[1.8vw] max-md:text-[3vw]">

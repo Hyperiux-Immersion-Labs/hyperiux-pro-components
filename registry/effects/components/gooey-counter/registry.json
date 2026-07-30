@@ -1,6 +1,6 @@
 {
   "name": "gooey-counter",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "type": "registry:component",
   "title": "Gooey Counter",
   "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
@@ -23,6 +23,18 @@
   ],
   "changelog": [
     {
+      "version": "1.2.2",
+      "date": "2026-07-30",
+      "summary": "Changed the default and maximum counter range to 0..100.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed value/textColor/prefix from the public prop surface, capped maxValue at 50, and added working gridSize and roundedness controls.",
+      "breaking": false
+    },
+    {
       "version": "1.2.0",
       "date": "2026-07-28",
       "summary": "Added maxValue, duration, blobColor, and backgroundColor as public props. The originally suggested value/prefix props didn't fit this effect's actual behavior (it loops 0..maxValue continuously rather than counting once to a fixed value, and has no text label to prefix), so they were replaced with props that reflect what the component really does.",
@@ -39,14 +51,28 @@
     {
       "name": "maxValue",
       "type": "number",
-      "default": 10,
+      "default": 100,
       "description": "Upper bound of the looping 0..maxValue count sequence.",
       "remixer": {
         "control": "range",
         "group": "controls",
         "groupTitle": "Controls",
         "min": 2,
-        "max": 99,
+        "max": 100,
+        "step": 1
+      }
+    },
+    {
+      "name": "gridSize",
+      "type": "number",
+      "default": 22,
+      "description": "Number of grid columns used by the morphing counter.",
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 12,
+        "max": 50,
         "step": 1
       }
     },
@@ -62,6 +88,20 @@
         "min": 0.2,
         "max": 3,
         "step": 0.1
+      }
+    },
+    {
+      "name": "roundedness",
+      "type": "number",
+      "default": 0,
+      "description": "Corner rounding for each gooey grid cell.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.05
       }
     },
     {
@@ -84,42 +124,6 @@
         "control": "color",
         "group": "style",
         "groupTitle": "Style"
-      }
-    },
-    {
-      "name": "value",
-      "type": "number",
-      "description": "Target number displayed by the counter.",
-      "default": 100,
-      "remixer": {
-        "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "min": 0,
-        "max": 300,
-        "step": 1
-      }
-    },
-    {
-      "name": "textColor",
-      "type": "color",
-      "description": "Color of the counter text.",
-      "default": "#ffffff",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
-      "name": "prefix",
-      "type": "string",
-      "description": "Text shown before the number.",
-      "default": "",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
       }
     }
   ],

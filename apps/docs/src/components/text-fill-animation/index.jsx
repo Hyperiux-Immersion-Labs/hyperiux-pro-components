@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -108,25 +110,33 @@ export default function TextFillAnimation({
         textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
       );
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 0.25,
-          },
-        })
-        .to(
-          characters,
-          {
-            className: 'split-chars show',
-            duration: 0.4,
-            stagger: 0.05,
-            ease: 'power2.inOut',
-          },
-          0
-        );
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        gsap.set(characters, { className: 'split-chars show' });
+      } else {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: 0.25,
+            },
+          })
+          .to(
+            characters,
+            {
+              className: 'split-chars show',
+              duration: 0.4,
+              stagger: 0.05,
+              ease: 'power2.inOut',
+            },
+            0
+          );
+      }
 
       return () => {
         split.revert();
@@ -160,36 +170,35 @@ export default function TextFillAnimation({
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff6b00]/5 blur-3xl" />
-
-        <div className="absolute bottom-[6vh] left-[5vw] max-w-55 max-sm:bottom-[9vh]">
-          <p className="text-sm leading-relaxed text-black/35 max-md:text-lg max-sm:text-sm">
+        <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
+          <p className="text-sm leading-relaxed text-black/35 max-[1025px]:text-lg max-md:text-sm">
             Less friction.
             <br />
             More building.
           </p>
         </div>
 
-        <div className="absolute bottom-[6vh] right-[5vw] text-right max-sm:bottom-[9vh]">
+        <div className="absolute bottom-[6vh] right-[5vw] text-right">
           <div className="space-y-1">
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Systems
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Motion
             </p>
-            <p className="text-sm text-black/35 max-md:text-lg max-sm:text-sm">
+            <p className="text-sm text-black/35 max-[1025px]:text-lg max-md:text-sm">
               Clarity
             </p>
           </div>
         </div>
 
         <div className="split__wrapper tfa-text-wrapper relative z-10 mx-auto text-center">
-          <h1
+          <h2
             ref={textRef}
             className={`tfa-heading opacity-0 font-display font-medium leading-[1.18] tracking-[-0.03em] ${className}`}
           >
             {text}
-          </h1>
+          </h2>
         </div>
       </div>
     </section>

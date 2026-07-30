@@ -1,7 +1,19 @@
 {
   "name": "sticky-content-wrapper",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "changelog": [
+    {
+      "version": "1.3.0",
+      "date": "2026-07-30",
+      "summary": "Removed stepGap — each section step now always uses a fixed 2s scroll-timeline distance.",
+      "breaking": true
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Fixed the uncolored gap between the content and image panes by applying bgColor to the section background, and exposed initialImageScale, activeImageScale, and exitImageScale as remixer props.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -41,7 +53,7 @@
       "name": "bgColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Background color of the sticky content pane (left side).",
+      "description": "Background color of the sticky section, including the gap between the content and image panes.",
       "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
     },
     {
@@ -59,11 +71,25 @@
       "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.1, "max": 3, "step": 0.05 }
     },
     {
-      "name": "stepGap",
+      "name": "initialImageScale",
       "type": "number",
-      "default": 2.1,
-      "description": "Scroll-timeline distance allotted to each section step — bigger means more scrolling per section.",
-      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.5, "max": 6, "step": 0.1 }
+      "default": 1.5,
+      "description": "Scale of an image before it becomes the active image.",
+      "remixer": { "control": "range", "group": "image", "groupTitle": "Image", "min": 1, "max": 2.5, "step": 0.05 }
+    },
+    {
+      "name": "activeImageScale",
+      "type": "number",
+      "default": 1.2,
+      "description": "Scale of the image while it is active on screen.",
+      "remixer": { "control": "range", "group": "image", "groupTitle": "Image", "min": 1, "max": 2, "step": 0.05 }
+    },
+    {
+      "name": "exitImageScale",
+      "type": "number",
+      "default": 1,
+      "description": "Scale of an image after it has exited.",
+      "remixer": { "control": "range", "group": "image", "groupTitle": "Image", "min": 0.5, "max": 1.5, "step": 0.05 }
     }
   ],
   "remixer": {

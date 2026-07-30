@@ -16,9 +16,11 @@ export default function SlideTextReveal({
   children,
   animateOnScroll = true,
   delay = 0,
+  duration = 0.5,
+  speed = 20,
+  stagger = 0.03,
+  variant = "right",
   className = "",
-  start = "top 80%",
-  end = "bottom 60%",
 }) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
@@ -72,8 +74,7 @@ export default function SlideTextReveal({
               ...fadeUpProps,
               scrollTrigger: {
                 trigger: containerRef.current,
-                start,
-                end,
+                start: "top 80%",
                 scrub: true,
               },
             });
@@ -88,8 +89,10 @@ export default function SlideTextReveal({
           opacity: 1,
         });
 
+        const xFrom = variant === "left" ? -Math.abs(speed) : Math.abs(speed);
+
         gsap.set(charsRef.current, {
-          x: 20,
+          x: xFrom,
           opacity: 0,
           willChange: "transform",
         });
@@ -97,8 +100,8 @@ export default function SlideTextReveal({
         const animationProps = {
           x: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.03,
+          duration,
+          stagger,
           ease: "power3.out",
           delay,
         };
@@ -108,9 +111,8 @@ export default function SlideTextReveal({
             ...animationProps,
             scrollTrigger: {
               trigger: containerRef.current,
-              start,
-              end,
-              scrub: true,
+              start: "top 80%",
+              scrub: false,
               // markers: true,
             },
           });
@@ -126,7 +128,7 @@ export default function SlideTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, start, end]);
+  }, [animateOnScroll, delay, duration, speed, stagger, variant]);
 
   return (
     <div

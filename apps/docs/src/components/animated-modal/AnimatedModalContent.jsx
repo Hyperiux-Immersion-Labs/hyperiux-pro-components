@@ -16,16 +16,19 @@ const AnimatedModalContent = ({
   closeButtonClassName = "",
   ariaLabel = "Dialog",
   ariaLabelledby,
+  overlayOpacity = 0.82,
+  duration = 0.5,
 }) => {
   const containerRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const safeOverlayOpacity = Math.min(1, Math.max(0, Number(overlayOpacity) || 0));
+  const safeDuration = Math.max(0.05, Number(duration) || 0.5);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const container = containerRef.current;
 
-    // Remember where focus was so we can restore it when the modal closes.
     previousFocusRef.current = document.activeElement;
 
     const getFocusable = () => {
@@ -37,7 +40,6 @@ const AnimatedModalContent = ({
       ).filter((el) => el.offsetParent !== null || el === document.activeElement);
     };
 
-    // Move focus into the dialog on open (announces the dialog + its label).
     container?.focus();
 
     const handleKeyDown = (e) => {
@@ -48,7 +50,6 @@ const AnimatedModalContent = ({
 
       if (e.key !== "Tab") return;
 
-      // Trap focus: keep Tab / Shift+Tab cycling within the modal only.
       const items = getFocusable();
       if (items.length === 0) {
         e.preventDefault();
@@ -71,7 +72,6 @@ const AnimatedModalContent = ({
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -92,11 +92,10 @@ const AnimatedModalContent = ({
       aria-labelledby={ariaLabelledby}
       tabIndex={-1}
       data-lenis-prevent
-
       {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
-        duration-500
+        transition-opacity
         ${
           isOpen
             ? "opacity-100 pointer-events-auto"
@@ -104,6 +103,7 @@ const AnimatedModalContent = ({
         }
         ${className}
       `}
+      style={{ transitionDuration: `${safeDuration}s` }}
     >
       <button
         type="button"
@@ -112,9 +112,9 @@ const AnimatedModalContent = ({
         className="
           absolute inset-0
           cursor-pointer border-0
-          bg-black/82
           backdrop-blur-md
         "
+        style={{ backgroundColor: `rgba(0,0,0,${safeOverlayOpacity})` }}
       />
 
       {showCloseButton && (
@@ -140,8 +140,8 @@ const AnimatedModalContent = ({
             min-w-10 min-h-10
 
             top-[1.5vw] right-[1.5vw] w-[3vw] h-[3vw]
-            max-md:top-8 max-md:right-8 max-md:w-14 max-md:h-14
-            max-sm:top-4 max-sm:right-4 max-sm:w-10 max-sm:h-10
+            max-[1025px]:top-8 max-[1025px]:right-8 max-[1025px]:w-14 max-[1025px]:h-14
+            max-md:top-4 max-md:right-4 max-md:w-10 max-md:h-10
 
             ${closeButtonClassName}
           `}
@@ -156,8 +156,8 @@ const AnimatedModalContent = ({
           flex h-screen w-screen items-center
           px-0
 
-          max-md:px-0
-          max-sm:justify-center max-sm:px-0
+          max-[1025px]:px-0
+          max-md:justify-center max-md:px-0
 
           ${contentClassName}
         `}

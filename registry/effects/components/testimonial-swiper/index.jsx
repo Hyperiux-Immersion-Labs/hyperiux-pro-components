@@ -45,10 +45,25 @@ const data = [
   },
 ];
 
-const TestimonialSwiper = ({ testimonials = data, bgColor = "#edeae2" }) => {
+const TestimonialSwiper = ({
+  bgColor = "#edeae2",
+  accentColor = "#ff6b00",
+  autoplay = true,
+  autoplayDelay = 4500,
+  showNavigation = true,
+  imageSize = 1,
+}) => {
   return (
     <div className="h-screen bg-white">
-      <TestimonialComp testimonials={testimonials} bgColor={bgColor} />
+      <TestimonialComp
+        testimonials={data}
+        bgColor={bgColor}
+        accentColor={accentColor}
+        autoplay={autoplay}
+        autoplayDelay={autoplayDelay}
+        showNavigation={showNavigation}
+        imageSize={imageSize}
+      />
     </div>
   );
 };

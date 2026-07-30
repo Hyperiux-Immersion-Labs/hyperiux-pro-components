@@ -7,7 +7,7 @@ import { ScrollTrigger } from'gsap/dist/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 
-const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reducedMotion = false }) => {
+const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, trigger, textColor, reducedMotion = false }) => {
  const containerRef = useRef(null);
 
  useEffect(() => {
@@ -20,6 +20,7 @@ const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reduced
  gsap.to(containerRef.current, {
  y: `-${digitIndex * 10}%`,
  duration,
+ delay: index * stagger,
  ease:'power2.out',
  scrollTrigger: {
  trigger: trigger || containerRef.current,
@@ -29,7 +30,7 @@ const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reduced
  }, containerRef);
 
  return () => ctx.revert();
- }, [digit, duration, reducedMotion, trigger]);
+ }, [digit, index, duration, stagger, reducedMotion, trigger]);
 
  if (reducedMotion) {
  return (
@@ -63,9 +64,10 @@ DigitScroller.displayName ='DigitScroller';
 const NumberCounterThree = ({
  value ='0',
  duration = 1.5,
+ stagger = 0.1,
  fontWeight = 600,
  textColor ='#FF5100',
- textSize ='text-[5vw] max-md:text-[7vw] max-sm:text-[12vw]',
+ textSize ='text-[5vw] max-[1025px]:text-[7vw] max-md:text-[12vw]',
  trigger,
  suffix ='',
  reducedMotion = false,
@@ -77,7 +79,9 @@ const NumberCounterThree = ({
  <DigitScroller
  key={i}
  digit={char}
+ index={i}
  duration={duration}
+ stagger={stagger}
  trigger={trigger}
  textColor={textColor}
  reducedMotion={reducedMotion}
@@ -96,7 +100,7 @@ const NumberCounterThree = ({
 
  return (
  <div
- className={`flex items-end gap-[0.05em] max-md:gap-0 ${textSize}`}
+ className={`flex items-end gap-[0.05em] max-[1025px]:gap-0 ${textSize}`}
  style={{
  fontWeight,
  color: textColor,

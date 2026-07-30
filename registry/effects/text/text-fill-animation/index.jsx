@@ -170,9 +170,6 @@ export default function TextFillAnimation({
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ff6b00]/5 blur-3xl" />
-
-       
-
         <div className="absolute bottom-[6vh] left-[5vw] max-w-55">
           <p className="text-sm leading-relaxed text-black/35 max-[1025px]:text-lg max-md:text-sm">
             Less friction.

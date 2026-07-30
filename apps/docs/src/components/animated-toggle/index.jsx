@@ -5,15 +5,14 @@ import Cross from './Cross'
 import Plus from './Plus'
 
 const AnimatedToggle = ({
-  defaultChecked = false,
   size = 96,
   activeColor = "#ff5f00",
   inactiveColor = "#a1a1aa",
   duration = 0.32,
 }) => {
-  const [chevronActive, setChevronActive] = useState(defaultChecked);
-  const [crossActive, setCrossActive] = useState(defaultChecked);
-  const [plusActive, setPlusActive] = useState(defaultChecked);
+  const [chevronActive, setChevronActive] = useState(false);
+  const [crossActive, setCrossActive] = useState(false);
+  const [plusActive, setPlusActive] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {

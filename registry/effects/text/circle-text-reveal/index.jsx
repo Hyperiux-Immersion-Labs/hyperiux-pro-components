@@ -54,10 +54,11 @@ function usePrefersReducedMotion() {
 
 export default function CircleTextReveal({
  textColor ='#111',
- Text="Some ideas only bloom when you move toward them.",
- revealText="The hidden layer has been waiting for your cursor.",
  circleColorBg ='#E76F2E',
- RevealedTextColor ='#fefefe'
+ RevealedTextColor ='#fefefe',
+ lerp = 0.15,
+ smoothness = 0.5,
+ circleSize = 500,
 }) {
  const sectionRef = useRef(null);
  const [isHovered, setIsHovered] = useState(false);
@@ -67,13 +68,15 @@ export default function CircleTextReveal({
 
  const [smoothPos, setSmoothPos] = useState(null);
 
- const size = isHovered ? 500 : 40;
+ const baseCircleSize = Math.max(24, Number(circleSize) || 500);
+ const size = isHovered ? baseCircleSize : Math.max(24, baseCircleSize * 0.08);
+ const lerpFactor = prefersReducedMotion ? 1 : Math.min(1, Math.max(0.01, Number(lerp) || 0.15));
+ const safeSmoothness = prefersReducedMotion ? 0 : Math.max(0, Number(smoothness) || 0.5);
 
  useEffect(() => {
  if (!isPointerFine) return;
 
- const lerp = (start, end, factor) => start + (end - start) * factor;
- const lerpFactor = prefersReducedMotion ? 1 : 0.15;
+ const mix = (start, end, factor) => start + (end - start) * factor;
 
  const loop = createSuspendedRaf({
  root: sectionRef.current,
@@ -82,8 +85,8 @@ export default function CircleTextReveal({
  if (x === null || y === null) return prev;
  if (prev === null) return { x, y };
  return {
- x: lerp(prev.x, x, lerpFactor),
- y: lerp(prev.y, y, lerpFactor),
+ x: mix(prev.x, x, lerpFactor),
+ y: mix(prev.y, y, lerpFactor),
  };
  });
  },
@@ -92,7 +95,7 @@ export default function CircleTextReveal({
  loop.start();
 
  return () => loop.destroy();
- }, [x, y, isPointerFine, prefersReducedMotion]);
+ }, [x, y, isPointerFine, prefersReducedMotion, lerpFactor]);
 
  return (
  <section ref={sectionRef} className="w-screen h-screen flex items-center justify-center text-[7vw] text-center px-[5vw] bg-[#fefefe] relative overflow-hidden">
@@ -122,7 +125,7 @@ export default function CircleTextReveal({
  transition={
  prefersReducedMotion
  ? { type:'tween', ease:'linear', duration: 0 }
- : { type:'tween', ease:'backOut', duration: 0.5 }
+ : { type:'tween', ease:'backOut', duration: safeSmoothness }
  }
  >
  <div className="absolute inset-0" style={{ backgroundColor: circleColorBg }} />
@@ -133,7 +136,7 @@ export default function CircleTextReveal({
  onMouseEnter={() => setIsHovered(true)}
  onMouseLeave={() => setIsHovered(false)}
  >
- {revealText}
+ The hidden layer has been waiting for your cursor.
  </h2>
  </motion.div>
  )}
@@ -144,7 +147,7 @@ export default function CircleTextReveal({
  className="leading-tight select-none"
  style={{ color: textColor }}
  >
- {Text}
+ Some ideas only bloom when you move toward them.
  </h1>
  </div>
  </section>

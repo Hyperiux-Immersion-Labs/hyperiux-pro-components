@@ -73,6 +73,12 @@ export default function ContactForm({
  loadingLabel ="Sending...",
  successMessage =" Form submitted successfully!",
  errorMessage =" Error sending message. Please try again.",
+ accentColor ="#111111",
+ textColor ="#111111",
+ inputBackgroundColor ="#ffffff",
+ fieldBorderColor ="#e5e7eb",
+ inputRoundedness = 28,
+ duration = 0.3,
 }) {
  const [values, setValues] = useState(() => buildInitialValues(fields));
  const [errors, setErrors] = useState({});
@@ -242,7 +248,56 @@ export default function ContactForm({
  };
 
  return (
- <section className="h-full w-full" id={sectionId}>
+ <section
+ className="h-full w-full"
+ id={sectionId}
+ style={{
+ "--form-accent": accentColor,
+ "--form-text": textColor,
+ "--form-input-bg": inputBackgroundColor,
+ "--form-field-border": fieldBorderColor,
+ "--form-input-radius": `${Math.max(0, Number(inputRoundedness) || 0)}px`,
+ "--form-duration": `${Math.max(0.05, Number(duration) || 0.3)}s`,
+ }}
+ >
+ <style>{`
+ #${sectionId} input,
+ #${sectionId} textarea,
+ #${sectionId} select,
+ #${sectionId} [role="button"][aria-invalid],
+ #${sectionId} button[id] {
+   background-color: var(--form-input-bg);
+   border-color: var(--form-field-border);
+   border-radius: var(--form-input-radius);
+   color: var(--form-text);
+   transition-duration: var(--form-duration);
+ }
+ #${sectionId} input:focus,
+ #${sectionId} textarea:focus,
+ #${sectionId} button[id]:focus,
+ #${sectionId} .group:focus-within input,
+ #${sectionId} .group:focus-within textarea {
+   border-color: var(--form-accent);
+ }
+ #${sectionId} label span,
+ #${sectionId} .text-gray-700,
+ #${sectionId} .text-gray-600 {
+   color: var(--form-text);
+ }
+ #${sectionId} label span {
+   background-color: var(--form-input-bg);
+ }
+ #${sectionId} button[type="submit"] {
+   background-color: var(--form-accent);
+   border-radius: var(--form-input-radius);
+   color: #ffffff;
+   transition-duration: var(--form-duration);
+ }
+ #${sectionId} [role="checkbox"][aria-checked="true"] {
+   background-color: var(--form-accent);
+   border-color: var(--form-accent);
+ }
+ `}</style>
  <div className="w-full h-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form

@@ -4,9 +4,9 @@
   "description": "Interactive shader overlay that distorts and dithers an image with fluid cursor ripples",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "2dCanvasTracker.js",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -5,9 +5,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+gsap.registerPlugin(SplitText);
 
 function resetSplitPositions({ splitText, split2, split3, split4 }) {
   gsap.set(split2.chars, { yPercent: 100 });
@@ -17,19 +16,13 @@ function resetSplitPositions({ splitText, split2, split3, split4 }) {
 }
 
 const GlitchyText = ({
-  runOnScroll = false,
-  triggerId = "glitch-section",
-  start = "top 70%",
-  end = "bottom 30%",
-  once = true,
-  markers = false,
   initialDelay = 2.5,
   replayDelay = 0.2,
-  text = "Engineering meets artistry",
+  baseTextColor = "#ffffff",
+  glitchColor = "#eab308",
 }) => {
   const rootRef = useRef(null);
   const splitRef = useRef({});
-  const scrollTriggerRef = useRef(null);
   const animationTimelineRef = useRef(null);
 
   const text1Ref = useRef(null);
@@ -38,11 +31,14 @@ const GlitchyText = ({
   const text4Ref = useRef(null);
 
   const [isDisabled, setIsDisabled] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (event) => setPrefersReducedMotion(event.matches);
     mediaQuery.addEventListener("change", handleChange);
@@ -180,31 +176,10 @@ const GlitchyText = ({
       resetSplitPositions({ splitText, split2, split3, split4 });
     }
 
-    if (runOnScroll) {
-      const triggerElement = document.getElementById(triggerId) || root;
-
-      scrollTriggerRef.current = ScrollTrigger.create({
-        trigger: triggerElement,
-        start,
-        end,
-        markers,
-        once,
-        onEnter: () => {
-          runAnimation(0);
-        },
-        onEnterBack: () => {
-          if (!once) {
-            runAnimation(0);
-          }
-        },
-      });
-    } else {
-      runAnimation(prefersReducedMotion ? 0 : initialDelay);
-    }
+    runAnimation(prefersReducedMotion ? 0 : initialDelay);
 
     return () => {
       animationTimelineRef.current?.kill();
-      scrollTriggerRef.current?.kill();
 
       splitText.revert();
       split2?.revert();
@@ -213,52 +188,44 @@ const GlitchyText = ({
 
       splitRef.current = {};
       animationTimelineRef.current = null;
-      scrollTriggerRef.current = null;
     };
   }, [
     runAnimation,
-    runOnScroll,
-    triggerId,
-    start,
-    end,
-    once,
-    markers,
     initialDelay,
-    text,
     prefersReducedMotion,
   ]);
 
   return (
     <div
-      id={triggerId}
+      id="glitch-section"
       ref={rootRef}
       className="flex h-screen w-screen flex-col items-center justify-center bg-[#111111]"
     >
-      <div className="relative h-[8.2vw] w-full overflow-hidden pl-[0.5vw] text-white">
+      <div className="relative h-[8.2vw] w-full overflow-hidden pl-[0.5vw]" style={{ color: baseTextColor }}>
         <div className="relative h-[6vw] w-full overflow-hidden">
           <p className="absolute left-[2vw] top-0 z-4 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
             <span ref={text1Ref} className="block">
-              {text}
+              Engineering meets artistry
             </span>
           </p>
 
           {!prefersReducedMotion && (
             <>
-              <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+              <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
                 <span ref={text3Ref} className="block">
-                  {text}
+                  Engineering meets artistry
                 </span>
               </p>
 
               <p className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
                 <span ref={text2Ref} className="block">
-                  {text}
+                  Engineering meets artistry
                 </span>
               </p>
 
-              <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter text-yellow-500">
+              <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
                 <span ref={text4Ref} className="block">
-                  {text}
+                  Engineering meets artistry
                 </span>
               </p>
             </>
@@ -271,10 +238,9 @@ const GlitchyText = ({
         onClick={handleReplay}
         disabled={isDisabled}
         className={`mt-10 rounded-lg px-6 py-3 font-bold transition-all duration-300 ease-linear hover:scale-[0.95] ${
-          isDisabled
-            ? "cursor-not-allowed bg-gray-500 text-gray-300"
-            : "bg-yellow-500 text-black"
+          isDisabled ? "cursor-not-allowed bg-gray-500 text-gray-300" : ""
         }`}
+        style={!isDisabled ? { backgroundColor: glitchColor, color: "#111111" } : undefined}
       >
         {isDisabled ? "Please wait..." : "Replay Animation"}
       </button>

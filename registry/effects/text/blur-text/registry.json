@@ -1,7 +1,25 @@
 {
   "name": "blur-text",
-  "version": "1.1.0",
+  "version": "1.1.3",
   "changelog": [
+    {
+      "version": "1.1.3",
+      "date": "2026-07-30",
+      "summary": "Removed the heading-specific props from the public API while keeping once defaulted to false and retaining rerun behavior when remixer values change.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.2",
+      "date": "2026-07-30",
+      "summary": "once now defaults to false, and heading-related props control the wrapper tag, color, size, and line-height while value changes rerun the animation.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.1",
+      "date": "2026-07-30",
+      "summary": "Changing timing, blur, variant, once, or text content now remounts the word spans so the reveal animation reruns in the remixer.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -29,13 +47,104 @@
   "exportKind": "default",
   "main": "index.jsx",
   "props": [
-    { "name": "delay", "type": "number", "default": 0, "description": "Delay before the word animation starts.", "remixer": { "control": "range", "group": "timing", "groupTitle": "Timing", "min": 0, "max": 2, "step": 0.05 } },
-    { "name": "duration", "type": "number", "default": 0.5, "description": "Animation duration per word.", "remixer": { "control": "range", "group": "timing", "groupTitle": "Timing", "min": 0.1, "max": 2, "step": 0.05 } },
-    { "name": "blur", "type": "number", "default": 10, "description": "Initial blur amount in pixels.", "remixer": { "control": "range", "group": "style", "groupTitle": "Style", "min": 0, "max": 40, "step": 1 } },
-    { "name": "variant", "type": "string", "default": "fade", "description": "Direction variant for the reveal.", "remixer": { "control": "select", "group": "style", "groupTitle": "Style", "options": [ { "value": "fade", "label": "Fade" }, { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }, { "value": "up", "label": "Up" }, { "value": "down", "label": "Down" } ] } },
-    { "name": "once", "type": "boolean", "default": true, "description": "Runs the animation once when it enters view.", "remixer": { "control": "checkbox", "group": "behavior", "groupTitle": "Behavior" } }
+    {
+      "name": "delay",
+      "type": "number",
+      "default": 0,
+      "description": "Delay before the word animation starts.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.5,
+      "description": "Animation duration per word.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0.1,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "blur",
+      "type": "number",
+      "default": 10,
+      "description": "Initial blur amount in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 40,
+        "step": 1
+      }
+    },
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "fade",
+      "description": "Direction variant for the reveal.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "value": "fade",
+            "label": "Fade"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "up",
+            "label": "Up"
+          },
+          {
+            "value": "down",
+            "label": "Down"
+          }
+        ]
+      }
+    },
+    {
+      "name": "once",
+      "type": "boolean",
+      "default": false,
+      "description": "Runs the reveal only once per viewport entry when enabled.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    }
   ],
-  "remixer": { "enabled": true, "defaultOpenGroupId": "timing", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "timing",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

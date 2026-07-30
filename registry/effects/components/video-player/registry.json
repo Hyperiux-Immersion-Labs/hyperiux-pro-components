@@ -1,6 +1,6 @@
 {
   "name": "video-player",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "type": "registry:component",
   "title": "Custom Video Player",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
@@ -28,6 +28,12 @@
   ],
   "changelog": [
     {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed public videoSrc/poster/src media controls and duplicate muted/showControls entries; merged behavior and controls into a single working controls group.",
+      "breaking": false
+    },
+    {
       "version": "1.2.0",
       "date": "2026-07-28",
       "summary": "Added videoSrc, poster, autoPlay, startMuted, and showCloseButton as public props with a working remixer panel. The originally suggested prop names (src, muted, showControls) didn't match the real component API, so they were renamed to match what VideoPlayerComp actually accepts.",
@@ -42,40 +48,14 @@
   ],
   "props": [
     {
-      "name": "videoSrc",
-      "type": "string",
-      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
-      "demoDefault": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4",
-      "description": "Video source URL.",
-      "copyable": false,
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "poster",
-      "type": "string",
-      "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png",
-      "demoDefault": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel-cover.png",
-      "description": "Poster image shown before playback.",
-      "copyable": false,
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "autoPlay",
       "type": "boolean",
       "default": true,
       "description": "Starts playback automatically when allowed.",
       "remixer": {
         "control": "checkbox",
-        "group": "behavior",
-        "groupTitle": "Behavior"
+        "group": "controls",
+        "groupTitle": "Controls"
       }
     },
     {
@@ -85,8 +65,8 @@
       "description": "Initial muted state.",
       "remixer": {
         "control": "checkbox",
-        "group": "behavior",
-        "groupTitle": "Behavior"
+        "group": "controls",
+        "groupTitle": "Controls"
       }
     },
     {
@@ -96,26 +76,15 @@
       "description": "Shows the close button on the player.",
       "remixer": {
         "control": "checkbox",
-        "group": "behavior",
-        "groupTitle": "Behavior"
+        "group": "controls",
+        "groupTitle": "Controls"
       }
     },
     {
-      "name": "src",
-      "type": "string",
-      "description": "Video source URL.",
-      "default": "/showreel.mp4",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "muted",
+      "name": "rounded",
       "type": "boolean",
-      "description": "Initial muted state.",
-      "default": true,
+      "default": false,
+      "description": "Rounds the player frame when not fullscreen.",
       "remixer": {
         "control": "checkbox",
         "group": "controls",
@@ -123,20 +92,34 @@
       }
     },
     {
-      "name": "showControls",
+      "name": "preserveAspectRatio",
       "type": "boolean",
-      "description": "Shows the custom playback controls.",
       "default": true,
+      "description": "Uses object-contain instead of object-cover for the video.",
       "remixer": {
         "control": "checkbox",
         "group": "controls",
         "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "hideControlsDelay",
+      "type": "number",
+      "description": "Delay before controls auto-hide, in milliseconds.",
+      "default": 1800,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 500,
+        "max": 5000,
+        "step": 100
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "controls",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

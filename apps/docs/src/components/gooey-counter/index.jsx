@@ -1,7 +1,14 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
+
 import { useEffect, useId, useRef } from "react";
 
-const COLS = 22;
+const DEFAULT_GRID_SIZE = 22;
+const MIN_GRID_SIZE = 12;
+const MAX_GRID_SIZE = 50;
+const DEFAULT_MAX_VALUE = 100;
+const MAX_COUNTER_VALUE = 100;
 const ROWS = 13;
 const ROWS_TABLET = 30;
 const ROWS_MOBILE = 32;
@@ -76,11 +83,17 @@ function getScaledCellIndexes(index, sourceSize, targetSize) {
  return scaledIndexes;
 }
 
-function getNumberCells(n, rows, width) {
+function clampNumber(value, min, max, fallback) {
+ const number = Number(value);
+ if (!Number.isFinite(number)) return fallback;
+ return Math.min(Math.max(number, min), max);
+}
+
+function getNumberCells(n, rows, cols, width) {
  const digits = [...String(n)].map(Number);
  const { digitHeight, digitWidth, digitGap } = getDigitMetrics(width);
  const totalW = digits.length * digitWidth + (digits.length - 1) * digitGap;
- const startCol = Math.floor((COLS - totalW) / 2);
+ const startCol = Math.floor((cols - totalW) / 2);
  const rowOff = Math.max(0, Math.floor((rows - digitHeight) / 2));
  const cells = [];
  digits.forEach((d, i) => {
@@ -103,10 +116,10 @@ function getNumberCells(n, rows, width) {
  return cells;
 }
 
-function computeMaxBlocks(rows, width, maxValue) {
+function computeMaxBlocks(rows, cols, width, maxValue) {
  let max = 0;
  for (let n = RANGE_MIN; n <= maxValue; n++) {
-  max = Math.max(max, getNumberCells(n, rows, width).length);
+  max = Math.max(max, getNumberCells(n, rows, cols, width).length);
  }
  return max;
 }
@@ -124,10 +137,10 @@ function shuffle(arr) {
  return a;
 }
 
-function randomLayout(n, rows) {
+function randomLayout(n, rows, cols) {
  const all = [];
  for (let r = 0; r < rows; r++)
-  for (let c = 0; c < COLS; c++) all.push([r, c]);
+  for (let c = 0; c < cols; c++) all.push([r, c]);
  return shuffle(all).slice(0, n);
 }
 
@@ -170,7 +183,9 @@ function drawCapsule(ctx, x1, y1, x2, y2, r) {
 }
 
 export default function GooeyCounter({
- maxValue = 10,
+ maxValue = DEFAULT_MAX_VALUE,
+ gridSize = DEFAULT_GRID_SIZE,
+ roundedness = 0,
  duration = 1,
  blobColor = "#111111",
  backgroundColor = "#d1d1d1",
@@ -188,6 +203,9 @@ export default function GooeyCounter({
   const filterUrl = `url(#${gooeyFilterId})`;
 
   const paceScale = duration;
+  const safeMaxValue = Math.round(clampNumber(maxValue, 2, MAX_COUNTER_VALUE, DEFAULT_MAX_VALUE));
+  const safeGridSize = Math.round(clampNumber(gridSize, MIN_GRID_SIZE, MAX_GRID_SIZE, DEFAULT_GRID_SIZE));
+  const safeRoundedness = clampNumber(roundedness, 0, 1, 0);
   const transitionDuration = TRANSITION_MS * paceScale;
   const numberDwellMs = NUMBER_DWELL_MS * paceScale;
   const randomDwellMs = RANDOM_DWELL_MS * paceScale;
@@ -206,7 +224,7 @@ export default function GooeyCounter({
   const sim = {
    blocks: [], phase: "idle", nextNumber: RANGE_MIN + 1,
    timer: null, raf: null, layout: null, transition: null,
-   activeRows: ROWS, viewportWidth: window.innerWidth, maxBlocks: computeMaxBlocks(ROWS, window.innerWidth, maxValue),
+   activeRows: ROWS, activeCols: safeGridSize, viewportWidth: window.innerWidth, maxBlocks: computeMaxBlocks(ROWS, safeGridSize, window.innerWidth, safeMaxValue),
   };
   stateRef.current = sim;
 
@@ -226,7 +244,7 @@ export default function GooeyCounter({
   }
 
   function goToNumber(n, onDone) {
-   const targets = getNumberCells(n, sim.activeRows, sim.viewportWidth);
+   const targets = getNumberCells(n, sim.activeRows, sim.activeCols, sim.viewportWidth);
    while (sim.blocks.length < sim.maxBlocks) {
     const p = targets[Math.floor(Math.random() * targets.length)];
     sim.blocks.push({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: true });
@@ -236,7 +254,7 @@ export default function GooeyCounter({
   }
 
   function goToRandom(onDone) {
-   const targets = randomLayout(sim.maxBlocks, sim.activeRows);
+   const targets = randomLayout(sim.maxBlocks, sim.activeRows, sim.activeCols);
    sim.blocks.forEach((b, i) => { b.tr = targets[i][0]; b.tc = targets[i][1]; b.idle = false; });
    beginTransition(transitionMs(), onDone);
   }
@@ -247,7 +265,7 @@ export default function GooeyCounter({
    if (reduceMotion) {
     sim.timer = setTimeout(() => {
      const n = sim.nextNumber;
-     sim.nextNumber = n >= maxValue ? RANGE_MIN : n + 1;
+     sim.nextNumber = n >= safeMaxValue ? RANGE_MIN : n + 1;
      goToNumber(n, loop);
     }, numberDwellMs);
     return;
@@ -256,8 +274,8 @@ export default function GooeyCounter({
     goToRandom(() => {
      sim.timer = setTimeout(() => {
       const n = sim.nextNumber;
-      sim.nextNumber = n >= maxValue ? RANGE_MIN : n + 1;
-      goToNumber(n, loop);
+     sim.nextNumber = n >= safeMaxValue ? RANGE_MIN : n + 1;
+     goToNumber(n, loop);
      }, randomDwellMs);
     });
    }, numberDwellMs);
@@ -266,7 +284,7 @@ export default function GooeyCounter({
   function start() {
    clearTimeout(sim.timer);
    sim.blocks = []; sim.nextNumber = RANGE_MIN + 1; sim.transition = null;
-   const firstTargets = getNumberCells(RANGE_MIN, sim.activeRows, sim.viewportWidth);
+   const firstTargets = getNumberCells(RANGE_MIN, sim.activeRows, sim.activeCols, sim.viewportWidth);
    if (reduceMotion) {
     // Land on 0 immediately — no opening scatter morph.
     sim.blocks = firstTargets.map(([r, c]) => ({
@@ -279,7 +297,7 @@ export default function GooeyCounter({
     beginTransition(0, loop);
     return;
    }
-   const rpos = randomLayout(sim.maxBlocks, sim.activeRows);
+   const rpos = randomLayout(sim.maxBlocks, sim.activeRows, sim.activeCols);
    sim.blocks = rpos.map(p => ({ cr: p[0], cc: p[1], tr: p[0], tc: p[1], sr: p[0], sc: p[1], idle: false }));
    assignTargets(sim.blocks, firstTargets);
    beginTransition(transitionDuration, loop);
@@ -294,9 +312,10 @@ export default function GooeyCounter({
    const widthChanged = vw !== sim.viewportWidth;
    sim.viewportWidth = vw;
 
-   if (newRows !== sim.activeRows || widthChanged) {
+   if (newRows !== sim.activeRows || widthChanged || safeGridSize !== sim.activeCols) {
     sim.activeRows = newRows;
-    sim.maxBlocks = computeMaxBlocks(newRows, vw, maxValue);
+    sim.activeCols = safeGridSize;
+    sim.maxBlocks = computeMaxBlocks(newRows, safeGridSize, vw, safeMaxValue);
    }
 
    canvas.width = Math.floor(vw * dpr);
@@ -310,10 +329,10 @@ export default function GooeyCounter({
    offCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
    const margin = Math.max(24, Math.min(vw, vh) * 0.05);
-   const cellW = Math.floor((vw - margin * 2) / COLS);
+   const cellW = Math.floor((vw - margin * 2) / sim.activeCols);
    const cellH = Math.floor((vh - margin * 2) / sim.activeRows);
    const cell = Math.min(CELL_MAX, Math.min(cellW, cellH));
-   const gridW = COLS * cell, gridH = sim.activeRows * cell;
+   const gridW = sim.activeCols * cell, gridH = sim.activeRows * cell;
    const originX = Math.round((vw - gridW) / 2);
    const originY = Math.round((vh - gridH) / 2);
    sim.layout = { vw, vh, cell, gridW, gridH, originX, originY };
@@ -364,8 +383,13 @@ export default function GooeyCounter({
     }
    }
    for (const s of snapped) {
-    offCtx.beginPath();
-    offCtx.rect(originX + s.c * cell, originY + s.r * cell, cell, cell);
+   offCtx.beginPath();
+    const radius = (cell * 0.5) * safeRoundedness;
+    if (radius > 0 && offCtx.roundRect) {
+     offCtx.roundRect(originX + s.c * cell, originY + s.r * cell, cell, cell, radius);
+    } else {
+     offCtx.rect(originX + s.c * cell, originY + s.r * cell, cell, cell);
+    }
     offCtx.fill();
    }
 
@@ -398,7 +422,7 @@ export default function GooeyCounter({
    window.removeEventListener("resize", resize);
    reduceMotionMq?.removeEventListener?.("change", onReduceMotionChange);
   };
- }, [gooeyFilterId, maxValue, duration, blobColor, backgroundColor]);
+ }, [gooeyFilterId, maxValue, gridSize, roundedness, duration, blobColor, backgroundColor]);
 
  return (
   <div style={{ position: "fixed", inset: 0, background: backgroundColor }}>
@@ -407,7 +431,7 @@ export default function GooeyCounter({
         Gooey Counter
       </h1>
       <p className="text-sm max-[1025px]:text-lg max-md:text-sm max-[1025px]:w-[80%] mx-auto">
-        Gooey Counter is a morphing counter which counts from 0 to 10
+        Gooey Counter is a morphing counter which counts from 0 to {Math.round(clampNumber(maxValue, 2, MAX_COUNTER_VALUE, DEFAULT_MAX_VALUE))}
       </p>
     </div>
    <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute" }}>

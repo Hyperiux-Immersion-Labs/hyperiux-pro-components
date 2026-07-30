@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
@@ -7,13 +9,17 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
+
 export default function PerspectiveTextReveal({
  children,
  animateOnScroll = true,
  delay = 0,
+ duration = 0.8,
+ stagger = 0.08,
  className = "",
  scrub = false,
- end = "bottom 60%",
 }) {
  const containerRef = useRef(null);
  const splitRefs = useRef([]);
@@ -28,6 +34,10 @@ export default function PerspectiveTextReveal({
  const elements = containerRef.current.hasAttribute("data-copy-wrapper")
  ? Array.from(containerRef.current.children)
  : [containerRef.current];
+
+ const prefersReduced =
+ window.matchMedia &&
+ window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
  let ctx;
 
@@ -46,6 +56,34 @@ export default function PerspectiveTextReveal({
  linesRef.current.push(...split.lines);
  });
 
+ if (prefersReduced) {
+ gsap.set(linesRef.current, { yPercent: 0, rotateX: 0, opacity: 1 });
+ gsap.set(containerRef.current, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+ const fadeUpProps = {
+ opacity: 1,
+ y: 0,
+ duration: REDUCED_MOTION_FADE_DURATION,
+ ease:"power2.out",
+ delay,
+ };
+
+ if (animateOnScroll) {
+ gsap.to(containerRef.current, {
+ ...fadeUpProps,
+ scrollTrigger: {
+ trigger: containerRef.current,
+ start:"top 90%",
+ scrub,
+ },
+ });
+ } else {
+ gsap.to(containerRef.current, fadeUpProps);
+ }
+
+ return;
+ }
+
  gsap.set(linesRef.current, {
  yPercent: -100,
  rotateX: 70,
@@ -61,8 +99,8 @@ export default function PerspectiveTextReveal({
  yPercent: 0,
  rotateX: 0,
  opacity: 1,
- duration: 0.8,
- stagger: 0.08,
+ duration,
+ stagger,
  ease:"power3.out",
  delay,
  };
@@ -73,7 +111,6 @@ export default function PerspectiveTextReveal({
  scrollTrigger: {
  trigger: containerRef.current,
  start:"top 90%",
- end,
  scrub,
 //  markers:true,
  },
@@ -90,7 +127,7 @@ export default function PerspectiveTextReveal({
  if (ctx) ctx.revert();
  splitRefs.current.forEach((split) => split?.revert());
  };
- }, [animateOnScroll, delay, scrub, end]);
+ }, [animateOnScroll, delay, duration, scrub, stagger]);
 
  return (
  <div

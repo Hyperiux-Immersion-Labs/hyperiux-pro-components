@@ -15,7 +15,7 @@ const FONT_WEIGHTS = {
  bold:'font-bold',
 };
 
-const DigitScroller = memo(({ digit, index, triggerRef, reducedMotion = false }) => {
+const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, triggerRef, reducedMotion = false }) => {
  const digitRef = useRef(null);
 
  useEffect(() => {
@@ -26,9 +26,9 @@ const DigitScroller = memo(({ digit, index, triggerRef, reducedMotion = false })
  const ctx = gsap.context(() => {
  gsap.to(digitRef.current, {
  yPercent: -(digitIndex * 100),
- duration: 1.5,
+ duration,
  ease:'power2.inOut',
- delay: index * 0.1,
+ delay: index * stagger,
  scrollTrigger: {
  trigger: triggerRef.current,
  start:'top 85%',
@@ -37,7 +37,7 @@ const DigitScroller = memo(({ digit, index, triggerRef, reducedMotion = false })
  }, triggerRef);
 
  return () => ctx.revert();
- }, [digit, index, reducedMotion, triggerRef]);
+ }, [digit, index, duration, stagger, reducedMotion, triggerRef]);
 
  if (reducedMotion) {
  return (
@@ -70,6 +70,8 @@ const NumberCounterTwo = ({
  textSize ='text-[8vw] max-[1025px]:text-[7vw] max-md:text-[12vw]',
  color ='#111111',
  fontWeight ='normal',
+ duration = 1.5,
+ stagger = 0.1,
  reducedMotion = false, }) => {
  const containerRef = useRef(null);
  const cleanValue = value.replace('+','');
@@ -85,6 +87,8 @@ const NumberCounterTwo = ({
  key={`${digit}-${index}`}
  digit={digit}
  index={index}
+ duration={duration}
+ stagger={stagger}
  triggerRef={containerRef}
  reducedMotion={reducedMotion}
  />

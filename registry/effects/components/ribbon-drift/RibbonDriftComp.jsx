@@ -6,6 +6,52 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+const IMAGE_POOL = [
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+];
+
+const PROJECT_NAMES = [
+	"Nebula Drift",
+	"Velvet Orbit",
+	"Prism Bloom",
+	"Midnight Aurora",
+	"Chromatic Tide",
+	"Ion Garden",
+	"Lunar Gradient",
+	"Violet Haze",
+	"Echo Spectrum",
+	"Noir Fluence",
+	"Solar Jelly",
+	"Plasma Atelier",
+	"Hyperwave Studio",
+	"Glassline",
+	"Starlit Systems",
+	"Pulse & Grain",
+	"Arclight",
+	"Soft Collision",
+];
+
 function buildCards(count, startIndex = 0, imagesArr = IMAGE_POOL, namesArr = PROJECT_NAMES) {
 	return Array.from({ length: count }, (_, i) => {
 		const idx = (startIndex + i) % imagesArr.length;
@@ -18,7 +64,12 @@ const sectionBreakText = `Design is a feeling before it’s a layout. This conce
 motion-first composition, gradient-led art direction, and small details
 that make a brand experience unforgettable.`;
 
-const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) => {
+const RibbonDriftComp = ({
+	driftSpeed = 1,
+	ribbonColor = "#000000",
+	imageSize = 1,
+	showNames = true,
+}) => {
 	const uid = useId().replace(/:/g, "");
 	const sectionId = `ribbon-drift-${uid}`;
 	const headingRef = useRef(null);
@@ -28,6 +79,8 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	const hoverSplitsRef = useRef([]);
 
 	useEffect(() => {
+		const speedScale = 1 / Math.max(0.05, driftSpeed);
+
 		const ctx = gsap.context(() => {
 			const mm = gsap.matchMedia();
 
@@ -54,8 +107,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 
 					gsap.set(sectionBreakSplit.lines, {
 						color: "transparent",
-						backgroundImage:
-							"linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 100%)",
+						backgroundImage: `linear-gradient(to right, ${ribbonColor} 0%, ${ribbonColor} 100%)`,
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "0% 100%",
 						backgroundPosition: "left center",
@@ -81,7 +133,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						headingSplit.chars,
 						{
 							yPercent: -100,
-							duration: 1.2,
+							duration: 1.2 * speedScale,
 							stagger: 0.02,
 							ease: "power3.inOut",
 						},
@@ -92,7 +144,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						paragraphSplit.lines,
 						{
 							yPercent: -100,
-							duration: 1.2,
+							duration: 1.2 * speedScale,
 							stagger: 0.06,
 							ease: "power3.inOut",
 						},
@@ -120,16 +172,17 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 					gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
 
 					cards.forEach((card, index) => {
-						const split = hoverSplitsRef.current[index];
 						const image = card.querySelector(".project-image");
-
-						if (!split || !image) return;
+						if (!image) return;
 
 						gsap.set(image, {
 							force3D: true,
-							scale: 1,
+							scale: imageSize,
 							opacity: 1,
 						});
+
+						const split = hoverSplitsRef.current[index];
+						if (!split) return;
 
 						const onEnter = () => {
 							gsap.killTweensOf(image);
@@ -138,7 +191,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 								yPercent: 0,
 								opacity: 1,
 								stagger: 0.02,
-								duration: 0.45,
+								duration: 0.45 * speedScale,
 								ease: "power3.out",
 								overwrite: true,
 							});
@@ -151,7 +204,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 								yPercent: 120,
 								opacity: 0,
 								stagger: 0.015,
-								duration: 0.35,
+								duration: 0.35 * speedScale,
 								ease: "power3.in",
 								overwrite: true,
 							});
@@ -178,20 +231,20 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 					tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
 					tl.to(".card-1", {
 						yPercent: -100,
-						duration: 0.3,
+						duration: 0.3 * speedScale,
 						ease: "power3.inOut",
 					});
 					tl.to(
 						".card-2",
 						{
 							yPercent: 100,
-							duration: 0.3,
+							duration: 0.3 * speedScale,
 							ease: "power3.inOut",
 						},
 						"<",
 					);
-					tl.to(".left-strip", { xPercent: -170, duration: 0.3, ease: "power3.inOut" }, "<");
-					tl.to(".right-strip", { xPercent: 170, duration: 0.3, ease: "power3.inOut" }, "<");
+					tl.to(".left-strip", { xPercent: -170, duration: 0.3 * speedScale, ease: "power3.inOut" }, "<");
+					tl.to(".right-strip", { xPercent: 170, duration: 0.3 * speedScale, ease: "power3.inOut" }, "<");
 
 					const sectionBreakTl = gsap.timeline({
 						scrollTrigger: {
@@ -205,7 +258,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 					sectionBreakTl.from(".section-break-wrapper", {
 						scale: 0.7,
 						opacity: 0,
-						duration: 3,
+						duration: 3 * speedScale,
 						ease: "power3.inOut",
 					});
 
@@ -239,11 +292,11 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 		});
 
 		return () => ctx.revert();
-	}, [sectionId]);
+	}, [sectionId, driftSpeed, ribbonColor, imageSize, showNames]);
 
 	let titleIndex = 0;
 
-	const allCards = buildCards(22, 0, images, projectNames);
+	const allCards = buildCards(22, 0, IMAGE_POOL, PROJECT_NAMES);
 	const leftCards = allCards.slice(0, 8);
 	const midCards = allCards.slice(8, 14);
 	const rightCards = allCards.slice(14, 22);
@@ -294,16 +347,18 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
-									<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
-										<p
-											ref={(el) => {
-												titleRefs.current[currentIndex] = el;
-											}}
-											className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
-										>
-											{item.title}
-										</p>
-									</div>
+									{showNames && (
+										<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
+											<p
+												ref={(el) => {
+													titleRefs.current[currentIndex] = el;
+												}}
+												className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
+											>
+												{item.title}
+											</p>
+										</div>
+									)}
 								</a>
 							);
 						})}
@@ -328,16 +383,18 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
-									<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
-										<p
-											ref={(el) => {
-												titleRefs.current[currentIndex] = el;
-											}}
-											className="text-white text-[2.2vw] project-name font-medium leading-none opacity-0"
-										>
-											{item.title}
-										</p>
-									</div>
+									{showNames && (
+										<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
+											<p
+												ref={(el) => {
+													titleRefs.current[currentIndex] = el;
+												}}
+												className="text-white text-[2.2vw] project-name font-medium leading-none opacity-0"
+											>
+												{item.title}
+											</p>
+										</div>
+									)}
 								</a>
 							);
 						})}
@@ -361,16 +418,18 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
-									<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
-										<p
-											ref={(el) => {
-												titleRefs.current[currentIndex] = el;
-											}}
-											className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
-										>
-											{item.title}
-										</p>
-									</div>
+									{showNames && (
+										<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
+											<p
+												ref={(el) => {
+													titleRefs.current[currentIndex] = el;
+												}}
+												className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
+											>
+												{item.title}
+											</p>
+										</div>
+									)}
 								</a>
 							);
 						})}
@@ -420,9 +479,11 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 									/>
 								</div>
 								<div className="px-4 py-4 max-md:px-2 max-md:py-5">
-									<p className="text-[2.8vw] font-medium leading-none max-md:text-[4.8vw]">
-										{item.title}
-									</p>
+									{showNames && (
+										<p className="text-[2.8vw] font-medium leading-none max-md:text-[4.8vw]">
+											{item.title}
+										</p>
+									)}
 								</div>
 							</a>
 						))}

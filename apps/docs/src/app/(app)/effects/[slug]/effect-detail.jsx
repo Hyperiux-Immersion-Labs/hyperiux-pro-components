@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Fragment,
   useRef,
   useState,
   useEffect,
@@ -540,6 +541,7 @@ export function EffectDetailContent({
                   ref={contentRef}
                   content={safeContent}
                   isLocked={isLocked}
+                  effectProps={effect?.props}
                 />
               </div>
 
@@ -687,7 +689,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false },
+  { content, isLocked = false, effectProps },
   ref
 ) {
   if (!content) return null;
@@ -697,7 +699,11 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
       ref={ref}
       className={`space-y-8 w-[70%] max-md:w-full ${styles.content}`}
     >
-      <SanityBodyRenderer body={content.body} isLocked={isLocked} />
+      <SanityBodyRenderer
+        body={content.body}
+        isLocked={isLocked}
+        effectProps={effectProps}
+      />
     </div>
   );
 });
@@ -746,20 +752,84 @@ function EffectCtaSection({ cta, sectionRef }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false }) {
+function SanityBodyRenderer({ body = [], isLocked = false, effectProps }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
+  const showPropsTable = Array.isArray(effectProps) && effectProps.length > 0;
+  const hasFaqBlock = groupedBlocks.some(
+    (block) => block._type === "effectFaqAccordion"
+  );
 
   return (
     <div className="space-y-6">
-      {groupedBlocks.map((block, index) => (
-        <SanityBodyBlock
-          key={block._key || block._groupKey || `${block._type}-${index}`}
-          block={block}
-          isLocked={isLocked}
-        />
-      ))}
+      {groupedBlocks.map((block, index) => {
+        const key = block._key || block._groupKey || `${block._type}-${index}`;
+
+        return (
+          <Fragment key={key}>
+            {showPropsTable && block._type === "effectFaqAccordion" && (
+              <EffectPropsTable props={effectProps} />
+            )}
+            <SanityBodyBlock block={block} isLocked={isLocked} />
+          </Fragment>
+        );
+      })}
+
+      {showPropsTable && !hasFaqBlock && <EffectPropsTable props={effectProps} />}
+    </div>
+  );
+}
+
+function formatPropDefault(value) {
+  if (value === undefined) return "—";
+  if (typeof value === "string") return value;
+  if (typeof value === "boolean" || typeof value === "number") return String(value);
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+// Rendered directly from the effect's registry.json `props` array - not a
+// Sanity content block, so it always reflects what the installable
+// component actually accepts rather than editorial copy that can drift.
+function EffectPropsTable({ props = [] }) {
+  if (!props.length) return null;
+
+  return (
+    <div className="space-y-3 fadeup">
+      <h3 className="text-xl tracking-tighter text-foreground">Props</h3>
+
+      <div className={styles.tableWrap} data-variant="vault">
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {props.map((prop) => (
+              <tr key={prop.name}>
+                <td>
+                  <code>{prop.name}</code>
+                </td>
+                <td>{prop.type || "—"}</td>
+                <td>
+                  <code>{formatPropDefault(prop.default)}</code>
+                </td>
+                <td>{prop.description || ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

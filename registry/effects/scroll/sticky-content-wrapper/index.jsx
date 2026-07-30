@@ -60,10 +60,12 @@ export default function StickyContentWrapper({
  bgColor = "#ffffff",
  contentEnterYPercent = 2,
  contentTransitionDuration = 0.9,
- stepGap = 2.1,
+ initialImageScale = 1.5,
+ activeImageScale = 1.2,
+ exitImageScale = 1,
 }) {
  return (
- <section className="bg-white">
+ <section>
  <StickyContentComp
  items={stickyItems}
  leftClassName="text-black"
@@ -72,10 +74,9 @@ export default function StickyContentWrapper({
  contentExitYPercent={-2}
  contentTransitionDuration={contentTransitionDuration}
  contentDelay={0.35}
- stepGap={stepGap}
-  initialImageScale={1.5}
- activeImageScale={1.2}
- exitImageScale={1}
+  initialImageScale={initialImageScale}
+ activeImageScale={activeImageScale}
+ exitImageScale={exitImageScale}
  />
  </section>
  );

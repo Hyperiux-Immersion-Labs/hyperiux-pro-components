@@ -1,7 +1,13 @@
 {
   "name": "colliding-models",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Wired connectorCount, gravity, modelScale, and backgroundColor into the live scene, and removed the non-functional modelUrl prop.",
+      "breaking": true
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",
@@ -49,13 +55,6 @@
   ],
   "props": [
     {
-      "name": "modelUrl",
-      "type": "string",
-      "default": "\"/models/model.glb\"",
-      "description": "Main GLB model source.",
-      "suggested": true
-    },
-    {
       "name": "connectorCount",
       "type": "number",
       "default": 8,
@@ -79,7 +78,7 @@
     {
       "name": "backgroundColor",
       "type": "string",
-      "default": "#000000",
+      "default": "#141518",
       "description": "Canvas background color.",
       "suggested": true
     }
@@ -96,13 +95,6 @@
     },
     "controls": [
       {
-        "name": "modelUrl",
-        "label": "Model Url",
-        "type": "text",
-        "group": "controls",
-        "copyable": true
-      },
-      {
         "name": "connectorCount",
         "label": "Connector Count",
         "type": "range",
@@ -110,7 +102,7 @@
         "copyable": true,
         "min": 0,
         "max": 24,
-        "step": 0.1
+        "step": 1
       },
       {
         "name": "gravity",

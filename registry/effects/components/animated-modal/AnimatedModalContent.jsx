@@ -16,9 +16,13 @@ const AnimatedModalContent = ({
   closeButtonClassName = "",
   ariaLabel = "Dialog",
   ariaLabelledby,
+  overlayOpacity = 0.82,
+  duration = 0.5,
 }) => {
   const containerRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const safeOverlayOpacity = Math.min(1, Math.max(0, Number(overlayOpacity) || 0));
+  const safeDuration = Math.max(0.05, Number(duration) || 0.5);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -91,7 +95,7 @@ const AnimatedModalContent = ({
       {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
-        duration-500
+        transition-opacity
         ${
           isOpen
             ? "opacity-100 pointer-events-auto"
@@ -99,6 +103,7 @@ const AnimatedModalContent = ({
         }
         ${className}
       `}
+      style={{ transitionDuration: `${safeDuration}s` }}
     >
       <button
         type="button"
@@ -107,9 +112,9 @@ const AnimatedModalContent = ({
         className="
           absolute inset-0
           cursor-pointer border-0
-          bg-black/82
           backdrop-blur-md
         "
+        style={{ backgroundColor: `rgba(0,0,0,${safeOverlayOpacity})` }}
       />
 
       {showCloseButton && (
