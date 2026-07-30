@@ -890,27 +890,15 @@ function EffectsGridInner({
   const gridRef = useRef(null);
   const sentinelRef = useRef(null);
 
-  // TEMP DEBUG for F-014 - remove once root cause is confirmed. Deliberately
-  // mount-only (empty deps) - the whole point is detecting unwanted remounts.
-  useEffect(() => {
-    console.log("[F-014 debug] EffectsGridInner mounted, visibleCount reset to", BATCH_SIZE, "filteredEffects.length =", filteredEffects.length);
-  }, []);
-
   // Load next batch when the sentinel enters the viewport
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    console.log("[F-014 debug] observer effect ran, sentinel =", sentinel, "filteredEffects.length =", filteredEffects.length);
     if (!sentinel) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log("[F-014 debug] observer fired, isIntersecting =", entry.isIntersecting);
         if (entry.isIntersecting) {
-          setVisibleCount((prev) => {
-            const next = Math.min(prev + BATCH_SIZE, filteredEffects.length);
-            console.log("[F-014 debug] setVisibleCount", prev, "->", next);
-            return next;
-          });
+          setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, filteredEffects.length));
         }
       },
       { rootMargin: "400px" }
