@@ -9,7 +9,9 @@ import {
   forwardRef,
 } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { createPortal } from "react-dom";
+import { useRouter, usePathname } from "next/navigation";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -32,6 +34,7 @@ import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
 
 function SkeletonBlock({ className = "" }) {
   return (
@@ -180,6 +183,12 @@ export function EffectDetailContent({
   useLineAnim();
 
   const router = useRouter();
+  const pathname = usePathname();
+
+  const [mounted, setMounted] = useState(false);
+  const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -402,6 +411,7 @@ export function EffectDetailContent({
     }) || "/assets/img/image01.webp";
 
   return (
+    <CopyLimitProvider onRequireSignIn={() => setShowSignInToCopyModal(true)}>
     <VaultLayout
       effectCounts={effectCounts || {}}
       totalEffects={totalEffects || 0}
@@ -683,6 +693,47 @@ export function EffectDetailContent({
         )}
       </div>
     </VaultLayout>
+
+    {mounted && createPortal(
+      <div
+        className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showSignInToCopyModal ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        onClick={() => setShowSignInToCopyModal(false)}
+      >
+        <div
+          className={`flex w-[35vw] max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setShowSignInToCopyModal(false)}
+            className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          >
+            <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+              <span className="h-px w-4 rotate-45 bg-white" />
+              <span className="absolute h-px w-4 -rotate-45 bg-white" />
+            </div>
+          </button>
+
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="text-xl font-medium text-white">Sign in to copy code</h2>
+          </div>
+          <p className="text-sm text-white/60 text-center">
+            Create a free account or sign in to copy code and install
+            commands from the vault.
+          </p>
+          <Link
+            href={`/sign-in?redirect_url=${encodeURIComponent(pathname)}`}
+            className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
+            onClick={() => setShowSignInToCopyModal(false)}
+          >
+            Sign In
+          </Link>
+        </div>
+      </div>,
+      document.body
+    )}
+    </CopyLimitProvider>
   );
 }
 
@@ -765,6 +816,13 @@ function SanityBodyRenderer({ body = [], isLocked = false }) {
 }
 
 function SanityBodyBlock({ block, isLocked = false }) {
+  const {
+    isLocked: copyLimitLocked,
+    selectable: copySelectable,
+    requestCopy,
+    lockedCtaHref,
+  } = useCopyLimit();
+
   if (!block) return null;
 
   if (block._type === "block") {
@@ -827,6 +885,10 @@ function SanityBodyBlock({ block, isLocked = false }) {
           filename={block.filename}
           hideHeaderWhenNoFilename
           className={!block.filename ? styles.contentCodeBlockNoFilename : ""}
+          copyLocked={copyLimitLocked}
+          selectable={copySelectable}
+          onBeforeCopy={requestCopy}
+          lockedCtaHref={block.language === "bash" ? null : lockedCtaHref}
         />
       </div>
     );
@@ -1038,6 +1100,13 @@ function LockedCodePlaceholder({ filename }) {
 }
 
 function PortableTextBlock({ block, isLocked = false }) {
+  const {
+    isLocked: copyLimitLocked,
+    selectable: copySelectable,
+    requestCopy,
+    lockedCtaHref,
+  } = useCopyLimit();
+
   if (isCodeOnlyBlock(block)) {
     const code = normalizeCodeString(getBlockText(block));
 
@@ -1049,7 +1118,14 @@ function PortableTextBlock({ block, isLocked = false }) {
 
     return (
       <div className="fadeup">
-        <CodeBlock code={code} language={inferCodeLanguage(code)} />
+        <CodeBlock
+          code={code}
+          language={inferCodeLanguage(code)}
+          copyLocked={copyLimitLocked}
+          selectable={copySelectable}
+          onBeforeCopy={requestCopy}
+          lockedCtaHref={inferCodeLanguage(code) === "bash" ? null : lockedCtaHref}
+        />
       </div>
     );
   }

@@ -3,7 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ArrowUpRight, ChevronDown, Mail, X, UserPlus } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Search, ArrowUpRight, ChevronDown, Mail, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+
+const USERS_PER_PAGE = 10;
 
 function formatDate(value) {
   if (!value) return "-";
@@ -81,30 +84,43 @@ function InviteModal({ onClose }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4"
+    <motion.div
+      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4 backdrop-blur-md"
       onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
     >
-      <div
-        className="w-full max-w-md rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
+      <motion.div
+        className="relative w-full max-w-md rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Invite user</h2>
-          <button
-            onClick={onClose}
-            className="text-white/40 transition hover:text-white"
-            aria-label="Close"
-          >
-            <X className="h-4 w-4" />
-          </button>
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+        >
+          <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+            <span className="h-px w-4 rotate-45 bg-white" />
+            <span className="absolute h-px w-4 -rotate-45 bg-white" />
+          </div>
+        </button>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold">Invite user</h2>
         </div>
-        <p className="mb-4 text-sm text-white/50">
+        <p className="mb-8 text-sm text-white/80">
           Send an invitation email to any address — they&apos;ll get a link
           straight to account setup.
         </p>
         <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-3">
-          <Mail className="h-4 w-4 shrink-0 text-white/40" />
+          {/* <Mail className="h-4 w-4 shrink-0 text-white/40" /> */}
           <input
             type="email"
             required
@@ -116,7 +132,7 @@ function InviteModal({ onClose }) {
           <button
             type="submit"
             disabled={sending}
-            className="rounded-full px-4 py-2.5 text-xs font-medium bg-[#ff5f00]/15 text-[#ff5f00] transition hover:bg-[#ff5f00]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full px-4 py-2.5 text-xs font-medium bg-[#ff5f00] text-white transition hover:bg-[#ff6b00] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {sending ? "Sending…" : "Send Invitation"}
           </button>
@@ -130,8 +146,8 @@ function InviteModal({ onClose }) {
             {message.text}
           </p>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -144,6 +160,7 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [intervalByUser, setIntervalByUser] = useState({});
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (!showInviteModal) return;
@@ -180,6 +197,10 @@ export default function AdminPage() {
     return () => clearTimeout(timer);
   }, [fetchUsers]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, planFilter]);
+
   async function togglePlan(user) {
     const newPlan = user.plan === "pro" ? "free" : "pro";
     const billingInterval = newPlan === "pro" ? intervalByUser[user.id] || "yearly" : null;
@@ -214,6 +235,12 @@ export default function AdminPage() {
 
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
+
+  const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
+  const pagedUsers = users.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE
+  );
 
   return (
     <>
@@ -310,7 +337,7 @@ export default function AdminPage() {
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                pagedUsers.map((user) => (
                   <tr key={user.id} className="transition hover:bg-white/2">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -400,11 +427,40 @@ export default function AdminPage() {
           </table>
         </div>
       </div>
+
+      {!loading && users.length > 0 && (
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-white/45">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Next page"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
-    {showInviteModal && (
+    <AnimatePresence>
+      {showInviteModal && (
         <InviteModal onClose={() => setShowInviteModal(false)} />
       )}
-    
+    </AnimatePresence>
     </>
   );
 }

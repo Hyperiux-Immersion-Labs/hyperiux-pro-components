@@ -828,9 +828,20 @@ const routeKey = `${pathname}${
             className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setUpgradeToastDismissed(true)}
+              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            >
+              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                <span className="h-px w-4 rotate-45 bg-white" />
+                <span className="absolute h-px w-4 -rotate-45 bg-white" />
+              </div>
+            </button>
+
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-xl font-medium text-white">Welcome to Pro</h2>
-              <button type="button" onClick={() => setUpgradeToastDismissed(true)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors absolute right-[3%] top-[5%]">✕</button>
             </div>
             <p className="text-sm text-white/60 text-center">
               Your upgrade is confirmed and the full vault is unlocked. Explore
@@ -851,9 +862,20 @@ const routeKey = `${pathname}${
             className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setShowWishlistToast(false)}
+              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            >
+              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                <span className="h-px w-4 rotate-45 bg-white" />
+                <span className="absolute h-px w-4 -rotate-45 bg-white" />
+              </div>
+            </button>
+
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-xl font-medium text-white">Sign in required</h2>
-              <button type="button" onClick={() => setShowWishlistToast(false)} className="shrink-0 text-white/50 hover:text-[#ff5f00] transition-colors absolute right-[3%] top-[5%]">✕</button>
             </div>
             <p className="text-sm text-white/60 text-center">
               Create a free account or sign in to save effects to your

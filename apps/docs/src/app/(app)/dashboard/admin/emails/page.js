@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronDown, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 const EMAIL_TYPES = [
   "all",
@@ -14,6 +15,13 @@ const EMAIL_TYPES = [
   "subscription_cancelled",
   "payment_failed",
   "custom_animation_request",
+  "verification_code",
+  "reset_password_code",
+  "password_changed",
+  "password_removed",
+  "primary_email_address_changed",
+  "account_locked",
+  "new_device_sign_in",
 ];
 
 function formatDate(value) {
@@ -41,6 +49,33 @@ function StatusBadge({ status }) {
   );
 }
 
+// Resend's status column only reflects whether the invite email was
+// delivered, not what happened to the invitation afterward - this shows
+// Clerk's actual live invitation status instead (synced server-side in the
+// API route), for waitlist_invite rows specifically.
+function InvitationStatusBadge({ invitationStatus }) {
+  if (!invitationStatus) {
+    return <span className="text-xs text-white/35">Unknown</span>;
+  }
+
+  const styles = {
+    accepted: "bg-emerald-500/15 text-emerald-400",
+    pending: "bg-blue-500/15 text-blue-400",
+    revoked: "bg-red-500/15 text-red-400",
+    expired: "bg-white/8 text-white/50",
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
+        styles[invitationStatus] || "bg-white/8 text-white/50"
+      }`}
+    >
+      {invitationStatus}
+    </span>
+  );
+}
+
 function TypeLabel({ type }) {
   const labels = {
     welcome: "Welcome",
@@ -51,6 +86,13 @@ function TypeLabel({ type }) {
     subscription_cancelled: "Cancelled",
     payment_failed: "Payment Failed",
     custom_animation_request: "Animation Request",
+    verification_code: "Verification Code",
+    reset_password_code: "Reset Password Code",
+    password_changed: "Password Changed",
+    password_removed: "Password Removed",
+    primary_email_address_changed: "Primary Email Changed",
+    account_locked: "Account Locked",
+    new_device_sign_in: "New Device Sign-In",
     transactional: "Transactional",
   };
   return <span className="text-xs text-white/55">{labels[type] || type}</span>;
@@ -75,11 +117,46 @@ function EmailPreviewModal({ emailId, onClose }) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl border border-white/15 bg-[#0a0a0a] overflow-hidden">
+    <motion.div
+      className="fixed inset-0 z-900 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      <motion.div
+        className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-md border border-white/15 bg-[#0a0a0a] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+      >
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="max-md:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+        >
+          <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+            <span className="h-px w-4 rotate-45 bg-white" />
+            <span className="absolute h-px w-4 -rotate-45 bg-white" />
+          </div>
+        </button>
+
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-white/10">
+        <div className="flex items-start h-[5vw] max-sm:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
           <div className="min-w-0">
             {loading ? (
               <div className="h-4 w-48 rounded bg-white/10 animate-pulse" />
@@ -90,12 +167,6 @@ function EmailPreviewModal({ emailId, onClose }) {
               </>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-white/50 hover:text-white hover:bg-white/10 transition"
-          >
-            <X className="h-4 w-4" />
-          </button>
         </div>
 
         {/* Email HTML preview */}
@@ -120,10 +191,12 @@ function EmailPreviewModal({ emailId, onClose }) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
+
+const EMAILS_PER_PAGE = 10;
 
 export default function AdminEmailsPage() {
   const [emails, setEmails] = useState([]);
@@ -133,6 +206,7 @@ export default function AdminEmailsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [previewId, setPreviewId] = useState(null);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchEmails = useCallback(async () => {
     setLoading(true);
@@ -141,6 +215,8 @@ export default function AdminEmailsPage() {
       const params = new URLSearchParams();
       if (typeFilter !== "all") params.set("type", typeFilter);
       if (statusFilter !== "all") params.set("status", statusFilter);
+      params.set("limit", String(EMAILS_PER_PAGE));
+      params.set("offset", String((currentPage - 1) * EMAILS_PER_PAGE));
 
       const res = await fetch(`/api/admin/emails?${params.toString()}`);
       const json = await res.json();
@@ -152,20 +228,27 @@ export default function AdminEmailsPage() {
     } finally {
       setLoading(false);
     }
-  }, [typeFilter, statusFilter]);
+  }, [typeFilter, statusFilter, currentPage]);
 
   useEffect(() => {
     fetchEmails();
   }, [fetchEmails]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [typeFilter, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(total / EMAILS_PER_PAGE));
   const successCount = emails.filter((e) => e.status === "success").length;
   const failedCount = emails.filter((e) => e.status === "failed").length;
 
   return (
     <>
-      {previewId && (
-        <EmailPreviewModal emailId={previewId} onClose={() => setPreviewId(null)} />
-      )}
+      <AnimatePresence>
+        {previewId && (
+          <EmailPreviewModal emailId={previewId} onClose={() => setPreviewId(null)} />
+        )}
+      </AnimatePresence>
 
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
@@ -269,7 +352,11 @@ export default function AdminEmailsPage() {
                         {formatDate(email.sent_at)}
                       </td>
                       <td className="px-4 py-3">
-                        <StatusBadge status={email.status} />
+                        {email.email_type === "waitlist_invite" ? (
+                          <InvitationStatusBadge invitationStatus={email.invitation_status} />
+                        ) : (
+                          <StatusBadge status={email.status} />
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
@@ -286,6 +373,34 @@ export default function AdminEmailsPage() {
             </table>
           </div>
         </div>
+
+        {!loading && emails.length > 0 && (
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-white/45">
+              Page {currentPage} of {totalPages}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                disabled={currentPage === 1}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                disabled={currentPage === totalPages}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Next page"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

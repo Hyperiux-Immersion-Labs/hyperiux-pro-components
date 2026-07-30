@@ -3,16 +3,88 @@ import { Webhook } from "svix";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
 import { renderWelcomeEmail, welcomeSubject, welcomeText } from "@/lib/emails/welcome-email";
-import {
-  renderResetPasswordEmail,
-  resetPasswordSubject,
-  resetPasswordText,
-} from "@/lib/emails/reset-password-email";
-import {
-  renderPasswordChangedEmail,
-  passwordChangedSubject,
-  passwordChangedText,
-} from "@/lib/emails/password-changed-email";
+import { renderVerificationCodeEmail } from "@/lib/emails/verification-code-email";
+import { renderResetPasswordCodeEmail } from "@/lib/emails/reset-password-code-email";
+import { renderPasswordChangedEmail } from "@/lib/emails/password-changed-email";
+import { renderPasswordRemovedEmail } from "@/lib/emails/password-removed-email";
+import { renderPrimaryEmailAddressChangedEmail } from "@/lib/emails/primary-email-address-changed-email";
+import { renderAccountLockedEmail } from "@/lib/emails/account-locked-email";
+import { renderNewDeviceSignInEmail } from "@/lib/emails/new-device-sign-in-email";
+
+// Clerk's "Delivered by Clerk" toggle hands templates to us via the
+// email.created webhook instead of sending them itself. Each entry maps a
+// Clerk template slug (ground-truthed against this project's live templates
+// via `npx clerk api templates/email`, not guessed) to the subject line and
+// React template we render for it, plus the Clerk merge-tag field names to
+// pull off event.data.data for that template. Slugs are the only reliable
+// discriminator - verification_code and reset_password_code both carry an
+// otp_code field, so branching on "does this have an otp code" (the old
+// approach) sent the same email for both.
+const EMAIL_TEMPLATE_HANDLERS = {
+  verification_code: (data) => ({
+    subject: `${data?.otp_code || ""} is your Hyperiux Vault verification code`,
+    react: renderVerificationCodeEmail({
+      otpCode: data?.otp_code,
+      requestedFrom: data?.requested_from,
+      requestedAt: data?.requested_at,
+    }),
+    emailType: "verification_code",
+  }),
+  reset_password_code: (data) => ({
+    subject: `${data?.otp_code || ""} is your Hyperiux Vault reset code`,
+    react: renderResetPasswordCodeEmail({
+      otpCode: data?.otp_code,
+      requestedFrom: data?.requested_from,
+      requestedAt: data?.requested_at,
+    }),
+    emailType: "reset_password_code",
+  }),
+  password_changed: (data) => ({
+    subject: "Your Hyperiux Vault password was changed",
+    react: renderPasswordChangedEmail({
+      requestedFrom: data?.requested_from,
+      requestedAt: data?.requested_at,
+    }),
+    emailType: "password_changed",
+  }),
+  password_removed: (data) => ({
+    subject: "Your Hyperiux Vault password was removed",
+    react: renderPasswordRemovedEmail({
+      primaryEmailAddress: data?.primary_email_address,
+    }),
+    emailType: "password_removed",
+  }),
+  primary_email_address_changed: (data) => ({
+    subject: "Your Hyperiux Vault email address was updated",
+    react: renderPrimaryEmailAddressChangedEmail({
+      newEmailAddress: data?.new_email_address,
+    }),
+    emailType: "primary_email_address_changed",
+  }),
+  account_locked: (data) => ({
+    subject: "Your Hyperiux Vault account has been locked",
+    react: renderAccountLockedEmail({
+      failedAttempts: data?.failed_attempts,
+      lockedDate: data?.locked_date,
+      lockoutDuration: data?.lockout_duration,
+    }),
+    emailType: "account_locked",
+  }),
+  new_device_sign_in: (data) => ({
+    subject: "New device signed in to your Hyperiux Vault account",
+    react: renderNewDeviceSignInEmail({
+      browserName: data?.browser_name,
+      deviceType: data?.device_type,
+      ipAddress: data?.ip_address,
+      location: data?.location,
+      operatingSystem: data?.operating_system,
+      revokeSessionUrl: data?.revoke_session_url,
+      sessionCreatedAt: data?.session_created_at,
+      signInMethod: data?.sign_in_method,
+    }),
+    emailType: "new_device_sign_in",
+  }),
+};
 
 export async function POST(request) {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
@@ -80,59 +152,25 @@ export async function POST(request) {
     }
   } else if (event.type === "email.created") {
     // Fires for any Clerk system email whose "Delivered by Clerk" toggle is
-    // off (currently: reset-password-code and password-changed - see
-    // Dashboard > Customization > Emails). delivered_by_clerk is false only
-    // for those, so gating on it (rather than guessing each template's
-    // internal slug string) is what tells us Clerk expects us to send this
-    // one ourselves instead of just logging/ignoring the event.
+    // off (Dashboard > Customization > Emails) - delivered_by_clerk is false
+    // only for those, so gating on it is what tells us Clerk expects us to
+    // send this one ourselves instead of just logging/ignoring the event.
     const { to_email_address: toEmail, delivered_by_clerk: deliveredByClerk, slug, data } = event.data;
 
     if (deliveredByClerk !== false || !toEmail) {
       return NextResponse.json({ received: true });
     }
 
-    // TODO: once a real delivery has been inspected in the Clerk Dashboard's
-    // Webhooks > Logs tab, replace this data-shape guess with a direct
-    // `slug === "..."` check for each template - more robust than inferring
-    // from which fields happen to be present.
-    console.log("CLERK_EMAIL_CREATED_SLUG:", slug);
+    const buildEmail = EMAIL_TEMPLATE_HANDLERS[slug];
 
-    const otpCode = data?.otp_code;
-
-    if (otpCode) {
-      await sendEmail({
-        to: toEmail,
-        subject: resetPasswordSubject,
-        react: renderResetPasswordEmail({
-          otpCode,
-          requestedFrom: data?.requested_from,
-          requestedAt: data?.requested_at,
-        }),
-        text: resetPasswordText({
-          otpCode,
-          requestedFrom: data?.requested_from,
-          requestedAt: data?.requested_at,
-        }),
-        emailType: "reset_password_code",
-      });
-    } else {
-      // No otp_code means this isn't the reset-password-code email - with
-      // only two templates currently disabled, the other one is
-      // password-changed.
-      await sendEmail({
-        to: toEmail,
-        subject: passwordChangedSubject,
-        react: renderPasswordChangedEmail({
-          requestedFrom: data?.requested_from,
-          requestedAt: data?.requested_at,
-        }),
-        text: passwordChangedText({
-          requestedFrom: data?.requested_from,
-          requestedAt: data?.requested_at,
-        }),
-        emailType: "password_changed",
-      });
+    if (!buildEmail) {
+      console.warn("CLERK_EMAIL_CREATED_UNHANDLED_SLUG:", slug);
+      return NextResponse.json({ received: true });
     }
+
+    const { subject, react, emailType } = buildEmail(data);
+
+    await sendEmail({ to: toEmail, subject, react, emailType });
   }
 
   return NextResponse.json({ received: true });

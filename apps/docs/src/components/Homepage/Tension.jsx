@@ -144,12 +144,12 @@ export default function Tension() {
         /* Draw check icon (reverse direction) */
         tl.to(checkIcons[i].querySelectorAll('path, polyline, line'), {
           drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out',
-        }, t + 0.3)
+        }, t + 0.7)
 
         /* Draw X icon */
         tl.to(xIcons[i].querySelectorAll('path, polyline, line'), {
           drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out',
-        }, t + 0.3)
+        }, t + 0.7)
       }
     }, sectionRef)
     }

@@ -77,13 +77,13 @@ export default function Workflow() {
                     const OPEN_HEIGHT = isMobile
                         ? '60vw'
                         : isTablet
-                          ? '40vw'
-                          : '16vw'
+                            ? '40vw'
+                            : '16vw'
                     const CLOSED_HEIGHT = isMobile
                         ? '12vw'
                         : isTablet
-                          ? '10vw'
-                          : '5vw'
+                            ? '10vw'
+                            : '5vw'
 
                     /* ── Query DOM groups (scoped by gsap.context) ── */
                     const numBoxes = gsap.utils.toArray('.wf-num-box')
@@ -150,14 +150,14 @@ export default function Workflow() {
                     /* ── Radial glow (runs across the whole timeline) ── */
                     gsap.set('.radial-glow', {
                         opacity: 0.2,
-                        scale: 0.8,
+                        scale: 0.5,
                         transformOrigin: 'bottom center',
                     })
                     tl.to(
                         '.radial-glow',
                         {
-                            opacity: 0.8,
-                            scale: 1.5,
+                            opacity: 1,
+                            scale: 1,
                             ease: 'none',
                             duration:
                                 STEPS.length * (STEP_DURATION + HOLD_DURATION),
@@ -354,15 +354,19 @@ export default function Workflow() {
                 </LineReveal>
 
                 <div className="h-screen max-sm:h-[85vh] max-md:h-[80vh]  w-full  sticky top-0 flex flex-col justify-center max-md:pt-0">
-                     <LineReveal as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
-                    Preview. Install. Tune. <span className='gradient-text-animate'>Ship.</span>
-                </LineReveal>
+                    <LineReveal as="h2" className="text110 w-[80vw] mx-auto hidden max-md:block max-md:pt-[12vh] max-sm:pt-[14vh] text-center">
+                        Preview. Install. Tune. <span className='gradient-text-animate'>Ship.</span>
+                    </LineReveal>
                     <div className="w-full h-full flex items-center justify-center flex-col relative z-10">
                         {/* Radial glow */}
-                        <div
+                        {/* <div
                             className="radial-glow w-screen h-[50vw] absolute bottom-[-15vw] left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0"
                             style={{ background: 'radial-gradient(50% 50% at 50% 50%, #ff5f00 0%, transparent 100%)' }}
-                        />
+                        /> */}
+                        <div
+                            className="radial-glow  size-[75vw]  absolute bottom-0 left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0 bg-[#ff5f00] blur-[200px] max-sm:size-[150vw] max-sm:left-1/2 max-sm:blur-[100px] max-sm:bottom-[40%]"
+
+                        ></div>
 
                         {/* Steps */}
                         <div className="h-full w-full flex-col gap-0 flex items-center justify-center relative pt-[5vw] max-md:pt-[15vw] max-sm:pt-[25vw] z-100">
