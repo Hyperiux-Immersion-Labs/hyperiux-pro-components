@@ -87,13 +87,11 @@ export const BeamBorder = forwardRef(function BeamBorder(
     size = 'md',
     colorVariant = 'sunset',
     theme = 'light',
-    staticColors = false,
     duration,
     active = true,
     borderRadius: customBorderRadius,
     brightness: brightnessProp,
     saturation,
-    hueRange = 30,
     strength = 1,
     beamWidth,
     className,
@@ -243,8 +241,8 @@ export const BeamBorder = forwardRef(function BeamBorder(
   const finalBorderWidth = beamWidth ?? dims.borderWidth;
   const sat = saturation ?? finish.saturation;
   const bright = brightnessProp ?? finish.brightness ?? 1.3;
-  const hueSpan = size === 'line' ? Math.min(hueRange, 13) : hueRange;
-  const frozen = colorVariant === 'mono' ? true : staticColors;
+  const hueSpan = size === 'line' ? 13 : 30;
+  const frozen = colorVariant === 'mono';
 
   const instanceCSS = useMemo(
     () =>

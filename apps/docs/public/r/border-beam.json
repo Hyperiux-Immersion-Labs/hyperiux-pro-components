@@ -8,8 +8,14 @@
   "exportName": "BorderBeam",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-31",
+      "summary": "Added dynamic/remixer props: size, colorVariant, theme, active, strength, duration, beamWidth, and backgroundColor. Only props with simple, direct, reliable mappings are exposed — staticColors and hueRange stay internal (fixed at their prior defaults), and beamColor/paused were dropped as redundant/unreliable.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -106,17 +112,6 @@
       }
     },
     {
-      "name": "staticColors",
-      "type": "boolean",
-      "default": false,
-      "description": "Freezes the animated color drift.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "motion",
-        "groupTitle": "Motion"
-      }
-    },
-    {
       "name": "active",
       "type": "boolean",
       "default": true,
@@ -125,20 +120,6 @@
         "control": "checkbox",
         "group": "motion",
         "groupTitle": "Motion"
-      }
-    },
-    {
-      "name": "hueRange",
-      "type": "number",
-      "default": 30,
-      "description": "Controls the amount of hue drift.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 120,
-        "step": 1
       }
     },
     {
@@ -159,13 +140,13 @@
       "name": "duration",
       "type": "number",
       "description": "Time for the beam to complete a loop.",
-      "default": 6,
+      "default": 2,
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
+        "min": 0.5,
+        "max": 8,
         "step": 0.05
       }
     },
@@ -179,41 +160,19 @@
         "group": "style",
         "groupTitle": "Style",
         "min": 0,
-        "max": 1200,
+        "max": 16,
         "step": 1
-      }
-    },
-    {
-      "name": "beamColor",
-      "type": "color",
-      "description": "Primary color of the border beam.",
-      "default": "#ff6b00",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
       }
     },
     {
       "name": "backgroundColor",
       "type": "color",
       "description": "Card or container background color.",
-      "default": "#111111",
+      "default": "#f4f5f7",
       "remixer": {
         "control": "color",
         "group": "style",
         "groupTitle": "Style"
-      }
-    },
-    {
-      "name": "paused",
-      "type": "boolean",
-      "description": "Pauses the border animation.",
-      "default": false,
-      "remixer": {
-        "control": "checkbox",
-        "group": "controls",
-        "groupTitle": "Controls"
       }
     }
   ],

@@ -288,15 +288,13 @@ Note: `defaultChecked` was removed — all three toggles always start unchecked.
 | `size` | `"md"` | string | select | Chooses the beam motion family and sizing preset (Rotate MD/SM, Line, Pulse Inner/Outside). |
 | `colorVariant` | `"colorful"` | string | select | Chooses the color palette used by the beam (Colorful, Mono, Ocean, Sunset). |
 | `theme` | `"light"` | string | select | Sets the light, dark, or auto (system-aware) beam tuning. |
-| `staticColors` | `false` | boolean | toggle | Freezes the animated color drift. |
 | `active` | `true` | boolean | toggle | Turns the beam animation on or off. |
-| `hueRange` | `30` | number | range/number | Controls the amount of hue drift. |
 | `strength` | `1` | number | range/number | Scales the beam intensity. |
 | `duration` | `2` | number | range/number | Time for the beam to complete a loop. |
 | `beamWidth` | `2` | number | range/number | Thickness of the animated border beam. |
 | `backgroundColor` | `#f4f5f7` | color | color | Card or container background color. |
 
-Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the existing gradient rather than truly recoloring it, and `paused` duplicated `active`. Only props with simple, direct, reliable mappings are kept.
+Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the existing gradient rather than truly recoloring it, and `paused` duplicated `active`. `staticColors` and `hueRange` were later removed from the public props/remixer panel too; the beam still hue-drifts internally at their previous defaults (30, clamped to 13 for `size="line"`; frozen for `colorVariant="mono"`), so only props with simple, direct, reliable mappings are kept.
 
 ### Card Drift (`card-drift`, pro)
 

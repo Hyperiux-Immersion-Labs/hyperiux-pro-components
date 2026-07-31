@@ -17,9 +17,7 @@ export default function BorderBeam({
   size = cardData.size,
   colorVariant = cardData.colorVariant,
   theme = "light",
-  staticColors = false,
   active = true,
-  hueRange = 30,
   strength = 1,
   duration,
   beamWidth,
@@ -30,9 +28,7 @@ export default function BorderBeam({
       size={size}
       colorVariant={colorVariant}
       theme={theme}
-      staticColors={staticColors}
       active={active}
-      hueRange={hueRange}
       strength={strength}
       duration={duration}
       beamWidth={beamWidth}
