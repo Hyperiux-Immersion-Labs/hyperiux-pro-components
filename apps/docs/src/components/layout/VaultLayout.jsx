@@ -347,7 +347,7 @@ export function VaultLayout({
     typeof children === "function" ? children({ isSidebarOpen }) : children;
 
   return (
-    <div className="relative min-h-screen text-foreground">
+    <div className="relative min-h-[200vh] text-foreground">
       <Suspense fallback={null}>
         <RouteChangeWatcher
           isSidebarReady={isSidebarReady}
@@ -355,7 +355,7 @@ export function VaultLayout({
         />
       </Suspense>
 
-      <div className="relative z-300 flex min-h-screen items-start">
+      <div className="relative z-300 flex  min-h-[200vh] items-start">
         <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
           <Sidebar
             effects={effects}

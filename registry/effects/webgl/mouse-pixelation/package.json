@@ -4,11 +4,11 @@
   "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
   "main": "index.jsx",
   "files": [
+    "index.jsx",
     "EnhancedPixelCube.jsx",
     "PixelCircle.jsx",
     "PixelShift.jsx",
     "createSuspendedRaf.js",
-    "index.jsx",
     "registry.json"
   ],
   "keywords": [

@@ -1,5 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 'use client'
 
 import React, { useRef, useEffect, useCallback, useState } from'react'
@@ -15,20 +13,8 @@ import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import { createVisibilityGate } from './createSuspendedRaf'
-
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  return prefersReducedMotion
-}
+import Link from 'next/link'
+import { usePrefersReducedMotion } from '@/lib/motion'
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -171,6 +157,7 @@ export default function HeroBannerAnimated() {
   const isMobile = deviceType === 'mobile'
   const prefersReducedMotion = usePrefersReducedMotion()
 
+
   useEffect(() => {
     const gate = createVisibilityGate({
       root: rootRef,
@@ -211,7 +198,7 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section ref={rootRef} className="w-full h-screen bg-black relative">
+      <section ref={rootRef} className="w-full h-screen overflow-hidden bg-black relative">
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -221,15 +208,15 @@ export default function HeroBannerAnimated() {
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
               className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-md:py-[8vw] max-md:px-[5vw]'
             >
-              <div className='flex items-start pt-[5vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
-                <motion.p
+              <div className='flex items-start max-md:hidden pt-[2vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
+                <motion.h1
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                  className='text-[20vw] font-semibold leading-1 tracking-tight max-md:text-[28vw]'
+                  className='text-[15vw] font-semibold leading-[0.6]! tracking-tight max-md:text-[28vw]'
                 >
                   HXR
-                </motion.p>
+                </motion.h1>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -246,7 +233,7 @@ export default function HeroBannerAnimated() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className='text-[20vw] font-semibold tracking-tight text-right w-full max-md:text-[28vw]'
+                className='text-[15vw] max-md:hidden max-md:pt-auto pt-[30vh] max-md:pt-[50vh] font-semibold tracking-tight text-right w-full max-md:text-[28vw]'
               >
                 UI
               </motion.p>
@@ -255,13 +242,17 @@ export default function HeroBannerAnimated() {
  initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-  className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
+  className='absolute flex items-center justify-center gap-5 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <a href="/effects" className='pointer-events-auto'>
+  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </a>
-
+  </Link>
   <Play className='w-4 h-4 max-[1025px]:hidden' fill='#ECE4B4' />
+  <Link prefetch={false} href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
+    Read Article
+  </Link>
+
+  
 </motion.p>
 
               <motion.div
@@ -326,9 +317,9 @@ export default function HeroBannerAnimated() {
         )}
 
         {prefersReducedMotion && (
-           <div
+          <div
             aria-live="polite"
-            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
           >
             <h2 className="text-sm leading-none text-white">
               The light keeps tracking.

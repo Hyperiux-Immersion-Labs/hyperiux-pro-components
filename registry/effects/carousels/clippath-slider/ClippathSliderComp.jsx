@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import gsap from "gsap";
-import SplitText from "gsap/dist/SplitText";
+import SplitText from "gsap/SplitText";
 
 gsap.registerPlugin(SplitText);
 

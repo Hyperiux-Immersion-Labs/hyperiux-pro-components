@@ -2,8 +2,8 @@
 
 import gsap from "gsap";
 import React, { useEffect, useId, useRef } from "react";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import SplitText from "gsap/dist/SplitText";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import SplitText from "gsap/SplitText";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 function buildCards(count, startIndex = 0, imagesArr = IMAGE_POOL, namesArr = PROJECT_NAMES) {

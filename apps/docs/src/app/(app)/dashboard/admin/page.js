@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, ArrowUpRight, ChevronDown, Mail, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ArrowUpRight, ChevronDown, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
 
 const USERS_PER_PAGE = 10;
 
