@@ -11,7 +11,14 @@
   "exportKind": "named",
   "tier": "pro",
   "version": "1.0.0",
-  "changelog": [],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-07-09",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
   "props": [
     {
       "name": "intensity",
