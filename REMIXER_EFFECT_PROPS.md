@@ -306,9 +306,7 @@ Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the
 | `cardTextColor` | `#ffffff` | color | color | Text color for each draggable card. |
 | `barColor` | `#262626` | color | color | Background color for each card's tag bar. |
 | `driftAmount` | `30` | number | range/number | Initial scatter and drag throw distance for cards. |
-| `rotationAmount` | `3` | number | range/number | Maximum random rotation applied to individual cards. |
 | `smoothness` | `0.7` | number | range/number | Release and scale smoothing duration for each dragged card. |
-| `lerp` | `0.35` | number | range/number | Velocity smoothing amount while dragging; higher values react faster. |
 
 ### Cards Runway (`cards-runway`, pro) - Suggested props
 
@@ -326,7 +324,6 @@ Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the
 |---|---|---|---|---|
 | `duration` | `0.55` | number | range/number | Card navigation transition duration. |
 | `mouseInteraction` | `true` | boolean | toggle | Enables pointer tilt and texture reveal on the active card. |
-| `bgVisible` | `true` | boolean | toggle | Shows the white section background behind the card stack. |
 | `lerp` | `0.18` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
 | `smoothness` | `0.4` | number | range/number | Hover enter/leave smoothing duration for card tilt and texture reveal. |
 
@@ -634,7 +631,6 @@ Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were 
 | `darkLineColor` | `#ffffff` | color | color | Line color on the dark loader layer. |
 | `lightLineColor` | `#000000` | color | color | Line color on the light reveal layer. |
 | `fadeOutDuration` | `0.5` | number | range/number | Duration of the line fade-out phases. |
-| `loaderDuration` | `1` | number | range/number | Duration multiplier for the main line morph and reveal. |
 
 ### Numeric Tunnel (`numeric-tunnel`, free) - Suggested props
 

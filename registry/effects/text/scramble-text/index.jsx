@@ -15,7 +15,7 @@ const REDUCED_MOTION_Y_OFFSET = 24;
 
 const ScrambleText = ({
   speed = 0.6,
-  charType = 'lowercase',
+  charType = 'uppercase',
   textSize = 5,
   textColor = '#111111',
   align = 'left',
@@ -141,7 +141,7 @@ const ScrambleText = ({
  duration,
  scrambleText: {
  text: (i) => originals[i],
- chars: charType ||'lowercase',
+ chars: charType ||'uppercase',
  speed,
  revealDelay: 0.2,
  },

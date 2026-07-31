@@ -35,7 +35,6 @@ export default function CenterLinesLoading(
         lineHeight = 1,
         darkLineColor = "#ffffff",
         fadeOutDuration = 0.5,
-        loaderDuration = 1,
         onComplete,
     } = {}
 ) {
@@ -52,7 +51,6 @@ export default function CenterLinesLoading(
     const safeDuration = clampNumber(duration, 0.25, 3, 1);
     const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
     const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
-    const safeLoaderDuration = clampNumber(loaderDuration, 0.25, 3, 1);
 
     const recomputeLayout = useCallback((lineCount) => {
         const el = containerRef.current;
@@ -143,7 +141,7 @@ export default function CenterLinesLoading(
 
             tl.to(lines, {
                 opacity: 1,
-                duration: 0.65 * safeLoaderDuration,
+                duration: 0.65,
                 stagger: { each: 0.02, from: "center" },
             });
             tl.to(
@@ -213,7 +211,7 @@ export default function CenterLinesLoading(
                 driver,
                 {
                     p: 1,
-                    duration: totalS * safeLoaderDuration,
+                    duration: totalS,
                     onUpdate: () => {
                         const p = driver.p;
                         const scaled =
@@ -228,7 +226,7 @@ export default function CenterLinesLoading(
         }
 
         const lastStart = (count - 1) * staggerS;
-        const allLinesEnd = lastStart + totalS * safeLoaderDuration;
+        const allLinesEnd = lastStart + totalS;
 
         // Fade top+bottom lines in synchronous pairs, leaving only the middle line.
         const midIdx = Math.floor((count - 1) / 2);
@@ -251,12 +249,12 @@ export default function CenterLinesLoading(
         // Page reveal: white expands from the center to top and bottom.
         tl.to(
             revealPanelRef.current,
-            { scaleY: 1, duration: (TRANSLATE_UP_MS / 1000) * safeLoaderDuration },
+            { scaleY: 1, duration: TRANSLATE_UP_MS / 1000 },
             revealStart
         );
         tl.to(
             blackPanelRef.current,
-            { opacity: 0, duration: (TRANSLATE_UP_MS / 1000) * safeLoaderDuration + 0.25 },
+            { opacity: 0, duration: TRANSLATE_UP_MS / 1000 + 0.25 },
             revealStart + 0.14
         );
         tl.to(linesWrapRef.current, { opacity: 0, duration: safeFadeOutDuration }, revealStart + 0.06);
@@ -283,8 +281,8 @@ export default function CenterLinesLoading(
             },
             revealStart + 0.32
         );
-        tl.to({}, { duration: Math.max(0, HOLD_END_MS / 1000) }, revealStart + (TRANSLATE_UP_MS / 1000) * safeLoaderDuration);
-    }, [heroWords.length, lineCount, onComplete, recomputeLayout, safeDuration, safeFadeOutDuration, safeLoaderDuration]);
+        tl.to({}, { duration: Math.max(0, HOLD_END_MS / 1000) }, revealStart + TRANSLATE_UP_MS / 1000);
+    }, [heroWords.length, lineCount, onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
     useEffect(() => {
         const el = containerRef.current;

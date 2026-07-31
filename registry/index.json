@@ -538,24 +538,22 @@
   },
   {
     "name": "card-drift",
+    "version": "1.2.2",
+    "type": "registry:component",
     "title": "Card Drift",
     "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
     "category": "components",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.2.2",
     "dependencies": [
-      "gsap",
-      "lucide-react"
+      "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/card-drift/registry.json",
-    "importPath": "@/components/effects/card-drift",
-    "target": "src/components/effects/card-drift",
     "previewUrl": "/demo/card-drift",
+    "tier": "pro",
     "main": "index.jsx",
     "exportName": "CardDrift",
     "exportKind": "default",
+    "importPath": "@/components/effects/card-drift",
+    "target": "src/components/effects/card-drift",
     "files": [
       {
         "path": "index.jsx",
@@ -564,10 +562,6 @@
       {
         "path": "CardDriftComp.jsx",
         "target": "src/components/effects/card-drift/CardDriftComp.jsx"
-      },
-      {
-        "path": "NavigationButtons.jsx",
-        "target": "src/components/effects/card-drift/NavigationButtons.jsx"
       }
     ],
     "changelog": [
@@ -582,8 +576,117 @@
         "date": "2026-07-30",
         "summary": "Removed data/cards and shadowOpacity from the public prop surface, replaced Tailwind color class props with color-picker props, and added working driftAmount, rotationAmount, smoothness, and lerp controls.",
         "breaking": false
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-07-28",
+        "summary": "Added data, bgColor, bgTextColor, cardBg, cardTextColor, and barBg as public props with a working remixer panel. The originally suggested props (driftAmount, rotationAmount, duration, shadowOpacity) described ambient hover drift, but this component is a drag-and-throw physics grid with fixed jitter/rotation constants, so they were replaced with the content/theme props CardDriftComp actually accepts.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-07-24",
+        "summary": "Added a prefers-reduced-motion notice explaining that dragging stays fully interactive since it is a direct, user-initiated action.",
+        "breaking": false
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Background color for the draggable card field.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "backgroundTextColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Color of the large background label.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "cardColor",
+        "type": "color",
+        "default": "#4f46e5",
+        "description": "Background color for each draggable card.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "cardTextColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Text color for each draggable card.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "barColor",
+        "type": "color",
+        "default": "#262626",
+        "description": "Background color for each card's tag bar.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "driftAmount",
+        "type": "number",
+        "description": "Initial scatter and drag throw distance for cards.",
+        "default": 30,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "smoothness",
+        "type": "number",
+        "description": "Release and scale smoothing duration for each dragged card.",
+        "default": 0.7,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.15,
+          "max": 1.5,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/card-drift/registry.json"
   },
   {
     "name": "cards-runway",
@@ -1181,12 +1284,37 @@
   },
   {
     "name": "depth-card-stack",
+    "version": "1.2.2",
+    "type": "registry:component",
     "title": "Depth Card Stack",
     "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
     "category": "components",
-    "type": "registry:component",
+    "dependencies": [
+      "gsap",
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/depth-card-stack",
     "tier": "pro",
-    "version": "1.2.2",
+    "main": "index.jsx",
+    "exportName": "DepthCardStack",
+    "exportKind": "default",
+    "importPath": "@/components/effects/depth-card-stack",
+    "target": "src/components/effects/depth-card-stack",
+    "files": [
+      {
+        "path": "index.jsx",
+        "target": "src/components/effects/depth-card-stack/index.jsx"
+      },
+      {
+        "path": "DepthCardStackComp.jsx",
+        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+      },
+      {
+        "path": "SliderCard.jsx",
+        "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+      }
+    ],
     "changelog": [
       {
         "version": "1.2.2",
@@ -1201,38 +1329,85 @@
         "breaking": false
       },
       {
+        "version": "1.2.0",
+        "date": "2026-07-28",
+        "summary": "Added cards as a public prop with a working remixer panel. The originally suggested activeIndex/depth/rotation/duration props don't exist here - card positions come from a fixed hand-tuned per-slot table (getSlotProps), not a linear depth/rotation formula - so they were dropped rather than shipping non-functional controls.",
+        "breaking": false
+      },
+      {
         "version": "1.1.0",
         "date": "2026-07-21",
         "summary": "Disable pointer tilt and texture reveal under reduced motion",
         "breaking": false
       }
     ],
-    "dependencies": [
-      "gsap",
-      "lucide-react"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/components/depth-card-stack/registry.json",
-    "importPath": "@/components/effects/depth-card-stack",
-    "target": "src/components/effects/depth-card-stack",
-    "previewUrl": "/demo/depth-card-stack",
-    "main": "index.jsx",
-    "exportName": "DepthCardStack",
-    "exportKind": "default",
-    "files": [
+    "props": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/depth-card-stack/index.jsx"
+        "name": "duration",
+        "type": "number",
+        "description": "Card navigation transition duration.",
+        "default": 0.55,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.15,
+          "max": 1.5,
+          "step": 0.05
+        }
       },
       {
-        "path": "DepthCardStackComp.jsx",
-        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+        "name": "mouseInteraction",
+        "type": "boolean",
+        "description": "Enables pointer tilt and texture reveal on the active card.",
+        "default": true,
+        "remixer": {
+          "control": "checkbox",
+          "group": "controls",
+          "groupTitle": "Controls"
+        }
       },
       {
-        "path": "SliderCard.jsx",
-        "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+        "name": "lerp",
+        "type": "number",
+        "description": "Pointer-follow smoothing amount; higher values track faster.",
+        "default": 0.18,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.02,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "smoothness",
+        "type": "number",
+        "description": "Hover enter/leave smoothing duration for card tilt and texture reveal.",
+        "default": 0.4,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 1.2,
+          "step": 0.05
+        }
       }
-    ]
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/depth-card-stack/registry.json"
   },
   {
     "name": "directional-menu",
@@ -2685,50 +2860,127 @@
   },
   {
     "name": "lines-loader",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Lines Loader",
     "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
     "category": "loaders",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.1.0",
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Add prefers-reduced-motion support",
-        "breaking": false
-      }
-    ],
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/loaders/lines-loader/registry.json",
-    "importPath": "@/components/effects/lines-loader",
-    "target": "src/components/effects/lines-loader",
     "previewUrl": "/demo/lines-loader",
+    "tier": "pro",
     "main": "index.jsx",
     "exportName": "LinesLoader",
     "exportKind": "default",
+    "importPath": "@/components/effects/lines-loader",
+    "target": "src/components/effects/lines-loader",
     "files": [
       {
         "path": "index.jsx",
         "target": "src/components/effects/lines-loader/index.jsx"
       },
       {
-        "path": "LinesLoading.jsx",
-        "target": "src/components/effects/lines-loader/LinesLoading.jsx"
-      },
-      {
         "path": "CenterLinesLoading.jsx",
         "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+      },
+      {
+        "path": "LinesLoading.jsx",
+        "target": "src/components/effects/lines-loader/LinesLoading.jsx"
       },
       {
         "path": "utils.js",
         "target": "src/components/effects/lines-loader/utils.js"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1,
+        "description": "Overall timeline duration multiplier.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.25,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1,
+        "description": "Rendered height of each loader line in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "lines",
+          "groupTitle": "Lines",
+          "min": 1,
+          "max": 12,
+          "step": 1
+        }
+      },
+      {
+        "name": "darkLineColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Line color on the dark loader layer.",
+        "remixer": {
+          "control": "color",
+          "group": "lines",
+          "groupTitle": "Lines"
+        }
+      },
+      {
+        "name": "lightLineColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Line color on the light reveal layer.",
+        "remixer": {
+          "control": "color",
+          "group": "lines",
+          "groupTitle": "Lines"
+        }
+      },
+      {
+        "name": "fadeOutDuration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Duration of the line fade-out phases.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-21",
+        "summary": "Add prefers-reduced-motion support: hero text fades in as a single block instead of a per-letter stagger",
+        "breaking": false
+      }
+    ],
+    "registryPath": "registry/effects/loaders/lines-loader/registry.json"
   },
   {
     "name": "link-button",

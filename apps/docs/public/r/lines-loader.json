@@ -84,20 +84,6 @@
         "max": 3,
         "step": 0.05
       }
-    },
-    {
-      "name": "loaderDuration",
-      "type": "number",
-      "default": 1,
-      "description": "Duration multiplier for the main line morph and reveal.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0.25,
-        "max": 3,
-        "step": 0.05
-      }
     }
   ],
   "remixer": {

@@ -9,9 +9,7 @@ const CardDrift = ({
   cardTextColor,
   barColor,
   driftAmount,
-  rotationAmount,
   smoothness,
-  lerp,
 }) => {
   return (
    <CardDriftComp
@@ -22,9 +20,7 @@ const CardDrift = ({
  cardTextColor={cardTextColor}
  barColor={barColor}
  driftAmount={driftAmount}
- rotationAmount={rotationAmount}
  smoothness={smoothness}
- lerp={lerp}
  />
   )
 }

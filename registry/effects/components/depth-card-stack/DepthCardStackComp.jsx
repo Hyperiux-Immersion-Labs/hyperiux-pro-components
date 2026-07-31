@@ -52,7 +52,6 @@ export default function DepthCardStackComp({
  cards,
  duration = DEFAULT_DURATION,
  mouseInteraction = true,
- bgVisible = true,
  lerp = DEFAULT_LERP,
  smoothness = DEFAULT_SMOOTHNESS,
 }) {
@@ -142,6 +141,8 @@ export default function DepthCardStackComp({
  if (animating.current) return;
  animating.current = true;
 
+ const effectiveDuration = reduceMotion ? 0.15 : safeDuration;
+
  const total = cards.length;
  const oldCenter = centerRef.current;
  const newCenter = ((oldCenter + dir) % total + total) % total;
@@ -204,27 +205,27 @@ export default function DepthCardStackComp({
  scale: 0.88,
  opacity: 1,
  ease:"cubic-bezier(.25, .46, .45, .94)",
- duration: safeDuration * 0.55,
+ duration: effectiveDuration * 0.55,
  }, 0);
  tl.to(cardEl, {
  ...newProps,
  rotateY: 0,
- duration: safeDuration * 0.35,
+ duration: effectiveDuration * 0.35,
  ease:"cubic-bezier(.32, .72, 0, 1)",
- }, safeDuration * 0.4);
+ }, effectiveDuration * 0.4);
  return;
  }
 
  gsap.set(cardEl, { zIndex: newSlot === 0 ? 25 : newProps.zIndex });
  tl.to(cardEl, {
  ...newProps,
- duration: safeDuration,
+ duration: effectiveDuration,
  ease:"power2.inOut",
- }, safeDuration * 0.1);
+ }, effectiveDuration * 0.1);
  });
 
  setClaimedText(cards[newCenter].claimedText);
- }, [cards, cardWidth, safeDuration]);
+ }, [cards, cardWidth, safeDuration, reduceMotion]);
 
  useEffect(() => {
  const autoplayId = setInterval(() => {
@@ -367,7 +368,7 @@ export default function DepthCardStackComp({
  }, [reduceMotion, isStackReady, mouseInteraction, pointerDuration, safeSmoothness]);
 
  return (
- <section className={`flex flex-col items-center px-6 pt-20 max-[1025px]:pt-40 max-md:pt-20 h-screen pb-5 select-none ${bgVisible ? "bg-white" : "bg-transparent"}`}>
+ <section className="flex flex-col items-center px-6 pt-20 max-[1025px]:pt-40 max-md:pt-20 h-screen pb-5 select-none bg-white">
 <p className="text-sm max-md:text-sm max-[1025px]:text-lg font-medium text-blue-500 mb-1 max-[1025px]:mb-3">
   Hyperiux-UI Library
 </p>

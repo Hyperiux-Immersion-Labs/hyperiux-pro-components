@@ -13,7 +13,6 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*",
-    "lucide-react": "*"
+    "gsap": "*"
   }
 }

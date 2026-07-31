@@ -1,7 +1,13 @@
 {
   "name": "scramble-text",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-31",
+      "summary": "Removed the lowercase option from charType — scrambling now defaults to uppercase, with mixed-case and numbers still available.",
+      "breaking": true
+    },
     {
       "version": "1.1.1",
       "date": "2026-07-30",
@@ -52,17 +58,13 @@
     {
       "name": "charType",
       "type": "string",
-      "default": "lowercase",
+      "default": "uppercase",
       "description": "Character set used while scrambling.",
       "remixer": {
         "control": "select",
         "group": "motion",
         "groupTitle": "Motion",
         "options": [
-          {
-            "value": "lowercase",
-            "label": "Lowercase"
-          },
           {
             "value": "uppercase",
             "label": "Uppercase"

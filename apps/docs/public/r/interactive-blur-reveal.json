@@ -8,8 +8,14 @@
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-31",
+      "summary": "Removed iChannel0 (image texture) from the public/remixer API so it's no longer remixable in the panel; the prop is still accepted by the component with its original default. Changed the Mouse Interaction control from a toggle to a checkbox.",
+      "breaking": true
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-22",
@@ -24,12 +30,6 @@
     }
   ],
   "props": [
-    {
-      "name": "iChannel0",
-      "type": "string",
-      "default": "https://picsum.photos/seed/hover7/800/1000",
-      "description": "Primary image texture revealed by pointer movement."
-    },
     {
       "name": "mouseRadius",
       "type": "number",
@@ -60,13 +60,6 @@
     },
     "controls": [
       {
-        "name": "iChannel0",
-        "label": "Image Texture",
-        "type": "text",
-        "group": "media",
-        "copyable": true
-      },
-      {
         "name": "mouseRadius",
         "label": "Mouse Radius",
         "type": "range",
@@ -78,7 +71,7 @@
       {
         "name": "mouseInteraction",
         "label": "Mouse Interaction",
-        "type": "toggle",
+        "type": "checkbox",
         "group": "interaction"
       },
       {

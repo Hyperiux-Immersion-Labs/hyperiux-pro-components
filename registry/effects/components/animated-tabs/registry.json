@@ -1,6 +1,6 @@
 {
   "name": "animated-tabs",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",
@@ -28,6 +28,12 @@
   ],
   "changelog": [
     {
+      "version": "1.2.2",
+      "date": "2026-07-31",
+      "summary": "Changed the defaultActiveIndex remixer control from a slider to a dropdown so tabs are picked by name instead of a raw index.",
+      "breaking": false
+    },
+    {
       "version": "1.2.1",
       "date": "2026-07-30",
       "summary": "Removed the tabs content prop from the public/remixer API and wired accentColor and duration into the active indicator and panel transitions.",
@@ -53,12 +59,23 @@
       "default": 0,
       "description": "Index of the initially active tab.",
       "remixer": {
-        "control": "range",
+        "control": "select",
         "group": "behavior",
         "groupTitle": "Behavior",
-        "min": 0,
-        "max": 2,
-        "step": 1
+        "options": [
+          {
+            "label": "Overview",
+            "value": 0
+          },
+          {
+            "label": "Services",
+            "value": 1
+          },
+          {
+            "label": "Contact",
+            "value": 2
+          }
+        ]
       }
     },
     {

@@ -19,7 +19,6 @@ const cards = [
 const DepthCardStack = ({
   duration,
   mouseInteraction,
-  bgVisible,
   lerp,
   smoothness,
 }) => {
@@ -29,7 +28,6 @@ const DepthCardStack = ({
         cards={cards}
         duration={duration}
         mouseInteraction={mouseInteraction}
-        bgVisible={bgVisible}
         lerp={lerp}
         smoothness={smoothness}
       />

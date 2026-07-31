@@ -1,7 +1,8 @@
 {
   "name": "interactive-blur-reveal",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    { "version": "1.2.0", "date": "2026-07-31", "summary": "Removed iChannel0 (image texture) from the public/remixer API so it's no longer remixable in the panel; the prop is still accepted by the component with its original default. Changed the Mouse Interaction control from a toggle to a checkbox.", "breaking": true },
     { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
     { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
   ],
@@ -20,7 +21,6 @@
   "importPath": "@/components/effects/interactive-blur-reveal",
   "target": "src/components/effects/interactive-blur-reveal",
   "props": [
-    { "name": "iChannel0", "type": "string", "default": "https://picsum.photos/seed/hover7/800/1000", "description": "Primary image texture revealed by pointer movement." },
     { "name": "mouseRadius", "type": "number", "default": 180, "description": "Radius of the cursor reveal mask in canvas pixels." },
     { "name": "mouseInteraction", "type": "boolean", "default": true, "description": "Enables pointer-driven reveal drawing." },
     { "name": "duration", "type": "number", "default": 0.3, "description": "Trail persistence and fade duration in seconds." }
@@ -31,9 +31,8 @@
     "layout": { "controlsButtonClassName": "right-4! top-25!" },
     "panel": { "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" },
     "controls": [
-      { "name": "iChannel0", "label": "Image Texture", "type": "text", "group": "media", "copyable": true },
       { "name": "mouseRadius", "label": "Mouse Radius", "type": "range", "group": "interaction", "min": 40, "max": 420, "step": 5 },
-      { "name": "mouseInteraction", "label": "Mouse Interaction", "type": "toggle", "group": "interaction" },
+      { "name": "mouseInteraction", "label": "Mouse Interaction", "type": "checkbox", "group": "interaction" },
       { "name": "duration", "label": "Duration", "type": "range", "group": "motion", "min": 0.08, "max": 1.5, "step": 0.01 }
     ]
   },

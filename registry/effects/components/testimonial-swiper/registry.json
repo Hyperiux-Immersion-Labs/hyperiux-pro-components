@@ -1,6 +1,6 @@
 {
   "name": "testimonial-swiper",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "registry:component",
   "title": "Testimonial Swiper",
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
@@ -32,6 +32,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.2.3",
+      "date": "2026-07-31",
+      "summary": "Testimonial count, quote mark, and navigation buttons now default to black instead of following accentColor, which made them orange by default.",
+      "breaking": false
+    },
     {
       "version": "1.2.2",
       "date": "2026-07-30",

@@ -65,17 +65,6 @@
       }
     },
     {
-      "name": "bgVisible",
-      "type": "boolean",
-      "description": "Shows the white section background behind the card stack.",
-      "default": true,
-      "remixer": {
-        "control": "checkbox",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
       "name": "lerp",
       "type": "number",
       "description": "Pointer-follow smoothing amount; higher values track faster.",

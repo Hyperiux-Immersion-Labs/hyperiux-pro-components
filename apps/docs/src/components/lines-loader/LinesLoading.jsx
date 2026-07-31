@@ -241,7 +241,6 @@ export default function LinesLoading({
   darkLineColor = "#ffffff",
   lightLineColor = "#000000",
   fadeOutDuration = 0.5,
-  loaderDuration = 1,
 } = {}) {
   const containerRef = useRef(null);
   const darkLineRefs = useRef([]);
@@ -267,7 +266,6 @@ export default function LinesLoading({
   const safeDuration = clampNumber(duration, 0.25, 3, 1);
   const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
   const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
-  const safeLoaderDuration = clampNumber(loaderDuration, 0.25, 3, 1);
 
   const recomputeLayout = useCallback(() => {
     const el = containerRef.current;
@@ -422,8 +420,8 @@ export default function LinesLoading({
     tl.timeScale(1 / safeDuration);
 
     const staggerS = MORPH_STAGGER / 1000;
-    const appearS = (APPEAR_DUR / 1000) * safeLoaderDuration;
-    const morphS = (MORPH_DUR / 1000) * safeLoaderDuration;
+    const appearS = APPEAR_DUR / 1000;
+    const morphS = MORPH_DUR / 1000;
     const totalS = appearS + morphS;
     const appearPct = totalS === 0 ? 1 : appearS / totalS;
     const scaleSetters = darkLineEls.map((el) =>
@@ -480,7 +478,7 @@ export default function LinesLoading({
       lightLayerRef.current,
       {
         clipPath: "inset(0% 0 0 0)",
-        duration: (WIPE_DUR / 1000) * safeLoaderDuration,
+        duration: WIPE_DUR / 1000,
       },
       "wipe",
     );
@@ -517,7 +515,7 @@ export default function LinesLoading({
     );
     tl.to({}, { duration: HOLD_AFTER_MORPH / 1000 });
     tl.to({}, { duration: HOLD_END / 1000 });
-  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration, safeLoaderDuration]);
+  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
   useEffect(() => {
     const el = containerRef.current;

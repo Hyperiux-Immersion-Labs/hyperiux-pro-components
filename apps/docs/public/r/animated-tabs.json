@@ -10,8 +10,14 @@
   "exportName": "AnimatedTabs",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "changelog": [
+    {
+      "version": "1.2.2",
+      "date": "2026-07-31",
+      "summary": "Changed the defaultActiveIndex remixer control from a slider to a dropdown so tabs are picked by name instead of a raw index.",
+      "breaking": false
+    },
     {
       "version": "1.2.1",
       "date": "2026-07-30",
@@ -38,12 +44,23 @@
       "default": 0,
       "description": "Index of the initially active tab.",
       "remixer": {
-        "control": "range",
+        "control": "select",
         "group": "behavior",
         "groupTitle": "Behavior",
-        "min": 0,
-        "max": 2,
-        "step": 1
+        "options": [
+          {
+            "label": "Overview",
+            "value": 0
+          },
+          {
+            "label": "Services",
+            "value": 1
+          },
+          {
+            "label": "Contact",
+            "value": 2
+          }
+        ]
       }
     },
     {

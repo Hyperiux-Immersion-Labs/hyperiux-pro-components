@@ -7,7 +7,7 @@ import { Draggable } from "gsap/Draggable";
 gsap.registerPlugin(Draggable);
 
 const DEFAULT_DRIFT_AMOUNT = 30;
-const DEFAULT_ROTATION_AMOUNT = 3;
+const DEFAULT_ROTATION_AMOUNT = 0;
 const DEFAULT_SMOOTHNESS = 0.7;
 const DEFAULT_LERP = 0.35;
 
@@ -45,31 +45,23 @@ export default function CardDriftComp({
  cardTextColor = "#ffffff",
  barColor = "#262626",
  driftAmount = DEFAULT_DRIFT_AMOUNT,
- rotationAmount = DEFAULT_ROTATION_AMOUNT,
  smoothness = DEFAULT_SMOOTHNESS,
- lerp = DEFAULT_LERP,
 }) {
  const containerRef = useRef(null);
  const configRef = useRef({
   driftAmount: DEFAULT_DRIFT_AMOUNT,
-  rotationAmount: DEFAULT_ROTATION_AMOUNT,
   smoothness: DEFAULT_SMOOTHNESS,
-  lerp: DEFAULT_LERP,
  });
  const reducedMotion = usePrefersReducedMotion();
  const safeDriftAmount = clampNumber(driftAmount, 0, 90, DEFAULT_DRIFT_AMOUNT);
- const safeRotationAmount = clampNumber(rotationAmount, 0, 18, DEFAULT_ROTATION_AMOUNT);
  const safeSmoothness = clampNumber(smoothness, 0.15, 1.5, DEFAULT_SMOOTHNESS);
- const safeLerp = clampNumber(lerp, 0.02, 1, DEFAULT_LERP);
 
  useEffect(() => {
   configRef.current = {
    driftAmount: safeDriftAmount,
-   rotationAmount: safeRotationAmount,
    smoothness: safeSmoothness,
-   lerp: safeLerp,
   };
- }, [safeDriftAmount, safeRotationAmount, safeSmoothness, safeLerp]);
+ }, [safeDriftAmount, safeSmoothness]);
 
  useEffect(() => {
  const ctx = gsap.context(() => {
@@ -126,7 +118,7 @@ export default function CardDriftComp({
  gsap.set(card, {
  x,
  y,
- rotation: getCardRotation(i, configRef.current.rotationAmount),
+ rotation: getCardRotation(i, DEFAULT_ROTATION_AMOUNT),
  zIndex: i + 1,
  opacity: 1,
  });
@@ -169,7 +161,7 @@ export default function CardDriftComp({
  const curY = gsap.getProperty(card,"y");
 
  // Exponential moving average for smoother velocity
- const alpha = Math.min(1, configRef.current.lerp + dt / 1000);
+ const alpha = Math.min(1, DEFAULT_LERP + dt / 1000);
  velX = velX * (1 - alpha) + ((curX - lastX) / dt) * alpha;
  velY = velY * (1 - alpha) + ((curY - lastY) / dt) * alpha;
 
@@ -224,23 +216,6 @@ export default function CardDriftComp({
 
  return () => ctx.revert();
  }, [data]);
-
- useEffect(() => {
-  const cards = containerRef.current
-   ? gsap.utils.toArray(".testimonial-card", containerRef.current)
-   : [];
-
-  cards.forEach((card, index) => {
-   gsap.to(card, {
-    rotation: getCardRotation(index, safeRotationAmount),
-    duration: Math.min(safeSmoothness, 0.35),
-    ease: "power2.out",
-    overwrite: "auto",
-   });
-  });
-
-  return () => cards.forEach((card) => gsap.killTweensOf(card));
- }, [safeRotationAmount, safeSmoothness]);
 
  return (
  <div

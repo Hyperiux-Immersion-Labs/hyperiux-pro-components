@@ -4,8 +4,7 @@
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
   "dependencies": [
-    "gsap",
-    "lucide-react"
+    "gsap"
   ],
   "registryDependencies": [],
   "exportName": "CardDrift",
@@ -109,20 +108,6 @@
       }
     },
     {
-      "name": "rotationAmount",
-      "type": "number",
-      "description": "Maximum random rotation applied to individual cards.",
-      "default": 3,
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 18,
-        "step": 0.5
-      }
-    },
-    {
       "name": "smoothness",
       "type": "number",
       "description": "Release and scale smoothing duration for each dragged card.",
@@ -134,20 +119,6 @@
         "min": 0.15,
         "max": 1.5,
         "step": 0.05
-      }
-    },
-    {
-      "name": "lerp",
-      "type": "number",
-      "description": "Velocity smoothing amount while dragging; higher values react faster.",
-      "default": 0.35,
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0.02,
-        "max": 1,
-        "step": 0.01
       }
     }
   ],

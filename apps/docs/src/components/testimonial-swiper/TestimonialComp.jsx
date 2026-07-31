@@ -245,7 +245,7 @@ export default function TestimonialComp({
                         <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px]" style={{ color: accentColor }}>◆</span>
                         <span>Client Stories</span>
                     </div>
-                    <span className="text-[13px] max-[1025px]:text-[12px] max-md:pl-4 text-neutral-700 tabular-nums" style={{ color: accentColor }}>
+                    <span className="text-[13px] max-[1025px]:text-[12px] max-md:pl-4 text-black tabular-nums">
                         {pad(current + 1)}&nbsp;/&nbsp;{pad(total)}
                     </span>
                 </div>
@@ -255,7 +255,7 @@ export default function TestimonialComp({
                         className="max-md:hidden"
                         onPrev={handlePrev}
                         onNext={handleNext}
-                        accentColor={accentColor}
+                        accentColor="#000000"
                     />
                 )}
             </div>
@@ -283,8 +283,8 @@ export default function TestimonialComp({
                 {/* Quote area */}
                 <div className="flex-1 flex flex-col relative">
                     <span
-                        className="absolute -top-1 font-serif font-bold leading-none max-[1025px]:top-[-2vw] text-[42px] max-[1025px]:text-[4.5vw] max-md:text-[34px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-1"
-                        style={{ left: 0, color: accentColor }}
+                        className="absolute -top-1 font-serif font-bold leading-none max-[1025px]:top-[-2vw] text-[42px] max-[1025px]:text-[4.5vw] max-md:text-[34px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-1 text-black"
+                        style={{ left: 0 }}
                         ref={quoteMarkRef}
                     >
                         &quot;

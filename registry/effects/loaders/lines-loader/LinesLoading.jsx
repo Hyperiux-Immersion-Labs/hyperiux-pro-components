@@ -40,7 +40,7 @@ function DemoContent({
 
   const navItems = useMemo(
     () => [
-      { left: <span className="font-bold tracking-tighter max-[1025px]:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
+      { left: <span className="font-bold tracking-tighter max-md:text-2xl max-sm:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
@@ -134,7 +134,7 @@ function DemoContent({
 
   const rowCount = lineCount - 1;
 
-  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-[1025px]:flex max-[1025px]:justify-between";
+  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-md:flex max-md:justify-between";
 
   return (
     <div
@@ -147,7 +147,7 @@ function DemoContent({
         <>
           <div
             className={[
-              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-md:text-[3.5vw]",
+              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-sm:text-[3.5vw]",
               GRID_CLASS,
               isDark ? "text-white/55" : "text-black/55",
             ].join(" ")}
@@ -174,7 +174,7 @@ function DemoContent({
                     : isDark
                       ? "text-white/55"
                       : "text-black/55",
-                  idx > 0 && idx < 6 ? "max-[1025px]:hidden" : "",
+                  idx > 0 && idx < 6 ? "max-md:hidden" : "",
                 ].join(" ")}
               >
                 {item.left || item.center || item.right}
@@ -191,7 +191,7 @@ function DemoContent({
                   rowRefs.current[idx] = el;
                 }}
                 className={[
-                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-md:text-[4vw]",
+                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-sm:text-[4vw]",
                   GRID_CLASS,
                   "will-change-[filter,transform,opacity]",
                   idx < 9
@@ -206,19 +206,19 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-[1025px]:w-full max-[1025px]:whitespace-nowrap max-[1025px]:text-[1.5vw] max-md:text-[4vw]",
+                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[1.5vw] max-sm:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >
                   {cells[0]}
                 </div>
-                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-[1025px]:hidden"].join(" ")}>
+                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-md:hidden"].join(" ")}>
                   {cells[1]}
                 </div>
-                <div className="max-[1025px]:hidden">{cells[2]}</div>
-                <div className="max-[1025px]:hidden">{cells[3]}</div>
-                <div className="justify-self-start max-[1025px]:hidden">{cells[4]}</div>
-                <div className="max-[1025px]:hidden"></div>
+                <div className="max-md:hidden">{cells[2]}</div>
+                <div className="max-md:hidden">{cells[3]}</div>
+                <div className="justify-self-start max-md:hidden">{cells[4]}</div>
+                <div className="max-md:hidden"></div>
               </div>
             ))}
           </div>
@@ -241,7 +241,6 @@ export default function LinesLoading({
   darkLineColor = "#ffffff",
   lightLineColor = "#000000",
   fadeOutDuration = 0.5,
-  loaderDuration = 1,
 } = {}) {
   const containerRef = useRef(null);
   const darkLineRefs = useRef([]);
@@ -267,7 +266,6 @@ export default function LinesLoading({
   const safeDuration = clampNumber(duration, 0.25, 3, 1);
   const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
   const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
-  const safeLoaderDuration = clampNumber(loaderDuration, 0.25, 3, 1);
 
   const recomputeLayout = useCallback(() => {
     const el = containerRef.current;
@@ -422,8 +420,8 @@ export default function LinesLoading({
     tl.timeScale(1 / safeDuration);
 
     const staggerS = MORPH_STAGGER / 1000;
-    const appearS = (APPEAR_DUR / 1000) * safeLoaderDuration;
-    const morphS = (MORPH_DUR / 1000) * safeLoaderDuration;
+    const appearS = APPEAR_DUR / 1000;
+    const morphS = MORPH_DUR / 1000;
     const totalS = appearS + morphS;
     const appearPct = totalS === 0 ? 1 : appearS / totalS;
     const scaleSetters = darkLineEls.map((el) =>
@@ -480,7 +478,7 @@ export default function LinesLoading({
       lightLayerRef.current,
       {
         clipPath: "inset(0% 0 0 0)",
-        duration: (WIPE_DUR / 1000) * safeLoaderDuration,
+        duration: WIPE_DUR / 1000,
       },
       "wipe",
     );
@@ -517,7 +515,7 @@ export default function LinesLoading({
     );
     tl.to({}, { duration: HOLD_AFTER_MORPH / 1000 });
     tl.to({}, { duration: HOLD_END / 1000 });
-  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration, safeLoaderDuration]);
+  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -588,7 +586,7 @@ export default function LinesLoading({
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-[1025px]:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-[1025px]:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
+          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>
