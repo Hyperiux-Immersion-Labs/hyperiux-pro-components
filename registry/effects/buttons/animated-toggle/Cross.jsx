@@ -1,5 +1,14 @@
 "use client"
 
+/**
+ * @typedef {Object} CrossProps
+ * @property {boolean} [isActive]
+ * @property {number} [size]
+ * @property {boolean} [prefersReducedMotion]
+ * @property {string} [className]
+ */
+
+/** @param {CrossProps} props */
 const Cross = ({
  isActive = false,
  size = 24,

@@ -2,8 +2,18 @@
 import { useEffect, useRef, useState } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @param {number} n
+ */
 const lerp = (a, b, n) => (1 - n) * a + n * b;
 
+/**
+ * @param {Object} [options]
+ * @param {boolean} [options.smooth]
+ * @param {number} [options.lerpFactor]
+ */
 export const useMouse = ({
  smooth = true,
  lerpFactor = 0.1,
@@ -24,7 +34,7 @@ export const useMouse = ({
  });
 
  useEffect(() => {
- const handleMouseMove = (e) => {
+ const handleMouseMove = (/** @type {MouseEvent} */ e) => {
  mouse.current = {
  x: e.clientX,
  y: e.clientY,

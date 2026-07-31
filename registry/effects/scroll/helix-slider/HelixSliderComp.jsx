@@ -29,10 +29,40 @@ const DEFAULT_ITEMS = [
   { id: 6, image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg", title: "Card 6" },
 ];
 
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ */
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+/**
+ * @typedef {Object} HelixSliderItem
+ * @property {string|number} id
+ * @property {string} [image]
+ * @property {string} [title]
+ */
+
+/**
+ * @typedef {Object} HelixSliderCompProps
+ * @property {HelixSliderItem[]} [items]
+ * @property {number} [cardWidth]
+ * @property {number} [cardHeight]
+ * @property {number} [verticalSpacing]
+ * @property {number} [snakeAmplitude]
+ * @property {number} [snakeTightness]
+ * @property {number} [depthAmplitude]
+ * @property {number} [scrollDistance]
+ * @property {number} [perspective]
+ * @property {number} [scaleMin]
+ * @property {number} [yRotateStrength]
+ * @property {number} [maxYRotation]
+ * @property {string} [className]
+ */
+
+/** @param {HelixSliderCompProps} props */
 export default function HelixSliderComp({
     items = DEFAULT_ITEMS,
     cardWidth = 220,
@@ -47,15 +77,15 @@ export default function HelixSliderComp({
     maxYRotation = 75,
     className = "",
 }) {
-    const sectionRef = useRef(null);
-    const cardRefs = useRef([]);
+    const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
+    const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
     const reducedMotion = usePrefersReducedMotion();
 
     const repeatedItems = useMemo(() => {
         return [...items, ...items, ...items];
     }, [items]);
 
-    const setCardRef = useCallback((index) => (el) => {
+    const setCardRef = useCallback((/** @type {number} */ index) => (/** @type {HTMLDivElement|null} */ el) => {
         cardRefs.current[index] = el;
     }, []);
 
@@ -67,6 +97,7 @@ export default function HelixSliderComp({
             const baseCount = items.length;
             const totalTravel = baseCount * verticalSpacing;
 
+            /** @param {number} travel */
             const render = (travel) => {
                 const isMobile = window.innerWidth < 640;
 
@@ -160,11 +191,11 @@ export default function HelixSliderComp({
         <section
             ref={sectionRef}
             className={`relative h-screen w-full overflow-hidden bg-[#020202] before:pointer-events-none before:absolute before:left-0 before:top-0 before:z-20 before:h-[14%] before:w-full before:bg-[linear-gradient(to_bottom,#020202_0%,rgba(2,2,2,0)_100%)] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:z-20 after:h-[14%] after:w-full after:bg-[linear-gradient(to_top,#020202_0%,rgba(2,2,2,0)_100%)] max-[1025px]:[--card-height:245px] max-[1025px]:[--card-width:180px] max-md:[--card-height:190px] max-md:[--card-width:140px] ${className}`}
-            style={{
+            style={/** @type {import('react').CSSProperties} */ ({
                 "--card-width": `${cardWidth}px`,
                 "--card-height": `${cardHeight}px`,
                 "--scene-perspective": `${perspective}px`,
-            }}
+            })}
         >
             <div className="relative h-screen w-full overflow-hidden perspective-(--scene-perspective,1800px) perspective-origin-[center_center]">
                 <div className="relative h-full w-full transform-3d">

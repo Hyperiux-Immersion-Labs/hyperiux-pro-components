@@ -13,9 +13,31 @@ const prefersReducedMotion = () =>
 
 const REDUCED_MOTION_NAV_DURATION = 0.15;
 
+/**
+ * @typedef {Object} HorizontalLoopConfig
+ * @property {number} [repeat]
+ * @property {number | false} [snap]
+ * @property {string | number} [paddingRight]
+ * @property {boolean} [draggable]
+ * @property {Element} [wrapperEl]
+ * @property {(index: number) => void} [onIndexChange]
+ * @property {boolean} [reduceMotion]
+ * @property {boolean} [reversed]
+ */
+
+/**
+ * Returns a gsap.core.Timeline augmented with next/previous/current/toIndex/
+ * updateIndex/times/draggable helpers (the official GSAP horizontalLoop
+ * recipe) - typed loosely since it's an internal implementation detail, not
+ * part of the component's public props.
+ * @param {HTMLElement[]} items
+ * @param {HorizontalLoopConfig} [config]
+ * @returns {any}
+ */
 function horizontalLoop(items, config = {}) {
  items[0].getBoundingClientRect();
 
+ /** @type {any} */
  const tl = gsap.timeline({
  repeat: config.repeat,
  paused: true,
@@ -25,21 +47,24 @@ function horizontalLoop(items, config = {}) {
 
  const length = items.length;
  const startX = items[0].offsetLeft;
+ /** @type {number[]} */
  const times = [];
+ /** @type {number[]} */
  const widths = [];
+ /** @type {number[]} */
  const xPercents = [];
  let curIndex = 0;
 
  const pixelsPerSecond = 100 * Math.max(config.speed ?? 1, 0.01);
  const snap =
- config.snap === false ? (v) => v : gsap.utils.snap(config.snap || 1);
+ config.snap === false ? /** @type {(v: number) => number} */ ((v) => v) : gsap.utils.snap(config.snap || 1);
 
  const populateWidths = () =>
  items.forEach((el, i) => {
- widths[i] = parseFloat(gsap.getProperty(el,"width","px"));
+ widths[i] = parseFloat(/** @type {string} */ (gsap.getProperty(el,"width","px")));
  xPercents[i] = snap(
- (parseFloat(gsap.getProperty(el,"x","px")) / widths[i]) * 100 +
- gsap.getProperty(el,"xPercent")
+ (parseFloat(/** @type {string} */ (gsap.getProperty(el,"x","px"))) / widths[i]) * 100 +
+ /** @type {number} */ (gsap.getProperty(el,"xPercent"))
  );
  });
 
@@ -48,8 +73,8 @@ function horizontalLoop(items, config = {}) {
  (xPercents[length - 1] / 100) * widths[length - 1] -
  startX +
  items[length - 1].offsetWidth *
- gsap.getProperty(items[length - 1],"scaleX") +
- (parseFloat(config.paddingRight) || 0);
+ /** @type {number} */ (gsap.getProperty(items[length - 1],"scaleX")) +
+ (parseFloat(/** @type {string} */ (config.paddingRight)) || 0);
 
  populateWidths();
  if (!widths[0]) return null;
@@ -64,7 +89,7 @@ function horizontalLoop(items, config = {}) {
  const curX = (xPercents[i] / 100) * widths[i];
  const distanceToStart = item.offsetLeft + curX - startX;
  const distanceToLoop =
- distanceToStart + widths[i] * gsap.getProperty(item,"scaleX");
+ distanceToStart + widths[i] * /** @type {number} */ (gsap.getProperty(item,"scaleX"));
 
  tl.to(
  item,
@@ -94,6 +119,10 @@ function horizontalLoop(items, config = {}) {
  times[i] = distanceToStart / pixelsPerSecond;
  }
 
+ /**
+  * @param {number} index
+  * @param {Record<string, any>} [vars]
+  */
  function toIndex(index, vars = {}) {
  if (Math.abs(index - curIndex) > length / 2) {
  index += index > curIndex ? -length : length;
@@ -113,10 +142,10 @@ function horizontalLoop(items, config = {}) {
  return tl.tweenTo(time, vars);
  }
 
- tl.next = (vars) => toIndex(curIndex + 1, vars);
- tl.previous = (vars) => toIndex(curIndex - 1, vars);
+ tl.next = (/** @type {Record<string, any>} */ vars) => toIndex(curIndex + 1, vars);
+ tl.previous = (/** @type {Record<string, any>} */ vars) => toIndex(curIndex - 1, vars);
  tl.current = () => curIndex;
- tl.toIndex = (index, vars) => toIndex(index, vars);
+ tl.toIndex = (/** @type {number} */ index, /** @type {Record<string, any>} */ vars) => toIndex(index, vars);
  tl.updateIndex = () => {
  curIndex = gsap.utils.wrap(0, length, Math.round(tl.progress() * length));
  config.onIndexChange?.(curIndex);
@@ -134,10 +163,15 @@ function horizontalLoop(items, config = {}) {
  const proxy = document.createElement("div");
  const wrap = gsap.utils.wrap(0, 1);
 
+ /** @type {number} */
  let ratio;
+ /** @type {number} */
  let startProgress;
+ /** @type {any} */
  let draggableInst;
+ /** @type {number} */
  let dragSnap;
+ /** @type {number} */
  let roundFactor;
 
  const align = () => {
@@ -176,7 +210,7 @@ function horizontalLoop(items, config = {}) {
  // Reduced motion drops the post-release momentum coast entirely, so the
  // carousel stops exactly where the drag ends instead of gliding on.
  inertia: !config.reduceMotion,
- snap: (value) => {
+ snap: (/** @type {any} */ value) => {
  const n =
  Math.round(parseFloat(value) / dragSnap) * dragSnap * roundFactor;
  return (n - (n % 1)) / roundFactor;
@@ -194,6 +228,30 @@ function horizontalLoop(items, config = {}) {
  return tl;
 }
 
+/**
+ * @typedef {Object} InfiniteCarouselCompProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [draggable]
+ * @property {boolean} [showNav]
+ * @property {import('react').ReactNode} [prevLabel]
+ * @property {import('react').ReactNode} [nextLabel]
+ * @property {import('react').CSSProperties} [pageStyle]
+ * @property {import('react').CSSProperties} [controlsStyle]
+ * @property {import('react').CSSProperties} [prevBtnStyle]
+ * @property {import('react').CSSProperties} [nextBtnStyle]
+ * @property {import('react').CSSProperties} [wrapperStyle]
+ * @property {import('react').CSSProperties} [itemStyle]
+ * @property {string} [pageClassName]
+ * @property {string} [controlsClassName]
+ * @property {string} [prevBtnClassName]
+ * @property {string} [nextBtnClassName]
+ * @property {string} [wrapperClassName]
+ * @property {string} [itemClassName]
+ * @property {number} [mobileBreakpoint]
+ * @property {'gsap' | 'wrap' | 'swiper'} [mobileMode]
+ */
+
+/** @param {InfiniteCarouselCompProps} props */
 export default function InfiniteCarouselComp({
  children,
  draggable = true,
@@ -221,11 +279,11 @@ export default function InfiniteCarouselComp({
  mobileBreakpoint = 640,
  mobileMode ="gsap",
 }) {
- const wrapperRef = useRef(null);
- const itemRefs = useRef([]);
- const loopRef = useRef(null);
+ const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const itemRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+ const loopRef = useRef(/** @type {any} */ (null));
  const attemptsRef = useRef(0);
- const mobileCardRefs = useRef([]);
+ const mobileCardRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
  const isAdjustingScrollRef = useRef(false);
  const isHoveredRef = useRef(false);
 
@@ -233,13 +291,13 @@ export default function InfiniteCarouselComp({
  const [activeIndex, setActiveIndex] = useState(0);
  const [reduceMotion, setReduceMotion] = useState(false);
 
- const childArray = useMemo(() => {
+ const childArray = /** @type {any[]} */ (useMemo(() => {
  return Array.isArray(children)
  ? children.flat().filter(Boolean)
  : children
  ? [children]
  : [];
- }, [children]);
+ }, [children]));
 
  const slideCount = childArray.length;
  const activeChild = slideCount ? childArray[activeIndex] : null;
@@ -276,6 +334,7 @@ export default function InfiniteCarouselComp({
  useEffect(() => {
  const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+ /** @param {MediaQueryList | MediaQueryListEvent} event */
  const syncReducedMotion = (event) => {
  setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
  };
@@ -302,7 +361,7 @@ export default function InfiniteCarouselComp({
  attemptsRef.current = 0;
 
  function tryInit() {
- const items = itemRefs.current.filter(Boolean);
+ const items = /** @type {HTMLElement[]} */ (itemRefs.current.filter(Boolean));
  if (!items.length || !wrapperRef.current) return;
 
  const loop = horizontalLoop(items, {
@@ -425,6 +484,7 @@ export default function InfiniteCarouselComp({
  return firstItem.offsetWidth + gap;
  };
 
+ /** @param {number} direction */
  const scrollMobileByCard = (direction) => {
  if (!wrapperRef.current) return;
 

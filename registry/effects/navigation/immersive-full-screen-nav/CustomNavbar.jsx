@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 
+/** @type {Record<string, import('react').ReactNode>} */
 const SOCIAL_ICONS = {
   instagram: (
     <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 max-[1025px]:h-8 max-[1025px]:w-8 max-md:h-6 max-md:w-6">
@@ -46,6 +47,32 @@ const IMAGE_DELAY_OFFSET = 0.1;
 const SOCIAL_DELAY_OFFSET = 0.2;
 const LOCATION_DELAY_OFFSET = 0.25;
 
+/**
+ * @typedef {Object} CustomNavbarLink
+ * @property {string} label
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} CustomNavbarSocial
+ * @property {string} type
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} CustomNavbarProps
+ * @property {CustomNavbarLink[]} [links]
+ * @property {string[]} [images]
+ * @property {string} [agencyName]
+ * @property {CustomNavbarSocial[]} [socials]
+ * @property {string} [location]
+ * @property {string} [tagline]
+ * @property {boolean} [isOpen]
+ * @property {string} [overlayBg]
+ * @property {number} [delay]
+ */
+
+/** @param {CustomNavbarProps} props */
 export default function CustomNavbar({
   links = [],
   images = ["https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"],
@@ -72,12 +99,12 @@ export default function CustomNavbar({
   socialStagger = DEFAULT_SOCIAL_STAGGER,
 }) {
   // State & refs
-  const linksRef = useRef([]);
-  const imagesRef = useRef([]);
-  const socialsRef = useRef([]);
-  const agencyRef = useRef(null);
-  const taglineRef = useRef(null);
-  const locationRef = useRef(null);
+  const linksRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const imagesRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const socialsRef = useRef(/** @type {(HTMLAnchorElement|null)[]} */ ([]));
+  const agencyRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const taglineRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const locationRef = useRef(/** @type {HTMLElement|null} */ (null));
   const reduceMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
@@ -103,15 +130,18 @@ export default function CustomNavbar({
     gsap.set(locationRef.current, { y: LOCATION_Y_OFFSET, opacity: 0 });
   };
 
-  const setLinkRef = (index) => (element) => {
+  /** @param {number} index */
+  const setLinkRef = (index) => (/** @type {HTMLDivElement|null} */ element) => {
     linksRef.current[index] = element;
   };
 
-  const setImageRef = (index) => (element) => {
+  /** @param {number} index */
+  const setImageRef = (index) => (/** @type {HTMLDivElement|null} */ element) => {
     imagesRef.current[index] = element;
   };
 
-  const setSocialRef = (index) => (element) => {
+  /** @param {number} index */
+  const setSocialRef = (index) => (/** @type {HTMLAnchorElement|null} */ element) => {
     socialsRef.current[index] = element;
   };
 

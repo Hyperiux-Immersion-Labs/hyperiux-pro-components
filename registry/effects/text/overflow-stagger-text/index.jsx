@@ -23,19 +23,35 @@ const COPY_WRAPPER_ATTRIBUTE = "data-copy-wrapper";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const DEFAULT_TEXT = <p>Text that steps into frame.</p>;
+
+
+/**
+ * @typedef {Object} OverflowStaggerTextProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [animateOnScroll]
+ * @property {number} [delay]
+ * @property {string} [className]
+ * @property {number} [stagger]
+ * @property {boolean} [scrub]
+ * @property {string} [start]
+ * @property {string} [end]
+ */
+
+/** @param {OverflowStaggerTextProps} props */
 export default function OverflowStaggerText({
-  children,
+  children = DEFAULT_TEXT,
   animateOnScroll = true,
   delay = 0,
   className = "",
   stagger = STAGGER_DELAY,
-  scrub = true,
+  scrub = false,
   start = "top 90%",
   end = "bottom 60%",
 }) {
-  const containerRef = useRef(null);
-  const splitRefs = useRef([]);
-  const charactersRef = useRef([]);
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
+  const charactersRef = useRef(/** @type {HTMLElement[]} */ ([]));
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -57,6 +73,7 @@ export default function OverflowStaggerText({
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    /** @type {ReturnType<typeof gsap.context> | undefined} */
     let context;
 
     const initializeAnimation = async () => {
@@ -72,7 +89,7 @@ export default function OverflowStaggerText({
           });
 
           splitRefs.current.push(split);
-          charactersRef.current.push(...split.chars);
+          charactersRef.current.push(.../** @type {HTMLElement[]} */ (split.chars));
         });
 
         if (prefersReduced) {

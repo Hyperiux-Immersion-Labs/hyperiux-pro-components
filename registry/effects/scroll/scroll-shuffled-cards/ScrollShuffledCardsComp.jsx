@@ -14,8 +14,46 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
+/**
+ * @param {number} min
+ * @param {number} max
+ */
 const getRandomInRange = (min, max) => Math.random() * (max - min) + min;
 
+/**
+ * @typedef {Object} ShuffledCard
+ * @property {string|number} [id]
+ * @property {string} [bgOuter]
+ * @property {string} [bgInner]
+ * @property {string} [text]
+ * @property {string} [eyebrow]
+ * @property {string} [description]
+ * @property {string} [title]
+ */
+
+/**
+ * @typedef {Object} ScrollShuffledCardsCompProps
+ * @property {ShuffledCard[]} [cards]
+ * @property {string} [heading]
+ * @property {number} [sectionHeight]
+ * @property {string} [cardWidth]
+ * @property {string} [cardHeight]
+ * @property {string} [cardPadding]
+ * @property {string} [cardRadius]
+ * @property {string} [cardsGap]
+ * @property {string} [background]
+ * @property {number} [initialContainerXPercent]
+ * @property {number} [finalContainerXPercent]
+ * @property {[number, number]} [startXRange]
+ * @property {[number, number]} [startYRange]
+ * @property {[number, number]} [startRotateRange]
+ * @property {[number, number]} [endXRange]
+ * @property {[number, number]} [endYRange]
+ * @property {[number, number]} [endRotateRange]
+ * @property {string} [className]
+ */
+
+/** @param {ScrollShuffledCardsCompProps} props */
 const ScrollShuffledCardsComp = ({
   cards = [],
   heading = "Scroll Shuffled Cards",
@@ -36,9 +74,9 @@ const ScrollShuffledCardsComp = ({
   endRotateRange = [-10, 10],
   className = "",
 }) => {
-  const sectionRef = useRef(null);
-  const containerRef = useRef(null);
-  const cardRefs = useRef([]);
+  const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
 
   const randomizedCards = useMemo(() => {
     return cards.map((card, index) => ({
@@ -138,7 +176,7 @@ const ScrollShuffledCardsComp = ({
           {randomizedCards.map((card, index) => (
             <div
               key={card.id || index}
-              ref={(el) => (cardRefs.current[index] = el)}
+              ref={(el) => { cardRefs.current[index] = el; }}
               className="relative h-fit w-fit shrink-0 opacity-0 will-change-transform"
               style={{ zIndex: card.zIndex }}
             >

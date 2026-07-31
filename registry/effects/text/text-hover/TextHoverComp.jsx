@@ -7,6 +7,13 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} TextHoverItem
+ * @property {string} label
+ * @property {string} description
+ */
+
+/** @param {{ className?: string, style?: import('react').CSSProperties }} props */
 const CornerSVG = ({ className, style }) => (
   <svg
     className={className}
@@ -24,6 +31,7 @@ const CornerSVG = ({ className, style }) => (
   </svg>
 );
 
+/** @type {(value: number, min: number, max: number) => number} */
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const REDUCED_MOTION_MOVE_DURATION = 0.08;
@@ -37,6 +45,7 @@ function usePrefersReducedMotion() {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    /** @param {MediaQueryListEvent} event */
     const handleChange = (event) => setPrefersReducedMotion(event.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
@@ -45,6 +54,14 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} TextHoverCompProps
+ * @property {TextHoverItem[]} [data]
+ * @property {string} [bgColor]
+ * @property {string} [textColor]
+ */
+
+/** @param {TextHoverCompProps} props */
 export default function TextHoverComp({
   data = [],
   bgColor = "#0a0a0a",
@@ -52,21 +69,21 @@ export default function TextHoverComp({
   hoverColor = "#ffffff",
   duration = 0.35,
 }) {
-  const sectionRef = useRef(null);
-  const contentRef = useRef(null);
-  const listRef = useRef(null);
-  const highlightRef = useRef(null);
+  const sectionRef = useRef(/** @type {HTMLElement | null} */ (null));
+  const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const listRef = useRef(/** @type {HTMLUListElement | null} */ (null));
+  const highlightRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
-  const itemRefs = useRef([]);
-  const labelRefs = useRef([]);
-  const descriptionRefs = useRef([]);
+  const itemRefs = useRef(/** @type {(HTMLLIElement | null)[]} */ ([]));
+  const labelRefs = useRef(/** @type {(HTMLSpanElement | null)[]} */ ([]));
+  const descriptionRefs = useRef(/** @type {(HTMLParagraphElement | null)[]} */ ([]));
 
-  const refreshLoopRef = useRef(null);
-  const activationFrameRef = useRef(null);
-  const refreshStartRef = useRef(null);
-  const activeIndexRef = useRef(null);
+  const refreshLoopRef = useRef(/** @type {ReturnType<typeof createSuspendedRaf> | null} */ (null));
+  const activationFrameRef = useRef(/** @type {number | null} */ (null));
+  const refreshStartRef = useRef(/** @type {number | null} */ (null));
+  const activeIndexRef = useRef(/** @type {number | null} */ (null));
 
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(/** @type {number | null} */ (null));
   const [isCompact, setIsCompact] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -75,7 +92,9 @@ export default function TextHoverComp({
     return window.innerWidth < 1025;
   }, []);
 
-  const measureHighlight = useCallback((index) => {
+  const measureHighlight = useCallback(
+    /** @param {number} index */
+    (index) => {
     const content = contentRef.current;
     const el = itemRefs.current[index];
     const label = labelRefs.current[index];
@@ -156,6 +175,10 @@ export default function TextHoverComp({
   }, []);
 
   const moveHighlight = useCallback(
+    /**
+     * @param {number} index
+     * @param {boolean} [instant]
+     */
     (index, instant = false) => {
       const highlight = highlightRef.current;
       const next = measureHighlight(index);
@@ -183,6 +206,7 @@ export default function TextHoverComp({
   );
 
   const startRefreshTracking = useCallback(
+    /** @param {number} index */
     (index) => {
       refreshLoopRef.current?.destroy();
       refreshLoopRef.current = null;
@@ -202,7 +226,7 @@ export default function TextHoverComp({
 
           moveHighlight(index, true);
 
-          const elapsed = performance.now() - refreshStartRef.current;
+          const elapsed = performance.now() - /** @type {number} */ (refreshStartRef.current);
 
           if (elapsed >= 520) {
             loop.destroy();
@@ -220,6 +244,7 @@ export default function TextHoverComp({
   );
 
   const setActive = useCallback(
+    /** @param {number} index */
     (index) => {
       activeIndexRef.current = index;
       setActiveIndex(index);
@@ -262,6 +287,7 @@ export default function TextHoverComp({
   }, [duration, prefersReducedMotion]);
 
   const handleDesktopHover = useCallback(
+    /** @param {number} index */
     (index) => {
       if (!isCompact) {
         setActive(index);
@@ -277,6 +303,7 @@ export default function TextHoverComp({
   }, [isCompact, clearActive]);
 
   const handleItemClick = useCallback(
+    /** @param {number} index */
     (index) => {
       if (!isCompact) return;
 

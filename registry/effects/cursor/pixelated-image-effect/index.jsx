@@ -18,6 +18,14 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} PixelateSvgFilterProps
+ * @property {string} [id]
+ * @property {number} [size]
+ * @property {boolean} [crossLayers]
+ */
+
+/** @param {PixelateSvgFilterProps} props */
 export function PixelateSvgFilter({
   id: idProp,
   size: propSize = 16,
@@ -136,6 +144,14 @@ export function PixelateSvgFilter({
   );
 }
 
+/**
+ * @typedef {Object} PixelatedImageEffectProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {string} [imageClassName]
+ */
+
+/** @param {PixelatedImageEffectProps} props */
 export default function PixelatedImageEffect({
   src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
   pixelSize = 16,
@@ -143,7 +159,7 @@ export default function PixelatedImageEffect({
   mouseReactivity = 1,
   imageClassName = "",
 }) {
-  const imageRef = useRef(null);
+  const imageRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const isTouching = useRef(false);
   const animationRef = useRef(null);
   const [renderedPixelSize, setRenderedPixelSize] = useState(pixelSize);
@@ -188,6 +204,7 @@ export default function PixelatedImageEffect({
     return () => cancelAnimationFrame(animationRef.current);
   }, [resolvedDuration, targetPixelSize]);
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} event */
   const updatePixel = (event) => {
     if (!imageRef.current) return;
 
@@ -200,11 +217,13 @@ export default function PixelatedImageEffect({
     setTargetPixelSize(Math.min(Math.max(nextPixelSize, 1), 64));
   };
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} event */
   const handlePointerDown = (event) => {
     isTouching.current = true;
     updatePixel(event);
   };
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} event */
   const handlePointerMove = (event) => {
     if (event.pointerType === "touch" && !isTouching.current) return;
     updatePixel(event);

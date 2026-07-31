@@ -12,6 +12,11 @@ const NAV_CONFIG = {
   openDuration: 1.2,
   closeDuration: 1.2,
 };
+   
+
+
+
+
 
 const NAV_CONTENT = {
   agencyName: "",

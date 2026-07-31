@@ -36,7 +36,6 @@ const Select = forwardRef(function Select(
  type="button"
  id={id}
  ref={ref}
- aria-invalid={error ? true : undefined}
  aria-describedby={error ? `${id}-error` : undefined}
  onClick={() => setOpen((prev) => !prev)}
  className={`

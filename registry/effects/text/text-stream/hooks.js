@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+/**
+ * @param {number} [breakpoint]
+ * @returns {boolean}
+ */
 export function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
 

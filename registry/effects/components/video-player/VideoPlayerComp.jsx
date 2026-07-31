@@ -17,6 +17,7 @@ import {
   Minimize2,
 } from "lucide-react";
 
+/** @param {number} time */
 const formatTime = (time) => {
   if (!Number.isFinite(time)) return "0:00";
 
@@ -26,14 +27,32 @@ const formatTime = (time) => {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
+/** @param {HTMLVideoElement | null | undefined} video */
 const readVideoDuration = (video) => {
   const duration = video?.duration;
 
-  if (!Number.isFinite(duration) || duration <= 0) return 0;
+  if (!Number.isFinite(duration) || /** @type {number} */ (duration) <= 0) return 0;
 
-  return duration;
+  return /** @type {number} */ (duration);
 };
 
+/**
+ * @typedef {Object} VideoPlayerCompProps
+ * @property {string} [videoSrc]
+ * @property {string} [poster]
+ * @property {boolean} [autoPlay]
+ * @property {boolean} [startMuted]
+ * @property {boolean} [isActive]
+ * @property {string} [className]
+ * @property {boolean} [rounded]
+ * @property {boolean} [preserveAspectRatio]
+ * @property {() => void} [onRequestClose]
+ * @property {boolean} [showCloseButton]
+ * @property {boolean} [resetOnClose]
+ * @property {number} [hideControlsDelay]
+ */
+
+/** @param {VideoPlayerCompProps} props */
 const VideoPlayerComp = ({
   videoSrc = "",
   poster = "",
@@ -48,10 +67,10 @@ const VideoPlayerComp = ({
   resetOnClose = true,
   hideControlsDelay = 1800,
 }) => {
-  const wrapperRef = useRef(null);
-  const videoRef = useRef(null);
-  const progressBarRef = useRef(null);
-  const hideControlsTimeoutRef = useRef(null);
+  const wrapperRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null));
+  const progressBarRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const hideControlsTimeoutRef = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
   const isDraggingRef = useRef(false);
   const hasInitializedRef = useRef(false);
 
@@ -193,6 +212,7 @@ const VideoPlayerComp = ({
   }, [revealControls]);
 
   const handleToggleFullscreen = useCallback(
+    /** @param {import('react').MouseEvent | undefined} [event] */
     async (event) => {
       event?.preventDefault?.();
       event?.stopPropagation?.();
@@ -224,7 +244,7 @@ const VideoPlayerComp = ({
     onRequestClose?.();
   };
 
-  const updateVideoTimeFromClientX = useCallback((clientX) => {
+  const updateVideoTimeFromClientX = useCallback((/** @type {number} */ clientX) => {
     const video = videoRef.current;
     const progressBar = progressBarRef.current;
 
@@ -262,7 +282,7 @@ const VideoPlayerComp = ({
   }, [revealControls, syncVideoProgress]);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (/** @type {KeyboardEvent} */ event) => {
       if (event.key === "Escape" && isFullscreen) {
         setIsFullscreen(false);
       }
@@ -453,6 +473,7 @@ const VideoPlayerComp = ({
     };
   }, [clearHideTimer]);
 
+  /** @param {import('react').MouseEvent} [event] */
   const handleTogglePlay = async (event) => {
     event?.stopPropagation?.();
 
@@ -468,6 +489,7 @@ const VideoPlayerComp = ({
     revealControls();
   };
 
+  /** @param {import('react').MouseEvent} [event] */
   const handleToggleMute = (event) => {
     event?.stopPropagation?.();
 
@@ -475,6 +497,7 @@ const VideoPlayerComp = ({
     revealControls();
   };
 
+  /** @param {import('react').MouseEvent<HTMLDivElement>} event */
   const handleProgressClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -483,6 +506,7 @@ const VideoPlayerComp = ({
     revealControls();
   };
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} event */
   const handlePointerDown = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -492,7 +516,7 @@ const VideoPlayerComp = ({
     updateVideoTimeFromClientX(event.clientX);
     revealControls();
 
-    const handlePointerMove = (moveEvent) => {
+    const handlePointerMove = (/** @type {PointerEvent} */ moveEvent) => {
       updateVideoTimeFromClientX(moveEvent.clientX);
     };
 

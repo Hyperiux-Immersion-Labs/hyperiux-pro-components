@@ -117,6 +117,7 @@ const TOUCH_THRESHOLD = 45;
 const TEXT_STAGGER = 0.035;
 const TEXT_DURATION = 0.7;
 
+/** @param {any} source */
 function resolveImageSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
@@ -124,6 +125,7 @@ function resolveImageSource(source) {
   return source;
 }
 
+/** @param {any} source */
 function loadCorsObjectUrl(source) {
   const imageSource = resolveImageSource(source);
 
@@ -151,6 +153,7 @@ function loadCorsObjectUrl(source) {
     });
 }
 
+/** @param {HTMLImageElement} imageElement */
 function createTextureFromImage(imageElement) {
   const texture = new THREE.Texture(imageElement);
 
@@ -163,6 +166,29 @@ function createTextureFromImage(imageElement) {
   return texture;
 }
 
+/**
+ * @typedef {Object} ScrollDistortionSection
+ * @property {string} text
+ * @property {string} src
+ */
+
+/**
+ * @typedef {Object} ScrollDistortionShaderConfig
+ * @property {number} [strength]
+ * @property {number} [rgbShift]
+ * @property {number} [scale]
+ * @property {number} [transitionDuration]
+ * @property {string} [transitionEase]
+ */
+
+/**
+ * @typedef {Object} ScrollDistortionProps
+ * @property {ScrollDistortionSection[]} [sections]
+ * @property {ScrollDistortionShaderConfig} [shaderConfig]
+ * @property {string} [displacementSrc]
+ */
+
+/** @param {ScrollDistortionProps} props */
 export default function ScrollDistortion({
   sections = DEFAULT_SECTIONS,
   distortionStrength,
@@ -170,20 +196,20 @@ export default function ScrollDistortion({
   distortionScale,
   transitionDuration,
 }) {
-  const containerRef = useRef(null);
-  const imageRefs = useRef([]);
-  const textRefs = useRef([]);
-  const textTimelineRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const imageRefs = useRef(/** @type {(HTMLImageElement|null)[]} */ ([]));
+  const textRefs = useRef(/** @type {(HTMLSpanElement|null)[][]} */ ([]));
+  const textTimelineRef = useRef(/** @type {gsap.core.Timeline|null} */ (null));
 
-  const [objectUrls, setObjectUrls] = useState(null);
-  const [decodedUrls, setDecodedUrls] = useState(() => new Set());
+  const [objectUrls, setObjectUrls] = useState(/** @type {string[]|null} */ (null));
+  const [decodedUrls, setDecodedUrls] = useState(() => /** @type {Set<string>} */ (new Set()));
   const [isSceneReady, setIsSceneReady] = useState(false);
 
   const currentIndexRef = useRef(0);
   const targetIndexRef = useRef(0);
   const isTransitioningRef = useRef(false);
   const wheelDeltaRef = useRef(0);
-  const touchStartYRef = useRef(null);
+  const touchStartYRef = useRef(/** @type {number|null} */ (null));
 
   const splitSections = useMemo(() => {
     return sections.map((section) => ({
@@ -194,6 +220,7 @@ export default function ScrollDistortion({
 
   useEffect(() => {
     let isCancelled = false;
+    /** @type {string[]} */
     let nextObjectUrls = [];
 
     currentIndexRef.current = 0;
@@ -233,6 +260,7 @@ export default function ScrollDistortion({
     objectUrls?.length === sections.length + 1 &&
     objectUrls.every((url) => decodedUrls.has(url));
 
+  /** @param {string|undefined} url */
   const markImageDecoded = (url) => {
     if (!url) return;
 
@@ -291,9 +319,9 @@ export default function ScrollDistortion({
 
     const geometry = new THREE.PlaneGeometry(width, height);
 
-    const textures = imageRefs.current
+    const textures = /** @type {HTMLImageElement[]} */ (imageRefs.current
       .slice(0, sections.length)
-      .filter(Boolean)
+      .filter(Boolean))
       .map(createTextureFromImage);
 
     const displacementImage = imageRefs.current[sections.length];
@@ -349,7 +377,7 @@ export default function ScrollDistortion({
       transparent: true,
     });
 
-    const setTextureResolution = (uniformIndex, texture) => {
+    const setTextureResolution = (/** @type {number} */ uniformIndex, /** @type {any} */ texture) => {
       if (!texture?.image) return;
 
       material.uniforms[`u_textureResolution${uniformIndex}`].value.set(
@@ -364,7 +392,7 @@ export default function ScrollDistortion({
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    const getTextChars = (index) => {
+    const getTextChars = (/** @type {number} */ index) => {
       return (textRefs.current[index] || []).filter(Boolean);
     };
 
@@ -401,7 +429,7 @@ export default function ScrollDistortion({
 
     resetTextState();
 
-    const animateTextTransition = (fromIndex, toIndex, direction) => {
+    const animateTextTransition = (/** @type {number} */ fromIndex, /** @type {number} */ toIndex, /** @type {number} */ direction) => {
       const fromChars = getTextChars(fromIndex);
       const toChars = getTextChars(toIndex);
       const allChars = getAllTextChars();
@@ -502,7 +530,7 @@ export default function ScrollDistortion({
       return timeline;
     };
 
-    const transitionTo = (nextIndex) => {
+    const transitionTo = (/** @type {number} */ nextIndex) => {
       if (nextIndex < 0 || nextIndex >= textures.length) {
         return;
       }
@@ -576,7 +604,7 @@ export default function ScrollDistortion({
       transitionTo(nextIndex);
     };
 
-    const onWheel = (event) => {
+    const onWheel = (/** @type {WheelEvent} */ event) => {
       event.preventDefault();
 
       wheelDeltaRef.current += event.deltaY;
@@ -594,11 +622,11 @@ export default function ScrollDistortion({
       wheelDeltaRef.current = 0;
     };
 
-    const onTouchStart = (event) => {
+    const onTouchStart = (/** @type {TouchEvent} */ event) => {
       touchStartYRef.current = event.touches[0].clientY;
     };
 
-    const onTouchMove = (event) => {
+    const onTouchMove = (/** @type {TouchEvent} */ event) => {
       if (touchStartYRef.current === null) return;
 
       const currentY = event.touches[0].clientY;

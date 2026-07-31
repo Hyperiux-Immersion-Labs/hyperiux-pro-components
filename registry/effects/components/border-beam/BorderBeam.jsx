@@ -16,16 +16,18 @@ import { registerPulseInstance } from './PulseDriver';
 // no-op-safe useEffect on the server (avoids the SSR useLayoutEffect warning).
 const useIsomorphicLayoutEffect = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
 
+/** @returns {'dark' | 'light'} */
 function useSystemTheme() {
-  const [theme, setTheme] = useState(() => {
+  const [theme, setTheme] = useState(/** @type {() => 'dark' | 'light'} */ (() => {
     if (typeof window === 'undefined') return 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+  }));
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    /** @param {MediaQueryListEvent} e */
     const handler = (e) => {
       setTheme(e.matches ? 'dark' : 'light');
     };
@@ -37,6 +39,7 @@ function useSystemTheme() {
   return theme;
 }
 
+/** @returns {boolean} */
 function usePrefersReducedMotion() {
   const [reduceMotion, setReduceMotion] = useState(() =>
     typeof window !== 'undefined'
@@ -48,6 +51,7 @@ function usePrefersReducedMotion() {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     if (!mq) return;
 
+    /** @param {MediaQueryListEvent} event */
     const onChange = (event) => setReduceMotion(event.matches);
     setReduceMotion(mq.matches);
     mq.addEventListener?.('change', onChange);
@@ -57,8 +61,13 @@ function usePrefersReducedMotion() {
   return reduceMotion;
 }
 
+/**
+ * @param {'dark' | 'light' | 'auto'} theme
+ * @param {'dark' | 'light'} systemTheme
+ * @returns {'dark' | 'light'}
+ */
 function resolveTheme(theme, systemTheme) {
-  return theme === 'auto' ? systemTheme : theme;
+  return theme === 'auto' ? systemTheme : /** @type {'dark' | 'light'} */ (theme);
 }
 
 /**
@@ -81,7 +90,31 @@ function resolveTheme(theme, systemTheme) {
  * </BorderBeam>
  * ```
  */
-export const BeamBorder = forwardRef(function BeamBorder(
+/**
+ * @typedef {{
+ *   children?: import('react').ReactNode,
+ *   size?: 'sm' | 'md' | 'line' | 'pulse-outside' | 'pulse-inner',
+ *   colorVariant?: 'colorful' | 'mono' | 'ocean' | 'sunset',
+ *   theme?: 'dark' | 'light' | 'auto',
+ *   staticColors?: boolean,
+ *   duration?: number,
+ *   active?: boolean,
+ *   borderRadius?: number,
+ *   brightness?: number,
+ *   saturation?: number,
+ *   hueRange?: number,
+ *   strength?: number,
+ *   className?: string,
+ *   style?: import('react').CSSProperties,
+ *   onActivate?: () => void,
+ *   onDeactivate?: () => void,
+ *   onAnimationEnd?: (e: import('react').AnimationEvent<HTMLDivElement>) => void,
+ * } & Record<string, any>} BeamBorderProps
+ */
+
+export const BeamBorder = forwardRef(
+  /** @type {import('react').ForwardRefRenderFunction<HTMLDivElement, BeamBorderProps>} */
+  (function BeamBorder(
   {
     children,
     size = 'md',
@@ -109,12 +142,12 @@ export const BeamBorder = forwardRef(function BeamBorder(
   const id = baseId.replace(/:/g, '-');
   const systemTheme = useSystemTheme();
   const reduceMotion = usePrefersReducedMotion();
-  const internalRef = useRef(null);
+  const internalRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
   const [isActive, setIsActive] = useState(active);
   const [isFading, setIsFading] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [detectedRadius, setDetectedRadius] = useState(null);
+  const [detectedRadius, setDetectedRadius] = useState(/** @type {number | null} */ (null));
   const [pulseGlowScale, setPulseGlowScale] = useState({ x: 1, y: 1 });
 
   // Auto-detect child border radius when no explicit value is provided.
@@ -189,6 +222,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     // with generous bounds to avoid degenerate geometry at the extremes.
     const MIN_SCALE = 0.35;
     const MAX_SCALE = 4;
+    /** @param {number} value */
     const clamp = (value) => Math.max(MIN_SCALE, Math.min(MAX_SCALE, value));
 
     const measure = () => {
@@ -213,6 +247,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   }, [size, children]);
 
   const handleAnimationEnd = useCallback(
+    /** @param {import('react').AnimationEvent<HTMLDivElement>} e */
     (e) => {
       const animationName = e.animationName;
 
@@ -333,6 +368,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
   }, [driverConfig, isActive, isFading, isVisible]);
 
   const setRefs = useCallback(
+    /** @param {HTMLDivElement | null} node */
     (node) => {
       internalRef.current = node;
       if (typeof ref === 'function') {
@@ -344,13 +380,13 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [ref]
   );
 
-  const mergedStyle = {
+  const mergedStyle = /** @type {import('react').CSSProperties} */ ({
     ...(style ?? {}),
     '--beam-strength': Math.max(0, Math.min(1, strength)),
     ...(size === 'pulse-outside'
       ? { '--pulse-glow-sx': pulseGlowScale.x, '--pulse-glow-sy': pulseGlowScale.y }
       : {}),
-  };
+  });
 
   // Static layout via Tailwind. The dynamic border-radius, gradients, masks, and
   // keyframes live in the generated <style> (they can't be Tailwind utilities).
@@ -382,6 +418,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
       </div>
     </>
   );
-});
+})
+);
 
 export default BeamBorder;

@@ -1,7 +1,13 @@
 {
   "name": "svg-pixel-reveal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-07-28",
+      "summary": "Added a reduced-motion notice (ported from the docs copy, which already had it): this effect relies on a continuous scroll-driven pixelated-to-sharp transition and can't be simplified to a fade without losing the effect entirely, so it now surfaces that instead of silently ignoring the preference.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-07-09",
@@ -20,8 +26,8 @@
   "previewUrl": "/demo/svg-pixel-reveal",
   "tier": "pro",
   "main": "index.jsx",
-  "exportName": "SvgPixelReveal",
-  "exportKind": "named",
+  "exportName": "SVGPixelReveal",
+  "exportKind": "default",
   "importPath": "@/components/effects/svg-pixel-reveal",
   "target": "src/components/effects/svg-pixel-reveal",
   "props": [
@@ -43,8 +49,8 @@
       "target": "src/components/effects/svg-pixel-reveal/index.jsx"
     },
     {
-      "path": "PixelatedScgFilter.jsx",
-      "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
+      "path": "PixelatedSvgFilter.jsx",
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.jsx"
     }
   ]
 }

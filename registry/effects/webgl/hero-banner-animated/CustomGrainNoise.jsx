@@ -45,18 +45,27 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 `;
 
 class FilmGrainEffectImpl extends Effect {
+ /**
+  * @param {{amount?: number, scale?: number, opacity?: number, resolution?: [number, number]}} [options]
+  */
  constructor({ amount = 0.12, scale = 900.0, opacity = 0.25, resolution = [1280, 720] } = {}) {
- const uniforms = new Map([
+ const uniforms = new Map(
+ /** @type {[string, Uniform<any>][]} */ ([
  ["uTime", new Uniform(0)],
  ["uAmount", new Uniform(amount)],
  ["uScale", new Uniform(scale)],
  ["uOpacity", new Uniform(opacity)],
  ["uResolution", new Uniform(new Vector2(resolution[0], resolution[1]))],
- ]);
+ ])
+ );
  super("FilmGrainEffect", fragmentShader, { uniforms });
  this._time = 0;
  }
 
+ /**
+  * @param {number} width
+  * @param {number} height
+  */
  setResolution(width, height) {
  const uRes = this.uniforms.get("uResolution");
  if (uRes) {
@@ -64,8 +73,13 @@ class FilmGrainEffectImpl extends Effect {
  }
  }
 
+ /**
+  * @param {import('three').WebGLRenderer} renderer
+  * @param {import('three').WebGLRenderTarget} _inputBuffer
+  * @param {number} [deltaTime]
+  */
  update(renderer, _inputBuffer, deltaTime) {
- this._time += deltaTime;
+ this._time += deltaTime ?? 0;
  // Wrap time to prevent float precision loss - keeps grain as dots, not rain streaks
  if (this._time > 1000) this._time -= 1000;
  const uTime = this.uniforms.get("uTime");
@@ -79,6 +93,9 @@ class FilmGrainEffectImpl extends Effect {
  }
 }
 
+/**
+ * @param {{amount?: number, scale?: number, opacity?: number}} [props]
+ */
 export default function CustomGrainNoise({ amount = 0.12, scale = 900, opacity = 0.7 } = {}) {
  const effect = useMemo(() => {
  // Get initial resolution (SSR safe fallback)

@@ -1,6 +1,6 @@
 {
   "name": "animated-faq",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "registry:component",
   "title": "Animated FAQ",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
@@ -14,7 +14,7 @@
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
-  "exportName": "AnimatedFAQ",
+  "exportName": "AnimatedFaq",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-faq",
   "target": "src/components/effects/animated-faq",
@@ -84,9 +84,19 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/animated-faq/index.jsx"
+    },
+    {
+      "path": "AnimatedFaqComp.jsx",
+      "target": "src/components/effects/animated-faq/AnimatedFaqComp.jsx"
     }
   ],
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Documented existing prefers-reduced-motion support : the accordion open/close tween duration is set to 0 under reduced motion instead of animating.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-23",

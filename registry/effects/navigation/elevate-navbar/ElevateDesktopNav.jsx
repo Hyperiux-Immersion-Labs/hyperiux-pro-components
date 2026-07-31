@@ -58,6 +58,40 @@ const DEFAULT_CTA = {
   href: "#",
 };
 
+/**
+ * @typedef {Object} ElevateDropdownItem
+ * @property {string} title
+ * @property {string} img
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} ElevateMenuItem
+ * @property {string} name
+ * @property {string} href
+ * @property {boolean} isDropdown
+ * @property {ElevateDropdownItem[] | null} [dropdown]
+ */
+
+/**
+ * @typedef {Object} ElevateCta
+ * @property {string} label
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} ElevateTextSwapData
+ * @property {Element|null} defaultText
+ * @property {Element|null} hoverText
+ */
+
+/**
+ * @typedef {Object} ElevateNavbarDesktopProps
+ * @property {ElevateMenuItem[]} [menuItems]
+ * @property {ElevateCta} [cta]
+ */
+
+/** @param {ElevateNavbarDesktopProps} props */
 export function ElevateNavbarDesktop({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
@@ -72,22 +106,22 @@ export function ElevateNavbarDesktop({
   ctaBackground = DEFAULT_CTA_BACKGROUND,
   ctaHoverBackground = HOVER_CTA_BACKGROUND,
 }) {
-  const navWrapRef = useRef(null);
-  const navLinksRef = useRef([]);
-  const ctaRef = useRef(null);
-  const dropdownRef = useRef(null);
-  const dropdownItemsRef = useRef([]);
-  const dropdownTextDataRef = useRef([]);
-  const linkDataRef = useRef([]);
+  const navWrapRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const navLinksRef = useRef(/** @type {(HTMLAnchorElement|null)[]} */ ([]));
+  const ctaRef = useRef(/** @type {HTMLAnchorElement|null} */ (null));
+  const dropdownRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const dropdownItemsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const dropdownTextDataRef = useRef(/** @type {(ElevateTextSwapData|null)[]} */ ([]));
+  const linkDataRef = useRef(/** @type {(ElevateTextSwapData|null)[]} */ ([]));
 
-  const activeDropdownIndexRef = useRef(null);
+  const activeDropdownIndexRef = useRef(/** @type {number|null} */ (null));
   const isPointerInsideDropdownRef = useRef(false);
-  const hideCallRef = useRef(null);
-  const switchTweenRef = useRef(null);
-  const itemTweenRef = useRef(null);
+  const hideCallRef = useRef(/** @type {gsap.core.Tween|null} */ (null));
+  const switchTweenRef = useRef(/** @type {gsap.core.Tween|null} */ (null));
+  const itemTweenRef = useRef(/** @type {gsap.core.Timeline|gsap.core.Tween|null} */ (null));
 
-  const [renderedDropdownIndex, setRenderedDropdownIndexState] = useState(null);
-  const [activeChevronIndex, setActiveChevronIndex] = useState(null);
+  const [renderedDropdownIndex, setRenderedDropdownIndexState] = useState(/** @type {number|null} */ (null));
+  const [activeChevronIndex, setActiveChevronIndex] = useState(/** @type {number|null} */ (null));
   const reduceMotion = useCallback(
     () =>
       typeof window !== "undefined" &&
@@ -117,10 +151,10 @@ export function ElevateNavbarDesktop({
   }, []);
 
   const getCurrentDropdownItems = useCallback(() => {
-    return dropdownItemsRef.current.filter(Boolean);
+    return /** @type {HTMLDivElement[]} */ (dropdownItemsRef.current.filter(Boolean));
   }, []);
 
-  const setRenderedDropdownIndex = useCallback((index) => {
+  const setRenderedDropdownIndex = useCallback((/** @type {number|null} */ index) => {
     dropdownItemsRef.current = [];
     dropdownTextDataRef.current = [];
     setRenderedDropdownIndexState(index);
@@ -144,7 +178,7 @@ export function ElevateNavbarDesktop({
     });
   }, []);
 
-  const setNavVisualState = useCallback((activeIndex) => {
+  const setNavVisualState = useCallback((/** @type {number|null} */ activeIndex) => {
     navLinksRef.current.forEach((linkElement, index) => {
       if (!linkElement) return;
 
@@ -167,7 +201,7 @@ export function ElevateNavbarDesktop({
     });
   }, [activeColor, ease, inactiveColor, navTextDuration, reduceMotion]);
 
-  const animateTextSwap = useCallback((item, isEntering) => {
+  const animateTextSwap = useCallback((/** @type {ElevateTextSwapData|null} */ item, /** @type {boolean} */ isEntering) => {
     if (!item) return;
 
     if (reduceMotion()) {
@@ -243,7 +277,7 @@ export function ElevateNavbarDesktop({
   }, [dropdownItemOffsetY, ease, getCurrentDropdownItems, killItemTween, navTextDuration, reduceMotion, staggerItems]);
 
   const animateDropdownItemsOut = useCallback(
-    (onComplete) => {
+    (/** @type {(() => void)|undefined} */ onComplete) => {
       const dropdownItems = getCurrentDropdownItems();
 
       if (!dropdownItems.length) {
@@ -312,7 +346,7 @@ export function ElevateNavbarDesktop({
   ]);
 
   const openDropdownForIndex = useCallback(
-    (index) => {
+    (/** @type {number} */ index) => {
       const menuItem = menuItems[index];
 
       killHideCall();
@@ -431,7 +465,7 @@ export function ElevateNavbarDesktop({
   ]);
 
   const onNavItemEnter = useCallback(
-    (index) => {
+    (/** @type {number} */ index) => {
       const item = linkDataRef.current[index];
 
       if (!item) return;
@@ -462,7 +496,7 @@ export function ElevateNavbarDesktop({
   );
 
   const onNavItemLeave = useCallback(
-    (index) => {
+    (/** @type {number} */ index) => {
       const item = linkDataRef.current[index];
 
       if (!item) return;
@@ -478,7 +512,7 @@ export function ElevateNavbarDesktop({
     [animateTextSwap, menuItems, setNavVisualState]
   );
 
-  const onCtaHover = useCallback((isEntering = true) => {
+  const onCtaHover = useCallback((/** @type {boolean} */ isEntering = true) => {
     const ctaElement = ctaRef.current;
 
     if (!ctaElement) return;
@@ -531,14 +565,14 @@ export function ElevateNavbarDesktop({
   }, [scheduleCloseDropdown]);
 
   const onDropdownItemEnter = useCallback(
-    (index) => {
+    (/** @type {number} */ index) => {
       animateTextSwap(dropdownTextDataRef.current[index], true);
     },
     [animateTextSwap]
   );
 
   const onDropdownItemLeave = useCallback(
-    (index) => {
+    (/** @type {number} */ index) => {
       animateTextSwap(dropdownTextDataRef.current[index], false);
     },
     [animateTextSwap]

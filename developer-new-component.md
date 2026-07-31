@@ -79,7 +79,7 @@ Every component needs a live preview page so users can see it before installing.
 
 **Create the page at:**
 ```
-apps/docs/src/app/effects/{your-slug}/page.jsx
+apps/docs/src/app/(marketing)/demo/{your-slug}/page.js
 ```
 
 Inside this page, import your component from `@/components/{name}` and render a live demo. The page also calls `getEffectBySlug(slug)` to pull in metadata for the code panel and install instructions - this data comes from the registry you'll set up in the next steps, so you can come back and wire this up fully after Step 4.
@@ -246,8 +246,8 @@ When you update a component, always bump the `version` in `package.json`, delete
 - [ ] Entry added to `registry/index.json`
 
 ### Docs Site
-- [ ] Preview page created at `src/app/effects/{slug}/page.jsx`
-- [ ] `previewUrl` in `registry.json` matches that page path
+- [ ] Preview page created at `src/app/(marketing)/demo/{slug}/page.js`
+- [ ] `previewUrl` in `registry.json` is `/demo/{slug}`
 - [ ] Alias added to `effect-slugs.js` if the component has alternate names
 
 ### Distribution
@@ -267,7 +267,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 - **Using anything other than `"type": "registry:component"`** (e.g. `"effect"`) - every real component in this registry uses `"registry:component"`
 - **`name` in `registry.json` not matching the folder name** - the slug will be wrong everywhere
 - **Missing files in the `files` array** - users get import errors after installing
-- **Leaving a stale duplicate source file lying around** (e.g. an old `index.jsx` next to the real `index.js` after a rename) - `build-registry.js` scans the folder by file extension, not by the `files` array, so a stray file gets bundled too and can silently win the entry-point detection over the real one. Delete old files when you rename/replace them, don't just stop referencing them.
+- **Leaving a stale duplicate source file lying around** (e.g. an old `index.jsx` next to the real `index.js` after a rename) - when `files` is present it is authoritative, but stale files still confuse humans, package contents, and future syncs. Delete old files when you rename/replace them, don't just stop referencing them.
 - **Using `@/` imports between your own files** - `@/` resolves to the user's project, not yours
 - **Editing a component's code without bumping `version` in its `registry.json`** - the registry will silently serve the new code under the old version number, and no CLI command (`outdated`, `diff`, `versions`) will ever detect it changed. See `effects-versioning.md` for the full versioning workflow.
 - **Not bumping the version before re-packing** - old tarballs get silently overwritten

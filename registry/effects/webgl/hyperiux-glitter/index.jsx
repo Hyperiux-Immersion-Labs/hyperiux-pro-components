@@ -24,8 +24,10 @@ export default function HyperiuxGlitter({
   rotationInfluence = 1,
 }) {
 
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
   const [modelScale, setModelScale] = useState(0.15);
   const resolvedSpeed = clampNumber(speed, 0.05, 5, 1);
   const resolvedMouseInfluence = clampNumber(mouseInfluence, 0, 4, 1);

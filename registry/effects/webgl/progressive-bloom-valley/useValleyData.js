@@ -1,6 +1,11 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
+/**
+ * @param {number} v
+ * @param {number} lo
+ * @param {number} hi
+ */
 function clampVal(v, lo, hi) {
  return Math.max(lo, Math.min(hi, v));
 }
@@ -8,6 +13,11 @@ function clampVal(v, lo, hi) {
 const SPRITE_COLS = 8;
 const SPRITE_ROWS = 7;
 
+/**
+ * @param {number} x
+ * @param {number} z
+ * @param {number} [scale]
+ */
 function smoothNoise(x, z, scale = 0.2) {
  return (
  Math.sin(x * scale) * 0.5 +
@@ -18,6 +28,7 @@ function smoothNoise(x, z, scale = 0.2) {
 
 
 
+/** @param {any} gltf */
 function extractCameraPath(gltf) {
  if (!gltf) {
  return fallbackCurve();
@@ -25,7 +36,7 @@ function extractCameraPath(gltf) {
 
  if (gltf.animations?.length > 0) {
  const clip = gltf.animations[0];
- const posTrack = clip.tracks.find((t) => t.name.includes("position"));
+ const posTrack = clip.tracks.find((/** @type {any} */ t) => t.name.includes("position"));
 
  if (posTrack && posTrack.values.length >= 6) {
  const pts = [];
@@ -49,8 +60,8 @@ function extractCameraPath(gltf) {
  }
 
  gltf.scene.updateWorldMatrix(true, true);
- const verts = [];
- gltf.scene.traverse((child) => {
+ const verts = /** @type {import('three').Vector3[]} */ ([]);
+ gltf.scene.traverse((/** @type {any} */ child) => {
  if (child.geometry?.attributes?.position) {
  const pos = child.geometry.attributes.position;
  for (let i = 0; i < pos.count; i++) {
@@ -78,6 +89,7 @@ function fallbackCurve() {
  );
 }
 
+/** @param {any} img */
 function buildTerrainPixels(img) {
  if (!img?.width || !img?.height) return null;
  const c = document.createElement("canvas");
@@ -93,6 +105,11 @@ function buildTerrainPixels(img) {
  };
 }
 
+/**
+ * @param {import('three').CatmullRomCurve3} curve
+ * @param {any} terrain
+ * @param {any} config
+ */
 function generateValleyFlowers(curve, terrain, config) {
  const baseCount = config.rows * config.perRow;
  const MAX = baseCount * 2; // We can have up to 2x particles due to overlaying flowers on grass
@@ -232,6 +249,11 @@ function generateValleyFlowers(curve, terrain, config) {
  };
 }
 
+/**
+ * @param {any} gltf
+ * @param {any} terrainTex
+ * @param {any} config
+ */
 export default function useValleyData(gltf, terrainTex, config) {
  const curve = useMemo(() => {
  if (!gltf) return null;

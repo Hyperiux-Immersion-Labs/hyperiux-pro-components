@@ -41,6 +41,23 @@ import Button from "./Button";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * @typedef {Object} FieldConfig
+ * @property {string} type
+ * @property {string} name
+ * @property {import('react').ReactNode} [label]
+ * @property {boolean} [required]
+ * @property {string} [defaultCountry]
+ * @property {import('./Select').SelectOption[]} [options]
+ * @property {number} [rows]
+ * @property {(value: any) => string | undefined} [validate]
+ */
+
+/**
+ * @param {FieldConfig} field
+ * @param {any} value
+ * @returns {string | undefined}
+ */
 function defaultValidate(field, value) {
  if (field.required && (value ==="" || value === false || value == null)) {
  return `${typeof field.label ==="string" ? field.label.replace("*","") :"This field"} is required.`;
@@ -54,7 +71,12 @@ function defaultValidate(field, value) {
  return undefined;
 }
 
+/**
+ * @param {FieldConfig[]} fields
+ * @returns {Record<string, any>}
+ */
 function buildInitialValues(fields) {
+ /** @type {Record<string, any>} */
  const values = {};
  for (const f of fields) {
  if (f.type ==="checkbox") values[f.name] = false;
@@ -64,7 +86,19 @@ function buildInitialValues(fields) {
  return values;
 }
 
-// component 
+/**
+ * @typedef {Object} ContactFormProps
+ * @property {FieldConfig[]} [fields]
+ * @property {(data: Record<string, any>) => Promise<void>} onSubmit
+ * @property {import('zod').ZodType<any>} [schema]
+ * @property {string} [submitLabel]
+ * @property {string} [loadingLabel]
+ * @property {string} [successMessage]
+ * @property {string} [errorMessage]
+ */
+
+// component
+/** @param {ContactFormProps} props */
 export default function ContactForm({
  fields = [],
  onSubmit,
@@ -81,7 +115,7 @@ export default function ContactForm({
  duration = 0.3,
 }) {
  const [values, setValues] = useState(() => buildInitialValues(fields));
- const [errors, setErrors] = useState({});
+ const [errors, setErrors] = useState(/** @type {Record<string, string>} */ ({}));
  const [isLoading, setIsLoading] = useState(false);
  const [submitted, setSubmitted] = useState(false);
  const [failed, setFailed] = useState(false);
@@ -89,11 +123,18 @@ export default function ContactForm({
  const sectionId = `contact-form-${uid}`;
 
  // ── value helpers ──
- const setValue = useCallback((name, value) => {
+ const setValue = useCallback(
+ /**
+  * @param {string} name
+  * @param {any} value
+  */
+ (name, value) => {
  setValues((prev) => ({ ...prev, [name]: value }));
  }, []);
 
- const clearError = useCallback((name) => {
+ const clearError = useCallback(
+ /** @param {string} name */
+ (name) => {
  setErrors((prev) => {
  if (!prev[name]) return prev;
  const next = { ...prev };
@@ -104,6 +145,10 @@ export default function ContactForm({
 
  // ── per-field validation ──
  const validateField = useCallback(
+ /**
+  * @param {FieldConfig} field
+  * @param {any} value
+  */
  (field, value) => {
  // Run built-in checks first
  const builtIn = defaultValidate(field, value);
@@ -119,6 +164,7 @@ export default function ContactForm({
  // Returns { valid, data } where `data` is Zod's parsed (coerced/trimmed)
  // output when a schema is used, or the raw values otherwise.
  const validateAll = useCallback(() => {
+ /** @type {Record<string, string>} */
  const newErrors = {};
 
  if (schema) {
@@ -129,7 +175,7 @@ export default function ContactForm({
  return { valid: true, data: result.data };
  }
  for (const issue of result.error.issues) {
- const key = issue.path[0];
+ const key = /** @type {string | number | undefined} */ (issue.path[0]);
  if (key != null && !newErrors[key]) newErrors[key] = issue.message;
  }
  } else {
@@ -145,6 +191,7 @@ export default function ContactForm({
 
  // ── submit ──
  const handleSubmit = useCallback(
+ /** @param {import('react').FormEvent<HTMLFormElement>} e */
  async (e) => {
  e.preventDefault();
  const { valid, data } = validateAll();
@@ -169,11 +216,13 @@ export default function ContactForm({
  );
 
  // ── render field ──
+ /** @param {FieldConfig} field */
  const renderField = (field) => {
  const { name, type, label, options, rows, defaultCountry } = field;
  const value = values[name];
  const error = errors[name];
 
+ /** @param {any} val */
  const commonChange = (val) => {
  setValue(name, val);
  clearError(name);
@@ -198,7 +247,7 @@ export default function ContactForm({
  <Select
  key={name}
  id={name}
- label={label}
+ label={/** @type {string | undefined} */ (label)}
  options={options || []}
  value={value}
  onChange={(e) => commonChange(e.target.value)}
@@ -211,7 +260,7 @@ export default function ContactForm({
  <PhoneInput
  key={name}
  id={name}
- label={label}
+ label={/** @type {string | false | undefined} */ (label)}
  value={value}
  onChange={(val) => commonChange(val)}
  defaultCountry={defaultCountry ||"IN"}

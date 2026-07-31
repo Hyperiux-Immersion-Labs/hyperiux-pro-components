@@ -21,8 +21,17 @@ const NO_INDEX = null;
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+/**
+ * @typedef {Object} DirectionalMenuItem
+ * @property {string} [label]
+ * @property {import('react').ReactNode} [customContent]
+ * @property {string} [href]
+ */
+
+/** @param {DirectionalMenuItem} [item] */
 const hasDropdownContent = (item) => Boolean(item?.customContent);
 
+/** @param {HTMLElement|null} [element] */
 const getPaneHeight = (element) => {
   if (!element) {
     return 0;
@@ -37,6 +46,36 @@ const prefersReducedMotion = () =>
 
 const REDUCED_MOTION_FADE_DURATION = 0.16;
 
+/**
+ * @typedef {Object} DirectionalMenuAnimationConfig
+ * @property {number} [contentFadeDelay]
+ * @property {number} [contentFadeDuration]
+ * @property {number} [distance]
+ * @property {number} [duration]
+ * @property {string} [ease]
+ * @property {boolean} [fade]
+ * @property {number} [heightDuration]
+ * @property {string} [heightEase]
+ */
+
+/**
+ * @typedef {Object} DirectionalMegaMenuProps
+ * @property {DirectionalMenuItem[]} [items]
+ * @property {string} [className]
+ * @property {string} [navClassName]
+ * @property {string} [navItemClassName]
+ * @property {string} [activeClassName]
+ * @property {string} [inactiveClassName]
+ * @property {string} [panelClassName]
+ * @property {string} [contentWrapperClassName]
+ * @property {number|null} [initialIndex]
+ * @property {number} [closeDelay]
+ * @property {DirectionalMenuAnimationConfig & Record<string, any>} [animation]
+ * @property {number} [panelGap]
+ * @property {string} [menuTop]
+ */
+
+/** @param {DirectionalMegaMenuProps} props */
 export function DirectionalMegaMenu({
   items = [],
   className = "",
@@ -75,20 +114,20 @@ export function DirectionalMegaMenu({
 
   // State and refs
   const [isOpen, setIsOpen] = useState(initialIndex !== NO_INDEX);
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [nextIndex, setNextIndex] = useState(NO_INDEX);
-  const [highlightedIndex, setHighlightedIndex] = useState(initialIndex);
+  const [currentIndex, setCurrentIndex] = useState(/** @type {number|null} */ (initialIndex));
+  const [nextIndex, setNextIndex] = useState(/** @type {number|null} */ (NO_INDEX));
+  const [highlightedIndex, setHighlightedIndex] = useState(/** @type {number|null} */ (initialIndex));
 
-  const panelRef = useRef(null);
-  const viewportRef = useRef(null);
-  const currentPaneRef = useRef(null);
-  const nextPaneRef = useRef(null);
-  const menuPanelRef = useRef(null);
-  const closeTimerRef = useRef(null);
+  const panelRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const viewportRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const currentPaneRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const nextPaneRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const menuPanelRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const closeTimerRef = useRef(/** @type {ReturnType<typeof setTimeout>|null} */ (null));
   const isAnimatingRef = useRef(false);
-  const queuedIndexRef = useRef(NO_INDEX);
+  const queuedIndexRef = useRef(/** @type {number|null} */ (NO_INDEX));
   const hasOpenedOnceRef = useRef(initialIndex !== NO_INDEX);
-  const visualIndexRef = useRef(initialIndex);
+  const visualIndexRef = useRef(/** @type {number|null} */ (initialIndex));
   const transitionDirectionRef = useRef(DEFAULT_TRANSITION_DIRECTION);
 
   const clearCloseTimer = () => {
@@ -175,6 +214,7 @@ export function DirectionalMegaMenu({
     }, closeDelay);
   };
 
+  /** @param {number} index */
   const openMenuAt = (index) => {
     const item = items[index];
 
@@ -195,6 +235,7 @@ export function DirectionalMegaMenu({
     transitionDirectionRef.current = DEFAULT_TRANSITION_DIRECTION;
   };
 
+  /** @param {number} index */
   const requestSwitch = (index) => {
     const item = items[index];
 
@@ -258,6 +299,7 @@ export function DirectionalMegaMenu({
     scheduleClose();
   };
 
+  /** @param {number} index */
   const onItemEnter = (index) => {
     const item = items[index];
 

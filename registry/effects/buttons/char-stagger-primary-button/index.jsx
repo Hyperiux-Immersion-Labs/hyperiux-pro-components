@@ -5,6 +5,26 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   btnClassName?: string,
+ *   textClassName?: string,
+ *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
+ *   children?: import('react').ReactNode,
+ *   staggerStep?: number,
+ *   lineClassName?: string,
+ *   hoverColor?: string,
+ *   showArrow?: boolean,
+ *   icon?: import('react').ComponentType<{ className?: string }>,
+ *   iconClassName?: string,
+ *   bgClassName?: string,
+ *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} CharStaggerPrimaryButtonProps
+ */
+
+/** @param {CharStaggerPrimaryButtonProps} props */
 const CharStaggerPrimaryButton = ({
     btnText = "Hover me",
     href = "#",
@@ -22,7 +42,7 @@ const CharStaggerPrimaryButton = ({
     onClick,
     ...props
 }) => {
-    const linkRef = useRef(null);
+    const linkRef = useRef(/** @type {HTMLAnchorElement | null} */ (null));
     const [isTouchHovered, setIsTouchHovered] = useState(false);
     const [supportsTouchHover, setSupportsTouchHover] = useState(false);
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -63,8 +83,9 @@ const CharStaggerPrimaryButton = ({
     useEffect(() => {
         if (!isTouchHovered) return undefined;
 
+        /** @param {PointerEvent} event */
         const handlePointerDown = (event) => {
-            if (linkRef.current?.contains(event.target)) return;
+            if (linkRef.current?.contains(/** @type {Node | null} */ (event.target))) return;
             setIsTouchHovered(false);
         };
 
@@ -75,6 +96,7 @@ const CharStaggerPrimaryButton = ({
         };
     }, [isTouchHovered]);
 
+    /** @param {import('react').MouseEvent<HTMLAnchorElement>} event */
     const handleClick = (event) => {
         if (supportsTouchHover && !isTouchHovered) {
             event.preventDefault();
@@ -98,7 +120,7 @@ const CharStaggerPrimaryButton = ({
             {...props}
             onClick={handleClick}
             className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none motion-safe:hover:text-(--char-hover-color) motion-safe:focus-visible:text-(--char-hover-color) bg-[#ff5f00] max-[1025px]:h-[9vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[15vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${hoverStateClass} ${btnClassName}`}
-            style={{ "--char-hover-color": hoverColor }}
+            style={/** @type {import('react').CSSProperties} */ ({ "--char-hover-color": hoverColor })}
         >
             <div className="relative z-2">
                 <span

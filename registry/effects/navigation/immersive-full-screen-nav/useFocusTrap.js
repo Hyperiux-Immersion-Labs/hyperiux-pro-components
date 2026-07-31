@@ -11,6 +11,7 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
 
+/** @param {HTMLElement|null} [element] */
 const isVisible = (element) => {
   if (!element || element.hidden) {
     return false;
@@ -25,14 +26,18 @@ const isVisible = (element) => {
   return element.getClientRects().length > 0;
 };
 
+/**
+ * @param {HTMLElement|null} [container]
+ * @returns {HTMLElement[]}
+ */
 const getFocusableElements = (container) => {
   if (!container) {
     return [];
   }
 
-  return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
-    isVisible
-  );
+  return /** @type {HTMLElement[]} */ (
+    Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR))
+  ).filter(isVisible);
 };
 
 /**
@@ -44,6 +49,12 @@ const getFocusableElements = (container) => {
  *   otherwise the first focusable element).
  * - Wraps Tab / Shift+Tab around the menu's focusable elements.
  * - Calls `onEscape` when the Escape key is pressed.
+ *
+ * @param {Object} params
+ * @param {boolean} params.active
+ * @param {import('react').RefObject<HTMLElement|null>} params.containerRef
+ * @param {import('react').RefObject<HTMLElement|null>} [params.initialFocusRef]
+ * @param {() => void} [params.onEscape]
  */
 export function useFocusTrap({
   active,
@@ -90,7 +101,7 @@ export function useFocusTrap({
     // Defer focus so it lands after the menu has mounted / started animating in.
     const focusFrame = requestAnimationFrame(focusInitial);
 
-    const onKeyDown = (event) => {
+    const onKeyDown = (/** @type {KeyboardEvent} */ event) => {
       if (event.key === "Escape") {
         event.preventDefault();
         onEscapeRef.current?.();

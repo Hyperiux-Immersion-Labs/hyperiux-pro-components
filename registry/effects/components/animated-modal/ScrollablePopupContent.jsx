@@ -2,6 +2,22 @@
 
 
 
+/**
+ * @typedef {Object} PopupSection
+ * @property {string} [heading]
+ * @property {string} [paragraph]
+ * @property {string[]} [list]
+ */
+
+/**
+ * @typedef {Object} ScrollablePopupContentProps
+ * @property {string} [title]
+ * @property {string} [subtitle]
+ * @property {PopupSection[]} [sections]
+ * @property {string} [className]
+ */
+
+/** @param {ScrollablePopupContentProps} props */
 const ScrollablePopupContent = ({
     title = "Popup Title",
     subtitle = "",

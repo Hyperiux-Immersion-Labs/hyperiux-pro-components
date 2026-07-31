@@ -321,9 +321,9 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "SvgPixelReveal",
-      "exportKind": "named",
-      "version": "1.0.0"
+      "exportName": "SVGPixelReveal",
+      "exportKind": "default",
+      "version": "1.1.0"
     },
     {
       "name": "text-convergence",
@@ -911,7 +911,7 @@
       "registryDependencies": [],
       "exportName": "TextFillAnimation",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "text-hover",
@@ -1042,7 +1042,7 @@
       "registryDependencies": [],
       "exportName": "ScrambleLinkButton",
       "exportKind": "default",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "name": "clippath-slider",
@@ -1135,9 +1135,9 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "AnimatedFAQ",
+      "exportName": "AnimatedFaq",
       "exportKind": "default",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "name": "animated-form",

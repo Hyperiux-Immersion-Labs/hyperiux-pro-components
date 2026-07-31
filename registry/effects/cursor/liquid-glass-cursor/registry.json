@@ -15,7 +15,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/liquid-glass-cursor",
   "tier": "pro",
-  "main": "index.js",
+  "main": "index.jsx",
   "exportName": "LiquidGlassCursor",
   "exportKind": "default",
   "importPath": "@/components/effects/liquid-glass-cursor",
@@ -89,8 +89,8 @@
   },
   "files": [
     {
-      "path": "index.js",
-      "target": "src/components/effects/liquid-glass-cursor/index.js"
+      "path": "index.jsx",
+      "target": "src/components/effects/liquid-glass-cursor/index.jsx"
     },
     {
       "path": "LiquidText.jsx",

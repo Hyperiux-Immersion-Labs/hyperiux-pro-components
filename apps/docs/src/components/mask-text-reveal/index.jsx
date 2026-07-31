@@ -9,8 +9,10 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+const DEFAULT_TEXT = <p className="text-2xl">Pull the words from the noise.</p>;
+
 export default function MaskTextReveal({
-    children,
+    children = DEFAULT_TEXT,
     animateOnScroll = true,
     stagger = 0.2,
     duration = 5.5,

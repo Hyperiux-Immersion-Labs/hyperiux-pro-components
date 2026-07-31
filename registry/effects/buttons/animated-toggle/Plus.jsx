@@ -1,5 +1,14 @@
 "use client"
 
+/**
+ * @typedef {Object} PlusProps
+ * @property {boolean} [isActive]
+ * @property {number} [size]
+ * @property {boolean} [prefersReducedMotion]
+ * @property {string} [className]
+ */
+
+/** @param {PlusProps} props */
 const Plus = ({
  isActive = false,
  size = 24,

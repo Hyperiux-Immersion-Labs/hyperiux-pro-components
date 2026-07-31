@@ -20,6 +20,7 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/** @type {import('./ScrollablePopupContent').PopupSection[]} */
 const popupSections = [
   {
     heading: "Project Overview",

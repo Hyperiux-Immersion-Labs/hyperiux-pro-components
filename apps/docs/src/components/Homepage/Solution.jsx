@@ -11,7 +11,7 @@ const Solution = () => {
     return (
         <section className='w-full h-fit px-[3vw] py-[10%]' id='solution'>
             <LineReveal as="h2" className="text110 w-full text-center">
-                Vault is That Layer, Ready to <span className='text-[#ff5f00]'> Install. </span>
+                Vault is That Layer, Ready to <span className='gradient-text-animate'> Install. </span>
             </LineReveal>
 
             <TextFillAnimationCustom
@@ -21,8 +21,8 @@ const Solution = () => {
                 primaryColor="#ff5f00"
                 dimColor="#272727"
                 id="break-heading"
-                textSize="4vw"
-                textWidth="100%"
+                textSize="3.25vw"
+                textWidth="90%"
                 mobileTextSize="7vw"
                 mobileTextWidth="95%"
                 tabletTextSize="5vw"

@@ -12,6 +12,11 @@ import {
 import { createVisibilityGate } from "./createSuspendedRaf";
 
 // Custom wrap function
+/**
+ * @param {number} min
+ * @param {number} max
+ * @param {number} value
+ */
 const wrap = (min, max, value) => {
   const range = max - min
   return ((((value - min) % range) + range) % range) + min
@@ -22,6 +27,33 @@ const wrap = (min, max, value) => {
 // the path multiple times.
 const REDUCED_MOTION_SCROLL_FACTOR = 0.05
 
+/**
+ * @typedef {Object} CssVariableInterpolation
+ * @property {string} property
+ * @property {number} from
+ * @property {number} to
+ */
+
+/**
+ * @typedef {Object} MarqueePathItemProps
+ * @property {import('react').ReactNode} child
+ * @property {number} repeatIndex
+ * @property {number} itemIndex
+ * @property {string} itemKey
+ * @property {any} baseOffset
+ * @property {number} itemCount
+ * @property {(t: number) => number} [easing]
+ * @property {(offsetDistance: number) => number|undefined} calculateZIndex
+ * @property {CssVariableInterpolation[]} cssVariableInterpolation
+ * @property {boolean} [draggable]
+ * @property {boolean} [grabCursor]
+ * @property {string} path
+ * @property {boolean} [enableRollingZIndex]
+ * @property {import('react').RefObject<Map<string, HTMLDivElement>>} itemRefs
+ * @property {import('react').RefObject<boolean>} isHoveredRef
+ */
+
+/** @param {MarqueePathItemProps} props */
 function MarqueePathItem({
   child,
   repeatIndex,
@@ -48,7 +80,7 @@ function MarqueePathItem({
   const currentOffsetDistance = useMotionValue(0)
   const zIndex = useTransform(currentOffsetDistance, (value) =>
     calculateZIndex(value))
-  const itemRef = useRef(null)
+  const itemRef = useRef(/** @type {HTMLDivElement|null} */ (null))
 
   useEffect(() => {
     const unsubscribe = itemOffset.on("change", (value) => {
@@ -57,10 +89,11 @@ function MarqueePathItem({
         const numericValue = parseFloat(match[1])
         currentOffsetDistance.set(numericValue)
 
-        if (itemRef.current) {
+        const itemElement = itemRef.current
+        if (itemElement) {
           cssVariableInterpolation.forEach(({ property, from, to }) => {
             const nextValue = from + (to - from) * (numericValue / 100)
-            itemRef.current.style.setProperty(property, String(nextValue))
+            itemElement.style.setProperty(property, String(nextValue))
           })
         }
       }
@@ -91,6 +124,41 @@ function MarqueePathItem({
   )
 }
 
+/**
+ * @typedef {Object} SVGPathCompProps
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [className]
+ * @property {string} path
+ * @property {string} [pathId]
+ * @property {string} [preserveAspectRatio]
+ * @property {boolean} [showPath]
+ * @property {string|number} [width]
+ * @property {string|number} [height]
+ * @property {string} [viewBox]
+ * @property {number} [baseVelocity]
+ * @property {string} [direction]
+ * @property {(t: number) => number} [easing]
+ * @property {boolean} [slowdownOnHover]
+ * @property {number} [slowDownFactor]
+ * @property {any} [slowDownSpringConfig]
+ * @property {boolean} [useScrollVelocity]
+ * @property {boolean} [scrollAwareDirection]
+ * @property {any} [scrollSpringConfig]
+ * @property {any} [scrollContainer]
+ * @property {number} [repeat]
+ * @property {boolean} [draggable]
+ * @property {number} [dragSensitivity]
+ * @property {number} [dragVelocityDecay]
+ * @property {boolean} [dragAwareDirection]
+ * @property {boolean} [grabCursor]
+ * @property {boolean} [enableRollingZIndex]
+ * @property {number} [zIndexBase]
+ * @property {number} [zIndexRange]
+ * @property {CssVariableInterpolation[]} [cssVariableInterpolation]
+ * @property {boolean} [responsive]
+ */
+
+/** @param {SVGPathCompProps} props */
 const SVGPathComp = ({
   children,
   className,
@@ -149,15 +217,15 @@ const SVGPathComp = ({
   // Responsive defaults
   responsive = false
 }) => {
-  const container = useRef(null)
-  const marqueeContainerRef = useRef(null)
+  const container = useRef(/** @type {HTMLDivElement|null} */ (null))
+  const marqueeContainerRef = useRef(/** @type {HTMLDivElement|null} */ (null))
   const baseOffset = useMotionValue(0)
   const [isPositionReady, setIsPositionReady] = useState(false)
   const reduceMotion = useReducedMotion()
 
-  const pathRef = useRef(null)
+  const pathRef = useRef(/** @type {SVGPathElement|null} */ (null))
 
-  const itemRefs = useRef(new Map())
+  const itemRefs = useRef(/** @type {Map<string, HTMLDivElement>} */ (new Map()))
   const generatedPathId = useId()
 
   // Responsive scaling using direct DOM manipulation (no re-renders)
@@ -221,7 +289,7 @@ const SVGPathComp = ({
   }, [children, repeat])
 
   // Function to calculate z-index based on offset distance
-  const calculateZIndex = useCallback((offsetDistance) => {
+  const calculateZIndex = useCallback((/** @type {number} */ offsetDistance) => {
     if (!enableRollingZIndex) {
       return undefined
     }
@@ -374,6 +442,7 @@ const SVGPathComp = ({
   // Pointer event handlers for dragging
   const lastPointerPosition = useRef({ x: 0, y: 0 })
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} e */
   const handlePointerDown = (e) => {
     if (!draggable || reduceMotion) return
     ;(e.currentTarget).setPointerCapture(e.pointerId)
@@ -389,6 +458,7 @@ const SVGPathComp = ({
     dragVelocity.current = 0
   }
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} e */
   const handlePointerMove = (e) => {
     if (!draggable || !isDragging.current) return
 
@@ -409,6 +479,7 @@ const SVGPathComp = ({
     lastPointerPosition.current = currentPosition
   }
 
+  /** @param {import('react').PointerEvent<HTMLDivElement>} e */
   const handlePointerUp = (e) => {
     if (!draggable) return
     ;(e.currentTarget).releasePointerCapture(e.pointerId)

@@ -9,6 +9,23 @@ const DEFAULT_HREF = "#";
 const COMPACT_LAYOUT_BREAKPOINT = 1280;
 const ANIMATION_DURATION_MS = 450;
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   bgColor?: string,
+ *   textColor?: string,
+ *   fillBgColor?: string,
+ *   fillTextColor?: string,
+ *   hoverFillBgColor?: string,
+ *   hoverFillTextColor?: string,
+ *   arrowColor?: string,
+ *   hoverArrowColor?: string,
+ * } & import('react').ComponentPropsWithoutRef<'a'>} ArrowFillButtonProps
+ */
+
+/** @param {ArrowFillButtonProps} props */
 function ArrowFillButton({
   btnText="Hover Me",
   href = DEFAULT_HREF,
@@ -33,7 +50,7 @@ function ArrowFillButton({
   const [isReady, setIsReady] = useState(false);
   const [isCompactLayout, setIsCompactLayout] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const releaseTimeoutRef = useRef(null);
+  const releaseTimeoutRef = useRef(/** @type {number | null} */ (null));
 
   const usesUtilityBackground =
     className.includes("bg-") ||
@@ -54,8 +71,10 @@ function ArrowFillButton({
       `(max-width: ${COMPACT_LAYOUT_BREAKPOINT - 1}px)`
     );
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncCompactLayout = (event) => {
-      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+      const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
       setIsCompactLayout(matches);
 
       if (!matches) {
@@ -90,6 +109,7 @@ function ArrowFillButton({
     }, ANIMATION_DURATION_MS);
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerDown = (event) => {
     props.onPointerDown?.(event);
 
@@ -105,6 +125,7 @@ function ArrowFillButton({
     setIsPressed(true);
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerUp = (event) => {
     props.onPointerUp?.(event);
 
@@ -115,6 +136,7 @@ function ArrowFillButton({
     clearPressedState();
   };
 
+  /** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
   const handlePointerCancel = (event) => {
     props.onPointerCancel?.(event);
 
@@ -136,7 +158,7 @@ function ArrowFillButton({
       className={`group relative inline-flex h-[4.2vw] w-fit min-w-fit max-w-none cursor-pointer items-center justify-center overflow-hidden rounded-full px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] whitespace-nowrap font-medium text-[1.1vw] leading-none [text-rendering:geometricPrecision] [--icon-circle:3.1vw] [--icon-right:0.55vw] [--circle-inset-y:calc((100%-var(--icon-circle))/2)] max-[1025px]:h-[11vw] max-[1025px]:px-[5vw] max-[1025px]:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:[--icon-circle:8vw] max-[1025px]:[--icon-right:1.5vw] max-md:h-[15vw] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] max-md:text-[4.2vw] max-md:[--icon-circle:11vw] max-md:[--icon-right:2vw] ${
         usesUtilityBackground ? "" : "bg-(--btn-bg)"
       } text-(--btn-text) ${className}`}
-      style={{
+      style={/** @type {import('react').CSSProperties} */ ({
         "--btn-bg": bgColor,
         "--btn-text": textColor,
         "--btn-fill-bg": fillBgColor,
@@ -146,7 +168,7 @@ function ArrowFillButton({
         "--btn-arrow": arrowColor || fillTextColor,
         "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
         visibility: isReady ? "visible" : "hidden",
-      }}
+      })}
     >
       <span className="relative z-1 pb-px">{btnText}</span>
 

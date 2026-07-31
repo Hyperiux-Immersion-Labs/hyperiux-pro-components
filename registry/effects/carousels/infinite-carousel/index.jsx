@@ -5,6 +5,15 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import InfiniteCarouselComp from "./InfiniteCarouselComp";
 
+/**
+ * @param {{
+ *   title: string,
+ *   subtitle: string,
+ *   description: string,
+ *   themeClass: string,
+ *   points: string[],
+ * }} props
+ */
 function CarouselCard({ title, subtitle, description, themeClass, points }) {
     return (
         <div className="h-full w-lg px-3 max-[1025px]:w-md max-[1025px]:min-w-md max-[1025px]:max-w-[calc(100vw-5.5rem)] max-[1025px]:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2">

@@ -149,9 +149,9 @@
   },
   "files": [
     {
-      "path": "index.js",
+      "path": "index.jsx",
       "type": "registry:component",
-      "target": "src/components/effects/liquid-glass-cursor/index.js"
+      "target": "src/components/effects/liquid-glass-cursor/index.jsx"
     },
     {
       "path": "LiquidText.jsx",

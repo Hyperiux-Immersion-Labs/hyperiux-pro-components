@@ -5,7 +5,7 @@ import {
     FAQGroup,
     FAQTitle,
     FAQWrapper,
-} from "@/components/animated-faq";
+} from "@/components/animated-faq/AnimatedFaqComp";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -60,7 +60,7 @@ export default function FAQs({ faqItems, isHomePage = false, fixWidth = false })
 
             <div className="mx-auto text-center text-white max-sm:mb-[14vw] mb-[6vw] relative z-10">
                 <LineReveal as="h2" className='text110 w-full max-w-[70vw] max-sm:max-w-full text-center mx-auto'>
-                    Questions <span className='text-primary'>Answered.</span>
+                    Questions <span className='gradient-text-animate'>Answered.</span>
                 </LineReveal>
             </div>
             <div className={`mx-auto w-full max-md:max-w-[90%] max-sm:max-w-full   ${fixWidth ? ' max-w-[70vw] max-sm:w-[87%]' : ''}`}>

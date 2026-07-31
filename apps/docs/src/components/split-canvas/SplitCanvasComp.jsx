@@ -219,7 +219,7 @@ export default function SplitCanvasComp({ wrapperRef, gridSize = 16, numSlices =
  loop.destroy();
  loop = null;
  }
- ScrollTrigger.getAll().forEach(t => t.kill());
+//  ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {
  renderer.dispose();
  renderer.forceContextLoss();

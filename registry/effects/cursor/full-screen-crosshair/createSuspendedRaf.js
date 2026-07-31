@@ -1,6 +1,15 @@
 
+
 const DEFAULT_ROOT_MARGIN = "256px";
 
+/**
+ * @typedef {Element|null|{current: Element|null}|(() => Element|null)} RafRoot
+ */
+
+/**
+ * @param {RafRoot} root
+ * @returns {Element|null}
+ */
 function resolveElement(root) {
   if (!root) return null;
   if (typeof root === "function") return root() ?? null;
@@ -8,6 +17,20 @@ function resolveElement(root) {
   return root;
 }
 
+/**
+ * @param {object} [options]
+ * @param {RafRoot} [options.root]
+ * @param {string} [options.rootMargin]
+ * @param {number} [options.threshold]
+ * @param {boolean} [options.observeTab]
+ * @param {boolean} [options.observeOffscreen]
+ * @param {(active: boolean) => void} [options.onChange]
+ * @returns {{
+ *   readonly isActive: boolean,
+ *   observe: (nextRoot?: RafRoot) => void,
+ *   destroy: () => void,
+ * }}
+ */
 function createVisibilityGate({
   root = null,
   rootMargin = DEFAULT_ROOT_MARGIN,
@@ -21,6 +44,7 @@ function createVisibilityGate({
   // Match border-beam: assume onscreen until the observer reports otherwise.
   let onscreen = true;
   let destroyed = false;
+  /** @type {IntersectionObserver | null} */
   let observer = null;
 
   const isActive = () => {
@@ -112,13 +136,21 @@ function createVisibilityGate({
  * Owns a requestAnimationFrame loop that auto-pauses when the tab is hidden
  * or the root element is offscreen.
  *
- * @param {object} options
- * @param {(time: number) => void} options.onFrame
- * @param {Element|null|{current: Element|null}|(() => Element|null)} [options.root]
+ * @param {object} [options]
+ * @param {(time: number) => void} [options.onFrame]
+ * @param {RafRoot} [options.root]
  * @param {string} [options.rootMargin]
  * @param {number} [options.threshold]
  * @param {boolean} [options.observeTab]
  * @param {boolean} [options.observeOffscreen]
+ * @returns {{
+ *   start: () => void,
+ *   stop: () => void,
+ *   readonly isRunning: boolean,
+ *   readonly isActive: boolean,
+ *   observe: (nextRoot?: RafRoot) => void,
+ *   destroy: () => void,
+ * }}
  */
 function createSuspendedRaf({
   onFrame,
@@ -132,6 +164,7 @@ function createSuspendedRaf({
     throw new TypeError("createSuspendedRaf: onFrame is required");
   }
 
+  /** @type {number | null} */
   let rafId = null;
   let running = false;
   let destroyed = false;
@@ -143,6 +176,7 @@ function createSuspendedRaf({
     }
   };
 
+  /** @param {number} time */
   const tick = (time) => {
     rafId = null;
     if (destroyed || !running || !gate.isActive) return;
