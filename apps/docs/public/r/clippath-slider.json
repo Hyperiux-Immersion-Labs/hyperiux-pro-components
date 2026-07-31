@@ -152,12 +152,6 @@
       }
     },
     {
-      "name": "clipDirection",
-      "type": "enum",
-      "description": "Direction the clipping mask travels during transition.",
-      "default": "left"
-    },
-    {
       "name": "duration",
       "type": "number",
       "description": "Clip-path transition duration.",
@@ -170,18 +164,6 @@
         "max": 5,
         "step": 0.05
       }
-    },
-    {
-      "name": "easing",
-      "type": "string",
-      "description": "Easing curve used for slide transitions.",
-      "default": "power3.inOut"
-    },
-    {
-      "name": "showControls",
-      "type": "boolean",
-      "description": "Shows slider navigation controls.",
-      "default": true
     }
   ],
   "remixer": {

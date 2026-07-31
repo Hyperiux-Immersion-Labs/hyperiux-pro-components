@@ -10,8 +10,20 @@
   "exportName": "CardsRunway",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "changelog": [
+    {
+      "version": "1.2.2",
+      "date": "2026-07-30",
+      "summary": "Removed cardWidth, pauseOnHover, and start from the public API. The runway now uses a constant card width and fixed ScrollTrigger start/end while keeping speed, gap, and perspective controls.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed data/cards content props, wired speed, gap, perspective, and pauseOnHover, and changed desktop travel to measure the rendered card width so wide cards scroll fully.",
+      "breaking": false
+    },
     {
       "version": "1.2.0",
       "date": "2026-07-28",
@@ -39,47 +51,10 @@
   ],
   "props": [
     {
-      "name": "data",
-      "type": "array",
-      "default": [
-        {
-          "id": 1,
-          "title": "A smarter assistant in your pocket",
-          "text": "AI now drafts your messages, sets your reminders, and answers questions before you finish typing them. What once meant opening five apps is increasingly a single spoken sentence."
-        },
-        {
-          "id": 2,
-          "title": "Recommendations that just fit",
-          "text": "The songs you discover, the shows you binge, the products you didn't know you wanted - quietly ranked by models learning your taste. Personalization has become the default, not the feature."
-        },
-        {
-          "id": 3,
-          "title": "Language is no longer a wall",
-          "text": "Real-time translation turns menus, road signs, and conversations abroad into something you actually understand. AI is slowly erasing the friction of speaking a different tongue."
-        },
-        {
-          "id": 4,
-          "title": "Creativity, on tap",
-          "text": "Write a prompt, get an image, a melody, or a first draft in seconds. AI doesn't replace the spark, it hands more people the tools to act on theirs."
-        },
-        {
-          "id": 5,
-          "title": "Everyday coding, accelerated",
-          "text": "From autocompleting a function to explaining an error, AI sits beside developers as a tireless pair. The gap between an idea and a working prototype keeps getting shorter."
-        }
-      ],
-      "description": "Cards shown in the runway sequence (title, text).",
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "accentColor",
       "type": "color",
       "default": "#ff5f00",
-      "description": "Accent color used by the runway cards.",
+      "description": "Accent color used by the runway card bars.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -98,84 +73,51 @@
       }
     },
     {
-      "name": "cardWidth",
-      "type": "string",
-      "default": "28vw",
-      "description": "Width of each card (CSS length).",
-      "remixer": {
-        "control": "text",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
-      "name": "cards",
-      "type": "array",
-      "description": "Cards shown in the runway sequence.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "speed",
       "type": "number",
-      "description": "Playback speed for the runway motion.",
       "default": 1,
+      "description": "Playback speed multiplier for the runway motion.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
+        "min": 0.2,
+        "max": 3,
         "step": 0.05
       }
     },
     {
       "name": "gap",
       "type": "number",
-      "description": "Spacing between runway cards.",
-      "default": 32,
+      "default": 48,
+      "description": "Spacing between runway cards in pixels.",
       "remixer": {
         "control": "range",
         "group": "style",
         "groupTitle": "Style",
         "min": 0,
-        "max": 1200,
+        "max": 160,
         "step": 1
       }
     },
     {
       "name": "perspective",
       "type": "number",
-      "description": "Perspective depth applied to card movement.",
       "default": 900,
+      "description": "Perspective depth applied to the runway track.",
       "remixer": {
         "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
+        "group": "motion",
+        "groupTitle": "Motion",
         "min": 0,
-        "max": 2700,
-        "step": 1
-      }
-    },
-    {
-      "name": "pauseOnHover",
-      "type": "boolean",
-      "description": "Pauses movement while hovering cards.",
-      "default": true,
-      "remixer": {
-        "control": "checkbox",
-        "group": "controls",
-        "groupTitle": "Controls"
+        "max": 2000,
+        "step": 25
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "style",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

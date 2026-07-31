@@ -10,8 +10,14 @@
   "exportName": "AnimatedForm",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "changelog": [
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed fields, submitLabel, successMessage, and validateOnBlur from the public/remixer API. The built-in form fields now always render, while color, border radius, and duration props customize the form controls.",
+      "breaking": false
+    },
     {
       "version": "1.2.0",
       "date": "2026-07-28",
@@ -27,38 +33,10 @@
   ],
   "props": [
     {
-      "name": "fields",
-      "type": "array",
-      "default": [],
-      "description": "Fields rendered by the form (text, email, phone, select, textarea, checkbox)."
-    },
-    {
-      "name": "submitLabel",
-      "type": "string",
-      "default": "Send Message",
-      "description": "Text shown on the submit button.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "successMessage",
-      "type": "string",
-      "default": " Form submitted successfully!",
-      "description": "Message shown after successful submission.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "accentColor",
       "type": "color",
-      "description": "Accent color for focus, checks, and primary actions.",
-      "default": "#ff6b00",
+      "default": "#111111",
+      "description": "Accent color for focus states, checkbox checks, and the submit button.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -66,20 +44,81 @@
       }
     },
     {
-      "name": "validateOnBlur",
-      "type": "boolean",
-      "description": "Runs field validation after blur.",
-      "default": true,
+      "name": "backgroundColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Page background color around the form.",
       "remixer": {
-        "control": "checkbox",
+        "control": "color",
         "group": "style",
         "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Text color for the form heading and field labels.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "inputBackgroundColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Background color for inputs, textarea, and select controls.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "fieldBorderColor",
+      "type": "color",
+      "default": "#e5e7eb",
+      "description": "Default border color for form controls.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "inputRoundedness",
+      "type": "number",
+      "default": 28,
+      "description": "Border radius for inputs and the submit button in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 48,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.3,
+      "description": "Transition duration for control focus and button effects in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.05,
+        "max": 2,
+        "step": 0.05
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "style",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

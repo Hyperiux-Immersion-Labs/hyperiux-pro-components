@@ -572,6 +572,7 @@ export function EffectDetailContent({
                   content={safeContent}
                   isLocked={isLocked}
                   effectProps={effect?.props}
+                  effectRemixerControls={effect?.remixer?.controls}
                   changelog={safeEffect.changelog}
                 />
               </div>
@@ -720,7 +721,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false, effectProps, changelog = [] },
+  { content, isLocked = false, effectProps, effectRemixerControls, changelog = [] },
   ref
 ) {
   if (!content) return null;
@@ -734,6 +735,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
         body={content.body}
         isLocked={isLocked}
         effectProps={effectProps}
+        effectRemixerControls={effectRemixerControls}
         changelog={changelog}
       />
     </div>
@@ -870,12 +872,19 @@ function SanityBodyRenderer({
   body = [],
   isLocked = false,
   effectProps,
+  effectRemixerControls,
   changelog = [],
 }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
-  const showPropsTable = Array.isArray(effectProps) && effectProps.length > 0;
+  const remixerControlNames = new Set(
+    (effectRemixerControls || []).map((control) => control?.name).filter(Boolean)
+  );
+  const remixableProps = (effectProps || []).filter(
+    (prop) => prop?.remixer?.control || remixerControlNames.has(prop?.name)
+  );
+  const showPropsTable = remixableProps.length > 0;
   const hasFaqBlock = groupedBlocks.some(
     (block) => block._type === "effectFaqAccordion"
   );
@@ -899,14 +908,14 @@ function SanityBodyRenderer({
               <EffectChangelogSection changelog={changelog} />
             )}
             {showPropsTable && block._type === "effectFaqAccordion" && (
-              <EffectPropsTable props={effectProps} />
+              <EffectPropsTable props={remixableProps} />
             )}
             <SanityBodyBlock block={block} isLocked={isLocked} />
           </Fragment>
         );
       })}
 
-      {showPropsTable && !hasFaqBlock && <EffectPropsTable props={effectProps} />}
+      {showPropsTable && !hasFaqBlock && <EffectPropsTable props={remixableProps} />}
     </div>
   );
 }
@@ -923,9 +932,10 @@ function formatPropDefault(value) {
   }
 }
 
-// Rendered directly from the effect's registry.json `props` array - not a
-// Sanity content block, so it always reflects what the installable
-// component actually accepts rather than editorial copy that can drift.
+// Rendered directly from the effect's registry.json `props` array, filtered
+// to entries with a remixer control (see SanityBodyRenderer) - not a Sanity
+// content block, so it always reflects what's actually live-editable in the
+// props remixer rather than editorial copy that can drift.
 function EffectPropsTable({ props = [] }) {
   if (!props.length) return null;
 

@@ -10,18 +10,12 @@
   "exportName": "TextFillAnimation",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.0",
-      "date": "2026-07-28",
-      "summary": "Documented existing prefers-reduced-motion support : the scroll-scrubbed stagger fill is skipped and all characters show their filled state immediately.",
-      "breaking": false
-    },
-    {
-      "version": "1.0.0",
-      "date": "2026-07-09",
-      "summary": "Initial release",
+      "version": "1.0.1",
+      "date": "2026-07-30",
+      "summary": "Removed text from the remixer controls while keeping the built-in heading content and visual controls.",
       "breaking": false
     }
   ],
@@ -30,12 +24,7 @@
       "name": "text",
       "type": "string",
       "default": "Design systems should feel effortless, not like you're fighting your own components every time you build.",
-      "description": "Text filled on scroll.",
-      "remixer": {
-        "control": "textarea",
-        "group": "content",
-        "groupTitle": "Content"
-      }
+      "description": "Text filled on scroll."
     },
     {
       "name": "textColor",
@@ -106,7 +95,7 @@
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "colors",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

@@ -10,8 +10,14 @@
   "exportName": "AnimatedTabs",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "changelog": [
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed the tabs content prop from the public/remixer API and wired accentColor and duration into the active indicator and panel transitions.",
+      "breaking": false
+    },
     {
       "version": "1.2.0",
       "date": "2026-07-28",
@@ -76,35 +82,10 @@
       }
     },
     {
-      "name": "tabs",
-      "type": "array",
-      "description": "Tab labels and panel content.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "controls",
-        "groupTitle": "Controls"
-      }
-    },
-    {
-      "name": "defaultTab",
-      "type": "number",
-      "description": "Index of the initially active tab.",
-      "default": 0,
-      "remixer": {
-        "control": "range",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "min": 0,
-        "max": 10,
-        "step": 1
-      }
-    },
-    {
       "name": "accentColor",
       "type": "color",
-      "description": "Color used for the active tab indicator.",
       "default": "#ff6b00",
+      "description": "Color used for the active tab label and indicator.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -114,27 +95,15 @@
     {
       "name": "duration",
       "type": "number",
-      "description": "Panel transition duration.",
       "default": 0.35,
+      "description": "Panel and indicator transition duration in seconds.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
+        "min": 0.05,
+        "max": 2,
         "step": 0.05
-      }
-    },
-    {
-      "name": "orientation",
-      "type": "enum",
-      "description": "Tab layout direction.",
-      "default": "horizontal",
-      "remixer": {
-        "control": "select",
-        "group": "controls",
-        "groupTitle": "Controls",
-        "options": []
       }
     }
   ],

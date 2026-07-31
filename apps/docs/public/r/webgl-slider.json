@@ -35,124 +35,10 @@
   ],
   "props": [
     {
-      "name": "images",
-      "type": "array",
-      "default": [
-        {
-          "src": "https://picsum.photos/seed/wgl0/800/1200",
-          "text": "PR.00\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl1/800/1200",
-          "text": "PR.01\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl2/800/1200",
-          "text": "PR.02\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl3/800/1200",
-          "text": "PR.03\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl4/800/1200",
-          "text": "PR.04\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl5/800/1200",
-          "text": "PR.05\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl6/800/1200",
-          "text": "PR.06\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl7/800/1200",
-          "text": "PR.07\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl8/800/1200",
-          "text": "PR.08\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl9/800/1200",
-          "text": "PR.09\n /10"
-        },
-        {
-          "src": "https://picsum.photos/seed/wgl10/800/1200",
-          "text": "PR.10\n /10"
-        }
-      ],
-      "demoDefault": [
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-          "text": "PR.00\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
-          "text": "PR.01\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-          "text": "PR.02\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-          "text": "PR.03\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-          "text": "PR.04\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-          "text": "PR.05\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-          "text": "PR.06\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
-          "text": "PR.07\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-          "text": "PR.08\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-          "text": "PR.09\n /10"
-        },
-        {
-          "src": "/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-          "text": "PR.10\n /10"
-        }
-      ],
-      "description": "Image slides rendered in the WebGL scene (src, text label).",
-      "copyable": false,
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "slides",
-      "type": "array",
-      "description": "Image or media slides rendered in the WebGL scene.",
-      "default": [],
-      "remixer": {
-        "control": "json",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "distortionStrength",
       "type": "number",
-      "description": "Strength of the shader distortion during transitions.",
-      "default": 0.35,
+      "description": "Strength of the shader fold distortion as slides scroll past.",
+      "default": 1,
       "remixer": {
         "control": "range",
         "group": "controls",
@@ -165,8 +51,8 @@
     {
       "name": "transitionDuration",
       "type": "number",
-      "description": "WebGL slide transition duration.",
-      "default": 0.9,
+      "description": "Duration of the scroll-snap settle animation.",
+      "default": 0.6,
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -177,31 +63,20 @@
       }
     },
     {
-      "name": "backgroundColor",
-      "type": "color",
-      "description": "Canvas background color.",
-      "default": "#000000",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
-      "name": "showControls",
+      "name": "enableHoverEffect",
       "type": "boolean",
-      "description": "Shows slider navigation controls.",
+      "description": "Enables the pointer-driven hover bend on each slide.",
       "default": true,
       "remixer": {
         "control": "checkbox",
-        "group": "controls",
-        "groupTitle": "Controls"
+        "group": "motion",
+        "groupTitle": "Motion"
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "controls",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

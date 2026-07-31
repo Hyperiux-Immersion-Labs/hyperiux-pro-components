@@ -39,34 +39,6 @@
   "target": "src/components/effects/zoom-slider",
   "props": [
     {
-      "name": "zoomScale",
-      "type": "number",
-      "description": "Scale applied to images during slide transitions.",
-      "default": 1.2,
-      "remixer": {
-        "control": "range",
-        "group": "style",
-        "groupTitle": "Style",
-        "min": 0,
-        "max": 3,
-        "step": 0.05
-      }
-    },
-    {
-      "name": "duration",
-      "type": "number",
-      "description": "Zoom transition duration.",
-      "default": 0.7,
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    },
-    {
       "name": "scaleOnHover",
       "type": "boolean",
       "description": "Enables the image scale-up effect on hover.",
@@ -93,7 +65,7 @@
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "style",
+    "defaultOpenGroupId": "hover",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

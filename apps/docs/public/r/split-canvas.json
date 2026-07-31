@@ -23,101 +23,82 @@
   ],
   "props": [
     {
-      "name": "split",
-      "type": "number",
-      "default": 0.5,
-      "description": "Initial split position.",
-      "suggested": true
-    },
-    {
-      "name": "backgroundColor",
-      "type": "string",
-      "default": "#000000",
-      "description": "Canvas background color.",
-      "suggested": true
-    },
-    {
-      "name": "transitionDuration",
-      "type": "number",
-      "default": 0.6,
-      "description": "Split transition duration.",
-      "suggested": true
-    },
-    {
-      "name": "leftContent",
-      "type": "reactNode",
-      "description": "Content rendered on the left canvas side.",
-      "default": "defaultLeft",
+      "name": "bgColor",
+      "type": "color",
+      "default": "#F5F5F0",
+      "description": "Page background color.",
       "remixer": {
-        "control": "range",
-        "group": "content",
-        "groupTitle": "Content"
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
       }
     },
     {
-      "name": "rightContent",
-      "type": "reactNode",
-      "description": "Content rendered on the right canvas side.",
-      "default": "defaultRight",
+      "name": "gridSize",
+      "type": "number",
+      "default": 16,
+      "description": "Pixel-dissolve shader's grid cell size, in px.",
       "remixer": {
         "control": "range",
-        "group": "content",
-        "groupTitle": "Content"
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 2,
+        "max": 64,
+        "step": 1
+      }
+    },
+    {
+      "name": "numSlices",
+      "type": "number",
+      "default": 32,
+      "description": "Number of horizontal slices the pixel-wipe transition is split into.",
+      "remixer": {
+        "control": "range",
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 2,
+        "max": 128,
+        "step": 1
+      }
+    },
+    {
+      "name": "canvasSize",
+      "type": "number",
+      "default": 599,
+      "description": "Size (px) of the central transitioning canvas panel on desktop — mobile/tablet sizes scale proportionally.",
+      "remixer": {
+        "control": "range",
+        "group": "shader",
+        "groupTitle": "Shader",
+        "min": 200,
+        "max": 900,
+        "step": 1
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "controls",
+    "defaultOpenGroupId": "shader",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "split",
-        "label": "Split",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 10,
-        "step": 0.1
-      },
-      {
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      },
-      {
-        "name": "transitionDuration",
-        "label": "Transition Duration",
-        "type": "range",
-        "group": "motion",
-        "copyable": true,
-        "min": 0,
-        "max": 5,
-        "step": 0.05
-      }
-    ]
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "src/components/effects/split-canvas/index.jsx",
-      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n'use client';\n\nimport { useRef } from 'react';\nimport { ReactLenis } from 'lenis/react';\nimport PixelScrollCanvas from './PixelScrollCanvas';\nimport { sections } from './content';\n\nexport default function SplitCanvas() {\n    const wrapperRef = useRef(null);\n\n    return (\n        <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>\n            <main className=\"bg-[#F5F5F0] min-h-screen text-black\">\n                {/* Hero Section */}\n               \n\n                {/* Scrollable Content */}\n                <div\n                    ref={wrapperRef}\n                    className=\"relative\"\n                    style={{ height: `${sections.length * 100}vh` }}\n                >\n                    {/* Fixed Canvas Container - higher z-index to be visible */}\n                    <div className=\"sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-md:items-center\">\n                        <PixelScrollCanvas wrapperRef={wrapperRef} />\n                    </div>\n\n                    {/* Content Sections */}\n                    <div className=\"absolute inset-0 z-30 pointer-events-none px-10 max-[1025px]:px-6 \">\n                        {sections.map((section, i) => (\n                            <div\n                                key={i}\n                                className=\"h-screen flex py-24 max-md:py-10 border-t border-black/40 max-[1025px]:pb-20 max-md:pb-20 \"\n                            >\n                                <div className=\"w-full h-full mx-auto px-16 max-[1025px]:px-0 max-md:px-0 flex flex-row justify-between items-start max-md:flex-col max-md:justify-end max-md:items-center pb-0 max-md:pb-0\">\n                                    {/* Left Column - Number & Title */}\n                                    <div className=\"w-80 shrink-0 flex flex-col items-start text-left max-[1025px]:w-[40%] max-md:w-full max-md:items-center max-md:text-center\">\n                                        <span className=\"text-[1.5vw] tracking-wider text-black/40 block mb-2 max-[1025px]:text-[3vw] max-md:text-[5vw]\">\n                                            {section.number}\n                                        </span>\n                                        <h2\n                                            className=\"text-[3.5vw] max-[1025px]:text-[7vw] max-md:text-[9vw] leading-[1.05] font-normal\"\n                                            style={{ fontFamily: '\"Times New Roman\", Georgia, serif' }}\n                                        >\n                                            {section.title}\n                                        </h2>\n                                        {/* Mobile Description */}\n                                        <p className=\"hidden max-md:block mt-4 text-[1.2vw] leading-[1.2] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw] text-black/60 max-w-70\">\n                                            {section.description}\n                                        </p>\n                                    </div>\n\n                                    {/* Center - Space for Canvas (482px) */}\n                                    <div className=\"w-125 shrink-0 max-[1025px]:hidden\" />\n\n                                    {/* Right Column - Description */}\n                                    <div className=\"w-70 shrink-0 mt-auto max-[1025px]:w-[50%] max-md:hidden\">\n                                        <p className=\"text-[1.2vw] leading-[1.2] max-[1025px]:text-[2.5vw] max-md:text-[3vw]   text-black/60 text-right\">\n                                            {section.description}\n                                        </p>\n                                    </div>\n                                </div>\n                            </div>\n                        ))}\n                    </div>\n                </div>\n\n                {/* Bottom divider */}\n                <div className=\"w-full h-px bg-black/10\" />\n            </main>\n        </ReactLenis>\n    );\n}\n"
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n'use client';\n\nimport { useRef } from 'react';\nimport { ReactLenis } from 'lenis/react';\nimport PixelScrollCanvas from './PixelScrollCanvas';\nimport { sections } from './content';\n\nexport default function SplitCanvas({\n    bgColor = \"#F5F5F0\",\n    gridSize = 16,\n    numSlices = 32,\n    canvasSize = 599,\n}) {\n    const wrapperRef = useRef(null);\n\n    return (\n        <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>\n            <main className=\"min-h-screen text-black\" style={{ backgroundColor: bgColor }}>\n                {/* Hero Section */}\n\n\n                {/* Scrollable Content */}\n                <div\n                    ref={wrapperRef}\n                    className=\"relative\"\n                    style={{ height: `${sections.length * 100}vh` }}\n                >\n                    {/* Fixed Canvas Container - higher z-index to be visible */}\n                    <div className=\"sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-md:items-center\">\n                        <PixelScrollCanvas\n                            wrapperRef={wrapperRef}\n                            gridSize={gridSize}\n                            numSlices={numSlices}\n                            canvasSize={canvasSize}\n                        />\n                    </div>\n\n                    {/* Content Sections */}\n                    <div className=\"absolute inset-0 z-30 pointer-events-none px-10 max-[1025px]:px-6 \">\n                        {sections.map((section, i) => (\n                            <div\n                                key={i}\n                                className=\"h-screen flex py-24 max-md:py-10 border-t border-black/40 max-[1025px]:pb-20 max-md:pb-20 \"\n                            >\n                                <div className=\"w-full h-full mx-auto px-16 max-[1025px]:px-0 max-md:px-0 flex flex-row justify-between items-start max-md:flex-col max-md:justify-end max-md:items-center pb-0 max-md:pb-0\">\n                                    {/* Left Column - Number & Title */}\n                                    <div className=\"w-80 shrink-0 flex flex-col items-start text-left max-[1025px]:w-[40%] max-md:w-full max-md:items-center max-md:text-center\">\n                                        <span className=\"text-[1.5vw] tracking-wider text-black/40 block mb-2 max-[1025px]:text-[3vw] max-md:text-[5vw]\">\n                                            {section.number}\n                                        </span>\n                                        <h2\n                                            className=\"text-[3.5vw] max-[1025px]:text-[7vw] max-md:text-[9vw] leading-[1.05] font-normal\"\n                                            style={{ fontFamily: '\"Times New Roman\", Georgia, serif' }}\n                                        >\n                                            {section.title}\n                                        </h2>\n                                        {/* Mobile Description */}\n                                        <p className=\"hidden max-md:block mt-4 text-[1.2vw] leading-[1.2] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw] text-black/60 max-w-70\">\n                                            {section.description}\n                                        </p>\n                                    </div>\n\n                                    {/* Center - Space for Canvas (482px) */}\n                                    <div className=\"w-125 shrink-0 max-[1025px]:hidden\" />\n\n                                    {/* Right Column - Description */}\n                                    <div className=\"w-70 shrink-0 mt-auto max-[1025px]:w-[50%] max-md:hidden\">\n                                        <p className=\"text-[1.2vw] leading-[1.2] max-[1025px]:text-[2.5vw] max-md:text-[3vw]   text-black/60 text-right\">\n                                            {section.description}\n                                        </p>\n                                    </div>\n                                </div>\n                            </div>\n                        ))}\n                    </div>\n                </div>\n\n                {/* Bottom divider */}\n                <div className=\"w-full h-px bg-black/10\" />\n            </main>\n        </ReactLenis>\n    );\n}\n"
     },
     {
       "path": "PixelScrollCanvas.jsx",
       "type": "registry:component",
       "target": "src/components/effects/split-canvas/PixelScrollCanvas.jsx",
-      "content": "'use client';\n\nimport { useEffect, useRef } from'react';\nimport * as THREE from'three';\nimport gsap from'gsap';\nimport { ScrollTrigger } from'gsap/ScrollTrigger';\nimport { PixelTransitionFragment, PixelTransitionVertex } from './pixel-transition';\nimport { imageSources } from './content';\nimport { createSuspendedRaf } from './createSuspendedRaf';\n\ngsap.registerPlugin(ScrollTrigger);\n\n// True when the user has asked the OS to minimise animation. Safe to call\n// during render - returns false on the server.\nfunction prefersReducedMotion() {\n if (typeof window === 'undefined') return false;\n return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;\n}\n\n// Load SVG as image and render to canvas for proper texture\n/**\n * @param {string} src\n * @param {number} size\n * @returns {Promise<HTMLCanvasElement>}\n */\nconst loadSvgAsCanvas = (src, size) => {\n return new Promise((resolve, reject) => {\n const img = new Image();\n img.crossOrigin ='anonymous';\n\n img.onload = () => {\n const canvas = document.createElement('canvas');\n canvas.width = size;\n canvas.height = size;\n const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));\n\n // Keep transparent background - grid is drawn in shader\n ctx.clearRect(0, 0, size, size);\n\n // Draw the SVG image\n ctx.drawImage(img, 0, 0, size, size);\n\n resolve(canvas);\n };\n\n img.onerror = reject;\n img.src = src;\n });\n};\n\n/**\n * @typedef {Object} PixelScrollCanvasProps\n * @property {import('react').RefObject<HTMLElement|null>} wrapperRef\n */\n\n/** @param {PixelScrollCanvasProps} props */\nexport default function PixelScrollCanvas({ wrapperRef }) {\n const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));\n const hasInit = useRef(false);\n\n useEffect(() => {\n const container = containerRef.current;\n const wrapper = wrapperRef?.current;\n if (!container || !wrapper) return;\n if (hasInit.current) return;\n hasInit.current = true;\n\n /** @type {any} */\n let renderer;\n /** @type {any} */\n let scene;\n /** @type {any} */\n let camera;\n /** @type {any} */\n let mesh;\n /** @type {any} */\n let material;\n /** @type {THREE.CanvasTexture[]} */\n let textures = [];\n let isMounted = true;\n /** @type {ReturnType<typeof createSuspendedRaf>|null} */\n let loop = null;\n\n const getCanvasSize = () => {\n if (typeof window === 'undefined') return 599;\n if (window.innerWidth < 640) return 320;\n if (window.innerWidth < 768) return 420;\n return 599;\n };\n\n const canvasSize = getCanvasSize();\n const numSlices = 32;\n const reducedMotion = prefersReducedMotion();\n /** @param {THREE.CanvasTexture[]} canvasTextures */\n const init = (canvasTextures) => {\n if (!isMounted || !container) return;\n\n textures = canvasTextures;\n\n renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });\n renderer.setSize(canvasSize, canvasSize);\n renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));\n renderer.setClearColor(0x000000, 0); // Transparent background\n\n container.innerHTML ='';\n container.appendChild(renderer.domElement);\n\n scene = new THREE.Scene();\n\n camera = new THREE.OrthographicCamera(\n -canvasSize / 2, canvasSize / 2,\n canvasSize / 2, -canvasSize / 2,\n -1, 1\n );\n\n const geometry = new THREE.PlaneGeometry(canvasSize, canvasSize);\n\n material = new THREE.ShaderMaterial({\n uniforms: {\n u_texture1: { value: textures[0] },\n u_texture2: { value: textures[1] || textures[0] },\n u_progress: { value: 0 },\n u_numSlices: { value: numSlices },\n u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },\n u_gridSize: { value: 16.0 }, // Grid cell size in pixels\n u_reducedMotion: { value: reducedMotion ? 1 : 0 },\n },\n vertexShader: PixelTransitionVertex,\n fragmentShader: PixelTransitionFragment,\n transparent: true,\n });\n\n mesh = new THREE.Mesh(geometry, material);\n scene.add(mesh);\n\n // Each section is 100vh, canvas is canvasSize pixels\n // Transition happens when section border passes through canvas\n // Border enters at bottom of canvas, exits at top\n\n const numSections = imageSources.length;\n const viewportHeight = window.innerHeight;\n const sectionHeight = viewportHeight; // 100vh per section\n\n ScrollTrigger.create({\n trigger: wrapper,\n start:'top top',\n end:'bottom bottom',\n scrub: true,\n onUpdate: (self) => {\n // Use the actual rendered canvas position so transitions stay aligned\n // even when breakpoint styles shift the canvas up or down.\n const canvasRect = container.getBoundingClientRect();\n const canvasTop = canvasRect.top;\n const canvasBottom = canvasRect.bottom;\n const canvasHeight = canvasRect.height || canvasSize;\n\n // Current scroll position within wrapper (in pixels)\n const wrapperHeight = wrapper.offsetHeight;\n const scrolled = self.progress * (wrapperHeight - viewportHeight);\n\n // For each section border (at section * sectionHeight from wrapper top):\n // The border is at position (sectionIndex * sectionHeight - scrolled) from viewport top\n // Transition starts when border reaches canvasBottom\n // Transition ends when border reaches canvasTop\n\n let currentTransition = 0;\n let transitionProgress = 0;\n\n for (let i = 1; i < numSections; i++) {\n // Border position relative to viewport top\n const borderPos = i * sectionHeight - scrolled;\n\n // Check if this border is currently passing through the canvas\n if (borderPos <= canvasBottom && borderPos >= canvasTop) {\n currentTransition = i - 1;\n // Progress: 0 when border at canvasBottom, 1 when border at canvasTop\n transitionProgress = (canvasBottom - borderPos) / canvasHeight;\n break;\n } else if (borderPos < canvasTop) {\n // Border has passed above canvas, this transition is complete\n currentTransition = i - 1;\n transitionProgress = 1;\n }\n }\n\n // Clamp values\n currentTransition = Math.max(0, Math.min(currentTransition, textures.length - 2));\n transitionProgress = Math.max(0, Math.min(1, transitionProgress));\n\n // Determine which textures to show\n const fromIndex = currentTransition;\n const toIndex = Math.min(currentTransition + 1, textures.length - 1);\n\n // If transition is complete, show the\"to\" texture as the base\n if (transitionProgress >= 1) {\n material.uniforms.u_texture1.value = textures[toIndex];\n material.uniforms.u_texture2.value = textures[Math.min(toIndex + 1, textures.length - 1)];\n material.uniforms.u_progress.value = 0;\n } else {\n material.uniforms.u_texture1.value = textures[fromIndex];\n material.uniforms.u_texture2.value = textures[toIndex];\n material.uniforms.u_progress.value = transitionProgress;\n }\n },\n });\n\n const loopInstance = createSuspendedRaf({\n root: container,\n onFrame: () => {\n if (!isMounted) return;\n renderer.render(scene, camera);\n },\n });\n loop = loopInstance;\n loop.start();\n };\n\n // Load all SVGs as canvases, then create textures\n const loadAllImages = async () => {\n try {\n const canvases = await Promise.all(\n imageSources.map(src => loadSvgAsCanvas(src, canvasSize))\n );\n\n const canvasTextures = canvases.map(canvas => {\n const texture = new THREE.CanvasTexture(canvas);\n texture.needsUpdate = true;\n texture.minFilter = THREE.NearestFilter;\n texture.magFilter = THREE.NearestFilter;\n return texture;\n });\n\n init(canvasTextures);\n } catch (error) {\n console.error('Error loading images:', error);\n }\n };\n\n loadAllImages();\n\n return () => {\n isMounted = false;\n hasInit.current = false;\n if (loop) {\n loop.destroy();\n loop = null;\n }\n//  ScrollTrigger.getAll().forEach(t => t.kill());\n if (renderer) {\n renderer.dispose();\n renderer.forceContextLoss();\n }\n textures.forEach(t => t?.dispose());\n if (container) {\n container.innerHTML ='';\n }\n };\n }, [wrapperRef]);\n\n return (\n <div\n ref={containerRef}\n className=\"h-[599px] w-[599px] max-[1025px]:h-[420px] max-[1025px]:w-[420px] max-md:h-[320px] max-md:w-[320px] max-md:-translate-y-20 border-r border-t border-black/20\"\n />\n );\n}\n"
+      "content": "'use client';\n\nimport { useEffect, useRef } from'react';\nimport * as THREE from'three';\nimport gsap from'gsap';\nimport { ScrollTrigger } from'gsap/ScrollTrigger';\nimport { PixelTransitionFragment, PixelTransitionVertex } from './pixel-transition';\nimport { imageSources } from './content';\nimport { createSuspendedRaf } from './createSuspendedRaf';\n\ngsap.registerPlugin(ScrollTrigger);\n\n// True when the user has asked the OS to minimise animation. Safe to call\n// during render - returns false on the server.\nfunction prefersReducedMotion() {\n if (typeof window === 'undefined') return false;\n return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;\n}\n\n// Load SVG as image and render to canvas for proper texture\nconst loadSvgAsCanvas = (src, size) => {\n return new Promise((resolve, reject) => {\n const img = new Image();\n img.crossOrigin ='anonymous';\n\n img.onload = () => {\n const canvas = document.createElement('canvas');\n canvas.width = size;\n canvas.height = size;\n const ctx = canvas.getContext('2d');\n\n // Keep transparent background - grid is drawn in shader\n ctx.clearRect(0, 0, size, size);\n\n // Draw the SVG image\n ctx.drawImage(img, 0, 0, size, size);\n\n resolve(canvas);\n };\n\n img.onerror = reject;\n img.src = src;\n });\n};\n\nexport default function PixelScrollCanvas({ wrapperRef, gridSize = 16, numSlices = 32, canvasSize: canvasSizeProp = 599 }) {\n const containerRef = useRef(null);\n const hasInit = useRef(false);\n\n useEffect(() => {\n const container = containerRef.current;\n const wrapper = wrapperRef?.current;\n if (!container || !wrapper) return;\n if (hasInit.current) return;\n hasInit.current = true;\n\n let renderer, scene, camera, mesh, material;\n let textures = [];\n let isMounted = true;\n let loop = null;\n\n const getCanvasSize = () => {\n if (typeof window === 'undefined') return canvasSizeProp;\n const ratio = canvasSizeProp / 599;\n if (window.innerWidth < 640) return Math.round(320 * ratio);\n if (window.innerWidth < 768) return Math.round(420 * ratio);\n return canvasSizeProp;\n };\n\n const canvasSize = getCanvasSize();\n const reducedMotion = prefersReducedMotion();\n const init = (canvasTextures) => {\n if (!isMounted || !container) return;\n\n textures = canvasTextures;\n\n container.style.width = `${canvasSize}px`;\n container.style.height = `${canvasSize}px`;\n\n renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });\n renderer.setSize(canvasSize, canvasSize);\n renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));\n renderer.setClearColor(0x000000, 0); // Transparent background\n\n container.innerHTML ='';\n container.appendChild(renderer.domElement);\n\n scene = new THREE.Scene();\n\n camera = new THREE.OrthographicCamera(\n -canvasSize / 2, canvasSize / 2,\n canvasSize / 2, -canvasSize / 2,\n -1, 1\n );\n\n const geometry = new THREE.PlaneGeometry(canvasSize, canvasSize);\n\n material = new THREE.ShaderMaterial({\n uniforms: {\n u_texture1: { value: textures[0] },\n u_texture2: { value: textures[1] || textures[0] },\n u_progress: { value: 0 },\n u_numSlices: { value: numSlices },\n u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },\n u_gridSize: { value: gridSize }, // Grid cell size in pixels\n u_reducedMotion: { value: reducedMotion ? 1 : 0 },\n },\n vertexShader: PixelTransitionVertex,\n fragmentShader: PixelTransitionFragment,\n transparent: true,\n });\n\n mesh = new THREE.Mesh(geometry, material);\n scene.add(mesh);\n\n // Each section is 100vh, canvas is canvasSize pixels\n // Transition happens when section border passes through canvas\n // Border enters at bottom of canvas, exits at top\n\n const numSections = imageSources.length;\n const viewportHeight = window.innerHeight;\n const sectionHeight = viewportHeight; // 100vh per section\n\n ScrollTrigger.create({\n trigger: wrapper,\n start:'top top',\n end:'bottom bottom',\n scrub: true,\n onUpdate: (self) => {\n // Use the actual rendered canvas position so transitions stay aligned\n // even when breakpoint styles shift the canvas up or down.\n const canvasRect = container.getBoundingClientRect();\n const canvasTop = canvasRect.top;\n const canvasBottom = canvasRect.bottom;\n const canvasHeight = canvasRect.height || canvasSize;\n\n // Current scroll position within wrapper (in pixels)\n const wrapperHeight = wrapper.offsetHeight;\n const scrolled = self.progress * (wrapperHeight - viewportHeight);\n\n // For each section border (at section * sectionHeight from wrapper top):\n // The border is at position (sectionIndex * sectionHeight - scrolled) from viewport top\n // Transition starts when border reaches canvasBottom\n // Transition ends when border reaches canvasTop\n\n let currentTransition = 0;\n let transitionProgress = 0;\n\n for (let i = 1; i < numSections; i++) {\n // Border position relative to viewport top\n const borderPos = i * sectionHeight - scrolled;\n\n // Check if this border is currently passing through the canvas\n if (borderPos <= canvasBottom && borderPos >= canvasTop) {\n currentTransition = i - 1;\n // Progress: 0 when border at canvasBottom, 1 when border at canvasTop\n transitionProgress = (canvasBottom - borderPos) / canvasHeight;\n break;\n } else if (borderPos < canvasTop) {\n // Border has passed above canvas, this transition is complete\n currentTransition = i - 1;\n transitionProgress = 1;\n }\n }\n\n // Clamp values\n currentTransition = Math.max(0, Math.min(currentTransition, textures.length - 2));\n transitionProgress = Math.max(0, Math.min(1, transitionProgress));\n\n // Determine which textures to show\n const fromIndex = currentTransition;\n const toIndex = Math.min(currentTransition + 1, textures.length - 1);\n\n // If transition is complete, show the\"to\" texture as the base\n if (transitionProgress >= 1) {\n material.uniforms.u_texture1.value = textures[toIndex];\n material.uniforms.u_texture2.value = textures[Math.min(toIndex + 1, textures.length - 1)];\n material.uniforms.u_progress.value = 0;\n } else {\n material.uniforms.u_texture1.value = textures[fromIndex];\n material.uniforms.u_texture2.value = textures[toIndex];\n material.uniforms.u_progress.value = transitionProgress;\n }\n },\n });\n\n const loopInstance = createSuspendedRaf({\n root: container,\n onFrame: () => {\n if (!isMounted) return;\n renderer.render(scene, camera);\n },\n });\n loop = loopInstance;\n loop.start();\n };\n\n // Load all SVGs as canvases, then create textures\n const loadAllImages = async () => {\n try {\n const canvases = await Promise.all(\n imageSources.map(src => loadSvgAsCanvas(src, canvasSize))\n );\n\n const canvasTextures = canvases.map(canvas => {\n const texture = new THREE.CanvasTexture(canvas);\n texture.needsUpdate = true;\n texture.minFilter = THREE.NearestFilter;\n texture.magFilter = THREE.NearestFilter;\n return texture;\n });\n\n init(canvasTextures);\n } catch (error) {\n console.error('Error loading images:', error);\n }\n };\n\n loadAllImages();\n\n return () => {\n isMounted = false;\n hasInit.current = false;\n if (loop) {\n loop.destroy();\n loop = null;\n }\n ScrollTrigger.getAll().forEach(t => t.kill());\n if (renderer) {\n renderer.dispose();\n renderer.forceContextLoss();\n }\n textures.forEach(t => t?.dispose());\n if (container) {\n container.innerHTML ='';\n }\n };\n }, [wrapperRef, gridSize, numSlices, canvasSizeProp]);\n\n return (\n <div\n ref={containerRef}\n className=\"max-md:-translate-y-20 border-r border-t border-black/20\"\n />\n );\n}\n"
     },
     {
       "path": "content.js",

@@ -12,8 +12,8 @@
   "changelog": [
     {
       "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion spotlight tracking.",
+      "date": "2026-07-30",
+      "summary": "Removed text and width-style content controls and added working base color, spotlight color, lerp, spotlight size, and smoothness controls.",
       "breaking": false
     },
     {
@@ -25,56 +25,73 @@
   ],
   "props": [
     {
-      "name": "text",
+      "name": "baseTextColor",
       "type": "string",
-      "default": "Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
-      "description": "Text shown under the spotlight.",
+      "default": "#525252",
+      "description": "Dim base text color.",
       "remixer": {
-        "control": "textarea",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
-      "name": "size",
-      "type": "string",
-      "default": "text-3xl",
-      "description": "Text size class.",
-      "remixer": {
-        "control": "text",
+        "control": "color",
         "group": "style",
         "groupTitle": "Style"
       }
     },
     {
-      "name": "align",
+      "name": "spotlightColor",
       "type": "string",
-      "default": "center",
-      "description": "Text alignment.",
+      "default": "#ffffff",
+      "description": "Text color inside the spotlight.",
       "remixer": {
-        "control": "select",
+        "control": "color",
         "group": "style",
-        "groupTitle": "Style",
-        "options": [
-          {
-            "value": "left",
-            "label": "Left"
-          },
-          {
-            "value": "center",
-            "label": "Center"
-          },
-          {
-            "value": "right",
-            "label": "Right"
-          }
-        ]
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": 0.08,
+      "description": "Pointer-follow smoothing amount; higher values track faster.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "spotlightSize",
+      "type": "number",
+      "default": 220,
+      "description": "Spotlight radius in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 60,
+        "max": 500,
+        "step": 5
+      }
+    },
+    {
+      "name": "smoothness",
+      "type": "number",
+      "default": 0.12,
+      "description": "Spotlight opacity smoothing amount.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

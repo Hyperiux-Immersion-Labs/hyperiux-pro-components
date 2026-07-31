@@ -14,8 +14,8 @@
   "changelog": [
     {
       "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion slide reveal.",
+      "date": "2026-07-30",
+      "summary": "Removed start/end controls, added duration, speed, stagger, and a left-slide variant. The reveal now plays normally on replay instead of being scrubbed by default.",
       "breaking": false
     },
     {
@@ -41,7 +41,7 @@
       "name": "delay",
       "type": "number",
       "default": 0,
-      "description": "Animation delay.",
+      "description": "Animation delay in seconds.",
       "remixer": {
         "control": "range",
         "group": "timing",
@@ -52,31 +52,72 @@
       }
     },
     {
-      "name": "start",
-      "type": "string",
-      "default": "top 80%",
-      "description": "ScrollTrigger start position.",
+      "name": "duration",
+      "type": "number",
+      "default": 0.5,
+      "description": "Character reveal duration in seconds.",
       "remixer": {
-        "control": "text",
-        "group": "scroll",
-        "groupTitle": "Scroll"
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 3,
+        "step": 0.05
       }
     },
     {
-      "name": "end",
-      "type": "string",
-      "default": "bottom 60%",
-      "description": "ScrollTrigger end position.",
+      "name": "speed",
+      "type": "number",
+      "default": 20,
+      "description": "Starting horizontal offset in pixels.",
       "remixer": {
-        "control": "text",
-        "group": "scroll",
-        "groupTitle": "Scroll"
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 120,
+        "step": 1
+      }
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.03,
+      "description": "Delay between revealed characters.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.005
+      }
+    },
+    {
+      "name": "variant",
+      "type": "string",
+      "default": "right",
+      "description": "Slide direction.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "value": "right",
+            "label": "From right"
+          },
+          {
+            "value": "left",
+            "label": "From left"
+          }
+        ]
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "behavior",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

@@ -10,12 +10,18 @@
   "exportName": "ScrambleText",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "changelog": [
     {
+      "version": "1.1.1",
+      "date": "2026-07-30",
+      "summary": "Changed the default text color to black and adjusted the scroll trigger start so the built-in heading is visible and animates in the remixer.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion scramble playback.",
+      "date": "2026-07-30",
+      "summary": "Removed text from the remixer API and added working vw text size, text color, duration, and stagger controls.",
       "breaking": false
     },
     {
@@ -27,21 +33,10 @@
   ],
   "props": [
     {
-      "name": "text",
-      "type": "string",
-      "default": "Every frame is deliberate.",
-      "description": "Text revealed by the scramble effect.",
-      "remixer": {
-        "control": "text",
-        "group": "content",
-        "groupTitle": "Content"
-      }
-    },
-    {
       "name": "speed",
       "type": "number",
       "default": 0.6,
-      "description": "Scramble playback speed.",
+      "description": "Scramble character cycling speed.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -70,30 +65,37 @@
             "label": "Uppercase"
           },
           {
-            "value": "mixed",
+            "value": "upperAndLowerCase",
             "label": "Mixed"
+          },
+          {
+            "value": "0123456789",
+            "label": "Numbers"
           }
         ]
       }
     },
     {
       "name": "textSize",
-      "type": "string",
-      "default": "text-base",
-      "description": "Text size class.",
+      "type": "number",
+      "default": 5,
+      "description": "Text size in vw.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 2,
+        "max": 12,
+        "step": 0.1
       }
     },
     {
       "name": "textColor",
       "type": "string",
-      "default": "text-white",
-      "description": "Text color class.",
+      "default": "#111111",
+      "description": "Text color.",
       "remixer": {
-        "control": "text",
+        "control": "color",
         "group": "style",
         "groupTitle": "Style"
       }
@@ -118,11 +120,39 @@
           }
         ]
       }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.7,
+      "description": "Scramble reveal duration in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.04,
+      "description": "Delay between scrambled characters.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.005
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

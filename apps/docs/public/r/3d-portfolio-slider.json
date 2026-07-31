@@ -29,94 +29,55 @@
   ],
   "props": [
     {
-      "name": "projects",
-      "type": "array",
-      "default": [],
-      "description": "Portfolio projects rendered in the slider.",
-      "suggested": true
-    },
-    {
-      "name": "radius",
+      "name": "zoomFactor",
       "type": "number",
-      "default": 420,
-      "description": "Radius of the 3D project layout.",
-      "suggested": true
+      "default": 1,
+      "description": "Multiplier on the shader zoom applied to planes as they swing away from center.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
     },
     {
-      "name": "depth",
+      "name": "scrollSpeed",
       "type": "number",
-      "default": 900,
-      "description": "Scene perspective depth.",
-      "suggested": true
+      "default": 0.01,
+      "description": "How fast wheel/scroll input moves the carousel.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.002,
+        "max": 0.03,
+        "step": 0.001
+      }
     },
     {
-      "name": "autoRotate",
+      "name": "showCaption",
       "type": "boolean",
-      "default": false,
-      "description": "Enables automatic rotation.",
-      "suggested": true
-    },
-    {
-      "name": "backgroundColor",
-      "type": "string",
-      "default": "#000000",
-      "description": "Scene background color.",
-      "suggested": true
+      "default": true,
+      "description": "Shows the project caption text overlay.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     }
   ],
   "remixer": {
     "enabled": true,
-    "suggested": true,
-    "defaultOpenGroupId": "content",
+    "defaultOpenGroupId": "motion",
     "layout": {
-      "controlsButtonClassName": "right-4! top-25!"
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "panel": {
-      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-    },
-    "controls": [
-      {
-        "name": "projects",
-        "label": "Projects",
-        "type": "json",
-        "group": "content",
-        "copyable": true
-      },
-      {
-        "name": "radius",
-        "label": "Radius",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 1680,
-        "step": 1
-      },
-      {
-        "name": "depth",
-        "label": "Depth",
-        "type": "range",
-        "group": "controls",
-        "copyable": true,
-        "min": 0,
-        "max": 2700,
-        "step": 0.1
-      },
-      {
-        "name": "autoRotate",
-        "label": "Auto Rotate",
-        "type": "toggle",
-        "group": "controls",
-        "copyable": true
-      },
-      {
-        "name": "backgroundColor",
-        "label": "Background Color",
-        "type": "color",
-        "group": "style",
-        "copyable": true
-      }
-    ]
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {
