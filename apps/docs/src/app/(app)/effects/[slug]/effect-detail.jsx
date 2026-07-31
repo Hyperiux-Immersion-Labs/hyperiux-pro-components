@@ -572,6 +572,7 @@ export function EffectDetailContent({
                   content={safeContent}
                   isLocked={isLocked}
                   effectProps={effect?.props}
+                  changelog={safeEffect.changelog}
                 />
               </div>
 
@@ -719,7 +720,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false, effectProps },
+  { content, isLocked = false, effectProps, changelog = [] },
   ref
 ) {
   if (!content) return null;
@@ -733,6 +734,7 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
         body={content.body}
         isLocked={isLocked}
         effectProps={effectProps}
+        changelog={changelog}
       />
     </div>
   );
@@ -782,7 +784,94 @@ function EffectCtaSection({ cta, sectionRef }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false, effectProps }) {
+function formatChangelogDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function EffectChangelogSection({ changelog = [] }) {
+  if (!changelog?.length) return null;
+
+  return (
+    <section className={`fadeup ${styles.faqAccordion}`}>
+      <h2 className={styles.changelogTitle}>Changelog</h2>
+
+      <FAQGroup
+        allowMultiple={false}
+        defaultOpenItems={changelog[0]?.version ? [changelog[0].version] : []}
+      >
+        <div className={styles.changelogTimeline}>
+          {changelog.map((entry, index) => {
+            const itemId = entry.version || `changelog-${index}`;
+
+            return (
+              <div key={itemId} className={styles.changelogTimelineItem}>
+                <div
+                  className={styles.changelogTimelineMarker}
+                  aria-hidden="true"
+                >
+                  <span className={styles.changelogTimelineDot} />
+                </div>
+
+                <FAQWrapper
+                  itemId={itemId}
+                  className={`${styles.faqAccordionItem} ${styles.changelogTimelineCard}`}
+                  titleClassName={styles.faqAccordionQuestion}
+                  iconClassName={styles.faqAccordionIcon}
+                  iconSize={18}
+                  iconStrokeWidth={1.8}
+                >
+                  <FAQTitle
+                    className={styles.changelogTrigger}
+                    iconPosition="right"
+                  >
+                    <div className={styles.changelogRow}>
+                      <h3 className={styles.changelogVersion}>
+                        v{entry.version}
+                      </h3>
+                      {entry.date && (
+                        <span className={styles.changelogDate}>
+                          {formatChangelogDate(entry.date)}
+                        </span>
+                      )}
+                      {entry.breaking && (
+                        <span className={styles.changelogBreaking}>
+                          Breaking
+                        </span>
+                      )}
+                    </div>
+                  </FAQTitle>
+
+                  {entry.summary && (
+                    <FAQContent className={styles.changelogSummary}>
+                      {entry.summary}
+                    </FAQContent>
+                  )}
+                </FAQWrapper>
+              </div>
+            );
+          })}
+        </div>
+      </FAQGroup>
+    </section>
+  );
+}
+
+function SanityBodyRenderer({
+  body = [],
+  isLocked = false,
+  effectProps,
+  changelog = [],
+}) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
@@ -790,14 +879,25 @@ function SanityBodyRenderer({ body = [], isLocked = false, effectProps }) {
   const hasFaqBlock = groupedBlocks.some(
     (block) => block._type === "effectFaqAccordion"
   );
+  const firstFaqIndex = groupedBlocks.findIndex(
+    (block) => block?._type === "effectFaqAccordion"
+  );
+  const shouldRenderChangelog = changelog?.length > 0;
 
   return (
     <div className="space-y-6">
+      {shouldRenderChangelog && firstFaqIndex === -1 && (
+        <EffectChangelogSection changelog={changelog} />
+      )}
+
       {groupedBlocks.map((block, index) => {
         const key = block._key || block._groupKey || `${block._type}-${index}`;
 
         return (
           <Fragment key={key}>
+            {shouldRenderChangelog && index === firstFaqIndex && (
+              <EffectChangelogSection changelog={changelog} />
+            )}
             {showPropsTable && block._type === "effectFaqAccordion" && (
               <EffectPropsTable props={effectProps} />
             )}
