@@ -11,7 +11,7 @@ const page = () => {
       <ButterflyTrailCursor />
       <div className="pointer-events-none absolute left-1/2 top-1/2  -translate-x-1/2 -translate-y-1/2 text-center ">
         <h1 className="font-serif text-4xl text-zinc-600">
-          ʚଓ Unseen Butterflies ʚଓ
+          ʚଓ Butterfly Trail ʚଓ
         </h1>
         <p className="mt-4 font-serif max-md:hidden text-md italic tracking-wide text-zinc-500">
           Stir the air with your cursor - the butterflies will follow.

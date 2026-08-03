@@ -68,7 +68,7 @@ const MaskTextWrapper = () => {
       {notes.map((note, index) => (
         <span
           key={note}
-          className="border border-black bg-[#f8f2df] px-4 py-2 text-sm font-black uppercase shadow-[5px_5px_0_#111111] max-md:px-3.5 max-md:py-1.5 max-md:text-[0.75rem] max-sm:px-3 max-sm:py-1.5 max-sm:text-[0.62rem]"
+          className="border border-black w-[17vw] bg-[#f8f2df] px-4 py-2 text-sm font-black uppercase shadow-[5px_5px_0_#111111] max-md:px-3.5 max-md:py-1.5 max-md:text-[0.75rem] max-sm:px-3 max-sm:py-1.5 max-sm:text-[0.62rem]"
           style={{
             transform: `rotate(${[-2, 1.5, -1, 2][index]}deg)`,
             backgroundColor: ["#f8f2df", "#d7ff48", "#ff6b4a", "#7dd3fc"][index],

@@ -83,7 +83,7 @@ const PerspectiveTextWrapper = () => {
                   />
                   <div className="absolute inset-0 bg-[#07090d]/25" />
                 </div>
-                <div className="absolute bottom-0 left-0 max-w-sm border-l border-[#b9e6ff] bg-[#07090d]/80 p-6 backdrop-blur max-sm:max-w-[78%] max-sm:p-4">
+                <div className="absolute bottom-0 left-0 max-w-sm w-[30vw] border-l border-[#b9e6ff] bg-[#07090d]/80 p-6 backdrop-blur max-sm:max-w-[78%] max-sm:p-4">
                 <PerspectiveTextReveal key={`hero-copy-${replayKey}`} scrub={false}>
 
                   <p className="text-lg font-semibold leading-8 text-white/76 max-sm:text-sm max-sm:leading-6">

@@ -27,7 +27,23 @@ const EXCLUDED_PATHS = new Set([
   "/demo/svg-brush-transition",
   "/demo/svg-brush-transition/page2",
   "/demo/lines-loader",
-  "/demo/number-counter"
+  // Text animation demos - excluded as a category.
+  "/demo/blur-text",
+  // "/demo/circle-text-reveal",
+  // "/demo/glitchy-text",
+  "/demo/mask-text-reveal",
+  "/demo/number-counter",
+  "/demo/overflow-stagger-text",
+  "/demo/overflow-text-reveal",
+  "/demo/perspective-text-reveal",
+  "/demo/rectangular-text-reveal",
+  "/demo/scramble-text",
+  "/demo/slide-text-reveal",
+  "/demo/spotlight-text",
+  "/demo/text-cloning",
+  // "/demo/text-fill-animation",
+  "/demo/text-hover",
+  "/demo/text-stream"
 ]);
 
 function formatLabel(pathname) {

@@ -24,7 +24,7 @@ const OverflowTextRevealWrapper = () => {
       <ScrollBottom textColor="#ffffff" />
 
       {/* SECTION 1 - direction: bottom (default) */}
-      <section className="relative min-h-screen flex flex-col justify-end max-md:justify-center max-md:px-5 overflow-hidden bg-[#0a0a0a]">
+      <section className="relative h-screen flex flex-col pt-[20vh] max-md:pt-[45vh] max-sm:pt-[4vh] max-md:justify-center max-md:px-5 overflow-hidden bg-[#0a0a0a]">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"
           alt="Nature"
@@ -34,14 +34,18 @@ const OverflowTextRevealWrapper = () => {
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
 
-        <div className="relative z-10 px-2 max-md:pt-[45vh] max-sm:pt-[4vh] max-w-6xl mx-auto w-full">
+        <div className="relative z-10 px-2  max-w-6xl mx-auto w-full">
+          <SplitLine>
+
           <button
             type="button"
             onClick={() => setReplayKey((k) => k + 1)}
-            className="mb-6 w-fit border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white/60 backdrop-blur"
+            className=" w-fit border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white/60 backdrop-blur"
           >
             Replay animation
           </button>
+          </SplitLine>
+
 
           <SplitLine>
             <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-sm:text-sm">
@@ -54,7 +58,7 @@ const OverflowTextRevealWrapper = () => {
             </h1>
           </OverflowTextReveal>
           <OverflowTextReveal direction="bottom" scrub={false} delay={0.1}>
-            <p className="max-w-lg py-8 text-xl max-md:text-2xl leading-relaxed font-light text-white/50 max-sm:text-base">
+            <p className="max-w-xl py-8 text-xl max-md:text-2xl leading-relaxed text-white/50 max-sm:text-base">
               The default variant. Each character slides upward out of its clipping mask,
               rotating into place with a subtle tilt as you scroll.
             </p>
