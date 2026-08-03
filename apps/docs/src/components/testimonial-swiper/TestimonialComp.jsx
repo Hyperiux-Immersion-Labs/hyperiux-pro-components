@@ -264,7 +264,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                     <div className="flex flex-col pl-13 w-[95%] max-md:pl-0 max-md:w-full max-sm:pl-0 max-sm:w-full">
                         <blockquote
                             ref={quoteRef}
-                            className="m-0 mb-10 p-0 text-[4vw] max-sm:min-h-0 max-md:min-h-[30vh] leading-[1.2] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7vw] max-sm:mb-4"
+                            className="m-0 mb-10 p-0 text-[3.5vw] max-sm:min-h-0 max-md:min-h-[30vh] leading-[1.2] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7vw] max-sm:mb-4"
                         >
                             {displayItem.quote}
                         </blockquote>

@@ -8,7 +8,7 @@ export default function NavigationButtons({ onPrev, onNext, isAnimating }) {
                 aria-label="Previous testimonial"
                 onClick={onPrev}
                 disabled={isAnimating}
-                className="w-11 h-11 relative flex items-center group justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-default disabled:pointer-events-none disabled:opacity-30 overflow-hidden"
+                className="w-11 h-11 relative flex items-center group justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30 overflow-hidden"
             >
                 
                 <ArrowLeft
@@ -22,7 +22,7 @@ export default function NavigationButtons({ onPrev, onNext, isAnimating }) {
                 aria-label="Next testimonial"
                 onClick={onNext}
                 disabled={isAnimating}
-                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-default disabled:pointer-events-none disabled:opacity-30"
+                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
             >
                
                 <ArrowRight
