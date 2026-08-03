@@ -128,7 +128,7 @@ export function VerificationCodeEmail({ otpCode, requestedFrom, requestedAt }) {
                               fontSize: "32px",
                               fontWeight: 600,
                               letterSpacing: "0.15em",
-                              color: "#E61915",
+                              color: "#111111",
                             }}
                           >
                             {otpCode}

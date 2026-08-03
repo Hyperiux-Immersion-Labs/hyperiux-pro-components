@@ -8,20 +8,35 @@ import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 const EMAIL_TYPES = [
   "all",
   "welcome",
-  "waitlist_invite",
-  "pro_onboarding",
-  "subscription_invoice",
-  "subscription_renewal",
-  "subscription_cancelled",
-  "payment_failed",
-  "custom_animation_request",
-  "verification_code",
   "reset_password_code",
   "password_changed",
+  "password_reset_otp",
+  "pro_unlocked",
+  "waitlist_invite",
+  "subscription_invoice",
+  "custom_animation_request",
+  "custom_animation_request_confirmation",
+  "work_with_hyperiux",
+  "work_with_hyperiux_confirmation",
+  "verification_code",
   "password_removed",
   "primary_email_address_changed",
   "account_locked",
   "new_device_sign_in",
+];
+
+const TEST_SEND_TYPES = [
+  { type: "welcome", label: "Welcome" },
+  { type: "reset_password_code", label: "Reset password code" },
+  { type: "password_changed", label: "Password changed" },
+  { type: "password_reset_otp", label: "Password reset OTP" },
+  { type: "pro_unlocked", label: "Pro unlocked" },
+  { type: "waitlist_invite", label: "Waitlist invite" },
+  { type: "subscription_invoice", label: "Subscription invoice" },
+  { type: "custom_animation_request", label: "Animation request (team)" },
+  { type: "custom_animation_request_confirmation", label: "Animation request (confirmation)" },
+  { type: "work_with_hyperiux", label: "Work enquiry (team)" },
+  { type: "work_with_hyperiux_confirmation", label: "Work enquiry (confirmation)" },
 ];
 
 function formatDate(value) {
@@ -79,16 +94,17 @@ function InvitationStatusBadge({ invitationStatus }) {
 function TypeLabel({ type }) {
   const labels = {
     welcome: "Welcome",
-    waitlist_invite: "Waitlist Invite",
-    pro_onboarding: "Pro Onboarding",
-    subscription_invoice: "Invoice",
-    subscription_renewal: "Renewal",
-    subscription_cancelled: "Cancelled",
-    payment_failed: "Payment Failed",
-    custom_animation_request: "Animation Request",
-    verification_code: "Verification Code",
     reset_password_code: "Reset Password Code",
     password_changed: "Password Changed",
+    password_reset_otp: "Password Reset OTP",
+    pro_unlocked: "Pro Unlocked",
+    waitlist_invite: "Waitlist Invite",
+    subscription_invoice: "Invoice",
+    custom_animation_request: "Animation Request",
+    custom_animation_request_confirmation: "Animation Request Confirmation",
+    work_with_hyperiux: "Work Enquiry",
+    work_with_hyperiux_confirmation: "Work Enquiry Confirmation",
+    verification_code: "Verification Code",
     password_removed: "Password Removed",
     primary_email_address_changed: "Primary Email Changed",
     account_locked: "Account Locked",
@@ -206,6 +222,8 @@ export default function AdminEmailsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [previewId, setPreviewId] = useState(null);
   const [error, setError] = useState(null);
+  const [sendingType, setSendingType] = useState(null);
+  const [testSendResult, setTestSendResult] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const fetchEmails = useCallback(async () => {
@@ -232,6 +250,26 @@ export default function AdminEmailsPage() {
 
   useEffect(() => {
     fetchEmails();
+  }, [fetchEmails]);
+
+  const sendTestEmail = useCallback(async (type) => {
+    setSendingType(type);
+    setTestSendResult(null);
+    try {
+      const res = await fetch("/api/admin/emails/test-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to send test email");
+      setTestSendResult({ type, status: "success", message: `Sent to ${json.sentTo}` });
+      fetchEmails();
+    } catch (err) {
+      setTestSendResult({ type, status: "error", message: err.message });
+    } finally {
+      setSendingType(null);
+    }
   }, [fetchEmails]);
 
   useEffect(() => {
@@ -267,6 +305,39 @@ export default function AdminEmailsPage() {
               {total} total · {successCount} delivered · {failedCount} failed
             </p>
           </div>
+        </div>
+
+        {/* Test send: fires each template with sample data to your own
+            signed-in admin email, so templates can be checked without
+            waiting for the real event that would normally trigger them. */}
+        <div className="rounded-lg border border-white/10 bg-white/2 p-4">
+          <p className="text-sm font-medium text-white">Send test email</p>
+          <p className="mt-0.5 text-xs text-white/45">
+            Sends a sample of each template to your own account email.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {TEST_SEND_TYPES.map(({ type, label }) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => sendTestEmail(type)}
+                disabled={sendingType !== null}
+                className="rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {sendingType === type ? "Sending…" : label}
+              </button>
+            ))}
+          </div>
+          {testSendResult && (
+            <p
+              className={`mt-3 text-xs ${
+                testSendResult.status === "success" ? "text-emerald-400" : "text-red-400"
+              }`}
+            >
+              {TEST_SEND_TYPES.find((t) => t.type === testSendResult.type)?.label}:{" "}
+              {testSendResult.message}
+            </p>
+          )}
         </div>
 
         {/* Filters */}
