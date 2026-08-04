@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { GlobalSearch } from "./SearchBar";
 import { useEffect, useState } from "react";
 import Button from "@/components/WebsiteComps/Button";
-
+ 
 // Dynamic so ProfileDropDown's Clerk imports never load on marketing routes -
 // it only renders when isSignedIn, which is always false there.
 const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
