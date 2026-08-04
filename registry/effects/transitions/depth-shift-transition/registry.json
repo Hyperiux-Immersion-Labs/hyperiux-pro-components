@@ -1,0 +1,37 @@
+{
+  "name": "depth-shift-transition",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "type": "registry:component",
+  "title": "Depth Shift Transition",
+  "description": "The outgoing page recedes and shifts down-right while the incoming page slides in diagonally from the bottom-left, layered on top",
+  "category": "transitions",
+  "dependencies": [
+    "gsap",
+    "next-transition-router"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/depth-shift-transition",
+  "coverImage": "depth-shift-transition",
+  "videoUrl": "depth-shift-transition.mp4",
+  "tier": "free",
+  "subfolder": true,
+  "main": "index.jsx",
+  "exportName": "DepthShiftTransition",
+  "exportKind": "default",
+  "importPath": "@/components/effects/depth-shift-transition",
+  "target": "src/components/effects/depth-shift-transition",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/depth-shift-transition/index.jsx"
+    }
+  ]
+}

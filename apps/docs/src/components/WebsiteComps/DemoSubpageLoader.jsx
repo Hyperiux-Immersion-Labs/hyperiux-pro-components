@@ -43,7 +43,9 @@ const EXCLUDED_PATHS = new Set([
   "/demo/text-cloning",
   // "/demo/text-fill-animation",
   "/demo/text-hover",
-  "/demo/text-stream"
+  "/demo/text-stream",
+  "/demo/depth-shift-transition/page2",
+  "/demo/depth-shift-transition"
 ]);
 
 function formatLabel(pathname) {
