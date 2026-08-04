@@ -218,6 +218,8 @@ export function VaultHeader({
            {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
               <Button
                 text="Upgrade to Pro"
+              id={"upgrade-to-pro-navbar"}
+
                 href="/pricing"
                 className="border-white/50!"
                 variant="outline2"
@@ -231,6 +233,8 @@ export function VaultHeader({
                 <div className="block max-md:hidden">
                   <Button
                     text="Browse Free Effects"
+              id={"browse-free-effects-navbar"}
+
                     href="/effects/free"
                     variant="orange"
                   />

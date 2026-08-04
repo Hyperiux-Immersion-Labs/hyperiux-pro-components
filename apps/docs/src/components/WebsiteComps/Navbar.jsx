@@ -137,6 +137,7 @@ export default function Navbar({ effects = [] }) {
                 </button>
 
                     <Button
+                    id={"upgrade-to-pro-navbar"}
                     text="Upgrade to Pro"
                     href="/sign-up"
                     className="border-white/40! bg-[#0E0E0E]!"

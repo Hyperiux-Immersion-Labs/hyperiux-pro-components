@@ -216,6 +216,7 @@ export default function Pricing({ padding, content = true }) {
                 variant="outline"
                 href="/effects/free"
                 text="Browse Free Effects"
+                id={"browse-free-effects-pricing"}
                 className=" max-md:w-full max-md:mb-0 max-sm:text-[4vw]"
               />
             </div>
@@ -300,6 +301,7 @@ export default function Pricing({ padding, content = true }) {
                 <Button
                   variant="orange"
                   text="Upgrade to Pro"
+                  id={"upgrade-to-pro-pricing"}
                   href="/sign-up"
                   className="max-md:w-full max-sm:text-[4vw]"
                 />

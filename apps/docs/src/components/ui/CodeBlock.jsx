@@ -45,6 +45,8 @@ function CopyLimitOverlay({ message, ctaHref }) {
             <p className="max-w-xs text-sm font-medium text-white">{message}</p>
             {ctaHref && (
                 <Link
+              id={"upgrade-to-pro-codeblock"}
+
                     href={ctaHref}
                     className="rounded-full bg-[#ff5f00] px-4 py-2 text-xs font-medium text-white! transition hover:bg-[#e05500]"
                 >

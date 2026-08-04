@@ -240,6 +240,7 @@ export default function Hero() {
         >
           <Button
             text="Browse Free Effects"
+            id={"browse-free-effects-hero"}
             href="/effects/free"
             variant="black"
             className="border-white/40 bg-[#0e0e0e]!"
@@ -247,6 +248,7 @@ export default function Hero() {
 
           <Button
             text="Upgrade to Pro"
+            id={"upgrade-to-pro-hero"}
             href="/sign-up"
             variant="orange"
             scrollOffset={-1000}
