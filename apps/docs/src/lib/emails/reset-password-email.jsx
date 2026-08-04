@@ -88,7 +88,7 @@ export function ResetPasswordEmail({ otpCode, requestedFrom, requestedAt }) {
 
               <Section className="px-8 pb-10 text-center mt-4">
                 <Text
-                  className="m-0 mb-2 text-[13px] font-medium tracking-[0.08em] text-[#8a8a8a] uppercase text-center"
+                  className="m-0 mb-4 text-[13px] font-medium tracking-[0.08em] text-[#8a8a8a] uppercase text-center"
                   style={{ fontFamily, textAlign: "center" }}
                 >
                   Password Reset
@@ -97,7 +97,7 @@ export function ResetPasswordEmail({ otpCode, requestedFrom, requestedAt }) {
                 <Heading
                   as="h1"
                   style={{ fontFamily, fontWeight: 400, textAlign: "center" }}
-                  className="m-0 mb-4 text-[32px] leading-[1.15] text-[#0a0a0a] text-center"
+                  className="m-0 mb-2 text-[32px] leading-[1.15] text-[#0a0a0a] text-center"
                 >
                   Reset your password
                 </Heading>
@@ -117,8 +117,8 @@ export function ResetPasswordEmail({ otpCode, requestedFrom, requestedAt }) {
                           align="center"
                           style={{
                             borderRadius: "10px",
-                            border: "1px solid #ffd7bd",
-                            backgroundColor: "#fff4ed",
+                            border: "1px solid #c4c4c4",
+                            backgroundColor: "#f2f2f2",
                             padding: "16px 32px",
                           }}
                         >
