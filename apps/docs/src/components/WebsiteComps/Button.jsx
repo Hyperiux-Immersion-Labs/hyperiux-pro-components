@@ -50,9 +50,15 @@ export default function Button({
   children,
   ariaLabel,
   scrollOffset = 0,
+  id,
 }) {
   const lenis = useLenis();
   const styles = buttonTv({ variant, className });
+
+  const label = children ?? text;
+  const autoId = !id && typeof label === "string"
+    ? label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    : undefined;
 
   const circleColorClass = variant === "outline" ? "bg-background" : (variant === "white" ? "bg-black" : "bg-white");
 
@@ -116,6 +122,7 @@ export default function Button({
 
   return (
     <Link
+      id={id ?? autoId}
       prefetch={false}
       href={href}
       onClick={handleClick}
