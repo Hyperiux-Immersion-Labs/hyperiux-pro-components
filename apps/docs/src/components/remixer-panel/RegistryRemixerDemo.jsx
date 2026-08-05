@@ -36,6 +36,24 @@ function getGroupsFromRemixerControls(controls = []) {
   return [...groupMap.values()];
 }
 
+const legacyLauncherLayoutTokens = new Set([
+  "right-4!",
+  "top-25!",
+  "right-0!",
+  "top-[132px]!",
+  "h-[calc(100%-132px)]!",
+  "w-[344px]!",
+]);
+
+function removeLegacyLauncherLayoutClasses(className) {
+  if (!className) return "";
+
+  return className
+    .split(/\s+/)
+    .filter((token) => token && !legacyLauncherLayoutTokens.has(token))
+    .join(" ");
+}
+
 export default function RegistryRemixerDemo({
   registry,
   component: Component,
@@ -78,10 +96,12 @@ export default function RegistryRemixerDemo({
           }
           onReset={resetValues}
           defaultOpenGroupId={remixerConfig.defaultOpenGroupId}
-          buttonClassName={
+          buttonClassName={removeLegacyLauncherLayoutClasses(
             layoutConfig.buttonClassName ?? layoutConfig.controlsButtonClassName
-          }
-          panelClassName={layoutConfig.panelClassName ?? panelConfig.className}
+          )}
+          panelClassName={removeLegacyLauncherLayoutClasses(
+            layoutConfig.panelClassName ?? panelConfig.className
+          )}
           containerClassName={layoutConfig.containerClassName}
         />
       ) : null}

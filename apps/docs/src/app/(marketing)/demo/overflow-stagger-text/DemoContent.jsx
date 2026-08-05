@@ -17,7 +17,6 @@ export default function DemoContent({ registry }) {
         <ReactLenis root>
           <DemoHeader />
           {effect}
-          <ScrollBottom textColor="text-[#151515]" />
         </ReactLenis>
       )}
     </RegistryRemixerDemo>

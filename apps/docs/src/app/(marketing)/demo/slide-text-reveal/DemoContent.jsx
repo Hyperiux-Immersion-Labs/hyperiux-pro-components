@@ -2,7 +2,6 @@
 
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import SlideTextWrapper from "./SlideTextWrapper";
 
 export default function DemoContent({ registry }) {
@@ -14,9 +13,8 @@ export default function DemoContent({ registry }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader textColor="#ffffff" logoColor="#FFFFFF" />
+          <DemoHeader />
           {effect}
-          <ScrollBottom />
         </>
       )}
     </RegistryRemixerDemo>

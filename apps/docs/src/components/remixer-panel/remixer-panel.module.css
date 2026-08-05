@@ -663,22 +663,60 @@
   display: block;
 }
 
-.launcherButton {
+.launcherGroup {
   pointer-events: auto;
   position: absolute;
   right: 1rem;
-  top: 6.25rem;
+  top: 10vh;
   z-index: 50;
+  width: min(292px, calc(100vw - 2rem));
+  touch-action: none;
+}
+
+.launcherRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dragHandle {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  background: #0e0e0e;
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandleIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.launcherButton {
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   width: auto;
   min-height: 0;
-  flex: none;
+  flex: 1 1 auto;
   border-color: rgba(255, 255, 255, 0.5);
   background: #0e0e0e;
-  padding: 0.8vw 1.5vw;
-  font-size: 1.15vw;
+  padding: 0.62rem 0.95rem;
+  font-size: 0.88rem;
   letter-spacing: 0;
 }
 
@@ -686,13 +724,13 @@
   transition: transform 300ms ease;
 }
 
-.launcherIconClosed {
-  transform: scaleX(-1);
+.launcherIconOpen {
+  transform: rotate(180deg);
 }
 
 .launcherButtonText {
   width: auto;
-  font-size: 1.1vw;
+  font-size: 0.86rem;
   letter-spacing: 0;
 }
 
@@ -700,11 +738,12 @@
   pointer-events: none;
   position: absolute;
   right: 0;
-  top: 132px;
-  width: 344px;
-  height: calc(100% - 132px);
+  top: calc(100% + 0.6rem);
+  width: 100%;
+  max-height: min(70vh, 640px);
+  overflow: hidden auto;
   background: rgba(14, 14, 14, 0.2);
-  box-shadow: -24px 0 80px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(8px);
 }
 
@@ -714,6 +753,7 @@
 
 .launcherPanelInner {
   height: 100%;
+  min-height: 320px;
   padding-block: 1rem;
 }
 

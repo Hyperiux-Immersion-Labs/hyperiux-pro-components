@@ -16,7 +16,6 @@ export default function DemoContent({ registry }) {
         <>
           <DemoHeader />
           {effect}
-          <ScrollBottom textColor="text-black" />
         </>
       )}
     </RegistryRemixerDemo>

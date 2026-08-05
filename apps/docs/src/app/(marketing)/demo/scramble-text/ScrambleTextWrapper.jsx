@@ -56,50 +56,6 @@ const ScrambleTextWrapper = ({ effectProps = {} }) => {
             </div>
           </div>
         </section>
-
-        <section className="px-8 py-24 max-sm:px-4 max-sm:py-16">
-          <div className="mx-auto grid max-w-7xl gap-10  max-sm:gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="h-130 max-md:h-95 w-full max-sm:h-75">
-
-           
-            <Image
-              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg"
-              alt="Gradient texture"
-              width={2070}
-              height={1380}
-              className="h-full w-full object-cover"
-        
-            />
-             </div>
-
-            <div className="flex flex-col justify-center">
-              <ScrambleText
-                text="Use it for launch lines, secretive labels, and text that needs a little suspense."
-                textSize="text-5xl max-sm:text-[8vw]"
-                textColor="text-[#121212]"
-                align="left"
-                {...effectProps}
-                className="font-black uppercase leading-[0.94]"
-                start="top 90%"
-              />
-
-              <div className="mt-10 grid gap-4">
-                {notes.map((note, index) => (
-                  <div
-                    key={note}
-                    className="border-t border-black/15 pt-4 text-lg leading-7 text-black/65 max-sm:text-base"
-                  >
-                    <SplitLine>
-
-                    <span className="mr-4 font-black text-black">0{index + 1}</span>
-                    {note}
-                    </SplitLine>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
     </>
   );

@@ -96,63 +96,6 @@ export default function DemoContent({ registry }) {
                 </div>
               </div>
             </section>
-
-            <section className="px-[6vw] pb-[10vw] max-md:px-[7vw]">
-              <div className="mx-auto flex w-full max-w-360 flex-col gap-[5vw]">
-                {showcaseSections.map((section, index) => (
-                  <div
-                    key={section.direction}
-                    className="grid gap-[2vw] border-t border-black/10 py-[4vw] md:grid-cols-[0.9fr_1.1fr] max-md:gap-[6vw] max-md:py-[10vw] max-sm:gap-[10vw] max-sm:py-[15vw]"
-                  >
-                    <div className="flex flex-col gap-10">
-                      <p className="text-sm tracking-[0.28em] text-black/45 uppercase">
-                        {section.eyebrow}
-                      </p>
-                      <p className="max-w-88 text-xl leading-[1.7] text-black/55 max-sm:text-xl">
-                        Variation {index + 1} demonstrates how the same reveal
-                        mechanic can shift tone depending on the travel
-                        direction, pacing, and color pairing.
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-6">
-                      <RectangularTextReveal
-                        direction={section.direction}
-                        baseColor={section.baseColor}
-                        overlayColor={section.overlayColor}
-                        useOverlay={section.useOverlay}
-                        coverDuration={0.34}
-                        revealDuration={0.42}
-                        overlayEnterDuration={0.24}
-                        overlayExitDuration={0.28}
-                        {...values}
-                      >
-                        <h2 className="max-w-3xl text-[clamp(2rem,4.3vw,4.75rem)] leading-[1.02] font-semibold">
-                          {section.title}
-                        </h2>
-                      </RectangularTextReveal>
-
-                      <div className="max-w-136">
-                        <RectangularTextReveal
-                          direction={section.direction}
-                          baseColor={section.baseColor}
-                          overlayColor={section.overlayColor}
-                          useOverlay={false}
-                          stagger={0.12}
-                          coverDuration={0.26}
-                          revealDuration={0.3}
-                          {...values}
-                        >
-                          <p className="text-[clamp(1rem,1.35vw,1.2rem)] leading-[1.75] text-black/70">
-                            {section.body}
-                          </p>
-                        </RectangularTextReveal>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         </ReactLenis>
       )}

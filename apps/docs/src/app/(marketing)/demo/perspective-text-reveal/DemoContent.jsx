@@ -15,7 +15,6 @@ export default function DemoContent({ registry }) {
       {({ effect }) => (
         <>
           <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
-          <ScrollBottom textColor="#ffffff" />
           {effect}
         </>
       )}
