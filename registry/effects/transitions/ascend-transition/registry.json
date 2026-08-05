@@ -1,0 +1,37 @@
+{
+  "name": "ascend-transition",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-05",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "type": "registry:component",
+  "title": "Ascend Transition",
+  "description": "A scaled-down panel rises from the bottom with clip-path revealing its height, then scales up to fill the screen before the next page fades in",
+  "category": "transitions",
+  "dependencies": [
+    "gsap",
+    "next-transition-router"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/ascend-transition",
+  "coverImage": "ascend-transition",
+  "videoUrl": "ascend-transition.mp4",
+  "tier": "free",
+  "subfolder": true,
+  "main": "index.jsx",
+  "exportName": "AscendTransition",
+  "exportKind": "default",
+  "importPath": "@/components/effects/ascend-transition",
+  "target": "src/components/effects/ascend-transition",
+  "files": [
+    {
+      "path": "index.jsx",
+      "target": "src/components/effects/ascend-transition/index.jsx"
+    }
+  ]
+}

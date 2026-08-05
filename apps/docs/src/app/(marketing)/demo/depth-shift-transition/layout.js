@@ -5,7 +5,7 @@ import React from "react";
 export default function layout({ children }) {
   return (
     <DepthShiftTransition>
-      <DemoHeader logoColor='#FFFFFF' />
+      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
       {children}
     </DepthShiftTransition>
   );
