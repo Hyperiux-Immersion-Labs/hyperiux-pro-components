@@ -4,6 +4,16 @@ import { useEffect, useRef } from'react'
 import gsap from'gsap'
 import { Stars } from'lucide-react'
 
+/**
+ * @typedef {Object} CircularTextProps
+ * @property {string} [text]
+ * @property {number} [spinDuration]
+ * @property {'slowDown'|'speedUp'|'pause'|'goBonkers'} [onHover]
+ * @property {string} [className]
+ * @property {number} [radius]
+ */
+
+/** @param {CircularTextProps} props */
 const CircularText = ({
  text ='',
  spinDuration = 20,
@@ -11,8 +21,8 @@ const CircularText = ({
  className ='',
  radius = 80,
 }) => {
- const containerRef = useRef(null)
- const tweenRef = useRef(null)
+ const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+ const tweenRef = useRef(/** @type {gsap.core.Tween|null} */ (null))
 
  const letters = Array.from(text)
 
@@ -29,7 +39,7 @@ const CircularText = ({
  transformOrigin:'50% 50%',
  })
 
- return () => tweenRef.current?.kill()
+ return () => { tweenRef.current?.kill() }
  }, [spinDuration, text])
 
  

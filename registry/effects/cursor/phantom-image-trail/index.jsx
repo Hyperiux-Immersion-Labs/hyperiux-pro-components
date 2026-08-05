@@ -58,13 +58,20 @@ const DEFAULT_IMAGES = [
   },
 ];
 
+/**
+ * @typedef {Object} PhantomImage
+ * @property {string} src
+ * @property {string} alt
+ */
+
+/** @param {any} images */
 function normalizeImages(images) {
   if (!Array.isArray(images) || images.length === 0) {
     return DEFAULT_IMAGES;
   }
 
-  const validImages = images
-    .map((image, index) => {
+  const validImages = /** @type {PhantomImage[]} */ (images
+    .map((/** @type {any} */ image, /** @type {number} */ index) => {
       if (typeof image === "string") {
         return {
           src: image,
@@ -81,11 +88,46 @@ function normalizeImages(images) {
 
       return null;
     })
-    .filter(Boolean);
+    .filter(Boolean));
 
   return validImages.length > 0 ? validImages : DEFAULT_IMAGES;
 }
 
+/**
+ * @typedef {Object} PhantomImageTrailProps
+ * @property {(string|{src:string, alt?:string})[]} [images]
+ * @property {string} [className]
+ * @property {string} [imageClassName]
+ * @property {number} [imageMultiplier]
+ * @property {boolean} [enableRotation]
+ * @property {number} [minStartRotation]
+ * @property {number} [maxStartRotation]
+ * @property {number} [minExitRotation]
+ * @property {number} [maxExitRotation]
+ * @property {boolean} [idleSpawn]
+ * @property {number} [idleDelay]
+ * @property {number} [idleDistanceThreshold]
+ * @property {number} [triggerDistance]
+ * @property {number} [cursorOffsetX]
+ * @property {number} [cursorOffsetY]
+ * @property {number} [popOutDuration]
+ * @property {number} [fadeOutDuration]
+ * @property {number} [idlePopOutMultiplier]
+ * @property {number} [idleFadeMultiplier]
+ * @property {number} [startScale]
+ * @property {number} [endScale]
+ * @property {number} [exitScale]
+ * @property {boolean} [smoothMouse]
+ * @property {number} [lerpFactor]
+ * @property {boolean} [disableOnMobile]
+ * @property {boolean} [enableMobileTap]
+ * @property {any} [popEase]
+ * @property {any} [idlePopEase]
+ * @property {any} [fadeEase]
+ * @property {(info: { index: number, element: HTMLImageElement, isIdle: boolean }) => void} [onImageShow]
+ */
+
+/** @param {PhantomImageTrailProps} props */
 export function PhantomImageTrail({
   images,
   className = "",
@@ -133,9 +175,9 @@ export function PhantomImageTrail({
   const safeImageMultiplier = Math.max(1, Number(imageMultiplier) || 1);
   const totalImages = resolvedImages.length * safeImageMultiplier;
 
-  const imagesRef = useRef([]);
-  const containerRef = useRef(null);
-  const idleTimerRef = useRef(null);
+  const imagesRef = useRef(/** @type {(HTMLImageElement|null)[]} */ ([]));
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const idleTimerRef = useRef(/** @type {ReturnType<typeof setTimeout>|null} */ (null));
 
   const isMobileRef = useRef(false);
 
@@ -187,7 +229,7 @@ export function PhantomImageTrail({
   }, [mouse]);
 
   const getCenteredPosition = useCallback(
-    (width, height, useSmoothedMouse = false) => {
+    (/** @type {number} */ width, /** @type {number} */ height, /** @type {boolean} */ useSmoothedMouse = false) => {
       const mouseSource = useSmoothedMouse ? smoothedMouse.current : mouse.current;
 
       return {
@@ -199,6 +241,7 @@ export function PhantomImageTrail({
   );
 
   const showNextImage = useCallback(
+    /** @param {{ lockToCursor?: boolean, isIdle?: boolean, overridePosition?: {x: number, y: number}|null }} [options] */
     ({ lockToCursor = false, isIdle = false, overridePosition = null } = {}) => {
       if (!totalImages) return;
 
@@ -379,10 +422,10 @@ export function PhantomImageTrail({
   );
 
   const onTap = useCallback(
-    (event) => {
+    (/** @type {import('react').MouseEvent|import('react').TouchEvent} */ event) => {
       if (!enableMobileTap || !isMobileRef.current) return;
 
-      const touch = event.changedTouches?.[0] || event;
+      const touch = /** @type {any} */ (event).changedTouches?.[0] || event;
 
       const tapPosition = {
         x: touch.clientX,

@@ -2,15 +2,19 @@
 import React, { forwardRef } from "react";
 
 /**
- * Props:
- * - id: string
- * - checked: boolean
- * - onChange: function
- * - label: React.ReactNode (can contain JSX, links, etc.)
- * - error: string | undefined
- * - accentColor: string (tailwind bg class, default"bg-orange-500")
+ * @typedef {{
+ *   id?: string,
+ *   checked?: boolean,
+ *   onChange?: (checked: boolean) => void,
+ *   label?: import('react').ReactNode,
+ *   error?: string,
+ *   accentColor?: string,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'button'>, 'id' | 'onChange'>} CheckboxProps
  */
-const Checkbox = forwardRef(function Checkbox(
+
+const Checkbox = forwardRef(
+ /** @type {import('react').ForwardRefRenderFunction<HTMLButtonElement, CheckboxProps>} */
+ (function Checkbox(
  { id, checked, onChange, label, error, accentColor ="bg-orange-500", ...rest },
  ref
 ) {
@@ -65,6 +69,7 @@ const Checkbox = forwardRef(function Checkbox(
  )}
  </div>
  );
-});
+})
+);
 
 export default Checkbox;

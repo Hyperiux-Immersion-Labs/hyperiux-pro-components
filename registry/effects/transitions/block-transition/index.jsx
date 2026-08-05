@@ -23,19 +23,32 @@ const SHIFT_DURATION_OUT = 0.7;
 const SHIFT_DURATION_IN = 0.8;
 
 
+/**
+ * @typedef {Object} BlockTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [enableContentShift]
+ * @property {number} [rows]
+ * @property {string} [color]
+ */
+
+/** @param {BlockTransitionProps} props */
 export default function BlockTransition({
   children,
   enableContentShift = false,
   rows = ROWS,
   color = COLOR,
 }) {
-  const wrapperRef = useRef(null);
-  const rowRefs    = useRef([]);
+  const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const rowRefs    = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
 
-  const getRows = () => rowRefs.current.filter(Boolean);
+  const getRows = () => /** @type {HTMLDivElement[]} */ (rowRefs.current.filter(Boolean));
 
 
 
+  /**
+   * @param {gsap.core.Timeline} timeline
+   * @param {'cover' | 'reveal'} direction
+   */
   const buildRowsAnimation = (timeline, direction) => {
     const rows = getRows();
     const orderedRows = direction === "cover" ? rows : [...rows].reverse();

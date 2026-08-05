@@ -13,6 +13,7 @@ function usePrefersReducedMotion() {
 
  useEffect(() => {
  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+ /** @param {MediaQueryListEvent} e */
  const handler = (e) => setPrefersReducedMotion(e.matches);
  mq.addEventListener('change', handler);
  return () => mq.removeEventListener('change', handler);
@@ -21,13 +22,22 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} SpotlightTextProps
+ * @property {string} [text]
+ * @property {string} [className]
+ * @property {string} [size]
+ * @property {'left' | 'center' | 'right'} [align]
+ */
+
+/** @param {SpotlightTextProps} props */
 export default function SpotlightText({
  text ="Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
  className ="",
  size ="text-3xl md:text-5xl",
  align ="center",
 }) {
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
  const target = useRef({ x: 0, y: 0 });
  const current = useRef({ x: 0, y: 0 });
@@ -38,6 +48,7 @@ export default function SpotlightText({
  const [isMobile, setIsMobile] = useState(false);
  const prefersReducedMotion = usePrefersReducedMotion();
 
+ /** @type {(start: number, end: number, factor: number) => number} */
  const lerp = (start, end, factor) => start + (end - start) * factor;
 
  useEffect(() => {
@@ -56,9 +67,10 @@ export default function SpotlightText({
  useEffect(() => {
  if (isMobile) return; //  disable effect on mobile
 
- const el = containerRef.current;
+ const el = /** @type {HTMLDivElement} */ (containerRef.current);
  const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
 
+ /** @param {MouseEvent} e */
  const updateTarget = (e) => {
  const rect = el.getBoundingClientRect();
 
@@ -69,6 +81,7 @@ export default function SpotlightText({
  target.current.y = y;
  };
 
+ /** @param {MouseEvent} e */
  const handleEnter = (e) => {
  updateTarget(e);
  current.current.x = target.current.x;
@@ -77,6 +90,7 @@ export default function SpotlightText({
  targetOpacity.current = 1;
  };
 
+ /** @param {MouseEvent} e */
  const handleMove = (e) => {
  updateTarget(e);
  };
@@ -128,11 +142,11 @@ export default function SpotlightText({
  style={
  isMobile
  ? {}
- : {
+ : /** @type {import('react').CSSProperties} */ ({
 "--x":"0px",
 "--y":"0px",
 "--opacity": 0,
- }
+ })
  }
  >
  {/* Dim text (mobile becomes fully visible) */}

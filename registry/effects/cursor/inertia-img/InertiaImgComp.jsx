@@ -5,9 +5,15 @@ import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(InertiaPlugin);
 
+/**
+ * @typedef {Object} InertiaImageCompProps
+ * @property {string[]} [images]
+ */
+
+/** @param {InertiaImageCompProps} props */
 function InertiaImageComp({ images = [] }) {
-  const rootRef = useRef(null);
-  const deltaRef = useRef({ x: 0, y: 0, oldX: null, oldY: null });
+  const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const deltaRef = useRef({ x: 0, y: 0, oldX: /** @type {number|null} */ (null), oldY: /** @type {number|null} */ (null) });
   const isTouchRef = useRef(false);
 
   useEffect(() => {
@@ -25,7 +31,7 @@ function InertiaImageComp({ images = [] }) {
     };
     window.addEventListener("touchstart", detectTouch, { passive: true });
 
-    const onMouseMove = (e) => {
+    const onMouseMove = (/** @type {MouseEvent} */ e) => {
       const d = deltaRef.current;
       if (d.oldX === null || d.oldY === null) {
         d.oldX = e.clientX;
@@ -40,7 +46,7 @@ function InertiaImageComp({ images = [] }) {
       d.oldY = e.clientY;
     };
 
-    const onTouchStart = (e) => {
+    const onTouchStart = (/** @type {TouchEvent} */ e) => {
       isTouchRef.current = true;
       const touch = e.touches[0];
       const d = deltaRef.current;
@@ -50,12 +56,12 @@ function InertiaImageComp({ images = [] }) {
       d.y = 0;
     };
 
-    const onTouchMove = (e) => {
+    const onTouchMove = (/** @type {TouchEvent} */ e) => {
       isTouchRef.current = true;
       const touch = e.touches[0];
       const d = deltaRef.current;
-      d.x = touch.clientX - d.oldX;
-      d.y = touch.clientY - d.oldY;
+      d.x = touch.clientX - /** @type {number} */ (d.oldX);
+      d.y = touch.clientY - /** @type {number} */ (d.oldY);
       d.oldX = touch.clientX;
       d.oldY = touch.clientY;
     };
@@ -65,6 +71,7 @@ function InertiaImageComp({ images = [] }) {
     root.addEventListener("touchmove", onTouchMove, { passive: true });
 
     const mediaEls = root.querySelectorAll(".media-item");
+    /** @type {(() => void)[]} */
     const cleanups = [];
 
     mediaEls.forEach((el) => {

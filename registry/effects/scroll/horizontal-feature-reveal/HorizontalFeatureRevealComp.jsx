@@ -1,11 +1,39 @@
 "use client";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useEffect, useId } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+/**
+ * @typedef {Object} FeatureRevealTriggerRange
+ * @property {string} [start]
+ * @property {string} [end]
+ */
+
+/**
+ * @typedef {Object} FeatureRevealTriggers
+ * @property {FeatureRevealTriggerRange} [no]
+ * @property {FeatureRevealTriggerRange} [title]
+ * @property {FeatureRevealTriggerRange} [content]
+ * @property {FeatureRevealTriggerRange} [img]
+ */
+
+/**
+ * @typedef {Object} FeatureRevealProperty
+ * @property {string} [image]
+ * @property {string} [imgClass]
+ * @property {string|number} [no]
+ * @property {string|number} [number]
+ * @property {string} [titleClass]
+ * @property {string} [title]
+ * @property {string} [contentClass]
+ * @property {string[]} [paragraphs]
+ * @property {FeatureRevealTriggers} [triggers]
+ */
+
+/** @type {FeatureRevealProperty[]} */
 const defaultPropertiesData = [];
 
 function prefersReducedMotion() {
@@ -13,6 +41,12 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
+/**
+ * @typedef {Object} HorizontalScrollCompProps
+ * @property {FeatureRevealProperty[]} [propertiesData]
+ */
+
+/** @param {HorizontalScrollCompProps} props */
 export default function HorizontalScrollComp({ propertiesData = defaultPropertiesData }) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `industries-${uid}`;
@@ -76,7 +110,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
       const cards = document.querySelectorAll(".industry-card");
 
       cards.forEach((card, i) => {
-        const cfg = propertiesData[i]?.triggers || {};
+        const cfg = propertiesData[i]?.triggers || /** @type {FeatureRevealTriggers} */ ({});
         const startNo = cfg.no?.start || "top 70%";
         const endNo = cfg.no?.end || "top 40%";
         const startTitle = cfg.title?.start || "top 70%";
@@ -274,7 +308,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
                   </h3>
 
                   <div className="space-y-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]">
-                    {property.paragraphs.map((para, pIndex) => (
+                    {/** @type {string[]} */ (property.paragraphs).map((para, pIndex) => (
                       <p
                         key={pIndex}
                         className={`opacity-0 industry-content max-[1025px]:opacity-100 ${property.contentClass}`}

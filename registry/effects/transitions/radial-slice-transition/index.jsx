@@ -11,6 +11,13 @@ function prefersReducedMotion() {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
+/**
+ * @typedef {Object} RadialSliceTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {{ duration?: number, color?: string }} [config]
+ */
+
+/** @param {RadialSliceTransitionProps} props */
 export default function RadialSliceTransition({
     children,
     config = { duration: 4, color: '#0F2854' },
@@ -20,11 +27,15 @@ export default function RadialSliceTransition({
         color: '#0F2854',
         ...config,
     }
-    const overlayRef = useRef(null)
+    const overlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
     const shapeRef = useRef({ start: 0, end: 0 })
-    const contentRef = useRef(null)
+    const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null))
     const DELAY = 0.2
 
+    /**
+     * @param {number} endDeg
+     * @param {number} startDeg
+     */
     const applySlice = (endDeg, startDeg) => {
         const el = overlayRef.current
         if (!el) return

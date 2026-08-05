@@ -151,8 +151,13 @@ void main() {
 }
 `;
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {number} type
+ * @param {string} source
+ */
 function createShader(gl, type, source) {
-  const shader = gl.createShader(type);
+  const shader = /** @type {WebGLShader} */ (gl.createShader(type));
 
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
@@ -168,10 +173,15 @@ function createShader(gl, type, source) {
   return shader;
 }
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {string} vertexSource
+ * @param {string} fragmentSource
+ */
 function createProgram(gl, vertexSource, fragmentSource) {
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
-  const program = gl.createProgram();
+  const program = /** @type {WebGLProgram} */ (gl.createProgram());
 
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
@@ -193,6 +203,7 @@ function createProgram(gl, vertexSource, fragmentSource) {
   return program;
 }
 
+/** @param {any} source */
 function resolveImageSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
@@ -200,6 +211,7 @@ function resolveImageSource(source) {
   return source;
 }
 
+/** @param {any} source */
 function shouldUseCrossOrigin(source) {
   if (typeof source !== "string") return false;
   if (source.startsWith("data:") || source.startsWith("blob:")) return false;
@@ -207,6 +219,10 @@ function shouldUseCrossOrigin(source) {
   return true;
 }
 
+/**
+ * @param {any} source
+ * @returns {Promise<HTMLImageElement>}
+ */
 function loadImage(source) {
   return new Promise((resolve, reject) => {
     if (source instanceof HTMLImageElement) {
@@ -246,8 +262,14 @@ function loadImage(source) {
   });
 }
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {HTMLImageElement} image
+ * @param {number} unit
+ * @param {boolean} [shouldRepeat]
+ */
 function createImageTexture(gl, image, unit, shouldRepeat = false) {
-  const texture = gl.createTexture();
+  const texture = /** @type {WebGLTexture} */ (gl.createTexture());
 
   gl.activeTexture(gl.TEXTURE0 + unit);
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -272,8 +294,13 @@ function createImageTexture(gl, image, unit, shouldRepeat = false) {
   return texture;
 }
 
+/**
+ * @param {WebGL2RenderingContext} gl
+ * @param {HTMLCanvasElement} maskCanvas
+ * @param {number} unit
+ */
 function createMaskTexture(gl, maskCanvas, unit) {
-  const texture = gl.createTexture();
+  const texture = /** @type {WebGLTexture} */ (gl.createTexture());
 
   gl.activeTexture(gl.TEXTURE0 + unit);
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -296,6 +323,11 @@ function createMaskTexture(gl, maskCanvas, unit) {
   return texture;
 }
 
+/**
+ * @param {number} clientX
+ * @param {number} clientY
+ * @param {DOMRect} rect
+ */
 function isPointInsideRect(clientX, clientY, rect) {
   return (
     clientX >= rect.left &&
@@ -305,6 +337,11 @@ function isPointInsideRect(clientX, clientY, rect) {
   );
 }
 
+/**
+ * @param {number} clientX
+ * @param {number} clientY
+ * @param {DOMRect} rect
+ */
 function getNormalizedPointer(clientX, clientY, rect) {
   return {
     x: (clientX - rect.left) / rect.width,
@@ -312,6 +349,13 @@ function getNormalizedPointer(clientX, clientY, rect) {
   };
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x
+ * @param {number} y
+ * @param {number} radius
+ * @param {number} softRadius
+ */
 function drawTrailStamp(ctx, x, y, radius, softRadius) {
   const gradient = ctx.createRadialGradient(
     x,
@@ -333,11 +377,34 @@ function drawTrailStamp(ctx, x, y, radius, softRadius) {
   ctx.fill();
 }
 
+/**
+ * @typedef {Object} PointerState
+ * @property {boolean} isInside
+ * @property {number} targetX
+ * @property {number} targetY
+ * @property {number} x
+ * @property {number} y
+ * @property {number} previousX
+ * @property {number} previousY
+ * @property {number} lastTime
+ * @property {number} lastMoveTime
+ * @property {boolean} hasDrawn
+ */
+
+/**
+ * @typedef {Object} InteractiveBlurRevealProps
+ * @property {any} [iChannel0]
+ * @property {any} [iChannel1]
+ * @property {string} [className]
+ * @property {import('react').CSSProperties} [style]
+ */
+
+/** @param {InteractiveBlurRevealProps} props */
 function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/800/1000", iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png", className, style }) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  const pointerRef = useRef({
+  const pointerRef = useRef(/** @type {PointerState} */ ({
     isInside: false,
     targetX: DEFAULT_POINTER_POSITION,
     targetY: DEFAULT_POINTER_POSITION,
@@ -348,36 +415,41 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     lastTime: 0,
     lastMoveTime: 0,
     hasDrawn: false,
-  });
+  }));
 
   useEffect(() => {
     let isDisposed = false;
+    /** @type {ReturnType<typeof createSuspendedRaf>|null} */
     let loop = null;
+    /** @type {(() => void)|undefined} */
     let cleanupWebgl;
 
     async function init() {
-      const canvas = canvasRef.current;
+      if (!canvasRef.current) return undefined;
+      const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
 
-      if (!canvas) return undefined;
-
-      const gl = canvas.getContext("webgl2", {
+      const glContext = canvas.getContext("webgl2", {
         alpha: false,
         antialias: false,
         preserveDrawingBuffer: false,
       });
 
-      if (!gl) {
+      if (!glContext) {
         console.error("WebGL2 is required for this shader.");
         return undefined;
       }
 
+      const gl = /** @type {WebGL2RenderingContext} */ (glContext);
+
       const maskCanvas = document.createElement("canvas");
-      const maskCtx = maskCanvas.getContext("2d", {
+      const maskCtx2d = maskCanvas.getContext("2d", {
         alpha: true,
         willReadFrequently: false,
       });
 
-      if (!maskCtx) return undefined;
+      if (!maskCtx2d) return undefined;
+
+      const maskCtx = /** @type {CanvasRenderingContext2D} */ (maskCtx2d);
 
       const program = createProgram(gl, BLUR_REVEAL_VERT, BLUR_REVEAL_FRAG);
       const positionBuffer = gl.createBuffer();
@@ -456,7 +528,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         );
       }
 
-      function updatePointerFromClient(clientX, clientY) {
+      function updatePointerFromClient(/** @type {number} */ clientX, /** @type {number} */ clientY) {
         const rect = canvas.getBoundingClientRect();
         const pointer = pointerRef.current;
         const isInside = isPointInsideRect(clientX, clientY, rect);
@@ -472,11 +544,11 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         pointer.lastMoveTime = performance.now();
       }
 
-      function onWindowPointerMove(event) {
+      function onWindowPointerMove(/** @type {PointerEvent} */ event) {
         updatePointerFromClient(event.clientX, event.clientY);
       }
 
-      function onWindowPointerLeave(event) {
+      function onWindowPointerLeave(/** @type {MouseEvent} */ event) {
         if (!event.relatedTarget) {
           const pointer = pointerRef.current;
 
@@ -485,7 +557,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         }
       }
 
-      function fadeMask(now, pointer) {
+      function fadeMask(/** @type {number} */ now, /** @type {PointerState} */ pointer) {
         const idleAge = now - pointer.lastMoveTime;
         const fadeAlpha =
           idleAge > ACTIVE_DRAW_WINDOW_MS
@@ -499,7 +571,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         maskCtx.restore();
       }
 
-      function drawTrail(pointer, velocity, now) {
+      function drawTrail(/** @type {PointerState} */ pointer, /** @type {number} */ velocity, /** @type {number} */ now) {
         const idleAge = now - pointer.lastMoveTime;
 
         const shouldDraw =
@@ -671,7 +743,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     };
   }, [iChannel0, iChannel1]);
 
-  function updatePointerFromEvent(event) {
+  function updatePointerFromEvent(/** @type {import('react').PointerEvent} */ event) {
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -686,11 +758,11 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     pointer.lastMoveTime = performance.now();
   }
 
-  function onPointerEnter(event) {
+  function onPointerEnter(/** @type {import('react').PointerEvent} */ event) {
     updatePointerFromEvent(event);
   }
 
-  function onPointerMove(event) {
+  function onPointerMove(/** @type {import('react').PointerEvent} */ event) {
     updatePointerFromEvent(event);
   }
 

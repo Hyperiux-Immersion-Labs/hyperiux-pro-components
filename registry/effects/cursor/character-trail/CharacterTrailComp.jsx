@@ -22,22 +22,52 @@ const COLORS = [
  { bg:"#c3dfe0", text:"#1a1a2e" },
 ];
 
+/**
+ * @typedef {Object} TrailCellColor
+ * @property {string} bg
+ * @property {string} text
+ */
+
+/**
+ * @typedef {Object} TrailCell
+ * @property {string} id
+ * @property {string} cellKey
+ * @property {number} col
+ * @property {number} row
+ * @property {string} char
+ * @property {TrailCellColor} color
+ */
+
+/**
+ * @typedef {Object} GridCell
+ * @property {number} col
+ * @property {number} row
+ */
+
+/** @typedef {'x'|'y'} TrailAxis */
+
+/**
+ * @typedef {Object} CharacterTrailCompProps
+ * @property {import('react').ReactNode} [children]
+ */
+
+/** @param {CharacterTrailCompProps} props */
 export default function CharacterTrailComp({ children }) {
- const [trail, setTrail] = useState([]);
+ const [trail, setTrail] = useState(/** @type {TrailCell[]} */ ([]));
  const [fading, setFading] = useState(false);
 
- const lastCell = useRef(null);
- const activeAxis = useRef(null);
+ const lastCell = useRef(/** @type {GridCell|null} */ (null));
+ const activeAxis = useRef(/** @type {TrailAxis|null} */ (null));
  const charIndexRef = useRef(0);
  const colorIndexRef = useRef(0);
- const idleTimer = useRef(null);
- const clearTimer = useRef(null);
+ const idleTimer = useRef(/** @type {ReturnType<typeof setTimeout>|undefined} */ (undefined));
+ const clearTimer = useRef(/** @type {ReturnType<typeof setTimeout>|undefined} */ (undefined));
  const fadingRef = useRef(false);
- const mouseTarget = useRef(null);
- const mouseFollower = useRef(null);
+ const mouseTarget = useRef(/** @type {{x: number, y: number}|null} */ (null));
+ const mouseFollower = useRef(/** @type {{x: number, y: number}|null} */ (null));
 
 
- const getNextTrailCell = useCallback((col, row) => {
+ const getNextTrailCell = useCallback((/** @type {number} */ col, /** @type {number} */ row) => {
  const char = ALPHABET[charIndexRef.current % ALPHABET.length];
  const color = COLORS[colorIndexRef.current % COLORS.length];
  charIndexRef.current++;
@@ -53,7 +83,7 @@ export default function CharacterTrailComp({ children }) {
  };
  }, []);
 
- const getLineCells = useCallback((from, to, axis, limit = Infinity) => {
+ const getLineCells = useCallback((/** @type {GridCell} */ from, /** @type {GridCell} */ to, /** @type {TrailAxis} */ axis, /** @type {number} */ limit = Infinity) => {
  const cells = [];
  const delta = axis ==="x" ? to.col - from.col : to.row - from.row;
  const direction = Math.sign(delta);
@@ -68,7 +98,7 @@ export default function CharacterTrailComp({ children }) {
  return cells;
  }, []);
 
- const appendCells = useCallback((cells) => {
+ const appendCells = useCallback((/** @type {GridCell[]} */ cells) => {
  if (!cells.length) return;
 
  const nextCells = cells.map(({ col, row }) => getNextTrailCell(col, row));
@@ -85,7 +115,7 @@ export default function CharacterTrailComp({ children }) {
  }, [fading]);
 
  
- const updateTrailPosition = useCallback((mx, my) => {
+ const updateTrailPosition = useCallback((/** @type {number} */ mx, /** @type {number} */ my) => {
  if (fadingRef.current) {
  fadingRef.current = false;
  setFading(false);
@@ -133,10 +163,11 @@ export default function CharacterTrailComp({ children }) {
  const dominantAxis = Math.abs(colDelta) >= Math.abs(rowDelta) ?"x" :"y";
  const targetAxis = colDelta === 0 ?"y" : rowDelta === 0 ?"x" : dominantAxis;
  const axis = activeAxis.current ?? targetAxis;
+ /** @type {GridCell[]} */
  const cells = [];
  let cursor = current;
 
- const pushCells = (lineCells) => {
+ const pushCells = (/** @type {GridCell[]} */ lineCells) => {
  if (!lineCells.length) return;
  cells.push(...lineCells);
  cursor = lineCells[lineCells.length - 1];
@@ -188,7 +219,7 @@ export default function CharacterTrailComp({ children }) {
  updateTrailPosition(mouseFollower.current.x, mouseFollower.current.y);
  }, [updateTrailPosition]);
 
- const handleMouseMove = useCallback((e) => {
+ const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
  mouseTarget.current = { x: e.clientX, y: e.clientY };
 
  if (!mouseFollower.current) {

@@ -84,10 +84,11 @@ const PIXEL_SHIFT_FRAG = /* glsl */ `
   }
 `;
 
+/** @param {{texture: import('three').Texture}} props */
 function PlaneWithShader({ texture }) {
-  const materialRef = useRef(null);
-  const shaderMaterialRef = useRef(null);
-  const moveTimeoutRef = useRef(null);
+  const materialRef = useRef(/** @type {import('three').ShaderMaterial|null} */ (null));
+  const shaderMaterialRef = useRef(/** @type {import('three').ShaderMaterial|null} */ (null));
+  const moveTimeoutRef = useRef(/** @type {ReturnType<typeof setTimeout>|null} */ (null));
   const clockRef = useRef(new THREE.Clock());
   const isMovingRef = useRef(1);
   const lastMouseRef = useRef(new THREE.Vector2(INITIAL_MOUSE, INITIAL_MOUSE));
@@ -121,7 +122,7 @@ function PlaneWithShader({ texture }) {
   }, [shaderMaterial]);
 
   useEffect(() => {
-    const onMouseMove = (event) => {
+    const onMouseMove = (/** @type {MouseEvent} */ event) => {
       const nextMouse = new THREE.Vector2(
         event.clientX / size.width,
         1 - event.clientY / size.height
@@ -204,6 +205,7 @@ function PlaneWithShader({ texture }) {
   );
 }
 
+/** @param {any} source */
 function resolveImageSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
@@ -211,6 +213,7 @@ function resolveImageSource(source) {
   return source;
 }
 
+/** @param {any} source */
 function resolveTextureSource(source) {
   const imageSource = resolveImageSource(source);
 
@@ -229,6 +232,10 @@ function resolveTextureSource(source) {
   return imageSource;
 }
 
+/**
+ * @param {any} source
+ * @returns {Promise<string>}
+ */
 function loadTextureBlobUrl(source) {
   const imageSource = resolveTextureSource(source);
 
@@ -256,12 +263,14 @@ function loadTextureBlobUrl(source) {
     });
 }
 
+/** @param {{img: any}} props */
 function Scene({ img }) {
   const resolvedImage = resolveImageSource(img) || DEFAULT_IMAGE_URL;
-  const [textureUrl, setTextureUrl] = useState(null);
+  const [textureUrl, setTextureUrl] = useState(/** @type {string|null} */ (null));
 
   useEffect(() => {
     let isCancelled = false;
+    /** @type {string|undefined} */
     let objectUrl;
 
     loadTextureBlobUrl(resolvedImage)
@@ -323,13 +332,16 @@ function Scene({ img }) {
   return <PlaneWithShader texture={texture} />;
 }
 
+/** @param {{img?: any, imageUrl?: any, notice?: string}} props */
 export default function PixelShift({
   img,
   imageUrl = img || DEFAULT_IMAGE_URL,
   notice = DEFAULT_NOTICE,
 }) {
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
 
   useEffect(() => {
     const gate = createVisibilityGate({

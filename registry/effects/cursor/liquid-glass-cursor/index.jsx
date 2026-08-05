@@ -21,6 +21,19 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} LiquidGlassCursorProps
+ * @property {number} [baseSize]
+ * @property {number} [textHoverSize]
+ * @property {number} [distortionScale]
+ * @property {number} [blurAmount]
+ * @property {string} [brightness]
+ * @property {string} [borderColor]
+ * @property {number} [maxButtonWidth]
+ * @property {number} [maxButtonHeight]
+ */
+
+/** @param {LiquidGlassCursorProps} props */
 export default function LiquidGlassCursor({
  baseSize = 40,
  textHoverSize = 120,
@@ -34,9 +47,9 @@ export default function LiquidGlassCursor({
  const uid = useId().replace(/:/g, "");
  const frostedFilterId = `frosted-${uid}`;
  const internalDivId = `internaldiv-${uid}`;
- const cursorRef = useRef(null);
- const innerRef = useRef(null);
- const textRef = useRef(null);
+ const cursorRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const innerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const textRef = useRef(/** @type {HTMLSpanElement|null} */ (null));
  const prefersReducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
@@ -56,17 +69,18 @@ export default function LiquidGlassCursor({
  // Center the cursor so animations grow evenly from the center
  gsap.set(cursorRef.current, { xPercent: -50, yPercent: -50 });
 
- const move = (e) => {
+ const move = (/** @type {MouseEvent} */ e) => {
  xTo(e.clientX);
  yTo(e.clientY);
  };
 
- const handleMouseOver = (e) => {
- const target = e.target.closest("[data-cursor]");
+ const handleMouseOver = (/** @type {MouseEvent} */ e) => {
+ const target = /** @type {Element} */ (e.target).closest("[data-cursor]");
  if (!target) return;
 
  const type = target.getAttribute("data-cursor");
  const bounds = target.getBoundingClientRect();
+ const textEl = /** @type {HTMLSpanElement} */ (textRef.current);
 
  if (type ==="button") {
  gsap.to(innerRef.current, {
@@ -79,8 +93,8 @@ export default function LiquidGlassCursor({
  ease:"power3.out",
  overwrite: true
  });
- textRef.current.innerText ="DISCOVER";
- gsap.to(textRef.current, {
+ textEl.innerText ="DISCOVER";
+ gsap.to(textEl, {
  opacity: 1,
  scale: 1,
  duration: 0.3,
@@ -99,8 +113,8 @@ export default function LiquidGlassCursor({
  ease:"power3.out",
  overwrite: true
  });
- textRef.current.innerText ="CLICK";
- gsap.to(textRef.current, {
+ textEl.innerText ="CLICK";
+ gsap.to(textEl, {
  opacity: 1,
  scale: 1,
  duration: 0.3,
@@ -111,8 +125,8 @@ export default function LiquidGlassCursor({
  }
  };
 
- const handleMouseOut = (e) => {
- const target = e.target.closest("[data-cursor]");
+ const handleMouseOut = (/** @type {MouseEvent} */ e) => {
+ const target = /** @type {Element} */ (e.target).closest("[data-cursor]");
  if (!target) return;
 
  // Return to default round droplet shape

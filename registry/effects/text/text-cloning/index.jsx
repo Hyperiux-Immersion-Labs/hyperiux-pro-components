@@ -6,14 +6,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
 export default function TextCloning() {
-    const canvasRef = useRef(null);
+    const canvasRef = useRef(/** @type {HTMLCanvasElement | null} */ (null));
     const [text, setText] = useState("Hyperiux");
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
+        const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+        const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
 
-        let w, h, dpr;
+        /** @type {number} */
+        let w;
+        /** @type {number} */
+        let h;
+        /** @type {number} */
+        let dpr;
 
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
@@ -25,6 +30,7 @@ export default function TextCloning() {
         const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
         const layerCount = prefersReducedMotion ? 3 : 9;
 
+        /** @type {(a: number, b: number, t: number) => number} */
         const lerp = (a, b, t) => a + (b - a) * t;
 
         const resize = () => {
@@ -43,6 +49,13 @@ export default function TextCloning() {
             mouse.y = target.y = h / 2;
         };
 
+        /**
+         * @param {string} value
+         * @param {number} x
+         * @param {number} y
+         * @param {number} size
+         * @param {number} alpha
+         */
         const drawText = (value, x, y, size, alpha) => {
             ctx.font = `900 ${size}px Arial Black, Impact, sans-serif`;
             ctx.textAlign = "center";
@@ -102,11 +115,13 @@ export default function TextCloning() {
             },
         });
 
+        /** @param {PointerEvent} e */
         const onMove = (e) => {
             target.x = e.clientX;
             target.y = e.clientY;
         };
 
+        /** @param {TouchEvent} e */
         const onTouch = (e) => {
             const touch = e.touches?.[0];
             if (!touch) return;

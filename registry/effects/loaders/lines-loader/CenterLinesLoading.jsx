@@ -20,6 +20,15 @@ const PAIR_FADE_MS = 260;
 const TRANSLATE_UP_MS = 820;
 const HOLD_END_MS = 260;
 
+/**
+ * @typedef {Object} CenterLinesLoadingProps
+ * @property {number} [lineCount]
+ * @property {string} [title]
+ * @property {string} [subtitle]
+ * @property {() => void} [onComplete]
+ */
+
+/** @param {CenterLinesLoadingProps} [props] */
 export default function CenterLinesLoading(
     {
         lineCount = DEFAULT_LINE_COUNT,
@@ -28,18 +37,23 @@ export default function CenterLinesLoading(
         onComplete,
     } = {}
 ) {
-    const containerRef = useRef(null);
-    const blackPanelRef = useRef(null);
-    const revealPanelRef = useRef(null);
-    const linesWrapRef = useRef(null);
-    const heroWordRefs = useRef([]);
-    const heroSubtitleRef = useRef(null);
-    const lineRefs = useRef([]);
-    const tlRef = useRef(null);
-    const layoutRef = useRef({ y: [], coneScale: [] });
+    const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+    const blackPanelRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+    const revealPanelRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+    const linesWrapRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+    const heroWordRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
+    const heroSubtitleRef = useRef(/** @type {HTMLParagraphElement | null} */ (null));
+    const lineRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+    const tlRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
+    const layoutRef = useRef({
+      y: /** @type {number[]} */ ([]),
+      coneScale: /** @type {number[]} */ ([]),
+    });
     const [done, setDone] = useState(false);
 
-    const recomputeLayout = useCallback((lineCount) => {
+    const recomputeLayout = useCallback(
+      /** @param {number} lineCount */
+      (lineCount) => {
         const el = containerRef.current;
         if (!el) return;
         const { height } = el.getBoundingClientRect();
@@ -307,7 +321,7 @@ export default function CenterLinesLoading(
                                         return (
                                             <span
                                                 key={`${char}-${charIdxInWord}`}
-                                                ref={(el) => (heroWordRefs.current[currentIdx] = el)}
+                                                ref={(el) => { heroWordRefs.current[currentIdx] = el; }}
                                                 className="inline-block opacity-0"
                                             >
                                                 {char}
@@ -331,7 +345,7 @@ export default function CenterLinesLoading(
                 {Array.from({ length: Math.max(3, Math.floor(lineCount)) }, (_, i) => (
                     <div
                         key={i}
-                        ref={(el) => (lineRefs.current[i] = el)}
+                        ref={(el) => { lineRefs.current[i] = el; }}
                         className="absolute left-1/2 top-0 h-px w-full origin-center bg-white/60 will-change-transform"
                         style={{ height: LINE_H }}
                     />

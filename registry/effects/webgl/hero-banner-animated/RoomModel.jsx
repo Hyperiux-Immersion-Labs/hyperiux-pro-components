@@ -95,17 +95,30 @@ const TVTransitionMaterial = shaderMaterial(
 
 extend({ TVTransitionMaterial });
 
+// tVTransitionMaterial is a custom shader material registered via extend(),
+// so it isn't part of JSX.IntrinsicElements; reference it through an
+// any-typed tag so JSX accepts it without changing what's rendered.
+const TVTransitionMaterialTag = /** @type {any} */ ("tVTransitionMaterial");
+
 
 // =========================
 // 🎯 MAIN COMPONENT
 // =========================
+/**
+ * @typedef {Object} RoomModelOwnProps
+ * @property {(e: any) => void} onClick
+ * @property {boolean} isZoomed
+ * @property {import('react').RefObject<HTMLVideoElement|null>} videoRef
+ */
+
+/** @param {RoomModelOwnProps & Record<string, any>} props */
 export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
 
- const groupRef = useRef();
- const tvMatRef = useRef();
+ const groupRef = useRef(/** @type {import('three').Group|null} */ (null));
+ const tvMatRef = useRef(/** @type {any} */ (null));
  const { gl } = useThree();
 
- const { nodes } = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/finall.glb");
+ const { nodes } = /** @type {any} */ (useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/finall.glb"));
 
 
  // =========================
@@ -165,7 +178,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  // ⚡ SMOOTH PROGRESS
  // =========================
  const progressRef = useRef({ value: 0 });
- const animate = useRef();
+ const animate = useRef(/** @type {((value: number) => any)|undefined} */ (undefined));
 
  useEffect(() => {
  animate.current = gsap.quickTo(progressRef.current,"value", {
@@ -188,7 +201,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
 
  // We want to only update rotation/offset from mouse if not zoomed
  const handlePointerMove = useCallback(
- (e) => {
+ (/** @type {MouseEvent} */ e) => {
  if (isZoomed) return; // 🛑 Ignore pointer move if zoomed!
  const rect = gl.domElement.getBoundingClientRect();
 
@@ -345,7 +358,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  </mesh>
 
  <mesh geometry={nodes.tv.geometry}>
- <tVTransitionMaterial
+ <TVTransitionMaterialTag
  ref={tvMatRef}
  uTexA={TVtexture}
  uTexB={videoTexture}

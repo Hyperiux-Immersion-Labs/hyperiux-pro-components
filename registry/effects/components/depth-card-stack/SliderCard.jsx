@@ -1,6 +1,18 @@
 const CARD_W = 300;
 const CARD_H = 450;
 
+/**
+ * @typedef {Object} SliderCardProps
+ * @property {import('./DepthCardStackComp').DepthCardStackCard} card
+ * @property {number} index
+ * @property {import('react').RefObject<(HTMLDivElement|null)[]>} cardRefs
+ * @property {import('react').RefObject<(HTMLDivElement|null)[]>} cardFaceRefs
+ * @property {import('react').RefObject<(HTMLDivElement|null)[]>} textureRefs
+ * @property {number} [cardWidth]
+ * @property {number} [cardHeight]
+ */
+
+/** @param {SliderCardProps} props */
 export default function SliderCard({
  card,
  index,
@@ -38,7 +50,7 @@ export default function SliderCard({
  <div
  ref={(el) => { textureRefsRef.current[index] = el; }}
  className="absolute bg-repeat-y mix-blend-screen inset-0 pointer-events-none opacity-0 rounded-[18px]"
- style={{
+ style={/** @type {import('react').CSSProperties} */ ({
  backgroundImage: `url('${card.textureImage}')`,
  backgroundPosition:"center",
  backgroundRepeat:"repeat",
@@ -49,7 +61,7 @@ export default function SliderCard({
 "radial-gradient(circle 100px at var(--reveal-x) var(--reveal-y), rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 80%, transparent 100%)",
  maskImage:
 "radial-gradient(circle 100px at var(--reveal-x) var(--reveal-y), rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.3) 65%, rgba(0,0,0,0.1) 80%, transparent 100%)",
- }}
+ })}
  />
 
  {/* Card content */}

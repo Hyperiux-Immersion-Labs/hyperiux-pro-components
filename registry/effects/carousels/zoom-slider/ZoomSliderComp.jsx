@@ -23,8 +23,25 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
 
+/** @type {(a: number, b: number, n: number) => number} */
 const lerp = (a, b, n) => a + (b - a) * n;
 
+/**
+ * @typedef {Object} ZoomSliderItem
+ * @property {string} number
+ * @property {string} src
+ * @property {string} title
+ * @property {string} desc
+ */
+
+/**
+ * @typedef {Object} ZoomSliderCompProps
+ * @property {ZoomSliderItem[]} sliderData
+ * @property {string} [title]
+ * @property {string} [subheading]
+ */
+
+/** @param {ZoomSliderCompProps} props */
 export function ZoomSliderComp({
   sliderData,
   title,
@@ -32,10 +49,10 @@ export function ZoomSliderComp({
 }) {
   const images = sliderData;
 
-  const stripRef = useRef(null);
-  const cardRefs = useRef([]);
-  const imageWrapRefs = useRef([]);
-  const textRefs = useRef([]);
+  const stripRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const cardRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const imageWrapRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const textRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
 
   const [viewportWidth, setViewportWidth] = useState(1440);
   const [viewportHeight, setViewportHeight] = useState(900);
@@ -56,7 +73,7 @@ export function ZoomSliderComp({
   const stateRef = useRef({
     current: 0,
     target: 0,
-    raf: null,
+    raf: /** @type {number | null} */ (null),
     isDragging: false,
     lastX: 0,
     lastY: 0,
@@ -82,6 +99,7 @@ export function ZoomSliderComp({
       '(prefers-reduced-motion: reduce)'
     );
 
+    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
       setReduceMotion(
         'matches' in event ? event.matches : prefersReducedMotion()
@@ -96,10 +114,11 @@ export function ZoomSliderComp({
   }, []);
 
   const positionCards = useCallback(
+    /** @param {number} offset */
     (offset) => {
       if (!stripRef.current) return;
 
-      const cards = Array.from(stripRef.current.children);
+      const cards = /** @type {HTMLElement[]} */ (Array.from(stripRef.current.children));
       const count = images.length;
 
       if (!count) return;
@@ -110,6 +129,7 @@ export function ZoomSliderComp({
       const bottom = viewportHeightValue - SLIDER_BOTTOM_OFFSET;
       const easingDistance = 2 * viewportWidthValue;
 
+      /** @param {number} value */
       const mapVtoX = (value) => {
         if (value <= 0) return 0;
         if (value >= easingDistance) return value - easingDistance / 2;
@@ -199,10 +219,15 @@ export function ZoomSliderComp({
       state.raf = requestAnimationFrame(tick);
     };
 
+    /** @param {WheelEvent} event */
     const onWheel = (event) => {
       state.target -= event.deltaY * SCROLL_PER_PX;
     };
 
+    /**
+     * @param {number} clientX
+     * @param {number} clientY
+     */
     const beginDrag = (clientX, clientY) => {
       state.isDragging = true;
       state.lastX = clientX;
@@ -210,6 +235,11 @@ export function ZoomSliderComp({
       state.velocity = 0;
     };
 
+    /**
+     * @param {number} clientX
+     * @param {number} clientY
+     * @param {number} [direction]
+     */
     const moveDrag = (clientX, clientY, direction = 1) => {
       if (!state.isDragging) return;
 
@@ -234,12 +264,16 @@ export function ZoomSliderComp({
       state.isDragging = false;
     };
 
+    /** @param {MouseEvent} event */
     const onMouseDown = (event) => beginDrag(event.clientX, event.clientY);
+    /** @param {MouseEvent} event */
     const onMouseMove = (event) => moveDrag(event.clientX, event.clientY);
     const onMouseUp = endDrag;
 
+    /** @param {TouchEvent} event */
     const onTouchStart = (event) =>
       beginDrag(event.touches[0].clientX, event.touches[0].clientY);
+    /** @param {TouchEvent} event */
     const onTouchMove = (event) =>
       moveDrag(event.touches[0].clientX, event.touches[0].clientY, -1);
     const onTouchEnd = endDrag;
@@ -256,7 +290,7 @@ export function ZoomSliderComp({
     state.raf = requestAnimationFrame(tick);
 
     return () => {
-      cancelAnimationFrame(state.raf);
+      cancelAnimationFrame(/** @type {number} */ (state.raf));
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
@@ -271,6 +305,7 @@ export function ZoomSliderComp({
   useEffect(() => {
     if (!images.length) return;
 
+    /** @type {(() => void)[]} */
     const cleanups = [];
 
     cardRefs.current.forEach((card, index) => {

@@ -16,15 +16,30 @@ const IMAGE_HIDDEN_CLIP_PATH = "inset(50%)";
 const IMAGE_VISIBLE_CLIP_PATH = "inset(0%)";
 const IMAGE_VISIBILITY_HIDDEN = "hidden";
 const IMAGE_VISIBILITY_VISIBLE = "visible";
+
+/**
+ * @typedef {Object} InteractiveListItem
+ * @property {string} client
+ * @property {string} [platform]
+ * @property {string} [services]
+ * @property {string} [img]
+ */
+
+/**
+ * @typedef {Object} InteractiveListPreviewCompProps
+ * @property {InteractiveListItem[]} items
+ */
+
+/** @param {InteractiveListPreviewCompProps} props */
 export default function InteractiveListPreviewComp({ items }) {
-  const imageRefs = useRef([]);
-  const imageContainerRef = useRef(null);
-  const tableRef = useRef(null);
-  const highlightRef = useRef(null);
-  const rowRefs = useRef({});
-  const pendingLeaveRef = useRef({});
-  const tweenGenerationRef = useRef({});
-  const activeIndexRef = useRef(null);
+  const imageRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const imageContainerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const tableRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const highlightRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const rowRefs = useRef(/** @type {Record<number, HTMLTableRowElement>} */ ({}));
+  const pendingLeaveRef = useRef(/** @type {Record<number, boolean>} */ ({}));
+  const tweenGenerationRef = useRef(/** @type {Record<number, number>} */ ({}));
+  const activeIndexRef = useRef(/** @type {number|null} */ (null));
   const zIndexRef = useRef(DEFAULT_IMAGE_Z_INDEX);
   const reduceMotionRef = useRef(
     typeof window !== "undefined" &&
@@ -35,7 +50,7 @@ export default function InteractiveListPreviewComp({ items }) {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches && imageContainerRef.current) {
         gsap.killTweensOf(imageContainerRef.current);
@@ -79,6 +94,7 @@ export default function InteractiveListPreviewComp({ items }) {
     });
   }, []);
 
+  /** @param {number} index */
   const getNextTweenGeneration = (index) => {
     tweenGenerationRef.current[index] =
       (tweenGenerationRef.current[index] || 0) + 1;
@@ -86,10 +102,18 @@ export default function InteractiveListPreviewComp({ items }) {
     return tweenGenerationRef.current[index];
   };
 
+  /**
+   * @param {number} index
+   * @param {HTMLDivElement|null} element
+   */
   const setImageRef = (index, element) => {
     imageRefs.current[index] = element;
   };
 
+  /**
+   * @param {number} index
+   * @param {string} color
+   */
   const setRowTextColor = (index, color) => {
     const rowElement = rowRefs.current[index];
 
@@ -103,6 +127,7 @@ export default function InteractiveListPreviewComp({ items }) {
     });
   };
 
+  /** @param {HTMLTableRowElement|null} rowElement */
   const moveHighlightToRow = (rowElement) => {
     const tableElement = tableRef.current;
     const highlightElement = highlightRef.current;
@@ -122,6 +147,7 @@ export default function InteractiveListPreviewComp({ items }) {
     });
   };
 
+  /** @param {number} index */
   const animateImageOut = (index) => {
     const imageElement = imageRefs.current[index];
 
@@ -148,6 +174,10 @@ export default function InteractiveListPreviewComp({ items }) {
     });
   };
 
+  /**
+   * @param {HTMLTableRowElement} rowElement
+   * @param {number} index
+   */
   const onRowEnter = (rowElement, index) => {
     const imageElement = imageRefs.current[index];
 
@@ -224,6 +254,7 @@ export default function InteractiveListPreviewComp({ items }) {
     moveHighlightToRow(rowElement);
   };
 
+  /** @param {number} index */
   const onRowLeave = (index) => {
     const imageElement = imageRefs.current[index];
 
@@ -253,6 +284,7 @@ export default function InteractiveListPreviewComp({ items }) {
     });
   };
 
+  /** @param {import('react').MouseEvent<HTMLDivElement>} event */
   const onMouseMove = (event) => {
     // Reduced-motion: no cursor parallax on the preview images.
     if (reduceMotionRef.current) return;
@@ -289,7 +321,7 @@ export default function InteractiveListPreviewComp({ items }) {
           {items.map((item, index) => (
             <div
               key={`${item.client}-${index}`}
-              ref={(element) => setImageRef(index, element)}
+              ref={(element) => { setImageRef(index, element); }}
               className="invisible absolute left-[35%] top-1/2 h-90 w-78 -translate-y-1/2"
               style={{
                 willChange: "clip-path, opacity",

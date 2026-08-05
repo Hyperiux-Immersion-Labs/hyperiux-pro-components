@@ -4,17 +4,31 @@
 
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import SplitText from 'gsap/SplitText';
-import ScrambleTextPlugin from 'gsap/ScrambleTextPlugin';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import SplitText from 'gsap/dist/SplitText';
+import ScrambleTextPlugin from 'gsap/dist/ScrambleTextPlugin';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
+const DEFAULT_TEXT = 'Signal appears when the noise decides to leave.';
 
+/**
+ * @typedef {Object} ScrambleTextProps
+ * @property {string} text
+ * @property {number} [speed]
+ * @property {string} [charType]
+ * @property {string} [textSize]
+ * @property {string} [textColor]
+ * @property {'left' | 'right'} [align]
+ * @property {string} [start]
+ * @property {string} [className]
+ */
+
+/** @param {ScrambleTextProps} props */
 const ScrambleText = ({
-  text,
+  text = DEFAULT_TEXT,
   speed = 0.6,
   charType = 'lowercase',
   textSize = 'text-base',
@@ -23,9 +37,9 @@ const ScrambleText = ({
   start = 'top 40%',
   className,
 }) => {
- const elRef = useRef(null);
- const splitRef = useRef(null);
- const tlRef = useRef(null);
+ const elRef = useRef(/** @type {HTMLParagraphElement | null} */ (null));
+ const splitRef = useRef(/** @type {InstanceType<typeof SplitText> | null} */ (null));
+ const tlRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
 
  const alignClass =
  align ==='right'
@@ -34,6 +48,7 @@ const ScrambleText = ({
 
  useEffect(() => {
  let isCancelled = false;
+ /** @type {number | null} */
  let fallbackRaf = null;
 
  const setup = async () => {
@@ -57,7 +72,7 @@ const ScrambleText = ({
  splitRef.current = null;
 
  const ctx = gsap.context(() => {
- const el = elRef.current;
+ const el = /** @type {HTMLParagraphElement} */ (elRef.current);
 
  const prefersReduced =
  window.matchMedia &&
@@ -137,12 +152,12 @@ const ScrambleText = ({
 
  tl.to(chars, {
  duration: 0.7,
- scrambleText: {
- text: (i) => originals[i],
+ scrambleText: /** @type {any} */ ({
+ text: (/** @type {number} */ i) => originals[i],
  chars: charType ||'lowercase',
  speed,
  revealDelay: 0.2,
- },
+ }),
  opacity: 1,
  stagger: 0.04,
  });

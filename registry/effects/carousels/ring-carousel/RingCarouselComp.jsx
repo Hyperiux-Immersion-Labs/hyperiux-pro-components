@@ -13,6 +13,31 @@ const prefersReducedMotion = () =>
 
 const REDUCED_MOTION_FADE_DURATION = 0.16;
 
+/**
+ * @typedef {{ src: string, alt?: string, title?: string, name?: string } | string} RingCarouselItem
+ */
+
+/**
+ * @typedef {Object} RingCarouselCompProps
+ * @property {RingCarouselItem[]} [items]
+ * @property {number} [itemWidth]
+ * @property {number} [itemHeight]
+ * @property {number} [radius]
+ * @property {number} [gap]
+ * @property {number} [dragSensitivity]
+ * @property {number} [momentum]
+ * @property {number} [friction]
+ * @property {boolean} [snap]
+ * @property {string} [className]
+ * @property {(item: RingCarouselItem, index: number) => import('react').ReactNode} [renderItem]
+ * @property {boolean} [showNavigation]
+ * @property {boolean} [showDots]
+ * @property {boolean} [autoPlay]
+ * @property {number} [autoPlayInterval]
+ * @property {boolean} [pauseOnHover]
+ */
+
+/** @type {import('react').FC<RingCarouselCompProps>} */
 const RingCarouselComp = ({
  items = [],
  itemWidth = 700,
@@ -31,12 +56,12 @@ const RingCarouselComp = ({
  autoPlayInterval = 3000,
  pauseOnHover = true,
 }) => {
- const containerRef = useRef(null);
- const ringRef = useRef(null);
- const draggerRef = useRef(null);
- const itemRefs = useRef([]);
- const momentumFrameRef = useRef(null);
- const autoplayRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const ringRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const draggerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const itemRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+ const momentumFrameRef = useRef(/** @type {number | null} */ (null));
+ const autoplayRef = useRef(/** @type {ReturnType<typeof setInterval> | null} */ (null));
  const velocityRef = useRef(0);
  const lastXRef = useRef(0);
  const isHoveredRef = useRef(false);
@@ -64,7 +89,9 @@ const RingCarouselComp = ({
  return stepAngle + gap;
  }, [stepAngle, gap]);
 
- const normalizeIndex = useCallback((index) => {
+ const normalizeIndex = useCallback(
+ /** @param {number} index */
+ (index) => {
  if (!totalItems) return 0;
  return ((index % totalItems) + totalItems) % totalItems;
  }, [totalItems]);
@@ -83,15 +110,24 @@ const RingCarouselComp = ({
  }
  }, []);
 
- const getRotationForStep = useCallback((step) => {
+ const getRotationForStep = useCallback(
+ /** @param {number} step */
+ (step) => {
  return 180 + step * stepAngle;
  }, [stepAngle]);
 
- const setActiveFromStep = useCallback((step) => {
+ const setActiveFromStep = useCallback(
+ /** @param {number} step */
+ (step) => {
  setActiveIndex(normalizeIndex(step));
  }, [normalizeIndex]);
 
- const rotateToStep = useCallback((step, animate = true) => {
+ const rotateToStep = useCallback(
+ /**
+  * @param {number} step
+  * @param {boolean} [animate]
+  */
+ (step, animate = true) => {
  if (!ringRef.current || !totalItems) return;
 
  currentStepRef.current = step;
@@ -141,7 +177,9 @@ const RingCarouselComp = ({
  setActiveFromStep(rawStep);
  }, [setActiveFromStep, stepAngle]);
 
- const goToNext = useCallback((fromAutoplay = false) => {
+ const goToNext = useCallback(
+ /** @param {boolean} [fromAutoplay] */
+ (fromAutoplay = false) => {
  stopMomentum();
 
  if (!fromAutoplay) {
@@ -157,7 +195,9 @@ const RingCarouselComp = ({
  rotateToStep(currentStepRef.current - 1, !reduceMotion);
  }, [reduceMotion, rotateToStep, stopAutoplay, stopMomentum]);
 
- const goToSlide = useCallback((targetIndex) => {
+ const goToSlide = useCallback(
+ /** @param {number} targetIndex */
+ (targetIndex) => {
  stopMomentum();
  stopAutoplay();
 
@@ -203,9 +243,12 @@ const RingCarouselComp = ({
  useEffect(() => {
  const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+ /** @param {MediaQueryList | MediaQueryListEvent} event */
  const syncReducedMotion = (event) => {
  const matches =
- "matches" in event ? event.matches : event.currentTarget?.matches ?? prefersReducedMotion();
+ "matches" in event
+ ? event.matches
+ : (/** @type {MediaQueryList | null} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget))?.matches ?? prefersReducedMotion();
  setReduceMotion(matches);
  };
 
@@ -227,6 +270,7 @@ const RingCarouselComp = ({
 
  if (!ring || !dragger || !panels.length) return;
 
+ /** @param {number} deltaX */
  const updateRingRotation = (deltaX) => {
  const rotationDelta = deltaX * resolvedDragSensitivity;
 
@@ -316,7 +360,7 @@ const RingCarouselComp = ({
  Draggable.create(dragger, {
  type:"x,y",
  trigger: dragger,
- onPress: function (e) {
+ onPress: /** @param {any} e */ function (e) {
  stopMomentum();
  stopAutoplay();
 
@@ -324,7 +368,7 @@ const RingCarouselComp = ({
  lastXRef.current = clientX;
  velocityRef.current = 0;
  },
- onDrag: function (e) {
+ onDrag: /** @param {any} e */ function (e) {
  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
  const deltaX = clientX - lastXRef.current;
 
@@ -422,7 +466,7 @@ const RingCarouselComp = ({
  className={` absolute overflow-hidden rounded-[20px] transform-3d will-change-transform ${
  activeIndex === i ?"is-active" :""
  }`}
- ref={(el) => (itemRefs.current[i] = el)}
+ ref={(el) => { itemRefs.current[i] = el; }}
  >
  {renderItem ? (
  renderItem(item, i)
@@ -433,7 +477,7 @@ const RingCarouselComp = ({
  className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
  />
  ) : (
- item
+ /** @type {import('react').ReactNode} */ (item)
  )}
  </div>
  );

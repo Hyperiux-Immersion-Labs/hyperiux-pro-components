@@ -8,6 +8,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const DIGITS = [...Array(10).keys()].concat(0);
 
+/**
+ * @typedef {'normal' | 'medium' | 'semibold' | 'bold'} CounterFontWeight
+ */
+
 const FONT_WEIGHTS = {
  normal:'font-normal',
  medium:'font-medium',
@@ -15,8 +19,18 @@ const FONT_WEIGHTS = {
  bold:'font-bold',
 };
 
+/**
+ * @typedef {{
+ *   digit: string,
+ *   index: number,
+ *   triggerRef: import('react').RefObject<HTMLElement | null>,
+ *   reducedMotion?: boolean,
+ * }} DigitScrollerProps
+ */
+
+/** @type {import('react').FC<DigitScrollerProps>} */
 const DigitScroller = memo(({ digit, index, triggerRef, reducedMotion = false }) => {
- const digitRef = useRef(null);
+ const digitRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
  useEffect(() => {
  if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
@@ -65,19 +79,29 @@ const DigitScroller = memo(({ digit, index, triggerRef, reducedMotion = false })
 
 DigitScroller.displayName ='DigitScroller';
 
+/**
+ * @typedef {Object} NumberCounterTwoProps
+ * @property {string} [value]
+ * @property {string} [textSize]
+ * @property {string} [color]
+ * @property {CounterFontWeight} [fontWeight]
+ * @property {boolean} [reducedMotion]
+ */
+
+/** @param {NumberCounterTwoProps} props */
 const NumberCounterTwo = ({
  value ='0',
  textSize ='text-[8vw] max-[1025px]:text-[7vw] max-md:text-[12vw]',
  color ='#111111',
  fontWeight ='normal',
  reducedMotion = false, }) => {
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
  const cleanValue = value.replace('+','');
 
  return (
  <div ref={containerRef} className="flex items-end gap-[2vw] w-fit max-[1025px]:gap-0">
  <div
- className={`flex items-end font-display leading-none ${textSize} ${FONT_WEIGHTS[fontWeight] ||'font-normal'}`}
+ className={`flex items-end font-display leading-none ${textSize} ${FONT_WEIGHTS[/** @type {CounterFontWeight} */ (fontWeight)] ||'font-normal'}`}
  style={{ color }}
  >
  {cleanValue.split('').map((digit, index) => (

@@ -19,6 +19,22 @@ function usePrefersReducedMotion() {
 	return prefersReducedMotion
 }
 
+/**
+ * @typedef {Object} RopeSegment
+ * @property {number} x
+ * @property {number} y
+ */
+
+/**
+ * @typedef {Object} RopeCursorProps
+ * @property {string} [ropeColor]
+ * @property {number} [ropeWidth]
+ * @property {number} [ropeOpacity]
+ * @property {number} [segmentLength]
+ * @property {number} [segmentCount]
+ */
+
+/** @param {RopeCursorProps} props */
 export default function RopeCursor({
 	ropeColor ='#bda985',
 	ropeWidth = 2,
@@ -26,10 +42,10 @@ export default function RopeCursor({
 	segmentLength = 0,
 	segmentCount = 8,
 }) {
-	const svgRef = useRef(null)
-	const pathRef = useRef(null)
-	const ropeSegments = useRef([])
-	const mousePosition = useRef({ x: null, y: null })
+	const svgRef = useRef(/** @type {SVGSVGElement|null} */ (null))
+	const pathRef = useRef(/** @type {SVGPathElement|null} */ (null))
+	const ropeSegments = useRef(/** @type {RopeSegment[]} */ ([]))
+	const mousePosition = useRef({ x: /** @type {number|null} */ (null), y: /** @type {number|null} */ (null) })
 	const [isVisible, setIsVisible] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
 	const prefersReducedMotion = usePrefersReducedMotion()
@@ -50,7 +66,7 @@ export default function RopeCursor({
 
  let isInitialized = false
 
- const initializeRopeSegments = (startX, startY) => {
+ const initializeRopeSegments = (/** @type {number} */ startX, /** @type {number} */ startY) => {
  ropeSegments.current = Array.from({ length: segmentCount }, () => ({
  x: startX,
  y: startY
@@ -59,7 +75,7 @@ export default function RopeCursor({
  setIsVisible(true)
  }
 
- const handleMouseMove = (event) => {
+ const handleMouseMove = (/** @type {MouseEvent} */ event) => {
  mousePosition.current.x = event.clientX
  mousePosition.current.y = event.clientY
 
@@ -71,15 +87,29 @@ export default function RopeCursor({
  // Time-based smoothing factor equivalent to the settle time of a short
  // eased tween, applied directly each frame instead of allocating a new
  // gsap tween per segment per frame (previously ~480 tweens/sec).
+ /**
+  * @param {number} durationSeconds
+  * @param {number} deltaSeconds
+  */
  const smoothingAmount = (durationSeconds, deltaSeconds) =>
  1 - Math.exp((-3 * deltaSeconds) / durationSeconds)
 
+ /**
+  * @param {RopeSegment[]} segments
+  * @param {number} targetX
+  * @param {number} targetY
+  * @param {number} deltaSeconds
+  */
  const updateLeadingSegment = (segments, targetX, targetY, deltaSeconds) => {
  const amount = smoothingAmount(0.05, deltaSeconds)
  segments[0].x += (targetX - segments[0].x) * amount
  segments[0].y += (targetY - segments[0].y) * amount
  }
 
+ /**
+  * @param {RopeSegment[]} segments
+  * @param {number} deltaSeconds
+  */
  const updateFollowingSegments = (segments, deltaSeconds) => {
  for (let i = 1; i < segmentCount; i++) {
  const previousSegment = segments[i - 1]
@@ -101,6 +131,7 @@ export default function RopeCursor({
  }
  }
 
+ /** @param {RopeSegment[]} segments */
  const generateSmoothPath = (segments) => {
  let pathData = `M ${segments[0].x} ${segments[0].y}`
 
@@ -116,11 +147,12 @@ export default function RopeCursor({
  return pathData
  }
 
+ /** @type {number|null} */
  let lastFrameTime = null
 
  const loop = createSuspendedRaf({
  root: svgRef.current,
- onFrame: (time) => {
+ onFrame: (/** @type {number} */ time) => {
  const segments = ropeSegments.current
  const mouse = mousePosition.current
 
@@ -133,7 +165,7 @@ export default function RopeCursor({
  return
  }
 
- updateLeadingSegment(segments, mouse.x, mouse.y, deltaSeconds)
+ updateLeadingSegment(segments, mouse.x, /** @type {number} */ (mouse.y), deltaSeconds)
  updateFollowingSegments(segments, deltaSeconds)
 
  if (pathRef.current) {

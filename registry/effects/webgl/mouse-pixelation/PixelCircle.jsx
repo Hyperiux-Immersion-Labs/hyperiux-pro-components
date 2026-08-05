@@ -118,6 +118,11 @@ class PixelCirclesMaterial extends THREE.ShaderMaterial {
 
 extend({ PixelCirclesMaterial });
 
+// pixelCirclesMaterial is a custom shader material registered via extend(),
+// so it isn't part of JSX.IntrinsicElements; reference it through an
+// any-typed tag so JSX accepts it without changing what's rendered.
+const PixelCirclesMaterialTag = /** @type {any} */ ("pixelCirclesMaterial");
+
 const DEFAULT_FIRST_LINE = {
   prefix: "Building ",
   highlight: "Interfaces.",
@@ -138,7 +143,7 @@ const DEFAULT_DESCRIPTION =
   "The Vault is a curated collection of production-ready UI effects built to help developers ship polished interactions faster.";
 
 function PixelCirclesPlane() {
-  const materialRef = useRef(null);
+  const materialRef = useRef(/** @type {PixelCirclesMaterial|null} */ (null));
   const pointerRef = useRef({
     target: { x: INITIAL_POINTER, y: INITIAL_POINTER },
     current: { x: INITIAL_POINTER, y: INITIAL_POINTER },
@@ -199,8 +204,8 @@ function PixelCirclesPlane() {
     isHoveredRef.current = false;
   };
 
-  const onPointerMove = (event) => {
-    const [u, v] = event.uv;
+  const onPointerMove = (/** @type {import('@react-three/fiber').ThreeEvent<PointerEvent>} */ event) => {
+    const [u, v] = /** @type {[number, number]} */ (/** @type {any} */ (event.uv));
     pointerRef.current.target = { x: u, y: v };
   };
 
@@ -239,19 +244,32 @@ function PixelCirclesPlane() {
       onPointerMove={onPointerMove}
     >
       <planeGeometry args={[PLANE_WIDTH, PLANE_HEIGHT]} />
-      <pixelCirclesMaterial ref={materialRef} />
+      <PixelCirclesMaterialTag ref={materialRef} />
     </mesh>
   );
 }
 
+/**
+ * @typedef {Object} PixelationLine
+ * @property {string} [prefix]
+ * @property {string} [highlight]
+ * @property {string} [highlightClassName]
+ * @property {string} [className]
+ */
+
+/**
+ * @param {{firstLine?: PixelationLine, secondLine?: PixelationLine, mobileNotice?: string, description?: string}} props
+ */
 export default function Pixelation({
   firstLine = DEFAULT_FIRST_LINE,
   secondLine = DEFAULT_SECOND_LINE,
   mobileNotice = DEFAULT_MOBILE_NOTICE,
   description = DEFAULT_DESCRIPTION,
 }) {
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
 
   useEffect(() => {
     const gate = createVisibilityGate({

@@ -5,6 +5,7 @@
 import React, { useEffect, useState } from'react'
 import WebGLSliderComp from './WebGLSliderComp';
 
+/** @type {import('./WebGLSliderComp').WebGLSliderImage[]} */
 const images = [
  { src:"https://picsum.photos/seed/wgl0/800/1200", text:"PR.00\n /10" },
  { src:"https://picsum.photos/seed/wgl1/800/1200", text:"PR.01\n /10" },

@@ -100,19 +100,30 @@ const SCROLL_SMOOTHNESS = 0.05;        // reduced from 0.08
 const MAX_SCROLL_VELOCITY = 0.05;      // reduced from 0.1
 const MAX_DEFORMATION = .1;
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @param {number} t
+ */
 function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
+/**
+ * @typedef {Object} CurvedPlaneVerticalProps
+ * @property {any} [routes]
+ */
+
+/** @param {CurvedPlaneVerticalProps} props */
 const CurvedPlaneVertical = ({ routes }) => {
   const uid = useId().replace(/:/g, "");
   const sectionId = `curved-swiper-vertical-${uid}`;
-  const containerRef = useRef(null);
-  const sceneRef = useRef();
-  const cameraRef = useRef();
-  const rendererRef = useRef();
-  const meshesRef = useRef([]);
-  const texturesRef = useRef([]);
+  const containerRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const sceneRef = useRef(/** @type {THREE.Scene|undefined} */ (undefined));
+  const cameraRef = useRef(/** @type {THREE.PerspectiveCamera|undefined} */ (undefined));
+  const rendererRef = useRef(/** @type {THREE.WebGLRenderer|undefined} */ (undefined));
+  const meshesRef = useRef(/** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */ ([]));
+  const texturesRef = useRef(/** @type {(THREE.Texture|null)[]} */ ([]));
   const lastScrollTime = useRef(0);
   const offsetRef = useRef(0);
   const targetOffsetRef = useRef(0);
@@ -155,7 +166,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     if (!imagesLoaded) return;
 
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const onReduceMotionChange = (event) => {
+    const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         velocityRef.current = 0;
@@ -169,7 +180,7 @@ const CurvedPlaneVertical = ({ routes }) => {
       mq.addEventListener?.("change", onReduceMotionChange);
     }
 
-    const container = containerRef.current;
+    const container = /** @type {HTMLElement} */ (containerRef.current);
     const viewHeight = window.innerHeight;
     const viewWidth = window.innerWidth;
     const scene = new THREE.Scene();
@@ -193,6 +204,7 @@ const CurvedPlaneVertical = ({ routes }) => {
     rendererRef.current = renderer;
 
     const geometry = new THREE.PlaneGeometry(1, 1, 50, 50);
+    /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
     const meshes = [];
     const totalMeshes = (VISIBLE_ROWS + 2) * NUM_COLUMNS;
 
@@ -253,6 +265,7 @@ const CurvedPlaneVertical = ({ routes }) => {
           );
         }
 
+        /** @type {number|undefined} */
         let xPos;
         if (tablet) {
           if (col === 0) {
@@ -270,7 +283,7 @@ const CurvedPlaneVertical = ({ routes }) => {
         const direction = col === 1 ? -1 : 1;
         const yPos = (baseY - yOffset) * direction;
 
-        mesh.position.set(xPos, yPos, 0);
+        mesh.position.set(/** @type {number} */ (xPos), yPos, 0);
 
         // Always full opacity - no fading
         mesh.material.uniforms.uAlpha.value = 1.0;
@@ -335,9 +348,9 @@ const CurvedPlaneVertical = ({ routes }) => {
     };
     window.addEventListener("resize", onResize);
 
-    const getPointerY = (e) => (e.touches ? e.touches[0].clientY : e.clientY);
+    const getPointerY = (/** @type {MouseEvent|TouchEvent} */ e) => ("touches" in e ? e.touches[0].clientY : e.clientY);
 
-    const onPointerDown = (e) => {
+    const onPointerDown = (/** @type {MouseEvent|TouchEvent} */ e) => {
       dragging.current = true;
       lastY.current = getPointerY(e);
       lastTime.current = Date.now();
@@ -347,7 +360,7 @@ const CurvedPlaneVertical = ({ routes }) => {
       e.preventDefault();
     };
 
-    const onPointerMove = (e) => {
+    const onPointerMove = (/** @type {MouseEvent|TouchEvent} */ e) => {
       if (!dragging.current) return;
       const currentY = getPointerY(e);
       const currentTime = Date.now();
@@ -391,7 +404,7 @@ const CurvedPlaneVertical = ({ routes }) => {
       document.body.style.userSelect = "";
     };
 
-    const onWheel = (e) => {
+    const onWheel = (/** @type {WheelEvent} */ e) => {
       const delta = e.deltaY / 100;
       targetOffsetRef.current += delta * 0.12;   // reduced from 0.25
 

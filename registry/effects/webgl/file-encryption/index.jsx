@@ -3,6 +3,10 @@
 import React from 'react'
 import { FileEncryptionComp } from './FileEncryptionComp';
 
+/**
+ * @param {number} index
+ * @param {number} salt
+ */
 function seededUnit(index, salt) {
   const value = Math.sin(index * 91.713 + salt * 37.529) * 10000;
   return value - Math.floor(value);

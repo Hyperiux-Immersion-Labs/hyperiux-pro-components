@@ -14,6 +14,37 @@ function prefersReducedMotion() {
     return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
+/**
+ * @typedef {Object} DraggableMarqueeItem
+ * @property {string|number} [id]
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {string} [title]
+ * @property {number} [width]
+ * @property {number} [height]
+ * @property {string} [imageClassName]
+ */
+
+/**
+ * @typedef {Object} DraggableMarqueeCompProps
+ * @property {DraggableMarqueeItem[]} [items]
+ * @property {number} [speed]
+ * @property {number} [repeatCount]
+ * @property {string} [gapClassName]
+ * @property {string} [className]
+ * @property {string} [trackClassName]
+ * @property {string} [itemClassName]
+ * @property {boolean} [pauseOnHover]
+ * @property {(item: DraggableMarqueeItem, index: number) => import('react').ReactNode} [renderItem]
+ * @property {number} [throwMultiplier]
+ * @property {number} [throwFriction]
+ * @property {number} [maxThrowVelocity]
+ * @property {number} [initialOffset]
+ * @property {number} [loopStart]
+ * @property {number} [loopEndMultiplier]
+ */
+
+/** @param {DraggableMarqueeCompProps} props */
 const DraggableMarqueeComp = ({
     items = [],
     speed = 1,
@@ -35,9 +66,9 @@ const DraggableMarqueeComp = ({
     loopStart = 0,
     loopEndMultiplier = -1.02,
 }) => {
-    const rootRef = useRef(null);
-    const trackRef = useRef(null);
-    const dragRef = useRef(null);
+    const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const trackRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const dragRef = useRef(/** @type {InstanceType<typeof Draggable>|null} */ (null));
 
     const duplicatedItems = useMemo(() => {
         return Array.from({ length: repeatCount }).flatMap(() => items);
@@ -57,19 +88,22 @@ const DraggableMarqueeComp = ({
         let lastDragX = 0;
         let lastDragTime = 0;
 
+        /** @type {(value: number) => number} */
         let wrapValue = (value) => value;
+        /** @type {number|null} */
         let resizeRaf = null;
 
         // Reduced motion: keep the marquee draggable (user-initiated, not
         // imposed motion) but stop the automatic continuous auto-scroll.
         const reducedMotion = prefersReducedMotion();
 
+        /** @type {ResizeObserver[]} */
         const observers = [];
         const setX = gsap.quickSetter(track, "x", "px");
 
         const getGap = () => {
             const styles = window.getComputedStyle(track);
-            return parseFloat(styles.columnGap || styles.gap || 0);
+            return parseFloat(styles.columnGap || styles.gap || "0");
         };
 
         const buildWrap = () => {
@@ -94,6 +128,7 @@ const DraggableMarqueeComp = ({
             return (wrapped - min) / range;
         };
 
+        /** @param {number} progress */
         const setProgressInLoop = (progress) => {
             if (!singleSetWidth) return;
 
@@ -106,7 +141,7 @@ const DraggableMarqueeComp = ({
             setX(x);
 
             if (dragRef.current) {
-                dragRef.current.x = x;
+                /** @type {any} */ (dragRef.current).x = x;
             }
         };
 
@@ -265,6 +300,7 @@ const DraggableMarqueeComp = ({
         // offscreen or the tab is hidden - never sleep the global gsap.ticker,
         // which is shared by every other GSAP animation on the page.
         let tickerAttached = true;
+        /** @param {boolean} active */
         const setTickerAttached = (active) => {
             if (active === tickerAttached) return;
             tickerAttached = active;

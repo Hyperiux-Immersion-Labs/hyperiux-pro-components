@@ -7,6 +7,18 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
+/**
+ * @typedef {Object} MaskedContainerProps
+ * @property {any} size
+ * @property {{x: number, y: number}} initialPosition
+ * @property {string} [className]
+ * @property {HTMLVideoElement|null} video
+ * @property {{width: number, height: number}} canvasSize
+ * @property {(size: any, position: {x: number, y: number}) => void} onPositionUpdate
+ * @property {(hovering: boolean) => void} [onHoverChange]
+ */
+
+/** @param {MaskedContainerProps} props */
 export default function MaskedContainer({
   size,
   initialPosition,
@@ -16,8 +28,8 @@ export default function MaskedContainer({
   onPositionUpdate,
   onHoverChange,
 }) {
-  const maskRef = useRef(null);
-  const canvasRef = useRef(null);
+  const maskRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const [position, setPosition] = useState(initialPosition);
 
   // Canvas drawing function for individual mask
@@ -27,7 +39,7 @@ export default function MaskedContainer({
 
     if (!canvas || !video || !maskElement) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
     const rect = maskElement.getBoundingClientRect();
 
     // Set canvas size to match mask

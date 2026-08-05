@@ -11,15 +11,23 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
+/**
+ * @typedef {Object} PageFlipTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {number} [duration]
+ * @property {string} [bgColor]
+ */
+
+/** @param {PageFlipTransitionProps} props */
 export default function PageFlipTransition({
   children,
   duration = 0.9,
   bgColor = '#ff5f00',
 }) {
-  const wrapperRef = useRef(null)
-  const exitOverlayRef = useRef(null)
-  const enterOverlayRef = useRef(null)
-  const boxesRef = useRef(null)
+  const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const exitOverlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const enterOverlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const boxesRef = useRef(/** @type {HTMLDivElement | null} */ (null))
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -36,7 +44,7 @@ export default function PageFlipTransition({
     })
 
     // Boxes hidden initially
-    gsap.set(boxesRef.current.children, { scaleY: 0 })
+    gsap.set(/** @type {HTMLDivElement} */ (boxesRef.current).children, { scaleY: 0 })
 
     requestAnimationFrame(() => setMounted(true))
   }, [])
@@ -50,7 +58,7 @@ export default function PageFlipTransition({
         if (prefersReducedMotion()) {
           tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)
           tl.set(enterOverlayRef.current, { rotation: -90, transformOrigin: 'bottom right' }, 0)
-          tl.set(boxesRef.current.children, { scaleY: 0 }, 0)
+          tl.set(/** @type {HTMLDivElement} */ (boxesRef.current).children, { scaleY: 0 }, 0)
           tl.to(wrapperRef.current, { opacity: 0, duration: 0.25, ease: 'power1.out' }, 0)
           return () => tl.kill()
         }
@@ -75,7 +83,7 @@ export default function PageFlipTransition({
         )
 
         // Boxes scale up from bottom once overlay is mostly covering screen
-        tl.to(boxesRef.current.children, {
+        tl.to(/** @type {HTMLDivElement} */ (boxesRef.current).children, {
           scaleY: 1,
           transformOrigin: 'bottom',
           duration: 0.4,
@@ -96,7 +104,7 @@ export default function PageFlipTransition({
         if (prefersReducedMotion()) {
           tl.set(exitOverlayRef.current, { rotation: -90, transformOrigin: 'bottom left' }, 0)
           tl.set(enterOverlayRef.current, { rotation: -90, transformOrigin: 'bottom right' }, 0)
-          tl.set(boxesRef.current.children, { scaleY: 0 }, 0)
+          tl.set(/** @type {HTMLDivElement} */ (boxesRef.current).children, { scaleY: 0 }, 0)
           tl.fromTo(wrapperRef.current,
             { opacity: 0 },
             { opacity: 1, duration: 0.25, ease: 'power1.out', clearProps: 'all' },
@@ -112,7 +120,7 @@ export default function PageFlipTransition({
         tl.set(enterOverlayRef.current, { rotation: 0, transformOrigin: 'bottom right' }, 0)
 
         // Boxes scale down from top first
-        tl.to(boxesRef.current.children, {
+        tl.to(/** @type {HTMLDivElement} */ (boxesRef.current).children, {
           scaleY: 0,
           transformOrigin: 'top',
           duration: 0.35,

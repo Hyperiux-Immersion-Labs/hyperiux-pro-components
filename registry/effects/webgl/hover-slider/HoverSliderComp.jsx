@@ -87,16 +87,45 @@ void main() {
 }
 `;
 
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ */
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+/**
+ * @param {number} start
+ * @param {number} end
+ * @param {number} amount
+ */
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
+/** @param {string} src */
 function getTextureUrl(src) {
   return src;
 }
 
+/**
+ * @typedef {Object} HoverSliderItem
+ * @property {string} id
+ * @property {string} title
+ * @property {string} focus
+ * @property {string} year
+ * @property {string} img
+ */
+
+/**
+ * @typedef {Object} HoverSliderGlApi
+ * @property {(index: number) => void} setActive
+ * @property {(targetIdx: number) => void} show
+ * @property {() => void} hide
+ * @property {(targetIdx: number) => void} onRowChange
+ */
+
+/** @param {{items?: HoverSliderItem[]}} props */
 export default function HoverSliderComp({ items = [] }) {
-  const mountRef = useRef(null);
-  const glRef = useRef(null);
+  const mountRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const glRef = useRef(/** @type {HoverSliderGlApi|null} */ (null));
   const isDesktopRef = useRef(false);
 
   const stateRef = useRef({
@@ -107,7 +136,9 @@ export default function HoverSliderComp({ items = [] }) {
 
   const DESKTOP_BREAKPOINT = 1025;
 
-  const [highlightedIndex, setHighlightedIndex] = useState(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(
+    /** @type {number|null} */ (null)
+  );
 
   useEffect(() => {
     if (!items.length) return;
@@ -175,9 +206,9 @@ export default function HoverSliderComp({ items = [] }) {
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = "anonymous";
-    const texCache = {};
+    const texCache = /** @type {Record<string, THREE.Texture>} */ ({});
 
-    const getTexture = (src) => {
+    const getTexture = (/** @type {string} */ src) => {
       if (!src) return null;
 
       const textureUrl = getTextureUrl(src);
@@ -217,7 +248,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     items.forEach((item) => getTexture(item.img));
 
-    const syncImageSize = (mesh) => {
+    const syncImageSize = (/** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>} */ mesh) => {
       const texture = mesh.material.uniforms.uTexture.value;
 
       if (!texture?.image) return;
@@ -233,7 +264,7 @@ export default function HoverSliderComp({ items = [] }) {
     let CW = getCardW();
     let CH = getCardH();
 
-    const makeMat = (tex) =>
+    const makeMat = (/** @type {THREE.Texture|null} */ tex) =>
       new THREE.ShaderMaterial({
         uniforms: {
           uTexture: {
@@ -297,7 +328,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     const vel = new THREE.Vector2(0, 0);
 
-    const getCurveForTravel = (targetIdx) => {
+    const getCurveForTravel = (/** @type {number} */ targetIdx) => {
       const travel = Math.abs(targetIdx - floatIdx);
       const progress = clamp((travel - 0.35) / 3.5, 0, 1);
       const eased = progress * progress * (3 - 2 * progress);
@@ -310,7 +341,7 @@ export default function HoverSliderComp({ items = [] }) {
     );
     let reduceMotion = reduceMotionMq?.matches ?? false;
 
-    const snapStack = (targetIdx = stateRef.current.activeIndex) => {
+    const snapStack = (/** @type {number} */ targetIdx = stateRef.current.activeIndex) => {
       curveAnim.value = 0;
       curveAnim.zoom = 1.06;
       floatIdx = targetIdx;
@@ -319,7 +350,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     // Reduced-motion: swap images with opacity instead of sliding the stack.
-    const fadeToIndex = (targetIdx) => {
+    const fadeToIndex = (/** @type {number} */ targetIdx) => {
       gsap.killTweensOf(curveAnim);
 
       const reveal = () => {
@@ -346,7 +377,7 @@ export default function HoverSliderComp({ items = [] }) {
       });
     };
 
-    const onReduceMotionChange = (event) => {
+    const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotion = event.matches;
 
       if (reduceMotion) {
@@ -357,7 +388,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
 
-    const releaseCurve = (targetIdx = stateRef.current.activeIndex) => {
+    const releaseCurve = (/** @type {number} */ targetIdx = stateRef.current.activeIndex) => {
       if (reduceMotion) {
         fadeToIndex(targetIdx);
         return;
@@ -385,7 +416,7 @@ export default function HoverSliderComp({ items = [] }) {
         });
     };
 
-    const show = (targetIdx) => {
+    const show = (/** @type {number} */ targetIdx) => {
       if (reduceMotion) {
         fadeToIndex(targetIdx);
         return;
@@ -432,7 +463,7 @@ export default function HoverSliderComp({ items = [] }) {
       });
     };
 
-    const onRowChange = (targetIdx) => {
+    const onRowChange = (/** @type {number} */ targetIdx) => {
       releaseCurve(targetIdx);
     };
 
@@ -566,7 +597,7 @@ export default function HoverSliderComp({ items = [] }) {
     loop.start();
 
     glRef.current = {
-      setActive: (index) => {
+      setActive: (/** @type {number} */ index) => {
         stateRef.current.activeIndex = index;
       },
       show,
@@ -600,7 +631,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
   }, [items]);
 
-  const onEnter = useCallback((index) => {
+  const onEnter = useCallback((/** @type {number} */ index) => {
     if (isDesktopRef.current) {
       const wasHovering = stateRef.current.hovering;
 
@@ -642,7 +673,7 @@ export default function HoverSliderComp({ items = [] }) {
     }
   }, []);
 
-  const onLeave = useCallback((event) => {
+  const onLeave = useCallback((/** @type {import('react').PointerEvent} */ event) => {
     if (event.pointerType === "touch") return;
     if (stateRef.current.hasClicked) return;
 
@@ -653,7 +684,7 @@ export default function HoverSliderComp({ items = [] }) {
     glRef.current?.hide();
   }, []);
 
-  const activateRow = useCallback((index) => {
+  const activateRow = useCallback((/** @type {number} */ index) => {
     if (isDesktopRef.current) return;
 
     const wasHovering = stateRef.current.hovering;
@@ -681,7 +712,7 @@ export default function HoverSliderComp({ items = [] }) {
       style={{ cursor: "crosshair" }}
     >
       <div className="relative z-20 w-full overflow-x-auto pb-8 max-md:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">
-        <div className="absolute right-[-50%] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-md:hidden">
+        <div className="absolute right-[-40vw] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-md:hidden">
           Tip: hover the list rows - watch the images move and reveal.
         </div>
 

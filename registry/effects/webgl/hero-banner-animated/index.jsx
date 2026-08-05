@@ -1,10 +1,12 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
 
 import React, { useRef, useEffect, useCallback, useState } from'react'
 import { Canvas, useThree, useFrame } from'@react-three/fiber'
 import { Environment, Center } from'@react-three/drei'
 import RoomModel from'./RoomModel'
-import { degToRad } from'three/src/math/MathUtils'
+import { degToRad } from'three/src/math/MathUtils.js'
 import gsap from'gsap'
 import CustomGrainNoise from'./CustomGrainNoise'
 import { EffectComposer } from'@react-three/postprocessing'
@@ -13,8 +15,20 @@ import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import { createVisibilityGate } from './createSuspendedRaf'
-import Link from 'next/link'
-import { usePrefersReducedMotion } from '@/lib/motion'
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setPrefersReducedMotion(mediaQuery.matches)
+    update()
+    mediaQuery.addEventListener('change', update)
+    return () => mediaQuery.removeEventListener('change', update)
+  }, [])
+
+  return prefersReducedMotion
+}
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -32,11 +46,12 @@ const CAMERA_CONFIG = {
   mobile:  { zoomedZ: 6.0, outZ: 7.9 }
 }
 
+/** @param {{lightRef: import('react').RefObject<import('three').PointLight|null>}} props */
 function MovingPointLight({ lightRef }) {
   const { gl } = useThree()
   const targetRef = useRef({ x: 0, y: 0 })
 
-  const handlePointerMove = useCallback((event) => {
+  const handlePointerMove = useCallback((/** @type {MouseEvent} */ event) => {
     const rect = gl.domElement.getBoundingClientRect()
     targetRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     targetRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
@@ -71,9 +86,17 @@ function MovingPointLight({ lightRef }) {
   )
 }
 
+/**
+ * @param {{
+ *   isZoomed: boolean,
+ *   setIsZoomed: (value: boolean|((prev: boolean) => boolean)) => void,
+ *   videoRef: import('react').RefObject<HTMLVideoElement|null>,
+ *   deviceType: 'desktop'|'tablet'|'mobile'
+ * }} props
+ */
 function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
-  const groupRef = useRef()
-  const lightRef = useRef()
+  const groupRef = useRef(/** @type {import('three').Group|null} */ (null))
+  const lightRef = useRef(/** @type {import('three').PointLight|null} */ (null))
   const { camera } = useThree()
   const [environmentIntensity, setEnvironmentIntensity] = useState(ENV_INTENSITY_CONFIG.out)
 
@@ -82,13 +105,13 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
     light: ENV_INTENSITY_CONFIG.lightOut
   })
 
-  const handleModelClick = useCallback((e) => {
+  const handleModelClick = useCallback((/** @type {any} */ e) => {
     e?.stopPropagation()
     setIsZoomed(prev => !prev)
   }, [setIsZoomed])
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (/** @type {KeyboardEvent} */ e) => {
       if (e.key === "Escape") setIsZoomed(false)
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -105,10 +128,10 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 
     if (isZoomed) {
       gsap.to(camera.position, { x: 0, y: 0.05, z: cfg.zoomedZ, duration, ease })
-      gsap.to(groupRef.current.rotation, { x: 0, y: 0, z: 0, duration, ease })
+      gsap.to(/** @type {import('three').Group} */ (groupRef.current).rotation, { x: 0, y: 0, z: 0, duration, ease })
     } else {
       gsap.to(camera.position, { x: 0, y: 0, z: cfg.outZ, duration, ease })
-      gsap.to(groupRef.current.rotation, { x: 0, y: 0, z: degToRad(-5), duration, ease })
+      gsap.to(/** @type {import('three').Group} */ (groupRef.current).rotation, { x: 0, y: 0, z: degToRad(-5), duration, ease })
     }
 
     gsap.to(intensityState.current, {
@@ -149,14 +172,17 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 }
 
 export default function HeroBannerAnimated() {
-  const rootRef = useRef(null)
-  const [frameloop, setFrameloop] = useState('always')
+  const rootRef = useRef(/** @type {HTMLElement|null} */ (null))
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ('always')
+  )
   const [isZoomed, setIsZoomed] = useState(false)
-  const [deviceType, setDeviceType] = useState('desktop')
-  const videoRef = useRef(null)
+  const [deviceType, setDeviceType] = useState(
+    /** @type {'desktop'|'tablet'|'mobile'} */ ('desktop')
+  )
+  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null))
   const isMobile = deviceType === 'mobile'
   const prefersReducedMotion = usePrefersReducedMotion()
-
 
   useEffect(() => {
     const gate = createVisibilityGate({
@@ -198,7 +224,7 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section ref={rootRef} className="w-full h-screen overflow-hidden bg-black relative">
+      <section ref={rootRef} className="w-full h-screen bg-black relative">
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -208,15 +234,15 @@ export default function HeroBannerAnimated() {
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
               className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-md:py-[8vw] max-md:px-[5vw]'
             >
-              <div className='flex items-start max-md:hidden pt-[2vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
-                <motion.h1
+              <div className='flex items-start pt-[5vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
+                <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-                  className='text-[15vw] font-semibold leading-[0.6]! tracking-tight max-md:text-[28vw]'
+                  className='text-[20vw] font-semibold leading-1 tracking-tight max-md:text-[28vw]'
                 >
                   HXR
-                </motion.h1>
+                </motion.p>
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -233,7 +259,7 @@ export default function HeroBannerAnimated() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className='text-[15vw] max-md:hidden max-md:pt-auto pt-[30vh] max-md:pt-[50vh] font-semibold tracking-tight text-right w-full max-md:text-[28vw]'
+                className='text-[20vw] font-semibold tracking-tight text-right w-full max-md:text-[28vw]'
               >
                 UI
               </motion.p>
@@ -242,17 +268,13 @@ export default function HeroBannerAnimated() {
  initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-  className='absolute flex items-center justify-center gap-5 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
+  className='absolute flex items-center justify-center gap-2 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
+  <a href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </Link>
-  <Play className='w-4 h-4 max-[1025px]:hidden' fill='#ECE4B4' />
-  <Link prefetch={false} href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
-    Read Article
-  </Link>
+  </a>
 
-  
+  <Play className='w-4 h-4 max-[1025px]:hidden' fill='#ECE4B4' />
 </motion.p>
 
               <motion.div
@@ -317,9 +339,9 @@ export default function HeroBannerAnimated() {
         )}
 
         {prefersReducedMotion && (
-          <div
+           <div
             aria-live="polite"
-            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
+            className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
           >
             <h2 className="text-sm leading-none text-white">
               The light keeps tracking.

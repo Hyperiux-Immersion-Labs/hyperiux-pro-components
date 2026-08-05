@@ -1,8 +1,16 @@
 import React, { useRef, useEffect } from'react';
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
+/**
+ * @typedef {Object} VideoUIProps
+ * @property {boolean} isZoomed
+ * @property {(value: boolean) => void} setIsZoomed
+ * @property {import('react').RefObject<HTMLVideoElement|null>} videoRef
+ */
+
+/** @param {VideoUIProps} props */
 const VideoUI = ({ isZoomed, setIsZoomed, videoRef }) => {
- const progressRef = useRef(null);
+ const progressRef = useRef(/** @type {HTMLDivElement|null} */ (null));
 
  useEffect(() => {
  const loop = createSuspendedRaf({

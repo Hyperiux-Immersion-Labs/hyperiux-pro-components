@@ -3,6 +3,7 @@ import { Point, lerpAngle } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
+  /** @param {Point} position */
   constructor(position) {
     this.pos = position;
     this.dx = 0;
@@ -11,6 +12,10 @@ class Arrow {
     this.rotationEase = 0.12;
   }
 
+  /**
+   * @param {number} mouseX
+   * @param {number} mouseY
+   */
   update(mouseX, mouseY) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
@@ -19,6 +24,7 @@ class Arrow {
     this.angle = lerpAngle(this.angle, targetAngle, this.rotationEase);
   }
 
+  /** @param {CanvasRenderingContext2D} ctx */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
@@ -38,23 +44,23 @@ class Arrow {
 }
 
 const ArrowsPlay = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const mouseRef = useRef({ x: 0, y: 0 });
-  const arrowsRef = useRef([]);
-  const divRef = useRef(null); // For the center div with text
+  const arrowsRef = useRef(/** @type {Arrow[]} */ ([]));
+  const divRef = useRef(/** @type {HTMLDivElement|null} */ (null)); // For the center div with text
 
-  const initializeArrows = useCallback((canvas) => {
+  const initializeArrows = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
     const arrows = [];
     const spacing = 120;
-    
+
     const cols = Math.floor(canvas.width / spacing);
     const rows = Math.floor(canvas.height / spacing);
-    
+
     const xPadding = (canvas.width - (cols * spacing)) / 2;
     const yPadding = (canvas.height - (rows * spacing)) / 2;
-  
+
     // Get div position relative to canvas
-    const divRect = divRef.current.getBoundingClientRect();
+    const divRect = /** @type {HTMLDivElement} */ (divRef.current).getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
     
     const divLeft = divRect.left - canvasRect.left;
@@ -96,11 +102,12 @@ const ArrowsPlay = () => {
     }
   }, [initializeArrows]);
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();  
-    
+    const rect = canvas.getBoundingClientRect();
+
+
     if (
       e.clientX >= rect.left &&
       e.clientX <= rect.right &&
@@ -117,7 +124,7 @@ const ArrowsPlay = () => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
 
@@ -130,7 +137,7 @@ const ArrowsPlay = () => {
   }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
     const { width, height } = canvas.getBoundingClientRect();
     canvas.width = width;
     canvas.height = height;

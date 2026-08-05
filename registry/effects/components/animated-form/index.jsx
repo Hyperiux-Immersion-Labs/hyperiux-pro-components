@@ -5,6 +5,7 @@
 import { z } from "zod";
 import ContactForm from "./ContactForm";
 
+/** @type {import('./ContactForm').FieldConfig[]} */
 const FIELDS = [
  { type:"text", name:"name", label:"Name*", required: true },
  { type:"email", name:"email", label:"Business Email*", required: true },
@@ -30,11 +31,13 @@ const FIELDS = [
 
 // Phone values are stored as "+<dial> <number>" (e.g. "+91 9876543210").
 // Strip the leading dial code so we count only the national number's digits.
+/** @type {(val: string) => string} */
 const nationalDigits = (val) => val.replace(/^\+\d+\s*/, "").replace(/\D/g, "");
 
 // Valid national-number digit ranges per dial code (E.164, trunk prefix
 // excluded). A single "exactly 10" rule rejects every valid number from
 // Ireland, Australia, France, the UAE and Singapore.
+/** @type {Record<string, [number, number]>} */
 const NATIONAL_LENGTH_BY_DIAL = {
  "+91": [10, 10], // India
  "+353": [7, 9], // Ireland
@@ -51,6 +54,7 @@ const NATIONAL_LENGTH_BY_DIAL = {
 // (e.g. UK 07123 456789) - drop it before checking the length.
 const TRUNK_ZERO_DIALS = new Set(["+44", "+353", "+61", "+49", "+33", "+971"]);
 
+/** @type {(val: string) => boolean} */
 const isValidPhone = (val) => {
  const dial = val.match(/^(\+\d+)\s/)?.[1];
  let digits = nationalDigits(val);
@@ -60,7 +64,7 @@ const isValidPhone = (val) => {
  }
 
  // Unknown dial code (custom countries prop): fall back to E.164 bounds.
- const [min, max] = NATIONAL_LENGTH_BY_DIAL[dial] ?? [6, 14];
+ const [min, max] = NATIONAL_LENGTH_BY_DIAL[dial ?? ""] ?? [6, 14];
  return digits.length >= min && digits.length <= max;
 };
 
@@ -91,6 +95,7 @@ const contactSchema = z.object({
  }),
 });
 
+/** @param {Record<string, any>} data */
 async function submitHandler(data) {
  console.log("Contact form submitted:", data);
 }

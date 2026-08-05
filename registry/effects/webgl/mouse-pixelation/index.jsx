@@ -27,6 +27,7 @@ const VARIANTS = {
   "enhanced-pixel-cube": EnhancedPixelCube,
 };
 
+/** @type {{label: string, value: MousePixelationVariant}[]} */
 const VERSIONS = [
   {
     label: "V1",
@@ -44,13 +45,20 @@ const VERSIONS = [
 
 const DEFAULT_PIXEL_SHIFT_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
 
+/**
+ * @typedef {'pixel-circle'|'pixel-shift'|'enhanced-pixel-cube'} MousePixelationVariant
+ */
+
+/**
+ * @param {{variant?: MousePixelationVariant, imageUrl?: string} & Record<string, any>} props
+ */
 export default function MousePixelation({
   variant = "pixel-shift",
   imageUrl = DEFAULT_PIXEL_SHIFT_IMAGE,
   ...props
 }) {
   const [activeVariant, setActiveVariant] = useState(
-    VARIANTS[variant] ? variant : "pixel-shift"
+    /** @type {MousePixelationVariant} */ (VARIANTS[variant] ? variant : "pixel-shift")
   );
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -102,6 +110,9 @@ function CursorMoveCue() {
 
 export { PixelCircle, PixelShift, EnhancedPixelCube };
 
+/**
+ * @param {{activeVariant: string, onVariantChange: (value: MousePixelationVariant) => void}} props
+ */
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
     <nav className="fixed top-4 max-[1025px]:top-5 max-md:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-[1025px]:px-3 max-[1025px]:py-2  max-md:px-2 max-md:py-1.5">
