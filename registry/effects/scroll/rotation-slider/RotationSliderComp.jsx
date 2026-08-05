@@ -44,11 +44,23 @@ const useIsomorphicLayoutEffect =
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} RotationSliderImage
+ * @property {string} [src]
+ * @property {string} [text]
+ */
+
+/**
+ * @typedef {Object} RotationSliderCompProps
+ * @property {RotationSliderImage[]} images
+ */
+
+/** @param {RotationSliderCompProps} props */
 export function RotationSliderComp({ images }) {
-    const outerRef = useRef(null);
-    const trackRef = useRef(null);
-    const cardsRef = useRef([]);
-    const wrappersRef = useRef([]);
+    const outerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const trackRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+    const cardsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+    const wrappersRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
     const reducedMotion = prefersReducedMotion();
 
     useEffect(() => {
@@ -233,7 +245,15 @@ export function RotationSliderComp({ images }) {
     );
 }
 
-const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
+/**
+ * @typedef {Object} RotationCardProps
+ * @property {string} [src]
+ * @property {number} index
+ * @property {number} total
+ * @property {string} [text]
+ */
+
+const RotationCard = forwardRef(/** @type {import('react').ForwardRefRenderFunction<HTMLDivElement, RotationCardProps>} */ (({ src, index, total, text }, ref) => {
     return (
         <div
             ref={ref}
@@ -269,6 +289,6 @@ const RotationCard = forwardRef(({ src, index, total, text }, ref) => {
             )}
         </div>
     );
-});
+}));
 
 RotationCard.displayName = "RotationCard";

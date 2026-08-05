@@ -6,10 +6,25 @@ import { ArrowRight } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
 
 const DEFAULT_HREF = "#";
+const DEFAULT_BTN_TEXT = "Hover me";
 const TABLET_BREAKPOINT = 1025;
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
+ *   icon?: import('react').ComponentType<{ className?: string }>,
+ *   iconClassName?: string,
+ *   disableNavigation?: boolean,
+ *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} LinkButtonProps
+ */
+
+/** @param {LinkButtonProps} props */
 export default function LinkButton({
-  btnText,
+  btnText = DEFAULT_BTN_TEXT,
   href = DEFAULT_HREF,
   className = "",
   linkProps = {},
@@ -37,6 +52,7 @@ export default function LinkButton({
     };
   }, []);
 
+  /** @param {import('react').MouseEvent<HTMLAnchorElement>} event */
   const onLinkClick = (event) => {
     setIsIconRotated((previousValue) => !previousValue);
 

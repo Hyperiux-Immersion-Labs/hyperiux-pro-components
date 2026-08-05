@@ -54,14 +54,33 @@ const LERP_AMOUNT = 0.18;
 const SCALE_OUT_MIN = 0.68;
 const SCALE_OUT_MAX = 1.48;
 
+/**
+ * @param {number} v
+ * @param {number} min
+ * @param {number} max
+ */
 function clamp(v, min, max) {
  return Math.max(min, Math.min(max, v));
 }
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @param {number} t
+ */
 function lerp(a, b, t) {
  return a + (b - a) * t;
 }
 
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {HTMLImageElement} img
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @param {number} [r]
+ */
 function drawRoundedImage(ctx, img, x, y, w, h, r = 0) {
  if (!img?.complete || img.naturalWidth <= 0) return;
 
@@ -97,9 +116,9 @@ function drawRoundedImage(ctx, img, x, y, w, h, r = 0) {
 }
 
 export default function ImageTrail() {
- const wrapRef = useRef(null);
- const canvasRef = useRef(null);
- const imagesRef = useRef([]);
+ const wrapRef = useRef(/** @type {HTMLElement|null} */ (null));
+ const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+ const imagesRef = useRef(/** @type {HTMLImageElement[]} */ ([]));
 
  const pointer = useRef({ x: 0, y: 0 });
  const lerpedPointer = useRef({ x: 0, y: 0 }); // lerped pointer position
@@ -119,9 +138,9 @@ export default function ImageTrail() {
 
  imagesRef.current = imgs;
 
- const canvas = canvasRef.current;
- const wrap = wrapRef.current;
- const ctx = canvas.getContext("2d");
+ const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+ const wrap = /** @type {HTMLElement} */ (wrapRef.current);
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
 
  function resize() {
  const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -143,6 +162,7 @@ export default function ImageTrail() {
  resize();
  window.addEventListener("resize", resize);
 
+ /** @param {number} now */
  function frame(now) {
  const W = wrap.clientWidth;
  const H = wrap.clientHeight;
@@ -306,7 +326,7 @@ export default function ImageTrail() {
  };
  }, []);
 
- const updatePointer = useCallback((e) => {
+ const updatePointer = useCallback((/** @type {import('react').PointerEvent<HTMLElement>} */ e) => {
  const rect = wrapRef.current?.getBoundingClientRect();
  if (!rect) return;
  // On mouse move, we set pointer to the actual event location (no lerp here).

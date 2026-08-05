@@ -69,7 +69,22 @@ const POINT_FRAG = /* glsl */ `
   }
 `;
 
-// Component 
+/**
+ * @typedef {Object} SpiderParticlesProps
+ * @property {number} [particleCount]
+ * @property {number} [gridGap]
+ * @property {number} [particleSize]
+ * @property {number} [mouseConnectDist]
+ * @property {number} [spotlightRadius]
+ * @property {boolean} [particlesGlow]
+ * @property {string | number} [glowColor]
+ * @property {string | number} [particleColor]
+ * @property {string | number} [webColor]
+ * @property {string | number} [centerColor]
+ */
+
+// Component
+/** @param {SpiderParticlesProps} props */
 export default function SpiderParticles({
   particleCount = 180,
   gridGap = 0,
@@ -82,7 +97,7 @@ export default function SpiderParticles({
   webColor = 0xffffff,
   centerColor = 0xffffff,
 }) {
-  const mountRef = useRef(null);
+  const mountRef = useRef(/** @type {HTMLDivElement | null} */ (null));
   const [active, setActive] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
@@ -121,6 +136,7 @@ export default function SpiderParticles({
 
     const isDesktop = () => window.innerWidth >= 1025;
 
+    /** @param {MouseEvent} e */
     const onMove = (e) => {
       if (!isDesktop()) return;
       const rect = mount.getBoundingClientRect();
@@ -131,6 +147,7 @@ export default function SpiderParticles({
       setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
+    /** @param {MouseEvent} e */
     const onEnter = (e) => {
       if (!isDesktop()) return;
       // Capture exact entry position so smoothMouse can snap without lerp drift
@@ -155,6 +172,7 @@ export default function SpiderParticles({
     mount.addEventListener("mouseenter", onEnter);
     mount.addEventListener("mouseleave", onLeave);
 
+    /** @param {TouchEvent} e */
     const onTouch = (e) => {
       if (!isDesktop()) return;
       const t    = e.touches[0];
@@ -297,6 +315,7 @@ export default function SpiderParticles({
     const reduceMotionMq = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)"
     );
+    /** @param {MediaQueryListEvent} event */
     const onReduceMotionChange = (event) => {
       reduceMotion = event.matches;
     };

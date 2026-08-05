@@ -9,9 +9,10 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
+const DEFAULT_TEXT = <p>Slide from right.</p>;
 
 export default function SlideTextReveal({
-  children,
+  children = DEFAULT_TEXT,
   animateOnScroll = true,
   delay = 0,
   className = "",
@@ -72,7 +73,7 @@ export default function SlideTextReveal({
                 trigger: containerRef.current,
                 start,
                 end,
-                scrub: true,
+                scrub: false,
               },
             });
           } else {
@@ -108,7 +109,7 @@ export default function SlideTextReveal({
               trigger: containerRef.current,
               start,
               end,
-              scrub: true,
+              scrub: false,
               // markers: true,
             },
           });

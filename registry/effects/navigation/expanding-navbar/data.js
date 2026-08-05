@@ -1,3 +1,24 @@
+/**
+ * @typedef {Object} ExpandingNavNestedLink
+ * @property {string} name
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} ExpandingNavSublink
+ * @property {string} name
+ * @property {string} href
+ * @property {ExpandingNavNestedLink[]} [nestedLinks]
+ */
+
+/**
+ * @typedef {Object} ExpandingNavItem
+ * @property {string} name
+ * @property {string} href
+ * @property {ExpandingNavSublink[]} [sublinks]
+ */
+
+/** @type {ExpandingNavItem[]} */
 export const navigationData = [
     {
         name: "About", href: "#",

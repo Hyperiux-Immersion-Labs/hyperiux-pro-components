@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const CharStaggerPrimaryButton = ({
- text ="",
+ text ="Hover me",
  href ="#",
  btnClassName ="",
  textClassName ="",

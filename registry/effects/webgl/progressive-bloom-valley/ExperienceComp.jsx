@@ -51,10 +51,11 @@ export default function Experience() {
  const cameraProps = useMemo(() => {
  const scene = gltf?.scene;
  if (!scene) return null;
- const cam =
+ const cam = /** @type {import('three').PerspectiveCamera} */ (
  scene.getObjectByName("Camera") ||
  scene.getObjectByProperty("type","PerspectiveCamera") ||
- gltf.cameras?.[0];
+ gltf.cameras?.[0]
+ );
  if (!cam) return null;
 
  return {
@@ -80,7 +81,7 @@ export default function Experience() {
  {/* Copy 1: flowers at original position */}
  <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
  {/* Copy 2: same flowers shifted forward - fills the gap at the end */}
- <group position={pathOffset}>
+ <group position={/** @type {any} */ (pathOffset)}>
  <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
  </group>
  </>

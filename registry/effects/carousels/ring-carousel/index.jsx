@@ -5,6 +5,20 @@
 import { useEffect, useState } from "react";
 import RingCarouselComp from "./RingCarouselComp";
 
+/**
+ * @typedef {Object} RingCarouselProps
+ * @property {import('./RingCarouselComp').RingCarouselItem[]} [items]
+ * @property {string} [className]
+ * @property {boolean} [snap]
+ * @property {boolean} [autoPlay]
+ * @property {number} [autoPlayInterval]
+ * @property {boolean} [pauseOnHover]
+ * @property {boolean} [showNavigation]
+ * @property {boolean} [showDots]
+ * @property {(item: import('./RingCarouselComp').RingCarouselItem, index: number) => import('react').ReactNode} [renderItem]
+ */
+
+/** @param {RingCarouselProps & Record<string, any>} props */
 export default function RingCarousel({
  items = imageItems,
  className = "",

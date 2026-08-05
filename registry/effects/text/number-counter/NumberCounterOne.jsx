@@ -7,6 +7,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 const DIGITS = [...Array(10).keys()]; // [0..9]
 
+/**
+ * @typedef {'normal' | 'medium' | 'semibold' | 'bold'} CounterFontWeight
+ */
+
 const FONT_WEIGHTS = {
  normal:"font-normal",
  medium:"font-medium",
@@ -14,8 +18,19 @@ const FONT_WEIGHTS = {
  bold:"font-bold",
 };
 
+/**
+ * @typedef {{
+ *   digit: string,
+ *   duration?: number,
+ *   color?: string,
+ *   trigger: string,
+ *   reducedMotion?: boolean,
+ * }} DigitScrollerProps
+ */
+
+/** @type {import('react').FC<DigitScrollerProps>} */
 const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion = false }) => {
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
  useEffect(() => {
  if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
@@ -59,6 +74,12 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
 
 DigitScroller.displayName ="DigitScroller";
 
+/**
+ * @param {string} value
+ * @param {string | undefined} color
+ * @param {string} trigger
+ * @param {boolean | undefined} reducedMotion
+ */
 const renderDigits = (value, color, trigger, reducedMotion) =>
  value.split("").map((char, i) =>
  /\d/.test(char) ? (
@@ -68,6 +89,26 @@ const renderDigits = (value, color, trigger, reducedMotion) =>
  )
  );
 
+/**
+ * @typedef {Object} CounterStat
+ * @property {string} [prefix]
+ * @property {string} value
+ * @property {string} [suffix]
+ * @property {string} [superSuffix]
+ */
+
+/**
+ * @typedef {{
+ *   stat: CounterStat,
+ *   textColor?: string,
+ *   textSize?: string,
+ *   fontWeight?: CounterFontWeight,
+ *   trigger: string,
+ *   reducedMotion?: boolean,
+ * }} StatItemProps
+ */
+
+/** @type {import('react').FC<StatItemProps>} */
 const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reducedMotion }) => {
  const { prefix, value, suffix, superSuffix } = stat;
 
@@ -76,7 +117,7 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
  <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-md:flex-row max-md:justify-between max-md:pl-[4vw] max-md:gap-[4vw]">
  <h3
  dir="ltr"
- className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-[1025px]:text-[7vw] max-md:text-[12vw] ${textSize}`}
+ className={`${FONT_WEIGHTS[/** @type {CounterFontWeight} */ (fontWeight)] ||"font-normal"} leading-[1.2] flex items-center max-[1025px]:text-[7vw] max-md:text-[12vw] ${textSize}`}
  >
  {prefix && <span style={{ color: textColor }}>{prefix}</span>}
  {renderDigits(value, textColor, trigger, reducedMotion)}
@@ -91,9 +132,15 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
 StatItem.displayName ="StatItem";
 
 /**
- * @param {Object[]} stats
- * @param {string} textColor
- * @param {string} textSize  * @param {string} fontWeight  */
+ * @typedef {Object} NumberCounterOneProps
+ * @property {CounterStat[]} [stats]
+ * @property {string} [textColor]
+ * @property {string} [textSize]
+ * @property {CounterFontWeight} [fontWeight]
+ * @property {boolean} [reducedMotion]
+ */
+
+/** @param {NumberCounterOneProps} props */
 export default function NumberCounterOne({
  stats = [],
  textColor ="black",

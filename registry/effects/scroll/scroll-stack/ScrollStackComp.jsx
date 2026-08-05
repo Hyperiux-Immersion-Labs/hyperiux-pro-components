@@ -6,12 +6,27 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} ScrollStackCard
+ * @property {string|number} id
+ * @property {string} [title]
+ * @property {string} [description]
+ * @property {string} [bgColor]
+ * @property {string} [textColor]
+ */
+
+/**
+ * @typedef {Object} ScrollStackCompProps
+ * @property {ScrollStackCard[]} [cards]
+ */
+
+/** @param {ScrollStackCompProps} props */
 const ScrollStackComp = ({cards = [] }) => {
  const uid = useId().replace(/:/g, "");
  const sectionId = `state-${uid}`;
- const sectionRef = useRef(null);
- const rowRefs = useRef([]);
- const cardRefs = useRef([]);
+ const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
+ const rowRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+ const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
 
  useEffect(() => {
  rowRefs.current = rowRefs.current.slice(0, cards.length);
@@ -134,6 +149,16 @@ const ScrollStackComp = ({cards = [] }) => {
 
 export default ScrollStackComp;
 
+/**
+ * @typedef {Object} ScrollStackCardProps
+ * @property {string} [title]
+ * @property {string} [description]
+ * @property {string} [bgColor]
+ * @property {string} [textColor]
+ * @property {(el: HTMLDivElement|null) => void} [cardRef]
+ */
+
+/** @param {ScrollStackCardProps} props */
 const Card = ({ title, description, bgColor, textColor, cardRef }) => {
  return (
  <div

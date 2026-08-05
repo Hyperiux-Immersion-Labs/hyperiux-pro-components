@@ -32,6 +32,7 @@ const RIGHT_ANGLE_OFFSET = -Math.PI * 0.08;
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** @param {number} value */
 function wrapProgress(value) {
   let wrappedValue = value % 1;
 
@@ -42,6 +43,12 @@ function wrapProgress(value) {
   return wrappedValue;
 }
 
+/**
+ * @param {number} progress
+ * @param {number} radiusX
+ * @param {number} radiusY
+ * @param {number} [angleOffset]
+ */
 function getCircularPosition(progress, radiusX, radiusY, angleOffset = 0) {
   const angle = progress * Math.PI * 2 + angleOffset;
 
@@ -54,6 +61,7 @@ function getCircularPosition(progress, radiusX, radiusY, angleOffset = 0) {
   };
 }
 
+/** @param {number} value */
 function getStrength(value) {
   return gsap.utils.clamp(
     0,
@@ -62,11 +70,56 @@ function getStrength(value) {
   );
 }
 
+/**
+ * @param {number} strength
+ * @param {number} [start]
+ * @param {number} [power]
+ */
 function shapeFocus(strength, start = 0.42, power = 2.8) {
   const normalized = gsap.utils.clamp(0, 1, (strength - start) / (1 - start));
   return Math.pow(normalized, power);
 }
 
+/**
+ * @typedef {Object} CircularSplitRollItem
+ * @property {string|number} [id]
+ * @property {string} [title]
+ * @property {string} [image]
+ * @property {string} [alt]
+ */
+
+/**
+ * @typedef {Object} CircularSplitRollCompProps
+ * @property {CircularSplitRollItem[]} [items]
+ * @property {string} [className]
+ * @property {number} [sectionHeight]
+ * @property {number} [leftRadiusX]
+ * @property {number} [leftRadiusY]
+ * @property {number} [rightRadiusX]
+ * @property {number} [rightRadiusY]
+ * @property {number} [imageCardWidth]
+ * @property {number} [imageCardHeight]
+ * @property {string} [titleSize]
+ * @property {boolean} [pinSpacing]
+ * @property {number} [scrub]
+ * @property {number} [textCenterScale]
+ * @property {number} [textSideScale]
+ * @property {number} [textCenterOpacity]
+ * @property {number} [textSideOpacity]
+ * @property {number} [imageCenterScale]
+ * @property {number} [imageSideScale]
+ * @property {number} [imageCenterOpacity]
+ * @property {number} [imageSideOpacity]
+ * @property {number} [textFocusStart]
+ * @property {number} [textFocusPower]
+ * @property {number} [imageFocusStart]
+ * @property {number} [imageFocusPower]
+ * @property {string} [gridImageClassName]
+ * @property {string} [gridCardClassName]
+ * @property {string} [gridTitleClassName]
+ */
+
+/** @param {CircularSplitRollCompProps} props */
 export function CircularSplitRollComp({
   items = [],
   className = "",
@@ -103,8 +156,8 @@ export function CircularSplitRollComp({
   gridCardClassName = "",
   gridTitleClassName = "",
 }) {
-  const rootRef = useRef(null);
-  const stickyRef = useRef(null);
+  const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const stickyRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const progressRef = useRef(0);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -124,12 +177,12 @@ export function CircularSplitRollComp({
 
     mm.add("(min-width: 769px)", () => {
       const ctx = gsap.context(() => {
-        const leftNodes = gsap.utils.toArray(
+        const leftNodes = /** @type {HTMLElement[]} */ (gsap.utils.toArray(
           ".circular-scroll-showcase__left-item"
-        );
-        const rightNodes = gsap.utils.toArray(
+        ));
+        const rightNodes = /** @type {HTMLElement[]} */ (gsap.utils.toArray(
           ".circular-scroll-showcase__right-item"
-        );
+        ));
 
         const total = safeItems.length;
 
@@ -137,6 +190,7 @@ export function CircularSplitRollComp({
 
         gsap.set([...leftNodes, ...rightNodes], { opacity: 1 });
 
+        /** @param {number} scrollProgress */
         const render = (scrollProgress) => {
           progressRef.current = scrollProgress;
 
@@ -314,11 +368,11 @@ export function CircularSplitRollComp({
     <section
       ref={rootRef}
       className={`relative min-h-screen w-full overflow-clip bg-black text-white ${className}`}
-      style={{
+      style={/** @type {import('react').CSSProperties} */ ({
         "--css-title-size": titleSize,
         "--css-card-width": `${imageCardWidth}px`,
         "--css-card-height": `${imageCardHeight}px`,
-      }}
+      })}
     >
       <div
         ref={stickyRef}

@@ -14,7 +14,7 @@
   "tier": "free",
   "subfolder": true,
   "main": "index.jsx",
-  "exportName": "AnimatedFAQ",
+  "exportName": "AnimatedFaq",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-faq",
   "target": "src/components/effects/animated-faq",
@@ -22,6 +22,10 @@
     {
       "path": "index.jsx",
       "target": "src/components/effects/animated-faq/index.jsx"
+    },
+    {
+      "path": "AnimatedFaqComp.jsx",
+      "target": "src/components/effects/animated-faq/AnimatedFaqComp.jsx"
     }
   ],
   "changelog": [

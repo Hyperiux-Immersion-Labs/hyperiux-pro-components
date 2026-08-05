@@ -11,14 +11,24 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
+/** @returns {boolean} */
 function hasDrawSVGPlugin() {
   return Boolean(gsap.plugins?.drawSVG)
 }
 
+/**
+ * @param {SVGPathElement | null} path
+ * @returns {number}
+ */
 function getPathLength(path) {
   return path?.getTotalLength?.() ?? 0
 }
 
+/**
+ * @param {SVGPathElement | null} path
+ * @param {string} drawSVGValue
+ * @param {number} strokeWidth
+ */
 function setPathDrawState(path, drawSVGValue, strokeWidth) {
   if (!path) return
 
@@ -38,6 +48,12 @@ function setPathDrawState(path, drawSVGValue, strokeWidth) {
   })
 }
 
+/**
+ * @param {SVGPathElement | null} path
+ * @param {string} drawSVGValue
+ * @param {number} strokeWidth
+ * @param {Record<string, any>} [tweenProps]
+ */
 function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
   if (hasDrawSVGPlugin()) {
     return { drawSVG: drawSVGValue, strokeWidth, ...tweenProps }
@@ -54,6 +70,22 @@ function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
   }
 }
 
+/**
+ * @typedef {Object} SVGBrushTransitionConfig
+ * @property {boolean} [enableBlur]
+ * @property {string} [strokeColor]
+ * @property {number} [strokeWidth]
+ * @property {number} [duration]
+ * @property {any} [drawSVGPlugin]
+ */
+
+/**
+ * @typedef {Object} SVGBrushTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {SVGBrushTransitionConfig} [config]
+ */
+
+/** @param {SVGBrushTransitionProps} props */
 export default function SVGBrushTransition({
   children,
   config = {
@@ -64,12 +96,13 @@ export default function SVGBrushTransition({
   },
 }) {
   const { enableBlur, strokeColor, strokeWidth, duration, drawSVGPlugin } = config
-  const transitionOverlayRef = useRef(null)
-  const svgPathDesktopRef = useRef(null)
-  const svgPathMobileRef = useRef(null)
-  const contentRef = useRef(null)
+  const transitionOverlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const svgPathDesktopRef = useRef(/** @type {SVGPathElement | null} */ (null))
+  const svgPathMobileRef = useRef(/** @type {SVGPathElement | null} */ (null))
+  const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null))
 
   // Returns whichever path is currently visible (desktop or mobile)
+  /** @returns {SVGPathElement | null} */
   const getActivePath = () => {
     if (typeof window === 'undefined') return null
     return window.innerWidth < 1025 ? svgPathMobileRef.current : svgPathDesktopRef.current
@@ -82,7 +115,7 @@ export default function SVGBrushTransition({
 
     const initPaths = () => {
       ;[svgPathDesktopRef.current, svgPathMobileRef.current].forEach((path) => {
-        setPathDrawState(path, '0%', strokeWidth)
+        setPathDrawState(path, '0%', /** @type {number} */ (strokeWidth))
       })
     }
 
@@ -127,7 +160,7 @@ export default function SVGBrushTransition({
           return () => tl.kill()
         }
 
-        tl.to(activePath, getPathDrawTween(activePath, '100% 100%', strokeWidth, {
+        tl.to(activePath, getPathDrawTween(activePath, '100% 100%', /** @type {number} */ (strokeWidth), {
           duration: duration,
           ease: 'power2.inOut',
         }))
@@ -141,7 +174,7 @@ export default function SVGBrushTransition({
             },
             1
           )
-          .call(() => setPathDrawState(activePath, '0%', strokeWidth))
+          .call(() => setPathDrawState(activePath, '0%', /** @type {number} */ (strokeWidth)))
 
         return () => tl.kill()
       }}

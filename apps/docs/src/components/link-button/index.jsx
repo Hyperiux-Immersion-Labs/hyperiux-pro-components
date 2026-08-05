@@ -5,12 +5,13 @@ import Link from "next/link";
 import { useLayoutEffect, useState } from "react";
 
 const TABLET_BREAKPOINT = 1025;
+const DEFAULT_TEXT = "Hover me";
 const DEFAULT_MOBILE_TEXT = "Click me";
 const DEFAULT_CLICKED_COLOR = "#ff6b00";
 const DEFAULT_HREF = "#";
 
 export default function LinkButton({
-  text,
+  text = DEFAULT_TEXT,
   mobileText = DEFAULT_MOBILE_TEXT,
   textColor,
   clickedColor = DEFAULT_CLICKED_COLOR,

@@ -5,6 +5,7 @@
   "main": "index.jsx",
   "files": [
     "index.jsx",
+    "AnimatedFaqComp.jsx",
     "registry.json"
   ],
   "keywords": [

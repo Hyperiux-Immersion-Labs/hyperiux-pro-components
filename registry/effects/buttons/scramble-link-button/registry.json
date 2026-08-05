@@ -7,6 +7,12 @@
       "date": "2026-07-28",
       "summary": "Documented existing prefers-reduced-motion support (was already implemented, not previously recorded): the character-scramble hover animation is skipped in favor of showing the final text immediately, and the underline/color/icon-rotate transitions are disabled via motion-reduce.",
       "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-09",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
   "type": "registry:component",

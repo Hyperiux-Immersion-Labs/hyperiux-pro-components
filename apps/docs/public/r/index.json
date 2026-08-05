@@ -1151,7 +1151,7 @@
         "lucide-react"
       ],
       "registryDependencies": [],
-      "exportName": "AnimatedFAQ",
+      "exportName": "AnimatedFaq",
       "exportKind": "default",
       "version": "1.2.0"
     },

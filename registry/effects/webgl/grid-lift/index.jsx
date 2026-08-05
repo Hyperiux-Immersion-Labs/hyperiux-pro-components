@@ -20,7 +20,26 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @param {number} start
+ * @param {number} end
+ * @param {number} amount
+ */
 const lerp = (start, end, amount) => start + (end - start) * amount;
+
+/**
+ * @typedef {Object} GridCell
+ * @property {number} x
+ * @property {number} y
+ * @property {number} cx
+ * @property {number} cy
+ * @property {number} lift
+ * @property {number} targetLift
+ * @property {boolean} topInside
+ * @property {boolean} leftInside
+ * @property {boolean} rightInside
+ * @property {boolean} bottomInside
+ */
 
 const DEFAULT_SVG_MASK_URL = null;
 
@@ -81,24 +100,24 @@ const levaTheme = {
 };
 
 function GridLiftDesktop() {
- const canvasRef = useRef(null);
- const fileInputRef = useRef(null);
+ const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+ const fileInputRef = useRef(/** @type {HTMLInputElement|null} */ (null));
  const isDesktop = true;
  const prefersReducedMotion = usePrefersReducedMotion();
  const [isLevaCollapsed, setIsLevaCollapsed] = useState(true);
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
- const cellsRef = useRef([]);
- const svgImageRef = useRef(null);
+ const cellsRef = useRef(/** @type {GridCell[]} */ ([]));
+ const svgImageRef = useRef(/** @type {HTMLImageElement|null} */ (null));
 
- const [svgName, setSvgName] = useState(null);
+ const [svgName, setSvgName] = useState(/** @type {string|null} */ (null));
  const [svgVersion, setSvgVersion] = useState(0);
  const [maskSourceState, setMaskSourceState] = useState("Text");
  const [maskText, setMaskText] = useState("DESIGN");
 
  // Live ref - Leva's render() callbacks close over this, not stale state
  const maskSourceRef = useRef("Text");
- const handleSetMask = (val) => {
+ const handleSetMask = (/** @type {string} */ val) => {
  maskSourceRef.current = val;
  setMaskSourceState(val);
  };
@@ -164,7 +183,7 @@ function GridLiftDesktop() {
  const safeText =
  typeof maskText ==="string" && maskText.trim().length > 0 ? maskText :"LSD";
 
- const handleSVGUpload = (event) => {
+ const handleSVGUpload = (/** @type {import('react').ChangeEvent<HTMLInputElement>} */ event) => {
  const file = event.target.files?.[0];
  if (!file) return;
  if (file.type !=="image/svg+xml" && !file.name.endsWith(".svg")) {
@@ -198,7 +217,7 @@ function GridLiftDesktop() {
  }
  }
 
- const blob = new Blob([svgText || reader.result], { type:"image/svg+xml" });
+ const blob = new Blob([/** @type {BlobPart} */ (svgText || reader.result)], { type:"image/svg+xml" });
  const url = URL.createObjectURL(blob);
  const image = new Image();
  image.crossOrigin = "anonymous";
@@ -229,10 +248,10 @@ useEffect(() => {
 
 useEffect(() => {
  if (!isDesktop) return;
- const canvas = canvasRef.current;
- const ctx = canvas.getContext("2d", { alpha: false });
+ const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d", { alpha: false }));
  const maskCanvas = document.createElement("canvas");
- const maskCtx = maskCanvas.getContext("2d", { willReadFrequently: true });
+ const maskCtx = /** @type {CanvasRenderingContext2D} */ (maskCanvas.getContext("2d", { willReadFrequently: true }));
 
  let width = 0, height = 0, dpr = 1;
 
@@ -284,14 +303,14 @@ useEffect(() => {
  maskSource ==="Text" ? createTextMask() : createSVGMask();
  };
 
- const isInsideMask = (x, y) => {
+ const isInsideMask = (/** @type {number} */ x, /** @type {number} */ y) => {
  if (x < 0 || y < 0 || x >= width || y >= height) return false;
  const pixel = maskCtx.getImageData(Math.floor(x * dpr), Math.floor(y * dpr), 1, 1).data;
  return pixel[3] > 20 || pixel[0] > 20 || pixel[1] > 20 || pixel[2] > 20;
  };
 
  const buildCells = () => {
- const cells = [];
+ const cells = /** @type {GridCell[]} */ ([]);
  for (let x = 0; x <= width; x += gridSpacing) {
  for (let y = 0; y <= height; y += gridSpacing) {
  const cx = x + gridSpacing / 2;
@@ -321,7 +340,7 @@ useEffect(() => {
  createMask(); buildCells();
  };
 
- const getNearestMaskDistance = (mouseX, mouseY) => {
+ const getNearestMaskDistance = (/** @type {number} */ mouseX, /** @type {number} */ mouseY) => {
  let nearest = Infinity;
  for (const cell of cellsRef.current) {
  const dx = cell.cx - mouseX, dy = cell.cy - mouseY;
@@ -331,7 +350,7 @@ useEffect(() => {
  return nearest;
  };
 
- const getHoverInfluence = (x, y) => {
+ const getHoverInfluence = (/** @type {number} */ x, /** @type {number} */ y) => {
  const mouse = mouseRef.current;
  if (!mouse.active) return 0;
  if (getNearestMaskDistance(mouse.x, mouse.y) > interactionRange) return 0;
@@ -358,7 +377,14 @@ useEffect(() => {
  ctx.stroke(); ctx.restore();
  };
 
- const drawCellEdges = (cell, ox, oy, alpha, lw, color) => {
+ const drawCellEdges = (
+ /** @type {GridCell} */ cell,
+ /** @type {number} */ ox,
+ /** @type {number} */ oy,
+ /** @type {number} */ alpha,
+ /** @type {number} */ lw,
+ /** @type {string} */ color
+ ) => {
  const x1 = cell.x + ox, y1 = cell.y + oy;
  const x2 = cell.x + gridSpacing + ox, y2 = cell.y + gridSpacing + oy;
  ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = lw;
@@ -409,7 +435,7 @@ useEffect(() => {
   },
  });
 
- const onPointerMove = (e) => {
+ const onPointerMove = (/** @type {PointerEvent} */ e) => {
   if (!isDesktop) return;
   mouseRef.current.x = e.clientX;
   mouseRef.current.y = e.clientY;
@@ -493,7 +519,7 @@ useEffect(() => {
  type="button"
  className="h-7.5 cursor-pointer rounded-md border border-[#2a2a2a] bg-[#141414] px-2.5 text-[12px] font-bold text-white hover:border-[#ff5f00] hover:bg-[#1f1f1f]"
  onClick={() => fileInputRef.current?.click()}
- title={svgName}
+ title={svgName ?? undefined}
  >
  Upload
  </button>
@@ -702,8 +728,8 @@ export default function GridLift() {
 
  useEffect(() => {
   const updateDesktop = () => {
-   const gw = typeof window !== "undefined" && typeof window.globalWidth === "number"
-    ? window.globalWidth
+   const gw = typeof window !== "undefined" && typeof (/** @type {any} */ (window)).globalWidth === "number"
+    ? (/** @type {any} */ (window)).globalWidth
     : (typeof window !== "undefined" ? window.innerWidth : 0);
    setIsDesktop(!(gw < 1025));
   };

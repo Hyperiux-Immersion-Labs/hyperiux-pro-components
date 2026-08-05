@@ -9,6 +9,18 @@ import PixelateSvgFilter from "./PixelatedSvgFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * @typedef {Object} PixelateSvgFilterProps
+ * @property {string} [id]
+ * @property {number} size
+ * @property {boolean} [crossLayers]
+ */
+
+/** @param {PixelateSvgFilterProps} props */
+const DEFAULT_SRC =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
+const DEFAULT_ALT = "Image";
+
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -52,9 +64,9 @@ function usePrefersReducedMotion() {
 }
 
 export default function SVGPixelReveal({
-  src,
-  alt,
-  className = "",
+  src = DEFAULT_SRC,
+  alt = DEFAULT_ALT,
+  className = "h-[50vh] w-[50vw]",
   imageClassName = "",
   initialPixelSize = 18,
   finalPixelSize = 1,
@@ -63,12 +75,11 @@ export default function SVGPixelReveal({
   crossLayers = true,
   priority = false,
 }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const filterId = useId().replace(/:/g, "");
   const [pixelSize, setPixelSize] = useState(initialPixelSize);
   const reducedMotion = usePrefersReducedMotion();
   const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const container = containerRef.current;

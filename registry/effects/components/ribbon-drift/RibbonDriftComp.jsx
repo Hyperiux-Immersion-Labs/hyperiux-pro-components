@@ -6,6 +6,20 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import SplitText from "gsap/SplitText";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+/**
+ * @typedef {Object} RibbonDriftCard
+ * @property {string} src
+ * @property {string} title
+ * @property {string} href
+ */
+
+/**
+ * @param {number} count
+ * @param {number} [startIndex]
+ * @param {string[]} [imagesArr]
+ * @param {string[]} [namesArr]
+ * @returns {RibbonDriftCard[]}
+ */
 function buildCards(count, startIndex = 0, imagesArr = IMAGE_POOL, namesArr = PROJECT_NAMES) {
 	return Array.from({ length: count }, (_, i) => {
 		const idx = (startIndex + i) % imagesArr.length;
@@ -18,14 +32,21 @@ const sectionBreakText = `Design is a feeling before it’s a layout. This conce
 motion-first composition, gradient-led art direction, and small details
 that make a brand experience unforgettable.`;
 
+/**
+ * @typedef {Object} RibbonDriftCompProps
+ * @property {string[]} [images]
+ * @property {string[]} [projectNames]
+ */
+
+/** @param {RibbonDriftCompProps} props */
 const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) => {
 	const uid = useId().replace(/:/g, "");
 	const sectionId = `ribbon-drift-${uid}`;
-	const headingRef = useRef(null);
-	const paragraphRef = useRef(null);
-	const sectionBreakFillRef = useRef(null);
-	const titleRefs = useRef([]);
-	const hoverSplitsRef = useRef([]);
+	const headingRef = useRef(/** @type {HTMLHeadingElement|null} */ (null));
+	const paragraphRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+	const sectionBreakFillRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+	const titleRefs = useRef(/** @type {(HTMLParagraphElement|null)[]} */ ([]));
+	const hoverSplitsRef = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
 
 	useEffect(() => {
 		const ctx = gsap.context(() => {

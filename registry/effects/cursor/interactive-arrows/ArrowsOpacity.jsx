@@ -3,6 +3,7 @@ import { Point } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
+  /** @param {Point} position */
   constructor(position) {
     this.pos = position;
     this.dx = 0;
@@ -11,6 +12,10 @@ class Arrow {
     this.dist = 0;
   }
 
+  /**
+   * @param {number} mx
+   * @param {number} my
+   */
   update(mx, my) {
     this.dx = mx - this.pos.x;
     this.dy = my - this.pos.y;
@@ -18,6 +23,7 @@ class Arrow {
     this.angle = Math.atan2(this.dy, this.dx);
   }
 
+  /** @param {CanvasRenderingContext2D} ctx */
   draw(ctx) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
@@ -38,11 +44,12 @@ class Arrow {
 }
 
 const ArrowsOpacity = () => {
-  const canvasRef = useRef(null);
-  const arrowArrRef = useRef([]);
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+  const arrowArrRef = useRef(/** @type {Arrow[]} */ ([]));
   const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    /** @param {HTMLCanvasElement} canvas */
     const initializeArrows = (canvas) => {
       arrowArrRef.current = [];
       for (let y = 0; y < canvas.height / 20; y++) {
@@ -54,14 +61,14 @@ const ArrowsOpacity = () => {
     };
 
     const handleResize = () => {
-      const canvas = canvasRef.current;
+      const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       initializeArrows(canvas);
     };
 
-    const handleMouseMove = (e) => {
-      const canvas = canvasRef.current;
+    const handleMouseMove = (/** @type {MouseEvent} */ e) => {
+      const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
@@ -72,7 +79,7 @@ const ArrowsOpacity = () => {
       }
     };
 
-    const canvas = canvasRef.current;
+    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     initializeArrows(canvas);
@@ -82,7 +89,7 @@ const ArrowsOpacity = () => {
     const loop = createSuspendedRaf({
       root: canvas,
       onFrame: () => {
-        const ctx = canvas.getContext('2d');
+        const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const { x: mx, y: my } = mouseRef.current;
         for (let y = 0; y < canvas.height / 20; y++) {

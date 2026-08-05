@@ -12,9 +12,10 @@ const variantMap = {
 };
 
 const REDUCED_MOTION_Y_OFFSET = 20;
+const DEFAULT_TEXT = "Blur text reveals as you scroll into view.";
 
 export default function BlurText({
-  children,
+  children = DEFAULT_TEXT,
   delay = 0,
   duration = 0.5,
   blur = 10,

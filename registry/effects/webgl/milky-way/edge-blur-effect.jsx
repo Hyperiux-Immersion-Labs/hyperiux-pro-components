@@ -122,25 +122,35 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
  * @param {number} blurStart
  */
 class EdgeBlurEffectImpl extends Effect {
+ /**
+  * @param {{blurStrength?: number, blurStart?: number, resolution?: [number, number], frag?: string}} [options]
+  */
  constructor({
  blurStrength = 1.0,
  blurStart = 0.25,
  resolution = [1280, 720],
  frag = frostedBlurFragmentShader,
  } = {}) {
- const uniforms = new Map([
+ const uniforms = new Map(
+ /** @type {[string, Uniform<any>][]} */ ([
  ["uBlurStrength", new Uniform(blurStrength)],
  ["uBlurStart", new Uniform(blurStart)],
  ["uResolution", new Uniform(new Vector2(resolution[0], resolution[1]))],
- ]);
+ ])
+ );
  super("EdgeBlurEffect", frag, { uniforms });
  }
 
+ /**
+  * @param {number} width
+  * @param {number} height
+  */
  setResolution(width, height) {
  const uRes = this.uniforms.get("uResolution");
  if (uRes) uRes.value.set(width, height);
  }
 
+ /** @param {import('three').WebGLRenderer} renderer */
  update(renderer) {
  if (renderer && renderer.getSize) {
  const size = renderer.getSize(new Vector2());
@@ -149,6 +159,9 @@ class EdgeBlurEffectImpl extends Effect {
  }
 }
 
+/**
+ * @param {{blurType?: 'classic'|'frosted', blurStrength?: number, blurStart?: number}} props
+ */
 export default function EdgeBlurEffect({
  blurType ="classic", //"frosted" |"classic"
  blurStrength = 1.0,

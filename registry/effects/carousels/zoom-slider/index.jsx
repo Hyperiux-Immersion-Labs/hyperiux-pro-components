@@ -16,6 +16,7 @@ const ZoomSlider = () => {
 
 export default ZoomSlider;
 
+/** @type {import('./ZoomSliderComp').ZoomSliderItem[]} */
 const DEFAULT_SLIDER_DATA = [
   {
     number: '01',

@@ -4,14 +4,15 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
+import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
 
+/** @param {import('three').Object3D} scene */
 function buildMergedSurface(scene) {
-  const meshes = [];
+  const meshes = /** @type {THREE.BufferGeometry[]} */ ([]);
 
   scene.updateMatrixWorld(true);
 
-  scene.traverse((child) => {
+  scene.traverse((/** @type {any} */ child) => {
     if (!child.isMesh || !child.geometry) return;
 
     const geometry = child.geometry.clone();
@@ -80,6 +81,46 @@ function buildMergedSurface(scene) {
   return geometry;
 }
 
+/**
+ * @typedef {Object} MorphingParticleModelProps
+ * @property {string} [url]
+ * @property {number} [scale]
+ * @property {number} [particleCount]
+ * @property {string} [color]
+ * @property {number} [size]
+ * @property {number} [speed]
+ * @property {number} [opacity]
+ * @property {number} [brightness]
+ * @property {boolean} [showModel]
+ * @property {number} [modelOpacity]
+ * @property {number} [parallaxStrength]
+ * @property {number} [parallaxLerp]
+ * @property {number} [rotationStrengthX]
+ * @property {number} [rotationStrengthY]
+ * @property {number} [rotationStrengthZ]
+ * @property {number} [rotationLerp]
+ * @property {number} [interactionRadius]
+ * @property {number} [interactionStrength]
+ * @property {number} [interactionDepth]
+ * @property {number} [interactionLerp]
+ * @property {number} [returnLerp]
+ * @property {number} [cursorLerp]
+ * @property {number} [maxOffset]
+ * @property {number} [frontFacingThreshold]
+ * @property {number} [frontFacingSoftness]
+ */
+
+/**
+ * @typedef {Object} ParticleBuffers
+ * @property {Float32Array} positions
+ * @property {Float32Array} normals
+ * @property {Float32Array} meta
+ * @property {number} count
+ * @property {Float32Array} basePositions
+ * @property {Float32Array} currentPositions
+ */
+
+/** @param {MorphingParticleModelProps} props */
 const MorphingParticleModel = ({
   url = "/assets/models/hyperiux-new-model.glb",
   scale = 1,
@@ -112,21 +153,23 @@ const MorphingParticleModel = ({
   frontFacingThreshold = 0.12,
   frontFacingSoftness = 0.05,
 }) => {
-  const groupRef = useRef();
-  const pointsRef = useRef();
+  const groupRef = useRef(/** @type {import('three').Group|null} */ (null));
+  const pointsRef = useRef(/** @type {any} */ (null));
 
   const { scene } = useGLTF(url);
   const { pointer, camera } = useThree();
 
   const reduceMotionRef = useRef(
-    typeof window !== "undefined" &&
-      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+    /** @type {boolean} */ (
+      typeof window !== "undefined" &&
+        (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+    )
   );
 
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
     };
     reduceMotionRef.current = mq.matches;
@@ -134,13 +177,15 @@ const MorphingParticleModel = ({
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
 
-  const particleBuffersRef = useRef(null);
-  const [particleBuffers, setParticleBuffers] = useState(null);
+  const particleBuffersRef = useRef(/** @type {ParticleBuffers|null} */ (null));
+  const [particleBuffers, setParticleBuffers] = useState(
+    /** @type {ParticleBuffers|null} */ (null)
+  );
 
-  const basePositionsRef = useRef(null);
-  const currentPositionsRef = useRef(null);
-  const metaRef = useRef(null);
-  const normalsRef = useRef(null);
+  const basePositionsRef = useRef(/** @type {Float32Array|null} */ (null));
+  const currentPositionsRef = useRef(/** @type {Float32Array|null} */ (null));
+  const metaRef = useRef(/** @type {Float32Array|null} */ (null));
+  const normalsRef = useRef(/** @type {Float32Array|null} */ (null));
   const countRef = useRef(0);
 
   useEffect(() => {
@@ -223,7 +268,7 @@ const MorphingParticleModel = ({
   const tempCursorDir = useRef(new THREE.Vector3());
 
   useEffect(() => {
-    scene.traverse((child) => {
+    scene.traverse((/** @type {any} */ child) => {
       if (!child.isMesh || !child.material) return;
       child.material = child.material.clone();
       child.material.transparent = true;
@@ -383,9 +428,11 @@ const MorphingParticleModel = ({
       }
     }
 
-    groupRef.current.updateWorldMatrix(true, false);
-    groupRef.current.getWorldPosition(planePointRef.current);
-    groupRef.current.getWorldQuaternion(groupWorldQuatRef.current);
+    const group = /** @type {import('three').Group} */ (groupRef.current);
+
+    group.updateWorldMatrix(true, false);
+    group.getWorldPosition(planePointRef.current);
+    group.getWorldQuaternion(groupWorldQuatRef.current);
 
     planeNormalRef.current
       .set(0, 0, 1)
@@ -407,7 +454,7 @@ const MorphingParticleModel = ({
       raycasterRef.current.ray.intersectPlane(plane, hitPointWorldRef.current)
     ) {
       hitPointLocalRef.current.copy(hitPointWorldRef.current);
-      groupRef.current.worldToLocal(hitPointLocalRef.current);
+      group.worldToLocal(hitPointLocalRef.current);
 
       if (!hasPrevHitRef.current) {
         smoothHitPointLocalRef.current.copy(hitPointLocalRef.current);
@@ -506,22 +553,28 @@ const MorphingParticleModel = ({
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
-            attach="attributes-position"
-            array={particleBuffers.positions}
-            count={particleBuffers.count}
-            itemSize={3}
+            {...(/** @type {any} */ ({
+              attach: "attributes-position",
+              array: particleBuffers.positions,
+              count: particleBuffers.count,
+              itemSize: 3,
+            }))}
           />
           <bufferAttribute
-            attach="attributes-aMeta"
-            array={particleBuffers.meta}
-            count={particleBuffers.count}
-            itemSize={2}
+            {...(/** @type {any} */ ({
+              attach: "attributes-aMeta",
+              array: particleBuffers.meta,
+              count: particleBuffers.count,
+              itemSize: 2,
+            }))}
           />
           <bufferAttribute
-            attach="attributes-aNormal"
-            array={particleBuffers.normals}
-            count={particleBuffers.count}
-            itemSize={3}
+            {...(/** @type {any} */ ({
+              attach: "attributes-aNormal",
+              array: particleBuffers.normals,
+              count: particleBuffers.count,
+              itemSize: 3,
+            }))}
           />
         </bufferGeometry>
 

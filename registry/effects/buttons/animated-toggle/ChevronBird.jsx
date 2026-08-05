@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @typedef {Object} ChevronBirdProps
+ * @property {boolean} [isActive]
+ * @property {number} [size]
+ * @property {number} [strokeWidth]
+ * @property {boolean} [prefersReducedMotion]
+ * @property {string} [className]
+ */
+
+/** @param {ChevronBirdProps} props */
 export const ChevronBird = ({
     isActive = false,
     size = 14,

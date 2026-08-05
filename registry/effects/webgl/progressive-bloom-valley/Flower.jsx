@@ -4,9 +4,10 @@ import { useFrame } from "@react-three/fiber";
 import { VERTEX, FRAGMENT } from "./shaders";
 import { prefersReducedMotion } from "./prefersReducedMotion";
 
+/** @param {{data: any, sprite: any, config: any}} props */
 export default function Flower({ data, sprite, config }) {
-  const pointsRef = useRef();
-  const materialRef = useRef(null);
+  const pointsRef = useRef(/** @type {import('three').Points|null} */ (null));
+  const materialRef = useRef(/** @type {import('three').ShaderMaterial|null} */ (null));
 
   const targetMouse = useRef(new THREE.Vector2(0.5, 0.5));
   const currentMouse = useRef(new THREE.Vector2(0.5, 0.5));
@@ -57,7 +58,7 @@ export default function Flower({ data, sprite, config }) {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const applyReduced = (enabled) => {
+    const applyReduced = (/** @type {boolean} */ enabled) => {
       reduceMotionRef.current = enabled;
       const runtimeMaterial = materialRef.current;
       if (!runtimeMaterial) return;
@@ -76,14 +77,14 @@ export default function Flower({ data, sprite, config }) {
     };
 
     applyReduced(mq.matches);
-    const onChange = (event) => applyReduced(event.matches);
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => applyReduced(event.matches);
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
   }, [config]);
 
   // Track raw mouse position in NDC (-1 to 1) and calculate velocity/intensity
   useEffect(() => {
-    const handleMove = (e) => {
+    const handleMove = (/** @type {PointerEvent} */ e) => {
       if (reduceMotionRef.current) return;
 
       targetMouse.current.x = e.clientX / window.innerWidth;
@@ -135,34 +136,44 @@ export default function Flower({ data, sprite, config }) {
     <points ref={pointsRef} frustumCulled={false}>
       <bufferGeometry>
         <bufferAttribute
-          attach="attributes-position"
-          array={data.positions}
-          count={data.count}
-          itemSize={3}
+          {...(/** @type {any} */ ({
+            attach: "attributes-position",
+            array: data.positions,
+            count: data.count,
+            itemSize: 3,
+          }))}
         />
         <bufferAttribute
-          attach="attributes-aColorCoordinate"
-          array={data.colorCoords}
-          count={data.count}
-          itemSize={2}
+          {...(/** @type {any} */ ({
+            attach: "attributes-aColorCoordinate",
+            array: data.colorCoords,
+            count: data.count,
+            itemSize: 2,
+          }))}
         />
         <bufferAttribute
-          attach="attributes-aSpriteScale"
-          array={data.scales}
-          count={data.count}
-          itemSize={1}
+          {...(/** @type {any} */ ({
+            attach: "attributes-aSpriteScale",
+            array: data.scales,
+            count: data.count,
+            itemSize: 1,
+          }))}
         />
         <bufferAttribute
-          attach="attributes-aRandomSeed"
-          array={data.seeds}
-          count={data.count}
-          itemSize={1}
+          {...(/** @type {any} */ ({
+            attach: "attributes-aRandomSeed",
+            array: data.seeds,
+            count: data.count,
+            itemSize: 1,
+          }))}
         />
         <bufferAttribute
-          attach="attributes-aGrowNoise"
-          array={data.growNoise}
-          count={data.count}
-          itemSize={1}
+          {...(/** @type {any} */ ({
+            attach: "attributes-aGrowNoise",
+            array: data.growNoise,
+            count: data.count,
+            itemSize: 1,
+          }))}
         />
       </bufferGeometry>
       <primitive attach="material" object={material} />

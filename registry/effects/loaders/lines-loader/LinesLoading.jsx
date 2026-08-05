@@ -28,6 +28,20 @@ const WIPE_DUR = 820;
 const HOLD_END = 820;
 const WIPE_OVERLAP = 0.1;
 
+/**
+ * @typedef {import('react').MutableRefObject<(HTMLElement | null)[]>} ElementListRef
+ */
+
+/**
+ * @param {{
+ *   theme?: 'dark' | 'light',
+ *   showText?: boolean,
+ *   navRefs?: ElementListRef,
+ *   rowRefs?: ElementListRef,
+ *   rowHeight?: number,
+ *   lineCount?: number,
+ * }} [props]
+ */
 function DemoContent({
   theme = "dark",
   showText = true,
@@ -38,8 +52,9 @@ function DemoContent({
 } = {}) {
   const isDark = theme === "dark";
 
+  /** @typedef {{ left?: import('react').ReactNode, center?: import('react').ReactNode, right?: import('react').ReactNode }} NavItem */
   const navItems = useMemo(
-    () => [
+    () => /** @type {NavItem[]} */ ([
       { left: <span className="font-bold tracking-tighter max-[1025px]:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
@@ -47,7 +62,7 @@ function DemoContent({
       { left: "(SELECTED CLIENTS)" },
       { left: "(PRESS)" },
       { right: "■" },
-    ],
+    ]),
     [],
   );
 
@@ -228,22 +243,23 @@ function DemoContent({
   );
 }
 
+/** @param {{ onComplete?: () => void }} [props] */
 export default function LinesLoading({ onComplete } = {}) {
-  const containerRef = useRef(null);
-  const darkLineRefs = useRef([]);
-  const lightLineRefs = useRef([]);
-  const darkNavTextRefs = useRef([]);
-  const darkRowTextRefs = useRef([]);
-  const lightNavTextRefs = useRef([]);
-  const lightRowTextRefs = useRef([]);
-  const lightLayerRef = useRef(null);
-  const darkContentRef = useRef(null);
-  const tlRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const darkLineRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const lightLineRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const darkNavTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
+  const darkRowTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
+  const lightNavTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
+  const lightRowTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
+  const lightLayerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const darkContentRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const tlRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
   const layoutRef = useRef({
     height: 0,
-    coneY: [],
-    flatY: [],
-    coneScale: [],
+    coneY: /** @type {number[]} */ ([]),
+    flatY: /** @type {number[]} */ ([]),
+    coneScale: /** @type {number[]} */ ([]),
   });
 
   const [done, setDone] = useState(false);
@@ -533,7 +549,7 @@ export default function LinesLoading({ onComplete } = {}) {
           {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
-              ref={(el) => (darkLineRefs.current[i] = el)}
+              ref={(el) => { darkLineRefs.current[i] = el; }}
               className="absolute left-1/2 top-0 h-px w-full origin-center bg-white will-change-transform"
             />
           ))}
@@ -556,7 +572,7 @@ export default function LinesLoading({ onComplete } = {}) {
           {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
-              ref={(el) => (lightLineRefs.current[i] = el)}
+              ref={(el) => { lightLineRefs.current[i] = el; }}
               className="absolute left-1/2 top-0 h-px w-full origin-center bg-black will-change-transform"
             />
           ))}

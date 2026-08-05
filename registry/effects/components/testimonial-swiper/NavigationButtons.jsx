@@ -1,5 +1,14 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
+/**
+ * @typedef {Object} NavigationButtonsProps
+ * @property {() => void} [onPrev]
+ * @property {() => void} [onNext]
+ * @property {boolean} [isAnimating]
+ * @property {string} [className]
+ */
+
+/** @param {NavigationButtonsProps} props */
 export default function NavigationButtons({ onPrev, onNext, isAnimating }) {
     return (
         <nav className="flex gap-1.5">

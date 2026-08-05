@@ -6,6 +6,7 @@ import {
   useEffect,
   useCallback,
   Suspense,
+  Fragment,
   forwardRef,
 } from "react";
 import Image from "next/image";
@@ -23,7 +24,7 @@ import {
   FAQGroup,
   FAQTitle,
   FAQWrapper,
-} from "@/components/animated-faq";
+} from "@/components/animated-faq/AnimatedFaqComp";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Button from "@/components/WebsiteComps/Button";
@@ -35,6 +36,20 @@ import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
+
+function formatEffectDate(value) {
+  if (!value) return null;
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return null;
+
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
 
 function SkeletonBlock({ className = "" }) {
   return (
@@ -276,6 +291,14 @@ export function EffectDetailContent({
   const hasCtaSection = Boolean(
     safeContent?.ctaBanner?.heading || safeContent?.ctaBanner?.buttonText
   );
+  const addedAtLabel = formatEffectDate(safeContent?.addedAt ?? safeEffect.addedAt);
+  const lastUpdatedLabel = formatEffectDate(
+    safeContent?.lastUpdated ??
+      safeContent?.updatedAt ??
+      safeEffect.lastUpdated ??
+      safeEffect.updatedAt
+  );
+  const shouldShowEffectDates = Boolean(addedAtLabel && lastUpdatedLabel);
 
   const scrollRelatedEffects = (direction) => {
     const slider = relatedSliderRef.current;
@@ -450,8 +473,14 @@ export function EffectDetailContent({
                       </p>
                     </Copy>
                   )}
+                  {shouldShowEffectDates && (
+                  <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-sm:text-[3vw]! ">
+                    <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
+                    <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
+                  </div>
+                )}
 
-                  <div className="mt-12 flex w-full items-center justify-between gap-3 fadeup max-md:mt-8">
+                  <div className="mt-10 flex w-full items-center justify-between gap-3 fadeup max-md:mt-8">
                     {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
                       <div className="flex flex-wrap items-center gap-2">
                         {dependencies.map((dep) => (
@@ -525,9 +554,11 @@ export function EffectDetailContent({
                     </>
                   )}
                 </div>
+
+                
               </div>
 
-              <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 justify-center shrink-0 hidden">
+              <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
                 <Button
                   text="Live Preview"
                   href={previewHref}
@@ -537,7 +568,7 @@ export function EffectDetailContent({
                 />
               </div>
 
-              <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-[1.5vw]">
+              <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
                 <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
                   <TableOfContents
                     containerRef={contentRef}
@@ -550,6 +581,7 @@ export function EffectDetailContent({
                   ref={contentRef}
                   content={safeContent}
                   isLocked={isLocked}
+                  changelog={safeEffect.changelog}
                 />
               </div>
 
@@ -738,7 +770,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false },
+  { content, isLocked = false, changelog = [] },
   ref
 ) {
   if (!content) return null;
@@ -748,7 +780,11 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
       ref={ref}
       className={`space-y-8 w-[70%] max-[1025px]:w-full ${styles.content}`}
     >
-      <SanityBodyRenderer body={content.body} isLocked={isLocked} />
+      <SanityBodyRenderer
+        body={content.body}
+        isLocked={isLocked}
+        changelog={changelog}
+      />
     </div>
   );
 });
@@ -797,19 +833,112 @@ function EffectCtaSection({ cta, sectionRef }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false }) {
+function formatChangelogDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+function EffectChangelogSection({ changelog = [] }) {
+  if (!changelog?.length) return null;
+
+  return (
+    <section className={`fadeup ${styles.faqAccordion}`}>
+      <h2 className={styles.changelogTitle}>Changelog</h2>
+
+      <FAQGroup
+        allowMultiple={false}
+        defaultOpenItems={changelog[0]?.version ? [changelog[0].version] : []}
+      >
+        <div className={styles.changelogTimeline}>
+          {changelog.map((entry, index) => {
+            const itemId = entry.version || `changelog-${index}`;
+
+            return (
+              <div key={itemId} className={styles.changelogTimelineItem}>
+                <div
+                  className={styles.changelogTimelineMarker}
+                  aria-hidden="true"
+                >
+                  <span className={styles.changelogTimelineDot} />
+                </div>
+
+                <FAQWrapper
+                  itemId={itemId}
+                  className={`${styles.faqAccordionItem} ${styles.changelogTimelineCard}`}
+                  titleClassName={styles.faqAccordionQuestion}
+                  iconClassName={styles.faqAccordionIcon}
+                  iconSize={18}
+                  iconStrokeWidth={1.8}
+                >
+                  <FAQTitle
+                    className={styles.changelogTrigger}
+                    iconPosition="right"
+                  >
+                    <div className={styles.changelogRow}>
+                      <h3 className={styles.changelogVersion}>
+                        v{entry.version}
+                      </h3>
+                      {entry.date && (
+                        <span className={styles.changelogDate}>
+                          {formatChangelogDate(entry.date)}
+                        </span>
+                      )}
+                      {entry.breaking && (
+                        <span className={styles.changelogBreaking}>
+                          Breaking
+                        </span>
+                      )}
+                    </div>
+                  </FAQTitle>
+
+                  {entry.summary && (
+                    <FAQContent className={styles.changelogSummary}>
+                      {entry.summary}
+                    </FAQContent>
+                  )}
+                </FAQWrapper>
+              </div>
+            );
+          })}
+        </div>
+      </FAQGroup>
+    </section>
+  );
+}
+
+function SanityBodyRenderer({ body = [], isLocked = false, changelog = [] }) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
+  const firstFaqIndex = groupedBlocks.findIndex(
+    (block) => block?._type === "effectFaqAccordion"
+  );
+  const shouldRenderChangelog = changelog?.length > 0;
 
   return (
     <div className="space-y-6">
+      {shouldRenderChangelog && firstFaqIndex === -1 && (
+        <EffectChangelogSection changelog={changelog} />
+      )}
+
       {groupedBlocks.map((block, index) => (
-        <SanityBodyBlock
+        <Fragment
           key={block._key || block._groupKey || `${block._type}-${index}`}
-          block={block}
-          isLocked={isLocked}
-        />
+        >
+          {shouldRenderChangelog && index === firstFaqIndex && (
+            <EffectChangelogSection changelog={changelog} />
+          )}
+          <SanityBodyBlock block={block} isLocked={isLocked} />
+        </Fragment>
       ))}
     </div>
   );

@@ -14,6 +14,7 @@ const DEFAULT_DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
   { href: "/docs/installation", label: "Installation" },
   { href: "/docs/cli", label: "CLI" },
+  { href: "/docs/mcp", label: "MCP" },
   { href: "/docs/dependencies", label: "Dependencies" },
   { href: "/docs/license", label: "License" },
 ];

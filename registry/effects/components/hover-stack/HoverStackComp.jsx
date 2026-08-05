@@ -6,6 +6,31 @@ const PRESET_ROTATIONS = [-8, 4, -3, 5, -4, 6, 3, -6, 2, -5];
 
 const BREAKPOINT = 1025;
 
+/**
+ * @typedef {Object} HoverStackCard
+ * @property {string|number} [id]
+ * @property {string} [quote]
+ * @property {string} [tag]
+ * @property {string} [bg]
+ * @property {string} [accent]
+ */
+
+/**
+ * @typedef {HoverStackCard & { _rotation: number, _baseX: number, _baseZ: number }} PreparedCard
+ */
+
+/**
+ * @typedef {Object} HoverStackCompProps
+ * @property {HoverStackCard[]} [cards]
+ * @property {number} [cardWidth]
+ * @property {number} [cardHeight]
+ * @property {number} [overlap]
+ * @property {number} [hoverLift]
+ * @property {number} [pushDistance]
+ * @property {string} [className]
+ */
+
+/** @param {HoverStackCompProps} props */
 const HoverStackComp = ({
   cards = [],
   cardWidth = 280,
@@ -15,7 +40,7 @@ const HoverStackComp = ({
   pushDistance = 110,
   className = "",
 }) => {
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(/** @type {number|null} */ (null));
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(
@@ -43,7 +68,7 @@ const HoverStackComp = ({
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       setReduceMotion(event.matches);
       if (event.matches) setActiveIndex(null);
     };
@@ -70,6 +95,10 @@ const HoverStackComp = ({
     });
   }, [cards, overlap]);
 
+  /**
+   * @param {PreparedCard} card
+   * @param {number} index
+   */
   const getCardStyle = (card, index) => {
     const isActive = activeIndex === index;
     const hasActive = activeIndex !== null;
@@ -128,7 +157,7 @@ const HoverStackComp = ({
 
   const totalWidth =
     preparedCards.length > 0
-      ? preparedCards.at(-1)._baseX + cardWidth
+      ? /** @type {PreparedCard} */ (preparedCards.at(-1))._baseX + cardWidth
       : cardWidth;
 
   if (!hasMounted) {
@@ -180,18 +209,18 @@ const HoverStackComp = ({
       ) : (
         <div
           className="relative mx-auto"
-          style={{
+          style={/** @type {import('react').CSSProperties} */ ({
             "--stack-width": `${totalWidth}px`,
             "--stack-height": `${cardHeight + (reduceMotion ? 0 : hoverLift) + 24}px`,
             width: "var(--stack-width)",
             height: "var(--stack-height)",
-          }}
+          })}
         >
           {preparedCards.map((card, index) => (
             <div
               key={card.id ?? index}
               className={`absolute left-0 top-0 flex h-[var(--card-height)] w-[var(--card-width)] origin-[center_center] cursor-pointer select-none flex-col justify-between overflow-hidden rounded-[1.667vw] border border-black/10 p-[1.667vw] will-change-transform ${card.accent || ""}`}
-              style={getCardStyle(card, index)}
+              style={/** @type {import('react').CSSProperties} */ (getCardStyle(card, index))}
               onMouseEnter={() => setActiveIndex(index)}
               onMouseLeave={() => setActiveIndex(null)}
             >

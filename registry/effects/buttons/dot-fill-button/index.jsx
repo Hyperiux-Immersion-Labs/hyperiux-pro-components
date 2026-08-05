@@ -8,6 +8,22 @@ const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
 const DEFAULT_HREF = "#";
 
+/**
+ * @typedef {{
+ *   btnText?: string,
+ *   href?: string,
+ *   className?: string,
+ *   textClassName?: string,
+ *   staggerStep?: number,
+ *   bgColor?: string,
+ *   textColor?: string,
+ *   fillColor?: string,
+ *   hoverTextColor?: string,
+ *   dotColor?: string,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href'>} DotFillBtnProps
+ */
+
+/** @param {DotFillBtnProps} props */
 const DotFillBtn = ({
  btnText ="",
  href = DEFAULT_HREF,
@@ -21,11 +37,11 @@ const DotFillBtn = ({
  dotColor,
  ...props
 }) => {
- const textRef = useRef(null);
+ const textRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
  const [hovered, setHovered] = useState(false);
  const [isMobile, setIsMobile] = useState(false);
  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
- const releaseTimeoutRef = useRef(null);
+ const releaseTimeoutRef = useRef(/** @type {number | null} */ (null));
 
  useEffect(() => {
  const el = textRef.current;
@@ -53,22 +69,24 @@ const DotFillBtn = ({
 
 		const spans = Array.from(el.children || []);
 		spans.forEach((span) => {
-			span.style.display = "inline-block";
-			span.style.position = "relative";
-			span.style.textShadow = "0px 1.3em currentColor";
-			span.style.transform = "translateY(0em) rotate(0.001deg)";
-			span.style.transition = prefersReducedMotion
+			const spanEl = /** @type {HTMLElement} */ (span);
+			spanEl.style.display = "inline-block";
+			spanEl.style.position = "relative";
+			spanEl.style.textShadow = "0px 1.3em currentColor";
+			spanEl.style.transform = "translateY(0em) rotate(0.001deg)";
+			spanEl.style.transition = prefersReducedMotion
 				? "none"
 				: "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1), color 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
-			span.style.willChange = "transform";
+			spanEl.style.willChange = "transform";
 		});
 	}, [btnText, staggerStep, prefersReducedMotion]);
 
 	useEffect(() => {
 		const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
+		/** @param {MediaQueryList | MediaQueryListEvent} event */
 		const syncReducedMotion = (event) => {
-			const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+			const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
 			setPrefersReducedMotion(matches);
 		};
 
@@ -83,8 +101,9 @@ const DotFillBtn = ({
 	useEffect(() => {
 		const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
+		/** @param {MediaQueryList | MediaQueryListEvent} event */
 		const syncIsMobile = (event) => {
-			const matches = "matches" in event ? event.matches : event.currentTarget.matches;
+			const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
 			setIsMobile(matches);
 		};
 
@@ -107,7 +126,8 @@ const DotFillBtn = ({
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				span.style.transform = "translateY(-1.3em) rotate(0.001deg)";
+				const spanEl = /** @type {HTMLElement} */ (span);
+				spanEl.style.transform = "translateY(-1.3em) rotate(0.001deg)";
 			});
 		}
 		setHovered(true);
@@ -118,12 +138,14 @@ const DotFillBtn = ({
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				span.style.transform = "translateY(0em) rotate(0.001deg)";
+				const spanEl = /** @type {HTMLElement} */ (span);
+				spanEl.style.transform = "translateY(0em) rotate(0.001deg)";
 			});
 		}
 		setHovered(false);
 	};
 
+	/** @param {import('react').PointerEvent<HTMLAnchorElement>} event */
 	const handlePointerDown = (event) => {
 		props.onPointerDown?.(event);
 
@@ -138,7 +160,8 @@ const DotFillBtn = ({
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				span.style.transform = "translateY(-1.3em) rotate(0.001deg)";
+				const spanEl = /** @type {HTMLElement} */ (span);
+				spanEl.style.transform = "translateY(-1.3em) rotate(0.001deg)";
 			});
 		}
 		setHovered(true);
@@ -147,7 +170,8 @@ const DotFillBtn = ({
 			const currentEl = textRef.current;
 			if (currentEl) {
 				Array.from(currentEl.children).forEach((span) => {
-					span.style.transform = "translateY(0em) rotate(0.001deg)";
+					const spanEl = /** @type {HTMLElement} */ (span);
+					spanEl.style.transform = "translateY(0em) rotate(0.001deg)";
 				});
 			}
 			setHovered(false);

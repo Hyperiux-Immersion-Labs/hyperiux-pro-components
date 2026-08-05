@@ -12,8 +12,10 @@ import DragCursor from "./DragCursor";
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
 export default function DraggableCanvas() {
-  const videoRef = useRef(null);
-  const [videoElement, setVideoElement] = useState(null);
+  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null));
+  const [videoElement, setVideoElement] = useState(
+    /** @type {HTMLVideoElement|null} */ (null)
+  );
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
@@ -27,7 +29,7 @@ export default function DraggableCanvas() {
     extra3: { x: 0, y: 0 }
   });
 
-  const setVideoRef = useCallback((node) => {
+  const setVideoRef = useCallback((/** @type {HTMLVideoElement|null} */ node) => {
     videoRef.current = node;
     setVideoElement(node);
   }, []);
@@ -36,7 +38,7 @@ export default function DraggableCanvas() {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
-    const syncReducedMotion = (event) => {
+    const syncReducedMotion = (/** @type {MediaQueryListEvent|MediaQueryList} */ event) => {
       setPrefersReducedMotion("matches" in event ? event.matches : mediaQuery.matches);
     };
 
@@ -86,14 +88,17 @@ export default function DraggableCanvas() {
   }, [videoElement]);
 
   
-  const handlePositionUpdate = useCallback((size, position) => {
-    setContainerPositions(prev => ({
-      ...prev,
-      [size]: position
-    }));
-  }, []);
+  const handlePositionUpdate = useCallback(
+    (/** @type {any} */ size, /** @type {{x: number, y: number}} */ position) => {
+      setContainerPositions(prev => ({
+        ...prev,
+        [size]: position
+      }));
+    },
+    []
+  );
 
-  const handleHoverChange = useCallback((isHovering) => {
+  const handleHoverChange = useCallback((/** @type {boolean} */ isHovering) => {
     setIsHoveringDraggable(isHovering);
   }, []);
 

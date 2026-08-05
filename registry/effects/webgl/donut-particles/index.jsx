@@ -5,7 +5,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { degToRad } from "three/src/math/MathUtils";
+import { degToRad } from "three/src/math/MathUtils.js";
 import { createVisibilityGate } from "./createSuspendedRaf";
 
 const PARTICLE_SIZES = [0.08, 0.09, 0.1, 0.2,0.4,0.6 ];
@@ -15,19 +15,29 @@ const TORUS_MINOR_RADIUS = 0.9;
 const TORUS_OUTER_RADIUS = 0.48;
 const TORUS_INNER_RADIUS = 0.08;
 
+/** @param {number} seed */
 function random01(seed) {
  const value = Math.sin(seed * 127.1 + seed * seed * 311.7) * 43758.5453123;
  return value - Math.floor(value);
 }
 
+/**
+ * @typedef {Object} DonutParticleProps
+ * @property {[number, number, number]} [position]
+ * @property {number} [scale]
+ * @property {[number, number, number]} [rotation]
+ * @property {boolean} [interactive]
+ */
+
+/** @param {DonutParticleProps} props */
 function DonutParticle({
  position = [0, 0, 0],
  scale = 2.5,
  rotation = [degToRad(-100), degToRad(45), 0],
  interactive = true,
 }) {
- const pointsRef = useRef(null);
- const simulationRef = useRef(null);
+ const pointsRef = useRef(/** @type {any} */ (null));
+ const simulationRef = useRef(/** @type {any} */ (null));
  const { size, camera, gl } = useThree();
 
  const count = 25000;
@@ -55,7 +65,7 @@ function DonutParticle({
  useEffect(() => {
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
  if (!mq) return;
- const onChange = (event) => {
+ const onChange = (/** @type {MediaQueryListEvent} */ event) => {
  reduceMotionRef.current = event.matches;
  if (event.matches) {
  mouse3D.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
@@ -79,7 +89,7 @@ function DonutParticle({
  return;
  }
 
- const handleMouseMove = (event) => {
+ const handleMouseMove = (/** @type {MouseEvent} */ event) => {
  if (reduceMotionRef.current) return;
  if (!pointsRef.current) {
  return;
@@ -136,6 +146,7 @@ function DonutParticle({
  const sizes = new Float32Array(count);
  const randoms = new Float32Array(count * 4);
  const velocities = new Float32Array(count * 3);
+ /** @type {{ x: number, y: number, z: number, u: number, v: number, noiseX: number, noiseY: number }[]} */
  const base = [];
 
  const palette = [
@@ -606,28 +617,36 @@ function DonutParticle({
  >
  <bufferGeometry>
  <bufferAttribute
- attach="attributes-position"
- array={positions}
- count={count}
- itemSize={3}
+ {...(/** @type {any} */ ({
+ attach: "attributes-position",
+ array: positions,
+ count: count,
+ itemSize: 3,
+ }))}
  />
  <bufferAttribute
- attach="attributes-color"
- array={colors}
- count={count}
- itemSize={3}
+ {...(/** @type {any} */ ({
+ attach: "attributes-color",
+ array: colors,
+ count: count,
+ itemSize: 3,
+ }))}
  />
  <bufferAttribute
- attach="attributes-size"
- array={sizes}
- count={count}
- itemSize={1}
+ {...(/** @type {any} */ ({
+ attach: "attributes-size",
+ array: sizes,
+ count: count,
+ itemSize: 1,
+ }))}
  />
  <bufferAttribute
- attach="attributes-random"
- array={randoms}
- count={count}
- itemSize={4}
+ {...(/** @type {any} */ ({
+ attach: "attributes-random",
+ array: randoms,
+ count: count,
+ itemSize: 4,
+ }))}
  />
  </bufferGeometry>
 
@@ -638,6 +657,19 @@ function DonutParticle({
  );
 }
 
+/**
+ * @typedef {Object} DonutParticlesProps
+ * @property {string} [className]
+ * @property {string} [canvasClassName]
+ * @property {[number, number, number]} [donutPosition]
+ * @property {number} [donutScale]
+ * @property {[number, number, number]} [donutRotation]
+ * @property {[number, number, number]} [cameraPosition]
+ * @property {number} [cameraFov]
+ * @property {number|[number, number]} [dpr]
+ */
+
+/** @param {DonutParticlesProps} props */
 export default function DonutParticles({
  className = "",
  canvasClassName = "",
@@ -648,8 +680,8 @@ export default function DonutParticles({
  cameraFov = 50,
  dpr = [1, 2],
 }) {
- const rootRef = useRef(null);
- const [frameloop, setFrameloop] = useState("always");
+ const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ("always"));
  const [viewportWidth, setViewportWidth] = useState(1280);
 
  useEffect(() => {
@@ -681,11 +713,11 @@ export default function DonutParticles({
  : isTablet
  ? donutScale * 0.52
  : donutScale;
- const responsivePosition = isMobile
+ const responsivePosition = /** @type {[number, number, number]} */ (isMobile
  ? [donutPosition[0] - 0.5, donutPosition[1], donutPosition[2]]
  : isTablet
  ? [donutPosition[0] - 0.35, donutPosition[1], donutPosition[2]]
- : donutPosition;
+ : donutPosition);
 
  return (
  <div ref={rootRef} className={`h-screen w-full bg-black ${className}`}>
