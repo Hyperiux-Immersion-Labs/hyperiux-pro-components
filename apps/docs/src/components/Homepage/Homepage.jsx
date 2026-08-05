@@ -26,13 +26,13 @@ const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"), {
   // below this section (Workflow, ForDevelopers, …) is created at the wrong
   // offset and seeks to the end of its timeline until a late refresh.
   loading: () => (
-    <div className="relative w-full h-[600vh] max-md:hidden" aria-hidden />
+    <div className="relative w-full h-[600vh] max-[1025px]:hidden" aria-hidden />
   ),
 });
 const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"), {
   loading: () => (
     <div
-      className="relative hidden max-md:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
+      className="relative hidden max-[1025px]:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
       aria-hidden
     />
   ),
@@ -47,9 +47,9 @@ const Footer = dynamic(() => import("./Footer"), {
 function StorytellingSpacer() {
   return (
     <>
-      <div className="relative w-full h-[600vh] max-md:hidden" aria-hidden />
+      <div className="relative w-full h-[600vh] max-[1025px]:hidden" aria-hidden />
       <div
-        className="relative hidden max-md:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
+        className="relative hidden max-[1025px]:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
         aria-hidden
       />
     </>
@@ -85,7 +85,7 @@ export default function Homepage({ faqItems, effects = [] }) {
           <UIKit />
           <SmallMotion />
           <ForDevelopers />
-          <Pricing padding={isMobile ? "pt-[130vw]! max-sm:mt-[-20vw]" : ""} />
+          <Pricing padding={isMobile ? "pt-[130vw]! max-md:mt-[-20vw]" : ""} />
           <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
           <CTA />
         </main>

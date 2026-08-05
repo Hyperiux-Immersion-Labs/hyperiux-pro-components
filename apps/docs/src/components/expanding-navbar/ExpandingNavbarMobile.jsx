@@ -147,7 +147,7 @@ export function ExpandingNavbarMobile() {
     };
 
     return (
-        <div ref={containerRef} className="hidden max-md:block">
+        <div ref={containerRef} className="hidden max-[1025px]:block">
             {/* Background Overlay */}
             <div
                 ref={overlayRef}
@@ -175,7 +175,7 @@ export function ExpandingNavbarMobile() {
                                 >
                                     <Link
                                         href={item.href}
-                                        className="text-3xl max-sm:text-3xl max-md:text-4xl font-medium tracking-tight text-white"
+                                        className="text-3xl max-md:text-3xl max-[1025px]:text-4xl font-medium tracking-tight text-white"
                                     >
                                         {item.name}
                                     </Link>
@@ -204,7 +204,7 @@ export function ExpandingNavbarMobile() {
                                                         >
                                                             <Link
                                                                 href={sub.href}
-                                                                className="max-sm:text-xl text-2xl text-white/80"
+                                                                className="max-md:text-xl text-2xl text-white/80"
                                                             >
                                                                 {sub.name}
                                                             </Link>
@@ -256,8 +256,8 @@ export function ExpandingNavbarMobile() {
                 </div>
 
                 {/* Header Bar */}
-                <div className="bg-[#111111] rounded-md px-6 max-md:py-6 max-sm:py-3 flex items-center justify-between shadow-2xl border border-white/5">
-                    <svg className="max-sm:w-24 w-40 h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
+                <div className="bg-[#111111] rounded-md px-6 max-[1025px]:py-6 max-md:py-3 flex items-center justify-between shadow-2xl border border-white/5">
+                    <svg className="max-md:w-24 w-40 h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
                         <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
                         <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>
                         <path d="M349.905 42.139L341.176 42.139L332.598 31.7548L336.962 26.3369L349.905 42.139Z" fill="white"/>
@@ -282,9 +282,9 @@ export function ExpandingNavbarMobile() {
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer items-center justify-center max-md:rounded-md max-sm:rounded-sm max-sm:p-2.5 max-md:p-3 text-white transition-all duration-300 bg-[#2E2A2A]"
+                        className="flex cursor-pointer items-center justify-center max-[1025px]:rounded-md max-md:rounded-sm max-md:p-2.5 max-[1025px]:p-3 text-white transition-all duration-300 bg-[#2E2A2A]"
                     >
-                        <div className="relative max-sm:h-3 max-sm:w-4 max-md:w-7 max-md:h-5">
+                        <div className="relative max-md:h-3 max-md:w-4 max-[1025px]:w-7 max-[1025px]:h-5">
                             <span
                                 className={`absolute left-0 block h-px w-full origin-center bg-white transition-all duration-300 ${
                                     isMenuOpen

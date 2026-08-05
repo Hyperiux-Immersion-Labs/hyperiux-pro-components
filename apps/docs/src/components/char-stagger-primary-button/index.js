@@ -97,7 +97,7 @@ const CharStaggerPrimaryButton = ({
  {...linkProps}
  {...props}
  onClick={handleClick}
- className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none motion-safe:hover:text-(--char-hover-color) motion-safe:focus-visible:text-(--char-hover-color) max-md:h-[9vw] max-md:text-[3vw] max-md:font-normal max-md:motion-reduce:transition-none max-sm:h-[15vw] max-sm:text-[4.2vw] max-sm:motion-reduce:transition-none ${hoverStateClass} ${btnClassName}`}
+ className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none motion-safe:hover:text-(--char-hover-color) motion-safe:focus-visible:text-(--char-hover-color) max-[1025px]:h-[9vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[15vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${hoverStateClass} ${btnClassName}`}
  style={{"--char-hover-color": hoverColor }}
  >
  <div className="relative z-2">

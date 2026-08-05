@@ -91,14 +91,14 @@ export function CodeBlock({
             <div
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
-                        ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[12vh]"
-                        : "max-sm:h-[8vh] max-sm:pt-[3vh] max-md:h-[5.5vh]"
+                        ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[12vh]"
+                        : "max-md:h-[8vh] max-md:pt-[3vh] max-[1025px]:h-[5.5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
-                        <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
+                        <span className="text-lg text-white max-md:text-sm">{filename || ""}</span>
                         <CopyBtn
                             value={displayCode}
                             color="white"
@@ -112,7 +112,7 @@ export function CodeBlock({
                     <CopyBtn
                         value={displayCode}
                         color="white"
-                        className="absolute top-5 right-5 z-10 max-sm:top-3.5 max-sm:right-6"
+                        className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6"
                         aria-label="Copy code to clipboard"
                         disabled={copyLocked}
                         onBeforeCopy={onBeforeCopy}
@@ -120,13 +120,13 @@ export function CodeBlock({
                 )}
                 <div className="relative">
                     <pre
-                        className={`overflow-x-auto bg-[#272727]  max-sm:pt-[7vw] tracking-tight! text-sm!  ${
-                            shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : ""
+                        className={`overflow-x-auto bg-[#272727]  max-md:pt-[7vw] tracking-tight! text-sm!  ${
+                            shouldShowHeader ? "max-md:text-xs max-[1025px]:text-sm" : ""
                         } ${!selectable ? "select-none" : ""}`}
                     >
                         {highlighted ? (
                             <code
-                                className={`hljs bg-[#272727]! max-sm:text-xs max-md:text-sm language-${language}`}
+                                className={`hljs bg-[#272727]! max-md:text-xs max-[1025px]:text-sm language-${language}`}
                                 dangerouslySetInnerHTML={{ __html: highlighted }}
                             />
                         ) : (
@@ -156,7 +156,7 @@ export function InstallCommand({
             {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={null} />}
             <span className="text-green-500">$</span>
             <code
-                className={`flex-1 text-sm text-neutral-300 max-sm:text-lg! max-sm:pt-[7vw] ${!selectable ? "select-none" : ""}`}
+                className={`flex-1 text-sm text-neutral-300 max-md:text-lg! max-md:pt-[7vw] ${!selectable ? "select-none" : ""}`}
             >
                 {displayCommand}
             </code>

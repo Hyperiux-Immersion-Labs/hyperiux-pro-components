@@ -42,8 +42,8 @@ export const UI = ({ images = [] }) => {
  </main>
 
  <div className="relative z-20 h-screen pointer-events-none">
-    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-md:justify-center max-md:gap-8 max-sm:gap-4 max-md:top-[85%] max-sm:top-[75%]">
-    <h1 className="flex w-full justify-between max-md:justify-center max-md:gap-8 max-sm:gap-4 text-[8vw] max-sm:text-[10vw] leading-[1.2] text-white">
+    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-[1025px]:justify-center max-[1025px]:gap-8 max-md:gap-4 max-[1025px]:top-[85%] max-md:top-[75%]">
+    <h1 className="flex w-full justify-between max-[1025px]:justify-center max-[1025px]:gap-8 max-md:gap-4 text-[8vw] max-md:text-[10vw] leading-[1.2] text-white">
         <span>BOOK</span>
         <span>FLIP</span>
     </h1>

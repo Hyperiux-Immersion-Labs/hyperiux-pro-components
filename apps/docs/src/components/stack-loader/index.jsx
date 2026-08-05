@@ -340,19 +340,19 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
         }
       }}
       id={loaderWrapperId}
-      className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-md:px-[5vw] max-sm:px-[6vw]"
+      className="flex h-screen w-full items-center justify-center bg-[#FCFCFC] px-[2.5vw] text-black max-[1025px]:px-[5vw] max-md:px-[6vw]"
     >
-      <div className="flex w-full items-center justify-between max-md:flex-col max-md:justify-center max-md:gap-[33vh] max-sm:gap-[70vw]">
+      <div className="flex w-full items-center justify-between max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:gap-[33vh] max-md:gap-[70vw]">
         <h1
           ref={text1Ref}
-          className="opacity-0 max-md:text-[2.8vw] max-sm:text-[5vw]"
+          className="opacity-0 max-[1025px]:text-[2.8vw] max-md:text-[5vw]"
         >
           HUMAN THINKERS
         </h1>
 
         <div
           id={imgsWrapperId}
-          className="relative size-[6.5vw] max-md:z-99 max-md:size-[13vw] max-sm:size-[18vw]"
+          className="relative size-[6.5vw] max-[1025px]:z-99 max-[1025px]:size-[13vw] max-md:size-[18vw]"
         >
           {images.map((src, index) => (
             <div
@@ -376,7 +376,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 
         <p
           ref={text2Ref}
-          className="opacity-0 max-md:text-[2.8vw] max-sm:text-[4vw]"
+          className="opacity-0 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
         >
           DIGITAL MAKERS
         </p>
@@ -384,7 +384,7 @@ const StackToSpreadIntro = forwardRef(function StackToSpreadIntro(
 
       <p
         ref={descriptionTextRef}
-        className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-md:bottom-[3vw] max-md:w-[68vw] max-md:text-[2.4vw] max-sm:bottom-[6vw] max-sm:w-[90%] max-sm:text-[3.5vw]"
+        className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-[1025px]:bottom-[3vw] max-[1025px]:w-[68vw] max-[1025px]:text-[2.4vw] max-md:bottom-[6vw] max-md:w-[90%] max-md:text-[3.5vw]"
       >
         Hyperiux Vault
       </p>

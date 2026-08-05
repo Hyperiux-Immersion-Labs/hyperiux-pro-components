@@ -8,14 +8,14 @@ const page = () => {
   return (
    <>
    <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'/>
-   <div className='w-full h-full flex flex-col bg-[#0a0a0a] items-center gap-[2vw] px-[5vw] pt-[10%] max-md:pt-[15%] max-sm:pt-[30%]'>
+   <div className='w-full h-full flex flex-col bg-[#0a0a0a] items-center gap-[2vw] px-[5vw] pt-[10%] max-[1025px]:pt-[15%] max-md:pt-[30%]'>
     <HeadAnim>
-    <h1 className='text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]'>
+    <h1 className='text-[4vw] max-[1025px]:text-[7vw] max-md:text-[9vw]'>
        Text Hover
     </h1>
 
     </HeadAnim>
-    <div className='w-[50%] text-center max-md:hidden'>
+    <div className='w-[50%] text-center max-[1025px]:hidden'>
     <SplitLine>
     <h2>
       &quot;Text Hover&quot; is a component, where you can hover on the particular label and a frame and content regarding that label just appears smoothly.
@@ -23,7 +23,7 @@ const page = () => {
     </SplitLine>
 
     </div>
-    <div className='w-[90%] text-center hidden max-md:block'>
+    <div className='w-[90%] text-center hidden max-[1025px]:block'>
 
     <SplitLine>
     <p className=''>

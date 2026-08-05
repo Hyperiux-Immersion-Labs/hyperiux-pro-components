@@ -395,11 +395,11 @@ export default function GooeyCounter() {
 
  return (
   <div style={{ position: "fixed", inset: 0, background: BG }}>
-    <div className="w-full h-fit gap-[0.5vw]  text-black relative z-4 flex flex-col items-center justify-center max-md:text-center max-md:px-[7vw] max-md:gap-[3vw] pt-19 max-md:pt-20 max-sm:pt-22 ">
-      <h1 className="text-[4vw] max-sm:text-[9vw] max-md:text-[7vw]">
+    <div className="w-full h-fit gap-[0.5vw]  text-black relative z-4 flex flex-col items-center justify-center max-[1025px]:text-center max-[1025px]:px-[7vw] max-[1025px]:gap-[3vw] pt-19 max-[1025px]:pt-20 max-md:pt-22 ">
+      <h1 className="text-[4vw] max-md:text-[9vw] max-[1025px]:text-[7vw]">
         Gooey Counter
       </h1>
-      <p className="text-sm max-md:text-lg max-sm:text-sm max-md:w-[80%] mx-auto">
+      <p className="text-sm max-[1025px]:text-lg max-md:text-sm max-[1025px]:w-[80%] mx-auto">
         Gooey Counter is a morphing counter which counts from 0 to 10
       </p>
     </div>
@@ -413,10 +413,10 @@ export default function GooeyCounter() {
      </filter>
     </defs>
    </svg>
-   <canvas ref={canvasRef} className=" h-[75%]! w-[80%]!  max-sm:h-full! max-md:w-[80%]! max-md:h-[60%]! top-[53%] max-sm:top-[62%] left-1/2 -translate-y-1/2 absolute -translate-x-1/2  "  />
+   <canvas ref={canvasRef} className=" h-[75%]! w-[80%]!  max-md:h-full! max-[1025px]:w-[80%]! max-[1025px]:h-[60%]! top-[53%] max-md:top-[62%] left-1/2 -translate-y-1/2 absolute -translate-x-1/2  "  />
    <button
     onClick={() => stateRef.current?.start?.()}
-    className="absolute bottom-8 cursor-pointer left-1/2 -translate-x-1/2 py-[0.7vw] px-[1.5vw] text-black bg-white rounded-[0.4vw] max-md:px-[5vw] max-md:py-[1.5vw] max-md:rounded-[1.5vw] max-md:bottom-24 max-sm:bottom-15 max-sm:text-[4.5vw] max-md:text-[3vw]"
+    className="absolute bottom-8 cursor-pointer left-1/2 -translate-x-1/2 py-[0.7vw] px-[1.5vw] text-black bg-white rounded-[0.4vw] max-[1025px]:px-[5vw] max-[1025px]:py-[1.5vw] max-[1025px]:rounded-[1.5vw] max-[1025px]:bottom-24 max-md:bottom-15 max-md:text-[4.5vw] max-[1025px]:text-[3vw]"
     
    >
     Reset

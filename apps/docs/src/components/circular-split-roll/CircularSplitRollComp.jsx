@@ -309,7 +309,7 @@ export function CircularSplitRollComp({
     >
       <div
         ref={stickyRef}
-        className="relative h-screen w-full overflow-hidden max-md:hidden"
+        className="relative h-screen w-full overflow-hidden max-[1025px]:hidden"
       >
         <div className="relative mx-auto flex h-full w-full">
           <div className="relative flex h-full w-[50vw] translate-x-[-60%] items-center justify-center">
@@ -348,15 +348,15 @@ export function CircularSplitRollComp({
         </div>
       </div>
 
-      <div className="hidden w-full px-5 py-10 max-md:block max-sm:px-4 max-sm:py-8">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-5 max-sm:grid-cols-2 max-sm:gap-4">
+      <div className="hidden w-full px-5 py-10 max-[1025px]:block max-md:px-4 max-md:py-8">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-5 max-md:grid-cols-2 max-md:gap-4">
           {safeItems.map((item) => (
             <article
               key={item.id}
               className={`w-full ${gridCardClassName}`}
             >
               <div
-                className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-sm:rounded-[14px] ${gridImageClassName}`}
+                className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-md:rounded-[14px] ${gridImageClassName}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -368,7 +368,7 @@ export function CircularSplitRollComp({
               </div>
 
               <h3
-                className={`mt-3 text-center text-[clamp(18px,4vw,30px)] font-medium leading-none tracking-[-0.04em] text-white max-sm:mt-2 max-sm:text-[clamp(16px,5vw,24px)] ${gridTitleClassName}`}
+                className={`mt-3 text-center text-[clamp(18px,4vw,30px)] font-medium leading-none tracking-[-0.04em] text-white max-md:mt-2 max-md:text-[clamp(16px,5vw,24px)] ${gridTitleClassName}`}
               >
                 {item.title}
               </h3>
@@ -382,7 +382,7 @@ export function CircularSplitRollComp({
           aria-live="polite"
           className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
         >
-          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
             This effect can&apos;t be reduced.
           </h2>
           <p className="mx-auto mt-4 text-sm leading-6 text-black/65">

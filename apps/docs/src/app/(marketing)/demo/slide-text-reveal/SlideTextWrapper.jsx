@@ -40,7 +40,7 @@ const SlideTextWrapper = () => {
             animateOnScroll={false}
             className="text-center"
           >
-            <h1 className="text-8xl max-md:text-6xl font-black leading-[0.92] tracking-tight text-white">
+            <h1 className="text-8xl max-[1025px]:text-6xl font-black leading-[0.92] tracking-tight text-white">
               Slide From Right
             </h1>
           </SlideTextReveal>
@@ -50,7 +50,7 @@ const SlideTextWrapper = () => {
             animateOnScroll={false}
             delay={0.2}
           >
-            <p className="mt-8 max-w-2xl text-2xl max-md:text-lg text-white/65">
+            <p className="mt-8 max-w-2xl text-2xl max-[1025px]:text-lg text-white/65">
               A cinematic text reveal where every character enters with
               intention.
             </p>
@@ -85,14 +85,14 @@ const SlideTextWrapper = () => {
               delay={0.15}
               className="max-w-5xl"
             >
-              <p className="text-center text-6xl max-md:text-4xl font-semibold leading-[1.15] text-[#121212]">
+              <p className="text-center text-6xl max-[1025px]:text-4xl font-semibold leading-[1.15] text-[#121212]">
                 Characters gracefully slide in from the right
                 <span className="text-[#c2185b]"> with elegant stagger</span>,
                 creating a premium reveal that feels alive while scrolling.
               </p>
             </SlideTextReveal>
 
-            <div className="mt-20 grid grid-cols-4 gap-6 max-md:grid-cols-2 max-sm:mb-10">
+            <div className="mt-20 grid grid-cols-4 gap-6 max-[1025px]:grid-cols-2 max-md:mb-10">
               {[
                 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg',
                 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg',
@@ -139,7 +139,7 @@ const SlideTextWrapper = () => {
               delay={0.1}
               className="relative text-center"
             >
-              <h2 className="text-8xl max-md:text-5xl font-black leading-[0.95] text-white">
+              <h2 className="text-8xl max-[1025px]:text-5xl font-black leading-[0.95] text-white">
                 Perfect for
                 <br />
                 guiding attention

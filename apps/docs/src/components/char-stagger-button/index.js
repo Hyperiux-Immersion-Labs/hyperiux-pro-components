@@ -144,11 +144,11 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-md:motion-reduce:transition-none max-sm:motion-reduce:transition-none ${className}`.trim()}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${className}`.trim()}
     >
       <div className="mt-[0.3vw]">
         <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
-          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-md:text-[3vw]  ${textClassName}`.trim()}>
+          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-[1025px]:text-[3vw]  ${textClassName}`.trim()}>
             {sourceText}
           </span>
 
@@ -173,7 +173,7 @@ export default function CharStaggerButton({
       {showArrow && Icon && (
         <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
-            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none max-sm:motion-reduce:transition-none" />
+            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none" />
           ) : (
             <div
               className="flex w-max"

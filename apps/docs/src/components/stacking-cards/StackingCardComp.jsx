@@ -161,7 +161,7 @@ export default function StackingCardComp({ data = [] }) {
 
             <div
                 ref={containerRef}
-                className="sticky top-0 h-screen max-sm:h-svh w-screen overflow-hidden bg-black"
+                className="sticky top-0 h-screen max-md:h-svh w-screen overflow-hidden bg-black"
                 style={{ perspective: "1200px" }}
             >
                 {data.map((item, i) => (
@@ -191,53 +191,53 @@ const SliderCard = ({
     return (
         <div
             className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
- max-sm:min-h-[100svh] max-md:flex-col max-md:justify-start max-sm:py-8`}
+ max-md:min-h-[100svh] max-[1025px]:flex-col max-[1025px]:justify-start max-md:py-8`}
         >
 
             <div
-                className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-md:py-28
- max-md:w-full max-md:w-[80%]  max-sm:px-5 max-sm:py-6"
+                className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-[1025px]:py-28
+ max-[1025px]:w-full max-[1025px]:w-[80%]  max-md:px-5 max-md:py-6"
             >
                 <div>
                     <h2
                         className="mb-[2vw] text-[7vw] text-black font-third
- max-sm:mb-4 max-sm:text-[12vw] max-sm:leading-none"
+ max-md:mb-4 max-md:text-[12vw] max-md:leading-none"
                     >
                         {category}
                     </h2>
                 </div>
 
-                <div className="mb-6 hidden h-[42svh] w-full max-md:block">
-                    <div className="h-full max-sm:w-full overflow-hidden max-md:w-[80%] max-md:mx-auto max-sm:rounded-[6vw] max-md:rounded-[3vw]">
+                <div className="mb-6 hidden h-[42svh] w-full max-[1025px]:block">
+                    <div className="h-full max-md:w-full overflow-hidden max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:rounded-[6vw] max-[1025px]:rounded-[3vw]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={image} alt={title} className="h-full w-full object-cover" />
                     </div>
                 </div>
 
                 <div
-                    className="flex justify-between max-md:px-8 max-sm:px-0 gap-[12vw]
- max-sm:flex-col max-sm:gap-5"
+                    className="flex justify-between max-[1025px]:px-8 max-md:px-0 gap-[12vw]
+ max-md:flex-col max-md:gap-5"
                 >
                     <div
                         className="mb-[3vw] w-fit text-[8vw] leading-none text-black
- max-sm:mb-0 max-sm:text-[14vw]"
+ max-md:mb-0 max-md:text-[14vw]"
                     >
                         {id}
                     </div>
 
                     <div
                         className="flex flex-grow flex-col justify-center space-y-[2vw]
- max-sm:space-y-3"
+ max-md:space-y-3"
                     >
                         <h3
                             className="font-display text-[2.5vw] text-black leading-[1.2]
- max-sm:text-[7vw] max-md:text-[4.5vw]"
+ max-md:text-[7vw] max-[1025px]:text-[4.5vw]"
                         >
                             {title}
                         </h3>
                         <p
                             className="text-[1.4vw] leading-[1.2] text-gray-700
- max-sm:text-[4.2vw] max-md:text-[3.5vw] max-sm:leading-[1.45]"
+ max-md:text-[4.2vw] max-[1025px]:text-[3.5vw] max-md:leading-[1.45]"
                         >
                             {description}
                         </p>
@@ -247,7 +247,7 @@ const SliderCard = ({
 
             <div
                 className="my-auto h-[75%] w-[40%] p-[4vw]
- max-md:hidden"
+ max-[1025px]:hidden"
             >
                 <div className="h-full w-full overflow-hidden rounded-[2vw]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}

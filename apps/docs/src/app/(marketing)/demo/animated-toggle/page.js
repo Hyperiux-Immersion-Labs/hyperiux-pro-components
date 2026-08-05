@@ -11,16 +11,16 @@ export default function Page() {
     <>
     <DemoHeader textColor="white" logoColor='#FFFFFF' />
       <section className="min-h-dvh w-full flex items-center relative justify-center">
-        <div className="z-1 space-y-[4vw] max-md:px-[7vw] max-md:space-y-[10vw]">
-          <div className="flex flex-col items-center justify-center gap-[1vw] text-center max-md:gap-[3vw]">
-            <h1 className="text-[5vw] text-white max-sm:text-[11vw] max-md:text-[7vw] max-sm:text-center">
+        <div className="z-1 space-y-[4vw] max-[1025px]:px-[7vw] max-[1025px]:space-y-[10vw]">
+          <div className="flex flex-col items-center justify-center gap-[1vw] text-center max-[1025px]:gap-[3vw]">
+            <h1 className="text-[5vw] text-white max-md:text-[11vw] max-[1025px]:text-[7vw] max-md:text-center">
               Animated Toggle
             </h1>
-            <p className="text-[1.2vw] max-md:hidden max-sm:text-[4.5vw] max-md:text-[3vw]">
+            <p className="text-[1.2vw] max-[1025px]:hidden max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
               Hover over and click to see the effect for hovered and active
               state of the toggles below
             </p>
-            <p className="text-[1.2vw] max-md:block hidden max-sm:text-[4.5vw] max-md:text-[3vw]">
+            <p className="text-[1.2vw] max-[1025px]:block hidden max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
               Click to see the effect for hovered and active
               state of the toggles below
             </p>

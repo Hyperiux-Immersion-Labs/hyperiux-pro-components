@@ -16,7 +16,7 @@ const page = () => {
  circleColorBg="#ff5f00"
  RevealedTextColor="#ffffff"
  />
- <p className="pointer-events-none absolute bottom-8 left-1/2 z-20 max-md:hidden max-w-105 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-black/55 ">
+ <p className="pointer-events-none absolute bottom-8 left-1/2 z-20 max-[1025px]:hidden max-w-105 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-black/55 ">
  Hover across the headline and let the circle uncover what stayed quiet.
  </p>
  </div>

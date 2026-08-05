@@ -140,8 +140,8 @@ const AnimatedModalContent = ({
             min-w-10 min-h-10
 
             top-[1.5vw] right-[1.5vw] w-[3vw] h-[3vw]
-            max-md:top-8 max-md:right-8 max-md:w-14 max-md:h-14
-            max-sm:top-4 max-sm:right-4 max-sm:w-10 max-sm:h-10
+            max-[1025px]:top-8 max-[1025px]:right-8 max-[1025px]:w-14 max-[1025px]:h-14
+            max-md:top-4 max-md:right-4 max-md:w-10 max-md:h-10
 
             ${closeButtonClassName}
           `}
@@ -156,8 +156,8 @@ const AnimatedModalContent = ({
           flex h-screen w-screen items-center
           px-0
 
-          max-md:px-0
-          max-sm:justify-center max-sm:px-0
+          max-[1025px]:px-0
+          max-md:justify-center max-md:px-0
 
           ${contentClassName}
         `}

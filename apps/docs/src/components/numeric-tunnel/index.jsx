@@ -20,7 +20,7 @@ export default function NumericTunnel() {
     <NumericTunnelLoader key={tunnelInstance} onComplete={handleComplete}>
       <div className="h-screen w-full bg-white">
         <div className="h-full w-full flex flex-col items-center justify-center gap-6">
-          <h1 className=" text-black text-[4vw] font-bold max-sm:text-[8vw]">
+          <h1 className=" text-black text-[4vw] font-bold max-md:text-[8vw]">
             HYPERIUX VAULT
           </h1>
           <Button

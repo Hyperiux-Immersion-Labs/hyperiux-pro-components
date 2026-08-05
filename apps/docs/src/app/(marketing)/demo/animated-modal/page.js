@@ -15,21 +15,21 @@ export default function Page() {
       <section
         className="
           relative flex w-screen  bg-white py-[2%]
-          max-md:py-[12%]
-          max-sm:pt-[18%] h-screen overflow-hidden max-sm:pb-[16%]
+          max-[1025px]:py-[12%]
+          max-md:pt-[18%] h-screen overflow-hidden max-md:pb-[16%]
         "
       >
         <div
           className="
             flex h-screen w-full flex-col items-center justify-center  gap-40
-            max-md:gap-[6vw]
-            max-sm:gap-[10vw]
+            max-[1025px]:gap-[6vw]
+            max-md:gap-[10vw]
           "
         >
           <div
             className="
               flex flex-col items-center gap-[2vw]
-              max-sm:gap-[4vw]
+              max-md:gap-[4vw]
             "
           >
             <HeadAnim>
@@ -38,8 +38,8 @@ export default function Page() {
               className="
               text-center font-medium leading-none text-[#111111]
               text-[4.5vw]
-              max-md:text-[7vw]
-              max-sm:text-[11vw]
+              max-[1025px]:text-[7vw]
+              max-md:text-[11vw]
               "
               >
               Animated Modal
@@ -53,8 +53,8 @@ export default function Page() {
               className="
               max-w-[34vw] text-center text-[#555555]
               text-[1.3vw] leading-[1.2]
-              max-md:max-w-[70vw] max-md:text-[2.5vw]
-              max-sm:max-w-[84vw] max-sm:text-[4vw]
+              max-[1025px]:max-w-[70vw] max-[1025px]:text-[2.5vw]
+              max-md:max-w-[84vw] max-md:text-[4vw]
               "
               >
               Click the button below to open the modal and view the content.

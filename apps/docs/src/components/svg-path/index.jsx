@@ -38,7 +38,7 @@ const tabs = [
     label: "Circle",
     path: circlePath,
     viewBox: "0 0 996 330",
-    className: "h-full w-full scale-[1.1] max-md:scale-[1.55] max-sm:scale-[1.95]",
+    className: "h-full w-full scale-[1.1] max-[1025px]:scale-[1.55] max-md:scale-[1.95]",
     repeat: 1,
     baseVelocity: 8,
   },
@@ -47,7 +47,7 @@ const tabs = [
     label: "Spiral",
     path: wavePath,
     viewBox: "0 0 996 330",
-    className: "h-full w-full scale-[1.05] max-md:scale-[1.35] max-sm:scale-[1.75]",
+    className: "h-full w-full scale-[1.05] max-[1025px]:scale-[1.35] max-md:scale-[1.75]",
     repeat: 1.5,
     baseVelocity: 8,
   },
@@ -56,7 +56,7 @@ const tabs = [
     label: "Wave",
     path: spiralPath,
     viewBox: "0 0 1080 330",
-    className: "h-full w-full scale-[1.08] max-md:scale-[1.3] max-sm:scale-[1.65]",
+    className: "h-full w-full scale-[1.08] max-[1025px]:scale-[1.3] max-md:scale-[1.65]",
     repeat: 1,
     baseVelocity: 8,
   },
@@ -79,7 +79,7 @@ export default function SVGPath() {
 
       <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden bg-black">
         <div className="fixed inset-0 h-svh w-dvw overflow-hidden bg-black">
-          <div className="pointer-events-auto fixed left-1/2 bottom-[5%] max-md:bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-md:gap-[1.2vw] max-md:p-[0.7vw] max-sm:w-fit max-md:h-fit max-sm:justify-center max-sm:gap-[2vw] max-sm:p-[1.4vw]">
+          <div className="pointer-events-auto fixed left-1/2 bottom-[5%] max-[1025px]:bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-[1025px]:gap-[1.2vw] max-[1025px]:p-[0.7vw] max-md:w-fit max-[1025px]:h-fit max-md:justify-center max-md:gap-[2vw] max-md:p-[1.4vw]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
 
@@ -88,7 +88,7 @@ export default function SVGPath() {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`rounded-full px-[1.2vw] py-[0.6vw] text-[0.9vw] font-medium transition-all duration-300 ease-in-out max-md:px-[2.4vw] max-md:py-[1.1vw] max-md:text-[1.8vw] max-sm:px-[4vw] max-sm:py-[2.2vw] max-sm:text-[3.4vw] ${
+                  className={`rounded-full px-[1.2vw] py-[0.6vw] text-[0.9vw] font-medium transition-all duration-300 ease-in-out max-[1025px]:px-[2.4vw] max-[1025px]:py-[1.1vw] max-[1025px]:text-[1.8vw] max-md:px-[4vw] max-md:py-[2.2vw] max-md:text-[3.4vw] ${
                     isActive
                       ? "bg-white text-black"
                       : "bg-transparent text-white/65 hover:text-white"
@@ -116,7 +116,7 @@ export default function SVGPath() {
           >
             {imgs.map((img, i) => (
               <Link prefetch={false} key={`${currentTab.id}-${i}`} href={img.link}>
-                <div className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-md:w-16 max-sm:w-18">
+                <div className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-[1025px]:w-16 max-md:w-18">
                   <Image
                     src={img.src}
                     alt={`Marquee path image ${i + 1}`}

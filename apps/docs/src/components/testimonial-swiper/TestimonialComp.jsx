@@ -214,23 +214,23 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-sm:min-h-screen bg-white flex flex-col justify-between max-sm:justify-start overflow-hidden text-black py-5 max-md:px-6 max-sm:px-2"
+        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black py-5 max-[1025px]:px-6 max-md:px-2"
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
-            <div className="flex items-start justify-between px-8 py-5 max-md:px-6 max-md:py-4 max-sm:px-5 max-sm:py-3">
-                <div className="flex max-sm:flex-row justify-between items-center max-sm:items-center w-[30%] max-md:w-full max-sm:w-full max-sm:justify-between">
-                    <div className="flex items-center gap-2 text-[0.8vw] max-md:text-[1.8vw] max-sm:text-[4vw] font-semibold tracking-[0.12em] uppercase">
-                        <span className="text-[9px] max-md:text-[12px] max-sm:text-[15px]">◆</span>
+            <div className="flex items-start justify-between px-8 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
+                <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
+                    <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
+                        <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px]">◆</span>
                         <span>Client Stories</span>
                     </div>
-                    <span className="text-[13px] max-md:text-[12px] max-md:hidden max-sm:pl-4 text-neutral-700 tabular-nums">
+                    <span className="text-[13px] max-[1025px]:text-[12px] max-[1025px]:hidden max-md:pl-4 text-neutral-700 tabular-nums">
                         {pad(current + 1)}&nbsp;/&nbsp;{pad(total)}
                     </span>
                 </div>
 
                 <NavigationButtons
-                    className="max-sm:hidden"
+                    className="max-md:hidden"
                     onPrev={handlePrev}
                     onNext={handleNext}
                     isAnimating={isAnimating}
@@ -238,9 +238,9 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
             </div>
 
             {/* Body */}
-            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-md:flex-col max-md:items-start max-md:gap-10 max-md:px-6 max-md:py-10 max-sm:px-5 max-sm:py-4 max-sm:gap-6 ">
+            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-10 max-[1025px]:px-6 max-[1025px]:py-10 max-md:px-5 max-md:py-4 max-md:gap-6 ">
 
-                <div className="shrink-0 max-md:hidden max-sm:hidden">
+                <div className="shrink-0 max-[1025px]:hidden max-md:hidden">
                     <div ref={desktopImageRef} className="relative w-40 h-50">
                         <Image
                             src={displayItem.image}
@@ -254,24 +254,24 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                 {/* Quote area */}
                 <div className="flex-1 flex flex-col relative ">
                     <span
-                        className="absolute -top-1.5 font-serif font-bold leading-none max-md:top-[-3vw] text-[48px] max-md:text-[5vw] max-sm:text-[40px] max-sm:relative max-sm:top-0 max-sm:left-0 max-sm:mb-2"
+                        className="absolute -top-1.5 font-serif font-bold leading-none max-[1025px]:top-[-3vw] text-[48px] max-[1025px]:text-[5vw] max-md:text-[40px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-2"
                         style={{ left: 0 }}
                         ref={quoteMarkRef}
                     >
                         &quot;
                     </span>
 
-                    <div className="flex flex-col pl-13 w-[95%] max-md:pl-0 max-md:w-full max-sm:pl-0 max-sm:w-full">
+                    <div className="flex flex-col pl-13 w-[95%] max-[1025px]:pl-0 max-[1025px]:w-full max-md:pl-0 max-md:w-full">
                         <blockquote
                             ref={quoteRef}
-                            className="m-0 mb-10 p-0 text-[3.5vw] max-sm:min-h-0 max-md:min-h-[30vh] leading-[1.2] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7vw] max-sm:mb-4"
+                            className="m-0 mb-10 p-0 text-[3.5vw] max-md:min-h-0 max-[1025px]:min-h-[30vh] leading-[1.2] max-[1025px]:mb-8 max-[1025px]:w-full max-[1025px]:max-w-full max-[1025px]:text-[clamp(2.4rem,5vw,3.6rem)] max-[1025px]:leading-[1.08] max-md:max-w-full max-md:text-[7vw] max-md:mb-4"
                         >
                             {displayItem.quote}
                         </blockquote>
 
                         
-                        <div className="hidden max-md:flex items-center gap-4 mt-6 max-md:gap-5 max-sm:mt-3 max-sm:gap-6">
-                            <div ref={mobileImageRef} className="relative max-md:w-30 max-md:h-36 max-sm:w-22 max-sm:h-26 shrink-0">
+                        <div className="hidden max-[1025px]:flex items-center gap-4 mt-6 max-[1025px]:gap-5 max-md:mt-3 max-md:gap-6">
+                            <div ref={mobileImageRef} className="relative max-[1025px]:w-30 max-[1025px]:h-36 max-md:w-22 max-md:h-26 shrink-0">
                                 <Image
                                     src={displayItem.image}
                                     alt={displayItem.name}
@@ -293,13 +293,13 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                         </div>
 
                         {/* Desktop: name/title */}
-                        <div className="flex flex-col gap-1 mt-2 max-md:hidden max-sm:hidden">
-                            <p ref={nameRef} className="m-0 text-xl max-md:text-lg font-normal">
+                        <div className="flex flex-col gap-1 mt-2 max-[1025px]:hidden max-md:hidden">
+                            <p ref={nameRef} className="m-0 text-xl max-[1025px]:text-lg font-normal">
                                 {displayItem.name}
                             </p>
                             <p
                                 ref={titleRef}
-                                className="m-0 text-[11px] max-md:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
+                                className="m-0 text-[11px] max-[1025px]:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
                             >
                                 {displayItem.title}
                             </p>

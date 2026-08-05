@@ -137,7 +137,7 @@ export default function SavedPage() {
                 type="button"
                 onClick={() => setActiveCategory(category.id)}
                 className={`
-                  px-7 py-[.8vw] max-sm:py-[2vw] rounded-full border transition
+                  px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
                   ${active
                     ? "bg-white text-black border-white"
                     : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
@@ -173,7 +173,7 @@ export default function SavedPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-6 max-md:grid-cols-2 max-sm:grid-cols-1 max-sm:gap-12">
+        <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2 max-md:grid-cols-1 max-md:gap-12">
           {filteredEffects.map((effect) => (
             <EffectCard
               key={effect.id}

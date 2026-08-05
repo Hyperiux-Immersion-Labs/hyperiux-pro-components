@@ -55,7 +55,7 @@ export default function NotFoundContent() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-6 text-foreground">
       <div className="max-w-md text-center">
-        <NotFoundShimmerText className="text-[15vw] uppercase font-medium font-laygrotesk leading-none max-sm:text-[30vw] max-md:text-[22vw] fadeup">
+        <NotFoundShimmerText className="text-[15vw] uppercase font-medium font-laygrotesk leading-none max-md:text-[30vw] max-[1025px]:text-[22vw] fadeup">
           404
         </NotFoundShimmerText>
         <SplitLine>

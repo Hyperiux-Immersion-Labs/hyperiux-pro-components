@@ -125,7 +125,7 @@ function ArrowFillButton({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
-      className={`group relative inline-flex h-[4.2vw] w-fit min-w-fit max-w-none cursor-pointer items-center justify-center overflow-hidden rounded-full px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] whitespace-nowrap font-medium text-[1.1vw] leading-none [text-rendering:geometricPrecision] [--icon-circle:3.1vw] [--icon-right:0.55vw] [--circle-inset-y:calc((100%-var(--icon-circle))/2)] max-md:h-[11vw] max-md:px-[5vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-md:text-[3vw] max-md:font-normal max-md:[--icon-circle:8vw] max-md:[--icon-right:1.5vw] max-sm:h-[15vw] max-sm:px-[7vw] max-sm:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] max-sm:text-[4.2vw] max-sm:[--icon-circle:11vw] max-sm:[--icon-right:2vw] ${
+      className={`group relative inline-flex h-[4.2vw] w-fit min-w-fit max-w-none cursor-pointer items-center justify-center overflow-hidden rounded-full px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] whitespace-nowrap font-medium text-[1.1vw] leading-none [text-rendering:geometricPrecision] [--icon-circle:3.1vw] [--icon-right:0.55vw] [--circle-inset-y:calc((100%-var(--icon-circle))/2)] max-[1025px]:h-[11vw] max-[1025px]:px-[5vw] max-[1025px]:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:[--icon-circle:8vw] max-[1025px]:[--icon-right:1.5vw] max-md:h-[15vw] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] max-md:text-[4.2vw] max-md:[--icon-circle:11vw] max-md:[--icon-right:2vw] ${
         usesUtilityBackground ? "" : "bg-(--btn-bg)"
       } text-(--btn-text) ${className}`}
       style={{
@@ -153,7 +153,7 @@ function ArrowFillButton({
 
       <div
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 z-2 flex items-center px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] text-(--btn-fill-text) [clip-path:inset(var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle)))] max-md:px-[5vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-sm:px-[7vw] max-sm:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] ${
+        className={`pointer-events-none absolute inset-0 z-2 flex items-center px-[3vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] text-(--btn-fill-text) [clip-path:inset(var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle)))] max-[1025px]:px-[5vw] max-[1025px]:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] ${
           isReady
             ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_0_0_0)] group-data-[pressed=true]:text-(--btn-fill-text-hover) group-data-[pressed=true]:[clip-path:inset(0_0_0_0)]"
             : ""
@@ -175,7 +175,7 @@ function ArrowFillButton({
         aria-hidden="true"
       >
           <ArrowRight
-            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-md:size-[4vw] max-sm:size-[5vw] translate-x-[-170%] -translate-y-1/2 origin-center scale-0 text-current ${
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-[1025px]:size-[4vw] max-md:size-[5vw] translate-x-[-170%] -translate-y-1/2 origin-center scale-0 text-current ${
               isReady
                 ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100 group-data-[pressed=true]:-translate-x-1/2 group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-100"
                 : ""
@@ -184,7 +184,7 @@ function ArrowFillButton({
           />
 
           <ArrowRight
-            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-md:size-[4vw] max-sm:size-[5vw] -translate-x-1/2 -translate-y-1/2 origin-center text-current ${
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-[1025px]:size-[4vw] max-md:size-[5vw] -translate-x-1/2 -translate-y-1/2 origin-center text-current ${
               isReady
                 ? "transition-transform duration-[450ms] ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0 group-data-[pressed=true]:translate-x-[70%] group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-0"
                 : ""

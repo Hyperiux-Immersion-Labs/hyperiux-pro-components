@@ -21,10 +21,10 @@ export default function SquareTranslate() {
 
             <SquareTranslateComp
                 items={items}
-                textClassName="text-[1.1vw] max-md:text-lg"
+                textClassName="text-[1.1vw] max-[1025px]:text-lg"
                 textColor="text-black"
-                squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3 bg-[#FB450F]"
-                containerClassName="w-[50vw]  max-md:w-full"
+                squareClassName="w-[.6vw] h-[.6vw] max-[1025px]:w-3 max-[1025px]:h-3 bg-[#FB450F]"
+                containerClassName="w-[50vw]  max-[1025px]:w-full"
                 translateValue={55}
                 borderColor="border-black/10"
                 totalTranslateImpact={3}

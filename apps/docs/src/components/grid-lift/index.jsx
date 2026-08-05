@@ -434,8 +434,8 @@ useEffect(() => {
  <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
  {isDesktop && (
  <>
- <div className="fixed max-md:hidden left-4 top-25 z-50 pointer-events-auto max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:top-auto">
- <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-sm:w-full max-sm:rounded-[16px]">
+ <div className="fixed max-[1025px]:hidden left-4 top-25 z-50 pointer-events-auto max-[1025px]:bottom-3 max-[1025px]:left-3 max-[1025px]:right-3 max-[1025px]:top-auto">
+ <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-md:w-full max-md:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
   <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
  <div className="inline-flex gap-[6px] rounded-[10px] border border-[#2a2a2a] bg-[#141414] p-1">
@@ -464,10 +464,10 @@ useEffect(() => {
  </div>
  </div>
 
- <div className="flex items-center gap-2.5 max-sm:w-full">
+ <div className="flex items-center gap-2.5 max-md:w-full">
  {maskSourceState ==="Text" && (
  <input
- className="h-7.5 w-full rounded-md border border-[#2a2a2a] bg-[#141414] px-2.5 text-[12px] font-bold tracking-[0.04em] text-white outline-none focus:border-[#ff5f00] max-sm:min-w-0 max-sm:flex-1"
+ className="h-7.5 w-full rounded-md border border-[#2a2a2a] bg-[#141414] px-2.5 text-[12px] font-bold tracking-[0.04em] text-white outline-none focus:border-[#ff5f00] max-md:min-w-0 max-md:flex-1"
  value={maskText}
  onChange={(e) => setMaskText(e.target.value)}
  placeholder="Text…"
@@ -484,7 +484,7 @@ useEffect(() => {
  </button>
  )}
  </div>
- <div className="mt-0.5 hidden text-[3.5vw] font-semibold tracking-[0.02em] text-white/70 pointer-events-none max-sm:block">
+ <div className="mt-0.5 hidden text-[3.5vw] font-semibold tracking-[0.02em] text-white/70 pointer-events-none max-md:block">
  Best on desktop: hover and drift through the grid - mobile shows a preview.
  </div>
  </div>
@@ -518,7 +518,7 @@ useEffect(() => {
  
  {/* Creative clue hint */}
  {isDesktop && (
- <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-md:bottom-4 max-md:hidden">
+ <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:bottom-4 max-[1025px]:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
@@ -528,7 +528,7 @@ useEffect(() => {
  {prefersReducedMotion && (
  <div
    aria-live="polite"
-   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
  >
    <h2 className="text-sm leading-none text-white">
      The grid keeps lifting.
@@ -549,7 +549,7 @@ useEffect(() => {
  style={{ display:"none" }}
  />
  {isDesktop && (
- <div className="grid-lift-right-controls max-sm:hidden z-60 pointer-events-auto">
+ <div className="grid-lift-right-controls max-md:hidden z-60 pointer-events-auto">
  <LevaPanel
  theme={levaTheme}
  collapsed={{ collapsed: isLevaCollapsed, onChange: setIsLevaCollapsed }}
@@ -704,7 +704,7 @@ export default function GridLift() {
 
  if (!isDesktop) {
   return (
-   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-md:pt-28">
+   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-[1025px]:pt-28">
     <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-white">
        <p className="text-[11vw] uppercase text-white">
       Grid Lift

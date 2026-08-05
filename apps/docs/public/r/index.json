@@ -644,6 +644,22 @@
       "version": "1.1.0"
     },
     {
+      "name": "depth-shift-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "DepthShiftTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
       "name": "page-flip-transition",
       "type": "registry:component",
       "category": "transitions",

@@ -239,7 +239,7 @@ function DemoSubpageOverlay({ pathname }) {
       <ShimmerText
         as="p"
         baseColor="#939393" shimmerColor="#ffffff"
-        className="text-[1.4vw] font-medium tracking-tight max-md:text-[4.5vw] text-[#939393]"
+        className="text-[1.4vw] font-medium tracking-tight max-[1025px]:text-[4.5vw] text-[#939393]"
       >
         Loading {formatLabel(pathname)}
       </ShimmerText>

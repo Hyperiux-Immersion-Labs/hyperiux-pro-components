@@ -149,7 +149,7 @@ function EmailPreviewModal({ emailId, onClose }) {
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="max-md:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          className="max-[1025px]:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
         >
           <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
             <span className="h-px w-4 rotate-45 bg-white" />
@@ -158,7 +158,7 @@ function EmailPreviewModal({ emailId, onClose }) {
         </button>
 
         {/* Header */}
-        <div className="flex items-start h-[5vw] max-sm:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
+        <div className="flex items-start h-[5vw] max-md:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
           <div className="min-w-0">
             {loading ? (
               <div className="h-4 w-48 rounded bg-white/10 animate-pulse" />

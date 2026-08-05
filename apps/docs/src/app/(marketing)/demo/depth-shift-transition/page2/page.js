@@ -7,7 +7,7 @@ import React from "react";
 
 export default function page() {
   return (
-    <section className="relative flex h-screen items-center justify-center max-sm:px-[7vw] text-center">
+    <section className="relative flex h-screen items-center justify-center max-md:px-[7vw] text-center">
       <Image
         src="/assets/abs/abs2.png"
         alt="Abstract background"
@@ -19,22 +19,22 @@ export default function page() {
       <div className="relative z-10 space-y-8 max-w-5xl mx-auto text-center text-white">
         {/* Heading */}
         <SplitLine>
-          <h1 className="text-[7vw] max-sm:text-[9vw]">Hyperiux Vault</h1>
+          <h1 className="text-[7vw] max-md:text-[9vw]">Hyperiux Vault</h1>
         </SplitLine>
 
       
 
         <SplitLine>
-          <p className=" text-[1.4vw] max-md:w-[80%] max-md:mx-auto max-sm:text-[4.5vw] max-md:text-[3vw]">
+          <p className=" text-[1.4vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
             You&apos;ve just seen the depth shift transition, now if you want to see
             again click on the &quot;click here&quot; button.
           </p>
         </SplitLine>
    
 
-        <div className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center">
+        <div className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center">
           <ArrowFillButton
-            className="border-[#ff5f00] max-sm:w-56! border text-[#ffffff] cursor-pointer"
+            className="border-[#ff5f00] max-md:w-56! border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
             href={"/demo/depth-shift-transition"}
           />

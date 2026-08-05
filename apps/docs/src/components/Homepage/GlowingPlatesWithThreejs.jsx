@@ -830,7 +830,7 @@ export default function GlowingPlates({
   const { isMobile } = useIsMobile();
 
   // Pause the render loop while the hero is scrolled out of view (or hidden on
-  // mobile via max-md:hidden). Rotation is a function of absolute elapsed time,
+  // mobile via max-[1025px]:hidden). Rotation is a function of absolute elapsed time,
   // so resuming looks seamless - no visual change, just no wasted GPU work.
   // Init true so the hero renders on first paint; the observer corrects it.
   const [inView, setInView] = useState(true);
@@ -1044,7 +1044,7 @@ export default function GlowingPlates({
     <div
       ref={containerRef}
       className={[
-        "absolute inset-0 z-10 h-[140vh] max-md:hidden w-full bg-background",
+        "absolute inset-0 z-10 h-[140vh] max-[1025px]:hidden w-full bg-background",
         containerClassName,
       ].join(" ")}
     >

@@ -82,9 +82,9 @@ body {
   --radius-2xl: 40px;
   --radius-pill: 56px;
   --radius-full: 100000px;
-
+/* 
   --breakpoint-md: 1025px;
-  --breakpoint-sm: 768px;
+  --breakpoint-sm: 768px; */
 }
 
 html,

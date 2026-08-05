@@ -15,17 +15,17 @@ const page = () => {
       <LenisSmoothScroll />
       <div className="fadeup">
       <TextStream />
-      <ScrollBottom className="bottom-[3%] left-[20%]! gap-[1vw] max-sm:left-1/2!"/>
+      <ScrollBottom className="bottom-[3%] left-[20%]! gap-[1vw] max-md:left-1/2!"/>
 
       </div>
-      <div className=" px-[5vw] pt-[7%] flex flex-col gap-[2vw] text-white absolute inset-0 w-[40%] max-md:pt-[20%]">
+      <div className=" px-[5vw] pt-[7%] flex flex-col gap-[2vw] text-white absolute inset-0 w-[40%] max-[1025px]:pt-[20%]">
         <HeadAnim> 
-        <h1 className="text-[4vw]  max-md:text-[7vw]">
+        <h1 className="text-[4vw]  max-[1025px]:text-[7vw]">
           Text Stream
         </h1>
         </HeadAnim>
         <SplitLine>
-        <p className="max-md:hidden">
+        <p className="max-[1025px]:hidden">
           &quot;Text Stream&quot; is a bi-directional Marquee of content being clipped with spotlight , scroll and see how it responds with your smooth flow of the scroll.
         </p>
         </SplitLine>

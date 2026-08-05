@@ -13,10 +13,10 @@ export default function Page() {
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
-                    <p className="text-xs max-sm:text-sm max-md:text-base uppercase tracking-[0.4em] text-white/60">
+                    <p className="text-xs max-md:text-sm max-[1025px]:text-base uppercase tracking-[0.4em] text-white/60">
                         Hyperiux Button Demo
                     </p>
-                    <h1 className="text-5xl font-medium max-sm:text-4xl">Scramble Link Button</h1>
+                    <h1 className="text-5xl font-medium max-md:text-4xl">Scramble Link Button</h1>
                 </div>
 
                 <div>
@@ -25,7 +25,7 @@ export default function Page() {
                         text="Hover me"
                         showLine
                         stepMs={50}
-                        className="text-[2vw] max-sm:text-[4.5vw]"
+                        className="text-[2vw] max-md:text-[4.5vw]"
                     />
                 </div>
             </div>

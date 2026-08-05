@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 import { usePrefersReducedMotion } from '@/lib/motion'
 
 const Content = () => (
-  <main className="relative min-h-screen max-sm:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
+  <main className="relative min-h-screen max-md:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-md:flex -translate-x-1/2 -translate-y-1/2 h-fit max-sm:w-[70%] px-6 text-center">
+    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-[1025px]:flex -translate-x-1/2 -translate-y-1/2 h-fit max-md:w-[70%] px-6 text-center">
       <p className="rounded-xl bg-black/10 px-5 py-3 leading-[1.2] text-base text-black backdrop-blur-sm">
         Follow the motion. <br />
         Open on desktop for the full magnetic effect
@@ -17,7 +17,7 @@ const Content = () => (
     {/* content */}
     <section className="flex min-h-screen items-end px-8 pb-8">
       <div>
-        <h1 className="font-mono text-[8vh] max-sm:text-[15vw] leading-none w-[30vw] font-black uppercase">
+        <h1 className="font-mono text-[8vh] max-md:text-[15vw] leading-none w-[30vw] font-black uppercase">
           Magnetic
           <br />
           Image Trail
@@ -58,7 +58,7 @@ export default function MagneticImageTrail() {
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-md:hidden"
+          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-[#111111]">
             The images keep pulling.

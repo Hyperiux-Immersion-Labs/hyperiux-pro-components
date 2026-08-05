@@ -82,7 +82,7 @@ export default function DemoHeader({
 
   return (
     <>
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-md:px-5 max-md:py-6 max-sm:py-3 py-4 transition-transform duration-500 ease-out max-sm:pt-4 max-md:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
+      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-[1025px]:px-5 max-[1025px]:py-6 max-md:py-3 py-4 transition-transform duration-500 ease-out max-md:pt-4 max-[1025px]:pt-12 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
@@ -146,14 +146,14 @@ export default function DemoHeader({
                 <Button
                                 text="Read Article"
                                 href={readArticleHref}
-                                className="border-white/50! bg-[#0e0e0e]! max-md:hidden"
+                                className="border-white/50! bg-[#0e0e0e]! max-[1025px]:hidden"
                                 variant="outline2"
                               />
                 <Button
                   text={text}
                   href={href}
                   variant="orange"
-                  className=" max-md:hidden text-[1.2vw] border border-primary "
+                  className=" max-[1025px]:hidden text-[1.2vw] border border-primary "
                 />
                 <LinkButton
                   href={href}
@@ -161,8 +161,8 @@ export default function DemoHeader({
                   mobileText={text}
                   textColor={textColor}
                   clickedColor={textColor}
-                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-md:block max-sm:block"
-                  iconClassName="h-5 w-5 max-md:h-6 max-md:w-6 max-sm:h-6 max-sm:w-6"
+                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-[1025px]:block max-md:block"
+                  iconClassName="h-5 w-5 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-6 max-md:w-6"
                 />
               </>
             ) : null}

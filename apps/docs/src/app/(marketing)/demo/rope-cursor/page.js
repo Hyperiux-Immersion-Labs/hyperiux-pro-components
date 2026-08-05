@@ -15,14 +15,14 @@ export default function page() {
           segmentLength={0}
           segmentCount={8}
         />
-        <div className="flex items-center max-md:hidden justify-center flex-col h-full pointer-events-none">
+        <div className="flex items-center max-[1025px]:hidden justify-center flex-col h-full pointer-events-none">
           <h1 className="text-[bda985] text-[4vw] text-center">Rope Cursor</h1>
           <p className="opacity-90 text-[2.5vw] text-center">
             (Move your cursor around to see the rope)
           </p>
         </div>
-        <div className="items-center  max-md:flex hidden justify-center gap-5 flex-col h-full pointer-events-none">
-          <p className="text-[bda985] text-4xl max-sm:text-2xl text-center">
+        <div className="items-center  max-[1025px]:flex hidden justify-center gap-5 flex-col h-full pointer-events-none">
+          <p className="text-[bda985] text-4xl max-md:text-2xl text-center">
             Rope Cursor
           </p>
           <p className="opacity-90 text-lg leading-[1.2]  text-center">

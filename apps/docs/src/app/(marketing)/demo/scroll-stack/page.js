@@ -12,7 +12,7 @@ const page = () => {
  <ReactLenis root>
  <DemoHeader />
  <ScrollStack/>
- <ScrollBottom className='bottom-[1%] gap-[0.5vw] z-50 max-md:bottom-[5%]' textColor={'text-[#111111]'}/>
+ <ScrollBottom className='bottom-[1%] gap-[0.5vw] z-50 max-[1025px]:bottom-[5%]' textColor={'text-[#111111]'}/>
  </ReactLenis>
   </>
  )

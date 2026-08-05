@@ -24,7 +24,7 @@ const OverflowTextRevealWrapper = () => {
       <ScrollBottom textColor="#ffffff" />
 
       {/* SECTION 1 - direction: bottom (default) */}
-      <section className="relative h-screen flex flex-col pt-[20vh] max-md:pt-[45vh] max-sm:pt-[4vh] max-md:justify-center max-md:px-5 overflow-hidden bg-[#0a0a0a]">
+      <section className="relative h-screen flex flex-col pt-[20vh] max-[1025px]:pt-[45vh] max-md:pt-[4vh] max-[1025px]:justify-center max-[1025px]:px-5 overflow-hidden bg-[#0a0a0a]">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"
           alt="Nature"
@@ -48,17 +48,17 @@ const OverflowTextRevealWrapper = () => {
 
 
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-sm:text-sm">
+            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-md:text-sm">
               direction - bottom (default)
             </p>
           </SplitLine>
           <OverflowTextReveal direction="bottom" scrub={false}>
-            <h1 className="text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase max-sm:text-5xl">
+            <h1 className="text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase max-md:text-5xl">
               Characters<br />Rise From<br />Below
             </h1>
           </OverflowTextReveal>
           <OverflowTextReveal direction="bottom" scrub={false} delay={0.1}>
-            <p className="max-w-xl py-8 text-xl max-md:text-2xl leading-relaxed text-white/50 max-sm:text-base">
+            <p className="max-w-xl py-8 text-xl max-[1025px]:text-2xl leading-relaxed text-white/50 max-md:text-base">
               The default variant. Each character slides upward out of its clipping mask,
               rotating into place with a subtle tilt as you scroll.
             </p>
@@ -80,30 +80,30 @@ const OverflowTextRevealWrapper = () => {
 
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-[#8c7b6b] uppercase py-2 max-sm:text-sm max-md:text-base">
+            <p className="text-xs tracking-[0.35rem] text-[#8c7b6b] uppercase py-2 max-md:text-sm max-[1025px]:text-base">
               direction - top
             </p>
           </SplitLine>
           <OverflowTextReveal direction="top" scrub={true}>
-            <h2 className="max-w-2xl text-7xl font-black text-[#2c1810] leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
+            <h2 className="max-w-2xl text-7xl font-black text-[#2c1810] leading-[0.92] tracking-tight uppercase max-md:text-5xl">
               Falling<br />Down From<br />The Sky
             </h2>
           </OverflowTextReveal>
           <OverflowTextReveal direction="top" scrub={true} delay={0.1}>
-            <p className="max-w-md py-8 max-md:text-2xl text-lg leading-relaxed text-[#6b5a4e] max-sm:text-base">
+            <p className="max-w-md py-8 max-[1025px]:text-2xl text-lg leading-relaxed text-[#6b5a4e] max-md:text-base">
               Characters descend from above the mask with a negative rotation,
               creating a gravity-defying cascade that feels like rainfall.
             </p>
           </OverflowTextReveal>
 
-         <div className="flex gap-12 max-md:gap-5 max-sm:gap-3 py-4 max-md:flex-col">
+         <div className="flex gap-12 max-[1025px]:gap-5 max-md:gap-3 py-4 max-[1025px]:flex-col">
   {stats.map(({ value, label }, i) => (
     <OverflowTextReveal key={label} direction="top" scrub={true} delay={i * 0.05}>
       <div className="flex flex-col gap-1">
-        <span className="text-5xl font-black text-[#2c1810] tabular-nums max-sm:text-4xl">
+        <span className="text-5xl font-black text-[#2c1810] tabular-nums max-md:text-4xl">
           {value}
         </span>
-        <span className="text-xs max-md:text-sm tracking-[0.22rem] text-[#8c7b6b] uppercase max-sm:text-xs">
+        <span className="text-xs max-[1025px]:text-sm tracking-[0.22rem] text-[#8c7b6b] uppercase max-md:text-xs">
           {label}
         </span>
       </div>
@@ -128,28 +128,28 @@ const OverflowTextRevealWrapper = () => {
 
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full flex flex-col items-end text-right">
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-[#4fc3f7]/50 uppercase py-2 max-sm:text-sm max-md:text-base">
+            <p className="text-xs tracking-[0.35rem] text-[#4fc3f7]/50 uppercase py-2 max-md:text-sm max-[1025px]:text-base">
               direction - left
             </p>
           </SplitLine>
           <OverflowTextReveal direction="left" scrub={true}>
-            <h2 className="text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
+            <h2 className="text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-md:text-5xl">
               Entering<br />From The<br />Left Edge
             </h2>
           </OverflowTextReveal>
           <OverflowTextReveal direction="left" scrub={true} delay={0.1}>
-            <p className="max-w-md py-8 max-md:text-2xl text-lg leading-relaxed text-white/40 max-sm:text-base">
+            <p className="max-w-md py-8 max-[1025px]:text-2xl text-lg leading-relaxed text-white/40 max-md:text-base">
               Characters sweep horizontally from the left, creating a cinematic
               wipe-in that suits editorial and title sequences perfectly.
             </p>
           </OverflowTextReveal>
 
-          <div className="grid grid-cols-2 w-[30%] max-md:w-[50%] max-sm:w-full gap-y-3 py-4">
+          <div className="grid grid-cols-2 w-[30%] max-[1025px]:w-[50%] max-md:w-full gap-y-3 py-4">
             {["Horizontal", "Cinematic", "Editorial", "Wipe-In"].map((tag, i) => (
               <OverflowTextReveal key={i} direction="left" scrub={true} delay={i * 0.04}>
                 <div className="flex items-start justify-between gap-2">
                   <span className="inline-block rounded-full h-2 w-2 bg-white" />
-                  <span className="px-4 py-2 text-xs max-md:text-sm tracking-[0.2rem] uppercase text-[#4fc3f7] max-sm:text-sm">
+                  <span className="px-4 py-2 text-xs max-[1025px]:text-sm tracking-[0.2rem] uppercase text-[#4fc3f7] max-md:text-sm">
                     {tag}
                   </span>
                 </div>
@@ -176,17 +176,17 @@ const OverflowTextRevealWrapper = () => {
 
         <div className="relative z-10 px-10 py-24 max-w-6xl mx-auto w-full">
           <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-[#d4af37]/60 uppercase py-2 max-sm:text-sm max-md:text-base">
+            <p className="text-xs tracking-[0.35rem] text-[#d4af37]/60 uppercase py-2 max-md:text-sm max-[1025px]:text-base">
               direction - right
             </p>
           </SplitLine>
           <OverflowTextReveal direction="right" scrub={true}>
-            <h2 className="max-w-xl text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-sm:text-5xl">
+            <h2 className="max-w-xl text-7xl font-black text-white leading-[0.92] tracking-tight uppercase max-md:text-5xl">
               Rushing In<br />From The<br />Right Side
             </h2>
           </OverflowTextReveal>
           <OverflowTextReveal direction="right" scrub={true} delay={0.1}>
-            <p className="max-w-md py-8 max-md:text-2xl text-lg leading-relaxed text-white/40 max-sm:text-base">
+            <p className="max-w-md py-8 max-[1025px]:text-2xl text-lg leading-relaxed text-white/40 max-md:text-base">
               The mirror of the left variant. Characters surge in from the right,
               ideal for alternating content blocks and scroll storytelling.
             </p>
@@ -194,10 +194,10 @@ const OverflowTextRevealWrapper = () => {
 
           <OverflowTextReveal direction="right" scrub={true} delay={0.2}>
             <div className="border-l-2 border-[#d4af37] px-6 py-4 max-w-xs">
-              <span className="block py-1 text-xs tracking-[0.18rem] uppercase text-[#d4af37] max-md:text-base max-sm:text-sm">
+              <span className="block py-1 text-xs tracking-[0.18rem] uppercase text-[#d4af37] max-[1025px]:text-base max-md:text-sm">
                 Tip
               </span>
-              <span className="text-sm leading-[1.2] text-white/60 max-md:text-base max-sm:text-xs">
+              <span className="text-sm leading-[1.2] text-white/60 max-[1025px]:text-base max-md:text-xs">
                 Combine left + right variants on alternating sections for a dynamic scroll-driven narrative.
               </span>
             </div>
@@ -209,18 +209,18 @@ const OverflowTextRevealWrapper = () => {
       <section className="relative bg-[#f7f4ef] overflow-hidden">
         <div className="max-w-6xl mx-auto px-10 py-24">
           <OverflowTextReveal direction="bottom" scrub={true}>
-            <p className="text-xs max-md:text-base tracking-[0.35rem] text-[#9e9e9e] uppercase py-2 max-sm:text-sm">
+            <p className="text-xs max-[1025px]:text-base tracking-[0.35rem] text-[#9e9e9e] uppercase py-2 max-md:text-sm">
               All variants - side by side
             </p>
           </OverflowTextReveal>
           <OverflowTextReveal direction="bottom" scrub={true}>
-            <h2 className="py-6 text-6xl font-black text-[#1a1a1a] uppercase leading-tight tracking-tight max-sm:text-4xl">
+            <h2 className="py-6 text-6xl font-black text-[#1a1a1a] uppercase leading-tight tracking-tight max-md:text-4xl">
               Four Directions.<br />One Component.
             </h2>
           </OverflowTextReveal>
         </div>
 
-        <div className="grid grid-cols-2 max-md:grid-cols-2 gap-px bg-[#e0dbd4]">
+        <div className="grid grid-cols-2 max-[1025px]:grid-cols-2 gap-px bg-[#e0dbd4]">
           {[
             { dir: "bottom", label: "↑ Bottom", bg: "#1a1a1a", text: "white", accent: "#e0dbd4" },
             { dir: "top", label: "↓ Top", bg: "#f5f0e8", text: "#1a1a1a", accent: "#8c7b6b" },
@@ -233,14 +233,14 @@ const OverflowTextRevealWrapper = () => {
               style={{ backgroundColor: bg }}
             >
               <span
-                className="text-xs tracking-[0.28rem] uppercase max-md:text-base max-sm:text-sm"
+                className="text-xs tracking-[0.28rem] uppercase max-[1025px]:text-base max-md:text-sm"
                 style={{ color: accent }}
               >
                 {label}
               </span>
               <OverflowTextReveal direction={dir} scrub={true}>
                 <p
-                  className="text-3xl font-black uppercase leading-none tracking-tight max-sm:text-2xl"
+                  className="text-3xl font-black uppercase leading-none tracking-tight max-md:text-2xl"
                   style={{ color: text }}
                 >
                   Scroll<br />Reveal
@@ -252,7 +252,7 @@ const OverflowTextRevealWrapper = () => {
       </section>
 
       {/* SECTION 6 - closing */}
-      <section className="relative min-h-[85vh] flex items-end max-sm:items-center bg-[#0a0a0a] overflow-hidden">
+      <section className="relative min-h-[85vh] flex items-end max-md:items-center bg-[#0a0a0a] overflow-hidden">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"
           alt="Nature"
@@ -260,14 +260,14 @@ const OverflowTextRevealWrapper = () => {
           className="object-cover opacity-20 object-[center_70%]"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-[#0a0a0a]/40" />
-        <div className="relative z-10 px-10 py-20 pb-58 max-md:pb-100 max-sm:pb-68 max-w-6xl mx-auto w-full">
+        <div className="relative z-10 px-10 py-20 pb-58 max-[1025px]:pb-100 max-md:pb-68 max-w-6xl mx-auto w-full">
           <OverflowTextReveal direction="bottom" scrub={true}>
-            <p className="py-2 text-xs max-md:text-base tracking-[0.35rem] uppercase text-white/20 max-sm:text-sm">
+            <p className="py-2 text-xs max-[1025px]:text-base tracking-[0.35rem] uppercase text-white/20 max-md:text-sm">
               Overflow Text Reveal Component
             </p>
           </OverflowTextReveal>
           <OverflowTextReveal direction="bottom" scrub={true}>
-            <h3 className="text-7xl max-md:text-4xl font-black text-white uppercase leading-tight tracking-tight max-sm:text-4xl">
+            <h3 className="text-7xl max-[1025px]:text-4xl font-black text-white uppercase leading-tight tracking-tight max-md:text-4xl">
               Built for smooth,<br />scroll-driven storytelling.
             </h3>
           </OverflowTextReveal>

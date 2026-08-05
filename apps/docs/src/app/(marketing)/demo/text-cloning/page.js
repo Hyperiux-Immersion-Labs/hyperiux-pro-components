@@ -10,9 +10,9 @@ const page = () => {
     <>
       <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
 
-      <div className="absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] px-[5vw] pt-[7%] max-md:pt-[15%] max-sm:pt-[30%]">
+      <div className="absolute inset-0 z-1 flex h-full w-full flex-col items-center gap-[1vw] px-[5vw] pt-[7%] max-[1025px]:pt-[15%] max-md:pt-[30%]">
         <HeadAnim>
-          <h1 className="text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">
+          <h1 className="text-[4vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
             Text Cloning
           </h1>
         </HeadAnim>
@@ -20,7 +20,7 @@ const page = () => {
         <SplitLine
           as="p"
           start="top 120%"
-          className="absolute bottom-[15%] w-[40%] text-center max-md:hidden"
+          className="absolute bottom-[15%] w-[40%] text-center max-[1025px]:hidden"
         >
           Move your cursor anywhere on the screen to see the effect, or you can
           add characters whatever you want in the field below.
@@ -29,7 +29,7 @@ const page = () => {
         <SplitLine
           as="p"
           start="top 120%"
-          className="absolute bottom-[15%] hidden w-[80%] text-center max-md:block max-md:text-[3vw] max-sm:text-[4.5vw]"
+          className="absolute bottom-[15%] hidden w-[80%] text-center max-[1025px]:block max-[1025px]:text-[3vw] max-md:text-[4.5vw]"
         >
           Tap anywhere on the screen to see the effect, or you can add characters
           whatever you want in the field below.

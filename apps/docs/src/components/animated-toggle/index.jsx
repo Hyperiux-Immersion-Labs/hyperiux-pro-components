@@ -32,7 +32,7 @@ const AnimatedToggle = () => {
     <div className="flex gap-8 justify-center">
       <button
         onClick={() => setChevronActive((prev) => !prev)}
-        className={`cursor-pointer size-24 max-sm:size-18 rounded-lg flex group items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${chevronActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className={`cursor-pointer size-24 max-md:size-18 rounded-lg flex group items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${chevronActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
       >
         <ChevronBird
           className="mt-2 duration-300 transition-all motion-reduce:transition-none motion-safe:group-hover:rotate-180 motion-safe:group-hover:translate-y-[-30%]"
@@ -43,13 +43,13 @@ const AnimatedToggle = () => {
       </button>
       <button
         onClick={() => setCrossActive((prev) => !prev)}
-        className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${crossActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className={`group cursor-pointer size-24 max-md:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${crossActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
       >
         <Cross size={24} isActive={crossActive} prefersReducedMotion={prefersReducedMotion} />
       </button>
       <button
         onClick={() => setPlusActive((prev) => !prev)}
-        className={`group cursor-pointer size-24 max-sm:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${plusActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
+        className={`group cursor-pointer size-24 max-md:size-18 rounded-lg flex items-center justify-center transition-all duration-300 motion-reduce:transition-none motion-safe:active:scale-90 ${plusActive ? "bg-[#ff5f00]" : "bg-zinc-400"}`}
       >
         <Plus size={24} isActive={plusActive} prefersReducedMotion={prefersReducedMotion} />
       </button>

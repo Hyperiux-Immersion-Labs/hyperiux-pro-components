@@ -253,7 +253,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh]  bg-white text-[#1a1a1a] max-md:hidden"
+				className="w-screen h-[1000vh]  bg-white text-[#1a1a1a] max-[1025px]:hidden"
 				id={sectionId}
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
@@ -293,7 +293,7 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										alt={item.title}
 										width={400}
 										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 max-md:object-cover cursor-pointer hover:scale-[1.2] ease-in-out"
+										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 max-[1025px]:object-cover cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
 									<div className="absolute bottom-[5%] left-[5%] overflow-hidden pointer-events-none">
@@ -396,27 +396,27 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 				</div>
 			</div>
 
-			<div className="hidden w-screen h-full bg-white text-[#1a1a1a] max-md:block max-md:px-8 max-md:py-24 max-sm:px-5 max-md:pt-35 max-sm:pt-24 max-sm:py-10">
-				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-sm:gap-10">
-					<div className="flex flex-col gap-8 max-sm:gap-6">
-						<p className="text-[6vw] text-center font-medium leading-none max-sm:text-[10vw]">
+			<div className="hidden w-screen h-full bg-white text-[#1a1a1a] max-[1025px]:block max-[1025px]:px-8 max-[1025px]:py-24 max-md:px-5 max-[1025px]:pt-35 max-md:pt-24 max-md:py-10">
+				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-10">
+					<div className="flex flex-col gap-8 max-md:gap-6">
+						<p className="text-[6vw] text-center font-medium leading-none max-md:text-[10vw]">
 							Gradient Ribbon Drift
 						</p>
-						<p className="max-w-2xl mx-auto text-center text-[2.8vw] font-medium leading-[1.45] text-black/70 max-sm:text-[4.5vw]">
+						<p className="max-w-2xl mx-auto text-center text-[2.8vw] font-medium leading-[1.45] text-black/70 max-md:text-[4.5vw]">
 							A scroll-led showcase where every project tile is a living gradient.
 							Hover to reveal names, then let the strips glide past each other for a
 							gallery that feels more like motion design than a grid.
 						</p>
 					</div>
 
-					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-sm:grid-cols-1 max-sm:gap-5">
+					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-md:grid-cols-1 max-md:gap-5">
 						{compactCards.map((item, index) => (
 							<Link
 								href={item.href}
 								key={`compact-${index}`}
-								className="overflow-hidden rounded-sm max-sm:mx-auto  w-full max-sm:w-[80%]"
+								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
 							>
-								<div className="relative  max-sm:aspect-auto h-[35vh] max-sm:h-[35vh]  ">
+								<div className="relative  max-md:aspect-auto h-[35vh] max-md:h-[35vh]  ">
 									{/* eslint-disable-next-line @next/next/no-img-element */}
 									<img
 										src={item.src}
@@ -424,8 +424,8 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 										className="object-cover absolute inset-0 h-[35vh]"
 									/>
 								</div>
-								<div className="px-4 py-4 max-sm:px-2 max-sm:py-5">
-									<p className="text-[2.8vw] font-medium leading-none max-sm:text-[4.8vw]">
+								<div className="px-4 py-4 max-md:px-2 max-md:py-5">
+									<p className="text-[2.8vw] font-medium leading-none max-md:text-[4.8vw]">
 										{item.title}
 									</p>
 								</div>
@@ -433,8 +433,8 @@ const RibbonDriftComp = ({ images = IMAGE_POOL, projectNames = projectNames }) =
 						))}
 					</div>
 
-					<div className="rounded-sm   px-6 py-8 text-center max-md:px-8 max-sm:px-5 max-sm:py-6">
-						<p className="text-[4vw] font-medium leading-[1.2] max-sm:text-[5vw]">
+					<div className="rounded-sm   px-6 py-8 text-center max-[1025px]:px-8 max-md:px-5 max-md:py-6">
+						<p className="text-[4vw] font-medium leading-[1.2] max-md:text-[5vw]">
 							{sectionBreakText}
 						</p>
 					</div>

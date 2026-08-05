@@ -347,14 +347,14 @@ export default function CollidingModels() {
   return (
 
     <>
-      <div className="flex-1 flex items-center justify-center px-12 max-sm:px-6 max-md:px-10">
-        <div ref={rootRef} className="relative h-[90%] min-h-[30vw] w-full overflow-hidden rounded-2xl bg-black max-sm:h-[80%]">
+      <div className="flex-1 flex items-center justify-center px-12 max-md:px-6 max-[1025px]:px-10">
+        <div ref={rootRef} className="relative h-[90%] min-h-[30vw] w-full overflow-hidden rounded-2xl bg-black max-md:h-[80%]">
           <Scene frameloop={frameloop} />
-          <p className="pointer-events-none max-md:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-sm:bottom-4 max-sm:text-xs">
+          <p className="pointer-events-none max-[1025px]:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>
 
-          <p className='hidden max-md:block absolute bottom-6 left-1/2 z-10 max-md:max-w-130 max-sm:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-md:text-lg max-sm:text-sm text-center '>
+          <p className='hidden max-[1025px]:block absolute bottom-6 left-1/2 z-10 max-[1025px]:max-w-130 max-md:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-[1025px]:text-lg max-md:text-sm text-center '>
             Touch the field and let the models collide , tap to change their spark.
           </p>
         </div>

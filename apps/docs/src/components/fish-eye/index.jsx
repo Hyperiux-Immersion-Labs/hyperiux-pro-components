@@ -198,7 +198,7 @@ export default function FishEye({ src }) {
       {prefersReducedMotion && (
         <div
           aria-live="polite"
-          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
+          className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-[1025px]:hidden"
         >
           <h2 className="text-sm leading-none text-black">
             The lens keeps bending.

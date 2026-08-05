@@ -11,18 +11,18 @@ export default function Page() {
         <div className="h-screen w-screen flex items-center justify-center relative">
             <div className="space-y-20 relative z-10 text-center -mt-20">
                 <div className="space-y-4">
-                    <p className="text-xs max-sm:text-sm max-md:text-base uppercase tracking-[0.4em] text-white/60">
+                    <p className="text-xs max-md:text-sm max-[1025px]:text-base uppercase tracking-[0.4em] text-white/60">
                         Hyperiux Button Demo
                     </p>
-                    <h1 className="text-5xl font-medium max-sm:text-4xl">Link Button</h1>
+                    <h1 className="text-5xl font-medium max-md:text-4xl">Link Button</h1>
                 </div>
 
                 <div className="w-fit mx-auto">
                     <LinkButton
                         text="Hover me"
                         href="#"
-                        iconClassName="size-[2vw] mt-[0.2vw] max-md:size-[3vw] max-sm:size-[4vw]"
-                        className="text-[2vw] hover:text-[#ff6b00] max-sm:text-[4.5vw]"
+                        iconClassName="size-[2vw] mt-[0.2vw] max-[1025px]:size-[3vw] max-md:size-[4vw]"
+                        className="text-[2vw] hover:text-[#ff6b00] max-md:text-[4.5vw]"
                     />
                 </div>
             </div>

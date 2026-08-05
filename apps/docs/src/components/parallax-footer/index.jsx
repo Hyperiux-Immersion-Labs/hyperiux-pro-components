@@ -9,17 +9,17 @@ const ParallaxFooter = () => {
 
 
       <div className="w-screen h-screen bg-[#ff6b00] relative z-2 flex justify-center items-center">
-        <h1 className="text-[4vw] font-medium max-sm:text-[8.5vw] w-[70%] text-center">
+        <h1 className="text-[4vw] font-medium max-md:text-[8.5vw] w-[70%] text-center">
           Scroll To See Parallax Effect
         </h1>
       </div>
       <FooterParallax footerClassName="bg-[#1a1a1a] text-white px-10 py-20">
-        <div className="max-w-7xl mx-auto flex justify-between max-sm:flex-col max-sm:justify-start max-sm:gap-[12vw]">
-          <div className="w-[40%] max-md:w-[70%] max-sm:w-[80%]">
-            <h1 className="text-5xl font-semibold max-sm:text-[7.5vw]">
+        <div className="max-w-7xl mx-auto flex justify-between max-md:flex-col max-md:justify-start max-md:gap-[12vw]">
+          <div className="w-[40%] max-[1025px]:w-[70%] max-md:w-[80%]">
+            <h1 className="text-5xl font-semibold max-md:text-[7.5vw]">
               Let’s build something insane
             </h1>
-            <p className="mt-4 text-sm max-md:text-xl">
+            <p className="mt-4 text-sm max-[1025px]:text-xl">
               Fully dynamic height. Add anything here - it just works.
             </p>
           </div>

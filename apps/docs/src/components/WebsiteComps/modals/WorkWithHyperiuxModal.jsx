@@ -243,7 +243,7 @@ function WorkWithHyperiuxModalInner() {
           />
 
           <motion.div
-            className="relative z-10 w-[80vw] max-md:w-[95%]"
+            className="relative z-10 w-[80vw] max-[1025px]:w-[95%]"
             initial={{ opacity: 0, scale: 0.97, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 10 }}
@@ -254,7 +254,7 @@ function WorkWithHyperiuxModalInner() {
               type="button"
               aria-label="Close"
               onClick={close}
-              className="group md:hidden absolute -top-12 right-0 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-sm:right-[-5%]"
+              className="group md:hidden absolute -top-12 right-0 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-md:right-[-5%]"
             >
               <div className="relative flex h-4 w-4 items-center justify-center transition-transform duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -263,7 +263,7 @@ function WorkWithHyperiuxModalInner() {
             </button>
 
             <div
-              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl h-[80vh] max-md:h-[75vh] max-md:rounded-[4vw] max-md:p-[6vw] max-sm:rounded-[5vw]"
+              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl h-[80vh] max-[1025px]:h-[75vh] max-[1025px]:rounded-[4vw] max-[1025px]:p-[6vw] max-md:rounded-[5vw]"
               onWheelCapture={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
@@ -273,7 +273,7 @@ function WorkWithHyperiuxModalInner() {
               type="button"
               aria-label="Close"
               onClick={close}
-              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -284,23 +284,23 @@ function WorkWithHyperiuxModalInner() {
             <div className="relative z-10">
               <h3
                 id="work-with-hyperiux-title"
-                className="text-[3vw] leading-none max-sm:text-[8vw] max-md:text-[5vw]"
+                className="text-[3vw] leading-none max-md:text-[8vw] max-[1025px]:text-[5vw]"
               >
                 {isSuccess ? "Enquiry sent." : "Work with Hyperiux"}
               </h3>
 
-              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-md:mt-4 max-md:max-w-full max-sm:text-[4vw]! max-md:text-[2.2vw]!">
+              <p className="mt-[1vw] max-w-[70vw] text24 leading-relaxed text-white/80 max-[1025px]:mt-4 max-[1025px]:max-w-full max-md:text-[4vw]! max-[1025px]:text-[2.2vw]!">
                 {isSuccess
                   ? "We received your message. A confirmation has been sent to your email. Closing now."
                   : "Tell us about your project - what you're building, the interaction or experience you have in mind, and your timeline. We'll get back to you within 1-2 business days."}
               </p>
 
               {isSuccess ? (
-                <div className="mt-[4vw] rounded-[1vw] border border-emerald-400/20 bg-emerald-400/10 p-[2vw] max-md:mt-8 max-md:rounded-3xl max-md:p-6">
-                  <p className="text-[1.4vw] font-medium text-emerald-100 max-md:text-xl">
+                <div className="mt-[4vw] rounded-[1vw] border border-emerald-400/20 bg-emerald-400/10 p-[2vw] max-[1025px]:mt-8 max-[1025px]:rounded-3xl max-[1025px]:p-6">
+                  <p className="text-[1.4vw] font-medium text-emerald-100 max-[1025px]:text-xl">
                     Your enquiry has been sent successfully.
                   </p>
-                  <p className="mt-2 text-[1vw] text-white/70 max-md:text-sm">
+                  <p className="mt-2 text-[1vw] text-white/70 max-[1025px]:text-sm">
                     Check your inbox for a confirmation. We&apos;ll be in touch shortly.
                   </p>
                 </div>
@@ -308,9 +308,9 @@ function WorkWithHyperiuxModalInner() {
                 <form
                   onSubmit={handleSubmit}
                   noValidate
-                  className="mt-[3vw] grid grid-cols-2 gap-x-[3vw] gap-y-[2vw] max-md:mt-8 max-md:grid-cols-1 max-md:gap-5"
+                  className="mt-[3vw] grid grid-cols-2 gap-x-[3vw] gap-y-[2vw] max-[1025px]:mt-8 max-[1025px]:grid-cols-1 max-[1025px]:gap-5"
                 >
-                  <div className="space-y-[1vw] max-md:space-y-5">
+                  <div className="space-y-[1vw] max-[1025px]:space-y-5">
                     <div>
                       <FieldLabel htmlFor="wwh-name">Name*</FieldLabel>
                       <Input
@@ -377,7 +377,7 @@ function WorkWithHyperiuxModalInner() {
                       id="wwh-message"
                       name="message"
                       label={false}
-                      className="h-[17.3vw]! rounded-xl! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-md:h-36!"
+                      className="h-[17.3vw]! rounded-xl! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-[1025px]:h-36!"
                       rows={3}
                       value={values.message}
                       onChange={updateField("message")}
@@ -387,12 +387,12 @@ function WorkWithHyperiuxModalInner() {
                   </div>
 
                   {serverError && (
-                    <div className="col-span-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200 max-md:col-span-1">
+                    <div className="col-span-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200 max-[1025px]:col-span-1">
                       {serverError}
                     </div>
                   )}
 
-                  <div className="col-span-2 max-md:col-span-1">
+                  <div className="col-span-2 max-[1025px]:col-span-1">
                     <CustomVerifyCheckbox
                       action="work_with_hyperiux"
                       checked={captchaVerified}
@@ -407,7 +407,7 @@ function WorkWithHyperiuxModalInner() {
                     )}
                   </div>
 
-                  <div className="col-span-2 mt-4 flex items-center gap-4 max-md:col-span-1 max-md:flex-col max-md:items-start">
+                  <div className="col-span-2 mt-4 flex items-center gap-4 max-[1025px]:col-span-1 max-[1025px]:flex-col max-[1025px]:items-start">
                     <WebsiteButton
                       text={isSubmitting ? "Sending..." : "Send Enquiry"}
                       href="#"

@@ -16,7 +16,7 @@ import { prefersReducedMotion } from '@/lib/motion'
 gsap.registerPlugin(ScrollTrigger)
 
 // Matches this project's `md` breakpoint (--breakpoint-md: 1025px in
-// globals.css, i.e. Tailwind's max-md: cutoff) so mobile and tablet share
+// globals.css, i.e. Tailwind's max-[1025px]: cutoff) so mobile and tablet share
 // the same tamed travel distance, and only true desktop gets the full one.
 function isCompactViewport() {
   if (typeof window === 'undefined') return false

@@ -634,14 +634,14 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
         className="absolute inset-0 text-white pointer-events-none"
         style={{ zIndex: 50 }}
       >
-        <h2 className="absolute left-[5%] max-sm:left-[1%] top-[50%] max-md:text-[3vw] w-[20vw] max-sm:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-sm:text-[4vw] font-medium about-slider-text">
+        <h2 className="absolute left-[5%] max-md:left-[1%] top-[50%] max-[1025px]:text-[3vw] w-[20vw] max-md:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-md:text-[4vw] font-medium about-slider-text">
           {slides[currentSlide].name}
         </h2>
         
-        <div className="absolute right-[5%] max-sm:right-[5%] max-md:right-[10%] top-[50%] max-md:w-[40vw] max-sm:top-[50%] w-[30vw] max-sm:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-normal">
+        <div className="absolute right-[5%] max-md:right-[5%] max-[1025px]:right-[10%] top-[50%] max-[1025px]:w-[40vw] max-md:top-[50%] w-[30vw] max-md:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-normal">
          
             <p
-              className="text-[1.5vw] max-md:text-[2.5vw] max-sm:text-[4vw] font-light about-slider-text text-shadow-black"
+              className="text-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw] font-light about-slider-text text-shadow-black"
               style={{ textShadow: "0 1px 12px rgba(0, 0, 0, 0.55)" }}
             >
                {slides[currentSlide].description}
@@ -653,10 +653,10 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
 
       <div
         ref={cursorRef}
-        className="fixed max-md:hidden  top-0 left-0 pointer-events-none z-100"
+        className="fixed max-[1025px]:hidden  top-0 left-0 pointer-events-none z-100"
       >
         <div
-          className="w-15 h-15 max-md:hidden  rounded-full flex items-center justify-center relative"
+          className="w-15 h-15 max-[1025px]:hidden  rounded-full flex items-center justify-center relative"
           style={{ backgroundColor: cursorBg }}
         >
           <div className="relative w-7.5 h-7.5">
@@ -678,7 +678,7 @@ export default function ClippathSliderComp({ slides = [], clueText, cursorBg = "
       </div>
 
       {clueText && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full max-md:rounded-[4vw] border max-sm:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-md:text-base max-sm:text-xs leading-relaxed text-white/80  backdrop-blur-md max-sm:bottom-18 max-sm:leading-[1.2]">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full max-[1025px]:rounded-[4vw] border max-md:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-[1025px]:text-base max-md:text-xs leading-relaxed text-white/80  backdrop-blur-md max-md:bottom-18 max-md:leading-[1.2]">
           {clueText}
         </p>
       )}

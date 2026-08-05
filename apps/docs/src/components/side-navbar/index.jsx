@@ -53,7 +53,7 @@ const SideNavbar = () => {
       <header
         className={`fixed top-0 w-full z-[200] transition-all duration-300`}
       >
-        <div className="w-full px-[4vw] pt-[2.2%] max-[1025px]:pt-[1%] flex justify-between items-center max-sm:py-[4%]">
+        <div className="w-full px-[4vw] pt-[2.2%] max-[1025px]:pt-[1%] flex justify-between items-center max-md:py-[4%]">
           <div className="w-fit overflow-hidden">
             <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
               <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 motion-reduce:transition-none`}>
@@ -86,14 +86,14 @@ const SideNavbar = () => {
               </div>
             </Link>
           </div>
-          <div className="flex items-center gap-8 relative z-[205] max-[1025px]:gap-4 max-sm:gap-0 max-sm:items-start">
-            <div className="w-[3.5vw] mr-[-0.5%] h-[3.5vw] max-sm:w-[12vw] max-sm:h-[15vw] relative max-[1025px]:w-[8vw] max-[1025px]:h-[10vw] max-sm:mr-[-5%]">
+          <div className="flex items-center gap-8 relative z-[205] max-[1025px]:gap-4 max-md:gap-0 max-md:items-start">
+            <div className="w-[3.5vw] mr-[-0.5%] h-[3.5vw] max-md:w-[12vw] max-md:h-[15vw] relative max-[1025px]:w-[8vw] max-[1025px]:h-[10vw] max-md:mr-[-5%]">
               <button
                 id="header-hamburger"
                 disabled={buttonDisabled}
                 onClick={handleMenuButtonClick}
                 aria-label="Open Menu"
-                className="group cursor-pointer pointer-events-auto h-[3.5vw] transition-all fixed z-[200] w-[3.5vw] max-sm:w-[12vw] max-sm:h-[12vw] max-[1025px]:w-[8vw] max-[1025px]:h-[10vw]"
+                className="group cursor-pointer pointer-events-auto h-[3.5vw] transition-all fixed z-[200] w-[3.5vw] max-md:w-[12vw] max-md:h-[12vw] max-[1025px]:w-[8vw] max-[1025px]:h-[10vw]"
               >
                 <span
                   className={`absolute left-[5px] top-0 -z-10 block h-full w-full scale-[0.6] rounded-[60px] opacity-0 pointer-events-none  duration-300 ease-out group-hover:scale-90 group-hover:opacity-100 ${
@@ -124,11 +124,11 @@ const SideNavbar = () => {
       </header>
       <div className="w-screen h-screen fixed inset-0">
         <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/side-navbar-bg.jpg"} alt="sidenavbar image" className={`w-full h-full absolute  duration-300 ${menuOpen ? "brightness-90" : ""}`} width={1920} height={1080} />
-       <div className={`w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-md:px-[10vw] ${menuOpen ? "brightness-90" : ""}`}>
-        <h1 className=" text-[5vw] max-sm:text-[12vw] max-md:text-[7vw]">
+       <div className={`w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw] ${menuOpen ? "brightness-90" : ""}`}>
+        <h1 className=" text-[5vw] max-md:text-[12vw] max-[1025px]:text-[7vw]">
           Side Navbar
         </h1>
-        <p className="max-md:text-center">
+        <p className="max-[1025px]:text-center">
           Click on the Hamburger to see the SideNavbar effect.
         </p>
 

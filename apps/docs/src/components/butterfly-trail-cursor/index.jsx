@@ -220,7 +220,7 @@ export default function ButterflyTrailCursor() {
 			{prefersReducedMotion && (
 				<div
 					aria-live="polite"
-					className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-sm p-3 text-center max-md:hidden"
+					className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-sm p-3 text-center max-[1025px]:hidden"
 				>
 					<h2 className="text-sm leading-none text-[#111111]">
 						The butterflies keep drifting.

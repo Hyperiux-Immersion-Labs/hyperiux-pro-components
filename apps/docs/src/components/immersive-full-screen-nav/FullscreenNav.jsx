@@ -216,7 +216,7 @@ export default function FullscreenNav({
   return (
     <div ref={rootRef}>
       <header
-        className={`fixed top-6 max-sm:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
+        className={`fixed top-6 max-md:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
           <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
@@ -256,11 +256,11 @@ export default function FullscreenNav({
           onClick={onToggleMenu}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
-          className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5 max-md:size-14 max-sm:size-10"
+          className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5 max-[1025px]:size-14 max-md:size-10"
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
               ? "translate-y-1.75 rotate-45"
               : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"
@@ -269,7 +269,7 @@ export default function FullscreenNav({
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-500 delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-500 delay-300 motion-reduce:transition-none ${isOpen
               ? "scale-x-0 opacity-0"
               : isReducedMotion
                 ? "scale-x-100 opacity-100 bg-black"
@@ -278,7 +278,7 @@ export default function FullscreenNav({
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full max-sm:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
               ? "-translate-y-2.25 -rotate-45"
               : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"

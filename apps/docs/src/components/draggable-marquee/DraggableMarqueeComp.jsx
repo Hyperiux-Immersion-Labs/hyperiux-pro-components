@@ -340,7 +340,7 @@ const DraggableMarqueeComp = ({
                                 alt={item.alt || "marquee-item"}
                                 width={item.width || 400}
                                 height={item.height || 500}
-                                className={`${item.imageClassName || "h-auto w-auto object-cover"} max-sm:w-[320px] max-sm:h-105`}
+                                className={`${item.imageClassName || "h-auto w-auto object-cover"} max-md:w-[320px] max-md:h-105`}
                             />
                         )}
                     </div>

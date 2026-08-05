@@ -449,7 +449,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
         onClick={closeSearch}
       />
 
-      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden rounded-lg border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-md:h-140 max-sm:h-113">
+      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden rounded-lg border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-[1025px]:h-140 max-md:h-113">
         <div className="flex items-center gap-3 border-b border-neutral-800/50 bg-black/20 px-4 py-4">
           <svg
             className="h-5 w-5 text-neutral-500"

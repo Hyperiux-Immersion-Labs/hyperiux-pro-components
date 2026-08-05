@@ -86,13 +86,13 @@ function SkeletonBlock({ className = "" }) {
 
 function EffectsGridSkeleton({ count = 6 }) {
   return (
-    <div className="grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 grid-cols-3 max-md:grid-cols-[20%_40%_40%] max-sm:grid-cols-[20%_40%_40%] max-md:gap-10 max-sm:gap-16">
+    <div className="grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 grid-cols-3 max-[1025px]:grid-cols-[20%_40%_40%] max-md:grid-cols-[20%_40%_40%] max-[1025px]:gap-10 max-md:gap-16">
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={`effect-card-skeleton-${index}`}
           className="effect-card-shell group relative"
         >
-          <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-md:p-5 max-sm:p-5">
+          <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
             {index % 3 === 2 && (
               <SkeletonBlock className="absolute right-4 top-4 h-10 w-14 rounded-full bg-[#3a3a3a]" />
             )}
@@ -102,7 +102,7 @@ function EffectsGridSkeleton({ count = 6 }) {
             </div>
           </div>
 
-          <div className="relative mt-5 flex items-start justify-between gap-4 px-3 max-sm:px-1">
+          <div className="relative mt-5 flex items-start justify-between gap-4 px-3 max-md:px-1">
             <div className="min-w-0 flex-1">
               <SkeletonBlock className="mb-2 h-5 w-[58%] rounded-sm bg-[#2f2f2f]" />
               <SkeletonBlock className="h-4 w-[34%] rounded-sm bg-[#242424]" />
@@ -558,20 +558,20 @@ const routeKey = `${pathname}${
           <div>
             <div
               key={`category-intro-${categoryFilter}`}
-              className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-sm:px-7 max-sm:pt-32 max-sm:pb-16"
+              className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
             >
               <Breadcrumb className="fadeup mx-auto" />
 
               <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
                 <h1
-                  className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-sm:w-[90%] max-sm:text-4xl"
+                  className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
                   style={{ lineHeight: "1.1" }}
                 >
                   {activeCategoryName}
                 </h1>
               </HeadAnim>
 
-              <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-md:max-w-full max-sm:text-base">
+              <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-[1025px]:max-w-full max-md:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
                     key={`${categoryFilter}-description-${index}`}
@@ -587,14 +587,14 @@ const routeKey = `${pathname}${
             </div>
           </div>
 
-          <div className="mx-auto px-10 pb-7 pt-20 max-sm:px-0 max-md:pt-10">
+          <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
             <div
-              className="relative max-md:w-full flex items-end gap-4 fadein"
+              className="relative max-[1025px]:w-full flex items-end gap-4 fadein"
               data-fadein-delay="1"
             >
               <div className="relative min-w-0 flex-1">
               <div
-                className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-md:block"
+                className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-[1025px]:block"
                 style={{
                   background:
                     "linear-gradient(to left, var(--background, #000) 0%, transparent 100%)",
@@ -606,12 +606,12 @@ const routeKey = `${pathname}${
                   className={[
                     "category-fadeup flex items-center gap-2.5",
                     "flex-wrap",
-                    "max-md:flex-nowrap max-md:overflow-x-auto max-md:px-6",
+                    "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
                     "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
                     "[&::-webkit-scrollbar]:h-1",
                     "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
                     "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
-                    "max-md:pb-3",
+                    "max-[1025px]:pb-3",
                   ].join(" ")}
                   
                 >
@@ -626,7 +626,7 @@ const routeKey = `${pathname}${
                   {/* Divider between filters and categories */}
                   <span
                     aria-hidden="true"
-                    className="mx-1 h-7 w-px shrink-0 self-center bg-white/15 max-sm:h-6"
+                    className="mx-1 h-7 w-px shrink-0 self-center bg-white/15 max-md:h-6"
                   />
 
                   {categoryChips.map((cat) => {
@@ -643,9 +643,9 @@ const routeKey = `${pathname}${
                           handleCategoryLinkClick(cat);
                         }}
                         className={`
-                          px-6 py-2.5 text-md text-center relative rounded-full max-sm:px-5 max-sm:py-2
+                          px-6 py-2.5 text-md text-center relative rounded-full max-md:px-5 max-md:py-2
                           backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
-                          transition-colors duration-300 max-sm:text-lg text20
+                          transition-colors duration-300 max-md:text-lg text20
                           ${isSelected
                             ? "bg-white text-[#111111] hover:text-[#111111] hover:bg-white"
                             : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
@@ -660,7 +660,7 @@ const routeKey = `${pathname}${
               </div>
 
               {/* Grid density viewer: 2 or 3 cards per row */}
-              <div className="relative shrink-0 max-md:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+              <div className="relative shrink-0 max-[1025px]:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute top-1 left-1 h-8 w-10 rounded-sm bg-white transition-transform duration-300 ease-out"
@@ -695,7 +695,7 @@ const routeKey = `${pathname}${
             </div>
           </div>
 
-          <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-sm:px-[7vw]">
+          <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-[7vw]">
             <div
               className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
                   ? "mb-8 min-h-10 opacity-100"
@@ -704,7 +704,7 @@ const routeKey = `${pathname}${
             >
               {searchQuery && (
                 <span
-                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium max-sm:px-3 max-sm:py-1.5 max-sm:text-xs"
+                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium max-md:px-3 max-md:py-1.5 max-md:text-xs"
                   style={{ borderRadius: "56px" }}
                 >
                   <span>&quot;{searchQuery}&quot;</span>
@@ -735,19 +735,19 @@ const routeKey = `${pathname}${
             {isEffectsLoading ? (
               <EffectsGridSkeleton count={9} />
             ) : filteredEffects.length === 0 ? (
-              <div className="py-20 text-center max-sm:px-4 max-sm:py-14">
-                <div className="mb-6 text-6xl max-sm:mb-4 max-sm:text-4xl">
+              <div className="py-20 text-center max-md:px-4 max-md:py-14">
+                <div className="mb-6 text-6xl max-md:mb-4 max-md:text-4xl">
                   🔍
                 </div>
 
                 <h3
-                  className="mb-3 font-display text-3xl font-normal text-foreground max-sm:text-2xl"
+                  className="mb-3 font-display text-3xl font-normal text-foreground max-md:text-2xl"
                   style={{ lineHeight: "1.1" }}
                 >
                   No effects found
                 </h3>
 
-                <p className="font-sans text-base text-muted max-sm:text-sm">
+                <p className="font-sans text-base text-muted max-md:text-sm">
                   Try adjusting your search or filter criteria
                 </p>
               </div>
@@ -764,7 +764,7 @@ const routeKey = `${pathname}${
             )}
 
             {!isEffectsLoading && (
-              <div className="relative text-foreground w-full mx-auto max-md:w-full">
+              <div className="relative text-foreground w-full mx-auto max-[1025px]:w-full">
                 {activeCategoryFaqItems.length > 0 && (
                   <div key={`category-faq-${categoryFilter}`}>
                     <FAQs faqItems={activeCategoryFaqItems} />
@@ -778,9 +778,9 @@ const routeKey = `${pathname}${
                       key={`category-cta-${categoryFilter}`}
                       className="category-fadeup fadeup w-full bg-[#272727] rounded-md text-center mb-[7vw] mx-auto"
                     >
-                      <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-md:px-6 max-sm:px-[7vw] py-15">
+                      <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
                         {activeCategoryContent.cta.heading && (
-                          <h2 className="text-[4vw] font-medium text-foreground max-sm:text-[7vw]">
+                          <h2 className="text-[4vw] font-medium text-foreground max-md:text-[7vw]">
                             {activeCategoryContent.cta.heading}
                           </h2>
                         )}
@@ -825,14 +825,14 @@ const routeKey = `${pathname}${
           onClick={() => setUpgradeToastDismissed(true)}
         >
           <div
-            className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
+            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Close"
               onClick={() => setUpgradeToastDismissed(true)}
-              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -859,14 +859,14 @@ const routeKey = `${pathname}${
           onClick={() => setShowWishlistToast(false)}
         >
           <div
-            className={`flex w-[35vw]  max-sm:w-full max-md:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
+            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Close"
               onClick={() => setShowWishlistToast(false)}
-              className="max-md:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -971,7 +971,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-md:pt-6 max-sm:pt-0 ${baseColsClass} max-md:grid-cols-2 max-sm:grid-cols-1 max-md:gap-10 max-sm:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-2 max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
       >
         {visibleEffects.map((effect, i) => (
           <motion.div

@@ -16,22 +16,22 @@ export default function Page() {
   return (
     <>
       <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
-      <section className="flex min-h-screen w-screen items-center max-md:items-start bg-[#111111] p-[5vw] max-md:h-auto max-md:py-[8vw] max-md:pt-24 max-sm:pt-24 max-md:pb-[8vw] max-sm:px-[5vw] max-sm:py-[12vw]">
-        <div className="flex w-full justify-between gap-[5vw] max-md:flex-col max-md:gap-[6vw] max-sm:gap-[8vw]">
+      <section className="flex min-h-screen w-screen items-center max-[1025px]:items-start bg-[#111111] p-[5vw] max-[1025px]:h-auto max-[1025px]:py-[8vw] max-[1025px]:pt-24 max-md:pt-24 max-[1025px]:pb-[8vw] max-md:px-[5vw] max-md:py-[12vw]">
+        <div className="flex w-full justify-between gap-[5vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw] max-md:gap-[8vw]">
           {/* LEFT VIDEO */}
-          <div className="aspect-video h-[27vw] w-[43vw] max-md:h-auto max-md:w-full fadeup">
+          <div className="aspect-video h-[27vw] w-[43vw] max-[1025px]:h-auto max-[1025px]:w-full fadeup">
             <VideoPlayer />
           </div>
 
           {/* RIGHT CONTENT */}
-          <div className="flex w-1/2 flex-col gap-[2vw] text-white max-md:w-full max-md:gap-[3vw]">
-            <h1 className="text-[3vw] leading-[1.1] font-medium max-md:text-[6vw] max-sm:text-[8.5vw]">
+          <div className="flex w-1/2 flex-col gap-[2vw] text-white max-[1025px]:w-full max-[1025px]:gap-[3vw]">
+            <h1 className="text-[3vw] leading-[1.1] font-medium max-[1025px]:text-[6vw] max-md:text-[8.5vw]">
               <SplitLine>
                 A Custom Video Player Built for Polished Interfaces
               </SplitLine>
             </h1>
             <SplitLine>
-              <p className="w-[85%] text-[1.1vw] leading-[1.8] opacity-80 max-md:w-full max-md:text-[2.2vw] max-sm:text-[3.8vw] max-sm:leading-[1.7]">
+              <p className="w-[85%] text-[1.1vw] leading-[1.8] opacity-80 max-[1025px]:w-full max-[1025px]:text-[2.2vw] max-md:text-[3.8vw] max-md:leading-[1.7]">
                 This video player gives you a clean, cinematic playback experience
                 without relying on the browser’s default controls. It handles
                 play, pause, mute, progress tracking, seeking, poster support,
@@ -41,7 +41,7 @@ export default function Page() {
             </SplitLine>
 
 
-            <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-md:gap-[1vw] max-md:text-[2vw] max-sm:gap-[2vw] max-sm:text-[3.5vw] max-sm:pl-[2vw]">
+            <ul className="flex list-none flex-col gap-[0.5vw] p-0 text-[1vw] opacity-80 max-[1025px]:gap-[1vw] max-[1025px]:text-[2vw] max-md:gap-[2vw] max-md:text-[3.5vw] max-md:pl-[2vw]">
               {featurePoints.map((point) => (
 
                 <li key={point} className="flex gap-[0.35em]">

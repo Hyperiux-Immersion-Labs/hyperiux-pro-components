@@ -60,14 +60,14 @@ const FullScreenCrosshair = ({
  <span className="absolute left-1/2 top-(--crosshair-gap) block h-(--crosshair-line-size) w-(--crosshair-thickness) -translate-x-1/2 bg-(--crosshair-color)" />
  <span className="absolute right-(--crosshair-gap) top-1/2 block h-(--crosshair-thickness) w-(--crosshair-line-size) -translate-y-1/2 bg-(--crosshair-color)" />
 
- <div className="absolute left-1/2 top-1/2 flex min-h-(--crosshair-center-size) min-w-(--crosshair-center-size) -translate-x-1/2 -translate-y-1/2 select-none items-center justify-center whitespace-nowrap leading-none text-(length:--crosshair-center-size) text-(--crosshair-color) max-md:text-[calc(var(--crosshair-center-size)*0.9)] max-sm:text-[calc(var(--crosshair-center-size)*0.9)]">
+ <div className="absolute left-1/2 top-1/2 flex min-h-(--crosshair-center-size) min-w-(--crosshair-center-size) -translate-x-1/2 -translate-y-1/2 select-none items-center justify-center whitespace-nowrap leading-none text-(length:--crosshair-center-size) text-(--crosshair-color) max-[1025px]:text-[calc(var(--crosshair-center-size)*0.9)] max-md:text-[calc(var(--crosshair-center-size)*0.9)]">
  {centerContent}
  </div>
  </div>
  {prefersReducedMotion && (
  <div
    aria-live="polite"
-   className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-md:hidden"
+   className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
  >
    <h2 className="text-sm leading-none text-white">
      The crosshair keeps tracking.

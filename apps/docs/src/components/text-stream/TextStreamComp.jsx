@@ -175,15 +175,15 @@ export default function TextStreamComp({ items = [] }) {
 
   return (
     <div className="flex h-screen">
-      <div className="w-[45%] flex max-sm:w-[30%] max-md:w-[35%] items-center justify-end pr-2">
-        <p className="max-sm:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
+      <div className="w-[45%] flex max-md:w-[30%] max-[1025px]:w-[35%] items-center justify-end pr-2">
+        <p className="max-md:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
           Hyperiux
         </p>
       </div>
 
       <div
         ref={containerRef}
-        className="relative w-[55%] max-md:w-[65%] max-sm:w-[70%] h-full overflow-hidden "
+        className="relative w-[55%] max-[1025px]:w-[65%] max-md:w-[70%] h-full overflow-hidden "
         style={{
           maskImage: revealMask,
           WebkitMaskImage: revealMask,
@@ -191,7 +191,7 @@ export default function TextStreamComp({ items = [] }) {
       >
         <div
           ref={trackRef}
-          className="absolute left-0 top-0 flex flex-col max-sm:text-xl text-4xl font-extralight leading-none"
+          className="absolute left-0 top-0 flex flex-col max-md:text-xl text-4xl font-extralight leading-none"
         >
           {Array.from({ length: copyCount }, (_, copyIndex) => (
             <div
@@ -207,10 +207,10 @@ export default function TextStreamComp({ items = [] }) {
     py-1
     pl-2
     whitespace-nowrap
-    max-md:whitespace-normal
-    max-md:wrap-break-word
-    max-sm:pr-3
-    max-md:max-w-full
+    max-[1025px]:whitespace-normal
+    max-[1025px]:wrap-break-word
+    max-md:pr-3
+    max-[1025px]:max-w-full
   "
 >
                   {text}

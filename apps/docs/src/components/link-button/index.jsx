@@ -67,7 +67,7 @@ export default function LinkButton({
   };
   const iconClassNames = `${isIconRotated ? "motion-safe:-rotate-45" : ""} ${
     !isCompactViewport ? "motion-safe:group-hover:-rotate-45" : ""
-  } size-[1.1vw] max-md:size-[2vw] max-sm:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
+  } size-[1.1vw] max-[1025px]:size-[2vw] max-md:size-[3.5vw] transition-transform duration-300 motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
   const underlineClassNames = `btn-link-line relative inline-block w-fit after:absolute after:left-0 after:bottom-[-2%] after:h-[1.5px] after:w-full after:bg-current after:content-[''] after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.62,0.05,0.01,0.99)] motion-reduce:after:transition-none ${
     hasMeasuredViewport && isCompactViewport
       ? isIconRotated
@@ -83,7 +83,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-md:text-[4vw] max-sm:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 max-[1025px]:text-[4vw] max-md:text-[5.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

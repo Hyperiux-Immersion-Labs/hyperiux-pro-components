@@ -11,22 +11,22 @@ const index = () => {
   return (
     <>
       <DonutParticles />
-      <div className="relative z-20 h-full w-full flex items-center max-md:items-start">
-        <div className="w-full max-w-2xl px-10 absolute bottom-10 left-0 max-md:top-10 max-md:bottom-auto max-md:px-6 max-sm:px-4">
+      <div className="relative z-20 h-full w-full flex items-center max-[1025px]:items-start">
+        <div className="w-full max-w-2xl px-10 absolute bottom-10 left-0 max-[1025px]:top-10 max-[1025px]:bottom-auto max-[1025px]:px-6 max-md:px-4">
           <HeadAnim>
-            <h1 className="leading-none uppercase text-[7vw] text-white font-medium max-md:text-[10vw] max-sm:text-[12vw]">
+            <h1 className="leading-none uppercase text-[7vw] text-white font-medium max-[1025px]:text-[10vw] max-md:text-[12vw]">
               Brands Built <span className=" text-purple-500"> Boldly</span>
             </h1>
           </HeadAnim>
         </div>
       </div>
 
-      <div className="absolute bottom-8 right-10 z-20 max-md:bottom-10 max-w-md max-md:right-4 space-y-2 text-right  max-md:w-[50vw]">
-        <p className="text-white max-md:text-[2.2vw] max-sm:text-[2.8vw] text-[0.8vw] uppercase tracking-[0.28em]">
+      <div className="absolute bottom-8 right-10 z-20 max-[1025px]:bottom-10 max-w-md max-[1025px]:right-4 space-y-2 text-right  max-[1025px]:w-[50vw]">
+        <p className="text-white max-[1025px]:text-[2.2vw] max-md:text-[2.8vw] text-[0.8vw] uppercase tracking-[0.28em]">
           Trace the orbit. The particles will follow.
         </p>
         <Copy delay={0.5}>
-          <p className="text-white max-md:text-xl max-sm:text-sm leading-[1.2] text-lg">
+          <p className="text-white max-[1025px]:text-xl max-md:text-sm leading-[1.2] text-lg">
             From strategy to visuals, we craft branding that tells your story
             and leaves a lasting impression.
           </p>
@@ -44,7 +44,7 @@ const index = () => {
       </div>
       
 
-      <div className="hidden max-md:flex absolute bottom-8 left-6 w-[30vw] max-sm:w-[35vw] max-sm:text-[3.5vw] justify-end text-center bg-white/20 backdrop-blur-[0.5vw] rounded-lg  text-white text-[2.5vw] p-2">
+      <div className="hidden max-[1025px]:flex absolute bottom-8 left-6 w-[30vw] max-md:w-[35vw] max-md:text-[3.5vw] justify-end text-center bg-white/20 backdrop-blur-[0.5vw] rounded-lg  text-white text-[2.5vw] p-2">
         Experience the full magic on desktop
       </div>
     </>

@@ -242,13 +242,13 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-[1025px]:static max-[1025px]:w-full max-[1025px]:h-fit max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-start">
 
 
-        <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]">
+        <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-[1025px]:gap-[15vw]">
           {propertiesData.map((property, index) => (
             <div
               key={index}
               className="w-[80vw] h-screen flex gap-[5vw] industry-card max-[1025px]:h-fit max-[1025px]:flex-col-reverse max-[1025px]:w-full"
             >
-              <div className="w-[40vw] h-screen overflow-hidden max-md:h-[110vw] max-[1025px]:w-full max-md:rounded-[4vw] max-[1025px]:h-[80vw] max-[1025px]:rounded-[2vw]">
+              <div className="w-[40vw] h-screen overflow-hidden max-[1025px]:h-[110vw] max-[1025px]:w-full max-[1025px]:rounded-[4vw] max-[1025px]:h-[80vw] max-[1025px]:rounded-[2vw]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={property.image}
@@ -259,21 +259,21 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
                 />
               </div>
 
-              <div className="flex flex-col gap-[5vh] w-[60%] pt-[7%] max-md:pt-0 max-[1025px]:w-full max-[1025px]:gap-[4vw] max-md:gap-[7vw]">
+              <div className="flex flex-col gap-[5vh] w-[60%] pt-[7%] max-[1025px]:pt-0 max-[1025px]:w-full max-[1025px]:gap-[4vw] max-[1025px]:gap-[7vw]">
                 <p
                   className={`text-[6em] font-medium font-display text-secondary leading-none opacity-0 industry-no industry-no-${property.no} max-[1025px]:text-[10vw] max-[1025px]:opacity-100`}
                 >
                   {property.number}
                 </p>
 
-                <div className="w-full h-fit flex flex-col gap-[4vh] max-md:gap-[7vw]">
+                <div className="w-full h-fit flex flex-col gap-[4vh] max-[1025px]:gap-[7vw]">
                   <h3
-                    className={`text-[4em] opacity-0 industry-title max-md:text-[9vw] max-[1025px]:text-[7.5vw] max-[1025px]:opacity-100 leading-[1.3] ${property.titleClass}`}
+                    className={`text-[4em] opacity-0 industry-title max-[1025px]:text-[9vw] max-[1025px]:text-[7.5vw] max-[1025px]:opacity-100 leading-[1.3] ${property.titleClass}`}
                   >
                     {property.title}
                   </h3>
 
-                  <div className="space-y-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]">
+                  <div className="space-y-[1.5vw] max-[1025px]:text-[2.5vw] max-[1025px]:text-[4.2vw]">
                     {property.paragraphs.map((para, pIndex) => (
                       <p
                         key={pIndex}

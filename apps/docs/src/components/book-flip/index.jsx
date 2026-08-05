@@ -25,7 +25,7 @@ export default function BookFlip() {
       }}
       showUI={true}
     />
-    <div className="w-fit absolute bottom-8 max-sm:bottom-3 max-sm:w-[80vw] max-sm:leading-[1.2] left-1/2 -translate-x-1/2 text-center">
+    <div className="w-fit absolute bottom-8 max-md:bottom-3 max-md:w-[80vw] max-md:leading-[1.2] left-1/2 -translate-x-1/2 text-center">
     Click on the navigation buttons or the pages itself to flip pages of the book
 
     </div>
@@ -33,7 +33,7 @@ export default function BookFlip() {
     {prefersReducedMotion && (
       <div
         aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
+        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
       >
         <h2 className="text-sm leading-none text-white">
           The pages keep turning.

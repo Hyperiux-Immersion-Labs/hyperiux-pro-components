@@ -22,10 +22,10 @@ export default function Home() {
         distortionMultiplier={8.0}
         edgePadding={0.12}
       />
-      <div className="w-fit absolute bottom-8 left-1/2 -translate-x-1/2  text-center max-md:hidden">
+      <div className="w-fit absolute bottom-8 left-1/2 -translate-x-1/2  text-center max-[1025px]:hidden">
         Move the cursor left and right to see the fractal effect
       </div>
-      <div className="w-fit absolute text-lg max-sm:text-sm  left-1/2 -translate-x-1/2 bottom-[85%] text-center hidden max-md:block">
+      <div className="w-fit absolute text-lg max-md:text-sm  left-1/2 -translate-x-1/2 bottom-[85%] text-center hidden max-[1025px]:block">
         Drag left and right to see the fractal effect
       </div>
     </>

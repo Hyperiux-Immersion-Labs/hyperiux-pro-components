@@ -406,7 +406,7 @@ const RingCarouselComp = ({
  <div className="sr-only" aria-live="polite" aria-atomic="true">
  {slideAnnouncement}
  </div>
- <div className=" absolute left-1/2 top-[40%] max-sm:top-[30%] h-[30vw] w-screen -translate-x-1/2 -translate-y-1/2 perspective-[2000px] transform-3d">
+ <div className=" absolute left-1/2 top-[40%] max-md:top-[30%] h-[30vw] w-screen -translate-x-1/2 -translate-y-1/2 perspective-[2000px] transform-3d">
  <div className=" relative h-full w-full transform-3d" ref={ringRef}>
  {items.map((item, i) => {
  const isImage = typeof item ==="string";
@@ -441,13 +441,13 @@ const RingCarouselComp = ({
  <div className=" absolute inset-0 z-3 cursor-grab active:cursor-grabbing" ref={draggerRef} />
  </div>
 
- <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-md:hidden" />
+ <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-[1025px]:hidden" />
 
  {showNavigation && totalItems > 1 && (
- <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3 max-sm:bottom-[10%]">
+ <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3 max-md:bottom-[10%]">
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-[1025px]:h-14 max-[1025px]:w-14 max-md:h-[15vw] max-md:w-[15vw]"
  onClick={goToPrev}
  aria-label="Previous slide"
  >
@@ -456,7 +456,7 @@ const RingCarouselComp = ({
 
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-md:h-14 max-md:w-14 max-sm:h-[15vw] max-sm:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-[1025px]:h-14 max-[1025px]:w-14 max-md:h-[15vw] max-md:w-[15vw]"
  onClick={() => goToNext(false)}
  aria-label="Next slide"
  >
@@ -466,7 +466,7 @@ const RingCarouselComp = ({
  )}
 
  {showDots && totalItems > 1 && (
- <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-md:bottom-[18%] max-md:gap-[2vw] max-md:px-4 max-md:py-3 max-sm:bottom-[30%] max-sm:px-3.5 max-sm:py-2.5" aria-label="Slider pagination">
+ <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[18%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[30%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
  {items.map((_, index) => (
  <button
  key={index}
@@ -478,9 +478,9 @@ const RingCarouselComp = ({
  aria-label={`Go to slide ${index + 1}`}
  >
  <span
- className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none max-md:h-2.25 max-md:w-2.25 max-sm:h-2 max-sm:w-2 ${
+ className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none max-[1025px]:h-2.25 max-[1025px]:w-2.25 max-md:h-2 max-md:w-2 ${
  activeIndex === index
- ? "w-10.5 bg-white/92 max-md:w-9 max-sm:w-7"
+ ? "w-10.5 bg-white/92 max-[1025px]:w-9 max-md:w-7"
  : ""
  }`}
  />

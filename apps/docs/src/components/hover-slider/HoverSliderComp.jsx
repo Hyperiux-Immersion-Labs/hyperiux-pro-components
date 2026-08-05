@@ -677,11 +677,11 @@ export default function HoverSliderComp({ items = [] }) {
     <section
       ref={mountRef}
       onPointerLeave={onLeave}
-      className="relative isolate pt-24 min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-sm:px-0 max-sm:pt-40 max-sm:pb-20 md:overflow-hidden md:px-10"
+      className="relative isolate pt-24 min-h-screen overflow-visible bg-[#f0ede6] px-4 py-9 text-[#1e1c18] max-md:px-0 max-md:pt-40 max-md:pb-20 md:overflow-hidden md:px-10"
       style={{ cursor: "crosshair" }}
     >
-      <div className="relative z-20 w-full overflow-x-auto pb-8 max-sm:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">
-        <div className="absolute right-[-40vw] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-sm:hidden">
+      <div className="relative z-20 w-full overflow-x-auto pb-8 max-md:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">
+        <div className="absolute right-[-40vw] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-md:hidden">
           Tip: hover the list rows - watch the images move and reveal.
         </div>
 
@@ -739,7 +739,7 @@ export default function HoverSliderComp({ items = [] }) {
       </div>
 
      <p
-        className="pointer-events-none absolute bottom-[8%] right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-[1025px]:hidden max-md:hidden md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
+        className="pointer-events-none absolute bottom-[8%] right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-[1025px]:hidden max-[1025px]:hidden md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
         style={{ color: "rgba(30,28,24,0.6)" }}
       >
         A curated collection of futuristic UI experiments, motion systems, and
@@ -747,7 +747,7 @@ export default function HoverSliderComp({ items = [] }) {
         the ordinary.
       </p>
 
-      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-[1025px]:block max-md:bottom-2 max-md:w-[80vw] max-md:text-sm">
+      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-[1025px]:block max-[1025px]:bottom-2 max-[1025px]:w-[80vw] max-[1025px]:text-sm">
         Click on an item to see the animation. Hover effects available on
         desktop.
       </p>

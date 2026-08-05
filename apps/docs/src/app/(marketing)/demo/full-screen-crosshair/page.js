@@ -21,7 +21,7 @@ export default function Page() {
       <HeadAnim>
 
 
- <h1 className="w-full h-full flex items-center justify-center text-center text-[3.5vw] font-medium max-md:text-[6.5vw]">
+ <h1 className="w-full h-full flex items-center justify-center text-center text-[3.5vw] font-medium max-[1025px]:text-[6.5vw]">
  Full Screen Crosshair
  </h1>
       </HeadAnim>
@@ -29,11 +29,11 @@ export default function Page() {
       <SplitLine
                    as="p"
                    start="top 120%"
- className="absolute max-md:hidden bottom-8 left-1/2 backdrop-blur-sm  -translate-x-1/2 py-3 px-5 bg-white/5 text-center text-neutral-200 text-base rounded-xl">
+ className="absolute max-[1025px]:hidden bottom-8 left-1/2 backdrop-blur-sm  -translate-x-1/2 py-3 px-5 bg-white/5 text-center text-neutral-200 text-base rounded-xl">
        Move your cursor to see the crosshair come alive ✛
  </SplitLine>
 
- <p className="absolute max-md:block hidden bottom-20 left-1/2 backdrop-blur-sm -translate-x-1/2 w-[50vw] max-sm:w-[80vw] py-3 px-5 bg-white/5 text-center text-neutral-200 text-lg rounded-2xl">
+ <p className="absolute max-[1025px]:block hidden bottom-20 left-1/2 backdrop-blur-sm -translate-x-1/2 w-[50vw] max-md:w-[80vw] py-3 px-5 bg-white/5 text-center text-neutral-200 text-lg rounded-2xl">
   Tap to see the crosshair move ✛
   <br/>
   Best experienced on desktop.

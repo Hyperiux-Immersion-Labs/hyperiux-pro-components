@@ -179,7 +179,7 @@ function MobileDropdownItem({
       }`}
     >
       {icon && (
-        <span className="flex max-sm:size-5 max-md:size-[4vw] shrink-0 items-center justify-center">
+        <span className="flex max-md:size-5 max-[1025px]:size-[4vw] shrink-0 items-center justify-center">
           <Image
             src={icon}
             alt="icon"
@@ -190,7 +190,7 @@ function MobileDropdownItem({
         </span>
       )}
 
-      <span className="max-sm:text-[4vw] max-md:text-[3vw] font-medium">
+      <span className="max-md:text-[4vw] max-[1025px]:text-[3vw] font-medium">
         {label}
       </span>
     </Link>
@@ -241,7 +241,7 @@ function MobileDropdown({
         className="flex w-full items-center justify-between py-5 text-left"
       >
         <span
-          className={`max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
+          className={`max-md:text-[5vw] max-[1025px]:text-[4vw] font-medium transition-colors duration-200 ${
             isActive ? "text-primary" : "text-white/90"
           }`}
         >
@@ -249,7 +249,7 @@ function MobileDropdown({
         </span>
 
         <ChevronDown
-          className={`size-5 transition-transform duration-300 max-md:size-[4vw] ${
+          className={`size-5 transition-transform duration-300 max-[1025px]:size-[4vw] ${
             isOpen || isActive ? "text-primary" : "text-white/50"
           } ${isOpen ? "rotate-180" : ""}`}
         />
@@ -561,34 +561,34 @@ export default function NavbarMobile() {
           visibility: "hidden",
           transform: "translate3d(0, -18px, 0)",
         }}
-        className="fixed left-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-1100 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-md:flex"
+        className="fixed left-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-1100 hidden w-full items-center justify-between border-b border-white/5 bg-black/90 px-6 py-4 backdrop-blur-xl max-[1025px]:flex"
       >
         <Link prefetch={false} href="/" onClick={handleNavigate} aria-label="Hyperiux Vault home">
-          <HyperiuxLogo className="h-auto max-sm:w-[40vw] text-primary max-md:w-[25vw]" />
+          <HyperiuxLogo className="h-auto max-md:w-[40vw] text-primary max-[1025px]:w-[25vw]" />
         </Link>
 
         <button
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
-          className="relative flex max-sm:size-[11vw] max-md:size-[8vw] items-center justify-center rounded-full text-white transition-colors"
+          className="relative flex max-md:size-[11vw] max-[1025px]:size-[8vw] items-center justify-center rounded-full text-white transition-colors"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? (
-            <X className="max-sm:size-[7vw] max-md:size-[4vw]" />
+            <X className="max-md:size-[7vw] max-[1025px]:size-[4vw]" />
           ) : (
-            <HamburgerIcon className="max-sm:size-[7vw] max-md:size-[4vw]" />
+            <HamburgerIcon className="max-md:size-[7vw] max-[1025px]:size-[4vw]" />
           )}
         </button>
       </nav>
 
       <div
         ref={menuRef}
-        className="fixed inset-0 z-999 hidden bg-black opacity-0 pointer-events-none max-md:flex"
+        className="fixed inset-0 z-999 hidden bg-black opacity-0 pointer-events-none max-[1025px]:flex"
       >
         <div
           data-lenis-prevent
-          className="absolute inset-0 overflow-y-auto px-[8vw] pt-32 max-sm:pt-36 pb-8"
+          className="absolute inset-0 overflow-y-auto px-[8vw] pt-32 max-md:pt-36 pb-8"
         >
           <div ref={linksRef} className="flex flex-1 flex-col">
             {vaultLinks.map(({ label, href, dropdown }) => {
@@ -641,7 +641,7 @@ export default function NavbarMobile() {
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
                   onClick={handleNavigate}
-                  className={` py-5 max-sm:text-[5vw] max-md:text-[4vw] font-medium transition-colors duration-200 ${
+                  className={` py-5 max-md:text-[5vw] max-[1025px]:text-[4vw] font-medium transition-colors duration-200 ${
                     isActive
                       ? "text-primary"
                       : "text-white/90 hover:text-white"
@@ -653,11 +653,11 @@ export default function NavbarMobile() {
             })}
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-8 flex max-sm:flex-col gap-4 max-sm:gap-6">
+          <div className="mt-8 border-t border-white/10 pt-8 flex max-md:flex-col gap-4 max-md:gap-6">
             {/* Clerk-free by design: marketing routes render without
                 ClerkProvider, so the mobile nav always shows the anonymous
                 state. */}
-            <div className="flex w-fit max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
+            <div className="flex w-fit max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
               <Button
                 text="Get Pro"
                 href="/sign-up"
@@ -665,8 +665,8 @@ export default function NavbarMobile() {
                 variant="outline2"
               />
             </div>
-            <div className="flex w-fit  max-sm:w-[88%] max-sm:mx-auto justify-center" onClick={handleNavigate}>
-              <Button text="Install CLI" href="/docs/installation" className="w-fit max-sm:w-full" />
+            <div className="flex w-fit  max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
+              <Button text="Install CLI" href="/docs/installation" className="w-fit max-md:w-full" />
             </div>
           </div>
         </div>

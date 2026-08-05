@@ -67,7 +67,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 
  <section
  ref={outerRef}
- className="max-md:hidden relative h-[250vh]"
+ className="max-[1025px]:hidden relative h-[250vh]"
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
@@ -111,15 +111,15 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </section>
 
  {/* Mobile / Tablet */}
- <section className="hidden max-md:block py-[16vw] max-sm:py-[22vw] px-[5vw]">
- <h2 className="text-center max-md:text-[4vw] max-sm:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
+ <section className="hidden max-[1025px]:block py-[16vw] max-md:py-[22vw] px-[5vw]">
+ <h2 className="text-center max-[1025px]:text-[4vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {heading}
  </h2>
- <div className="flex flex-col items-center gap-[5vw] max-sm:gap-[10vw]">
+ <div className="flex flex-col items-center gap-[5vw] max-md:gap-[10vw]">
  {data.map((product, i) => (
  <div
  key={i}
- className="w-[85vw] max-md:w-full rounded-[5vw] overflow-hidden"
+ className="w-[85vw] max-[1025px]:w-full rounded-[5vw] overflow-hidden"
  >
  <SliderCard
  heading={product.heading}
@@ -131,7 +131,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  </div>
  ))}
  </div>
- <p className="text-center font-light uppercase tracking-widest max-md:text-[2.5vw] max-sm:text-[6vw] mt-[10vw]">
+ <p className="text-center font-light uppercase tracking-widest max-[1025px]:text-[2.5vw] max-md:text-[6vw] mt-[10vw]">
  {para}
  </p>
  </section>
@@ -141,7 +141,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
  aria-live="polite"
  className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
  >
- <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
+ <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
  This effect can&apos;t be reduced.
  </h2>
  <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
@@ -161,30 +161,30 @@ export default CircularSliderComp;
 const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  const cardContent = (
  <div
- className="w-full h-full max-md:h-auto rounded-[1.5vw] max-md:rounded-[5vw] max-sm:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-md:gap-8 max-sm:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-md:px-[8%] max-sm:px-6 py-20 max-md:py-12 max-sm:py-10"
+ className="w-full h-full max-[1025px]:h-auto rounded-[1.5vw] max-[1025px]:rounded-[5vw] max-md:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-[1025px]:gap-8 max-md:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-[1025px]:px-[8%] max-md:px-6 py-20 max-[1025px]:py-12 max-md:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
  }}
  >
- <div className="flex flex-col items-center gap-4 max-sm:gap-4 justify-center">
+ <div className="flex flex-col items-center gap-4 max-md:gap-4 justify-center">
  <h2
- className="text-center font-medium text-[1.8vw] max-md:text-3xl max-sm:text-2xl uppercase"
+ className="text-center font-medium text-[1.8vw] max-[1025px]:text-3xl max-md:text-2xl uppercase"
  style={{ color: textColor ||"inherit" }}
  >
  {heading}
  </h2>
  <p
- className="text-[1.15vw] max-sm:text-lg max-md:text-xl text-center mt-[0.5vw] max-sm:mt-1"
+ className="text-[1.15vw] max-md:text-lg max-[1025px]:text-xl text-center mt-[0.5vw] max-md:mt-1"
  style={{ color: textColor ||"inherit" }}
  >
  {text}
  </p>
  </div>
 
- <div className="mt-[1vw] max-sm:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-sm:gap-2 group/btn">
+ <div className="mt-[1vw] max-md:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-md:gap-2 group/btn">
  <span
- className="text-[1vw] max-sm:text-xs max-md:text-lg uppercase tracking-widest"
+ className="text-[1vw] max-md:text-xs max-[1025px]:text-lg uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}
  >
  See More
@@ -199,7 +199,7 @@ const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  }
 
  return (
- <Link prefetch={false} href={link} className="block w-full h-full max-md:h-auto">
+ <Link prefetch={false} href={link} className="block w-full h-full max-[1025px]:h-auto">
  {cardContent}
  </Link>
  );
