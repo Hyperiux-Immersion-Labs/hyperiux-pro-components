@@ -22,14 +22,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/circular-slider/index.jsx"
+      "target": "src/components/effects/circular-slider/index.tsx"
     },
     {
-      "path": "CircularSliderComp.jsx",
+      "path": "CircularSliderComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
+      "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
     }
   ]
 }

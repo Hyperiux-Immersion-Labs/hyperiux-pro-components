@@ -1,5 +1,12 @@
 import React from 'react'
 
+/**
+ * @param {{
+ *   textColor?: string,
+ *   className?: string,
+ *   as?: string,
+ * }} props
+ */
 const ScrollBottom = ({ textColor,
   className = 'bottom-[5%] gap-[1vw]',
   as = 'p'

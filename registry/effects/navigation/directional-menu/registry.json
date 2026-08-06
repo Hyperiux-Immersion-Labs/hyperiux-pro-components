@@ -17,39 +17,39 @@
   "previewUrl": "/demo/directional-menu",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DirectionalMenu",
   "exportKind": "default",
   "importPath": "@/components/effects/directional-menu",
   "target": "src/components/effects/directional-menu",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/directional-menu/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/directional-menu/index.tsx"
     },
     {
-      "path": "DirectionalMegaMenu.jsx",
-      "target": "src/components/effects/directional-menu/DirectionalMegaMenu.jsx"
+      "path": "DirectionalMegaMenu.tsx",
+      "target": "src/components/effects/directional-menu/DirectionalMegaMenu.tsx"
     },
     {
-      "path": "Menu1.jsx",
-      "target": "src/components/effects/directional-menu/Menu1.jsx"
+      "path": "Menu1.tsx",
+      "target": "src/components/effects/directional-menu/Menu1.tsx"
     },
     {
-      "path": "Menu2.jsx",
-      "target": "src/components/effects/directional-menu/Menu2.jsx"
+      "path": "Menu2.tsx",
+      "target": "src/components/effects/directional-menu/Menu2.tsx"
     },
     {
-      "path": "Menu3.jsx",
-      "target": "src/components/effects/directional-menu/Menu3.jsx"
+      "path": "Menu3.tsx",
+      "target": "src/components/effects/directional-menu/Menu3.tsx"
     },
     {
-      "path": "MobileDirectionalMenu.jsx",
-      "target": "src/components/effects/directional-menu/MobileDirectionalMenu.jsx"
+      "path": "MobileDirectionalMenu.tsx",
+      "target": "src/components/effects/directional-menu/MobileDirectionalMenu.tsx"
     },
     {
-      "path": "useFocusTrap.js",
-      "target": "src/components/effects/directional-menu/useFocusTrap.js"
+      "path": "useFocusTrap.ts",
+      "target": "src/components/effects/directional-menu/useFocusTrap.ts"
     }
   ]
 }

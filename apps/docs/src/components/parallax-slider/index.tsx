@@ -1,0 +1,184 @@
+"use client";
+
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "@/lib/motion";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Reduced motion: the main horizontal track scroll stays untouched (it's the
+// functional mechanism for navigating slides, not decorative). The per-image
+// parallax (x shift + scale) is reduced, not removed, and the one-time
+// clip-path reveal loses its eased curve in favor of a linear one.
+const REDUCED_MOTION_FACTOR = 0.25;
+
+const GAP = 1.6;
+const PAD_X = "5vw";
+
+const DEFAULT_IMAGES = [
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+];
+
+interface ParallaxSliderProps {
+  images?: string[];
+  bgColor?: string;
+}
+
+function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }: ParallaxSliderProps) {
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+
+  /** Dynamic height */
+  useEffect(() => {
+    const outer = outerRef.current;
+    const track = trackRef.current;
+    if (!outer || !track) return;
+
+    const update = () => {
+      const travel = track.scrollWidth - window.innerWidth;
+      outer.style.height = `${travel + window.innerHeight}px`;
+    };
+
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    window.addEventListener("resize", update);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [images]);
+
+  /** GSAP logic */
+  useEffect(() => {
+    const outer = outerRef.current;
+    const track = trackRef.current;
+    if (!outer || !track) return;
+
+    const reducedMotion = prefersReducedMotion();
+
+    const ctx = gsap.context(() => {
+      /** Main horizontal animation - functional navigation, untouched by
+       * reduced motion. */
+      const horizontalTween = gsap.to(track, {
+        x: () => -(track.scrollWidth - window.innerWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: outer,
+          start: "top top",
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      /** Clip-path reveal */
+      const slideWrappers = gsap.utils.toArray(".slide-wrapper") as HTMLElement[];
+
+      gsap.fromTo(
+        slideWrappers,
+        { clipPath: "inset(0 100% 0 0)" },
+        {
+          clipPath: "inset(0 0% 0 0)",
+          ease: reducedMotion ? "none" : "power3.inOut",
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: outer,
+            start: "5% bottom",
+            toggleActions: "play none none none",
+            // markers: true,
+          },
+        },
+      );
+
+      /** Individual parallax per image - reduced, not removed, for
+       * reduced motion. */
+      const slides = gsap.utils.toArray(".parallax-img") as HTMLElement[];
+      const parallaxRange = reducedMotion ? 25 * REDUCED_MOTION_FACTOR : 25;
+      const parallaxScale = reducedMotion
+        ? 1 + (1.25 - 1) * REDUCED_MOTION_FACTOR
+        : 1.25;
+
+      slides.forEach((el) => {
+        gsap.fromTo(
+          el,
+          { x: `-${parallaxRange}%`, scale: parallaxScale },
+          {
+            x: `${parallaxRange}%`,
+            scale: parallaxScale,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el,
+              containerAnimation: horizontalTween,
+              start: "left right",
+              end: "right left",
+              scrub: true,
+            },
+          },
+        );
+      });
+    }, outer);
+
+    return () => ctx.revert();
+  }, [images]);
+
+  return (
+    <div
+      ref={outerRef}
+      className="relative"
+      style={{ height: "400vh", backgroundColor: bgColor }}
+    >
+      <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+        <div
+          ref={trackRef}
+          className="flex items-center will-change-transform"
+          style={{
+            gap: `${GAP}vw`,
+            paddingLeft: PAD_X,
+            paddingRight: PAD_X,
+          }}
+        >
+          {images.map((src, i) => {
+            const isWide = i % 2 === 0;
+            const slideClass = isWide
+              ? "max-md:w-[80vw] max-md:h-[50vh] w-[65vw] h-[43vw]"
+              : "max-md:w-[45vw] max-md:h-[50vh] w-[33vw] h-[43vw]";
+
+            return (
+              <div
+                key={i}
+                className={`slide-wrapper relative shrink-0 overflow-hidden ${slideClass}`}
+                style={{
+                  borderRadius: 0,
+                  clipPath: "inset(0 100% 0 0)",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={src}
+                  alt={`Slide ${i + 1}`}
+                  className="absolute inset-0 object-cover parallax-img w-full h-full"
+                  draggable={false}
+                />
+
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ParallaxSlider;

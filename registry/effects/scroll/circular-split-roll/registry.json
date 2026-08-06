@@ -33,19 +33,19 @@
   "previewUrl": "/demo/circular-split-roll",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CircularSplitRoll",
   "exportKind": "default",
   "importPath": "@/components/effects/circular-split-roll",
   "target": "src/components/effects/circular-split-roll",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/circular-split-roll/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/circular-split-roll/index.tsx"
     },
     {
-      "path": "CircularSplitRollComp.jsx",
-      "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.jsx"
+      "path": "CircularSplitRollComp.tsx",
+      "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.tsx"
     }
   ]
 }

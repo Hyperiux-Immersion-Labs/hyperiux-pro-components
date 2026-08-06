@@ -11,43 +11,43 @@
   "registryDependencies": [],
   "previewUrl": "/demo/animated-form",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AnimatedForm",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-form",
   "target": "src/components/effects/animated-form",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/animated-form/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/animated-form/index.tsx"
     },
     {
-      "path": "Button.jsx",
-      "target": "src/components/effects/animated-form/Button.jsx"
+      "path": "Button.tsx",
+      "target": "src/components/effects/animated-form/Button.tsx"
     },
     {
-      "path": "Checkbox.jsx",
-      "target": "src/components/effects/animated-form/Checkbox.jsx"
+      "path": "Checkbox.tsx",
+      "target": "src/components/effects/animated-form/Checkbox.tsx"
     },
     {
-      "path": "ContactForm.jsx",
-      "target": "src/components/effects/animated-form/ContactForm.jsx"
+      "path": "ContactForm.tsx",
+      "target": "src/components/effects/animated-form/ContactForm.tsx"
     },
     {
-      "path": "Input.jsx",
-      "target": "src/components/effects/animated-form/Input.jsx"
+      "path": "Input.tsx",
+      "target": "src/components/effects/animated-form/Input.tsx"
     },
     {
-      "path": "PhoneInput.jsx",
-      "target": "src/components/effects/animated-form/PhoneInput.jsx"
+      "path": "PhoneInput.tsx",
+      "target": "src/components/effects/animated-form/PhoneInput.tsx"
     },
     {
-      "path": "Select.jsx",
-      "target": "src/components/effects/animated-form/Select.jsx"
+      "path": "Select.tsx",
+      "target": "src/components/effects/animated-form/Select.tsx"
     },
     {
-      "path": "Textarea.jsx",
-      "target": "src/components/effects/animated-form/Textarea.jsx"
+      "path": "Textarea.tsx",
+      "target": "src/components/effects/animated-form/Textarea.tsx"
     }
   ],
   "changelog": [

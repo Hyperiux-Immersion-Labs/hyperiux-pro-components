@@ -25,19 +25,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/svg-pixel-reveal",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "SVGPixelReveal",
   "exportKind": "default",
   "importPath": "@/components/effects/svg-pixel-reveal",
   "target": "src/components/effects/svg-pixel-reveal",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/svg-pixel-reveal/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/svg-pixel-reveal/index.tsx"
     },
     {
-      "path": "PixelatedSvgFilter.jsx",
-      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.jsx"
+      "path": "PixelatedSvgFilter.tsx",
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.tsx"
     }
   ]
 }

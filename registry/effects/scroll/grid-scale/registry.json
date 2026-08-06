@@ -25,15 +25,15 @@
   "registryDependencies": [],
   "previewUrl": "/demo/grid-scale",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "GridScale",
   "exportKind": "default",
   "importPath": "@/components/effects/grid-scale",
   "target": "src/components/effects/grid-scale",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/grid-scale/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/grid-scale/index.tsx"
     }
   ]
 }

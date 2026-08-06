@@ -27,15 +27,15 @@
   "previewUrl": "/demo/radial-slice-transition",
   "tier": "pro",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "RadialSliceTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/radial-slice-transition",
   "target": "src/components/effects/radial-slice-transition",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/radial-slice-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/radial-slice-transition/index.tsx"
     }
   ]
 }

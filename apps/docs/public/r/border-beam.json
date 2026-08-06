@@ -19,24 +19,24 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/border-beam/index.jsx"
+      "target": "src/components/effects/border-beam/index.tsx"
     },
     {
-      "path": "BorderBeam.jsx",
+      "path": "BorderBeam.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/border-beam/BorderBeam.jsx"
+      "target": "src/components/effects/border-beam/BorderBeam.tsx"
     },
     {
-      "path": "PulseDriver.js",
+      "path": "PulseDriver.ts",
       "type": "registry:component",
-      "target": "src/components/effects/border-beam/PulseDriver.js"
+      "target": "src/components/effects/border-beam/PulseDriver.ts"
     },
     {
-      "path": "styles.js",
+      "path": "styles.ts",
       "type": "registry:component",
-      "target": "src/components/effects/border-beam/styles.js"
+      "target": "src/components/effects/border-beam/styles.ts"
     }
   ]
 }

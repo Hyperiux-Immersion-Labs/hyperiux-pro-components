@@ -29,15 +29,15 @@
   "videoUrl": "chess-grid-transition.mp4",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ChessGridTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/chess-grid-transition",
   "target": "src/components/effects/chess-grid-transition",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/chess-grid-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/chess-grid-transition/index.tsx"
     }
   ]
 }

@@ -30,29 +30,29 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/index.jsx"
+      "target": "src/components/effects/mouse-pixelation/index.tsx"
     },
     {
-      "path": "EnhancedPixelCube.jsx",
+      "path": "EnhancedPixelCube.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.jsx"
+      "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.tsx"
     },
     {
-      "path": "PixelCircle.jsx",
+      "path": "PixelCircle.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/PixelCircle.jsx"
+      "target": "src/components/effects/mouse-pixelation/PixelCircle.tsx"
     },
     {
-      "path": "PixelShift.jsx",
+      "path": "PixelShift.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
+      "target": "src/components/effects/mouse-pixelation/PixelShift.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
+      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.ts"
     }
   ]
 }

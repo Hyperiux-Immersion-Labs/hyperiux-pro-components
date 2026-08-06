@@ -5,7 +5,7 @@
     {
       "version": "1.1.1",
       "date": "2026-07-23",
-      "summary": "Replaced Next.js-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
+      "summary": "Replaced Next.ts-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
       "breaking": false
     },
     {
@@ -29,23 +29,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/character-trail",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CharacterTrail",
   "exportKind": "default",
   "importPath": "@/components/effects/character-trail",
   "target": "src/components/effects/character-trail",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/character-trail/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/character-trail/index.tsx"
     },
     {
-      "path": "CharacterTrailComp.jsx",
-      "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
+      "path": "CharacterTrailComp.tsx",
+      "target": "src/components/effects/character-trail/CharacterTrailComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/character-trail/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/character-trail/createSuspendedRaf.ts"
     }
   ]
 }

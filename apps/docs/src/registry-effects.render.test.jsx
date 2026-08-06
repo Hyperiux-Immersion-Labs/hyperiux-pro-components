@@ -38,6 +38,8 @@ const KNOWN_LIMITATIONS = {
     "same unexplained large-batch-only import failure as dotted-grid - confirmed fine in isolation.",
   "text-stream":
     "same unexplained large-batch-only import failure as dotted-grid - confirmed fine in isolation.",
+  "depth-shift-transition":
+    "calls next/navigation's usePathname() at render time, which throws outside a real Next.js App Router context (no PathnameContext.Provider in a bare jsdom render) - a harness limitation, not an effect bug.",
 };
 
 describe("registry effects - render contract", () => {

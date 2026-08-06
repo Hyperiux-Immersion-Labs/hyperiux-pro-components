@@ -27,9 +27,9 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/scramble-text/index.jsx"
+      "target": "src/components/effects/scramble-text/index.tsx"
     }
   ]
 }

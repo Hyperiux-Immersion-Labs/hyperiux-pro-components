@@ -11,19 +11,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/animated-tabs",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AnimatedTabs",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-tabs",
   "target": "src/components/effects/animated-tabs",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/animated-tabs/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/animated-tabs/index.tsx"
     },
     {
-      "path": "AnimatedTabsComp.jsx",
-      "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
+      "path": "AnimatedTabsComp.tsx",
+      "target": "src/components/effects/animated-tabs/AnimatedTabsComp.tsx"
     }
   ],
   "changelog": [

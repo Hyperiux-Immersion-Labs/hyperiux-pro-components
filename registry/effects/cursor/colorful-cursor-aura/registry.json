@@ -2,8 +2,18 @@
   "name": "colorful-cursor-aura",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Colorful Cursor Aura",
@@ -15,19 +25,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/colorful-cursor-aura",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ColorfulCursorAura",
   "exportKind": "default",
   "importPath": "@/components/effects/colorful-cursor-aura",
   "target": "src/components/effects/colorful-cursor-aura",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/colorful-cursor-aura/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/colorful-cursor-aura/index.tsx"
     },
     {
-      "path": "ColorfulCursorAuraComp.jsx",
-      "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
+      "path": "ColorfulCursorAuraComp.tsx",
+      "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.tsx"
     }
   ]
 }

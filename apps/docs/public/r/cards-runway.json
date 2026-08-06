@@ -33,14 +33,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/cards-runway/index.jsx"
+      "target": "src/components/effects/cards-runway/index.tsx"
     },
     {
-      "path": "CardsRunway.jsx",
+      "path": "CardsRunway.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/cards-runway/CardsRunway.jsx"
+      "target": "src/components/effects/cards-runway/CardsRunway.tsx"
     }
   ]
 }

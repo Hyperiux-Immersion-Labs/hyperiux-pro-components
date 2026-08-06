@@ -13,15 +13,15 @@
   "registryDependencies": [],
   "previewUrl": "/demo/dot-fill-button",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DotFillBtn",
   "exportKind": "default",
   "importPath": "@/components/effects/dot-fill-button",
   "target": "src/components/effects/dot-fill-button",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/dot-fill-button/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/dot-fill-button/index.tsx"
     }
   ]
 }

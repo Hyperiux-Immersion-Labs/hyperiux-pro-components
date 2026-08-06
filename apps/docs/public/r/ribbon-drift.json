@@ -16,13 +16,13 @@
     {
       "version": "1.3.0",
       "date": "2026-07-24",
-      "summary": "Removed the reduced-motion animation branching entirely - the scroll-driven reveal, hover splits, and strip transitions now always run identically to the default; only the reduced-motion notice remains conditional.",
+      "summary": "Removed the reduced-motion animation branching entirely - the scroll-driven reveal, hover spli.ts, and strip transitions now always run identically to the default; only the reduced-motion notice remains conditional.",
       "breaking": false
     },
     {
       "version": "1.2.0",
       "date": "2026-07-24",
-      "summary": "Synced the docs-mirror RibbonDriftComp with the registry copy's full prefers-reduced-motion support (static layout, X-only strip exits, fade-based intro/hover transitions) - the mirror was missing all of it.",
+      "summary": "Synced the docs-mirror RibbonDriftComp with the registry copy's full prefers-reduced-motion support (static layout, X-only strip exi.ts, fade-based intro/hover transitions) - the mirror was missing all of it.",
       "breaking": false
     },
     {
@@ -40,14 +40,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/ribbon-drift/index.jsx"
+      "target": "src/components/effects/ribbon-drift/index.tsx"
     },
     {
-      "path": "RibbonDriftComp.jsx",
+      "path": "RibbonDriftComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
+      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.tsx"
     }
   ]
 }

@@ -18,19 +18,19 @@
   "previewUrl": "/demo/webgl-slider",
   "coverImage": "webgl-slider",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "WebGLSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/webgl-slider",
   "target": "src/components/effects/webgl-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/webgl-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/webgl-slider/index.tsx"
     },
     {
-      "path": "WebGLSliderComp.jsx",
-      "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
+      "path": "WebGLSliderComp.tsx",
+      "target": "src/components/effects/webgl-slider/WebGLSliderComp.tsx"
     }
   ]
 }

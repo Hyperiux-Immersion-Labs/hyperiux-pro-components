@@ -27,9 +27,9 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/mask-text-reveal/index.jsx"
+      "target": "src/components/effects/mask-text-reveal/index.tsx"
     }
   ]
 }

@@ -9,27 +9,27 @@
   "registryDependencies": [],
   "previewUrl": "/demo/border-beam",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "BorderBeam",
   "exportKind": "default",
   "importPath": "@/components/effects/border-beam",
   "target": "src/components/effects/border-beam",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/border-beam/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/border-beam/index.tsx"
     },
     {
-      "path": "BorderBeam.jsx",
-      "target": "src/components/effects/border-beam/BorderBeam.jsx"
+      "path": "BorderBeam.tsx",
+      "target": "src/components/effects/border-beam/BorderBeam.tsx"
     },
     {
-      "path": "PulseDriver.js",
-      "target": "src/components/effects/border-beam/PulseDriver.js"
+      "path": "PulseDriver.ts",
+      "target": "src/components/effects/border-beam/PulseDriver.ts"
     },
     {
-      "path": "styles.js",
-      "target": "src/components/effects/border-beam/styles.js"
+      "path": "styles.ts",
+      "target": "src/components/effects/border-beam/styles.ts"
     }
   ],
   "changelog": [

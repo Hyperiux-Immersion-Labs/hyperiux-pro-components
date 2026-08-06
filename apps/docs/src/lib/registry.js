@@ -140,7 +140,9 @@ function attachPrivateFileContent(effect, effectDir) {
           .readdirSync(effectDir)
           .filter(
             (f) =>
-              (f.endsWith(".jsx") ||
+              (f.endsWith(".tsx") ||
+                f.endsWith(".ts") ||
+                f.endsWith(".jsx") ||
                 f.endsWith(".js") ||
                 f.endsWith(".css")) &&
               f !== "registry.json"
@@ -335,8 +337,12 @@ export function getEffectCode(slug) {
   }
 
   const primary =
+    effect.files.find((file) => file.path === `${slug}.tsx`) ||
+    effect.files.find((file) => file.path === `${slug}.ts`) ||
     effect.files.find((file) => file.path === `${slug}.jsx`) ||
     effect.files.find((file) => file.path === `${slug}.js`) ||
+    effect.files.find((file) => file.path.endsWith(".tsx")) ||
+    effect.files.find((file) => file.path.endsWith(".ts")) ||
     effect.files.find((file) => file.path.endsWith(".jsx")) ||
     effect.files.find((file) => file.path.endsWith(".js")) ||
     effect.files[0];

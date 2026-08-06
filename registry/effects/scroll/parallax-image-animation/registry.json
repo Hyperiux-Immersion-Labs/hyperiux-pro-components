@@ -19,15 +19,15 @@
   "registryDependencies": [],
   "previewUrl": "/demo/parallax-image-animation",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ParallaxImageAnimation",
   "exportKind": "default",
   "importPath": "@/components/effects/parallax-image-animation",
   "target": "src/components/effects/parallax-image-animation",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/parallax-image-animation/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/parallax-image-animation/index.tsx"
     }
   ]
 }

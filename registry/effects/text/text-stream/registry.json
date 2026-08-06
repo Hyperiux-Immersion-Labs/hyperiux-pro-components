@@ -27,22 +27,22 @@
   "tier": "pro",
   "exportName": "useIsMobile",
   "exportKind": "named",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
     {
-      "path": "hooks.js",
+      "path": "hooks.ts",
       "type": "registry:component",
-      "target": "src/components/effects/text-stream/hooks.js"
+      "target": "src/components/effects/text-stream/hooks.ts"
     },
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/text-stream/index.jsx"
+      "target": "src/components/effects/text-stream/index.tsx"
     },
     {
-      "path": "TextStreamComp.jsx",
+      "path": "TextStreamComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/text-stream/TextStreamComp.jsx"
+      "target": "src/components/effects/text-stream/TextStreamComp.tsx"
     }
   ]
 }

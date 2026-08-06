@@ -12,23 +12,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/depth-card-stack",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DepthCardStack",
   "exportKind": "default",
   "importPath": "@/components/effects/depth-card-stack",
   "target": "src/components/effects/depth-card-stack",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/depth-card-stack/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/depth-card-stack/index.tsx"
     },
     {
-      "path": "DepthCardStackComp.jsx",
-      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+      "path": "DepthCardStackComp.tsx",
+      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.tsx"
     },
     {
-      "path": "SliderCard.jsx",
-      "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+      "path": "SliderCard.tsx",
+      "target": "src/components/effects/depth-card-stack/SliderCard.tsx"
     }
   ],
   "changelog": [

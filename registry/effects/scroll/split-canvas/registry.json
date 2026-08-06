@@ -22,31 +22,31 @@
   "previewUrl": "/demo/split-canvas",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "SplitCanvas",
   "exportKind": "default",
   "importPath": "@/components/effects/split-canvas",
   "target": "src/components/effects/split-canvas",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/split-canvas/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/split-canvas/index.tsx"
     },
     {
-      "path": "PixelScrollCanvas.jsx",
-      "target": "src/components/effects/split-canvas/PixelScrollCanvas.jsx"
+      "path": "PixelScrollCanvas.tsx",
+      "target": "src/components/effects/split-canvas/PixelScrollCanvas.tsx"
     },
     {
-      "path": "content.js",
-      "target": "src/components/effects/split-canvas/content.js"
+      "path": "content.ts",
+      "target": "src/components/effects/split-canvas/content.ts"
     },
     {
-      "path": "pixel-transition.js",
-      "target": "src/components/effects/split-canvas/pixel-transition.js"
+      "path": "pixel-transition.ts",
+      "target": "src/components/effects/split-canvas/pixel-transition.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/split-canvas/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/split-canvas/createSuspendedRaf.ts"
     }
   ]
 }

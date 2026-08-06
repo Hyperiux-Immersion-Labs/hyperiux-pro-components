@@ -15,15 +15,15 @@
   "previewUrl": "/demo/link-button",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "LinkButton",
   "exportKind": "default",
   "importPath": "@/components/effects/link-button",
   "target": "src/components/effects/link-button",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/link-button/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/link-button/index.tsx"
     }
   ]
 }

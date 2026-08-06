@@ -10,19 +10,19 @@
   "previewUrl": "/demo/hover-stack",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HoverStack",
   "exportKind": "default",
   "importPath": "@/components/effects/hover-stack",
   "target": "src/components/effects/hover-stack",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/hover-stack/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/hover-stack/index.tsx"
     },
     {
-      "path": "HoverStackComp.jsx",
-      "target": "src/components/effects/hover-stack/HoverStackComp.jsx"
+      "path": "HoverStackComp.tsx",
+      "target": "src/components/effects/hover-stack/HoverStackComp.tsx"
     }
   ],
   "changelog": [

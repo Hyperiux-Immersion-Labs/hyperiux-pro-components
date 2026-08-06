@@ -22,19 +22,19 @@
   "coverImage": "scroll-distortion",
   "videoUrl": "scroll-distortion.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ScrollDistortion",
   "exportKind": "default",
   "importPath": "@/components/effects/scroll-distortion",
   "target": "src/components/effects/scroll-distortion",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/scroll-distortion/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/scroll-distortion/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/scroll-distortion/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/scroll-distortion/createSuspendedRaf.ts"
     }
   ]
 }

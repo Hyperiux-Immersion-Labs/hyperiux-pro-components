@@ -2,10 +2,10 @@
   "name": "@hyperiux/zoom-slider",
   "version": "1.1.0",
   "description": "Infinitely looping horizontal image carousel where the active card expands using a quadratic easing curve as it enters from the right. Supports scroll, drag, and touch. Hover reveals GSAP SplitText line animations above each card.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "ZoomSliderComp.jsx",
+    "index.tsx",
+    "ZoomSliderComp.tsx",
     "registry.json"
   ],
   "keywords": [

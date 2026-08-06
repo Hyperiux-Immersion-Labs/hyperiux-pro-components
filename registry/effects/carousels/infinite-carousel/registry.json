@@ -17,19 +17,19 @@
   "previewUrl": "/demo/infinite-carousel",
   "coverImage": "infinite-carousel",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InfiniteCarousel",
   "exportKind": "default",
   "importPath": "@/components/effects/infinite-carousel",
   "target": "src/components/effects/infinite-carousel",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/infinite-carousel/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/infinite-carousel/index.tsx"
     },
     {
-      "path": "InfiniteCarouselComp.jsx",
-      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
+      "path": "InfiniteCarouselComp.tsx",
+      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
     }
   ]
 }

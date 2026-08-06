@@ -2,9 +2,9 @@
   "name": "@hyperiux/chess-grid-transition",
   "version": "1.1.0",
   "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
     "registry.json"
   ],
   "keywords": [

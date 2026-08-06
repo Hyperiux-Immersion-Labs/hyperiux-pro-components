@@ -28,34 +28,34 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/index.jsx"
+      "target": "src/components/effects/expanding-navbar/index.tsx"
     },
     {
-      "path": "data.js",
+      "path": "data.ts",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/data.js"
+      "target": "src/components/effects/expanding-navbar/data.ts"
     },
     {
-      "path": "ExpandingNavbarDesktop.jsx",
+      "path": "ExpandingNavbarDesktop.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
     },
     {
-      "path": "ExpandingNavbarMobile.jsx",
+      "path": "ExpandingNavbarMobile.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
     },
     {
-      "path": "HoverFillLink.jsx",
+      "path": "HoverFillLink.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+      "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
     },
     {
-      "path": "useFocusTrap.js",
+      "path": "useFocusTrap.ts",
       "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
+      "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
     }
   ]
 }

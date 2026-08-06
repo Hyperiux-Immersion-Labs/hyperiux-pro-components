@@ -22,24 +22,24 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/lines-loader/index.jsx"
+      "target": "src/components/effects/lines-loader/index.tsx"
     },
     {
-      "path": "CenterLinesLoading.jsx",
+      "path": "CenterLinesLoading.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+      "target": "src/components/effects/lines-loader/CenterLinesLoading.tsx"
     },
     {
-      "path": "LinesLoading.jsx",
+      "path": "LinesLoading.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+      "target": "src/components/effects/lines-loader/LinesLoading.tsx"
     },
     {
-      "path": "utils.js",
+      "path": "utils.ts",
       "type": "registry:component",
-      "target": "src/components/effects/lines-loader/utils.js"
+      "target": "src/components/effects/lines-loader/utils.ts"
     }
   ]
 }

@@ -9,7 +9,7 @@ import {
     ThreeMark,
     WebGLMark,
 } from "@/utils/Icons";
-import MaskTextReveal from "../mask-text-reveal";
+import MaskTextReveal from "../mask-text-reveal/index";
 
 const HeroFigure = ({ className }) => (
     <Image src="/icons/gsap-icon.svg" className={` ${className}`} width={100} height={100} alt="gsap image" />

@@ -14,19 +14,19 @@
   "coverImage": "donut-particles",
   "videoUrl": "donut-particles.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DonutParticles",
   "exportKind": "default",
   "importPath": "@/components/effects/donut-particles",
   "target": "src/components/effects/donut-particles",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/donut-particles/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/donut-particles/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/donut-particles/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/donut-particles/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

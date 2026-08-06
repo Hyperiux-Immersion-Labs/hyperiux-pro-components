@@ -5,7 +5,7 @@
     {
       "version": "1.1.1",
       "date": "2026-07-23",
-      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.jsx.",
+      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.tsx.",
       "breaking": false
     },
     {
@@ -31,23 +31,23 @@
   "videoUrl": "full-screen-crosshair.mp4",
   "previewUrl": "/demo/full-screen-crosshair",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "FullScreenCrosshair",
   "exportKind": "default",
   "importPath": "@/components/effects/full-screen-crosshair",
   "target": "src/components/effects/full-screen-crosshair",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/full-screen-crosshair/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/full-screen-crosshair/index.tsx"
     },
     {
-      "path": "useMouse.js",
-      "target": "src/components/effects/full-screen-crosshair/useMouse.js"
+      "path": "useMouse.ts",
+      "target": "src/components/effects/full-screen-crosshair/useMouse.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.ts"
     }
   ]
 }

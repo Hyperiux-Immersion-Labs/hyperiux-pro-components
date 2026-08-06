@@ -21,19 +21,19 @@
   "previewUrl": "/demo/sticky-content-wrapper",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "StickyContentWrapper",
   "exportKind": "default",
   "importPath": "@/components/effects/sticky-content-wrapper",
   "target": "src/components/effects/sticky-content-wrapper",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/sticky-content-wrapper/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/sticky-content-wrapper/index.tsx"
     },
     {
-      "path": "StickyContentComp.jsx",
-      "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.jsx"
+      "path": "StickyContentComp.tsx",
+      "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.tsx"
     }
   ]
 }

@@ -26,19 +26,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/parallax-gallery",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ParallaxGallery",
   "exportKind": "default",
   "importPath": "@/components/effects/parallax-gallery",
   "target": "src/components/effects/parallax-gallery",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/parallax-gallery/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/parallax-gallery/index.tsx"
     },
     {
-      "path": "ParallaxGallery.jsx",
-      "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
+      "path": "ParallaxGallery.tsx",
+      "target": "src/components/effects/parallax-gallery/ParallaxGallery.tsx"
     }
   ]
 }

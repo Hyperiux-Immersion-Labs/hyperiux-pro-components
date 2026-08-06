@@ -15,15 +15,15 @@
   "registryDependencies": [],
   "previewUrl": "/demo/char-stagger-button",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CharStaggerButton",
   "exportKind": "default",
   "importPath": "@/components/effects/char-stagger-button",
   "target": "src/components/effects/char-stagger-button",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/char-stagger-button/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/char-stagger-button/index.tsx"
     }
   ]
 }

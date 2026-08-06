@@ -29,14 +29,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/webgl-slider/index.jsx"
+      "target": "src/components/effects/webgl-slider/index.tsx"
     },
     {
-      "path": "WebGLSliderComp.jsx",
+      "path": "WebGLSliderComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
+      "target": "src/components/effects/webgl-slider/WebGLSliderComp.tsx"
     }
   ]
 }

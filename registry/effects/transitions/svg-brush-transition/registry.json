@@ -29,15 +29,15 @@
   "videoUrl": "svg-brush-transition.mp4",
   "tier": "pro",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "SVGBrushTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/svg-brush-transition",
   "target": "src/components/effects/svg-brush-transition",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/svg-brush-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/svg-brush-transition/index.tsx"
     }
   ]
 }

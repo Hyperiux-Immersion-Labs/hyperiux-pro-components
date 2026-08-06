@@ -31,19 +31,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/cards-runway",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CardsRunway",
   "exportKind": "default",
   "importPath": "@/components/effects/cards-runway",
   "target": "src/components/effects/cards-runway",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/cards-runway/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/cards-runway/index.tsx"
     },
     {
-      "path": "CardsRunway.jsx",
-      "target": "src/components/effects/cards-runway/CardsRunway.jsx"
+      "path": "CardsRunway.tsx",
+      "target": "src/components/effects/cards-runway/CardsRunway.tsx"
     }
   ]
 }

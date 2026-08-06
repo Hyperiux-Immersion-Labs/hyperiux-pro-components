@@ -2,11 +2,11 @@
   "name": "@hyperiux/svg-path",
   "version": "1.2.0",
   "description": "Animate any content along a custom SVG path. Supports scroll velocity, drag interaction, hover slowdown, and responsive scaling.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "SVGPathComp.jsx",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "SVGPathComp.tsx",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

@@ -33,6 +33,27 @@ const buttonTv = tv({
   },
 });
 
+/**
+ * @param {{
+ *   text?: string,
+ *   href?: string,
+ *   variant?: string,
+ *   className?: string,
+ *   target_blank?: boolean,
+ *   preventDefault?: boolean,
+ *   disabled?: boolean,
+ *   onClick?: (event: import('react').MouseEvent<HTMLAnchorElement>) => void,
+ *   scaleClass?: string,
+ *   hoverTextClassName?: string,
+ *   innerClassName?: string,
+ *   circleClassName?: string,
+ *   arrowClassName?: string,
+ *   children?: import('react').ReactNode,
+ *   ariaLabel?: string,
+ *   scrollOffset?: number,
+ *   id?: string,
+ * }} props
+ */
 export default function Button({
   text = "Install CLI",
   href = "#",

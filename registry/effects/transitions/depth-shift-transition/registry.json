@@ -23,15 +23,15 @@
   "videoUrl": "depth-shift-transition.mp4",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DepthShiftTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/depth-shift-transition",
   "target": "src/components/effects/depth-shift-transition",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/depth-shift-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/depth-shift-transition/index.tsx"
     }
   ]
 }

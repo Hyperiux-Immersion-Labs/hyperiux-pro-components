@@ -21,44 +21,44 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/index.jsx"
+      "target": "src/components/effects/animated-form/index.tsx"
     },
     {
-      "path": "Button.jsx",
+      "path": "Button.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/Button.jsx"
+      "target": "src/components/effects/animated-form/Button.tsx"
     },
     {
-      "path": "Checkbox.jsx",
+      "path": "Checkbox.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/Checkbox.jsx"
+      "target": "src/components/effects/animated-form/Checkbox.tsx"
     },
     {
-      "path": "ContactForm.jsx",
+      "path": "ContactForm.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/ContactForm.jsx"
+      "target": "src/components/effects/animated-form/ContactForm.tsx"
     },
     {
-      "path": "Input.jsx",
+      "path": "Input.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/Input.jsx"
+      "target": "src/components/effects/animated-form/Input.tsx"
     },
     {
-      "path": "PhoneInput.jsx",
+      "path": "PhoneInput.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/PhoneInput.jsx"
+      "target": "src/components/effects/animated-form/PhoneInput.tsx"
     },
     {
-      "path": "Select.jsx",
+      "path": "Select.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/Select.jsx"
+      "target": "src/components/effects/animated-form/Select.tsx"
     },
     {
-      "path": "Textarea.jsx",
+      "path": "Textarea.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-form/Textarea.jsx"
+      "target": "src/components/effects/animated-form/Textarea.tsx"
     }
   ]
 }

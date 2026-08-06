@@ -2,8 +2,18 @@
   "name": "coffee-bean-cursor",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Coffee Bean Cursor",
@@ -19,19 +29,19 @@
   "coverImage": "coffee-bean-cursor",
   "videoUrl": "coffee-bean-cursor.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CoffeeBeanCursor",
   "exportKind": "default",
   "importPath": "@/components/effects/coffee-bean-cursor",
   "target": "src/components/effects/coffee-bean-cursor",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/coffee-bean-cursor/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/coffee-bean-cursor/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.ts"
     }
   ]
 }

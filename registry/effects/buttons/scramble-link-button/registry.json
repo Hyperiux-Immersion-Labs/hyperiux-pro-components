@@ -26,15 +26,15 @@
   "previewUrl": "/demo/scramble-link-button",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ScrambleLinkButton",
   "exportKind": "default",
   "importPath": "@/components/effects/scramble-link-button",
   "target": "src/components/effects/scramble-link-button",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/scramble-link-button/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/scramble-link-button/index.tsx"
     }
   ]
 }

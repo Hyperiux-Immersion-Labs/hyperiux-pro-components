@@ -22,19 +22,19 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/testimonial-swiper/index.jsx"
+      "target": "src/components/effects/testimonial-swiper/index.tsx"
     },
     {
-      "path": "NavigationButtons.jsx",
+      "path": "NavigationButtons.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
+      "target": "src/components/effects/testimonial-swiper/NavigationButtons.tsx"
     },
     {
-      "path": "TestimonialComp.jsx",
+      "path": "TestimonialComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
+      "target": "src/components/effects/testimonial-swiper/TestimonialComp.tsx"
     }
   ]
 }

@@ -19,27 +19,27 @@
   "previewUrl": "/demo/elevate-navbar",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ElevateNavbar",
   "exportKind": "default",
   "importPath": "@/components/effects/elevate-navbar",
   "target": "src/components/effects/elevate-navbar",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/elevate-navbar/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/elevate-navbar/index.tsx"
     },
     {
-      "path": "ElevateMobileNav.jsx",
-      "target": "src/components/effects/elevate-navbar/ElevateMobileNav.jsx"
+      "path": "ElevateMobileNav.tsx",
+      "target": "src/components/effects/elevate-navbar/ElevateMobileNav.tsx"
     },
     {
-      "path": "ElevateDesktopNav.jsx",
-      "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx"
+      "path": "ElevateDesktopNav.tsx",
+      "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.tsx"
     },
     {
-      "path": "useFocusTrap.js",
-      "target": "src/components/effects/elevate-navbar/useFocusTrap.js"
+      "path": "useFocusTrap.ts",
+      "target": "src/components/effects/elevate-navbar/useFocusTrap.ts"
     }
   ]
 }

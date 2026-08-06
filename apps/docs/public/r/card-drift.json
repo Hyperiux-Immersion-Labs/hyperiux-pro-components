@@ -22,14 +22,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/card-drift/index.jsx"
+      "target": "src/components/effects/card-drift/index.tsx"
     },
     {
-      "path": "CardDriftComp.jsx",
+      "path": "CardDriftComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/card-drift/CardDriftComp.jsx"
+      "target": "src/components/effects/card-drift/CardDriftComp.tsx"
     }
   ]
 }

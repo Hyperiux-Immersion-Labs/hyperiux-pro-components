@@ -2,9 +2,9 @@
   "name": "@hyperiux/depth-shift-transition",
   "version": "1.0.0",
   "description": "The outgoing page recedes and shifts down-right while the incoming page slides in diagonally from the bottom-left, layered on top",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
     "registry.json"
   ],
   "keywords": [

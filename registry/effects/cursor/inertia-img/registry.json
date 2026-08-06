@@ -2,8 +2,18 @@
   "name": "inertia-img",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Inertia Image",
@@ -15,19 +25,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/inertia-img",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InertiaImage",
   "exportKind": "default",
   "importPath": "@/components/effects/inertia-img",
   "target": "src/components/effects/inertia-img",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/inertia-img/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/inertia-img/index.tsx"
     },
     {
-      "path": "InertiaImgComp.jsx",
-      "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
+      "path": "InertiaImgComp.tsx",
+      "target": "src/components/effects/inertia-img/InertiaImgComp.tsx"
     }
   ]
 }

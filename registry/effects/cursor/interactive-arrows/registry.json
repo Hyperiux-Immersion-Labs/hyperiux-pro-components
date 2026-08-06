@@ -23,47 +23,47 @@
   "registryDependencies": [],
   "previewUrl": "/demo/interactive-arrows",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InteractiveArrows",
   "exportKind": "default",
   "importPath": "@/components/effects/interactive-arrows",
   "target": "src/components/effects/interactive-arrows",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/interactive-arrows/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/interactive-arrows/index.tsx"
     },
     {
-      "path": "arrows.jsx",
-      "target": "src/components/effects/interactive-arrows/arrows.jsx"
+      "path": "arrows.tsx",
+      "target": "src/components/effects/interactive-arrows/arrows.tsx"
     },
     {
-      "path": "ArrowsLimit.jsx",
-      "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
+      "path": "ArrowsLimit.tsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsLimit.tsx"
     },
     {
-      "path": "ArrowsOpacity.jsx",
-      "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
+      "path": "ArrowsOpacity.tsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsOpacity.tsx"
     },
     {
-      "path": "ArrowsPlay.jsx",
-      "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
+      "path": "ArrowsPlay.tsx",
+      "target": "src/components/effects/interactive-arrows/ArrowsPlay.tsx"
     },
     {
-      "path": "lines.jsx",
-      "target": "src/components/effects/interactive-arrows/lines.jsx"
+      "path": "lines.tsx",
+      "target": "src/components/effects/interactive-arrows/lines.tsx"
     },
     {
-      "path": "points.jsx",
-      "target": "src/components/effects/interactive-arrows/points.jsx"
+      "path": "points.tsx",
+      "target": "src/components/effects/interactive-arrows/points.tsx"
     },
     {
-      "path": "utils.js",
-      "target": "src/components/effects/interactive-arrows/utils.js"
+      "path": "utils.ts",
+      "target": "src/components/effects/interactive-arrows/utils.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/interactive-arrows/createSuspendedRaf.ts"
     }
   ]
 }

@@ -25,19 +25,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/clippath-slider",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ClipPathSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/clippath-slider",
   "target": "src/components/effects/clippath-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/clippath-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/clippath-slider/index.tsx"
     },
     {
-      "path": "ClippathSliderComp.jsx",
-      "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
+      "path": "ClippathSliderComp.tsx",
+      "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
     }
   ]
 }

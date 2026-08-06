@@ -28,27 +28,27 @@
   "videoUrl": "/number-counter.mp4",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "NumberCounter",
   "exportKind": "default",
   "importPath": "@/components/effects/number-counter",
   "target": "src/components/effects/number-counter",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/number-counter/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/number-counter/index.tsx"
     },
     {
-      "path": "NumberCounterOne.jsx",
-      "target": "src/components/effects/number-counter/NumberCounterOne.jsx"
+      "path": "NumberCounterOne.tsx",
+      "target": "src/components/effects/number-counter/NumberCounterOne.tsx"
     },
     {
-      "path": "NumberCounterTwo.jsx",
-      "target": "src/components/effects/number-counter/NumberCounterTwo.jsx"
+      "path": "NumberCounterTwo.tsx",
+      "target": "src/components/effects/number-counter/NumberCounterTwo.tsx"
     },
     {
-      "path": "NumberCounterThree.jsx",
-      "target": "src/components/effects/number-counter/NumberCounterThree.jsx"
+      "path": "NumberCounterThree.tsx",
+      "target": "src/components/effects/number-counter/NumberCounterThree.tsx"
     }
   ]
 }

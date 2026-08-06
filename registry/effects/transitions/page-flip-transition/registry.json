@@ -31,12 +31,12 @@
   "subfolder": true,
   "exportName": "FlipTransition",
   "exportKind": "default",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/page-flip-transition/index.jsx"
+      "target": "src/components/effects/page-flip-transition/index.tsx"
     }
   ]
 }

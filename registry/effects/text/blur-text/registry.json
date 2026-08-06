@@ -27,12 +27,12 @@
   "tier": "pro",
   "exportName": "BlurText",
   "exportKind": "default",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/blur-text/index.jsx"
+      "target": "src/components/effects/blur-text/index.tsx"
     }
   ]
 }

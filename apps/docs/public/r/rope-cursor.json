@@ -37,14 +37,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/rope-cursor/index.jsx"
+      "target": "src/components/effects/rope-cursor/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/rope-cursor/createSuspendedRaf.js"
+      "target": "src/components/effects/rope-cursor/createSuspendedRaf.ts"
     }
   ]
 }

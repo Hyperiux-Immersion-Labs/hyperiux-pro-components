@@ -2,10 +2,10 @@
   "name": "@hyperiux/spotlight-text",
   "version": "1.1.0",
   "description": "Mouse-tracked spotlight that reveals bright text through a radial gradient mask over dimmed text. Disabled on mobile.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

@@ -21,14 +21,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/parallax-footer/index.jsx"
+      "target": "src/components/effects/parallax-footer/index.tsx"
     },
     {
-      "path": "ParallaxFooter.jsx",
+      "path": "ParallaxFooter.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
+      "target": "src/components/effects/parallax-footer/ParallaxFooter.tsx"
     }
   ]
 }

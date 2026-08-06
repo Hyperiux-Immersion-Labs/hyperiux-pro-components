@@ -31,23 +31,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/animated-modal",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AnimatedModal",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-modal",
   "target": "src/components/effects/animated-modal",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/animated-modal/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/animated-modal/index.tsx"
     },
     {
-      "path": "AnimatedModalContent.jsx",
-      "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
+      "path": "AnimatedModalContent.tsx",
+      "target": "src/components/effects/animated-modal/AnimatedModalContent.tsx"
     },
     {
-      "path": "ScrollablePopupContent.jsx",
-      "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
+      "path": "ScrollablePopupContent.tsx",
+      "target": "src/components/effects/animated-modal/ScrollablePopupContent.tsx"
     }
   ]
 }

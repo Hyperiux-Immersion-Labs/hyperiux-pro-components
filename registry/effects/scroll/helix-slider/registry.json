@@ -26,19 +26,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/helix-slider",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HelixSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/helix-slider",
   "target": "src/components/effects/helix-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/helix-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/helix-slider/index.tsx"
     },
     {
-      "path": "HelixSliderComp.jsx",
-      "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+      "path": "HelixSliderComp.tsx",
+      "target": "src/components/effects/helix-slider/HelixSliderComp.tsx"
     }
   ]
 }

@@ -21,14 +21,14 @@
   ],
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-tabs/index.jsx"
+      "target": "src/components/effects/animated-tabs/index.tsx"
     },
     {
-      "path": "AnimatedTabsComp.jsx",
+      "path": "AnimatedTabsComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
+      "target": "src/components/effects/animated-tabs/AnimatedTabsComp.tsx"
     }
   ]
 }

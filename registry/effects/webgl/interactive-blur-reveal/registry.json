@@ -2,8 +2,18 @@
   "name": "interactive-blur-reveal",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "Added reduced-motion notice", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion notice",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Interactive Blur Reveal",
@@ -14,23 +24,23 @@
   "previewUrl": "/demo/interactive-blur-reveal",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
   "importPath": "@/components/effects/interactive-blur-reveal",
   "target": "src/components/effects/interactive-blur-reveal",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/interactive-blur-reveal/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/interactive-blur-reveal/index.tsx"
     },
     {
-      "path": "webgl-context-recovery.js",
-      "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
+      "path": "webgl-context-recovery.ts",
+      "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.ts"
     }
   ]
 }

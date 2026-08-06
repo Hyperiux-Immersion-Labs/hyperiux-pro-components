@@ -2,7 +2,7 @@
   {
     "name": "3d-portfolio-slider",
     "title": "3D Portfolio Slider",
-    "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+    "description": "Infinite scroll slider with a Three.ts WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
     "category": "webgl",
     "categories": [
       "webgl",
@@ -10,8 +10,14 @@
     ],
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-07-23",
+        "summary": "Unmount cleanup now disposes each plane's geometry, shader material, and texture (renderer.dispose() alone leaked them), fixing a GPU memory leak on remount.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-22",
@@ -29,27 +35,27 @@
     "importPath": "@/components/effects/3d-portfolio-slider",
     "target": "src/components/effects/3d-portfolio-slider",
     "previewUrl": "/demo/3d-portfolio-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "PortfolioSlider3D",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/3d-portfolio-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/3d-portfolio-slider/index.tsx"
       },
       {
-        "path": "PortfolioSlider.jsx",
-        "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.jsx"
+        "path": "PortfolioSlider.tsx",
+        "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "animated-faq",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "type": "registry:component",
     "title": "Animated FAQ",
     "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
@@ -62,26 +68,26 @@
     "previewUrl": "/demo/animated-faq",
     "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "AnimatedFaq",
     "exportKind": "default",
     "importPath": "@/components/effects/animated-faq",
     "target": "src/components/effects/animated-faq",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/animated-faq/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/animated-faq/index.tsx"
       },
       {
-        "path": "AnimatedFaqComp.jsx",
-        "target": "src/components/effects/animated-faq/AnimatedFaqComp.jsx"
+        "path": "AnimatedFaqComp.tsx",
+        "target": "src/components/effects/animated-faq/AnimatedFaqComp.tsx"
       }
     ],
     "changelog": [
       {
-        "version": "1.1.1",
-        "date": "2026-07-29",
-        "summary": "Latest Sync",
+        "version": "1.2.0",
+        "date": "2026-07-28",
+        "summary": "Documented existing prefers-reduced-motion support : the accordion open/close tween duration is set to 0 under reduced motion instead of animating.",
         "breaking": false
       },
       {
@@ -95,100 +101,148 @@
   },
   {
     "name": "animated-form",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Animated Form",
     "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
     "category": "components",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.0.0",
     "dependencies": [
       "zod"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/animated-form/registry.json",
-    "importPath": "@/components/effects/animated-form",
-    "target": "src/components/effects/animated-form",
     "previewUrl": "/demo/animated-form",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "AnimatedForm",
     "exportKind": "default",
+    "importPath": "@/components/effects/animated-form",
+    "target": "src/components/effects/animated-form",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/animated-form/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/animated-form/index.tsx"
       },
       {
-        "path": "Button.jsx",
-        "target": "src/components/effects/animated-form/Button.jsx"
+        "path": "Button.tsx",
+        "target": "src/components/effects/animated-form/Button.tsx"
       },
       {
-        "path": "Checkbox.jsx",
-        "target": "src/components/effects/animated-form/Checkbox.jsx"
+        "path": "Checkbox.tsx",
+        "target": "src/components/effects/animated-form/Checkbox.tsx"
       },
       {
-        "path": "ContactForm.jsx",
-        "target": "src/components/effects/animated-form/ContactForm.jsx"
+        "path": "ContactForm.tsx",
+        "target": "src/components/effects/animated-form/ContactForm.tsx"
       },
       {
-        "path": "Input.jsx",
-        "target": "src/components/effects/animated-form/Input.jsx"
+        "path": "Input.tsx",
+        "target": "src/components/effects/animated-form/Input.tsx"
       },
       {
-        "path": "PhoneInput.jsx",
-        "target": "src/components/effects/animated-form/PhoneInput.jsx"
+        "path": "PhoneInput.tsx",
+        "target": "src/components/effects/animated-form/PhoneInput.tsx"
       },
       {
-        "path": "Select.jsx",
-        "target": "src/components/effects/animated-form/Select.jsx"
+        "path": "Select.tsx",
+        "target": "src/components/effects/animated-form/Select.tsx"
       },
       {
-        "path": "Textarea.jsx",
-        "target": "src/components/effects/animated-form/Textarea.jsx"
+        "path": "Textarea.tsx",
+        "target": "src/components/effects/animated-form/Textarea.tsx"
       }
-    ]
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-23",
+        "summary": "Phone validation now uses per-country national-number length ranges (with trunk-zero tolerance) instead of a flat 10-digit rule that rejected all valid numbers from Ireland, Australia, France, the UAE and Singapore.",
+        "breaking": false
+      }
+    ],
+    "registryPath": "registry/effects/components/animated-form/registry.json"
   },
   {
     "name": "animated-modal",
+    "version": "1.1.1",
+    "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Trigger button responsive classes corrected from max-lg to max-[1025px], matching the max-[1025px]/max-md convention used by the rest of the modal (tablet styling was switching at 1024px on the button but 1280px on the modal chrome).",
+        "breaking": false
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
     "title": "Animated Modal",
     "description": "Backdrop-blurred fullscreen modal with escape, backdrop, and close-button support",
     "category": "components",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.0.0",
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/animated-modal/registry.json",
-    "importPath": "@/components/effects/animated-modal",
-    "target": "src/components/effects/animated-modal",
     "previewUrl": "/demo/animated-modal",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "AnimatedModal",
     "exportKind": "default",
+    "importPath": "@/components/effects/animated-modal",
+    "target": "src/components/effects/animated-modal",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/animated-modal/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/animated-modal/index.tsx"
       },
       {
-        "path": "AnimatedModalContent.jsx",
-        "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
+        "path": "AnimatedModalContent.tsx",
+        "target": "src/components/effects/animated-modal/AnimatedModalContent.tsx"
       },
       {
-        "path": "ScrollablePopupContent.jsx",
-        "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
+        "path": "ScrollablePopupContent.tsx",
+        "target": "src/components/effects/animated-modal/ScrollablePopupContent.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/components/animated-modal/registry.json"
   },
   {
     "name": "animated-tabs",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Tabs",
     "description": "Animated tabs with a moving active indicator and panel transitions",
     "category": "components",
-    "type": "registry:component",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/animated-tabs",
     "tier": "pro",
-    "version": "1.1.0",
+    "main": "index.tsx",
+    "exportName": "AnimatedTabs",
+    "exportKind": "default",
+    "importPath": "@/components/effects/animated-tabs",
+    "target": "src/components/effects/animated-tabs",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/animated-tabs/index.tsx"
+      },
+      {
+        "path": "AnimatedTabsComp.tsx",
+        "target": "src/components/effects/animated-tabs/AnimatedTabsComp.tsx"
+      }
+    ],
     "changelog": [
       {
         "version": "1.1.0",
@@ -197,35 +251,10 @@
         "breaking": false
       }
     ],
-    "dependencies": [
-      "gsap"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/components/animated-tabs/registry.json",
-    "importPath": "@/components/effects/animated-tabs",
-    "target": "src/components/effects/animated-tabs",
-    "previewUrl": "/demo/animated-tabs",
-    "main": "index.jsx",
-    "exportName": "AnimatedTabs",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.jsx",
-        "target": "src/components/effects/animated-tabs/index.jsx"
-      },
-      {
-        "path": "AnimatedTabsComp.jsx",
-        "target": "src/components/effects/animated-tabs/AnimatedTabsComp.jsx"
-      }
-    ]
+    "registryPath": "registry/effects/components/animated-tabs/registry.json"
   },
   {
     "name": "animated-toggle",
-    "title": "Animated Toggle",
-    "description": "Pure CSS animated icon components: ChevronBird (chevron/arrow), Cross (plus to X), and Plus (open/close). No animation libraries required.",
-    "category": "buttons",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -241,41 +270,41 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Animated Toggle",
+    "description": "Pure CSS animated icon components: ChevronBird (chevron/arrow), Cross (plus to X), and Plus (open/close). No animation libraries required.",
+    "category": "buttons",
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/animated-toggle/registry.json",
-    "importPath": "@/components/effects/animated-toggle",
-    "target": "src/components/effects/animated-toggle",
     "previewUrl": "/demo/animated-toggle",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "AnimatedToggle",
     "exportKind": "default",
+    "importPath": "@/components/effects/animated-toggle",
+    "target": "src/components/effects/animated-toggle",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/animated-toggle/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/animated-toggle/index.tsx"
       },
       {
-        "path": "ChevronBird.jsx",
-        "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
+        "path": "ChevronBird.tsx",
+        "target": "src/components/effects/animated-toggle/ChevronBird.tsx"
       },
       {
-        "path": "Cross.jsx",
-        "target": "src/components/effects/animated-toggle/Cross.jsx"
+        "path": "Cross.tsx",
+        "target": "src/components/effects/animated-toggle/Cross.tsx"
       },
       {
-        "path": "Plus.jsx",
-        "target": "src/components/effects/animated-toggle/Plus.jsx"
+        "path": "Plus.tsx",
+        "target": "src/components/effects/animated-toggle/Plus.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/animated-toggle/registry.json"
   },
   {
     "name": "arrow-fill-button",
-    "title": "Arrow Fill Button",
-    "description": "Button with expanding circle fill and animated arrow icon on hover",
-    "category": "buttons",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -291,32 +320,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Arrow Fill Button",
+    "description": "Button with expanding circle fill and animated arrow icon on hover",
+    "category": "buttons",
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/arrow-fill-button/registry.json",
-    "importPath": "@/components/effects/arrow-fill-button",
-    "target": "src/components/effects/arrow-fill-button",
     "previewUrl": "/demo/arrow-fill-button",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ArrowFillButton",
     "exportKind": "default",
+    "importPath": "@/components/effects/arrow-fill-button",
+    "target": "src/components/effects/arrow-fill-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/arrow-fill-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/arrow-fill-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/arrow-fill-button/registry.json"
   },
   {
     "name": "block-transition",
-    "title": "Block Transition",
-    "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -332,23 +361,29 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Block Transition",
+    "description": "Horizontal split-block route transition with row-based stagger and optional content shift blur using GSAP.",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/block-transition/registry.json",
     "previewUrl": "/demo/block-transition",
-    "main": "index.jsx",
+    "tier": "free",
+    "subfolder": true,
     "exportName": "BlockTransition",
     "exportKind": "default",
+    "main": "index.tsx",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/block-transition/index.jsx"
+        "target": "src/components/effects/block-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/block-transition/registry.json"
   },
   {
     "name": "blur-text",
@@ -378,14 +413,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/blur-text/registry.json",
     "previewUrl": "/demo/blur-text",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "BlurText",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/blur-text/index.jsx"
+        "target": "src/components/effects/blur-text/index.tsx"
       }
     ]
   },
@@ -396,7 +431,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -410,48 +445,88 @@
     "previewUrl": "/demo/book-flip",
     "coverImage": "book-flip",
     "videoUrl": "book-flip.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "BookFlip",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/book-flip/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/book-flip/index.tsx"
       },
       {
-        "path": "Book.jsx",
-        "target": "src/components/effects/book-flip/Book.jsx"
+        "path": "Book.tsx",
+        "target": "src/components/effects/book-flip/Book.tsx"
       },
       {
-        "path": "Experience.jsx",
-        "target": "src/components/effects/book-flip/Experience.jsx"
+        "path": "Experience.tsx",
+        "target": "src/components/effects/book-flip/Experience.tsx"
       },
       {
-        "path": "PageContext.jsx",
-        "target": "src/components/effects/book-flip/PageContext.jsx"
+        "path": "PageContext.tsx",
+        "target": "src/components/effects/book-flip/PageContext.tsx"
       },
       {
-        "path": "UI.jsx",
-        "target": "src/components/effects/book-flip/UI.jsx"
+        "path": "UI.tsx",
+        "target": "src/components/effects/book-flip/UI.tsx"
       },
       {
-        "path": "BookFlip.jsx",
-        "target": "src/components/effects/book-flip/BookFlip.jsx"
+        "path": "BookFlip.tsx",
+        "target": "src/components/effects/book-flip/BookFlip.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/book-flip/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/book-flip/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
   {
     "name": "border-beam",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Border Beam",
     "description": "Animated border beam effect for cards and surfaces",
     "category": "components",
-    "type": "registry:component",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/border-beam",
     "tier": "pro",
-    "version": "1.1.0",
+    "main": "index.tsx",
+    "exportName": "BorderBeam",
+    "exportKind": "default",
+    "importPath": "@/components/effects/border-beam",
+    "target": "src/components/effects/border-beam",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/border-beam/index.tsx"
+      },
+      {
+        "path": "BorderBeam.tsx",
+        "target": "src/components/effects/border-beam/BorderBeam.tsx"
+      },
+      {
+        "path": "PulseDriver.ts",
+        "target": "src/components/effects/border-beam/PulseDriver.ts"
+      },
+      {
+        "path": "styles.ts",
+        "target": "src/components/effects/border-beam/styles.ts"
+      }
+    ],
     "changelog": [
       {
         "version": "1.1.0",
@@ -460,33 +535,7 @@
         "breaking": false
       }
     ],
-    "dependencies": [],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/components/border-beam/registry.json",
-    "importPath": "@/components/effects/border-beam",
-    "target": "src/components/effects/border-beam",
-    "previewUrl": "/demo/border-beam",
-    "main": "index.jsx",
-    "exportName": "BorderBeam",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.jsx",
-        "target": "src/components/effects/border-beam/index.jsx"
-      },
-      {
-        "path": "BorderBeam.jsx",
-        "target": "src/components/effects/border-beam/BorderBeam.jsx"
-      },
-      {
-        "path": "PulseDriver.js",
-        "target": "src/components/effects/border-beam/PulseDriver.js"
-      },
-      {
-        "path": "styles.js",
-        "target": "src/components/effects/border-beam/styles.js"
-      }
-    ]
+    "registryPath": "registry/effects/components/border-beam/registry.json"
   },
   {
     "name": "butterfly-trail-cursor",
@@ -522,17 +571,17 @@
     "previewUrl": "/demo/butterfly-trail-cursor",
     "coverImage": "butterfly-trail-cursor",
     "videoUrl": "butterfly-trail-cursor.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ButterflyTrailCursor",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/butterfly-trail-cursor/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/butterfly-trail-cursor/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/butterfly-trail-cursor/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/butterfly-trail-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -543,7 +592,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -553,21 +602,25 @@
     "importPath": "@/components/effects/card-drift",
     "target": "src/components/effects/card-drift",
     "previewUrl": "/demo/card-drift",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CardDrift",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/card-drift/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/card-drift/index.tsx"
       },
       {
-        "path": "CardDriftComp.jsx",
-        "target": "src/components/effects/card-drift/CardDriftComp.jsx"
-      },
+        "path": "CardDriftComp.tsx",
+        "target": "src/components/effects/card-drift/CardDriftComp.tsx"
+      }
+    ],
+    "changelog": [
       {
-        "path": "NavigationButtons.jsx",
-        "target": "src/components/effects/card-drift/NavigationButtons.jsx"
+        "version": "1.1.0",
+        "date": "2026-07-24",
+        "summary": "Added a prefers-reduced-motion notice explaining that dragging stays fully interactive since it is a direct, user-initiated action.",
+        "breaking": false
       }
     ]
   },
@@ -578,8 +631,14 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Desktop pin/scrub threshold raised from >1024px to >=1280px to match the max-[1025px] CSS breakpoint; previously the 1025-1279px range ran the desktop timeline against the collapsed mobile layout.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -601,67 +660,62 @@
     "importPath": "@/components/effects/cards-runway",
     "target": "src/components/effects/cards-runway",
     "previewUrl": "/demo/cards-runway",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CardsRunway",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/cards-runway/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/cards-runway/index.tsx"
       },
       {
-        "path": "CardsRunway.jsx",
-        "target": "src/components/effects/cards-runway/CardsRunway.jsx"
+        "path": "CardsRunway.tsx",
+        "target": "src/components/effects/cards-runway/CardsRunway.tsx"
       }
     ]
   },
   {
     "name": "char-stagger-button",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-21",
+        "summary": "Added prefers-reduced-motion support: the hover character-stagger animation is skipped when the user has reduced motion enabled",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
     "title": "Character Stagger Button",
     "description": "Link button with staggered character animation on hover",
     "category": "buttons",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.1.0",
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Added prefers-reduced-motion support: the hover character-stagger animation is skipped when the user has reduced motion enabled",
-        "breaking": false
-      },
-      {
-        "version": "1.0.0",
-        "date": "2026-06-04",
-        "summary": "Initial release",
-        "breaking": false
-      }
-    ],
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/char-stagger-button/registry.json",
-    "importPath": "@/components/effects/char-stagger-button",
-    "target": "src/components/effects/char-stagger-button",
     "previewUrl": "/demo/char-stagger-button",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "CharStaggerButton",
     "exportKind": "default",
+    "importPath": "@/components/effects/char-stagger-button",
+    "target": "src/components/effects/char-stagger-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/char-stagger-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/char-stagger-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/char-stagger-button/registry.json"
   },
   {
     "name": "char-stagger-primary-button",
-    "title": "Character Stagger Primary Button",
-    "description": "Primary button with staggered character animation on hover",
-    "category": "buttons",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -677,23 +731,28 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Character Stagger Primary Button",
+    "description": "Primary button with staggered character animation on hover",
+    "category": "buttons",
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/char-stagger-primary-button/registry.json",
-    "importPath": "@/components/effects/char-stagger-primary-button",
-    "target": "src/components/effects/char-stagger-primary-button",
     "previewUrl": "/demo/char-stagger-primary-button",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "CharStaggerPrimaryButton",
     "exportKind": "default",
+    "importPath": "@/components/effects/char-stagger-primary-button",
+    "target": "src/components/effects/char-stagger-primary-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/char-stagger-primary-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/char-stagger-primary-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/char-stagger-primary-button/registry.json"
   },
   {
     "name": "character-trail",
@@ -702,8 +761,14 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Replaced Next.ts-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -723,31 +788,26 @@
     "importPath": "@/components/effects/character-trail",
     "target": "src/components/effects/character-trail",
     "previewUrl": "/demo/character-trail",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CharacterTrail",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/character-trail/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/character-trail/index.tsx"
       },
       {
-        "path": "CharacterTrailComp.jsx",
-        "target": "src/components/effects/character-trail/CharacterTrailComp.jsx"
+        "path": "CharacterTrailComp.tsx",
+        "target": "src/components/effects/character-trail/CharacterTrailComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/character-trail/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/character-trail/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "chess-grid-transition",
-    "title": "Chess Grid Transition",
-    "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -763,27 +823,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Chess Grid Transition",
+    "description": "Staggered fullscreen grid wipe that sweeps blocks across the viewport during route changes",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/chess-grid-transition/registry.json",
-    "importPath": "@/components/effects/chess-grid-transition",
-    "target": "src/components/effects/chess-grid-transition",
     "previewUrl": "/demo/chess-grid-transition",
     "coverImage": "chess-grid-transition",
     "videoUrl": "chess-grid-transition.mp4",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ChessGridTransition",
     "exportKind": "default",
+    "importPath": "@/components/effects/chess-grid-transition",
+    "target": "src/components/effects/chess-grid-transition",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/chess-grid-transition/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/chess-grid-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/chess-grid-transition/registry.json"
   },
   {
     "name": "circle-text-reveal",
@@ -813,19 +878,19 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/circle-text-reveal/registry.json",
     "previewUrl": "/demo/circle-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CircleTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/circle-text-reveal/index.jsx"
+        "target": "src/components/effects/circle-text-reveal/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
+        "path": "createSuspendedRaf.ts",
         "type": "registry:component",
-        "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.js"
+        "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.ts"
       }
     ]
   },
@@ -836,7 +901,7 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -846,17 +911,25 @@
     "importPath": "@/components/effects/circular-slider",
     "target": "src/components/effects/circular-slider",
     "previewUrl": "/demo/circular-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CircularSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/circular-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/circular-slider/index.tsx"
       },
       {
-        "path": "CircularSliderComp.jsx",
-        "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
+        "path": "CircularSliderComp.tsx",
+        "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-24",
+        "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+        "breaking": false
       }
     ]
   },
@@ -867,8 +940,14 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-24",
+        "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven rotation cannot be reduced to a static fade.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-17",
@@ -892,27 +971,22 @@
     "target": "src/components/effects/circular-split-roll",
     "previewUrl": "/demo/circular-split-roll",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CircularSplitRoll",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/circular-split-roll/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/circular-split-roll/index.tsx"
       },
       {
-        "path": "CircularSplitRollComp.jsx",
-        "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.jsx"
+        "path": "CircularSplitRollComp.tsx",
+        "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.tsx"
       }
     ]
   },
   {
     "name": "clippath-slider",
-    "title": "Clip Path Slider",
-    "description": "Fullscreen image slider where transitions sweep via two canvas-drawn radial clip-path arcs. Includes a dual-layer background crossfade, GSAP SplitText line reveals, and a smooth custom cursor that flips direction arrows left/right.",
-    "category": "carousels",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -928,27 +1002,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Clip Path Slider",
+    "description": "Fullscreen image slider where transitions sweep via two canvas-drawn radial clip-path arcs. Includes a dual-layer background crossfade, GSAP SplitText line reveals, and a smooth custom cursor that flips direction arrows left/right.",
+    "category": "carousels",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/carousels/clippath-slider/registry.json",
-    "importPath": "@/components/effects/clippath-slider",
-    "target": "src/components/effects/clippath-slider",
     "previewUrl": "/demo/clippath-slider",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "ClipPathSlider",
     "exportKind": "default",
+    "importPath": "@/components/effects/clippath-slider",
+    "target": "src/components/effects/clippath-slider",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/clippath-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/clippath-slider/index.tsx"
       },
       {
-        "path": "ClippathSliderComp.jsx",
-        "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
+        "path": "ClippathSliderComp.tsx",
+        "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/carousels/clippath-slider/registry.json"
   },
   {
     "name": "coffee-bean-cursor",
@@ -984,17 +1063,17 @@
     "previewUrl": "/demo/coffee-bean-cursor",
     "coverImage": "coffee-bean-cursor",
     "videoUrl": "coffee-bean-cursor.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CoffeeBeanCursor",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/coffee-bean-cursor/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/coffee-bean-cursor/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1005,7 +1084,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -1021,17 +1100,31 @@
     "previewUrl": "/demo/colliding-models",
     "coverImage": "colliding-models",
     "videoUrl": "colliding-models.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CollidingModels",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/colliding-models/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/colliding-models/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/colliding-models/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/colliding-models/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -1065,17 +1158,17 @@
     "importPath": "@/components/effects/colorful-cursor-aura",
     "target": "src/components/effects/colorful-cursor-aura",
     "previewUrl": "/demo/colorful-cursor-aura",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ColorfulCursorAura",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/colorful-cursor-aura/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/colorful-cursor-aura/index.tsx"
       },
       {
-        "path": "ColorfulCursorAuraComp.jsx",
-        "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.jsx"
+        "path": "ColorfulCursorAuraComp.tsx",
+        "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.tsx"
       }
     ]
   },
@@ -1086,8 +1179,14 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-23",
+        "summary": "Mousemove handling is now rAF-throttled: bursts of events coalesce into one rect read and one state update per frame instead of re-rendering per raw event.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -1109,20 +1208,20 @@
     "previewUrl": "/demo/cursor-move",
     "coverImage": "cursor-move",
     "videoUrl": "cursor-move.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CursorMove",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/cursor-move/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/cursor-move/index.tsx"
       }
     ]
   },
   {
     "name": "curved-plane",
     "title": "Curved Plane",
-    "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
+    "description": "Three.ts WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
@@ -1143,25 +1242,25 @@
     "importPath": "@/components/effects/curved-plane",
     "target": "src/components/effects/curved-plane",
     "previewUrl": "/demo/curved-plane",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "CurvedPlane",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/curved-plane/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/curved-plane/index.tsx"
       },
       {
-        "path": "CurvedSwiperHorizontal.jsx",
-        "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.jsx"
+        "path": "CurvedSwiperHorizontal.tsx",
+        "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.tsx"
       },
       {
-        "path": "CurvedSwiperVertical.jsx",
-        "target": "src/components/effects/curved-plane/CurvedSwiperVertical.jsx"
+        "path": "CurvedSwiperVertical.tsx",
+        "target": "src/components/effects/curved-plane/CurvedSwiperVertical.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/curved-plane/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/curved-plane/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1190,31 +1289,64 @@
     "importPath": "@/components/effects/depth-card-stack",
     "target": "src/components/effects/depth-card-stack",
     "previewUrl": "/demo/depth-card-stack",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DepthCardStack",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/depth-card-stack/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/depth-card-stack/index.tsx"
       },
       {
-        "path": "DepthCardStackComp.jsx",
-        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+        "path": "DepthCardStackComp.tsx",
+        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.tsx"
       },
       {
-        "path": "SliderCard.jsx",
-        "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+        "path": "SliderCard.tsx",
+        "target": "src/components/effects/depth-card-stack/SliderCard.tsx"
       }
     ]
   },
   {
-    "name": "directional-menu",
-    "title": "Directional Menu",
-    "description": "Mega menu with directional content transitions using GSAP",
-    "category": "navigation",
+    "name": "depth-shift-transition",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
     "type": "registry:component",
+    "title": "Depth Shift Transition",
+    "description": "The outgoing page recedes and shifts down-right while the incoming page slides in diagonally from the bottom-left, layered on top",
+    "category": "transitions",
+    "dependencies": [
+      "gsap",
+      "next-transition-router"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/depth-shift-transition",
+    "coverImage": "depth-shift-transition",
+    "videoUrl": "depth-shift-transition.mp4",
     "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DepthShiftTransition",
+    "exportKind": "default",
+    "importPath": "@/components/effects/depth-shift-transition",
+    "target": "src/components/effects/depth-shift-transition",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/depth-shift-transition/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/transitions/depth-shift-transition/registry.json"
+  },
+  {
+    "name": "directional-menu",
     "version": "1.1.0",
     "changelog": [
       {
@@ -1230,57 +1362,57 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Directional Menu",
+    "description": "Mega menu with directional content transitions using GSAP",
+    "category": "navigation",
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/navigation/directional-menu/registry.json",
-    "importPath": "@/components/effects/directional-menu",
-    "target": "src/components/effects/directional-menu",
     "previewUrl": "/demo/directional-menu",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DirectionalMenu",
     "exportKind": "default",
+    "importPath": "@/components/effects/directional-menu",
+    "target": "src/components/effects/directional-menu",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/directional-menu/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/directional-menu/index.tsx"
       },
       {
-        "path": "DirectionalMegaMenu.jsx",
-        "target": "src/components/effects/directional-menu/DirectionalMegaMenu.jsx"
+        "path": "DirectionalMegaMenu.tsx",
+        "target": "src/components/effects/directional-menu/DirectionalMegaMenu.tsx"
       },
       {
-        "path": "Menu1.jsx",
-        "target": "src/components/effects/directional-menu/Menu1.jsx"
+        "path": "Menu1.tsx",
+        "target": "src/components/effects/directional-menu/Menu1.tsx"
       },
       {
-        "path": "Menu2.jsx",
-        "target": "src/components/effects/directional-menu/Menu2.jsx"
+        "path": "Menu2.tsx",
+        "target": "src/components/effects/directional-menu/Menu2.tsx"
       },
       {
-        "path": "Menu3.jsx",
-        "target": "src/components/effects/directional-menu/Menu3.jsx"
+        "path": "Menu3.tsx",
+        "target": "src/components/effects/directional-menu/Menu3.tsx"
       },
       {
-        "path": "MobileDirectionalMenu.jsx",
-        "target": "src/components/effects/directional-menu/MobileDirectionalMenu.jsx"
+        "path": "MobileDirectionalMenu.tsx",
+        "target": "src/components/effects/directional-menu/MobileDirectionalMenu.tsx"
       },
       {
-        "path": "useFocusTrap.js",
-        "target": "src/components/effects/directional-menu/useFocusTrap.js"
+        "path": "useFocusTrap.ts",
+        "target": "src/components/effects/directional-menu/useFocusTrap.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/navigation/directional-menu/registry.json"
   },
   {
     "name": "dither-canvas",
-    "title": "Dither Canvas",
-    "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
-    "category": "backgrounds",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.0.1",
     "changelog": [
       {
@@ -1290,25 +1422,30 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Dither Canvas",
+    "description": "Interactive ASCII-style dither canvas with fluid mouse distortion over video",
+    "category": "backgrounds",
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json",
-    "importPath": "@/components/effects/dither-canvas",
-    "target": "src/components/effects/dither-canvas",
     "previewUrl": "/demo/dither-canvas",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "DitherCanvas",
     "exportKind": "default",
+    "importPath": "@/components/effects/dither-canvas",
+    "target": "src/components/effects/dither-canvas",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/dither-canvas/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/dither-canvas/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/dither-canvas/createSuspendedRaf.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json"
   },
   {
     "name": "donut-particles",
@@ -1337,27 +1474,22 @@
     "previewUrl": "/demo/donut-particles",
     "coverImage": "donut-particles",
     "videoUrl": "donut-particles.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DonutParticles",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/donut-particles/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/donut-particles/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/donut-particles/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/donut-particles/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "dot-fill-button",
-    "title": "Dot Fill Button",
-    "description": "Button with expanding dot that fills the background on hover with character stagger",
-    "category": "buttons",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -1373,35 +1505,35 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Dot Fill Button",
+    "description": "Button with expanding dot that fills the background on hover with character stagger",
+    "category": "buttons",
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/dot-fill-button/registry.json",
-    "importPath": "@/components/effects/dot-fill-button",
-    "target": "src/components/effects/dot-fill-button",
     "previewUrl": "/demo/dot-fill-button",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "DotFillBtn",
     "exportKind": "default",
+    "importPath": "@/components/effects/dot-fill-button",
+    "target": "src/components/effects/dot-fill-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/dot-fill-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/dot-fill-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/dot-fill-button/registry.json"
   },
   {
     "name": "dotted-grid",
-    "title": "Dotted Grid",
-    "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes (star, square, circle ring, plus, triangle). Mouse cursor creates a dark shrinking head effect and leaves a glowing blue trail that lingers and fades.",
-    "category": "backgrounds",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.1",
     "changelog": [
       {
         "version": "1.1.1",
         "date": "2026-07-22",
-        "summary": "Added a reduced-motion notice alongside the existing static canvas fallback.",
+        "summary": "Added a reduced-motion alongside the existing static canvas fallback.",
         "breaking": false
       },
       {
@@ -1417,26 +1549,31 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Dotted Grid",
+    "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes (star, square, circle ring, plus, triangle). Mouse cursor creates a dark shrinking head effect and leaves a glowing blue trail that lingers and fades.",
+    "category": "backgrounds",
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json",
-    "importPath": "@/components/effects/dotted-grid",
-    "target": "src/components/effects/dotted-grid",
     "previewUrl": "/demo/dotted-grid",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DottedGrid",
     "exportKind": "named",
+    "importPath": "@/components/effects/dotted-grid",
+    "target": "src/components/effects/dotted-grid",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/dotted-grid/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/dotted-grid/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/dotted-grid/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/dotted-grid/createSuspendedRaf.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json"
   },
   {
     "name": "draggable-canvas",
@@ -1445,7 +1582,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap"
     ],
@@ -1454,25 +1591,39 @@
     "importPath": "@/components/effects/draggable-canvas",
     "target": "src/components/effects/draggable-canvas",
     "previewUrl": "/demo/draggable-canvas",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DraggableCanvas",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/draggable-canvas/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/draggable-canvas/index.tsx"
       },
       {
-        "path": "DragCursor.jsx",
-        "target": "src/components/effects/draggable-canvas/DragCursor.jsx"
+        "path": "DragCursor.tsx",
+        "target": "src/components/effects/draggable-canvas/DragCursor.tsx"
       },
       {
-        "path": "MaskedContainer.jsx",
-        "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
+        "path": "MaskedContainer.tsx",
+        "target": "src/components/effects/draggable-canvas/MaskedContainer.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/draggable-canvas/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added a prefers-reduced-motion notice on the left side, informing users the drag/inertia animation may not honor their reduced-motion preference",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -1483,8 +1634,14 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Offscreen pause now detaches only the marquee's own ticker callback instead of sleeping the global gsap.ticker, which froze every other GSAP animation on the page",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -1500,31 +1657,26 @@
     "importPath": "@/components/effects/draggable-marquee",
     "target": "src/components/effects/draggable-marquee",
     "previewUrl": "/demo/draggable-marquee",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "DraggableMarquee",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/draggable-marquee/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/draggable-marquee/index.tsx"
       },
       {
-        "path": "DraggableMarqueeComp.jsx",
-        "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+        "path": "DraggableMarqueeComp.tsx",
+        "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/draggable-marquee/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/draggable-marquee/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "elevate-navbar",
-    "title": "Elevate Navbar",
-    "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
-    "category": "navigation",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -1540,45 +1692,47 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Elevate Navbar",
+    "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+    "category": "navigation",
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/navigation/elevate-navbar/registry.json",
-    "importPath": "@/components/effects/elevate-navbar",
-    "target": "src/components/effects/elevate-navbar",
+    "packageName": "@hyperiux/elevate-navbar",
+    "sourcePath": "apps/docs/src/components/elevate-navbar",
     "previewUrl": "/demo/elevate-navbar",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ElevateNavbar",
     "exportKind": "default",
+    "importPath": "@/components/effects/elevate-navbar",
+    "target": "src/components/effects/elevate-navbar",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/elevate-navbar/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/elevate-navbar/index.tsx"
       },
       {
-        "path": "ElevateMobileNav.jsx",
-        "target": "src/components/effects/elevate-navbar/ElevateMobileNav.jsx"
+        "path": "ElevateMobileNav.tsx",
+        "target": "src/components/effects/elevate-navbar/ElevateMobileNav.tsx"
       },
       {
-        "path": "ElevateDesktopNav.jsx",
-        "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx"
+        "path": "ElevateDesktopNav.tsx",
+        "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.tsx"
       },
       {
-        "path": "useFocusTrap.js",
-        "target": "src/components/effects/elevate-navbar/useFocusTrap.js"
+        "path": "useFocusTrap.ts",
+        "target": "src/components/effects/elevate-navbar/useFocusTrap.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/navigation/elevate-navbar/registry.json"
   },
   {
     "name": "expanding-navbar",
-    "title": "Expanding Navbar",
-    "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
-    "category": "navigation",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -1594,44 +1748,49 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Expanding Navbar",
+    "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
+    "category": "navigation",
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/navigation/expanding-navbar/registry.json",
-    "importPath": "@/components/effects/expanding-navbar",
-    "target": "src/components/effects/expanding-navbar",
     "previewUrl": "/demo/expanding-navbar",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "ExpandingNavbar",
     "exportKind": "default",
+    "importPath": "@/components/effects/expanding-navbar",
+    "target": "src/components/effects/expanding-navbar",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/expanding-navbar/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/expanding-navbar/index.tsx"
       },
       {
-        "path": "ExpandingNavbarDesktop.jsx",
-        "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+        "path": "ExpandingNavbarDesktop.tsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
       },
       {
-        "path": "ExpandingNavbarMobile.jsx",
-        "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+        "path": "ExpandingNavbarMobile.tsx",
+        "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
       },
       {
-        "path": "HoverFillLink.jsx",
-        "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+        "path": "HoverFillLink.tsx",
+        "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
       },
       {
-        "path": "data.js",
-        "target": "src/components/effects/expanding-navbar/data.js"
+        "path": "data.ts",
+        "target": "src/components/effects/expanding-navbar/data.ts"
       },
       {
-        "path": "useFocusTrap.js",
-        "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
+        "path": "useFocusTrap.ts",
+        "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/navigation/expanding-navbar/registry.json"
   },
   {
     "name": "file-encryption",
@@ -1657,37 +1816,43 @@
     "importPath": "@/components/effects/file-encryption",
     "target": "src/components/effects/file-encryption",
     "previewUrl": "/demo/file-encryption",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "FileEncryption",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/file-encryption/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/file-encryption/index.tsx"
       },
       {
-        "path": "FileEncryptionComp.jsx",
-        "target": "src/components/effects/file-encryption/FileEncryptionComp.jsx"
+        "path": "FileEncryptionComp.tsx",
+        "target": "src/components/effects/file-encryption/FileEncryptionComp.tsx"
       },
       {
-        "path": "webgl-context-recovery.js",
-        "target": "src/components/effects/file-encryption/webgl-context-recovery.js"
+        "path": "webgl-context-recovery.ts",
+        "target": "src/components/effects/file-encryption/webgl-context-recovery.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/file-encryption/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/file-encryption/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "fish-eye",
     "title": "Fish Eye",
-    "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
+    "description": "WebGPU fish-eye lens distortion on images using Three.ts TSL node materials with smooth cursor tracking",
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-24",
+        "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -1711,17 +1876,17 @@
     "importPath": "@/components/effects/fish-eye",
     "target": "src/components/effects/fish-eye",
     "previewUrl": "/demo/fish-eye",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "FishEye",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/fish-eye/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/fish-eye/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/fish-eye/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/fish-eye/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1732,8 +1897,14 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-15",
@@ -1750,17 +1921,17 @@
     "target": "src/components/effects/fractal-glass",
     "previewUrl": "/demo/fractal-glass",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "FractalGlass",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/fractal-glass/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/fractal-glass/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/fractal-glass/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/fractal-glass/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1771,8 +1942,14 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.tsx.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -1794,21 +1971,21 @@
     "previewUrl": "/demo/full-screen-crosshair",
     "coverImage": "full-screen-crosshair",
     "videoUrl": "full-screen-crosshair.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "FullScreenCrosshair",
-    "exportKind": "named",
+    "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/full-screen-crosshair/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/full-screen-crosshair/index.tsx"
       },
       {
-        "path": "useMouse.js",
-        "target": "src/components/effects/full-screen-crosshair/useMouse.js"
+        "path": "useMouse.ts",
+        "target": "src/components/effects/full-screen-crosshair/useMouse.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1840,14 +2017,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/glitchy-text/registry.json",
     "previewUrl": "/demo/glitchy-text",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "GlitchyText",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/glitchy-text/index.jsx"
+        "target": "src/components/effects/glitchy-text/index.tsx"
       }
     ]
   },
@@ -1863,7 +2040,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Snap digits and skip scatter morph under reduced motion",
+        "summary": "Snap digi.ts and skip scatter morph under reduced motion",
         "breaking": false
       }
     ],
@@ -1874,13 +2051,13 @@
     "target": "src/components/effects/gooey-counter",
     "previewUrl": "/demo/gooey-counter",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "GooeyCounter",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/gooey-counter/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/gooey-counter/index.tsx"
       }
     ]
   },
@@ -1891,7 +2068,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "leva"
     ],
@@ -1900,17 +2077,31 @@
     "importPath": "@/components/effects/grid-lift",
     "target": "src/components/effects/grid-lift",
     "previewUrl": "/demo/grid-lift",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "GridLift",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/grid-lift/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/grid-lift/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/grid-lift/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/grid-lift/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -1921,8 +2112,14 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Fixed malformed ScrollTrigger start value ('% top' -> 'top top') on the floating-words timeline; it previously parsed to NaN and anchored the animation to absolute page top instead of the section",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -1938,13 +2135,13 @@
     "importPath": "@/components/effects/grid-scale",
     "target": "src/components/effects/grid-scale",
     "previewUrl": "/demo/grid-scale",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "GridScale",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/grid-scale/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/grid-scale/index.tsx"
       }
     ]
   },
@@ -1955,8 +2152,14 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-24",
+        "summary": "Added a prefers-reduced-motion notice, and hardened camera-frame timing so a long tab-hidden pause no longer displaces the camera (and by extension the recycled tunnel chunks) on resume.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -1974,21 +2177,21 @@
     "importPath": "@/components/effects/grid-tunnel",
     "target": "src/components/effects/grid-tunnel",
     "previewUrl": "/demo/grid-tunnel",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "GridTunnel",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/grid-tunnel/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/grid-tunnel/index.tsx"
       },
       {
-        "path": "GridTunnelComp.jsx",
-        "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
+        "path": "GridTunnelComp.tsx",
+        "target": "src/components/effects/grid-tunnel/GridTunnelComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/grid-tunnel/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1999,7 +2202,7 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap",
       "lenis"
@@ -2009,17 +2212,31 @@
     "importPath": "@/components/effects/helix-slider",
     "target": "src/components/effects/helix-slider",
     "previewUrl": "/demo/helix-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "HelixSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/helix-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/helix-slider/index.tsx"
       },
       {
-        "path": "HelixSliderComp.jsx",
-        "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+        "path": "HelixSliderComp.tsx",
+        "target": "src/components/effects/helix-slider/HelixSliderComp.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-24",
+        "summary": "Added prefers-reduced-motion support (ported from the docs copy): shows a notice explaining the continuous scroll-driven rotation can't be reduced to a static fade.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-02-10",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -2030,7 +2247,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "@react-three/fiber",
       "@react-three/drei",
@@ -2046,33 +2263,47 @@
     "importPath": "@/components/effects/hero-banner-animated",
     "target": "src/components/effects/hero-banner-animated",
     "previewUrl": "/demo/hero-banner-animated",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "HeroBannerAnimated",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/hero-banner-animated/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/hero-banner-animated/index.tsx"
       },
       {
-        "path": "CustomGrainNoise.jsx",
-        "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.jsx"
+        "path": "CustomGrainNoise.tsx",
+        "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.tsx"
       },
       {
-        "path": "EdgeBlurEffect.jsx",
-        "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.jsx"
+        "path": "EdgeBlurEffect.tsx",
+        "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.tsx"
       },
       {
-        "path": "RoomModel.jsx",
-        "target": "src/components/effects/hero-banner-animated/RoomModel.jsx"
+        "path": "RoomModel.tsx",
+        "target": "src/components/effects/hero-banner-animated/RoomModel.tsx"
       },
       {
-        "path": "VideoUI.jsx",
-        "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
+        "path": "VideoUI.tsx",
+        "target": "src/components/effects/hero-banner-animated/VideoUI.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -2107,17 +2338,17 @@
     "target": "src/components/effects/horizontal-feature-reveal",
     "previewUrl": "/demo/horizontal-feature-reveal",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "HorizontalFeatureReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/horizontal-feature-reveal/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/horizontal-feature-reveal/index.tsx"
       },
       {
-        "path": "HorizontalFeatureRevealComp.jsx",
-        "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.jsx"
+        "path": "HorizontalFeatureRevealComp.tsx",
+        "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.tsx"
       }
     ]
   },
@@ -2146,32 +2377,51 @@
     "importPath": "@/components/effects/hover-slider",
     "target": "src/components/effects/hover-slider",
     "previewUrl": "/demo/hover-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "HoverSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/hover-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/hover-slider/index.tsx"
       },
       {
-        "path": "HoverSliderComp.jsx",
-        "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
+        "path": "HoverSliderComp.tsx",
+        "target": "src/components/effects/hover-slider/HoverSliderComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/hover-slider/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "hover-stack",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Hover Stack",
     "description": "Overlapping card stack that fans out around the hovered card",
     "category": "components",
-    "type": "registry:component",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/hover-stack",
     "tier": "free",
-    "version": "1.1.0",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "HoverStack",
+    "exportKind": "default",
+    "importPath": "@/components/effects/hover-stack",
+    "target": "src/components/effects/hover-stack",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/hover-stack/index.tsx"
+      },
+      {
+        "path": "HoverStackComp.tsx",
+        "target": "src/components/effects/hover-stack/HoverStackComp.tsx"
+      }
+    ],
     "changelog": [
       {
         "version": "1.1.0",
@@ -2180,26 +2430,7 @@
         "breaking": false
       }
     ],
-    "dependencies": [],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/components/hover-stack/registry.json",
-    "importPath": "@/components/effects/hover-stack",
-    "target": "src/components/effects/hover-stack",
-    "previewUrl": "/demo/hover-stack",
-    "subfolder": true,
-    "main": "index.jsx",
-    "exportName": "HoverStack",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.jsx",
-        "target": "src/components/effects/hover-stack/index.jsx"
-      },
-      {
-        "path": "HoverStackComp.jsx",
-        "target": "src/components/effects/hover-stack/HoverStackComp.jsx"
-      }
-    ]
+    "registryPath": "registry/effects/components/hover-stack/registry.json"
   },
   {
     "name": "hyperiux-glitter",
@@ -2230,35 +2461,30 @@
     "previewUrl": "/demo/hyperiux-glitter",
     "coverImage": "hyperiux-glitter",
     "videoUrl": "/hyperiux-glitter.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "HyperiuxGlitter",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/hyperiux-glitter/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/hyperiux-glitter/index.tsx"
       },
       {
-        "path": "MorphingParticleModelNew.jsx",
-        "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
+        "path": "MorphingParticleModelNew.tsx",
+        "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.tsx"
       },
       {
-        "path": "MouseTrailParticles.jsx",
-        "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
+        "path": "MouseTrailParticles.tsx",
+        "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "immersive-full-screen-nav",
-    "title": "Immersive Full Screen Navigation",
-    "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
-    "category": "navigation",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -2274,36 +2500,41 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Immersive Full Screen Navigation",
+    "description": "Clip-path powered full-screen navigation overlay with animated hamburger transitions",
+    "category": "navigation",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/navigation/immersive-full-screen-nav/registry.json",
-    "importPath": "@/components/effects/immersive-full-screen-nav",
-    "target": "src/components/effects/immersive-full-screen-nav",
     "previewUrl": "/demo/immersive-full-screen-nav",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ImmersiveFullscreenNav",
     "exportKind": "default",
+    "importPath": "@/components/effects/immersive-full-screen-nav",
+    "target": "src/components/effects/immersive-full-screen-nav",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/immersive-full-screen-nav/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/immersive-full-screen-nav/index.tsx"
       },
       {
-        "path": "CustomNavbar.jsx",
-        "target": "src/components/effects/immersive-full-screen-nav/CustomNavbar.jsx"
+        "path": "CustomNavbar.tsx",
+        "target": "src/components/effects/immersive-full-screen-nav/CustomNavbar.tsx"
       },
       {
-        "path": "FullscreenNav.jsx",
-        "target": "src/components/effects/immersive-full-screen-nav/FullscreenNav.jsx"
+        "path": "FullscreenNav.tsx",
+        "target": "src/components/effects/immersive-full-screen-nav/FullscreenNav.tsx"
       },
       {
-        "path": "useFocusTrap.js",
-        "target": "src/components/effects/immersive-full-screen-nav/useFocusTrap.js"
+        "path": "useFocusTrap.ts",
+        "target": "src/components/effects/immersive-full-screen-nav/useFocusTrap.ts"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/navigation/immersive-full-screen-nav/registry.json"
   },
   {
     "name": "inertia-img",
@@ -2335,27 +2566,22 @@
     "importPath": "@/components/effects/inertia-img",
     "target": "src/components/effects/inertia-img",
     "previewUrl": "/demo/inertia-img",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InertiaImage",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/inertia-img/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/inertia-img/index.tsx"
       },
       {
-        "path": "InertiaImgComp.jsx",
-        "target": "src/components/effects/inertia-img/InertiaImgComp.jsx"
+        "path": "InertiaImgComp.tsx",
+        "target": "src/components/effects/inertia-img/InertiaImgComp.tsx"
       }
     ]
   },
   {
     "name": "infinite-carousel",
-    "title": "Infinite Carousel",
-    "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
-    "category": "carousels",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -2371,29 +2597,34 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Infinite Carousel",
+    "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
+    "category": "carousels",
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/carousels/infinite-carousel/registry.json",
-    "importPath": "@/components/effects/infinite-carousel",
-    "target": "src/components/effects/infinite-carousel",
     "previewUrl": "/demo/infinite-carousel",
     "coverImage": "infinite-carousel",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "InfiniteCarousel",
     "exportKind": "default",
+    "importPath": "@/components/effects/infinite-carousel",
+    "target": "src/components/effects/infinite-carousel",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/infinite-carousel/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/infinite-carousel/index.tsx"
       },
       {
-        "path": "InfiniteCarouselComp.jsx",
-        "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
+        "path": "InfiniteCarouselComp.tsx",
+        "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/carousels/infinite-carousel/registry.json"
   },
   {
     "name": "infinite-grid-gallery",
@@ -2419,25 +2650,25 @@
     "previewUrl": "/demo/infinite-grid-gallery",
     "coverImage": "infinite-grid-gallery",
     "videoUrl": "infinite-grid-gallery.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InfiniteGridGallery",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/infinite-grid-gallery/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/infinite-grid-gallery/index.tsx"
       },
       {
-        "path": "InfiniteGrid.jsx",
-        "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx"
+        "path": "InfiniteGrid.tsx",
+        "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.tsx"
       },
       {
-        "path": "util.js",
-        "target": "src/components/effects/infinite-grid-gallery/util.js"
+        "path": "util.ts",
+        "target": "src/components/effects/infinite-grid-gallery/util.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2467,21 +2698,21 @@
     "previewUrl": "/demo/infinite-perspective-slider",
     "coverImage": "infinite-perspective-slider",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InfinitePerspectiveSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/infinite-perspective-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/infinite-perspective-slider/index.tsx"
       },
       {
-        "path": "InfinitePerspectiveSliderComp.jsx",
-        "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.jsx"
+        "path": "InfinitePerspectiveSliderComp.tsx",
+        "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2513,45 +2744,45 @@
     "importPath": "@/components/effects/interactive-arrows",
     "target": "src/components/effects/interactive-arrows",
     "previewUrl": "/demo/interactive-arrows",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InteractiveArrows",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/interactive-arrows/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/interactive-arrows/index.tsx"
       },
       {
-        "path": "arrows.jsx",
-        "target": "src/components/effects/interactive-arrows/arrows.jsx"
+        "path": "arrows.tsx",
+        "target": "src/components/effects/interactive-arrows/arrows.tsx"
       },
       {
-        "path": "ArrowsLimit.jsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsLimit.jsx"
+        "path": "ArrowsLimit.tsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsLimit.tsx"
       },
       {
-        "path": "ArrowsOpacity.jsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsOpacity.jsx"
+        "path": "ArrowsOpacity.tsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsOpacity.tsx"
       },
       {
-        "path": "ArrowsPlay.jsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsPlay.jsx"
+        "path": "ArrowsPlay.tsx",
+        "target": "src/components/effects/interactive-arrows/ArrowsPlay.tsx"
       },
       {
-        "path": "lines.jsx",
-        "target": "src/components/effects/interactive-arrows/lines.jsx"
+        "path": "lines.tsx",
+        "target": "src/components/effects/interactive-arrows/lines.tsx"
       },
       {
-        "path": "points.jsx",
-        "target": "src/components/effects/interactive-arrows/points.jsx"
+        "path": "points.tsx",
+        "target": "src/components/effects/interactive-arrows/points.tsx"
       },
       {
-        "path": "utils.js",
-        "target": "src/components/effects/interactive-arrows/utils.js"
+        "path": "utils.ts",
+        "target": "src/components/effects/interactive-arrows/utils.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/interactive-arrows/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/interactive-arrows/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2562,7 +2793,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/webgl/interactive-blur-reveal/registry.json",
@@ -2570,21 +2801,35 @@
     "target": "src/components/effects/interactive-blur-reveal",
     "previewUrl": "/demo/interactive-blur-reveal",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InteractiveBlurReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/interactive-blur-reveal/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/interactive-blur-reveal/index.tsx"
       },
       {
-        "path": "webgl-context-recovery.js",
-        "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
+        "path": "webgl-context-recovery.ts",
+        "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -2595,8 +2840,14 @@
     "category": "components",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Renamed helper ListHover.jsx to InteractiveListPreviewComp.jsx (default export) to match the production naming convention and eliminate registry/docs mirror drift.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -2613,74 +2864,69 @@
     "target": "src/components/effects/interactive-list-preview",
     "previewUrl": "/demo/interactive-list-preview",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "InteractiveListPreview",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/interactive-list-preview/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/interactive-list-preview/index.tsx"
       },
       {
-        "path": "ListHover.jsx",
-        "target": "src/components/effects/interactive-list-preview/ListHover.jsx"
+        "path": "InteractiveListPreviewComp.tsx",
+        "target": "src/components/effects/interactive-list-preview/InteractiveListPreviewComp.tsx"
       }
     ]
   },
   {
     "name": "lines-loader",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Lines Loader",
     "description": "Two GSAP-powered line loaders: staggered horizontal lines wipe from dark to light (Option 1), or a diamond cone that peels away to reveal a hero message (Option 2)",
     "category": "loaders",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.1.0",
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Add prefers-reduced-motion support",
-        "breaking": false
-      }
-    ],
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/loaders/lines-loader/registry.json",
-    "importPath": "@/components/effects/lines-loader",
-    "target": "src/components/effects/lines-loader",
     "previewUrl": "/demo/lines-loader",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "LinesLoader",
     "exportKind": "default",
+    "importPath": "@/components/effects/lines-loader",
+    "target": "src/components/effects/lines-loader",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/lines-loader/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/lines-loader/index.tsx"
       },
       {
-        "path": "LinesLoading.jsx",
-        "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+        "path": "LinesLoading.tsx",
+        "target": "src/components/effects/lines-loader/LinesLoading.tsx"
       },
       {
-        "path": "CenterLinesLoading.jsx",
-        "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+        "path": "CenterLinesLoading.tsx",
+        "target": "src/components/effects/lines-loader/CenterLinesLoading.tsx"
       },
       {
-        "path": "utils.js",
-        "target": "src/components/effects/lines-loader/utils.js"
+        "path": "utils.ts",
+        "target": "src/components/effects/lines-loader/utils.ts"
       }
-    ]
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-21",
+        "summary": "Add prefers-reduced-motion support: hero text fades in as a single block instead of a per-letter stagger",
+        "breaking": false
+      }
+    ],
+    "registryPath": "registry/effects/loaders/lines-loader/registry.json"
   },
   {
     "name": "link-button",
-    "title": "Link Button",
-    "description": "Minimal link button with animated underline and rotating arrow icon",
-    "category": "buttons",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.0.1",
     "changelog": [
       {
@@ -2690,24 +2936,29 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Link Button",
+    "description": "Minimal link button with animated underline and rotating arrow icon",
+    "category": "buttons",
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/link-button/registry.json",
-    "importPath": "@/components/effects/link-button",
-    "target": "src/components/effects/link-button",
     "previewUrl": "/demo/link-button",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "LinkButton",
     "exportKind": "default",
+    "importPath": "@/components/effects/link-button",
+    "target": "src/components/effects/link-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/link-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/link-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/link-button/registry.json"
   },
   {
     "name": "liquid-glass-cursor",
@@ -2739,17 +2990,17 @@
     "importPath": "@/components/effects/liquid-glass-cursor",
     "target": "src/components/effects/liquid-glass-cursor",
     "previewUrl": "/demo/liquid-glass-cursor",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "LiquidGlassCursor",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/liquid-glass-cursor/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/liquid-glass-cursor/index.tsx"
       },
       {
-        "path": "LiquidText.jsx",
-        "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
+        "path": "LiquidText.tsx",
+        "target": "src/components/effects/liquid-glass-cursor/LiquidText.tsx"
       }
     ]
   },
@@ -2781,21 +3032,21 @@
     "importPath": "@/components/effects/magnetic-image-trail",
     "target": "src/components/effects/magnetic-image-trail",
     "previewUrl": "/demo/magnetic-image-trail",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "MagneticImageTrail",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/magnetic-image-trail/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/magnetic-image-trail/index.tsx"
       },
       {
-        "path": "MagneticTrail.jsx",
-        "target": "src/components/effects/magnetic-image-trail/MagneticTrail.jsx"
+        "path": "MagneticTrail.tsx",
+        "target": "src/components/effects/magnetic-image-trail/MagneticTrail.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2827,14 +3078,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/mask-text-reveal/registry.json",
     "previewUrl": "/demo/mask-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "MaskTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/mask-text-reveal/index.jsx"
+        "target": "src/components/effects/mask-text-reveal/index.tsx"
       }
     ]
   },
@@ -2869,25 +3120,25 @@
     "target": "src/components/effects/milky-way",
     "previewUrl": "/demo/milky-way",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "MilkyWay",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/milky-way/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/milky-way/index.tsx"
       },
       {
-        "path": "circular-text.jsx",
-        "target": "src/components/effects/milky-way/circular-text.jsx"
+        "path": "circular-text.tsx",
+        "target": "src/components/effects/milky-way/circular-text.tsx"
       },
       {
-        "path": "edge-blur-effect.jsx",
-        "target": "src/components/effects/milky-way/edge-blur-effect.jsx"
+        "path": "edge-blur-effect.tsx",
+        "target": "src/components/effects/milky-way/edge-blur-effect.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/milky-way/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/milky-way/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2898,7 +3149,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "three",
       "@react-three/fiber",
@@ -2910,29 +3161,43 @@
     "importPath": "@/components/effects/mouse-pixelation",
     "target": "src/components/effects/mouse-pixelation",
     "previewUrl": "/demo/mouse-pixelation",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "MousePixelation",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/mouse-pixelation/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/mouse-pixelation/index.tsx"
       },
       {
-        "path": "EnhancedPixelCube.jsx",
-        "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.jsx"
+        "path": "EnhancedPixelCube.tsx",
+        "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.tsx"
       },
       {
-        "path": "PixelCircle.jsx",
-        "target": "src/components/effects/mouse-pixelation/PixelCircle.jsx"
+        "path": "PixelCircle.tsx",
+        "target": "src/components/effects/mouse-pixelation/PixelCircle.tsx"
       },
       {
-        "path": "PixelShift.jsx",
-        "target": "src/components/effects/mouse-pixelation/PixelShift.jsx"
+        "path": "PixelShift.tsx",
+        "target": "src/components/effects/mouse-pixelation/PixelShift.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -2943,8 +3208,14 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-23",
+        "summary": "Removed debug console.log calls that fired on every pointer enter/leave and target register/unregister.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -2968,21 +3239,21 @@
     "previewUrl": "/demo/noise-ripple-cursor",
     "coverImage": "noise-ripple-cursor",
     "videoUrl": "noise-ripple-cursor",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "NoiseRippleCursor",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/noise-ripple-cursor/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/noise-ripple-cursor/index.tsx"
       },
       {
-        "path": "2dCanvasTracker.js",
-        "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.js"
+        "path": "2dCanvasTracker.tsx",
+        "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -3019,44 +3290,35 @@
     "coverImage": "number-counter",
     "videoUrl": "/number-counter.mp4",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "NumberCounter",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/number-counter/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/number-counter/index.tsx"
       },
       {
-        "path": "NumberCounterOne.jsx",
-        "target": "src/components/effects/number-counter/NumberCounterOne.jsx"
+        "path": "NumberCounterOne.tsx",
+        "target": "src/components/effects/number-counter/NumberCounterOne.tsx"
       },
       {
-        "path": "NumberCounterTwo.jsx",
-        "target": "src/components/effects/number-counter/NumberCounterTwo.jsx"
+        "path": "NumberCounterTwo.tsx",
+        "target": "src/components/effects/number-counter/NumberCounterTwo.tsx"
       },
       {
-        "path": "NumberCounterThree.jsx",
-        "target": "src/components/effects/number-counter/NumberCounterThree.jsx"
+        "path": "NumberCounterThree.tsx",
+        "target": "src/components/effects/number-counter/NumberCounterThree.tsx"
       }
     ]
   },
   {
     "name": "numeric-tunnel",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Numeric Tunnel",
     "description": "WebGL loader with a 3D numeric tunnel that crossfades into a chromatic aberration warp effect",
     "category": "loaders",
-    "type": "registry:component",
-    "tier": "free",
-    "version": "1.1.0",
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Add prefers-reduced-motion support",
-        "breaking": false
-      }
-    ],
     "dependencies": [
       "gsap",
       "@react-three/fiber",
@@ -3064,24 +3326,33 @@
       "three"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json",
-    "importPath": "@/components/effects/numeric-tunnel",
-    "target": "src/components/effects/numeric-tunnel",
     "previewUrl": "/demo/numeric-tunnel",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "NumericTunnel",
     "exportKind": "default",
+    "importPath": "@/components/effects/numeric-tunnel",
+    "target": "src/components/effects/numeric-tunnel",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/numeric-tunnel/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/numeric-tunnel/index.tsx"
       },
       {
-        "path": "NumericTunnelLoader.jsx",
-        "target": "src/components/effects/numeric-tunnel/NumericTunnelLoader.jsx"
+        "path": "NumericTunnelLoader.tsx",
+        "target": "src/components/effects/numeric-tunnel/NumericTunnelLoader.tsx"
       }
-    ]
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-21",
+        "summary": "Add prefers-reduced-motion support: ring rotation and the end-of-tunnel warp/distortion effect are both skipped",
+        "breaking": false
+      }
+    ],
+    "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json"
   },
   {
     "name": "overflow-stagger-text",
@@ -3111,14 +3382,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/overflow-stagger-text/registry.json",
     "previewUrl": "/demo/overflow-stagger-text",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "OverflowStaggerText",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/overflow-stagger-text/index.jsx"
+        "target": "src/components/effects/overflow-stagger-text/index.tsx"
       }
     ]
   },
@@ -3150,24 +3421,19 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/overflow-text-reveal/registry.json",
     "previewUrl": "/demo/overflow-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "OverflowTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/overflow-text-reveal/index.jsx"
+        "target": "src/components/effects/overflow-text-reveal/index.tsx"
       }
     ]
   },
   {
     "name": "page-flip-transition",
-    "title": "Page Flip Transition",
-    "description": "Angular full-screen route wipe with a folding panel and staggered indicator bars",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -3183,25 +3449,31 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Page Flip Transition",
+    "description": "Angular full-screen route wipe with a folding panel and staggered indicator bars",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/page-flip-transition/registry.json",
     "previewUrl": "/demo/page-flip-transition",
     "coverImage": "page-flip-transition",
     "videoUrl": "page-flip-transition.mp4",
-    "main": "index.jsx",
+    "tier": "pro",
+    "subfolder": true,
     "exportName": "FlipTransition",
     "exportKind": "default",
+    "main": "index.tsx",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/page-flip-transition/index.jsx"
+        "target": "src/components/effects/page-flip-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/page-flip-transition/registry.json"
   },
   {
     "name": "parallax-footer",
@@ -3219,17 +3491,25 @@
     "importPath": "@/components/effects/parallax-footer",
     "target": "src/components/effects/parallax-footer",
     "previewUrl": "/demo/parallax-footer",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ParallaxFooter",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/parallax-footer/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-footer/index.tsx"
       },
       {
-        "path": "ParallaxFooter.jsx",
-        "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
+        "path": "ParallaxFooter.tsx",
+        "target": "src/components/effects/parallax-footer/ParallaxFooter.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-07-09",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -3240,8 +3520,14 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Fixed crash in scroll-snap onStart: lenis.stop() now uses optional chaining so consumers without a Lenis provider no longer throw a TypeError on every snap",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -3258,17 +3544,17 @@
     "importPath": "@/components/effects/parallax-gallery",
     "target": "src/components/effects/parallax-gallery",
     "previewUrl": "/demo/parallax-gallery",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ParallaxGallery",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/parallax-gallery/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-gallery/index.tsx"
       },
       {
-        "path": "ParallaxGallery.jsx",
-        "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
+        "path": "ParallaxGallery.tsx",
+        "target": "src/components/effects/parallax-gallery/ParallaxGallery.tsx"
       }
     ]
   },
@@ -3296,13 +3582,13 @@
     "importPath": "@/components/effects/parallax-image-animation",
     "target": "src/components/effects/parallax-image-animation",
     "previewUrl": "/demo/parallax-image-animation",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ParallaxImageAnimation",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/parallax-image-animation/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-image-animation/index.tsx"
       }
     ]
   },
@@ -3330,13 +3616,13 @@
     "importPath": "@/components/effects/parallax-slider",
     "target": "src/components/effects/parallax-slider",
     "previewUrl": "/demo/parallax-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ParallaxSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/parallax-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-slider/index.tsx"
       }
     ]
   },
@@ -3368,14 +3654,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/perspective-text-reveal/registry.json",
     "previewUrl": "/demo/perspective-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "PerspectiveTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/perspective-text-reveal/index.jsx"
+        "target": "src/components/effects/perspective-text-reveal/index.tsx"
       }
     ]
   },
@@ -3386,8 +3672,20 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "free",
-    "version": "1.1.0",
+    "version": "1.3.0",
     "changelog": [
+      {
+        "version": "1.3.0",
+        "date": "2026-07-24",
+        "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel, for consistent legibility.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-07-23",
+        "summary": "useMouse no longer calls setState every animation frame; movement values moved to refs, eliminating 60-120 wasted re-renders/sec. Returned scalar fields are now non-reactive snapshots - use the refs for live values.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -3410,21 +3708,21 @@
     "target": "src/components/effects/phantom-image-trail",
     "previewUrl": "/demo/phantom-image-trail",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "PhantomImageTrail",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/phantom-image-trail/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/phantom-image-trail/index.tsx"
       },
       {
-        "path": "useMouse.js",
-        "target": "src/components/effects/phantom-image-trail/useMouse.js"
+        "path": "useMouse.ts",
+        "target": "src/components/effects/phantom-image-trail/useMouse.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/phantom-image-trail/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/phantom-image-trail/createSuspendedRaf.ts"
       }
     ]
   },
@@ -3435,8 +3733,14 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-23",
+        "summary": "Added gridImageUrls prop to self-host bloom tile images; component now falls back to showing the media directly if tile images fail to load instead of rendering invisibly; removed debug console.log calls from the canvas tracker.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -3458,31 +3762,26 @@
     "previewUrl": "/demo/pixel-bloom",
     "coverImage": "pixel-bloom",
     "videoUrl": "pixel-bloom",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "PixelBloom",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/pixel-bloom/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/pixel-bloom/index.tsx"
       },
       {
-        "path": "2dcanvasTracker.js",
-        "target": "src/components/effects/pixel-bloom/2dcanvasTracker.js"
+        "path": "2dcanvasTracker.tsx",
+        "target": "src/components/effects/pixel-bloom/2dcanvasTracker.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/pixel-bloom/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/pixel-bloom/createSuspendedRaf.ts"
       }
     ]
   },
   {
     "name": "pixel-transition",
-    "title": "Pixel Transition",
-    "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -3498,23 +3797,29 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Pixel Transition",
+    "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/pixel-transition/registry.json",
     "previewUrl": "/demo/pixel-transition",
-    "main": "index.jsx",
+    "tier": "pro",
+    "subfolder": true,
     "exportName": "PixelTransition",
     "exportKind": "default",
+    "main": "index.tsx",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/pixel-transition/index.jsx"
+        "target": "src/components/effects/pixel-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/pixel-transition/registry.json"
   },
   {
     "name": "pixelated-image-effect",
@@ -3545,13 +3850,13 @@
     "target": "src/components/effects/pixelated-image-effect",
     "previewUrl": "/demo/pixelated-image-effect",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "PixelatedImageEffect",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/pixelated-image-effect/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/pixelated-image-effect/index.tsx"
       }
     ]
   },
@@ -3562,8 +3867,14 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Removed five stale kebab-case duplicate files (camera-rig, film-grain-effect, edge-blur-effect, use-input, use-valley-data) that had diverged from the camelCase originals and were being shipped to installers.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-21",
@@ -3585,67 +3896,62 @@
     "importPath": "@/components/effects/progressive-bloom-valley",
     "target": "src/components/effects/progressive-bloom-valley",
     "previewUrl": "/demo/progressive-bloom-valley",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ProgressiveBloomValley",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/index.tsx"
       },
       {
-        "path": "CameraRig.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+        "path": "CameraRig.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/CameraRig.tsx"
       },
       {
-        "path": "CircularText.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+        "path": "CircularText.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/CircularText.tsx"
       },
       {
-        "path": "EdgeBlurEffect.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+        "path": "EdgeBlurEffect.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.tsx"
       },
       {
-        "path": "ExperienceComp.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
+        "path": "ExperienceComp.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.tsx"
       },
       {
-        "path": "FilmGrainEffect.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+        "path": "FilmGrainEffect.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.tsx"
       },
       {
-        "path": "Flower.jsx",
-        "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
+        "path": "Flower.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/Flower.tsx"
       },
       {
-        "path": "useInput.js",
-        "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+        "path": "useInput.ts",
+        "target": "src/components/effects/progressive-bloom-valley/useInput.ts"
       },
       {
-        "path": "useValleyData.js",
-        "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+        "path": "useValleyData.ts",
+        "target": "src/components/effects/progressive-bloom-valley/useValleyData.ts"
       },
       {
-        "path": "shaders.js",
-        "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+        "path": "shaders.tsx",
+        "target": "src/components/effects/progressive-bloom-valley/shaders.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.ts"
       },
       {
-        "path": "prefersReducedMotion.js",
-        "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
+        "path": "prefersReducedMotion.ts",
+        "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.ts"
       }
     ]
   },
   {
     "name": "radial-slice-transition",
-    "title": "Radial Slice Transition",
-    "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -3661,24 +3967,30 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Radial Slice Transition",
+    "description": "Conic-gradient page transition that sweeps a pie-slice mask across the viewport using GSAP, revealing and hiding pages with a smooth rotational wipe",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/radial-slice-transition/registry.json",
-    "importPath": "@/components/effects/radial-slice-transition",
-    "target": "src/components/effects/radial-slice-transition",
     "previewUrl": "/demo/radial-slice-transition",
-    "main": "index.jsx",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
     "exportName": "RadialSliceTransition",
     "exportKind": "default",
+    "importPath": "@/components/effects/radial-slice-transition",
+    "target": "src/components/effects/radial-slice-transition",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/radial-slice-transition/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/radial-slice-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/radial-slice-transition/registry.json"
   },
   {
     "name": "rectangular-text-reveal",
@@ -3708,14 +4020,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/rectangular-text-reveal/registry.json",
     "previewUrl": "/demo/rectangular-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "RectangularTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/rectangular-text-reveal/index.jsx"
+        "target": "src/components/effects/rectangular-text-reveal/index.tsx"
       }
     ]
   },
@@ -3726,12 +4038,30 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.3.0",
     "changelog": [
       {
+        "version": "1.3.0",
+        "date": "2026-07-24",
+        "summary": "Removed the reduced-motion animation branching entirely - the scroll-driven reveal, hover spli.ts, and strip transitions now always run identically to the default; only the reduced-motion notice remains conditional.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-07-24",
+        "summary": "Synced the docs-mirror RibbonDriftComp with the registry copy's full prefers-reduced-motion support (static layout, X-only strip exi.ts, fade-based intro/hover transitions) - the mirror was missing all of it.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.1",
+        "date": "2026-07-23",
+        "summary": "Restored the mobile full-height wrapper rule (max-md:h-full) that was lost to a max-snm typo; docs copy typo corrected to max-sm.",
+        "breaking": false
+      },
+      {
         "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Disable vertical motion under reduced motion; keep horizontal pan at normal speed",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
         "breaking": false
       }
     ],
@@ -3744,27 +4074,22 @@
     "importPath": "@/components/effects/ribbon-drift",
     "target": "src/components/effects/ribbon-drift",
     "previewUrl": "/demo/ribbon-drift",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "RibbonDrift",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/ribbon-drift/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/ribbon-drift/index.tsx"
       },
       {
-        "path": "RibbonDriftComp.jsx",
-        "target": "src/components/effects/ribbon-drift/RibbonDriftComp.jsx"
+        "path": "RibbonDriftComp.tsx",
+        "target": "src/components/effects/ribbon-drift/RibbonDriftComp.tsx"
       }
     ]
   },
   {
     "name": "ring-carousel",
-    "title": "Ring Carousel",
-    "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
-    "category": "carousels",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.1",
     "changelog": [
       {
@@ -3786,29 +4111,34 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Ring Carousel",
+    "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
+    "category": "carousels",
     "dependencies": [
       "gsap",
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/carousels/ring-carousel/registry.json",
-    "importPath": "@/components/effects/ring-carousel",
-    "target": "src/components/effects/ring-carousel",
     "previewUrl": "/demo/ring-carousel",
     "coverImage": "ring-carousel",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "RingCarousel",
     "exportKind": "default",
+    "importPath": "@/components/effects/ring-carousel",
+    "target": "src/components/effects/ring-carousel",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/ring-carousel/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/ring-carousel/index.tsx"
       },
       {
-        "path": "RingCarouselComp.jsx",
-        "target": "src/components/effects/ring-carousel/RingCarouselComp.jsx"
+        "path": "RingCarouselComp.tsx",
+        "target": "src/components/effects/ring-carousel/RingCarouselComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/carousels/ring-carousel/registry.json"
   },
   {
     "name": "rope-cursor",
@@ -3817,8 +4147,20 @@
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.3.0",
     "changelog": [
+      {
+        "version": "1.3.0",
+        "date": "2026-07-24",
+        "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel.",
+        "breaking": false
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-07-23",
+        "summary": "Rope physics now use direct time-based smoothing per frame instead of allocating a new gsap tween per segment per frame (~480 tweens/sec); gsap dependency removed entirely.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -3832,9 +4174,7 @@
         "breaking": false
       }
     ],
-    "dependencies": [
-      "gsap"
-    ],
+    "dependencies": [],
     "registryDependencies": [],
     "registryPath": "registry/effects/cursor/rope-cursor/registry.json",
     "importPath": "@/components/effects/rope-cursor",
@@ -3842,17 +4182,17 @@
     "previewUrl": "/demo/rope-cursor",
     "coverImage": "rope-cursor",
     "videoUrl": "rope-cursor.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "RopeCursor",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/rope-cursor/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/rope-cursor/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/rope-cursor/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/rope-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -3882,46 +4222,60 @@
     "target": "src/components/effects/rotation-slider",
     "previewUrl": "/demo/rotation-slider",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "RotationSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/rotation-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/rotation-slider/index.tsx"
       },
       {
-        "path": "RotationSliderComp.jsx",
-        "target": "src/components/effects/rotation-slider/RotationSliderComp.jsx"
+        "path": "RotationSliderComp.tsx",
+        "target": "src/components/effects/rotation-slider/RotationSliderComp.tsx"
       }
     ]
   },
   {
     "name": "scramble-link-button",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-28",
+        "summary": "Documented existing prefers-reduced-motion support (was already implemented, not previously recorded): the character-scramble hover animation is skipped in favor of showing the final text immediately, and the underline/color/icon-rotate transitions are disabled via motion-reduce.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-07-09",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
     "title": "Scramble Link Button",
     "description": "Link button with text scramble effect on hover, optional underline and arrow",
     "category": "buttons",
-    "type": "registry:component",
-    "tier": "free",
-    "version": "1.0.0",
     "dependencies": [
       "lucide-react"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/buttons/scramble-link-button/registry.json",
-    "importPath": "@/components/effects/scramble-link-button",
-    "target": "src/components/effects/scramble-link-button",
     "previewUrl": "/demo/scramble-link-button",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ScrambleLinkButton",
     "exportKind": "default",
+    "importPath": "@/components/effects/scramble-link-button",
+    "target": "src/components/effects/scramble-link-button",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/scramble-link-button/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/scramble-link-button/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/buttons/scramble-link-button/registry.json"
   },
   {
     "name": "scramble-text",
@@ -3951,14 +4305,14 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/scramble-text/registry.json",
     "previewUrl": "/demo/scramble-text",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ScrambleText",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/scramble-text/index.jsx"
+        "target": "src/components/effects/scramble-text/index.tsx"
       }
     ]
   },
@@ -3989,17 +4343,17 @@
     "previewUrl": "/demo/scroll-distortion",
     "coverImage": "scroll-distortion",
     "videoUrl": "scroll-distortion.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ScrollDistortion",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/scroll-distortion/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/scroll-distortion/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/scroll-distortion/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/scroll-distortion/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4027,31 +4381,26 @@
     "importPath": "@/components/effects/scroll-shuffled-cards",
     "target": "src/components/effects/scroll-shuffled-cards",
     "previewUrl": "/demo/scroll-shuffled-cards",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ScrollShuffledCards",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/scroll-shuffled-cards/index.tsx"
       },
       {
-        "path": "ScrollShuffledCardsComp.jsx",
-        "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
+        "path": "ScrollShuffledCardsComp.tsx",
+        "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.tsx"
       },
       {
-        "path": "card.jsx",
-        "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
+        "path": "card.tsx",
+        "target": "src/components/effects/scroll-shuffled-cards/card.tsx"
       }
     ]
   },
   {
     "name": "scroll-stack",
-    "title": "Scroll Stack",
-    "description": "Successive content cards that hand off focus and fade as the next section enters",
-    "category": "scroll",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -4067,27 +4416,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Scroll Stack",
+    "description": "Successive content cards that hand off focus and fade as the next section enters",
+    "category": "scroll",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/scroll-stack/registry.json",
-    "importPath": "@/components/effects/scroll-stack",
-    "target": "src/components/effects/scroll-stack",
     "previewUrl": "/demo/scroll-stack",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "ScrollStack",
     "exportKind": "default",
+    "importPath": "@/components/effects/scroll-stack",
+    "target": "src/components/effects/scroll-stack",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/scroll-stack/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/scroll-stack/index.tsx"
       },
       {
-        "path": "ScrollStackComp.jsx",
-        "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
+        "path": "ScrollStackComp.tsx",
+        "target": "src/components/effects/scroll-stack/ScrollStackComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/scroll/scroll-stack/registry.json"
   },
   {
     "name": "slide-text-reveal",
@@ -4117,24 +4471,45 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/slide-text-reveal/registry.json",
     "previewUrl": "/demo/slide-text-reveal",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "SlideTextReveal",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/slide-text-reveal/index.jsx"
+        "target": "src/components/effects/slide-text-reveal/index.tsx"
       }
     ]
   },
   {
     "name": "spider-particles",
+    "type": "registry:component",
     "title": "Spider Particles",
     "description": "Canvas particle network background with connecting lines and mouse-driven repulsion.",
     "category": "backgrounds",
-    "type": "registry:component",
+    "dependencies": [
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/spider-particles",
     "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "SpiderParticles",
+    "exportKind": "default",
+    "importPath": "@/components/effects/spider-particles",
+    "target": "src/components/effects/spider-particles",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/spider-particles/index.tsx"
+      },
+      {
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/spider-particles/createSuspendedRaf.ts"
+      }
+    ],
     "version": "1.1.0",
     "changelog": [
       {
@@ -4144,28 +4519,7 @@
         "breaking": false
       }
     ],
-    "dependencies": [
-      "three"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/backgrounds/spider-particles/registry.json",
-    "importPath": "@/components/effects/spider-particles",
-    "target": "src/components/effects/spider-particles",
-    "previewUrl": "/demo/spider-particles",
-    "subfolder": true,
-    "main": "index.jsx",
-    "exportName": "SpiderParticles",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.jsx",
-        "target": "src/components/effects/spider-particles/index.jsx"
-      },
-      {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/spider-particles/createSuspendedRaf.js"
-      }
-    ]
+    "registryPath": "registry/effects/backgrounds/spider-particles/registry.json"
   },
   {
     "name": "split-canvas",
@@ -4194,29 +4548,29 @@
     "target": "src/components/effects/split-canvas",
     "previewUrl": "/demo/split-canvas",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "SplitCanvas",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/split-canvas/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/split-canvas/index.tsx"
       },
       {
-        "path": "PixelScrollCanvas.jsx",
-        "target": "src/components/effects/split-canvas/PixelScrollCanvas.jsx"
+        "path": "PixelScrollCanvas.tsx",
+        "target": "src/components/effects/split-canvas/PixelScrollCanvas.tsx"
       },
       {
-        "path": "content.js",
-        "target": "src/components/effects/split-canvas/content.js"
+        "path": "content.ts",
+        "target": "src/components/effects/split-canvas/content.ts"
       },
       {
-        "path": "pixel-transition.js",
-        "target": "src/components/effects/split-canvas/pixel-transition.js"
+        "path": "pixel-transition.ts",
+        "target": "src/components/effects/split-canvas/pixel-transition.ts"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/split-canvas/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/split-canvas/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4246,19 +4600,19 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/spotlight-text/registry.json",
     "previewUrl": "/demo/spotlight-text",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "SpotlightText",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/spotlight-text/index.jsx"
+        "target": "src/components/effects/spotlight-text/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
+        "path": "createSuspendedRaf.ts",
         "type": "registry:component",
-        "target": "src/components/effects/spotlight-text/createSuspendedRaf.js"
+        "target": "src/components/effects/spotlight-text/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4288,28 +4642,45 @@
     "previewUrl": "/demo/square-translate",
     "coverImage": "square-translate",
     "videoUrl": "square-translate.mp4",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "SquareTranslate",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/square-translate/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/square-translate/index.tsx"
       },
       {
-        "path": "SquareTranslateComp.jsx",
-        "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
+        "path": "SquareTranslateComp.tsx",
+        "target": "src/components/effects/square-translate/SquareTranslateComp.tsx"
       }
     ]
   },
   {
     "name": "stack-loader",
+    "version": "1.1.0",
+    "type": "registry:component",
     "title": "Stack Loader",
     "description": "Stack-to-spread image intro loader with GSAP SplitText word animations and staggered image choreography",
     "category": "loaders",
-    "type": "registry:component",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/stack-loader",
     "tier": "free",
-    "version": "1.1.0",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "StackLoader",
+    "exportKind": "default",
+    "importPath": "@/components/effects/stack-loader",
+    "target": "src/components/effects/stack-loader",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/stack-loader/index.tsx"
+      }
+    ],
     "changelog": [
       {
         "version": "1.1.0",
@@ -4318,24 +4689,7 @@
         "breaking": false
       }
     ],
-    "dependencies": [
-      "gsap"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/loaders/stack-loader/registry.json",
-    "importPath": "@/components/effects/stack-loader",
-    "target": "src/components/effects/stack-loader",
-    "previewUrl": "/demo/stack-loader",
-    "subfolder": true,
-    "main": "index.jsx",
-    "exportName": "StackLoader",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.jsx",
-        "target": "src/components/effects/stack-loader/index.jsx"
-      }
-    ]
+    "registryPath": "registry/effects/loaders/stack-loader/registry.json"
   },
   {
     "name": "stacking-cards",
@@ -4374,17 +4728,17 @@
     "importPath": "@/components/effects/stacking-cards",
     "target": "src/components/effects/stacking-cards",
     "previewUrl": "/demo/stacking-cards",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "StackingCards",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/stacking-cards/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/stacking-cards/index.tsx"
       },
       {
-        "path": "StackingCardComp.jsx",
-        "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
+        "path": "StackingCardComp.tsx",
+        "target": "src/components/effects/stacking-cards/StackingCardComp.tsx"
       }
     ]
   },
@@ -4414,28 +4768,28 @@
     "target": "src/components/effects/sticky-content-wrapper",
     "previewUrl": "/demo/sticky-content-wrapper",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "StickyContentWrapper",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/sticky-content-wrapper/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/sticky-content-wrapper/index.tsx"
       },
       {
-        "path": "StickyContentComp.jsx",
-        "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.jsx"
+        "path": "StickyContentComp.tsx",
+        "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.tsx"
       }
     ]
   },
   {
     "name": "strip-slider",
     "title": "Strip Slider",
-    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
+    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.ts shader materials and GSAP",
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "three"
     ],
@@ -4444,31 +4798,40 @@
     "importPath": "@/components/effects/strip-slider",
     "target": "src/components/effects/strip-slider",
     "previewUrl": "/demo/strip-slider",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "StripSlider",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/strip-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/strip-slider/index.tsx"
       },
       {
-        "path": "StripSliderComp.jsx",
-        "target": "src/components/effects/strip-slider/StripSliderComp.jsx"
+        "path": "StripSliderComp.tsx",
+        "target": "src/components/effects/strip-slider/StripSliderComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/strip-slider/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/strip-slider/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "Added reduced-motion notice",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-06-04",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
   {
     "name": "svg-brush-transition",
-    "title": "SVG Brush Transition",
-    "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
-    "category": "transitions",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -4484,26 +4847,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "SVG Brush Transition",
+    "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
+    "category": "transitions",
     "dependencies": [
       "gsap",
       "next-transition-router"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/transitions/svg-brush-transition/registry.json",
-    "importPath": "@/components/effects/svg-brush-transition",
-    "target": "src/components/effects/svg-brush-transition",
     "previewUrl": "/demo/svg-brush-transition",
     "coverImage": "svg-brush-transition",
     "videoUrl": "svg-brush-transition.mp4",
-    "main": "index.jsx",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
     "exportName": "SVGBrushTransition",
     "exportKind": "default",
+    "importPath": "@/components/effects/svg-brush-transition",
+    "target": "src/components/effects/svg-brush-transition",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/svg-brush-transition/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/svg-brush-transition/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/transitions/svg-brush-transition/registry.json"
   },
   {
     "name": "svg-path",
@@ -4512,7 +4881,7 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "dependencies": [
       "motion"
     ],
@@ -4521,17 +4890,41 @@
     "importPath": "@/components/effects/svg-path",
     "target": "src/components/effects/svg-path",
     "previewUrl": "/demo/svg-path",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "SVGPath",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/svg-path/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/svg-path/index.tsx"
       },
       {
-        "path": "SVGPathComp.jsx",
-        "target": "src/components/effects/svg-path/SVGPathComp.jsx"
+        "path": "SVGPathComp.tsx",
+        "target": "src/components/effects/svg-path/SVGPathComp.tsx"
+      },
+      {
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/svg-path/createSuspendedRaf.ts"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-07-24",
+        "summary": "Ported prefers-reduced-motion support from the docs copy: static scroll-tracked positioning instead of spring/lerp smoothing, and dragging disabled while reduced motion is active.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-07-23",
+        "summary": "Marquee now suspends its per-frame work while offscreen or in a hidden tab via the shared createSuspendedRaf visibility gate",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-02-10",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -4542,7 +4935,7 @@
     "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap"
     ],
@@ -4551,17 +4944,31 @@
     "importPath": "@/components/effects/svg-pixel-reveal",
     "target": "src/components/effects/svg-pixel-reveal",
     "previewUrl": "/demo/svg-pixel-reveal",
-    "main": "index.jsx",
-    "exportName": "SvgPixelReveal",
-    "exportKind": "named",
+    "main": "index.tsx",
+    "exportName": "SVGPixelReveal",
+    "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/svg-pixel-reveal/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/svg-pixel-reveal/index.tsx"
       },
       {
-        "path": "PixelatedScgFilter.jsx",
-        "target": "src/components/effects/svg-pixel-reveal/PixelatedScgFilter.jsx"
+        "path": "PixelatedSvgFilter.tsx",
+        "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-28",
+        "summary": "Added a reduced-motion notice (ported from the docs copy, which already had it): this effect relies on a continuous scroll-driven pixelated-to-sharp transition and can't be simplified to a fade without losing the effect entirely, so it now surfaces that instead of silently ignoring the preference.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-07-09",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -4590,21 +4997,21 @@
     "importPath": "@/components/effects/testimonial-swiper",
     "target": "src/components/effects/testimonial-swiper",
     "previewUrl": "/demo/testimonial-swiper",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "TestimonialSwiper",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/testimonial-swiper/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/testimonial-swiper/index.tsx"
       },
       {
-        "path": "NavigationButtons.jsx",
-        "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
+        "path": "NavigationButtons.tsx",
+        "target": "src/components/effects/testimonial-swiper/NavigationButtons.tsx"
       },
       {
-        "path": "TestimonialComp.jsx",
-        "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
+        "path": "TestimonialComp.tsx",
+        "target": "src/components/effects/testimonial-swiper/TestimonialComp.tsx"
       }
     ]
   },
@@ -4634,19 +5041,19 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/text-cloning/registry.json",
     "previewUrl": "/demo/text-cloning",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "TextCloning",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/text-cloning/index.jsx"
+        "target": "src/components/effects/text-cloning/index.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
+        "path": "createSuspendedRaf.ts",
         "type": "registry:component",
-        "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
+        "target": "src/components/effects/text-cloning/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4675,13 +5082,13 @@
     "target": "src/components/effects/text-convergence",
     "previewUrl": "/demo/text-convergence",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "TextConvergence",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/text-convergence/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/text-convergence/index.tsx"
       }
     ]
   },
@@ -4692,7 +5099,7 @@
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "gsap"
     ],
@@ -4701,13 +5108,27 @@
     "importPath": "@/components/effects/text-fill-animation",
     "target": "src/components/effects/text-fill-animation",
     "previewUrl": "/demo/text-fill-animation",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "TextFillAnimation",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/text-fill-animation/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/text-fill-animation/index.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-28",
+        "summary": "Documented existing prefers-reduced-motion support : the scroll-scrubbed stagger fill is skipped and all characters show their filled state immediately.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-07-09",
+        "summary": "Initial release",
+        "breaking": false
       }
     ]
   },
@@ -4741,21 +5162,21 @@
     "importPath": "@/components/effects/text-hover",
     "target": "src/components/effects/text-hover",
     "previewUrl": "/demo/text-hover",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "TextHover",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/text-hover/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/text-hover/index.tsx"
       },
       {
-        "path": "TextHoverComp.jsx",
-        "target": "src/components/effects/text-hover/TextHoverComp.jsx"
+        "path": "TextHoverComp.tsx",
+        "target": "src/components/effects/text-hover/TextHoverComp.tsx"
       },
       {
-        "path": "createSuspendedRaf.js",
-        "target": "src/components/effects/text-hover/createSuspendedRaf.js"
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/text-hover/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4787,24 +5208,24 @@
     "registryDependencies": [],
     "registryPath": "registry/effects/text/text-stream/registry.json",
     "previewUrl": "/demo/text-stream",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "useIsMobile",
     "exportKind": "named",
     "files": [
       {
-        "path": "hooks.js",
+        "path": "hooks.ts",
         "type": "registry:component",
-        "target": "src/components/effects/text-stream/hooks.js"
+        "target": "src/components/effects/text-stream/hooks.ts"
       },
       {
-        "path": "index.jsx",
+        "path": "index.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/text-stream/index.jsx"
+        "target": "src/components/effects/text-stream/index.tsx"
       },
       {
-        "path": "TextStreamComp.jsx",
+        "path": "TextStreamComp.tsx",
         "type": "registry:component",
-        "target": "src/components/effects/text-stream/TextStreamComp.jsx"
+        "target": "src/components/effects/text-stream/TextStreamComp.tsx"
       }
     ]
   },
@@ -4815,7 +5236,7 @@
     "category": "components",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "dependencies": [
       "lucide-react"
     ],
@@ -4824,27 +5245,30 @@
     "importPath": "@/components/effects/video-player",
     "target": "src/components/effects/video-player",
     "previewUrl": "/demo/video-player",
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "VideoPlayer",
     "exportKind": "default",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/video-player/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/video-player/index.tsx"
       },
       {
-        "path": "VideoPlayerComp.jsx",
-        "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+        "path": "VideoPlayerComp.tsx",
+        "target": "src/components/effects/video-player/VideoPlayerComp.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-07-23",
+        "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate even.ts with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
+        "breaking": false
       }
     ]
   },
   {
     "name": "webgl-slider",
-    "title": "WebGL Slider",
-    "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
-    "category": "carousels",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.1.0",
     "changelog": [
       {
@@ -4860,38 +5284,38 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "WebGL Slider",
+    "description": "Scroll-driven WebGL image slider with fold distortion, hover interaction, and Lenis + GSAP snap behavior.",
+    "category": "carousels",
     "dependencies": [
       "three",
       "gsap",
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/carousels/webgl-slider/registry.json",
-    "importPath": "@/components/effects/webgl-slider",
-    "target": "src/components/effects/webgl-slider",
     "previewUrl": "/demo/webgl-slider",
     "coverImage": "webgl-slider",
-    "main": "index.jsx",
+    "tier": "pro",
+    "main": "index.tsx",
     "exportName": "WebGLSlider",
     "exportKind": "default",
+    "importPath": "@/components/effects/webgl-slider",
+    "target": "src/components/effects/webgl-slider",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/webgl-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/webgl-slider/index.tsx"
       },
       {
-        "path": "WebGLSliderComp.jsx",
-        "target": "src/components/effects/webgl-slider/WebGLSliderComp.jsx"
+        "path": "WebGLSliderComp.tsx",
+        "target": "src/components/effects/webgl-slider/WebGLSliderComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/carousels/webgl-slider/registry.json"
   },
   {
     "name": "zoom-slider",
-    "title": "Zoom Slider",
-    "description": "Infinitely looping horizontal image carousel where the active card expands using a quadratic easing curve as it enters from the right. Supports scroll, drag, and touch. Hover reveals GSAP SplitText line animations above each card.",
-    "category": "carousels",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.1.0",
     "changelog": [
       {
@@ -4907,27 +5331,32 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Zoom Slider",
+    "description": "Infinitely looping horizontal image carousel where the active card expands using a quadratic easing curve as it enters from the right. Supports scroll, drag, and touch. Hover reveals GSAP SplitText line animations above each card.",
+    "category": "carousels",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/carousels/zoom-slider/registry.json",
-    "importPath": "@/components/effects/zoom-slider",
-    "target": "src/components/effects/zoom-slider",
     "previewUrl": "/demo/zoom-slider",
+    "tier": "free",
     "subfolder": true,
-    "main": "index.jsx",
+    "main": "index.tsx",
     "exportName": "ZoomSlider",
     "exportKind": "default",
+    "importPath": "@/components/effects/zoom-slider",
+    "target": "src/components/effects/zoom-slider",
     "files": [
       {
-        "path": "index.jsx",
-        "target": "src/components/effects/zoom-slider/index.jsx"
+        "path": "index.tsx",
+        "target": "src/components/effects/zoom-slider/index.tsx"
       },
       {
-        "path": "ZoomSliderComp.jsx",
-        "target": "src/components/effects/zoom-slider/ZoomSliderComp.jsx"
+        "path": "ZoomSliderComp.tsx",
+        "target": "src/components/effects/zoom-slider/ZoomSliderComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/carousels/zoom-slider/registry.json"
   }
 ]
