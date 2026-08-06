@@ -858,7 +858,7 @@ const routeKey = `${pathname}${
   );
 }
 
-const BATCH_SIZE = 12;
+const BATCH_SIZE = 18;
 // Keeps the cards' entrance well behind the heading/description (delay 0.3s)
 // so they clearly follow it rather than firing at the same time.
 const CARD_ENTRANCE_BASE_DELAY = 1;
@@ -888,7 +888,7 @@ function EffectsGridInner({
           setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, filteredEffects.length));
         }
       },
-      { rootMargin: "400px" }
+      { rootMargin: "1000px 0px" }
     );
 
     observer.observe(sentinel);

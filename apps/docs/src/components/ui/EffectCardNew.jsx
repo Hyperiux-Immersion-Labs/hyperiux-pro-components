@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
-import { ArrowUpRight, Eye, Heart } from "lucide-react";
+import { ArrowUpRight, Download, Eye, Heart } from "lucide-react";
 
 function formatLabel(value = "") {
   return value
@@ -14,6 +14,19 @@ function formatLabel(value = "") {
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function formatInstallCount(value) {
+  const count = Number.isFinite(Number(value)) ? Number(value) : 0;
+
+  if (count >= 1000) {
+    return new Intl.NumberFormat("en", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(count);
+  }
+
+  return String(count);
 }
 
 // Media sits inside inset-x-7 (56px) on desktop / inset-x-4 (32px) on mobile.
@@ -137,6 +150,10 @@ export function EffectCard({
       (effect.dependencies || []).slice(0, 2).map(formatLabel).filter(Boolean),
     [effect.dependencies]
   );
+  const installCount = Number.isFinite(Number(effect.installCount))
+    ? Number(effect.installCount)
+    : 0;
+  const installCountLabel = formatInstallCount(installCount);
 
   return (
     <Link
@@ -169,11 +186,19 @@ export function EffectCard({
               </span>
             ))}
           </div>
-          {effect.tier === "pro" && (
-            <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
-              Pro
-            </span>
-          )}
+          <div className="flex shrink-0 items-center gap-3 max-sm:gap-2">
+            {installCount > 0 && (
+              <span className="flex items-center gap-1.5 rounded-full border border-white/18 bg-transparent px-3 py-1 text-18 font-medium text-white/55 max-sm:px-2.5 max-sm:text-[3vw]!">
+                {installCountLabel}
+                <Download className="h-4 w-4 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
+              </span>
+            )}
+            {effect.tier === "pro" && (
+              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
+                Pro
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Media: inset horizontally, centered vertically, 16:9 aspect ratio */}

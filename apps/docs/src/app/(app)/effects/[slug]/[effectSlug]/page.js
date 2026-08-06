@@ -15,6 +15,7 @@ import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { resolveOgImageUrl } from "@/lib/media";
+import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
 
 // Mirrors effect-detail.jsx's isCodeOnlyBlock - a Sanity portable-text block
 // whose only content is a single "code"-marked span (used for freeform code
@@ -275,6 +276,19 @@ export default async function EffectPage({ params }) {
       .slice(0, 5);
   }
 
+  const installCounts = await getEffectInstallCounts([
+    ...globalSearchEffects,
+    ...relatedEffects,
+  ]);
+  const relatedEffectsWithInstallCounts = attachInstallCounts(
+    relatedEffects,
+    installCounts
+  );
+  const searchEffectsWithInstallCounts = attachInstallCounts(
+    globalSearchEffects,
+    installCounts
+  );
+
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
 
@@ -292,12 +306,12 @@ export default async function EffectPage({ params }) {
         categorySlug={slug}
         effect={stripFileContent(effect)}
         content={clientContent}
-        relatedEffects={relatedEffects}
+        relatedEffects={relatedEffectsWithInstallCounts}
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}
         isLocked={isLocked}
         userPlan={userPlan}
-        searchEffects={globalSearchEffects}
+        searchEffects={searchEffectsWithInstallCounts}
       />
     </>
   );

@@ -13,6 +13,7 @@ import {
   getEffectCategoryMetadata,
 } from "@/lib/categories";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
+import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
 
 export const metadata = getEffectCategoryMetadata("all");
 const pageContent = getEffectCategoryContent("all");
@@ -28,6 +29,8 @@ export default async function EffectsPage() {
   const sortedEffects = [...effects].sort(
     (a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0),
   );
+  const installCounts = await getEffectInstallCounts(sortedEffects);
+  const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
 
   const effectCounts = {};
   for (const [category, catEffects] of Object.entries(categories)) {
@@ -43,7 +46,7 @@ export default async function EffectsPage() {
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
         <VaultContent
-          effects={sortedEffects}
+          effects={effectsWithInstallCounts}
           effectCounts={effectCounts}
           userPlan={userPlan}
         />

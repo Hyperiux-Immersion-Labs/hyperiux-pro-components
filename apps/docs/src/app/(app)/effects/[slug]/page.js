@@ -15,6 +15,7 @@ import {
 } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
+import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
 
 function VaultFallback() {
   return (
@@ -67,6 +68,8 @@ export default async function EffectsCategoryPage({ params }) {
   const effects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
   const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
+  const installCounts = await getEffectInstallCounts(sortedEffects);
+  const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
 
   const effectCounts = {};
   for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
@@ -92,7 +95,7 @@ export default async function EffectsCategoryPage({ params }) {
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
         <VaultContent
-          effects={sortedEffects}
+          effects={effectsWithInstallCounts}
           effectCounts={effectCounts}
           initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category.id}
           userPlan={userPlan}
