@@ -20,7 +20,7 @@ const items = [
 export default function SquareTranslate() {
     return (
         <>
-      <div className="w-full bg-white h-[200vh] pt-[50vh] px-[20vw]">
+      <div className="w-full bg-white h-[300vh] pt-[100vh] px-[20vw]">
 
             <SquareTranslateComp
                 items={items}

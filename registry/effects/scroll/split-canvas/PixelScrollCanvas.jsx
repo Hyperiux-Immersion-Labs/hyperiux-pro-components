@@ -18,6 +18,11 @@ function prefersReducedMotion() {
 }
 
 // Load SVG as image and render to canvas for proper texture
+/**
+ * @param {string} src
+ * @param {number} size
+ * @returns {Promise<HTMLCanvasElement>}
+ */
 const loadSvgAsCanvas = (src, size) => {
  return new Promise((resolve, reject) => {
  const img = new Image();
@@ -27,7 +32,7 @@ const loadSvgAsCanvas = (src, size) => {
  const canvas = document.createElement('canvas');
  canvas.width = size;
  canvas.height = size;
- const ctx = canvas.getContext('2d');
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 
  // Keep transparent background - grid is drawn in shader
  ctx.clearRect(0, 0, size, size);
@@ -43,8 +48,14 @@ const loadSvgAsCanvas = (src, size) => {
  });
 };
 
+/**
+ * @typedef {Object} PixelScrollCanvasProps
+ * @property {import('react').RefObject<HTMLElement|null>} wrapperRef
+ */
+
+/** @param {PixelScrollCanvasProps} props */
 export default function PixelScrollCanvas({ wrapperRef }) {
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
  const hasInit = useRef(false);
 
  useEffect(() => {
@@ -54,9 +65,20 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  if (hasInit.current) return;
  hasInit.current = true;
 
- let renderer, scene, camera, mesh, material;
+ /** @type {any} */
+ let renderer;
+ /** @type {any} */
+ let scene;
+ /** @type {any} */
+ let camera;
+ /** @type {any} */
+ let mesh;
+ /** @type {any} */
+ let material;
+ /** @type {THREE.CanvasTexture[]} */
  let textures = [];
  let isMounted = true;
+ /** @type {ReturnType<typeof createSuspendedRaf>|null} */
  let loop = null;
 
  const getCanvasSize = () => {
@@ -69,6 +91,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  const canvasSize = getCanvasSize();
  const numSlices = 32;
  const reducedMotion = prefersReducedMotion();
+ /** @param {THREE.CanvasTexture[]} canvasTextures */
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 

@@ -1,6 +1,14 @@
 "use client";
 
 
+/**
+ * @typedef {Object} PixelateSvgFilterProps
+ * @property {string} [id]
+ * @property {number} [size]
+ * @property {boolean} [crossLayers]
+ */
+
+/** @param {PixelateSvgFilterProps} props */
 export function PixelateSvgFilter({
  id ="pixelate-filter",
  size: propSize = 16,

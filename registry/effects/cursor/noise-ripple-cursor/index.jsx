@@ -139,6 +139,11 @@ void main() {
 }
 `;
 
+/**
+ * @param {THREE.WebGLRenderer} renderer
+ * @param {number} width
+ * @param {number} height
+ */
 const createFBO = (renderer, width, height) => {
  const target = new THREE.WebGLRenderTarget(width, height, {
  minFilter: THREE.LinearFilter,
@@ -149,6 +154,7 @@ const createFBO = (renderer, width, height) => {
  return target;
 };
 
+/** @param {any} source */
 const resolveTextureSource = (source) => {
  if (typeof source === 'string') return source;
  if (source?.src) return source.src;
@@ -161,7 +167,7 @@ const createFallbackTexture = () => {
  const canvas = document.createElement('canvas');
  canvas.width = 512;
  canvas.height = 512;
- const ctx = canvas.getContext('2d');
+ const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
  const gradient = ctx.createLinearGradient(0, 0, 512, 512);
  gradient.addColorStop(0, '#0f0f1a');
  gradient.addColorStop(0.5, '#1a1a3e');
@@ -171,6 +177,22 @@ const createFallbackTexture = () => {
  return new THREE.CanvasTexture(canvas);
 };
 
+/**
+ * @typedef {Object} NoiseDietherShaderProps
+ * @property {string} [imageSrc]
+ * @property {string} [noiseColor]
+ * @property {string} [className]
+ * @property {import('react').CSSProperties} [style]
+ * @property {number} [pixelSize]
+ * @property {number} [patternDensity]
+ * @property {number} [fluidRadius]
+ * @property {number} [fluidStrength]
+ * @property {number} [fluidDissipation]
+ * @property {number} [distortStrength]
+ * @property {number} [trailDarkness]
+ */
+
+/** @param {NoiseDietherShaderProps} props */
 export const NoiseDietherShader = ({
  imageSrc = "https://picsum.photos/seed/11/800/600",
  noiseColor ='#ffffff',
@@ -184,12 +206,13 @@ export const NoiseDietherShader = ({
  distortStrength = 0.02,
  trailDarkness = 0.5
 }) => {
- const containerRef = useRef(null);
- const threeRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const threeRef = useRef(/** @type {any} */ (null));
  const mouseRef = useRef({ x: -1, y: -1 });
  const isMouseStoppedRef = useRef(false);
- const mouseStopTimeoutRef = useRef(null);
+ const mouseStopTimeoutRef = useRef(/** @type {ReturnType<typeof setTimeout>|null} */ (null));
 
+ /** @param {string} hex */
  const parseColor = (hex) => {
  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
  return result
@@ -208,6 +231,7 @@ export const NoiseDietherShader = ({
  const textureLoader = new THREE.TextureLoader();
  textureLoader.setCrossOrigin('anonymous');
  const resolvedImageSrc = resolveTextureSource(imageSrc);
+ /** @type {THREE.Texture} */
  let imageTexture;
  if (resolvedImageSrc) {
  imageTexture = textureLoader.load(
@@ -395,6 +419,26 @@ export const NoiseDietherShader = ({
  );
 };
 
+/**
+ * @typedef {Object} NoiseRippleShaderConfig
+ * @property {number} [pixelSize]
+ * @property {number} [patternDensity]
+ * @property {number} [fluidRadius]
+ * @property {number} [fluidStrength]
+ * @property {number} [fluidDissipation]
+ * @property {number} [distortStrength]
+ * @property {number} [trailDarkness]
+ */
+
+/**
+ * @typedef {Object} NoiseRippleCursorProps
+ * @property {string} [overlayColor]
+ * @property {string} [wrapperClassName]
+ * @property {string} [imageSrc]
+ * @property {NoiseRippleShaderConfig} [shaderConfig]
+ */
+
+/** @param {NoiseRippleCursorProps} props */
 export default function NoiseRippleCursor({
  overlayColor ='bg-[#1825AA]/30',
  wrapperClassName ='h-screen w-screen',

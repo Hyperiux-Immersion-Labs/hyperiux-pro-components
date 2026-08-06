@@ -2,16 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * @typedef {Object} FooterParallaxProps
+ * @property {import('react').ReactNode} [children]
+ * @property {string} [id]
+ * @property {string} [outerClassName]
+ * @property {string} [footerClassName]
+ */
+
+/** @param {FooterParallaxProps} props */
 const FooterParallax = ({
  children,
  id ="footer",
  outerClassName ="",
  footerClassName ="",
 }) => {
- const footerRef = useRef(null);
+ const footerRef = useRef(/** @type {HTMLElement|null} */ (null));
  const [height, setHeight] = useState(1);
 
  useEffect(() => {
+ /** @type {number|undefined} */
  let frameId;
 
  const updateHeight = () => {
@@ -35,7 +45,7 @@ const FooterParallax = ({
  window.addEventListener("resize", updateHeight);
 
  return () => {
- cancelAnimationFrame(frameId);
+ cancelAnimationFrame(/** @type {number} */ (frameId));
  resizeObserver.disconnect();
  window.removeEventListener("resize", updateHeight);
  };

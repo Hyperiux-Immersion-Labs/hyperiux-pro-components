@@ -9,6 +9,18 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+/**
+ * @typedef {InstanceType<typeof SplitText>} GsapSplitText
+ */
+
+/**
+ * @param {{
+ *   splitText: GsapSplitText,
+ *   split2: GsapSplitText,
+ *   split3: GsapSplitText,
+ *   split4: GsapSplitText,
+ * }} parts
+ */
 function resetSplitPositions({ splitText, split2, split3, split4 }) {
   gsap.set(split2.chars, { yPercent: 100 });
   gsap.set(split4.chars, { yPercent: 100 });
@@ -16,6 +28,20 @@ function resetSplitPositions({ splitText, split2, split3, split4 }) {
   gsap.set(split3.chars, { yPercent: 0 });
 }
 
+/**
+ * @typedef {Object} GlitchyTextProps
+ * @property {boolean} [runOnScroll]
+ * @property {string} [triggerId]
+ * @property {string} [start]
+ * @property {string} [end]
+ * @property {boolean} [once]
+ * @property {boolean} [markers]
+ * @property {number} [initialDelay]
+ * @property {number} [replayDelay]
+ * @property {string} [text]
+ */
+
+/** @param {GlitchyTextProps} props */
 const GlitchyText = ({
   runOnScroll = false,
   triggerId = "glitch-section",
@@ -27,15 +53,17 @@ const GlitchyText = ({
   replayDelay = 0.2,
   text = "Engineering meets artistry",
 }) => {
-  const rootRef = useRef(null);
-  const splitRef = useRef({});
-  const scrollTriggerRef = useRef(null);
-  const animationTimelineRef = useRef(null);
+  const rootRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+  const splitRef = useRef(
+    /** @type {{ splitText?: GsapSplitText, split2?: GsapSplitText, split3?: GsapSplitText, split4?: GsapSplitText }} */ ({})
+  );
+  const scrollTriggerRef = useRef(/** @type {InstanceType<typeof ScrollTrigger> | null} */ (null));
+  const animationTimelineRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
 
-  const text1Ref = useRef(null);
-  const text2Ref = useRef(null);
-  const text3Ref = useRef(null);
-  const text4Ref = useRef(null);
+  const text1Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const text2Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const text3Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const text4Ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -44,12 +72,15 @@ const GlitchyText = ({
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
+    /** @param {MediaQueryListEvent} event */
     const handleChange = (event) => setPrefersReducedMotion(event.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const runAnimation = useCallback((delay = 0.2) => {
+  const runAnimation = useCallback(
+    /** @param {number} [delay] */
+    (delay = 0.2) => {
     const { splitText, split2, split3, split4 } = splitRef.current;
 
     if (!splitText) return;
@@ -148,7 +179,12 @@ const GlitchyText = ({
       linesClass: "lines",
     });
 
-    let split2, split3, split4;
+    /** @type {GsapSplitText | undefined} */
+    let split2;
+    /** @type {GsapSplitText | undefined} */
+    let split3;
+    /** @type {GsapSplitText | undefined} */
+    let split4;
 
     if (!prefersReducedMotion) {
       split2 = SplitText.create(text2Ref.current, {
@@ -177,7 +213,12 @@ const GlitchyText = ({
     if (prefersReducedMotion) {
       gsap.set(splitText.chars, { yPercent: 100 });
     } else {
-      resetSplitPositions({ splitText, split2, split3, split4 });
+      resetSplitPositions({
+        splitText,
+        split2: /** @type {GsapSplitText} */ (split2),
+        split3: /** @type {GsapSplitText} */ (split3),
+        split4: /** @type {GsapSplitText} */ (split4),
+      });
     }
 
     if (runOnScroll) {

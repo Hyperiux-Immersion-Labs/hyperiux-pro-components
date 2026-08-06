@@ -2,16 +2,18 @@
 import React, { forwardRef } from "react";
 
 /**
- * Floating-label Textarea
- * Props:
- * - id: string (required)
- * - label: string
- * - error: string | undefined
- * - rows: number (default 5)
- * - className: string
- * - All standard <textarea> props
+ * @typedef {{
+ *   id?: string,
+ *   label?: import('react').ReactNode,
+ *   error?: string,
+ *   rows?: number,
+ *   className?: string,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'textarea'>, 'id' | 'rows'>} TextareaProps
  */
-const Textarea = forwardRef(function Textarea(
+
+const Textarea = forwardRef(
+ /** @type {import('react').ForwardRefRenderFunction<HTMLTextAreaElement, TextareaProps>} */
+ (function Textarea(
  { id, label, error, rows = 5, className ="", ...rest },
  ref
 ) {
@@ -68,6 +70,7 @@ const Textarea = forwardRef(function Textarea(
  )}
  </div>
  );
-});
+})
+);
 
 export default Textarea;

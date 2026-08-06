@@ -19,6 +19,22 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} FullScreenCrosshairProps
+ * @property {string} [color]
+ * @property {string} [centerContent]
+ * @property {boolean} [hideNativeCursor]
+ * @property {number} [lineSize]
+ * @property {number} [gap]
+ * @property {number} [thickness]
+ * @property {number} [centerSize]
+ * @property {boolean} [smooth]
+ * @property {number} [lerpFactor]
+ * @property {string} [blendMode]
+ * @property {string} [className]
+ */
+
+/** @param {FullScreenCrosshairProps} props */
 const FullScreenCrosshair = ({
   color = "#ffffff",
   centerContent = "•",
@@ -54,7 +70,7 @@ const FullScreenCrosshair = ({
   return (
     <div
       className={`pointer-events-none fixed inset-0 z-9999 ${className}`}
-      style={{
+      style={/** @type {import('react').CSSProperties} */ ({
         "--crosshair-color": color,
         "--crosshair-line-size": `${lineSize}px`,
         "--crosshair-gap": `${gap}px`,
@@ -62,7 +78,7 @@ const FullScreenCrosshair = ({
         "--crosshair-center-size": `${centerSize}px`,
         "--crosshair-blend-mode": blendMode,
         mixBlendMode: blendMode,
-      }}
+      })}
     >
       <div
         className="absolute left-0 top-0 h-0 w-0 will-change-transform"

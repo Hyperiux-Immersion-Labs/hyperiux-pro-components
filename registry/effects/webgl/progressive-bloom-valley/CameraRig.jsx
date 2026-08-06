@@ -5,10 +5,11 @@ import { PerspectiveCamera } from "@react-three/drei";
 import useInput from "./useInput";
 import { prefersReducedMotion } from "./prefersReducedMotion";
 
+/** @param {{curve?: any, cameraProps?: any, scrollConfig?: any}} props */
 export default function CameraRig({ curve, cameraProps, scrollConfig = {} }) {
-  const container = useRef();
-  const breath = useRef();
-  const camRef = useRef();
+  const container = useRef(/** @type {import('three').Group|null} */ (null));
+  const breath = useRef(/** @type {import('three').Group|null} */ (null));
+  const camRef = useRef(/** @type {import('three').PerspectiveCamera|null} */ (null));
   const intro = useRef({ angle: Math.PI / 2, done: false, started: false });
   const animMouse = useRef({ x: 0, y: 0 });
   const { mouse, scroll } = useInput(scrollConfig);
@@ -19,7 +20,7 @@ export default function CameraRig({ curve, cameraProps, scrollConfig = {} }) {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         intro.current.angle = 0;
@@ -139,7 +140,7 @@ export default function CameraRig({ curve, cameraProps, scrollConfig = {} }) {
           fov={cameraProps?.fov ?? 60}
           near={cameraProps?.near ?? 0.1}
           far={cameraProps?.far ?? 200}
-          rotation={baseRotation}
+          rotation={/** @type {any} */ (baseRotation)}
           position={[0, 2, 0]}
         />
       </group>

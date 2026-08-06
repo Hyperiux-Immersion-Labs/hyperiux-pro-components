@@ -1,19 +1,40 @@
 
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 
-const Select = forwardRef(function Select(
+/**
+ * @typedef {Object} SelectOption
+ * @property {string} value
+ * @property {string} label
+ */
+
+/**
+ * @typedef {{
+ *   id?: string,
+ *   label?: string,
+ *   options?: SelectOption[],
+ *   error?: string,
+ *   className?: string,
+ *   value?: string,
+ *   onChange?: (event: { target: { value: string, id?: string } }) => void,
+ * }} SelectProps
+ */
+
+const Select = forwardRef(
+ /** @type {import('react').ForwardRefRenderFunction<HTMLButtonElement, SelectProps>} */
+ (function Select(
  { id, label, options = [], error, className ="", ...rest },
  ref
 ) {
  const [open, setOpen] = useState(false);
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
 
  const selectedOption = options.find((opt) => opt.value === rest.value);
 
  // Close on outside click
  useEffect(() => {
+ /** @param {MouseEvent} e */
  const handleClickOutside = (e) => {
- if (!containerRef.current?.contains(e.target)) {
+ if (!containerRef.current?.contains(/** @type {Node | null} */ (e.target))) {
  setOpen(false);
  }
  };
@@ -21,6 +42,7 @@ const Select = forwardRef(function Select(
  return () => document.removeEventListener("mousedown", handleClickOutside);
  }, []);
 
+ /** @param {string} value */
  const handleSelect = (value) => {
  if (rest.onChange) {
  rest.onChange({ target: { value, id } });
@@ -113,6 +135,7 @@ const Select = forwardRef(function Select(
  )}
  </div>
  );
-});
+})
+);
 
 export default Select;

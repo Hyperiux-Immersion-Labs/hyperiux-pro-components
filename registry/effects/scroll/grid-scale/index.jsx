@@ -53,8 +53,8 @@ const floatingWords = [
 export default function GridScale() {
   const uid = useId().replace(/:/g, "");
   const sectionId = `grid-scale-${uid}`;
-  const centeredTextRef = useRef(null);
-  const ideaTextRef = useRef(null);
+  const centeredTextRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
+  const ideaTextRef = useRef(/** @type {HTMLParagraphElement|null} */ (null));
 
   useEffect(() => {
     const isMobile = window.innerWidth < 640

@@ -20,6 +20,24 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} CardDriftItem
+ * @property {string} [year]
+ * @property {string} [tag]
+ * @property {string} [text]
+ */
+
+/**
+ * @typedef {Object} CardDriftCompProps
+ * @property {CardDriftItem[]} [data]
+ * @property {string} [cardBg]
+ * @property {string} [cardTextColor]
+ * @property {string} [barBg]
+ * @property {string} [bgColor]
+ * @property {string} [bgTextColor]
+ */
+
+/** @param {CardDriftCompProps} props */
 export default function CardDriftComp({
  data = [],
  cardBg ="bg-blue-700",
@@ -28,13 +46,13 @@ export default function CardDriftComp({
  bgColor ="bg-black",
  bgTextColor ="text-white/10",
 }) {
- const containerRef = useRef(null);
+ const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
  const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  const ctx = gsap.context(() => {
- const container = containerRef.current;
- const cards = gsap.utils.toArray(".testimonial-card");
+ const container = /** @type {HTMLDivElement} */ (containerRef.current);
+ const cards = /** @type {HTMLElement[]} */ (gsap.utils.toArray(".testimonial-card"));
 
  const containerRect = container.getBoundingClientRect();
 
@@ -105,13 +123,13 @@ export default function CardDriftComp({
 
  velX = 0;
  velY = 0;
- lastX = gsap.getProperty(card,"x");
- lastY = gsap.getProperty(card,"y");
+ lastX = /** @type {number} */ (gsap.getProperty(card,"x"));
+ lastY = /** @type {number} */ (gsap.getProperty(card,"y"));
  lastTime = performance.now();
 
  // Assign the next highest z-index on press
  zCounter += 1;
- card.style.zIndex = zCounter;
+ card.style.zIndex = String(zCounter);
 
  gsap.to(card, {
  scale: 1.05,
@@ -125,8 +143,8 @@ export default function CardDriftComp({
  const dt = now - lastTime;
 
  if (dt > 0) {
- const curX = gsap.getProperty(card,"x");
- const curY = gsap.getProperty(card,"y");
+ const curX = /** @type {number} */ (gsap.getProperty(card,"x"));
+ const curY = /** @type {number} */ (gsap.getProperty(card,"y"));
 
  // Exponential moving average for smoother velocity
  const alpha = Math.min(1, dt / 30);
@@ -154,8 +172,8 @@ export default function CardDriftComp({
  const throwX = velX * throwDuration * 1000 * 0.35;
  const throwY = velY * throwDuration * 1000 * 0.35;
 
- const curX = gsap.getProperty(card,"x");
- const curY = gsap.getProperty(card,"y");
+ const curX = /** @type {number} */ (gsap.getProperty(card,"x"));
+ const curY = /** @type {number} */ (gsap.getProperty(card,"y"));
 
  // Throw target is always clamped inside bounds -
  // if card is outside, it smoothly comes back in
@@ -228,6 +246,15 @@ export default function CardDriftComp({
 }
 
 
+/**
+ * @typedef {Object} CardProps
+ * @property {CardDriftItem} item
+ * @property {string} [cardBg]
+ * @property {string} [cardTextColor]
+ * @property {string} [barBg]
+ */
+
+/** @param {CardProps} props */
 function Card({ item, cardBg, cardTextColor, barBg }) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">

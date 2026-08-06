@@ -2,16 +2,18 @@
 import React, { forwardRef } from "react";
 
 /**
- * Floating-label Input
- * Props:
- * - id: string (required, links label to input)
- * - label: string
- * - type: string (default"text")
- * - error: string | undefined
- * - className: string (extra classes on <input>)
- * - All standard <input> props (name, value, onChange, onBlur, autoComplete, …)
+ * @typedef {{
+ *   id?: string,
+ *   label?: import('react').ReactNode,
+ *   type?: string,
+ *   error?: string,
+ *   className?: string,
+ * } & Omit<import('react').ComponentPropsWithoutRef<'input'>, 'id' | 'type'>} InputProps
  */
-const Input = forwardRef(function Input(
+
+const Input = forwardRef(
+ /** @type {import('react').ForwardRefRenderFunction<HTMLInputElement, InputProps>} */
+ (function Input(
  { id, label, placeholder, type ="text", error, className ="", ...rest },
  ref
 ) {
@@ -82,6 +84,7 @@ const Input = forwardRef(function Input(
  )}
  </div>
  );
-});
+})
+);
 
 export default Input;

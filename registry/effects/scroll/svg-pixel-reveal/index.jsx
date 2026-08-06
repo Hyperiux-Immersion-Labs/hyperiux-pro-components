@@ -9,19 +9,17 @@ import PixelateSvgFilter from "./PixelatedSvgFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+/**
+ * @typedef {Object} PixelateSvgFilterProps
+ * @property {string} [id]
+ * @property {number} size
+ * @property {boolean} [crossLayers]
+ */
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
+/** @param {PixelateSvgFilterProps} props */
+const DEFAULT_SRC =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
+const DEFAULT_ALT = "Image";
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -37,24 +35,23 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+/**
+ * @typedef {Object} SvgPixelRevealProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {number} [initialPixelSize]
+ * @property {number} [finalPixelSize]
+ * @property {string} [start]
+ * @property {string} [end]
+ * @property {boolean} [crossLayers]
+ * @property {import('react').CSSProperties} [style]
+ */
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
-
+/** @param {SvgPixelRevealProps} props */
 export default function SVGPixelReveal({
-  src,
-  alt,
-  className = "",
+  src = DEFAULT_SRC,
+  alt = DEFAULT_ALT,
+  className = "h-[50vh] w-[50vw]",
   imageClassName = "",
   initialPixelSize = 18,
   finalPixelSize = 1,
@@ -63,12 +60,11 @@ export default function SVGPixelReveal({
   crossLayers = true,
   priority = false,
 }) {
-  const containerRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const filterId = useId().replace(/:/g, "");
   const [pixelSize, setPixelSize] = useState(initialPixelSize);
   const reducedMotion = usePrefersReducedMotion();
   const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -124,31 +120,19 @@ export default function SVGPixelReveal({
         />
       </div>
 
-      {prefersReducedMotion && (
+      {reducedMotion && (
         <div
           aria-live="polite"
-          style={{
-            position: "fixed",
-            bottom: "1.5rem",
-            right: "1.5rem",
-            zIndex: 60,
-            width: "fit-content",
-            maxWidth: "min(90vw, 26rem)",
-            borderRadius: "0.375rem",
-            border: "1px solid rgba(0, 0, 0, 0.1)",
-            background: "#F8F8F3",
-            padding: "1.5rem",
-            textAlign: "center",
-            boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-          }}
+          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
         >
-          <h2 style={{ fontSize: "1.15vw", lineHeight: 1, color: "#111111", margin: 0 }}>
+          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
             This effect can&apos;t be reduced.
           </h2>
-          <p style={{ marginTop: "1rem", fontSize: "0.875rem", lineHeight: 1.5, color: "rgba(0, 0, 0, 0.65)" }}>
-            Reduced motion is enabled, but this effect relies on a continuous
-            scroll-driven transition from pixelated to sharp, and can&apos;t be
-            simplified to a fade without losing the effect entirely.
+          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
+            Reduced motion is enabled, but this effect relies on a
+            continuous scroll-driven transition from pixelated to
+            sharp, and can&apos;t be simplified to a fade without
+            losing the effect entirely.
           </p>
         </div>
       )}

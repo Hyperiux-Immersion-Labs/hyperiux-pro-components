@@ -24,6 +24,7 @@ const PAD_Y = 0;
 const COLS = Math.floor((CARD_W - PAD_X * 2) / CHAR_W);
 const ROWS = Math.floor((CARD_H - PAD_Y * 2) / CHAR_H);
 
+/** @param {number} seed */
 function lcg(seed) {
  let s = seed | 0;
  return () => {
@@ -32,16 +33,19 @@ function lcg(seed) {
  };
 }
 
+/** @param {string} str */
 function seedFromStr(str) {
  let h = 0;
  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
  return h >>> 0;
 }
 
+/** @param {() => number} rand */
 function randomGlyph(rand) {
  return GLYPHS[Math.floor(rand() * GLYPHS.length)];
 }
 
+/** @param {number} seed */
 function makeGrid(seed) {
  const rand = lcg(seed);
  return Array.from({ length: ROWS }, () =>
@@ -49,6 +53,7 @@ function makeGrid(seed) {
  );
 }
 
+/** @param {string} hex */
 function hexToRgb(hex) {
  const h = hex.replace("#","");
  if (h.length === 3)
@@ -171,22 +176,49 @@ float yFade = smoothstep(0.10, 0.46, uv.y) * smoothstep(0.10, 0.46, 1.0 - uv.y);
 }
 `;
 
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {number} type
+ * @param {string} src
+ */
 function compileShader(gl, type, src) {
- const s = gl.createShader(type);
+ const s = /** @type {WebGLShader} */ (gl.createShader(type));
  gl.shaderSource(s, src);
  gl.compileShader(s);
  return s;
 }
 
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {string} vert
+ * @param {string} frag
+ */
 function buildProgram(gl, vert, frag) {
- const p = gl.createProgram();
+ const p = /** @type {WebGLProgram} */ (gl.createProgram());
  gl.attachShader(p, compileShader(gl, gl.VERTEX_SHADER, vert));
  gl.attachShader(p, compileShader(gl, gl.FRAGMENT_SHADER, frag));
  gl.linkProgram(p);
  return p;
 }
 
+/**
+ * @typedef {Object} BeamState
+ * @property {boolean} ready
+ * @property {boolean} hasCard
+ * @property {number} splitNorm
+ * @property {number} cardTop
+ * @property {number} cardBottom
+ * @property {number} cardLeft
+ * @property {number} cardRight
+ * @property {number} cardProgress
+ * @property {number} time
+ */
+
 // The WebGL beam lives in a single fullscreen canvas over the whole section
+/**
+ * @param {import('react').RefObject<HTMLCanvasElement|null>} canvasRef
+ * @param {string} primaryColor
+ */
 function useWebGLBeam(canvasRef, primaryColor) {
  // expose a setter so the animation loop can push state each frame
  const stateRef = useRef({
@@ -212,13 +244,16 @@ function useWebGLBeam(canvasRef, primaryColor) {
 
  const [r, g, b] = hexToRgb(primaryColor);
 
+ /** @type {ReturnType<typeof createSuspendedRaf> | null} */
  let loop = null;
+ /** @type {WebGLProgram | null | undefined} */
  let prog;
+ /** @type {WebGLBuffer | null | undefined} */
  let buf;
  let reduceMotion =
  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
- const onReduceMotionChange = (event) => {
+ const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
  reduceMotion = event.matches;
  };
  mq?.addEventListener?.("change", onReduceMotionChange);
@@ -254,7 +289,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
  lastTs: 0,
  };
 
- const tick = (ts) => {
+ const tick = (/** @type {number} */ ts) => {
  const { ready, hasCard, splitNorm, cardTop, cardBottom } = stateRef.current;
 
  const w = canvas.offsetWidth;
@@ -338,6 +373,7 @@ function useWebGLBeam(canvasRef, primaryColor) {
  return stateRef;
 }
 
+/** @param {number} count */
 function makeParticles(count) {
  const rand = lcg(0x51f15eed);
 
@@ -350,6 +386,10 @@ function makeParticles(count) {
  }));
 }
 
+/**
+ * @param {import('react').RefObject<HTMLCanvasElement|null>} canvasRef
+ * @param {import('react').RefObject<BeamState>} beamStateRef
+ */
 function useParticleCanvas(canvasRef, beamStateRef) {
  const particles = useMemo(() => makeParticles(PARTICLE_COUNT), []);
 
@@ -363,7 +403,7 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  let reduceMotion =
  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
- const onReduceMotionChange = (event) => {
+ const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
  reduceMotion = event.matches;
  };
  mq?.addEventListener?.("change", onReduceMotionChange);
@@ -377,7 +417,7 @@ function useParticleCanvas(canvasRef, beamStateRef) {
  cardRight: 0.5,
  lastTs: 0,
  };
- const draw = (ts) => {
+ const draw = (/** @type {number} */ ts) => {
  const frameDelta = visibleState.lastTs ? Math.min(ts - visibleState.lastTs, 50) : 16;
  visibleState.lastTs = ts;
  const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -473,6 +513,19 @@ const fade =
  }, [beamStateRef, canvasRef, particles]);
 }
 
+/**
+ * @typedef {Object} CardData
+ * @property {string} [id]
+ * @property {string} number
+ * @property {string} holder
+ * @property {string} expiry
+ * @property {string} gradient
+ * @property {string} glowColor
+ * @property {string} networkColor1
+ * @property {string} networkColor2
+ * @property {string} [_uid]
+ */
+
 function Chip() {
  return (
  <div className="relative h-9 w-12 rounded-md bg-[#f0ead6] shadow-inner overflow-hidden">
@@ -498,6 +551,7 @@ function Contactless() {
  );
 }
 
+/** @param {{c1: string, c2: string}} props */
 function NetworkMark({ c1, c2 }) {
  return (
  <div className="flex -space-x-2.5">
@@ -507,6 +561,7 @@ function NetworkMark({ c1, c2 }) {
  );
 }
 
+/** @param {{card: CardData}} props */
 function PlainFace({ card }) {
  return (
  <div
@@ -542,10 +597,11 @@ function PlainFace({ card }) {
  );
 }
 
+/** @param {{card: CardData, beamLit: boolean}} props */
 function AsciiFace({ card, beamLit }) {
  const seed = useMemo(() => seedFromStr(card.id || card.number || card.holder), [card]);
  const [grid, setGrid] = useState(() => makeGrid(seed));
- const randRef = useRef(null);
+ const randRef = useRef(/** @type {(() => number) | null} */ (null));
 
  useEffect(() => {
  randRef.current = lcg((seed ^ 0xdeadbeef) + Date.now());
@@ -555,7 +611,7 @@ function AsciiFace({ card, beamLit }) {
  if (!beamLit) return;
  if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
  const interval = setInterval(() => {
- const rand = randRef.current;
+ const rand = /** @type {() => number} */ (randRef.current);
  setGrid(prev =>
  prev.map(row =>
  row.map(ch => (rand() < 0.22 ? randomGlyph(rand) : ch))
@@ -601,7 +657,10 @@ function AsciiFace({ card, beamLit }) {
  );
 }
 
-// ─── CardShell 
+// ─── CardShell
+/**
+ * @param {{card: CardData, settersRef: import('react').RefObject<Record<string, (px: number) => void>>}} props
+ */
 function CardShell({ card, settersRef }) {
  const [beamLit, setBeamLit] = useState(false);
  const beamLitRef = useRef(false);
@@ -609,7 +668,7 @@ function CardShell({ card, settersRef }) {
  useEffect(() => {
  const setters = settersRef.current;
 
- setters[card._uid] = (px) => {
+ setters[/** @type {string} */ (card._uid)] = (/** @type {number} */ px) => {
  const lit = px > 1 && px < CARD_W - 1;
  if (lit !== beamLitRef.current) {
  beamLitRef.current = lit;
@@ -618,7 +677,7 @@ function CardShell({ card, settersRef }) {
  };
 
  return () => {
- delete setters[card._uid];
+ delete setters[/** @type {string} */ (card._uid)];
  };
  }, [card._uid, settersRef]);
 
@@ -640,17 +699,25 @@ function CardShell({ card, settersRef }) {
  );
 }
 
+/**
+ * @typedef {Object} FileEncryptionCompProps
+ * @property {CardData[]} [cards]
+ */
+
+/** @param {FileEncryptionCompProps} props */
 export function FileEncryptionComp({ cards = [] }) {
- const rootRef = useRef(null);
- const trackRef = useRef(null);
- const xRef = useRef(null);
+ const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
+ const trackRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+ const xRef = useRef(/** @type {number|null} */ (null));
  const dragRef = useRef({ active: false, lastX: 0, velocity: 0 });
- const beamCanvasRef = useRef(null);
- const particleCanvasRef = useRef(null);
- const settersRef = useRef({});
+ const beamCanvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+ const particleCanvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+ const settersRef = useRef(/** @type {Record<string, (px: number) => void>} */ ({}));
  const reduceMotionRef = useRef(
+ /** @type {boolean} */ (
  typeof window !== "undefined" &&
  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+ )
  );
 
  const allCards = useMemo(() => {
@@ -698,7 +765,7 @@ export function FileEncryptionComp({ cards = [] }) {
  if (!root || !track) return;
 
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
- const onReduceMotionChange = (event) => {
+ const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
  reduceMotionRef.current = event.matches;
  if (event.matches) dragRef.current.velocity = 0;
  };
@@ -709,19 +776,19 @@ export function FileEncryptionComp({ cards = [] }) {
 
  if (xRef.current === null) xRef.current = -singleGroupWidth;
 
- const onDown = (e) => {
+ const onDown = (/** @type {PointerEvent} */ e) => {
  dragRef.current.active = true;
- dragRef.current.lastX = e.clientX ?? e.touches?.[0]?.clientX;
+ dragRef.current.lastX = e.clientX ?? /** @type {any} */ (e).touches?.[0]?.clientX;
  dragRef.current.velocity = 0;
  root.style.cursor ="grabbing";
  };
- const onMove = (e) => {
+ const onMove = (/** @type {PointerEvent} */ e) => {
  if (!dragRef.current.active) return;
- const cx = e.clientX ?? e.touches?.[0]?.clientX;
+ const cx = e.clientX ?? /** @type {any} */ (e).touches?.[0]?.clientX;
  const dx = cx - dragRef.current.lastX;
  dragRef.current.lastX = cx;
  dragRef.current.velocity = reduceMotionRef.current ? 0 : dx;
- xRef.current += dx;
+ xRef.current = /** @type {number} */ (xRef.current) + dx;
  };
  const onUp = () => {
  dragRef.current.active = false;
@@ -734,7 +801,7 @@ export function FileEncryptionComp({ cards = [] }) {
  window.addEventListener("pointerup", onUp);
   window.addEventListener("pointercancel", onUp);
 
- const update = (_time, delta) => {
+ const update = (/** @type {number} */ _time, /** @type {number} */ delta) => {
  const dt = Math.min(delta, 50);
 
  if (!dragRef.current.active) {
@@ -742,16 +809,18 @@ export function FileEncryptionComp({ cards = [] }) {
  // No auto-scroll / inertia — drag still moves cards directly.
  dragRef.current.velocity = 0;
  } else {
- xRef.current += (AUTO_SPEED * dt) / 1000;
+ xRef.current = /** @type {number} */ (xRef.current) + (AUTO_SPEED * dt) / 1000;
  if (Math.abs(dragRef.current.velocity) > 0.5) {
- xRef.current += dragRef.current.velocity * 0.4;
+ xRef.current = /** @type {number} */ (xRef.current) + dragRef.current.velocity * 0.4;
  dragRef.current.velocity *= 0.88;
  }
  }
  }
 
- if (xRef.current >= 0) xRef.current -= singleGroupWidth;
- if (xRef.current < -2 * singleGroupWidth) xRef.current += singleGroupWidth;
+ if (/** @type {number} */ (xRef.current) >= 0)
+ xRef.current = /** @type {number} */ (xRef.current) - singleGroupWidth;
+ if (/** @type {number} */ (xRef.current) < -2 * singleGroupWidth)
+ xRef.current = /** @type {number} */ (xRef.current) + singleGroupWidth;
 
  track.style.transform = `translate3d(${xRef.current}px, 0, 0)`;
 
@@ -766,7 +835,8 @@ export function FileEncryptionComp({ cards = [] }) {
  let activeCardRight = 0.5;
  let activeCardProgress = 0;
 
- track.querySelectorAll("[data-card-uid]").forEach((el) => {
+ track.querySelectorAll("[data-card-uid]").forEach((/** @type {Element} */ elRaw) => {
+ const el = /** @type {HTMLElement} */ (elRaw);
  const uid = el.dataset.cardUid;
  const box = el.getBoundingClientRect();
  const splitPx = Math.max(0, Math.min(CARD_W, beamX - box.left));
@@ -781,10 +851,10 @@ export function FileEncryptionComp({ cards = [] }) {
  activeCardProgress = splitPx / CARD_W;
  }
 
- settersRef.current[uid]?.(splitPx);
+ settersRef.current[/** @type {string} */ (uid)]?.(splitPx);
 
- const plain = el.querySelector("[data-plain]");
- const ascii = el.querySelector("[data-ascii]");
+ const plain = /** @type {HTMLElement|null} */ (el.querySelector("[data-plain]"));
+ const ascii = /** @type {HTMLElement|null} */ (el.querySelector("[data-ascii]"));
  if (plain) plain.style.clipPath = `inset(0 ${Math.max(CARD_W - splitPx, 0)}px 0 0 round 0)`;
  if (ascii) ascii.style.clipPath = `inset(0 0 0 ${splitPx}px round 0)`;
  });

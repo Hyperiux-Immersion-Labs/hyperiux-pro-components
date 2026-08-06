@@ -39,6 +39,7 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+/** @param {number} seed */
 function seededRandom(seed) {
   let value = seed;
 
@@ -48,6 +49,7 @@ function seededRandom(seed) {
   };
 }
 
+/** @param {{points: [number, number, number][]}} props */
 function Line({ points }) {
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry();
@@ -64,7 +66,7 @@ function Line({ points }) {
   }, [geometry]);
 
   return (
-    <line geometry={geometry}>
+    <line {...(/** @type {any} */ ({ geometry }))}>
       <lineBasicMaterial
         color="#e5e5e5"
         transparent
@@ -77,7 +79,7 @@ function Line({ points }) {
 
 function GridChunkContent() {
   const lines = useMemo(() => {
-    const items = [];
+    const items = /** @type {{points: [number, number, number][]}[]} */ ([]);
 
     const halfW = TUNNEL_WIDTH / 2;
     const halfH = TUNNEL_HEIGHT / 2;
@@ -127,6 +129,7 @@ function GridChunkContent() {
   );
 }
 
+/** @param {{images: string[], slotIndex: number}} props */
 function ImageChunkContent({ images, slotIndex }) {
   const { viewport, size } = useThree();
   const canvasWidth = size?.width ?? 0;
@@ -157,8 +160,11 @@ function ImageChunkContent({ images, slotIndex }) {
       const side = Math.floor(random() * 4);
       const zi = Math.floor(random() * (GRID_Z - 2));
 
+      /** @type {[number, number, number]} */
       let position = [0, 0, 0];
+      /** @type {[number, number, number]} */
       let rotation = [0, 0, 0];
+      /** @type {[number, number, number]} */
       let scale = [1, 1, 1];
 
       if (side === 0) {
@@ -236,12 +242,14 @@ function ImageChunkContent({ images, slotIndex }) {
       {panels.map((panel) => (
         <Suspense key={panel.id} fallback={null}>
           <Image
-            alt="panel"
-            url={panel.url}
-            position={panel.position}
-            rotation={panel.rotation}
-            scale={panel.scale}
-            toneMapped={false}
+            {...(/** @type {any} */ ({
+              alt: "panel",
+              url: panel.url,
+              position: panel.position,
+              rotation: panel.rotation,
+              scale: panel.scale,
+              toneMapped: false,
+            }))}
           />
         </Suspense>
       ))}
@@ -249,8 +257,9 @@ function ImageChunkContent({ images, slotIndex }) {
   );
 }
 
+/** @param {{images: string[], slotIndex: number}} props */
 function TunnelChunk({ images, slotIndex }) {
-  const group = useRef();
+  const group = useRef(/** @type {THREE.Group|null} */ (null));
   const { camera } = useThree();
 
   const initialZ = TUNNEL_START_Z - slotIndex * TUNNEL_DEPTH;
@@ -281,6 +290,7 @@ function TunnelChunk({ images, slotIndex }) {
   );
 }
 
+/** @param {{images: string[]}} props */
 function InfiniteTunnelWorld({ images }) {
   const chunks = useMemo(() => {
     return Array.from({ length: VISIBLE_CHUNKS }, (_, i) => i);
@@ -297,12 +307,14 @@ function InfiniteTunnelWorld({ images }) {
 
 function InfiniteScrollCamera() {
   const { camera } = useThree();
-  const cameraRef = useRef(null);
+  const cameraRef = useRef(/** @type {THREE.Camera|null} */ (null));
   const targetZ = useRef(CAMERA_START_Z);
   const scrollVelocity = useRef(0);
   const reduceMotionRef = useRef(
-    typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+    /** @type {boolean} */ (
+      typeof window !== "undefined" &&
+        window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+    )
   );
   const touchState = useRef({
     active: false,
@@ -317,7 +329,7 @@ function InfiniteScrollCamera() {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (event) => {
+    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         scrollVelocity.current = 0;
@@ -330,7 +342,7 @@ function InfiniteScrollCamera() {
   }, []);
 
   useEffect(() => {
-    const applyDelta = (delta) => {
+    const applyDelta = (/** @type {number} */ delta) => {
       if (reduceMotionRef.current) {
         // Reduced-motion: move instantly — no velocity coast.
         scrollVelocity.current = 0;
@@ -350,19 +362,19 @@ function InfiniteScrollCamera() {
       }
     };
 
-    const preventPageScroll = (event) => {
+    const preventPageScroll = (/** @type {WheelEvent} */ event) => {
       event.preventDefault();
       applyDelta(-event.deltaY * SCROLL_SPEED);
     };
 
-    const onTouchStart = (event) => {
+    const onTouchStart = (/** @type {TouchEvent} */ event) => {
       const touch = event.touches?.[0];
       if (!touch) return;
       touchState.current.active = true;
       touchState.current.lastY = touch.clientY;
     };
 
-    const onTouchMove = (event) => {
+    const onTouchMove = (/** @type {TouchEvent} */ event) => {
       const touch = event.touches?.[0];
       if (!touch || !touchState.current.active) return;
 
@@ -466,6 +478,7 @@ function InfiniteScrollCamera() {
   return null;
 }
 
+/** @param {{images: string[]}} props */
 function Scene({ images }) {
   return (
     <>
@@ -491,9 +504,17 @@ function FooterMark() {
   );
 }
 
+/**
+ * @typedef {Object} GridTunnelCompProps
+ * @property {string[]} [images]
+ */
+
+/** @param {GridTunnelCompProps} props */
 export default function GridTunnelComp({ images = [] }) {
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
   const reducedMotion = usePrefersReducedMotion();
   const fallbackImages = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
@@ -547,7 +568,7 @@ export default function GridTunnelComp({ images = [] }) {
   ];
   // Validate image URLs on the client before passing to the three.js Image loader.
   // This prevents CORS/network failures from flooding the loader with bad URLs.
-  const [validatedImages, setValidatedImages] = useState([]);
+  const [validatedImages, setValidatedImages] = useState(/** @type {string[]} */ ([]));
   const [validating, setValidating] = useState(true);
 
   useEffect(() => {
@@ -563,6 +584,10 @@ export default function GridTunnelComp({ images = [] }) {
     let mounted = true;
     const list = images && images.length > 0 ? images : fallbackImages;
 
+    /**
+     * @param {string} url
+     * @returns {Promise<{ok: boolean, url: string}>}
+     */
     const validateUrl = (url) =>
       new Promise((res) => {
         try {
@@ -602,9 +627,9 @@ export default function GridTunnelComp({ images = [] }) {
     (async () => {
       try {
         const results = await Promise.allSettled(list.map((u) => validateUrl(u)));
-        const valids = results
-          .filter((r) => r.status === "fulfilled" && r.value && r.value.ok)
-          .map((r) => r.value.url);
+        const valids = /** @type {PromiseFulfilledResult<{ok: boolean, url: string}>[]} */ (
+          results.filter((r) => r.status === "fulfilled" && r.value && r.value.ok)
+        ).map((r) => r.value.url);
 
         if (!mounted) return;
         setValidatedImages(valids);

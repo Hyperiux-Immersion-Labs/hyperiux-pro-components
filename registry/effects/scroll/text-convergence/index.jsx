@@ -31,6 +31,7 @@ function prefersReducedMotion() {
 // scroll-through mechanism, not decorative per-char movement.
 const REDUCED_MOTION_FACTOR = 0.25;
 
+/** @param {string} text */
 const getDynamicHeight = (text) => {
   const trimmedText = text.trim();
   const words = trimmedText ? trimmedText.split(/\s+/).length : 0;
@@ -46,15 +47,23 @@ const getDynamicHeight = (text) => {
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+/**
+ * @typedef {Object} TextConvergenceProps
+ * @property {string} [text]
+ * @property {string} [bgColor]
+ * @property {string} [textColor]
+ */
+
+/** @param {TextConvergenceProps} props */
 export default function TextConvergence({
   text = "Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless.",
   bgColor = "bg-black",
   textColor = "text-white",
 }) {
   // State and refs
-  const sectionRef = useRef(null);
-  const textRef = useRef(null);
-  const introRef = useRef(null);
+  const sectionRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const textRef = useRef(/** @type {HTMLHeadingElement|null} */ (null));
+  const introRef = useRef(/** @type {HTMLDivElement|null} */ (null));
 
   // Derived values
   const dynamicHeight = useMemo(() => getDynamicHeight(text), [text]);

@@ -6,6 +6,22 @@ import ScrollTrigger from'gsap/dist/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+/**
+ * @typedef {Object} ColorfulCursorAuraColors
+ * @property {string} [color1]
+ * @property {string} [color2]
+ * @property {string} [color3]
+ */
+
+/**
+ * @typedef {Object} ColorfulCursorAuraCompProps
+ * @property {string} [text]
+ * @property {ColorfulCursorAuraColors} [colors]
+ * @property {boolean} [enableEntryAnimation]
+ * @property {string} [textColor]
+ */
+
+/** @param {ColorfulCursorAuraCompProps} props */
 export default function ColorfulCursorAuraComp({
  text,
  colors = {
@@ -16,9 +32,9 @@ export default function ColorfulCursorAuraComp({
  enableEntryAnimation = true,
  textColor ='#000000',
 }) {
- const container = useRef(null)
- const aeroText = useRef(null)
- const maskedText = useRef(null)
+ const container = useRef(/** @type {HTMLElement|null} */ (null))
+ const aeroText = useRef(/** @type {HTMLDivElement|null} */ (null))
+ const maskedText = useRef(/** @type {HTMLParagraphElement|null} */ (null))
  const [isDesktop, setIsDesktop] = useState(false)
  const circleTrackers = useRef([
  { x: 0, y: 0 }, // color1
@@ -65,7 +81,7 @@ export default function ColorfulCursorAuraComp({
  })
  syncMaskVars()
 
- const onMove = (evt) => {
+ const onMove = (/** @type {MouseEvent} */ evt) => {
  const rect = maskEl.getBoundingClientRect()
  const localX = evt.clientX - rect.left
  const localY = evt.clientY - rect.top
@@ -132,7 +148,7 @@ export default function ColorfulCursorAuraComp({
  ref={maskedText}
  aria-hidden
  className="pointer-events-none absolute inset-0 text-center font-heading text-[6vw] font-medium text-transparent bg-clip-text [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] max-[1025px]:text-[8vw] max-md:text-[10vw]"
- style={{
+ style={/** @type {import('react').CSSProperties} */ ({
 '--x-color1':'50%',
 '--y-color1':'50%',
 '--x-color2':'50%',
@@ -144,7 +160,7 @@ export default function ColorfulCursorAuraComp({
  radial-gradient(circle 220px at var(--x-color2) var(--y-color2), ${colors.color2} 0 99%, transparent 100%),
  radial-gradient(circle 325px at var(--x-color1) var(--y-color1), ${colors.color1} 0 99%, transparent 100%)
  `,
- }}
+ })}
  >
  {text}
  </p>

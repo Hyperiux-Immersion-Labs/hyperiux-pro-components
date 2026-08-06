@@ -2,11 +2,22 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Point {
+  /**
+   * @param {number} [x]
+   * @param {number} [y]
+   */
   constructor(x, y) {
     this.x = x || 0;
     this.y = y || 0;
   }
 
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} mouseX
+   * @param {number} mouseY
+   * @param {boolean} mouseEntered
+   * @param {number} lineLength
+   */
   draw(ctx, mouseX, mouseY, mouseEntered, lineLength) {
     if (mouseEntered) {
       const dx = mouseX - this.x;
@@ -38,15 +49,15 @@ class Point {
 }
 
 const Points = () => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const mouseRef = useRef({ x: 0, y: 0 });
-  const pointsRef = useRef([]);
-  const mouseEnteredRef = useRef(false); 
-  const lineLengthRef = useRef(0); 
-  const maxLineLength = 25; 
-  const easingSpeed = 0.05; 
+  const pointsRef = useRef(/** @type {Point[]} */ ([]));
+  const mouseEnteredRef = useRef(false);
+  const lineLengthRef = useRef(0);
+  const maxLineLength = 25;
+  const easingSpeed = 0.05;
 
-  const initializePoints = useCallback((canvas) => {
+  const initializePoints = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
     const points = [];
     const spacing = 60;
     const cols = Math.floor(canvas.width / spacing);
@@ -75,7 +86,7 @@ const Points = () => {
     }
   }, [initializePoints]);
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -105,7 +116,7 @@ const Points = () => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
     const points = pointsRef.current;
     const mouse = mouseRef.current;
 
@@ -118,7 +129,7 @@ const Points = () => {
   }, [updateLineLength]);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 

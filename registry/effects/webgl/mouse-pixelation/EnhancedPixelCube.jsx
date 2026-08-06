@@ -28,7 +28,9 @@ const WAVE_SPEED = 3;
 const WAVE_STRENGTH = 0.15;
 const VELOCITY_INFLUENCE_SCALE = 100;
 const DEFORMATION_SCALE = 0.3;
+/** @type {[number, number, number, number]} */
 const PLANE_ARGS = [18, 12, 200, 200];
+/** @type {[number, number, number, number, number, number]} */
 const CUBE_ARGS = [1, 1, 1, 20, 20, 20];
 const BLOOM_INTENSITY = 1;
 const BLOOM_THRESHOLD = 1.5;
@@ -252,6 +254,10 @@ class PixelTrailMaterial extends THREE.ShaderMaterial {
 }
 
 class CubeDeformMaterial extends THREE.ShaderMaterial {
+  /**
+   * @param {THREE.Color} color
+   * @param {THREE.Color} emissive
+   */
   constructor(color, emissive) {
     super({
       uniforms: {
@@ -267,16 +273,30 @@ class CubeDeformMaterial extends THREE.ShaderMaterial {
 
 extend({ PixelTrailMaterial, CubeDeformMaterial });
 
+// Custom shader materials registered via extend() aren't part of
+// JSX.IntrinsicElements; reference them through any-typed tags so JSX
+// accepts them without changing what's rendered.
+const PixelTrailMaterialTag = /** @type {any} */ ("pixelTrailMaterial");
+const CubeDeformMaterialTag = /** @type {any} */ ("cubeDeformMaterial");
+
+/**
+ * @typedef {Object} PointerVec2Ref
+ * @property {import('react').RefObject<{x: number, y: number}>} mousePositionRef
+ * @property {import('react').RefObject<{x: number, y: number}>} mouseVelocityRef
+ * @property {import('react').RefObject<number>} trailStrengthRef
+ */
+
+/** @param {PointerVec2Ref} props */
 function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
-  const materialRef = useRef(null);
+  const materialRef = useRef(/** @type {PixelTrailMaterial|null} */ (null));
   const pointerTargetRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const pointerCurrentRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const lastPointerRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const isMovingRef = useRef(false);
   const lastMoveTimeRef = useRef(0);
 
-  const onPointerMove = (event) => {
-    const [u, v] = event.uv;
+  const onPointerMove = (/** @type {import('@react-three/fiber').ThreeEvent<PointerEvent>} */ event) => {
+    const [u, v] = /** @type {[number, number]} */ (/** @type {any} */ (event.uv));
     const currentTime = Date.now();
     const deltaX = Math.abs(u - lastPointerRef.current.x);
     const deltaY = Math.abs(v - lastPointerRef.current.y);
@@ -365,28 +385,37 @@ function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
   return (
     <mesh onPointerMove={onPointerMove}>
       <planeGeometry args={PLANE_ARGS} />
-      <pixelTrailMaterial ref={materialRef} />
+      <PixelTrailMaterialTag ref={materialRef} />
     </mesh>
   );
 }
 
+/**
+ * @typedef {Object} DeformingCubeColorOption
+ * @property {string} color
+ * @property {string} [emissive]
+ */
+
+/**
+ * @param {PointerVec2Ref & {colorOptions: DeformingCubeColorOption[]}} props
+ */
 function DeformingCube({
   mousePositionRef,
   mouseVelocityRef,
   trailStrengthRef,
   colorOptions,
 }) {
-  const cubeRef = useRef(null);
-  const geometryRef = useRef(null);
-  const materialRef = useRef(null);
-  const originalPositionsRef = useRef(null);
+  const cubeRef = useRef(/** @type {THREE.Mesh|null} */ (null));
+  const geometryRef = useRef(/** @type {THREE.BufferGeometry|null} */ (null));
+  const materialRef = useRef(/** @type {CubeDeformMaterial|null} */ (null));
+  const originalPositionsRef = useRef(/** @type {Float32Array|null} */ (null));
   const targetRotationRef = useRef({ x: 0, y: 0 });
   const currentRotationRef = useRef({ x: 0, y: 0 });
   const parsedColorOptions = useMemo(
     () => {
       const palette = colorOptions.length ? colorOptions : DEFAULT_COLOR_OPTIONS;
 
-      return palette.map((option) => ({
+      return palette.map((/** @type {DeformingCubeColorOption} */ option) => ({
         color: new THREE.Color(option.color),
         emissive: new THREE.Color(option.emissive ?? option.color),
       }));
@@ -427,8 +456,9 @@ function DeformingCube({
     }
 
     geometryRef.current = cubeRef.current.geometry;
-    originalPositionsRef.current =
-      cubeRef.current.geometry.attributes.position.array.slice();
+    originalPositionsRef.current = /** @type {Float32Array} */ (
+      cubeRef.current.geometry.attributes.position.array.slice()
+    );
   }, []);
 
   useFrame(() => {
@@ -536,7 +566,7 @@ function DeformingCube({
   return (
     <mesh ref={cubeRef} position={[0, 0, 1]} layers={1}>
       <boxGeometry args={CUBE_ARGS} />
-      <cubeDeformMaterial
+      <CubeDeformMaterialTag
         ref={materialRef}
         args={[new THREE.Color("#ffffff"), new THREE.Color("#ffffff")]}
       />
@@ -544,12 +574,17 @@ function DeformingCube({
   );
 }
 
+/**
+ * @param {{notice?: string, colorOptions?: DeformingCubeColorOption[]}} props
+ */
 export default function EnhancedPixelCube({
   notice = DEFAULT_NOTICE_TEXT,
   colorOptions = DEFAULT_COLOR_OPTIONS,
 }) {
-  const rootRef = useRef(null);
-  const [frameloop, setFrameloop] = useState("always");
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const [frameloop, setFrameloop] = useState(
+    /** @type {'always'|'never'|'demand'} */ ("always")
+  );
   const mousePositionRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const mouseVelocityRef = useRef({ x: 0, y: 0 });
   const trailStrengthRef = useRef(0);

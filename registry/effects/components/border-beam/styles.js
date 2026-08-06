@@ -40,6 +40,7 @@ export const sizePresets = {
 /**
  * Per-size theme presets matching the tuned v5 control panel defaults
  */
+/** @type {Record<string, Record<string, any>>} */
 export const sizeThemePresets = {
   sm: {
     dark: {
@@ -148,6 +149,7 @@ export const themeColors = {
 /**
  * Color palettes for each color variant
  */
+/** @type {Record<string, any>} */
 const colorPalettes = {
   colorful: {
     border: [
@@ -222,6 +224,7 @@ const colorPalettes = {
 /**
  * Small size color palettes (compact gradients for button-sized elements)
  */
+/** @type {Record<string, any>} */
 const smallColorPalettes = {
   colorful: {
     border: [
@@ -313,35 +316,51 @@ const smallColorPalettes = {
   },
 };
 
+/**
+ * @param {any} colorVariant
+ * @returns {string}
+ */
 function getSmallColorGradients(colorVariant) {
   const palette = smallColorPalettes[colorVariant];
   return palette.border
-    .map(c => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
+    .map((/** @type {any} */ c) => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
     .join(',\n    ');
 }
 
+/**
+ * @param {any} colorVariant
+ * @returns {string}
+ */
 function getSmallInnerGradients(colorVariant) {
   const palette = smallColorPalettes[colorVariant];
   return palette.inner
-    .map(c => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
+    .map((/** @type {any} */ c) => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
     .join(',\n    ');
 }
 
+/**
+ * @param {any} colorVariant
+ * @returns {string}
+ */
 function getColorGradients(colorVariant) {
   const palette = colorPalettes[colorVariant];
   return palette.border
-    .map(c => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
+    .map((/** @type {any} */ c) => `radial-gradient(ellipse ${c.size} at ${c.pos}, ${c.color}, transparent)`)
     .join(',\n    ');
 }
 
+/**
+ * @param {any} colorVariant
+ * @returns {string}
+ */
 function getInnerGradients(colorVariant) {
   const palette = colorPalettes[colorVariant];
   // Mono variant gets 50% lower opacity
   const baseOpacity = colorVariant === 'mono' ? 0.225 : 0.45;
   return palette.border
-    .map(c => {
+    .map((/** @type {any} */ c) => {
       const rgba = c.color.replace('rgb(', 'rgba(').replace(')', `, ${baseOpacity})`);
-      const smallerSize = c.size.split(' ').map(s => {
+      const smallerSize = c.size.split(' ').map((/** @type {any} */ s) => {
         const val = parseInt(s);
         return `${Math.round(val * 0.9)}px`;
       }).join(' ');
@@ -350,11 +369,17 @@ function getInnerGradients(colorVariant) {
     .join(',\n    ');
 }
 
+/**
+ * @param {any} colorVariant
+ * @param {any} isDark
+ * @returns {any}
+ */
 function getSpikeColors(colorVariant, isDark) {
   const palette = colorPalettes[colorVariant];
   return isDark ? palette.spike : palette.spikeLt;
 }
 
+/** @type {Record<string, any>} */
 const lineColorPalettes = {
   colorful: {
     dark: [
@@ -454,10 +479,16 @@ const lineColorPalettes = {
   },
 };
 
+/**
+ * @param {any} colorVariant
+ * @param {any} isDark
+ * @param {any} id
+ * @returns {string}
+ */
 function getLineColorGradients(colorVariant, isDark, id) {
   const palette = lineColorPalettes[colorVariant][isDark ? 'dark' : 'light'];
   return palette
-    .map(c => {
+    .map((/** @type {any} */ c) => {
       const offsetXStr = c.offsetX === 0 ? '' : (c.offsetX > 0 ? ` + ${c.offsetX}px` : ` - ${Math.abs(c.offsetX)}px`);
       const offsetYStr = c.offsetY === 0 ? '' : (c.offsetY > 0 ? ` + ${c.offsetY}px` : ` - ${Math.abs(c.offsetY)}px`);
       return `radial-gradient(ellipse calc(${c.sizeW}px * var(--beam-w-${id})) calc(${c.sizeH}px * var(--beam-h-${id})) at calc(var(--beam-x-${id}) * 100%${offsetXStr}) calc(100%${offsetYStr}), ${c.color}, transparent)`;
@@ -466,6 +497,7 @@ function getLineColorGradients(colorVariant, isDark, id) {
 }
 
 // Inner gradient data matching v5.css exactly
+/** @type {Record<string, any>} */
 const lineInnerGradientData = {
   colorful: [
     { color: 'rgba(255, 50, 100, 0.48)', sizeW: 33, sizeH: 30, offsetX: 0, offsetY: 0 },
@@ -513,10 +545,15 @@ const lineInnerGradientData = {
   ],
 };
 
+/**
+ * @param {any} colorVariant
+ * @param {any} id
+ * @returns {string}
+ */
 function getLineInnerGradients(colorVariant, id) {
   const data = lineInnerGradientData[colorVariant];
   return data
-    .map(c => {
+    .map((/** @type {any} */ c) => {
       const offsetXStr = c.offsetX === 0 ? '' : (c.offsetX > 0 ? ` + ${c.offsetX}px` : ` - ${Math.abs(c.offsetX)}px`);
       const offsetYStr = c.offsetY === 0 ? '' : ` - ${Math.abs(c.offsetY)}px`;
       return `radial-gradient(ellipse calc(${c.sizeW}px * var(--beam-w-${id})) calc(${c.sizeH}px * var(--beam-h-${id})) at calc(var(--beam-x-${id}) * 100%${offsetXStr}) calc(100%${offsetYStr}), ${c.color}, transparent)`;
@@ -524,6 +561,7 @@ function getLineInnerGradients(colorVariant, id) {
     .join(',\n    ');
 }
 
+/** @type {Record<string, any>} */
 const lineBloomColors = {
   colorful: {
     dark: {
@@ -607,6 +645,11 @@ const lineBloomColors = {
   },
 };
 
+/**
+ * @param {any} color
+ * @param {any} alpha
+ * @returns {string}
+ */
 function withAlpha(color, alpha) {
   const rgbaMatch = color.match(/^rgba\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*[\d.]+\s*\)$/);
   if (rgbaMatch) return `rgba(${rgbaMatch[1]}, ${rgbaMatch[2]}, ${rgbaMatch[3]}, ${alpha})`;
@@ -615,6 +658,11 @@ function withAlpha(color, alpha) {
   return color;
 }
 
+/**
+ * @param {any} color
+ * @param {any} factor
+ * @returns {string}
+ */
 function attenuateSpike(color, factor) {
   const rgbaMatch = color.match(/^rgba\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*\)$/);
   if (rgbaMatch) return `rgba(${rgbaMatch[1]}, ${rgbaMatch[2]}, ${rgbaMatch[3]}, ${(parseFloat(rgbaMatch[4]) * factor).toFixed(2)})`;
@@ -623,6 +671,12 @@ function attenuateSpike(color, factor) {
   return color;
 }
 
+/**
+ * @param {any} colorVariant
+ * @param {any} isDark
+ * @param {any} id
+ * @returns {string}
+ */
 function getLineBloomGradients(colorVariant, isDark, id) {
   const spikeColors = getSpikeColors(colorVariant, isDark);
   const bloomData = lineBloomColors[colorVariant][isDark ? 'dark' : 'light'];
@@ -636,7 +690,7 @@ function getLineBloomGradients(colorVariant, isDark, id) {
   const sc2     = isMono ? attenuateSpike(spikeColors.secondary, 0.12) : spikeColors.secondary;
   const sc2_mid = isMono ? withAlpha(spikeColors.secondary, 0.06) : withAlpha(spikeColors.secondary, 0.49);
 
-  const spikes = bloomData.spikes.map(s => isMono
+  const spikes = bloomData.spikes.map((/** @type {any} */ s) => isMono
     ? { color1: attenuateSpike(s.color1, att), color2: attenuateSpike(s.color2, att * 0.7) }
     : s
   );
@@ -750,12 +804,29 @@ const PULSE_OUTER_BLOOM = [
 
 // Convert an `rgb()` palette color into `rgba()` whose alpha is the live quadrant
 // opacity custom property, so the gradient breathes per-quadrant.
+/**
+ * @param {any} color
+ * @param {any} quad
+ * @param {any} id
+ * @returns {string}
+ */
 function withAlphaVar(color, quad, id) {
   const m = color.match(/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/);
   const rgb = m ? `${m[1]}, ${m[2]}, ${m[3]}` : '255, 255, 255';
   return `rgba(${rgb}, var(--bop-${quad}-${id}))`;
 }
 
+/**
+ * @param {any} color
+ * @param {any} w
+ * @param {any} h
+ * @param {any} region
+ * @param {any} quad
+ * @param {any} x
+ * @param {any} y
+ * @param {any} id
+ * @returns {string}
+ */
 function pulseGrad(color, w, h, region, quad, x, y, id) {
   // `--pulse-glow-sx/sy` (set inline by the component for pulse-outside) scale the
   // blob WIDTH/HEIGHT to the measured element size, so the glow fits any component.
@@ -768,9 +839,14 @@ function pulseGrad(color, w, h, region, quad, x, y, id) {
 
 // The 9-gradient perimeter ring (Card 4 ::after / Card 5 stroke share this) -
 // positions + sizes come straight from the palette, region/quad from PULSE_RING_MAP.
+/**
+ * @param {any} variant
+ * @param {any} id
+ * @returns {string}
+ */
 function pulseRingGradients(variant, id) {
   return colorPalettes[variant].border
-    .map((c, i) => {
+    .map((/** @type {any} */ c, /** @type {number} */ i) => {
       const { region, quad } = PULSE_RING_MAP[i];
       const [x, y] = c.pos.split(' ');
       const [w, h] = c.size.split(' ').map(parseFloat);
@@ -780,9 +856,15 @@ function pulseRingGradients(variant, id) {
 }
 
 // Card 4 inner-perimeter gradients (smaller sizes) plus the bright corner accents.
+/**
+ * @param {any} variant
+ * @param {any} id
+ * @param {any} isDark
+ * @returns {string}
+ */
 function pulseInnerGradients(variant, id, isDark) {
   const palette = colorPalettes[variant].border;
-  const grads = palette.map((c, i) => {
+  const grads = palette.map((/** @type {any} */ c, /** @type {number} */ i) => {
     const { region, quad } = PULSE_RING_MAP[i];
     const [x, y] = c.pos.split(' ');
     const [w, h] = PULSE_INNER_SIZES[i];
@@ -804,10 +886,16 @@ function pulseInnerGradients(variant, id, isDark) {
 }
 
 // Emit a fixed gradient table (used by inner bloom + both outer layers).
+/**
+ * @param {any} table
+ * @param {any} variant
+ * @param {any} id
+ * @returns {string}
+ */
 function pulseTableGradients(table, variant, id) {
   const palette = colorPalettes[variant].border;
   return table
-    .map(e => {
+    .map((/** @type {any} */ e) => {
       const c = palette[e.ci];
       const [px, py] = c.pos.split(' ');
       return pulseGrad(c.color, e.w, e.h, e.region, e.quad, e.x ?? px, e.y ?? py, id);
@@ -821,11 +909,17 @@ function pulseTableGradients(table, variant, id) {
 // longer changes per frame, its heavily-blurred bitmap is painted ONCE and cached
 // by the compositor rather than re-rasterized 60–120×/sec - the single biggest
 // per-frame cost in the pulse effect.
+/**
+ * @param {any} table
+ * @param {any} variant
+ * @param {any} frozenAlpha
+ * @returns {string}
+ */
 function pulseTableGradientsStatic(table, variant, frozenAlpha) {
   const palette = colorPalettes[variant].border;
   const a = +frozenAlpha.toFixed(3);
   return table
-    .map(e => {
+    .map((/** @type {any} */ e) => {
       const c = palette[e.ci];
       const [px, py] = c.pos.split(' ');
       const x = e.x ?? px;
@@ -850,6 +944,10 @@ export const REDUCED_MOTION_SCALE = 3;
 // Pauses every animation on an instance (wrapper + pseudo layers + bloom) when it
 // carries the `data-paused` attribute. Driven by an IntersectionObserver so beams
 // that are scrolled offscreen stop doing per-frame paint work entirely.
+/**
+ * @param {any} id
+ * @returns {string}
+ */
 function pausedAnimationsRule(id) {
   return `
 [data-beam="${id}"][data-paused],
@@ -861,6 +959,10 @@ function pausedAnimationsRule(id) {
 }
 
 /** Slow continuous motion under prefers-reduced-motion (scale durations, don't freeze). */
+/**
+ * @param {any} id
+ * @returns {string}
+ */
 function reducedMotionRule(id) {
   return `
 @media (prefers-reduced-motion: reduce) {
@@ -870,11 +972,19 @@ function reducedMotionRule(id) {
 }`;
 }
 
+/**
+ * @param {any} seconds
+ * @returns {string}
+ */
 function motionDur(seconds) {
   return `calc(${seconds}s * var(--beam-motion-scale, 1))`;
 }
 
 // @property registrations for all per-instance pulse custom properties.
+/**
+ * @param {any} id
+ * @returns {string}
+ */
 function pulsePropertyRegs(id) {
   const numbers = ['bw1', 'bh1', 'bw2', 'bh2', 'bw3', 'bh3', 'bgh', 'bop-tl', 'bop-tr', 'bop-bl', 'bop-br'];
   const lengths = ['bx1', 'by1', 'bx2', 'by2', 'bx3', 'by3'];
@@ -902,6 +1012,12 @@ function pulsePropertyRegs(id) {
 // quarters it on 120 Hz, with no perceptible change to the breathing.
 
 /** Theme/size/duration-tuned breathing parameters (shared by CSS + JS driver). */
+/**
+ * @param {any} size
+ * @param {any} theme
+ * @param {any} duration
+ * @returns {any}
+ */
 function pulseParams(size, theme, duration) {
   const isDark = theme === 'dark';
   const durScale = duration / 2.3;
@@ -932,6 +1048,11 @@ function pulseParams(size, theme, duration) {
 }
 
 /** Build the oscillator table for an instance (matches the former keyframes). */
+/**
+ * @param {any} id
+ * @param {any} p
+ * @returns {any}
+ */
 function pulseOscillatorDefs(id, p) {
   const { sp, dr, op, gh, bs, ss, ghs } = p;
   return [
@@ -959,6 +1080,18 @@ function pulseOscillatorDefs(id, p) {
  * Returns the runtime config the JS driver needs to animate a pulse instance,
  * or null for non-pulse sizes. Kept in sync with the CSS by sharing pulseParams.
  */
+/**
+ * @param {string} size
+ * @param {string} theme
+ * @param {number} duration
+ * @param {number} hueRange
+ * @param {boolean} staticColors
+ * @param {string} id
+ * @returns {{
+ *   oscillators: { prop: string, a: number, b: number, period: number, delay: number, unit: string }[],
+ *   hue: { prop: string, range: number, period: number, continuous: boolean } | null,
+ * } | null}
+ */
 export function getPulseDriverConfig(size, theme, duration, hueRange, staticColors, id) {
   if (size !== 'pulse-inner' && size !== 'pulse-outside') return null;
   const p = pulseParams(size, theme, duration);
@@ -974,12 +1107,40 @@ export function getPulseDriverConfig(size, theme, duration, hueRange, staticColo
 
 // Only the (short, one-shot) fade is still a CSS animation; the breathing is
 // driven from JS so it can be frame-rate capped and paused offscreen.
+/**
+ * @param {any} id
+ * @param {any} fadeName
+ * @param {any} fadeDur
+ * @returns {string}
+ */
 function pulseWrapperAnimation(id, fadeName, fadeDur) {
   return `  animation: ${fadeName}-${id} ${motionDur(fadeDur)} ease forwards;`;
 }
 
 /**
+ * @typedef {Object} BeamCSSOptions
+ * @property {string} id
+ * @property {number} borderRadius
+ * @property {number} borderWidth
+ * @property {number} duration
+ * @property {number} strokeOpacity
+ * @property {number} innerOpacity
+ * @property {number} bloomOpacity
+ * @property {string} innerShadow
+ * @property {string} size
+ * @property {string} colorVariant
+ * @property {boolean} staticColors
+ * @property {number} brightness
+ * @property {number} saturation
+ * @property {number} hueRange
+ * @property {string} theme
+ * @property {number} [hairlineOpacity]
+ */
+
+/**
  * Generate complete CSS for a BorderBeam instance
+ * @param {BeamCSSOptions} options
+ * @returns {string}
  */
 export function generateBeamCSS(options) {
   const { size } = options;
@@ -1003,6 +1164,7 @@ export function generateBeamCSS(options) {
   return generateBorderVariantCSS(options);
 }
 
+/** @param {BeamCSSOptions} options */
 function generateSmallVariantCSS(options) {
   const {
     id,
@@ -1243,6 +1405,7 @@ ${reducedMotionRule(id)}
 `;
 }
 
+/** @param {BeamCSSOptions} options */
 function generateBorderVariantCSS(options) {
   const {
     id,
@@ -1497,6 +1660,7 @@ ${reducedMotionRule(id)}
  * A full colorful perimeter ring (::after), an inner perimeter glow with corner
  * accents (::before), and a soft blurred bloom, all clipped inside the element.
  */
+/** @param {BeamCSSOptions} options */
 function generatePulseInnerVariantCSS(options) {
   const {
     id, borderRadius, borderWidth, duration,
@@ -1638,6 +1802,7 @@ ${reducedMotionRule(id)}
  * Requires the wrapped child to be opaque so the inner part is covered and only
  * the outward halo shows.
  */
+/** @param {BeamCSSOptions} options */
 function generatePulseOuterVariantCSS(options) {
   const {
     id, borderRadius, duration,
@@ -1803,6 +1968,7 @@ ${reducedMotionRule(id)}
 `;
 }
 
+/** @param {BeamCSSOptions} options */
 function generateLineVariantCSS(options) {
   const {
     id,

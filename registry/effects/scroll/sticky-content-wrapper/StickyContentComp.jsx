@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,18 +14,49 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
+/**
+ * @typedef {Object} StickyContentLink
+ * @property {string} [href]
+ * @property {string} [text]
+ * @property {string} [label]
+ * @property {string} [className]
+ * @property {string} [target]
+ * @property {string} [rel]
+ */
+
+/**
+ * @typedef {Object} StickyContentItem
+ * @property {string} [heading]
+ * @property {string[]} [paragraphs]
+ * @property {string|string[]} [paragraph]
+ * @property {string[]} [list]
+ * @property {string[]} [listItems]
+ * @property {StickyContentLink} [link]
+ * @property {string} [href]
+ * @property {string} [linkText]
+ * @property {string} [cta]
+ * @property {string} [image]
+ * @property {string} [alt]
+ * @property {string} [imageAlt]
+ * @property {number} [width]
+ * @property {number} [height]
+ */
+
+/** @param {StickyContentItem} item */
 const getParagraphs = (item) => {
   if (Array.isArray(item.paragraphs)) return item.paragraphs;
   if (Array.isArray(item.paragraph)) return item.paragraph;
   return item.paragraph ? [item.paragraph] : [];
 };
 
+/** @param {StickyContentItem} item */
 const getListItems = (item) => {
   if (Array.isArray(item.list)) return item.list;
   if (Array.isArray(item.listItems)) return item.listItems;
   return [];
 };
 
+/** @param {StickyContentItem} item */
 const getLink = (item) => {
   if (item.link) return item.link;
   if (item.href) {
@@ -37,6 +68,7 @@ const getLink = (item) => {
   return null;
 };
 
+/** @param {StickyContentItem} item */
 const renderStickyContent = (item) => {
   const paragraphs = getParagraphs(item);
   const listItems = getListItems(item);
@@ -61,7 +93,7 @@ const renderStickyContent = (item) => {
       {link?.href && (
         <a
           href={link.href}
-          onClick={(e) => {
+          onClick={(/** @type {import('react').MouseEvent<HTMLAnchorElement>} */ e) => {
     e.preventDefault();
           }}
           className={`group mt-[1vw] inline-flex w-fit items-center gap-2 text-[1.2vw] leading-[1.2] no-underline ${link.className || ""}`}
@@ -91,6 +123,27 @@ const renderStickyContent = (item) => {
   );
 };
 
+/**
+ * @typedef {Object} StickyContentCompProps
+ * @property {StickyContentItem[]} [items]
+ * @property {string} [className]
+ * @property {string} [leftClassName]
+ * @property {string} [rightClassName]
+ * @property {string} [contentClassName]
+ * @property {string} [imageClassName]
+ * @property {string} [containerHeight]
+ * @property {number} [contentEnterYPercent]
+ * @property {number} [contentExitYPercent]
+ * @property {number} [contentTransitionDuration]
+ * @property {number} [contentDelay]
+ * @property {number} [stepGap]
+ * @property {boolean} [enableImageScaleFlow]
+ * @property {number} [initialImageScale]
+ * @property {number} [activeImageScale]
+ * @property {number} [exitImageScale]
+ */
+
+/** @param {StickyContentCompProps} props */
 export function StickyContentComp({
   items = [],
   className = "",
@@ -110,10 +163,10 @@ export function StickyContentComp({
   exitImageScale = 1,
 }) {
   // State & refs
-  const sectionRef = useRef(null);
-  const stickyRef = useRef(null);
-  const contentRefsRef = useRef([]);
-  const imageRefsRef = useRef([]);
+  const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const stickyRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const contentRefsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const imageRefsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
   const lenis = useLenis();
 
   // Effects
@@ -167,7 +220,7 @@ export function StickyContentComp({
           start: "top top",
           end: "bottom bottom",
           scrub: 1,
-          snap:
+          snap: /** @type {any} */ (
             items.length > 1
               ? {
                   snapTo: snapValues,
@@ -182,7 +235,8 @@ export function StickyContentComp({
                     lenis?.start();
                   },
                 }
-              : false,
+              : false
+          ),
         },
       });
 

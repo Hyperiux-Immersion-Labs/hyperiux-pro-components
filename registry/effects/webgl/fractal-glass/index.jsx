@@ -116,6 +116,7 @@ const fragmentShader = `
  }
 `;
 
+/** @param {any} source */
 function resolveMediaSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
@@ -123,6 +124,10 @@ function resolveMediaSource(source) {
   return source;
 }
 
+/**
+ * @param {any} source
+ * @returns {Promise<{image: HTMLImageElement, objectUrl: string}>}
+ */
 function loadImageElement(source) {
   return new Promise((resolve, reject) => {
     const imageSource = resolveMediaSource(source);
@@ -165,6 +170,20 @@ function loadImageElement(source) {
   });
 }
 
+/**
+ * @typedef {Object} FractalGlassProps
+ * @property {string} [imageSrc]
+ * @property {any} [videoSrc]
+ * @property {'image'|'video'} [mediaType]
+ * @property {number} [stripesFrequency]
+ * @property {number} [glassStrength]
+ * @property {number} [glassSmoothness]
+ * @property {number} [parallaxStrength]
+ * @property {number} [distortionMultiplier]
+ * @property {number} [edgePadding]
+ */
+
+/** @param {FractalGlassProps} props */
 export default function FractalGlass({
   imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", // ← new prop: path/URL to image file
   videoSrc = null,
@@ -176,8 +195,8 @@ export default function FractalGlass({
   distortionMultiplier = 8.0,
   edgePadding = 0.12,
 }) {
-  const mountRef = useRef(null);
-  const videoRef = useRef(null); // keeps reference to video element for cleanup
+  const mountRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null)); // keeps reference to video element for cleanup
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -210,26 +229,31 @@ export default function FractalGlass({
       uEdgePadding: { value: edgePadding },
     };
 
+    /** @type {HTMLVideoElement|null} */
     let videoEl = null;
+    /** @type {THREE.VideoTexture|null} */
     let videoTexture = null;
+    /** @type {THREE.Texture|null} */
     let imageTexture = null;
+    /** @type {string|null} */
     let imageObjectUrl = null;
     let isDisposed = false;
 
     if (mediaType === "video" && videoSrc) {
       // ── Video path ──────────────────────────────────────────────
       videoEl = document.createElement("video");
-      videoEl.crossOrigin = "anonymous";
-      videoEl.referrerPolicy = "no-referrer";
-      videoEl.loop = true;
-      videoEl.muted = true;
-      videoEl.playsInline = true;
-      videoEl.autoplay = true;
-      videoEl.src = resolveMediaSource(videoSrc);
-      videoRef.current = videoEl;
+      const currentVideoEl = videoEl;
+      currentVideoEl.crossOrigin = "anonymous";
+      /** @type {any} */ (currentVideoEl).referrerPolicy = "no-referrer";
+      currentVideoEl.loop = true;
+      currentVideoEl.muted = true;
+      currentVideoEl.playsInline = true;
+      currentVideoEl.autoplay = true;
+      currentVideoEl.src = resolveMediaSource(videoSrc);
+      videoRef.current = currentVideoEl;
 
-      videoEl.addEventListener("loadedmetadata", () => {
-        uniforms.uTextureSize.value.set(videoEl.videoWidth, videoEl.videoHeight);
+      currentVideoEl.addEventListener("loadedmetadata", () => {
+        uniforms.uTextureSize.value.set(currentVideoEl.videoWidth, currentVideoEl.videoHeight);
       });
 
       videoEl.play().catch(() => {
@@ -275,12 +299,12 @@ export default function FractalGlass({
     const target = { x: 0.5, y: 0.5 };
     const current = { x: 0.5, y: 0.5 };
 
-    const setTarget = (x, y) => {
+    const setTarget = (/** @type {number} */ x, /** @type {number} */ y) => {
       target.x = x / window.innerWidth;
       target.y = 1 - y / window.innerHeight;
     };
-    const onMouse = (e) => setTarget(e.clientX, e.clientY);
-    const onTouch = (e) => setTarget(e.touches[0].clientX, e.touches[0].clientY);
+    const onMouse = (/** @type {MouseEvent} */ e) => setTarget(e.clientX, e.clientY);
+    const onTouch = (/** @type {TouchEvent} */ e) => setTarget(e.touches[0].clientX, e.touches[0].clientY);
     window.addEventListener("mousemove", onMouse);
     window.addEventListener("touchmove", onTouch, { passive: true });
 

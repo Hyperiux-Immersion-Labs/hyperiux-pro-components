@@ -39,24 +39,51 @@ const TEXT_LEAVE_DURATION = 0.35;
 const TEXT_STAGGER = 0.06;
 const TEXT_LEAVE_STAGGER = 0.04;
 
+/**
+ * @typedef {Object} InfinitePerspectiveSliderItemData
+ * @property {string} [src]
+ * @property {string|number} [number]
+ * @property {string} [title]
+ * @property {string} [desc]
+ * @property {string} [description]
+ */
+
+/** @typedef {string|InfinitePerspectiveSliderItemData} InfinitePerspectiveSliderItem */
+
+/**
+ * @param {InfinitePerspectiveSliderItem} item
+ * @returns {InfinitePerspectiveSliderItemData}
+ */
 const getItemData = (item) => (typeof item === "string" ? { src: item } : item);
 
+/**
+ * @typedef {Object} CardSetter
+ * @property {(value: number|string) => void} x
+ * @property {(value: number|string) => void} rotateY
+ */
+
+/**
+ * @typedef {Object} InfinitePerspectiveSliderCompProps
+ * @property {InfinitePerspectiveSliderItem[]} [images]
+ */
+
+/** @param {InfinitePerspectiveSliderCompProps} props */
 export function InfinitePerspectiveSliderComp({ images = [] }) {
-  const stripRef = useRef(null);
-  const settersRef = useRef([]);
-  const cardRefs = useRef([]);
-  const imageRefs = useRef([]);
-  const numberRefs = useRef([]);
-  const titleRefs = useRef([]);
-  const descriptionRefs = useRef([]);
+  const stripRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const settersRef = useRef(/** @type {CardSetter[]} */ ([]));
+  const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const imageRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const numberRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const titleRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const descriptionRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
 
-  const activeHoverIndexRef = useRef(null);
-  const hoveredIndexRef = useRef(null);
+  const activeHoverIndexRef = useRef(/** @type {number|null} */ (null));
+  const hoveredIndexRef = useRef(/** @type {number|null} */ (null));
   const isScrollingRef = useRef(false);
-  const scrollStopTimerRef = useRef(null);
+  const scrollStopTimerRef = useRef(/** @type {number|null} */ (null));
 
-  const leaveHandlersRef = useRef({});
-  const enterHandlersRef = useRef({});
+  const leaveHandlersRef = useRef(/** @type {Record<number, () => void>} */ ({}));
+  const enterHandlersRef = useRef(/** @type {Record<number, () => void>} */ ({}));
 
   const [viewportWidth, setViewportWidth] = useState(CARD_WIDTH * 4);
 
@@ -96,7 +123,17 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
     lastX: 0,
   });
 
+  /**
+   * @param {number} a
+   * @param {number} b
+   * @param {number} n
+   */
   const lerp = (a, b, n) => a + (b - a) * n;
+  /**
+   * @param {number} value
+   * @param {number} min
+   * @param {number} max
+   */
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
   const clearActiveContent = useCallback(() => {
@@ -140,14 +177,14 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
   const initSetters = () => {
     if (!stripRef.current) return;
 
-    settersRef.current = Array.from(stripRef.current.children).map((element) => ({
+    settersRef.current = /** @type {CardSetter[]} */ (Array.from(stripRef.current.children).map((element) => ({
       x: gsap.quickSetter(element, "x", "px"),
       rotateY: gsap.quickSetter(element, "rotateY", "deg"),
-    }));
+    })));
   };
 
   const positionCards = useCallback(
-    (offset, rotation) => {
+    (/** @type {number} */ offset, /** @type {number} */ rotation) => {
       const strip = stripRef.current;
 
       if (!strip || !images.length) return;
@@ -250,7 +287,7 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
       positionCards(state.current, finalRotation);
     };
 
-    const onWheel = (event) => {
+    const onWheel = (/** @type {WheelEvent} */ event) => {
       const delta = event.deltaY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
@@ -260,13 +297,13 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
       state.target += delta * SCROLL_PER_PX;
     };
 
-    const onDown = (clientX) => {
+    const onDown = (/** @type {number} */ clientX) => {
       state.isDragging = true;
       state.lastX = clientX;
       markScrolling();
     };
 
-    const onMove = (clientX) => {
+    const onMove = (/** @type {number} */ clientX) => {
       if (!state.isDragging) return;
 
       const delta = clientX - state.lastX;
@@ -284,12 +321,12 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
       state.isDragging = false;
     };
 
-    const handleMouseDown = (event) => onDown(event.clientX);
-    const handleMouseMove = (event) => onMove(event.clientX);
+    const handleMouseDown = (/** @type {MouseEvent} */ event) => onDown(event.clientX);
+    const handleMouseMove = (/** @type {MouseEvent} */ event) => onMove(event.clientX);
     const handleMouseUp = () => onUp();
 
-    const handleTouchStart = (event) => onDown(event.touches[0].clientX);
-    const handleTouchMove = (event) => onMove(event.touches[0].clientX);
+    const handleTouchStart = (/** @type {TouchEvent} */ event) => onDown(event.touches[0].clientX);
+    const handleTouchMove = (/** @type {TouchEvent} */ event) => onMove(event.touches[0].clientX);
     const handleTouchEnd = () => onUp();
 
     const onResize = () => {
@@ -353,6 +390,7 @@ export function InfinitePerspectiveSliderComp({ images = [] }) {
   useEffect(() => {
     if (!images.length) return;
 
+    /** @type {{ image: HTMLElement, handleImageEnter: () => void, handleImageLeave: () => void, numberSplit: InstanceType<typeof SplitText>, titleSplit: InstanceType<typeof SplitText>, descriptionSplit: InstanceType<typeof SplitText> }[]} */
     const animations = [];
 
     leaveHandlersRef.current = {};

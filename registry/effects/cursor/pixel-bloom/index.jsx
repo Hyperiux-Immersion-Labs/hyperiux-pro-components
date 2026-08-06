@@ -16,8 +16,22 @@ const DEFAULT_GRID_IMAGE_URLS = Array.from(
   { length: 10 },
   (_, i) => `${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`
 );
+/** @param {string} source */
 const getCanvasSafeMediaUrl = (source) => source;
 
+/**
+ * @typedef {Object} PixelBloomProps
+ * @property {string} [src]
+ * @property {string} [type]
+ * @property {string} [className]
+ * @property {number} [gridSize]
+ * @property {number} [effectRadius]
+ * @property {number} [maxTrailLength]
+ * @property {number} [cellLifetime]
+ * @property {string[]} [gridImageUrls]
+ */
+
+/** @param {PixelBloomProps} props */
 export default function PixelBloom({
   src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
   type = "video",
@@ -29,22 +43,23 @@ export default function PixelBloom({
   // Override to self-host the bloom tile images instead of the demo CDN.
   gridImageUrls = DEFAULT_GRID_IMAGE_URLS,
 }) {
-  const containerRef = useRef(null);
-  const canvasRef = useRef(null);
-  const mediaRef = useRef(null);
+  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+  const mediaRef = useRef(/** @type {HTMLVideoElement|HTMLImageElement|null} */ (null));
 
-  const [gridImages, setGridImages] = useState([]);
+  const [gridImages, setGridImages] = useState(/** @type {HTMLImageElement[]} */ ([]));
   // When every tile image fails (CDN down, offline), show the media
   // directly instead of rendering an invisible component.
   const [gridLoadFailed, setGridLoadFailed] = useState(false);
 
-  const cellImageMapRef = useRef(new Map());
-  const trailRef = useRef([]);
+  const cellImageMapRef = useRef(/** @type {Map<string, {gridIndex: number, timestamp: number, randomDelay: number}>} */ (new Map()));
+  const trailRef = useRef(/** @type {{x: number, y: number, timestamp: number}[]} */ ([]));
   const sequenceRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
 
+    /** @type {HTMLImageElement[]} */
     const images = [];
     let loadedCount = 0;
     const totalImages = gridImageUrls.length;
@@ -97,7 +112,7 @@ export default function PixelBloom({
     if (!container) return;
 
     const handlers = {
-      onMove: ({ localX, localY }) => {
+      onMove: (/** @type {{ localX: number, localY: number }} */ { localX, localY }) => {
         const now = Date.now();
         const rand = () => Math.random() - 0.5;
 
@@ -153,16 +168,22 @@ export default function PixelBloom({
       canvas.style.height = `${rect.height}px`;
     };
 
+    /**
+     * @param {HTMLVideoElement|HTMLImageElement} mediaElement
+     * @param {CanvasRenderingContext2D} context
+     * @param {number} canvasWidth
+     * @param {number} canvasHeight
+     */
     const drawMediaCover = (mediaElement, context, canvasWidth, canvasHeight) => {
       const mediaWidth =
         type === "video"
-          ? mediaElement.videoWidth
-          : mediaElement.naturalWidth;
+          ? /** @type {HTMLVideoElement} */ (mediaElement).videoWidth
+          : /** @type {HTMLImageElement} */ (mediaElement).naturalWidth;
 
       const mediaHeight =
         type === "video"
-          ? mediaElement.videoHeight
-          : mediaElement.naturalHeight;
+          ? /** @type {HTMLVideoElement} */ (mediaElement).videoHeight
+          : /** @type {HTMLImageElement} */ (mediaElement).naturalHeight;
 
       if (!mediaWidth || !mediaHeight) {
         try {
@@ -353,13 +374,13 @@ export default function PixelBloom({
       media.addEventListener("loadeddata", startRender);
       media.addEventListener("play", startRender);
 
-      if (media.readyState >= 2) {
+      if (/** @type {HTMLVideoElement} */ (media).readyState >= 2) {
         startRender();
       }
     } else {
       media.addEventListener("load", startRender);
 
-      if (media.complete) {
+      if (/** @type {HTMLImageElement} */ (media).complete) {
         startRender();
       }
     }
@@ -390,7 +411,7 @@ export default function PixelBloom({
     >
       {type === "video" ? (
         <video
-          ref={mediaRef}
+          ref={/** @type {any} */ (mediaRef)}
           src={src || defaultVideoSrc}
           autoPlay
           loop
@@ -401,7 +422,7 @@ export default function PixelBloom({
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          ref={mediaRef}
+          ref={/** @type {any} */ (mediaRef)}
           src={getCanvasSafeMediaUrl(src)}
           alt="asset-image"
           className={`absolute inset-0 h-full w-full object-cover ${gridLoadFailed ? "opacity-100" : "opacity-0"}`}

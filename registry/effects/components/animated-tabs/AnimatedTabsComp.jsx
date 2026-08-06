@@ -3,6 +3,23 @@
 import React, { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+/**
+ * @typedef {Object} AnimatedTabItem
+ * @property {string | number} [id]
+ * @property {string} label
+ * @property {import('react').ReactNode} content
+ */
+
+/**
+ * @typedef {Object} AnimatedTabsCompProps
+ * @property {AnimatedTabItem[]} [tabs]
+ * @property {number} [defaultActiveIndex]
+ * @property {string} [className]
+ * @property {'fade' | 'slide'} [animationType]
+ * @property {number} [slideDistance]
+ */
+
+/** @param {AnimatedTabsCompProps} props */
 const AnimatedTabsComp = ({
  tabs = [],
  defaultActiveIndex = 0,
@@ -16,9 +33,9 @@ const AnimatedTabsComp = ({
  : 0;
 
  const [activeTab, setActiveTab] = useState(safeDefaultIndex);
- const labelRefs = useRef([]);
- const contentRefs = useRef([]);
- const activeLineRef = useRef(null);
+ const labelRefs = useRef(/** @type {(HTMLButtonElement | null)[]} */ ([]));
+ const contentRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+ const activeLineRef = useRef(/** @type {HTMLDivElement | null} */ (null));
  const reduceMotionRef = useRef(
  typeof window !=="undefined" &&
  (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
@@ -28,6 +45,7 @@ const AnimatedTabsComp = ({
  useEffect(() => {
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
  if (!mq) return;
+ /** @param {MediaQueryListEvent} event */
  const onChange = (event) => {
  reduceMotionRef.current = event.matches;
  };
@@ -36,6 +54,7 @@ const AnimatedTabsComp = ({
  return () => mq.removeEventListener?.("change", onChange);
  }, []);
 
+ /** @param {number} index */
  const moveActiveLine = (index) => {
  const activeLabel = labelRefs.current[index];
  const activeLine = activeLineRef.current;
@@ -50,6 +69,10 @@ const AnimatedTabsComp = ({
  });
  };
 
+ /**
+  * @param {number} currentIndex
+  * @param {number} nextIndex
+  */
  const animateContent = (currentIndex, nextIndex) => {
  const currentContent = contentRefs.current[currentIndex];
  const nextContent = contentRefs.current[nextIndex];
@@ -120,6 +143,7 @@ const AnimatedTabsComp = ({
  }
  };
 
+ /** @param {number} index */
  const handleTabClick = (index) => {
  if (index === activeTab) return;
 
@@ -128,6 +152,10 @@ const AnimatedTabsComp = ({
  setActiveTab(index);
  };
 
+ /**
+  * @param {import('react').KeyboardEvent<HTMLButtonElement>} event
+  * @param {number} index
+  */
  const handleTabKeyDown = (event, index) => {
  const count = tabs.length;
  let nextIndex;
@@ -188,7 +216,7 @@ const AnimatedTabsComp = ({
  {tabs.map((tab, index) => (
  <button
  key={tab.id || index}
- ref={(el) => (labelRefs.current[index] = el)}
+ ref={(el) => { labelRefs.current[index] = el; }}
  role="tab"
  id={`${baseId}-tab-${index}`}
  aria-selected={activeTab === index}
@@ -215,7 +243,7 @@ const AnimatedTabsComp = ({
  {tabs.map((tab, index) => (
  <div
  key={tab.id || index}
- ref={(el) => (contentRefs.current[index] = el)}
+ ref={(el) => { contentRefs.current[index] = el; }}
  role="tabpanel"
  id={`${baseId}-panel-${index}`}
  aria-labelledby={`${baseId}-tab-${index}`}

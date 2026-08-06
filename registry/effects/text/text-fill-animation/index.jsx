@@ -14,6 +14,25 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+/**
+ * @typedef {Object} TextFillAnimationProps
+ * @property {string} [text]
+ * @property {string} [textColor]
+ * @property {string} [primaryColor]
+ * @property {string} [dimColor]
+ * @property {string} [backgroundColor]
+ * @property {string} [className]
+ * @property {string} [id]
+ * @property {string} [textSize]
+ * @property {string} [textWidth]
+ * @property {string} [containerClassName]
+ * @property {string} [mobileTextSize]
+ * @property {string} [mobileTextWidth]
+ * @property {string} [tabletTextSize]
+ * @property {string} [tabletTextWidth]
+ */
+
+/** @param {TextFillAnimationProps} props */
 export default function TextFillAnimation({
   text = "Design systems should feel effortless, not like you're fighting your own components every time you build.",
   textColor = '#111111',
@@ -31,8 +50,8 @@ export default function TextFillAnimation({
   tabletTextWidth = '88%',
 }) {
   // State and refs
-  const sectionRef = useRef(null);
-  const textRef = useRef(null);
+  const sectionRef = useRef(/** @type {HTMLElement | null} */ (null));
+  const textRef = useRef(/** @type {HTMLHeadingElement | null} */ (null));
 
   // Effects
   useEffect(() => {
@@ -97,7 +116,7 @@ export default function TextFillAnimation({
 
       const split = SplitText.create(textElement, {
         type: 'words chars',
-        aria: false,
+        aria: /** @type {any} */ (false),
         tag: 'span',
         charsClass: 'split-chars',
       });

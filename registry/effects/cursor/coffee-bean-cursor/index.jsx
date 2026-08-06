@@ -64,15 +64,30 @@ const tempObject = new THREE.Object3D()
 // Shared material
 const beanMaterial = new THREE.MeshStandardMaterial({ color:"#392416", roughness: 0.6, metalness: 0.1 })
 
+/**
+ * @param {number} index
+ * @param {number} salt
+ */
 function seededUnit(index, salt) {
  const value = Math.sin(index * 91.713 + salt * 37.529) * 10000
  return value - Math.floor(value)
 }
 
+/** @typedef {import('react').RefObject<{x: number, y: number}>} Vec2Ref */
+
+/**
+ * @typedef {Object} CoffeeBeansProps
+ * @property {number} [count]
+ * @property {Vec2Ref} mousePositionRef
+ * @property {Vec2Ref} mouseVelocityRef
+ * @property {import('react').RefObject<boolean>} isMouseActiveRef
+ */
+
+/** @param {CoffeeBeansProps} props */
 function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, isMouseActiveRef }) {
  const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/coffebean.glb')
- const meshRef = useRef()
- const beansRef = useRef([])
+ const meshRef = useRef(/** @type {any} */ (null))
+ const beansRef = useRef(/** @type {any[]} */ ([]))
   // Precompute all bean data once
  const beansData = useMemo(() => {
  return Array.from({ length: count }, (_, i) => ({
@@ -170,6 +185,10 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
  bean.offsetPosition.z += bean.velocity.z * deltaScaled
   // Soft clamp offset
  const maxOffset = 3
+ /**
+  * @param {number} value
+  * @param {number} max
+  */
  const softClamp = (value, max) => {
  if (Math.abs(value) < max) return value
  const sign = value > 0 ? 1 : -1
@@ -201,13 +220,19 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
   return (
  <instancedMesh
  ref={meshRef}
- args={[nodes.COFFEE_COFFEE_MAT_0.geometry, beanMaterial, count]}
+ args={[/** @type {any} */ (nodes.COFFEE_COFFEE_MAT_0).geometry, beanMaterial, count]}
  />
  )
 }
 
+/**
+ * @typedef {Object} MouseLightProps
+ * @property {Vec2Ref} mousePositionRef
+ */
+
+/** @param {MouseLightProps} props */
 function MouseLight({ mousePositionRef }) {
- const lightRef = useRef()
+ const lightRef = useRef(/** @type {any} */ (null))
  const smoothPosition = useRef({ x: 0, y: 0 })
   useFrame((state, delta) => {
  if (!lightRef.current) return
@@ -230,6 +255,17 @@ function MouseLight({ mousePositionRef }) {
  )
 }
 
+/**
+ * @typedef {Object} MouseTrackerProps
+ * @property {Vec2Ref} mousePositionRef
+ * @property {Vec2Ref} mouseVelocityRef
+ * @property {Vec2Ref} targetPositionRef
+ * @property {Vec2Ref} targetVelocityRef
+ * @property {import('react').RefObject<boolean>} isMouseActiveRef
+ * @property {import('react').RefObject<number>} lastMoveTimeRef
+ */
+
+/** @param {MouseTrackerProps} props */
 function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, targetVelocityRef, isMouseActiveRef, lastMoveTimeRef }) {
  useFrame((state, delta) => {
  const now = Date.now()
@@ -248,8 +284,8 @@ function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, t
 }
 
 export default function CoffeeBeanCursor() {
- const rootRef = useRef(null)
- const [frameloop, setFrameloop] = useState('always')
+ const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
+ const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
  const prefersReducedMotion = usePrefersReducedMotion()
  const mousePositionRef = useRef({ x: 0, y: 0 })
  const mouseVelocityRef = useRef({ x: 0, y: 0 })
@@ -274,7 +310,7 @@ export default function CoffeeBeanCursor() {
  return () => gate.destroy()
  }, [])
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((/** @type {import('react').MouseEvent<HTMLDivElement>} */ e) => {
  const rect = e.currentTarget.getBoundingClientRect()
  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1
  const y = -((e.clientY - rect.top) / rect.height) * 2 + 1

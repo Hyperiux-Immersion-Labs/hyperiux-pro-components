@@ -91,22 +91,31 @@ const MAX_SCROLL_VELOCITY = 0.5;
 const MAX_DEFORMATION = 0.05;
 const MAX_SCROLL_DEFORMATION = 0.02; // New: Higher max for scroll deformation
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @param {number} t
+ */
 function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
 // Proper modulo function that handles negative numbers
+/**
+ * @param {number} n
+ * @param {number} m
+ */
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
 const CurvedPlaneHorizontal = () => {
-  const containerRef = useRef(null);
-  const meshesRef = useRef([]);
-  const sceneRef = useRef();
-  const cameraRef = useRef();
-  const rendererRef = useRef();
-  const texturesRef = useRef([]);
+  const containerRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const meshesRef = useRef(/** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */ ([]));
+  const sceneRef = useRef(/** @type {THREE.Scene|undefined} */ (undefined));
+  const cameraRef = useRef(/** @type {THREE.PerspectiveCamera|undefined} */ (undefined));
+  const rendererRef = useRef(/** @type {THREE.WebGLRenderer|undefined} */ (undefined));
+  const texturesRef = useRef(/** @type {(THREE.Texture|null)[]} */ ([]));
 
   const offsetRef = useRef(0);
   const targetOffsetRef = useRef(0);
@@ -152,7 +161,7 @@ const CurvedPlaneHorizontal = () => {
     if (!imagesLoaded) return;
 
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const onReduceMotionChange = (event) => {
+    const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         velocityRef.current = 0;
@@ -168,7 +177,7 @@ const CurvedPlaneHorizontal = () => {
       mq.addEventListener?.("change", onReduceMotionChange);
     }
 
-    const container = containerRef.current;
+    const container = /** @type {HTMLElement} */ (containerRef.current);
     const viewHeight = window.innerHeight * 0.8;
     const viewWidth = window.innerWidth;
 
@@ -193,6 +202,7 @@ const CurvedPlaneHorizontal = () => {
     rendererRef.current = renderer;
 
     const geometry = new THREE.PlaneGeometry(1, 1, 50, 50);
+    /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
     const meshes = [];
 
     // Create more meshes for better buffering (visible + 4 buffer)
@@ -328,9 +338,9 @@ const CurvedPlaneHorizontal = () => {
     };
     window.addEventListener("resize", onResize);
 
-    const getPointerX = (e) => (e.touches ? e.touches[0].clientX : e.clientX);
+    const getPointerX = (/** @type {MouseEvent|TouchEvent} */ e) => ("touches" in e ? e.touches[0].clientX : e.clientX);
 
-    const onPointerDown = (e) => {
+    const onPointerDown = (/** @type {MouseEvent|TouchEvent} */ e) => {
       dragging.current = true;
       lastX.current = getPointerX(e);
       lastTime.current = Date.now();
@@ -340,7 +350,7 @@ const CurvedPlaneHorizontal = () => {
       e.preventDefault();
     };
 
-    const onPointerMove = (e) => {
+    const onPointerMove = (/** @type {MouseEvent|TouchEvent} */ e) => {
       if (!dragging.current) return;
 
       const currentX = getPointerX(e);
@@ -390,7 +400,7 @@ const CurvedPlaneHorizontal = () => {
     };
 
     // Enhanced scroll handler with intensity-based deformation
-    const onWheel = (e) => {
+    const onWheel = (/** @type {WheelEvent} */ e) => {
       e.preventDefault();
 
       const rawScrollDelta = e.deltaY;

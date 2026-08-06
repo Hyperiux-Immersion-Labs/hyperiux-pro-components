@@ -29,6 +29,32 @@ const CLIPS = {
 
 const REDUCED_MOTION_FADE_DURATION = 0.2;
 
+/**
+ * @typedef {Object} FullscreenNavLink
+ * @property {string} label
+ * @property {string} href
+ */
+
+/**
+ * @typedef {Object} FullscreenNavProps
+ * @property {FullscreenNavLink[]} [links]
+ * @property {string} [brand]
+ * @property {string} [brandHref]
+ * @property {keyof typeof CLIPS} [clipOrigin]
+ * @property {string} [overlayBg]
+ * @property {string} [linkColor]
+ * @property {string} [linkHoverColor]
+ * @property {string} [linkSizeClass]
+ * @property {string} [headerClassName]
+ * @property {number} [openDuration]
+ * @property {number} [closeDuration]
+ * @property {string} [headerOpenColor]
+ * @property {() => void} [onOpen]
+ * @property {() => void} [onClose]
+ * @property {(isOpen: boolean) => import('react').ReactNode} [children]
+ */
+
+/** @param {FullscreenNavProps} props */
 export default function FullscreenNav({
   links,
   brand = "Hyperiux",
@@ -48,12 +74,12 @@ export default function FullscreenNav({
 }) {
   // State & refs
   const [isOpen, setIsOpen] = useState(false);
-  const overlayRef = useRef(null);
-  const linksWrapperRef = useRef(null);
-  const timelineRef = useRef(null);
+  const overlayRef = useRef(/** @type {HTMLElement|null} */ (null));
+  const linksWrapperRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const timelineRef = useRef(/** @type {gsap.core.Timeline|gsap.core.Tween|null} */ (null));
   const isAnimatingRef = useRef(false);
-  const rootRef = useRef(null);
-  const toggleButtonRef = useRef(null);
+  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
   const reduceMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
@@ -187,10 +213,12 @@ export default function FullscreenNav({
     onOpenMenu();
   };
 
+  /** @param {import('react').MouseEvent<HTMLAnchorElement>} event */
   const onLinkMouseEnter = (event) => {
     event.currentTarget.style.color = linkHoverColor;
   };
 
+  /** @param {import('react').MouseEvent<HTMLAnchorElement>} event */
   const onLinkMouseLeave = (event) => {
     event.currentTarget.style.color = linkColor;
   };
@@ -302,7 +330,7 @@ export default function FullscreenNav({
         >
           {children
             ? children(isOpen)
-            : links.map(({ label, href }) => (
+            : /** @type {FullscreenNavLink[]} */ (links).map(({ label, href }) => (
               <a
                 key={label}
                 href={href}

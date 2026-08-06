@@ -11,10 +11,17 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
+/**
+ * @typedef {Object} ChessGridTransitionProps
+ * @property {import('react').ReactNode} [children]
+ * @property {boolean} [enableContentShift]
+ */
+
+/** @param {ChessGridTransitionProps} props */
 export default function ChessGridTransition({ children, enableContentShift = false }) {
-  const wrapperRef = useRef(null)
-  const gridRef = useRef(null)
-  const bgRef = useRef(null)
+  const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const gridRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const bgRef = useRef(/** @type {HTMLDivElement | null} */ (null))
 
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -40,6 +47,10 @@ export default function ChessGridTransition({ children, enableContentShift = fal
 
   const rows = isMobile ? mobileRows : isTablet ? tabletRows : desktopRows
 
+  /**
+   * @param {HTMLCollection} cells
+   * @param {number} rowIndex
+   */
   const getRowCells = (cells, rowIndex) => {
     const rowCells = []
     for (let col = 0; col < cols; col++) {
@@ -48,6 +59,11 @@ export default function ChessGridTransition({ children, enableContentShift = fal
     return rowCells
   }
 
+  /**
+   * @param {gsap.core.Timeline} tl
+   * @param {HTMLCollection} cells
+   * @param {number} [direction]
+   */
   const buildAnimation = (tl, cells, direction = 1) => {
     const rowsArr = Array.from({ length: rows }, (_, i) => i)
 
@@ -86,7 +102,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
   }
 
   useEffect(() => {
-    const cells = gridRef.current.children
+    const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
 
     Array.from(cells).forEach((cell, i) => {
       const colIndex = i % cols
@@ -109,7 +125,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
           return () => tl.kill()
         }
 
-        const cells = gridRef.current.children
+        const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],
@@ -129,7 +145,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
           return () => tl.kill()
         }
 
-        const cells = gridRef.current.children
+        const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
 
         tl.fromTo(
           [wrapperRef.current, bgRef.current],

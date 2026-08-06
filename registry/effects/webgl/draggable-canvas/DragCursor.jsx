@@ -2,15 +2,21 @@
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 
+/**
+ * @typedef {Object} DragCursorProps
+ * @property {boolean} [isHoveringDraggable]
+ */
+
+/** @param {DragCursorProps} props */
 export default function DragCursor({ isHoveringDraggable = false }) {
-  const cursorRef = useRef(null);
+  const cursorRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    const handlePointerMove = (e) => {
+    const handlePointerMove = (/** @type {PointerEvent} */ e) => {
       const x = e.clientX;
       const y = e.clientY;
       

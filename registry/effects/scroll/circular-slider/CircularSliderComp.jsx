@@ -20,15 +20,32 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
+/**
+ * @typedef {Object} CircularSliderProduct
+ * @property {string} [heading]
+ * @property {string} [text]
+ * @property {string} [link]
+ * @property {string} [bgColor]
+ * @property {string} [textColor]
+ */
+
+/**
+ * @typedef {Object} CircularSliderCompProps
+ * @property {string} [heading]
+ * @property {string} [para]
+ * @property {CircularSliderProduct[]} [data]
+ */
+
+/** @param {CircularSliderCompProps} props */
 const CircularSliderComp = ({ heading, para, data = [] }) => {
- const outerRef = useRef(null);
- const wheelRef = useRef(null);
+ const outerRef = useRef(/** @type {HTMLElement|null} */ (null));
+ const wheelRef = useRef(/** @type {HTMLDivElement|null} */ (null));
  const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
  const ctx = gsap.context(() => {
- const wheel = wheelRef.current;
- const cards = gsap.utils.toArray(".wheel-card");
+ const wheel = /** @type {HTMLDivElement} */ (wheelRef.current);
+ const cards = /** @type {HTMLElement[]} */ (gsap.utils.toArray(".wheel-card"));
 
  const setup = () => {
  const radius = wheel.offsetWidth / 1.1;
@@ -170,6 +187,7 @@ const CircularSliderComp = ({ heading, para, data = [] }) => {
 export default CircularSliderComp;
 
 
+/** @param {CircularSliderProduct} props */
 const SliderCard = ({ heading, text, link, bgColor, textColor }) => {
  const cardContent = (
  <div
