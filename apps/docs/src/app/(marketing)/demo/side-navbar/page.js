@@ -5,9 +5,8 @@ const page = () => {
   return (
     <>
     <div className='w-screen h-screen bg-white'>
-
     <SideNavbar/>
-
+    
     </div>
     </>
   )
