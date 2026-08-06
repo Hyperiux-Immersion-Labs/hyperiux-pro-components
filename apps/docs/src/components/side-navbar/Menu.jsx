@@ -21,14 +21,15 @@ const NAV_LINKS = [
   { href: "#", text: "About", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/effects", text: "Effects", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/pricing", text: "Pricing", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
+  { href: "/docs", text: "Documentation", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
 
 ];
 
 const SOCIAL_LINKS = [
-  { href: "#", text: "Linkedin" },
-  { href: "#", text: "Instagram" },
-  { href: "#", text: "behance" },
-  { href: "#", text: "Pinterest" },
+  { href: "https://x.com/_hyperiux_", text: "Twitter / X" },
+  { href: "https://www.linkedin.com/company/hyperiux/", text: "LinkedIn" },
+  { href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", text: "GitHub" },
+  { href: "https://www.instagram.com/_hyperiux_/", text: "Instagram" },
 ];
 
 const SocialLink = ({ href, text }) => (
