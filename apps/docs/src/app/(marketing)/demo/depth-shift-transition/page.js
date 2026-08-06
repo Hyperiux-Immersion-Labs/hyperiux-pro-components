@@ -10,7 +10,7 @@ export default function page() {
     <>
     <section className="relative flex h-screen items-center justify-center max-md:px-[7vw] text-center">
       <Image
-             src="/assets/abs/abs3.png"
+             src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs3.png"
              alt="Abstract background"
              fill
              priority

@@ -18,10 +18,9 @@ const MenuLink = ({ href, text, className = "" }) => {
 
 const NAV_LINKS = [
   { href: "/", text: "Home", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
-  { href: "#", text: "About", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/effects", text: "Effects", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/pricing", text: "Pricing", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
-  { href: "/docs", text: "Documentation", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
+  { href: "/docs", text: "Docs", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
 
 ];
 
