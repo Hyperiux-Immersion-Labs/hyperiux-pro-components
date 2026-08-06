@@ -8,13 +8,14 @@ import React from "react";
 export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-sm:px-[7vw] text-center">
-      <Image
-        src="/assets/abs/abs2.png"
-        alt="Abstract background"
-        fill
-        priority
-        className="object-cover brightness-75"
-      />
+       <Image
+              src="/assets/abs/abs4.png"
+              alt="Abstract background"
+              fill
+              priority
+              className="object-cover brightness-75"
+            />
+      
 
       <div className="relative z-10 space-y-8 max-w-5xl mx-auto text-center text-white">
         {/* Heading */}

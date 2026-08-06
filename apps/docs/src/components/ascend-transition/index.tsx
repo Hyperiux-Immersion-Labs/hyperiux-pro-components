@@ -29,7 +29,7 @@ interface AscendTransitionProps {
   bgColor?: string
 }
 
-export default function AscendTransition({ children, bgColor = '#0b0b0c' }: AscendTransitionProps) {
+export default function AscendTransition({ children, bgColor = '#ffffff' }: AscendTransitionProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   return (

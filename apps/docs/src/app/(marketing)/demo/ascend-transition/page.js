@@ -9,12 +9,12 @@ export default function page() {
     <>
     <section className="relative flex h-screen items-center justify-center max-sm:px-[7vw] text-center">
       <Image
-        src="/assets/abs/abs1.png"
-        alt="Abstract background"
-        fill
-        priority
-        className="object-cover brightness-75"
-        />
+             src="/assets/abs/abs3.png"
+             alt="Abstract background"
+             fill
+             priority
+             className="object-cover "
+             />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center text-white">
         {/* Heading */}

@@ -49,7 +49,9 @@ const EXCLUDED_PATHS = new Set([
   "/demo/clippath-transition",
   "/demo/clippath-transition/page2",
   "/demo/ascend-transition",
-  "/demo/ascend-transition/page2"
+  "/demo/ascend-transition/page2",
+  "/demo/aperture-transition",
+  "/demo/aperture-transition/page2"
 ]);
 
 function formatLabel(pathname) {

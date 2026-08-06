@@ -21,7 +21,7 @@
   "previewUrl": "/demo/ascend-transition",
   "coverImage": "ascend-transition",
   "videoUrl": "ascend-transition.mp4",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.jsx",
   "exportName": "AscendTransition",

@@ -612,6 +612,38 @@
       "version": "1.1.0"
     },
     {
+      "name": "aperture-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "ApertureTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ascend-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "AscendTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
       "name": "block-transition",
       "type": "registry:component",
       "category": "transitions",
