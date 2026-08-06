@@ -30,7 +30,7 @@ function StatCard({ label, value, detail, href }) {
     <div className="h-full flex flex-col justify-between rounded-md p-6 bg-[#272727] backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
       <p className="text-white mb-3">{label}</p>
 
-      <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
+      <p className="text-2xl font-medium font-neue-haas leading-none">{value}</p>
 
       {detail && <p className="text-[#838383] mt-4">{detail}</p>}
     </div>
