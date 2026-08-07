@@ -7,13 +7,20 @@ import { ReactLenis } from 'lenis/react';
 import PixelScrollCanvas from './PixelScrollCanvas';
 import { sections } from './content';
 
+interface SplitCanvasProps {
+    bgColor?: string;
+    gridSize?: number;
+    numSlices?: number;
+    canvasSize?: number;
+}
+
 export default function SplitCanvas({
     bgColor = "#F5F5F0",
     gridSize = 16,
     numSlices = 32,
     canvasSize = 599,
-}) {
-    const wrapperRef = useRef(null);
+}: SplitCanvasProps) {
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     return (
         <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>

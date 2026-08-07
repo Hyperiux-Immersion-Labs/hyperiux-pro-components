@@ -18,7 +18,7 @@ const DURATION_LEAVE = 1.0
 const DURATION_ENTER = 0.8
 
 function easeInOut(t: number): number {
- return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
 function clampNumber(value: unknown, min: number, max: number, fallback: number): number {

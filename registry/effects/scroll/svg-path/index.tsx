@@ -50,13 +50,21 @@ const tabs = [
 
 const imgs = svgPathImages.map((src) => ({ src }));
 
+interface SVGPathProps {
+  bgColor?: string;
+  baseVelocity?: number;
+  dragSensitivity?: number;
+  slowDownFactor?: number;
+  draggable?: boolean;
+}
+
 export default function SVGPath({
   bgColor = "#000000",
   baseVelocity = 8,
   dragSensitivity = 0.1,
   slowDownFactor = 0.3,
   draggable = true,
-}) {
+}: SVGPathProps) {
   const [activeTab, setActiveTab] = useState("circle");
 
   const currentTab = useMemo(() => {

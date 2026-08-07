@@ -18,7 +18,7 @@ function clampNumber(value: unknown, min: number, max: number, fallback: number)
 }
 
 function easeInOut(t: number): number {
- return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 }
 
 function drawGrid(canvas: HTMLCanvasElement | null, progress: number, isEnter: boolean, cols = COLS, rows = ROWS, fromTopLeft = false, pixelColor = COLOR) {
